@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, Filter, MoreVertical, ShieldCheck, Mail, Phone, X } from 'lucide-react';
+import { Search, Plus, Filter, MoreVertical, ShieldCheck, Mail, Phone, X, Eye } from 'lucide-react';
 
 const mockMembers = [
   { id: '1', name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', plan: 'Pro', status: 'Active', joined: '2025-10-15' },
@@ -12,6 +12,7 @@ const mockMembers = [
 const GymAdminMembers = () => {
   const [search, setSearch] = useState('');
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
   const navigate = useNavigate();
 
   const handleAddMember = () => {
@@ -103,7 +104,10 @@ const GymAdminMembers = () => {
                       {member.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right flex justify-end gap-2 items-center">
+                    <button onClick={() => setSelectedMember(member)} className="p-2 text-[#475569] hover:text-[#16A34A] hover:bg-[#FFFFFF] rounded-lg transition-colors" title="View Member">
+                      <Eye size={18} />
+                    </button>
                     <button className="p-2 text-[#475569] hover:text-[#1E293B] hover:bg-[#FFFFFF] rounded-lg transition-colors">
                       <MoreVertical size={18} />
                     </button>
@@ -155,6 +159,56 @@ const GymAdminMembers = () => {
                 className="w-full py-3.5 bg-[#FFFFFF] text-[#1E293B] font-medium rounded-xl border border-[#CCFBF1] hover:bg-[#E2E8F0] transition-colors"
               >
                 Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Member View Modal */}
+      {selectedMember && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-[#CCFBF1]">
+            <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center bg-gradient-to-r from-[#F0FDFA] to-[#FFFFFF]">
+              <h2 className="text-xl font-bold text-[#1E293B]">Member Profile</h2>
+              <button onClick={() => setSelectedMember(null)} className="text-[#475569] hover:text-[#1E293B] transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-16 h-16 bg-[#16A34A]/10 text-[#16A34A] rounded-full flex items-center justify-center text-2xl font-bold">
+                  {selectedMember.name.charAt(0)}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#1E293B]">{selectedMember.name}</h3>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${selectedMember.status === 'Active' ? 'bg-green-500/10 text-green-500' : 'bg-[#0D9488]/10 text-[#0D9488]'}`}>
+                    {selectedMember.status}
+                  </span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-[#475569] mb-1">Email</p>
+                  <p className="font-medium text-[#1E293B]">{selectedMember.email}</p>
+                </div>
+                <div>
+                  <p className="text-[#475569] mb-1">Phone</p>
+                  <p className="font-medium text-[#1E293B]">{selectedMember.phone}</p>
+                </div>
+                <div>
+                  <p className="text-[#475569] mb-1">Membership Plan</p>
+                  <p className="font-medium text-[#1E293B]">{selectedMember.plan}</p>
+                </div>
+                <div>
+                  <p className="text-[#475569] mb-1">Join Date</p>
+                  <p className="font-medium text-[#1E293B]">{selectedMember.joined}</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-4 bg-[#F8FAFC] border-t border-[#CCFBF1] flex justify-end">
+              <button onClick={() => setSelectedMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl font-bold hover:bg-[#F1F5F9] transition-colors">
+                Close
               </button>
             </div>
           </div>

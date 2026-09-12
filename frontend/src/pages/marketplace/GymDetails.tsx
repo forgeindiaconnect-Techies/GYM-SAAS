@@ -266,11 +266,7 @@ const GymDetails = () => {
 
                     <button 
                       onClick={() => handleJoin(plan)}
-                      className={`w-full mt-8 py-3 rounded-xl font-bold transition-all ${
-                        idx === 1 
-                          ? 'bg-[#16A34A] text-white hover:bg-[#15803D] shadow-[0_0_20px_rgba(212,175,55,0.2)]'
-                          : 'bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] hover:bg-[#E2E8F0] hover:border-[#555]'
-                      }`}
+                      className="w-full mt-8 py-3 rounded-xl font-bold transition-all bg-[#16A34A] text-white hover:bg-[#15803D]"
                     >
                       Join Now
                     </button>

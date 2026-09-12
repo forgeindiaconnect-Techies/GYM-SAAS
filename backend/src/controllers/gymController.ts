@@ -173,8 +173,18 @@ export const updateGymStatus = async (req: Request, res: Response): Promise<void
       owner.approvalStatus = status as any;
       if (status === 'REJECTED') {
         owner.rejectionReason = reason;
+        owner.isActive = false;
       } else if (status === 'SUSPENDED') {
         (owner as any).suspensionReason = reason;
+        owner.isActive = false;
+      } else if (status === 'APPROVED') {
+        owner.isActive = true;
+        owner.rejectionReason = undefined;
+        (owner as any).suspensionReason = undefined;
+        // Start 1-day free trial
+        owner.subscriptionStatus = 'TRIAL' as any;
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        owner.subscriptionExpiry = new Date(Date.now() + oneDayMs);
       }
       await owner.save();
     }
@@ -192,7 +202,7 @@ export const updateGym = async (req: Request, res: Response): Promise<void> => {
       name, gymType, logo, description, email, phone, website,
       address, city, state, pinCode,
       subscriptionPlan, subscriptionStartDate, subscriptionEndDate, subscriptionStatus,
-      status, memberCapacity, trainerCapacity, equipment
+      status, memberCapacity, trainerCapacity, equipment, subscriptionPlans
     } = req.body;
 
     const gym = await Gym.findById(id);
@@ -213,6 +223,7 @@ export const updateGym = async (req: Request, res: Response): Promise<void> => {
     if (trainerCapacity !== undefined) updateData.trainerCapacity = trainerCapacity;
     if (equipment) updateData.equipment = equipment;
     if (status) updateData.status = status;
+    if (subscriptionPlans) updateData.subscriptionPlans = subscriptionPlans;
 
     if (address || city || state || pinCode) {
       updateData.location = {

@@ -11,6 +11,8 @@ import GymOwnerIntroduction from './pages/auth/GymOwnerIntroduction';
 import PendingPage from './pages/auth/PendingPage';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import StatusPage from './pages/auth/StatusPage';
+import TrainerInvitationPage from './pages/auth/TrainerInvitationPage';
+import TrainerOnboarding from './pages/auth/TrainerOnboarding';
 
 // Public Marketplace
 import GymMarketplace from './pages/marketplace/GymMarketplace';
@@ -119,6 +121,8 @@ function App() {
           <Route path="/register/customer" element={<CustomerRegisterPage />} />
           <Route path="/gym-owner-introduction" element={<GymOwnerIntroduction />} />
           <Route path="/register/gym-owner" element={<GymOwnerRegisterPage />} />
+          <Route path="/invite/trainer/:token" element={<TrainerInvitationPage />} />
+          <Route path="/invite/trainer/onboarding" element={<TrainerOnboarding />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           
           {/* Gym Marketplace */}

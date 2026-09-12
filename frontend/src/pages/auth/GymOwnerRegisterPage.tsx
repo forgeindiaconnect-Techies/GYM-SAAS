@@ -17,6 +17,7 @@ const STEPS = ['Basic Info', 'Equipment', 'AC Details', 'Facilities', 'Gym Image
 
 const initialForm = {
   firstName: '', lastName: '', email: '', mobile: '', password: '', confirmPassword: '',
+  emailOtpVerified: false,
   gymName: '', gymEmail: '', gymContactNumber: '', address: '', city: '', state: '', pinCode: '',
   gymType: '', approxMembers: '', numTrainers: '', operatingHours: '',
   trainingMode: '',
@@ -56,6 +57,7 @@ const GymOwnerRegisterPage = () => {
       if (!form.password) e.password = 'Password is required';
       else if (form.password.length < 8) e.password = 'Password must be at least 8 characters';
       if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match';
+      if (!form.emailOtpVerified) e.emailOtp = 'Please verify your email address with the OTP';
       
       if (!form.gymName.trim()) e.gymName = 'Gym name is required';
       if (!form.gymContactNumber.trim()) e.gymContactNumber = 'Gym contact number is required';
@@ -69,12 +71,7 @@ const GymOwnerRegisterPage = () => {
       if (!form.operatingHours) e.operatingHours = 'Operating hours is required';
       if (!form.trainingMode) e.trainingMode = 'Training mode is required';
       if (!form.services || form.services.length === 0) e.services = 'Please select at least one service';
-      else {
-        if ((form.trainingMode === 'online' || form.trainingMode === 'both') && !form.services.includes('Online Training'))
-          e.services = 'Online Training service must be selected for Online or Both modes';
-        if ((form.trainingMode === 'offline' || form.trainingMode === 'both') && !form.services.includes('Offline Training'))
-          e.services = 'Offline Training service must be selected for Offline or Both modes';
-      }
+      if (!form.rating) e.rating = 'Rating is required';
     }
     if (step === 1) {
       // Equipment is optional, but if they leave it empty we could show a warning. We won't block them.

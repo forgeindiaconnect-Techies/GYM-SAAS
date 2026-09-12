@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User, { Role, ApprovalStatus, SubscriptionStatus } from '../models/User';
 import Gym, { GymStatus } from '../models/Gym';
+import Trainer from '../models/Trainer';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
@@ -206,6 +207,23 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Check Trainer Status
+    if (user.role === Role.TRAINER) {
+      const trainer = await Trainer.findOne({ userId: user._id });
+      if (trainer && trainer.status !== 'Active') {
+        res.status(403).json({ success: false, message: `Your account is ${trainer.status}`, errorCode: 'ACCOUNT_SUSPENDED' });
+        return;
+      }
+    }
+
+    // Check trial expiration
+    if (user.subscriptionStatus === SubscriptionStatus.TRIAL && user.subscriptionExpiry) {
+      if (new Date(user.subscriptionExpiry) < new Date()) {
+        user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        await user.save();
+      }
+    }
+
     const payload = {
       id: user._id,
       role: user.role,
@@ -252,6 +270,14 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     if (!user) {
       res.status(404).json({ success: false, message: 'User not found' });
       return;
+    }
+    
+    // Check trial expiration
+    if (user.subscriptionStatus === SubscriptionStatus.TRIAL && user.subscriptionExpiry) {
+      if (new Date(user.subscriptionExpiry) < new Date()) {
+        user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        await user.save();
+      }
     }
     res.status(200).json({ success: true, user });
   } catch (error: any) {

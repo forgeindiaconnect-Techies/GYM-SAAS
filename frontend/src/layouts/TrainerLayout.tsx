@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
@@ -13,6 +13,18 @@ const TrainerLayout = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [gym, setGym] = useState<any>(null);
+
+  useEffect(() => {
+    if (user?.gymId) {
+      import('../utils/api').then(({ default: api }) => {
+        api.get(`/gyms/${user.gymId}`)
+          .then(res => setGym(res.data.gym))
+          .catch(err => console.error('Failed to fetch gym', err));
+      });
+    }
+  }, [user]);
 
   const navItems = [
     { label: 'Dashboard', path: '/trainer/dashboard', icon: LayoutDashboard },
@@ -37,10 +49,12 @@ const TrainerLayout = () => {
       {/* Logo */}
       <div className="p-5 border-b border-[#CCFBF1]">
         <Link to="/" className="flex items-center space-x-2" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 bg-gradient-to-br from-[#16A34A] to-[#0D9488] rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
+          <div className="w-9 h-9 bg-gradient-to-br from-[#16A34A] to-[#0D9488] rounded-xl flex items-center justify-center shadow-lg shadow-green-200 shrink-0">
             <Activity className="text-[#1E293B]" size={20} />
           </div>
-          <span className="text-xl font-bold tracking-tight text-[#16A34A]">AI GYM</span>
+          <span className="text-xl font-bold tracking-tight text-[#16A34A] truncate max-w-[160px]" title={gym?.name || 'AI GYM'}>
+            {gym?.name || 'AI GYM'}
+          </span>
         </Link>
         <div className="mt-4 flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-[#16A34A] to-[#0D9488] rounded-full flex items-center justify-center text-[#1E293B] font-bold text-base shadow">

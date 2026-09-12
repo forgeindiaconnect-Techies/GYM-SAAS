@@ -37,8 +37,14 @@ export const updateUserStatus = async (req: Request, res: Response): Promise<voi
     user.approvalStatus = status;
     if (status === 'REJECTED') {
       user.rejectionReason = reason;
+      user.isActive = false;
     } else if (status === 'SUSPENDED') {
       (user as any).suspensionReason = reason;
+      user.isActive = false;
+    } else if (status === 'APPROVED') {
+      user.isActive = true;
+      user.rejectionReason = undefined;
+      (user as any).suspensionReason = undefined;
     }
     await user.save();
     

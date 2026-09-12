@@ -256,6 +256,8 @@ const SuperAdminCustomers = () => {
                   <th className="px-6 py-4 font-medium">Customer</th>
                   <th className="px-6 py-4 font-medium">Contact</th>
                   <th className="px-6 py-4 font-medium">Location</th>
+                  <th className="px-6 py-4 font-medium">Login Date</th>
+                  <th className="px-6 py-4 font-medium">Expiry Date</th>
                   <th className="px-6 py-4 font-medium">Status</th>
                   <th className="px-6 py-4 font-medium text-right">Actions</th>
                 </tr>
@@ -295,6 +297,12 @@ const SuperAdminCustomers = () => {
                       ) : (
                         <span className="text-[#555]">Not provided</span>
                       )}
+                    </td>
+                    <td className="px-6 py-4 text-[#475569] whitespace-nowrap">
+                      {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 text-[#475569] whitespace-nowrap">
+                      {customer.subscriptionExpiry ? new Date(customer.subscriptionExpiry).toLocaleDateString() : 'N/A'}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${getStatusColor(customer.approvalStatus)}`}>

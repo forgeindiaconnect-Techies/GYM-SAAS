@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Check } from 'lucide-react';
 
 interface Step1Props {
   form: any;
@@ -15,6 +15,30 @@ const OPERATING_HOURS = ['24/7', '6 AM - 10 PM', '5 AM - 11 PM', 'Custom'];
 const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, selBtnCls }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [enteredOtp, setEnteredOtp] = useState('');
+  const [otpError, setOtpError] = useState('');
+  const DEMO_OTP = '123456';
+
+  const handleSendOtp = () => {
+    if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
+      setOtpError('Please enter a valid email first');
+      return;
+    }
+    setOtpSent(true);
+    setOtpError('');
+    // Demo OTP shown in alert
+    alert(`Demo OTP generated: ${DEMO_OTP}`);
+  };
+
+  const handleVerifyOtp = () => {
+    if (enteredOtp === DEMO_OTP) {
+      set('emailOtpVerified', true);
+      setOtpError('');
+    } else {
+      setOtpError('Invalid OTP. Please try again.');
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -35,8 +59,42 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
         </div>
         <div>
           <label className="block text-sm text-[#475569] mb-2">Email Address *</label>
-          <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="owner@gym.com" className={inputCls('email')} />
+          <div className="flex gap-2">
+            <input type="email" value={form.email} onChange={e => {
+              set('email', e.target.value);
+              if (form.emailOtpVerified) set('emailOtpVerified', false);
+            }} placeholder="owner@gym.com" className={inputCls('email') + ' flex-1'} disabled={form.emailOtpVerified} />
+            
+            {!form.emailOtpVerified && (
+              <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#F1F5F9] text-[#475569] text-sm font-medium rounded-xl border border-[#CBD5E1] hover:bg-[#E2E8F0] transition-colors whitespace-nowrap">
+                {otpSent ? 'Resend OTP' : 'Send OTP'}
+              </button>
+            )}
+            {form.emailOtpVerified && (
+              <span className="px-4 py-2 bg-green-50 text-green-600 text-sm font-medium rounded-xl border border-green-200 flex items-center gap-1 whitespace-nowrap">
+                <Check size={16} /> Verified
+              </span>
+            )}
+          </div>
           {errors.email && <p className="text-teal-400 text-xs mt-1">{errors.email}</p>}
+          {errors.emailOtp && <p className="text-teal-400 text-xs mt-1">{errors.emailOtp}</p>}
+          
+          {otpSent && !form.emailOtpVerified && (
+            <div className="mt-3 flex gap-2">
+              <input 
+                type="text" 
+                maxLength={6} 
+                value={enteredOtp} 
+                onChange={e => setEnteredOtp(e.target.value.replace(/\D/g, ''))}
+                placeholder="Enter 6-digit OTP" 
+                className="w-full px-4 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#16A34A] flex-1"
+              />
+              <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#16A34A] text-white text-sm font-medium rounded-xl hover:bg-[#15803D] transition-colors whitespace-nowrap">
+                Verify
+              </button>
+            </div>
+          )}
+          {otpError && <p className="text-teal-400 text-xs mt-1">{otpError}</p>}
         </div>
         <div>
           <label className="block text-sm text-[#475569] mb-2">Mobile Number *</label>
@@ -207,13 +265,15 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
           {errors.services && <p className="text-teal-400 text-xs mt-1">{errors.services}</p>}
         </div>
         <div>
-          <label className="block text-sm text-[#475569] mb-2">Rating (Optional)</label>
+          <label className="block text-sm text-[#475569] mb-2">Rating *</label>
           <input type="text" inputMode="decimal" value={form.rating || ''} onChange={e => {
             const v = e.target.value.replace(/[^0-9.]/g, '');
             const parts = v.split('.');
-            const cleaned = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
+            let cleaned = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
+            if (parseFloat(cleaned) > 5) cleaned = '5';
             set('rating', cleaned);
-          }} placeholder="e.g. 4.8" className={inputCls('rating')} maxLength={4} />
+          }} placeholder="e.g. 4.8 (Max 5.0)" className={inputCls('rating')} maxLength={4} />
+          {errors.rating && <p className="text-teal-400 text-xs mt-1">{errors.rating}</p>}
         </div>
         <div>
           <label className="block text-sm text-[#475569] mb-2">Gym Photo/Logo (Optional)</label>

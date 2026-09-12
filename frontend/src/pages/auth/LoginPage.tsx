@@ -64,6 +64,7 @@ const LoginPage = () => {
         }
       }
       
+      alert('Login successfully!');
       navigate(getDashboardRoute(user), { replace: true });
     } catch (err: any) {
       const msg = err.response?.data?.message || 'Something went wrong. Please try again.';

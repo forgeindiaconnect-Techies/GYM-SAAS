@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Plus, Filter, Wrench, CheckCircle2, AlertTriangle, SearchCode } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../utils/api';
 
 const mockEquipment = [
   { id: 'EQ001', name: 'Treadmill Series X', category: 'Cardio', status: 'Active', nextService: '2026-01-15', brand: 'LifeFitness' },
@@ -11,7 +13,26 @@ const mockEquipment = [
 ];
 
 const GymAdminEquipment = () => {
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
+  const [gym, setGym] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (user?.gymId) {
+      api.get(`/gyms/${user.gymId}`)
+        .then(res => {
+          setGym(res.data.gym);
+          setIsLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setIsLoading(false);
+        });
+    }
+  }, [user]);
+
+  const equipmentToDisplay = gym?.equipment?.length > 0 ? gym.equipment : mockEquipment;
 
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -60,16 +81,22 @@ const GymAdminEquipment = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {mockEquipment.map((eq) => (
-          <div key={eq.id} className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 hover:border-[#16A34A]/30 transition-all group relative overflow-hidden">
+        {isLoading ? (
+          <div className="col-span-1 md:col-span-2 xl:col-span-3 text-center py-10 text-[#475569]">Loading equipment...</div>
+        ) : equipmentToDisplay
+          .filter((eq: any) => eq.name?.toLowerCase().includes(search.toLowerCase()))
+          .map((eq: any, idx: number) => {
+            const status = eq.status || (eq.condition === 'Poor' ? 'Maintenance' : 'Active');
+            return (
+          <div key={eq._id || eq.id || idx} className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 hover:border-[#16A34A]/30 transition-all group relative overflow-hidden">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <div className="flex items-center space-x-2 mb-1">
-                  <span className="text-xs font-bold text-[#475569] bg-[#FFFFFF] px-2 py-1 rounded-md">{eq.id}</span>
-                  <span className="text-xs font-semibold text-[#16A34A] uppercase tracking-wider">{eq.category}</span>
+                  <span className="text-xs font-bold text-[#475569] bg-[#FFFFFF] px-2 py-1 rounded-md">{eq.id || `EQ00${idx+1}`}</span>
+                  <span className="text-xs font-semibold text-[#16A34A] uppercase tracking-wider">{eq.category || 'General'}</span>
                 </div>
                 <h3 className="text-lg font-bold text-[#1E293B]">{eq.name}</h3>
-                <p className="text-sm text-[#475569] mt-0.5">{eq.brand}</p>
+                <p className="text-sm text-[#475569] mt-0.5">{eq.brand || `Quantity: ${eq.quantity || 1}`}</p>
               </div>
               <button className="text-[#475569] hover:text-[#16A34A] transition-colors">
                 <SearchCode size={20} />
@@ -79,15 +106,15 @@ const GymAdminEquipment = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center py-3 border-t border-[#CCFBF1]">
                 <span className="text-sm text-[#475569]">Current Status</span>
-                <span className={`flex items-center text-xs font-bold px-3 py-1.5 rounded-lg border ${getStatusColor(eq.status)}`}>
-                  {getStatusIcon(eq.status)}
-                  {eq.status}
+                <span className={`flex items-center text-xs font-bold px-3 py-1.5 rounded-lg border ${getStatusColor(status)}`}>
+                  {getStatusIcon(status)}
+                  {status}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-[#475569]">Next Service</span>
                 <span className="text-sm font-semibold text-[#1E293B] bg-[#FFFFFF] px-3 py-1 rounded-lg">
-                  {eq.nextService}
+                  {eq.nextService || 'N/A'}
                 </span>
               </div>
             </div>
@@ -101,7 +128,8 @@ const GymAdminEquipment = () => {
               </button>
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   );
