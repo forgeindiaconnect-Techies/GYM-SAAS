@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #16A34A;
+  --color-secondary: #0D9488;
+  --color-accent: #06B6D4;
+  --color-background: #F0FDFA;
+  --color-sidebar: #FFFFFF;
+  --color-card: #FFFFFF;
+  --color-text: #1E293B;
+  --color-text-secondary: #475569;
+  --color-border: #CCFBF1;
+  --color-success: #16A34A;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F0FDFA;
+  color: #1E293B;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+/* Custom Scrollbar — Green/Teal theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #CCFBF1;
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #0D9488;
+}
+
+/* Sidebar mobile overlay */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 30;
+  display: none;
+}
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* Input/select global reset for light theme */
+input, select, textarea {
+  color: #1E293B;
+  background-color: #FFFFFF;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #94A3B8;
+}
+
+/* Focus ring — teal */
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  outline: 2px solid #0D9488;
+  outline-offset: 2px;
+}

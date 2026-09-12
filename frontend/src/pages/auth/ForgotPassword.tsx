@@ -1,0 +1,134 @@
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { Link } from 'react-router-dom';
+import { Activity, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import api from '../../utils/api';
+
+const ForgotPassword = () => {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [fieldError, setFieldError] = useState('');
+
+  const validate = () => {
+    if (!email.trim()) {
+      setFieldError('Email is required');
+      return false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setFieldError('Enter a valid email');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setFieldError('');
+    setSuccess(false);
+
+    if (!validate()) return;
+
+    setIsLoading(true);
+    try {
+      // Stub API call - this would be implemented in the backend
+      // await api.post('/auth/forgot-password', { email });
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSuccess(true);
+    } catch (err: any) {
+      const msg = err.response?.data?.message || 'Something went wrong. Please try again.';
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F0FDFA] flex flex-col items-center justify-center px-4">
+      {/* Background glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,255,0,0.05)_0%,_transparent_60%)] pointer-events-none" />
+
+      {/* Logo */}
+      <Link to="/" className="flex items-center space-x-2 mb-10 group relative z-10">
+        <div className="w-9 h-9 bg-[#16A34A] rounded-md flex items-center justify-center">
+          <Activity className="text-black" size={22} />
+        </div>
+        <span className="text-2xl font-bold tracking-tight text-[#16A34A]">AI GYM</span>
+      </Link>
+
+      <div className="w-full max-w-md bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-8 shadow-2xl relative z-10">
+        <h1 className="text-2xl font-bold text-[#1E293B] mb-2">Reset Password</h1>
+        <p className="text-[#475569] text-sm mb-8">
+          Enter your email address and we'll send you a link to reset your password.
+        </p>
+
+        {error && (
+          <div className="flex items-center space-x-3 bg-[#0D9488]/10 border border-[#0D9488]/30 text-teal-400 rounded-xl px-4 py-3 mb-6 text-sm">
+            <AlertCircle size={18} className="shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {success ? (
+          <div className="text-center py-6">
+            <div className="w-16 h-16 bg-[#16A34A]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle size={32} className="text-[#16A34A]" />
+            </div>
+            <h3 className="text-xl font-bold text-[#1E293B] mb-2">Check your email</h3>
+            <p className="text-[#475569] text-sm mb-6">
+              We've sent password reset instructions to <br />
+              <span className="text-[#1E293B] font-medium">{email}</span>
+            </p>
+            <Link 
+              to="/login"
+              className="inline-flex items-center justify-center w-full py-3.5 bg-[#E2E8F0] text-[#1E293B] font-semibold rounded-xl hover:bg-[#333] transition-colors"
+            >
+              Return to Login
+            </Link>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} noValidate className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-[#475569] mb-2">Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setFieldError(''); }}
+                placeholder="you@example.com"
+                className={`w-full bg-[#FFFFFF] border ${fieldError ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} text-[#1E293B] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#16A34A] transition-colors placeholder-[#555]`}
+              />
+              {fieldError && <p className="text-teal-400 text-xs mt-1">{fieldError}</p>}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 bg-[#16A34A] text-[#1E293B] font-bold rounded-xl hover:bg-[#15803D] transition-colors disabled:opacity-60 flex items-center justify-center space-x-2"
+            >
+              {isLoading ? (
+                <><Loader2 size={18} className="animate-spin" /><span>Sending...</span></>
+              ) : (
+                <span>Send Reset Link</span>
+              )}
+            </button>
+          </form>
+        )}
+
+        {!success && (
+          <div className="mt-6 text-center text-sm">
+            <Link to="/login" className="text-[#475569] hover:text-[#16A34A] transition-colors">
+              &larr; Back to Login
+            </Link>
+          </div>
+        )}
+      </div>
+
+      <p className="mt-8 text-xs text-[#555] relative z-10">&copy; {new Date().getFullYear()} AI GYM Technologies. All rights reserved.</p>
+    </div>
+  );
+};
+
+export default ForgotPassword;
