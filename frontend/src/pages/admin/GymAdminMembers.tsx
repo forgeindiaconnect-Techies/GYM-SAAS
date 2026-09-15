@@ -46,6 +46,8 @@ const GymAdminMembers = () => {
   const [showNewModal, setShowNewModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [editMember, setEditMember] = useState<any>(null);
+  const [editForm, setEditForm] = useState<any>(null);
   
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -94,6 +96,19 @@ const GymAdminMembers = () => {
     updateItem('members', id, { status: newStatus });
     setMembers(members.map(m => m.id === id ? { ...m, status: newStatus } : m));
     setActiveDropdown(null);
+  };
+
+  const handleEditClick = (member: any) => {
+    setEditMember(member);
+    setEditForm({ ...member });
+  };
+
+  const handleEditSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateItem('members', editForm.id, editForm);
+    setMembers(members.map(m => m.id === editForm.id ? { ...editForm } : m));
+    setEditMember(null);
+    setEditForm(null);
   };
 
   const handleAddNew = (data: any) => {
@@ -245,7 +260,7 @@ const GymAdminMembers = () => {
                       <button onClick={() => setSelectedMember(member)} className="p-1.5 text-[#475569] hover:text-[#16A34A] hover:bg-[#F0FDFA] rounded transition-colors" title="View Profile">
                         <Eye size={18} />
                       </button>
-                      <button className="p-1.5 text-[#475569] hover:text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Edit Profile">
+                      <button onClick={() => handleEditClick(member)} className="p-1.5 text-[#475569] hover:text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Edit Profile">
                         <Edit2 size={18} />
                       </button>
                       <button className="p-1.5 text-[#475569] hover:text-purple-600 hover:bg-purple-50 rounded transition-colors" title="AI Assessment">
@@ -433,6 +448,128 @@ const GymAdminMembers = () => {
                 Close Profile
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Member Modal */}
+      {editMember && editForm && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#CCFBF1] my-8 shrink-0">
+            <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center bg-[#F8FAFC]">
+              <div>
+                <h2 className="text-xl font-bold text-[#1E293B]">Edit Member</h2>
+                <p className="text-sm text-[#475569] mt-0.5 capitalize">Editing profile for {editMember.name}</p>
+              </div>
+              <button onClick={() => setEditMember(null)} className="text-[#475569] hover:text-[#1E293B] transition-colors p-2 hover:bg-gray-100 rounded-lg">
+                <XCircle size={24} />
+              </button>
+            </div>
+            <form onSubmit={handleEditSave}>
+              <div className="p-6 space-y-6">
+                
+                {/* Personal Info */}
+                <div>
+                  <p className="text-xs font-bold text-[#16A34A] uppercase tracking-wider mb-3 flex items-center gap-2"><User size={14}/> Personal Information</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Full Name *</label>
+                      <input required value={editForm.name || ''} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" placeholder="Full Name" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Email Address *</label>
+                      <input required type="email" value={editForm.email || ''} onChange={e => setEditForm({...editForm, email: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" placeholder="Email" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Phone Number *</label>
+                      <input required type="tel" value={editForm.phone || ''} onChange={e => { const v = e.target.value.replace(/\D/g,''); if(v.length<=10) setEditForm({...editForm, phone: v}); }} maxLength={10} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" placeholder="10-digit number" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Gender</label>
+                      <select value={editForm.gender || 'Male'} onChange={e => setEditForm({...editForm, gender: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm">
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Date of Birth</label>
+                      <input type="date" value={editForm.dob || ''} onChange={e => setEditForm({...editForm, dob: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Fitness Goal</label>
+                      <select value={editForm.fitnessGoal || 'General Fitness'} onChange={e => setEditForm({...editForm, fitnessGoal: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm">
+                        <option>General Fitness</option>
+                        <option>Weight Loss</option>
+                        <option>Muscle Gain</option>
+                        <option>Endurance</option>
+                        <option>Flexibility</option>
+                        <option>Sports Performance</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Membership */}
+                <div className="border-t border-[#CCFBF1] pt-6">
+                  <p className="text-xs font-bold text-[#16A34A] uppercase tracking-wider mb-3 flex items-center gap-2"><ShieldCheck size={14}/> Membership</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Plan</label>
+                      <select value={editForm.plan || ''} onChange={e => setEditForm({...editForm, plan: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm">
+                        {mockPlans.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Status</label>
+                      <select value={editForm.status || 'Active'} onChange={e => setEditForm({...editForm, status: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm">
+                        <option>Active</option>
+                        <option>Pending</option>
+                        <option>Inactive</option>
+                        <option>Suspended</option>
+                        <option>Rejected</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Join Date</label>
+                      <input type="date" value={editForm.joined || ''} onChange={e => setEditForm({...editForm, joined: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Assigned Trainer</label>
+                      <input value={editForm.trainer || ''} onChange={e => setEditForm({...editForm, trainer: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" placeholder="Trainer Name" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Emergency Contact */}
+                <div className="border-t border-[#CCFBF1] pt-6">
+                  <p className="text-xs font-bold text-[#16A34A] uppercase tracking-wider mb-3 flex items-center gap-2"><Phone size={14}/> Emergency Contact</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Name</label>
+                      <input value={editForm.emergencyName || ''} onChange={e => setEditForm({...editForm, emergencyName: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" placeholder="Contact Name" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Phone</label>
+                      <input type="tel" value={editForm.emergencyPhone || ''} onChange={e => { const v = e.target.value.replace(/\D/g,''); if(v.length<=10) setEditForm({...editForm, emergencyPhone: v}); }} maxLength={10} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" placeholder="Phone" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#475569] mb-1">Relationship</label>
+                      <input value={editForm.emergencyRelation || ''} onChange={e => setEditForm({...editForm, emergencyRelation: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-2.5 outline-none focus:border-[#16A34A] text-sm" placeholder="e.g. Parent" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-[#F8FAFC] border-t border-[#CCFBF1] flex justify-end gap-3">
+                <button type="button" onClick={() => setEditMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#E2E8F0] text-[#475569] rounded-xl font-bold hover:bg-[#F1F5F9] transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" className="px-8 py-2 bg-[#16A34A] text-white rounded-xl font-bold hover:bg-[#15803D] transition-colors shadow-lg shadow-[#16A34A]/20 flex items-center gap-2">
+                  <Edit2 size={16}/> Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

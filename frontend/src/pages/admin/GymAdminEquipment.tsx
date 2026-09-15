@@ -153,9 +153,6 @@ const GymAdminEquipment = () => {
           />
           <Search className="absolute left-3 top-3.5 text-[#475569]" size={18} />
         </div>
-        <button className="px-4 py-3 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl hover:bg-[#FFFFFF] transition-colors flex items-center gap-2 font-medium">
-          <Filter size={18} /> Filter by Status
-        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

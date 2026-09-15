@@ -1,5 +1,6 @@
 
-import { IndianRupee, ArrowUpRight, ArrowDownRight, Download, Search, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { IndianRupee, ArrowUpRight, ArrowDownRight, Download, Search } from 'lucide-react';
 
 const mockTransactions = [
   { id: 'TRX-9012', member: 'John Doe', amount: 29.99, type: 'Subscription', date: '2026-09-08', status: 'Completed' },
@@ -9,7 +10,42 @@ const mockTransactions = [
   { id: 'TRX-9016', member: 'Walk-in Guest', amount: 15.00, type: 'Day Pass', date: '2026-09-07', status: 'Completed' },
 ];
 
+const exportToCSV = () => {
+  const headers = ['Transaction ID', 'Member', 'Type', 'Date', 'Amount (₹)', 'Status'];
+  const rows = mockTransactions.map(trx => [
+    trx.id,
+    trx.member,
+    trx.type,
+    trx.date,
+    trx.amount.toFixed(2),
+    trx.status,
+  ]);
+
+  const csvContent = [headers, ...rows]
+    .map(row => row.map(cell => `"${cell}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `payments_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
 const GymAdminPayments = () => {
+  const [search, setSearch] = useState('');
+
+  const filtered = mockTransactions.filter(trx =>
+    trx.id.toLowerCase().includes(search.toLowerCase()) ||
+    trx.member.toLowerCase().includes(search.toLowerCase()) ||
+    trx.type.toLowerCase().includes(search.toLowerCase()) ||
+    trx.status.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -17,7 +53,10 @@ const GymAdminPayments = () => {
           <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Payments & Revenue</h1>
           <p className="text-[#475569] mt-1">Track gym revenue, subscriptions, and financial health.</p>
         </div>
-        <button className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] font-bold rounded-xl hover:bg-[#FFFFFF] transition-colors flex items-center gap-2">
+        <button
+          onClick={exportToCSV}
+          className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] font-bold rounded-xl hover:bg-[#F0FDFA] hover:border-[#16A34A] transition-colors flex items-center gap-2"
+        >
           <Download size={18} /> Export CSV
         </button>
       </div>
@@ -50,14 +89,15 @@ const GymAdminPayments = () => {
       <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
         <div className="p-6 border-b border-[#CCFBF1] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <h3 className="text-lg font-bold text-[#1E293B]">Recent Transactions</h3>
-          <div className="flex gap-3">
-            <div className="relative">
-              <input type="text" placeholder="Search..." className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg pl-9 pr-3 py-1.5 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none" />
-              <Search className="absolute left-2.5 top-2 text-[#475569]" size={14} />
-            </div>
-            <button className="p-2 bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg text-[#475569] hover:text-[#16A34A] transition-colors">
-              <Filter size={16} />
-            </button>
+          <div className="relative w-full md:w-72">
+            <input
+              type="text"
+              placeholder="Search by ID, member, type or status..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl pl-9 pr-4 py-2 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none"
+            />
+            <Search className="absolute left-2.5 top-2.5 text-[#475569]" size={16} />
           </div>
         </div>
         
@@ -74,7 +114,11 @@ const GymAdminPayments = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#CCFBF1]">
-              {mockTransactions.map((trx) => (
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-[#475569]">No transactions match your search.</td>
+                </tr>
+              ) : filtered.map((trx) => (
                 <tr key={trx.id} className="hover:bg-[#F0FDFA] transition-colors">
                   <td className="px-6 py-4 font-mono text-xs">{trx.id}</td>
                   <td className="px-6 py-4 font-semibold text-[#1E293B]">{trx.member}</td>

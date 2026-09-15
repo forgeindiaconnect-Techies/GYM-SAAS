@@ -66,11 +66,20 @@ const GymAdminAttendance = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6">
           <h3 className="text-lg font-bold text-[#1E293B] mb-6">Today's Traffic</h3>
-          <div className="h-48 flex items-end justify-between space-x-2 pt-4 border-t border-[#CCFBF1]">
-            {/* Fake bar chart for visual appeal */}
+          <div className="h-48 flex items-end justify-between gap-1 pt-4 border-t border-[#CCFBF1]">
             {[20, 15, 10, 5, 10, 30, 45, 60, 80, 50, 40, 70, 90, 85, 60, 40].map((val, idx) => (
-              <div key={idx} className="w-full bg-[#FFFFFF] hover:bg-[#16A34A] rounded-t-sm transition-colors relative group" style={{ height: `${val}%` }}>
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-[#1E293B] text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100">{val}</div>
+              <div key={idx} className="flex-1 flex flex-col items-center justify-end h-full relative group">
+                <div
+                  className="w-full rounded-t-lg transition-all duration-200 group-hover:opacity-80 cursor-pointer"
+                  style={{
+                    height: `${val}%`,
+                    background: `linear-gradient(to top, #15803D, #22C55E)`,
+                  }}
+                >
+                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#1E293B] text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10 pointer-events-none">
+                    {val}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
