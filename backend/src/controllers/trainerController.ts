@@ -19,7 +19,7 @@ export const manualAddTrainer = async (req: Request, res: Response): Promise<voi
     const {
       name, email, phone, profilePhoto, specialization, experience,
       trainingMode, qualifications, certifications, expertise, bio,
-      fee, paymentType, status, availableDays, availableStartTime, availableEndTime, availableSlot, password
+      fee, paymentType, status, availableDays, availableStartTime, availableEndTime, availableSlot, password, branchId
     } = req.body;
 
     if (!name || !email || !phone || !specialization || !trainingMode) {
@@ -68,6 +68,7 @@ export const manualAddTrainer = async (req: Request, res: Response): Promise<voi
 
     const trainer = new Trainer({
       gymId: gymOwner.gymId,
+      branchId: branchId && branchId !== 'main' ? branchId : undefined,
       userId: user._id,
       name,
       email,
@@ -282,9 +283,19 @@ export const getTrainers = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    const trainers = await Trainer.find({ gymId: gymOwner.gymId }).sort({ createdAt: -1 });
+    const branchId = req.query.branchId as string;
+    let query: any = { gymId: gymOwner.gymId };
+    if (branchId) {
+      if (branchId === 'main') {
+        query.branchId = { $exists: false };
+      } else {
+        query.branchId = branchId;
+      }
+    }
+
+    const trainers = await Trainer.find(query).sort({ createdAt: -1 });
     // also fetch invitations
-    const invitations = await TrainerInvitation.find({ gymId: gymOwner.gymId }).sort({ createdAt: -1 });
+    const invitations = await TrainerInvitation.find(query).sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, trainers, invitations });
   } catch (error: any) {

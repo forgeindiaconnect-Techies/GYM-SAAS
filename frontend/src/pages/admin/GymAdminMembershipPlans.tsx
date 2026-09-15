@@ -139,7 +139,7 @@ const GymAdminMembershipPlans = () => {
             </div>
 
             <div className="mt-8 pt-6 border-t border-[#CCFBF1]">
-              <button onClick={() => handleOpenModal(plan, index)} className={`w-full py-3 rounded-xl font-bold transition-colors ${isPopular ? 'bg-[#16A34A] text-white hover:bg-[#15803D]' : 'bg-[#FFFFFF] text-[#1E293B] hover:bg-[#E2E8F0]'}`}>
+              <button onClick={() => handleOpenModal(plan, index)} className="w-full py-3 rounded-xl font-bold transition-colors bg-[#16A34A] text-white hover:bg-[#15803D] shadow-lg shadow-[#16A34A]/20">
                 Edit Plan
               </button>
             </div>
@@ -174,7 +174,6 @@ const GymAdminMembershipPlans = () => {
                   <label className="block text-sm font-bold text-[#475569] mb-1">Duration</label>
                   <select value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
                     <option value="Monthly">Monthly</option>
-                    <option value="Quarterly">Quarterly</option>
                     <option value="Yearly">Yearly</option>
                   </select>
                 </div>

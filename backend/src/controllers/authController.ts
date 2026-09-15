@@ -79,6 +79,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         gymId: user.gymId,
         approvalStatus: user.approvalStatus,
         subscriptionStatus: user.subscriptionStatus,
+        subscriptionPlan: user.subscriptionPlan,
       },
     });
   } catch (error: any) {
@@ -254,6 +255,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         gymName,
         approvalStatus: user.approvalStatus,
         subscriptionStatus: user.subscriptionStatus,
+        subscriptionPlan: user.subscriptionPlan,
         rejectionReason: user.rejectionReason,
         suspensionReason: user.suspensionReason,
       },

@@ -41,6 +41,9 @@ export interface IUser extends Document {
   rejectionReason?: string;
   suspensionReason?: string;
 
+  // Onboarding origin
+  customerType?: 'EXISTING_CUSTOMER' | 'NEW_CUSTOMER' | 'PUBLIC_SIGNUP';
+
   // Subscription
   subscriptionStatus: SubscriptionStatus;
   subscriptionPlan?: string;
@@ -98,6 +101,7 @@ const userSchema = new Schema<IUser>(
     role: { type: String, enum: Object.values(Role), default: Role.MEMBER },
     gymId: { type: Schema.Types.ObjectId, ref: 'Gym' },
     isActive: { type: Boolean, default: true },
+    customerType: { type: String, enum: ['EXISTING_CUSTOMER', 'NEW_CUSTOMER', 'PUBLIC_SIGNUP'] },
 
     approvalStatus: {
       type: String,

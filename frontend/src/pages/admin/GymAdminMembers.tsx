@@ -1,163 +1,316 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, Filter, MoreVertical, ShieldCheck, Mail, Phone, X, Eye } from 'lucide-react';
+import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, MoreVertical, Settings } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { AddMemberSelectorModal } from '../../components/GymAdmin/AddMemberSelectorModal';
+import { AddExistingMemberModal } from '../../components/GymAdmin/AddExistingMemberModal';
+import { RegisterNewMemberModal } from '../../components/GymAdmin/RegisterNewMemberModal';
+import { getDb, addItem, updateItem, deleteItem } from '../../utils/mockDb';
 
-const mockMembers = [
-  { id: '1', name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', plan: 'Pro', status: 'Active', joined: '2025-10-15' },
-  { id: '2', name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210', plan: 'Elite', status: 'Active', joined: '2025-11-02' },
-  { id: '3', name: 'Mike Johnson', email: 'mike@example.com', phone: '555-123-4567', plan: 'Basic', status: 'Inactive', joined: '2025-08-20' },
-  { id: '4', name: 'Emily Davis', email: 'emily@example.com', phone: '444-987-1234', plan: 'Pro', status: 'Active', joined: '2025-12-01' },
+const defaultMockMembers = [
+  { id: '1', name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', plan: 'Pro', status: 'Active', joined: '2025-10-15', customerType: 'EXISTING_CUSTOMER', trainer: 'Mike Johnson', gender: 'Male', dob: '1990-05-12', emergencyName: 'Jane Doe', emergencyPhone: '098-765-4321', emergencyRelation: 'Spouse', fitnessGoal: 'Muscle Gain' },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210', plan: 'Elite', status: 'Active', joined: '2025-11-02', customerType: 'NEW_CUSTOMER', trainer: 'Sarah Williams', gender: 'Female', dob: '1985-08-22', emergencyName: 'Mark Smith', emergencyPhone: '555-444-3333', emergencyRelation: 'Brother', fitnessGoal: 'Weight Loss' },
+  { id: '3', name: 'Mike Johnson', email: 'mike@example.com', phone: '555-123-4567', plan: 'Basic', status: 'Inactive', joined: '2025-08-20', customerType: 'EXISTING_CUSTOMER', trainer: '', gender: 'Male', dob: '1992-11-05', emergencyName: 'Sarah Johnson', emergencyPhone: '111-222-3333', emergencyRelation: 'Sister', fitnessGoal: 'General Fitness' },
+  { id: '4', name: 'Emily Davis', email: 'emily@example.com', phone: '444-987-1234', plan: 'Pro', status: 'Pending', joined: '2025-12-01', customerType: 'NEW_CUSTOMER', trainer: 'Mike Johnson', gender: 'Female', dob: '1995-02-14', emergencyName: 'Tom Davis', emergencyPhone: '999-888-7777', emergencyRelation: 'Father', fitnessGoal: 'Endurance' },
+];
+
+const mockPlans = [
+  { id: '1', name: 'Basic' },
+  { id: '2', name: 'Pro' },
+  { id: '3', name: 'Elite' }
 ];
 
 const GymAdminMembers = () => {
-  const [search, setSearch] = useState('');
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<any>(null);
-  const navigate = useNavigate();
+  const [members, setMembers] = useState<any[]>([]);
+  
+  useEffect(() => {
+    let dbMembers = getDb('members');
+    // If DB is basically empty (only the 1 seed member), seed our rich UI test data
+    if (dbMembers.length <= 1) {
+      defaultMockMembers.forEach(m => {
+        if (!dbMembers.find((dbm: any) => dbm.email === m.email)) {
+          addItem('members', m);
+        }
+      });
+      dbMembers = getDb('members');
+    }
+    setMembers(dbMembers);
+  }, []);
 
-  const handleAddMember = () => {
-    // Simulating reaching the free trial limit of 10 members
-    const currentMembers = 10;
-    const planLimit = 10;
-    
-    if (currentMembers >= planLimit) {
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('All');
+  
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showSelectorModal, setShowSelectorModal] = useState(false);
+  const [showExistingModal, setShowExistingModal] = useState(false);
+  const [showNewModal, setShowNewModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const getMemberLimit = (plan?: string) => {
+    switch (plan?.toUpperCase()) {
+      case 'FREE_TRIAL': return 10;
+      case 'SILVER': return 100;
+      case 'GOLD': return 500;
+      case 'PREMIUM': return Infinity;
+      default: return 10;
+    }
+  };
+
+  const handleAddMemberClick = () => {
+    const planLimit = getMemberLimit(user?.subscriptionPlan);
+    if (members.length >= planLimit) {
       setShowUpgradeModal(true);
     } else {
-      // Normal add member logic would go here
+      setShowSelectorModal(true);
+    }
+  };
+
+  const handleAddExisting = (data: any) => {
+    const newMember = {
+      ...data,
+      joined: data.startDate
+    };
+    const savedMember = addItem('members', newMember);
+    setMembers([savedMember, ...members]);
+    setShowExistingModal(false);
+  };
+
+  const handleDeleteMember = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this member?')) {
+      deleteItem('members', id);
+      setMembers(members.filter(m => m.id !== id));
+      setActiveDropdown(null);
+      if (selectedMember?.id === id) {
+        setSelectedMember(null);
+      }
+    }
+  };
+
+  const handleStatusChange = (id: string, newStatus: string) => {
+    updateItem('members', id, { status: newStatus });
+    setMembers(members.map(m => m.id === id ? { ...m, status: newStatus } : m));
+    setActiveDropdown(null);
+  };
+
+  const handleAddNew = (data: any) => {
+    const newMember = {
+      ...data,
+      joined: data.startDate
+    };
+    const savedMember = addItem('members', newMember);
+    setMembers([savedMember, ...members]);
+    setShowNewModal(false);
+  };
+
+  const filteredMembers = members.filter(m => {
+    const matchesSearch = m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase()) || m.phone.includes(search);
+    if (filter === 'All') return matchesSearch;
+    if (filter === 'Existing') return matchesSearch && m.customerType === 'EXISTING_CUSTOMER';
+    if (filter === 'New') return matchesSearch && m.customerType === 'NEW_CUSTOMER';
+    return matchesSearch && m.status === filter;
+  });
+
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'Active': return 'bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20';
+      case 'Pending': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
+      case 'Inactive': return 'bg-[#0D9488]/10 text-[#0D9488] border-[#0D9488]/20';
+      default: return 'bg-red-500/10 text-red-500 border-red-500/20';
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
+      
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Members</h1>
           <p className="text-[#475569] mt-1">Manage your gym members, subscriptions, and profiles.</p>
         </div>
         <button 
-          onClick={handleAddMember}
-          className="px-4 py-2 bg-[#16A34A] text-[#1E293B] font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20 self-start md:self-auto"
+          onClick={handleAddMemberClick}
+          className="px-4 py-2 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20 self-start md:self-auto"
         >
           <Plus size={20} /> Add Member
         </button>
       </div>
 
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#CCFBF1] flex flex-col justify-center">
+          <div className="flex items-center space-x-2 text-[#475569] mb-2"><Users size={16}/> <span className="font-semibold text-sm">Total</span></div>
+          <span className="text-2xl font-bold text-[#1E293B]">{members.length}</span>
+        </div>
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#CCFBF1] flex flex-col justify-center">
+          <div className="flex items-center space-x-2 text-[#16A34A] mb-2"><CheckCircle size={16}/> <span className="font-semibold text-sm">Active</span></div>
+          <span className="text-2xl font-bold text-[#1E293B]">{members.filter(m => m.status === 'Active').length}</span>
+        </div>
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#CCFBF1] flex flex-col justify-center">
+          <div className="flex items-center space-x-2 text-orange-500 mb-2"><Clock size={16}/> <span className="font-semibold text-sm">Pending</span></div>
+          <span className="text-2xl font-bold text-[#1E293B]">{members.filter(m => m.status === 'Pending').length}</span>
+        </div>
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#CCFBF1] flex flex-col justify-center">
+          <div className="flex items-center space-x-2 text-[#0D9488] mb-2"><XCircle size={16}/> <span className="font-semibold text-sm">Inactive</span></div>
+          <span className="text-2xl font-bold text-[#1E293B]">{members.filter(m => m.status === 'Inactive').length}</span>
+        </div>
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#CCFBF1] flex flex-col justify-center">
+          <div className="flex items-center space-x-2 text-blue-500 mb-2"><UserPlus size={16}/> <span className="font-semibold text-sm">New This Month</span></div>
+          <span className="text-2xl font-bold text-[#1E293B]">{members.filter(m => m.customerType === 'NEW_CUSTOMER').length}</span>
+        </div>
+      </div>
+
       {/* Filters & Search */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
+      <div className="flex flex-col lg:flex-row gap-4 justify-between items-center bg-[#FFFFFF] p-4 rounded-2xl border border-[#CCFBF1]">
+        <div className="flex flex-wrap gap-2 w-full lg:w-auto">
+          {['All', 'Active', 'Pending', 'Inactive', 'Existing', 'New'].map(f => (
+            <button 
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ${filter === f ? 'bg-[#16A34A] text-white' : 'bg-[#F8FAFC] text-[#475569] hover:bg-[#E2E8F0]'}`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+        <div className="relative w-full lg:w-72">
           <input 
             type="text" 
-            placeholder="Search members by name, email or phone..." 
+            placeholder="Search by name, email or phone..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl pl-10 pr-4 py-3 text-[#1E293B] outline-none focus:border-[#16A34A]"
+            className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl pl-10 pr-4 py-2 text-[#1E293B] outline-none focus:border-[#16A34A] text-sm"
           />
-          <Search className="absolute left-3 top-3.5 text-[#475569]" size={18} />
+          <Search className="absolute left-3 top-2.5 text-[#475569]" size={16} />
         </div>
-        <button className="px-4 py-3 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl hover:bg-[#FFFFFF] transition-colors flex items-center gap-2 font-medium">
-          <Filter size={18} /> Filters
-        </button>
       </div>
 
       {/* Data Table */}
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto custom-scrollbar">
+      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-visible">
+        <div className="overflow-x-visible custom-scrollbar">
           <table className="w-full text-left text-sm text-[#475569] whitespace-nowrap">
-            <thead className="bg-[#FFFFFF] border-b border-[#CCFBF1] text-[#1E293B]">
+            <thead className="bg-[#F8FAFC] border-b border-[#CCFBF1] text-[#1E293B]">
               <tr>
                 <th className="px-6 py-4 font-semibold">Member</th>
-                <th className="px-6 py-4 font-semibold">Contact</th>
-                <th className="px-6 py-4 font-semibold">Plan</th>
-                <th className="px-6 py-4 font-semibold">Joined Date</th>
+                <th className="px-6 py-4 font-semibold">Contact Details</th>
+                <th className="px-6 py-4 font-semibold">Membership</th>
                 <th className="px-6 py-4 font-semibold">Status</th>
                 <th className="px-6 py-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#CCFBF1]">
-              {mockMembers.map((member) => (
-                <tr key={member.id} className="hover:bg-[#F0FDFA] transition-colors">
+              {filteredMembers.map((member) => (
+                <tr key={member.id} className="hover:bg-[#F0FDFA] transition-colors relative">
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-[#FFFFFF] border border-[#CCFBF1] flex items-center justify-center text-[#1E293B] font-bold">
+                      <div className="w-10 h-10 rounded-full bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center font-bold text-lg uppercase">
                         {member.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-[#1E293B] font-semibold">{member.name}</p>
-                        <p className="text-xs text-[#475569]">ID: #{member.id.padStart(4, '0')}</p>
+                        <p className="text-[#1E293B] font-bold capitalize">{member.name}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-[#475569]">#{member.id.slice(-4).padStart(4, '0')}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${member.customerType === 'NEW_CUSTOMER' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                            {member.customerType === 'NEW_CUSTOMER' ? 'NEW' : 'EXISTING'}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-1">
-                      <p className="flex items-center text-xs"><Mail size={12} className="mr-1.5"/> {member.email}</p>
-                      <p className="flex items-center text-xs"><Phone size={12} className="mr-1.5"/> {member.phone}</p>
+                      <p className="flex items-center text-xs text-[#1E293B] font-medium"><Mail size={12} className="mr-1.5 text-[#475569]"/> {member.email}</p>
+                      <p className="flex items-center text-xs text-[#1E293B] font-medium"><Phone size={12} className="mr-1.5 text-[#475569]"/> {member.phone}</p>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-md text-xs font-semibold flex items-center w-max">
-                      <ShieldCheck size={12} className="mr-1 text-[#16A34A]" /> {member.plan}
-                    </span>
+                    <div className="space-y-1">
+                      <span className="px-2 py-0.5 bg-[#1E293B] text-white rounded text-xs font-bold inline-flex items-center gap-1">
+                        <ShieldCheck size={12} className="text-[#CCFBF1]" /> {member.plan}
+                      </span>
+                      <p className="flex items-center text-[11px] text-[#475569]"><Calendar size={10} className="mr-1"/> Since {member.joined}</p>
+                    </div>
                   </td>
-                  <td className="px-6 py-4">{member.joined}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${member.status === 'Active' ? 'bg-green-500/10 text-green-500' : 'bg-[#0D9488]/10 text-[#0D9488]'}`}>
+                    <span className={`px-2.5 py-1 border rounded-lg text-xs font-bold transition-colors inline-block ${getStatusColor(member.status)}`}>
                       {member.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right flex justify-end gap-2 items-center">
-                    <button onClick={() => setSelectedMember(member)} className="p-2 text-[#475569] hover:text-[#16A34A] hover:bg-[#FFFFFF] rounded-lg transition-colors" title="View Member">
-                      <Eye size={18} />
-                    </button>
-                    <button className="p-2 text-[#475569] hover:text-[#1E293B] hover:bg-[#FFFFFF] rounded-lg transition-colors">
-                      <MoreVertical size={18} />
-                    </button>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-2 items-center relative">
+                      <button onClick={() => setSelectedMember(member)} className="p-1.5 text-[#475569] hover:text-[#16A34A] hover:bg-[#F0FDFA] rounded transition-colors" title="View Profile">
+                        <Eye size={18} />
+                      </button>
+                      <button className="p-1.5 text-[#475569] hover:text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Edit Profile">
+                        <Edit2 size={18} />
+                      </button>
+                      <button className="p-1.5 text-[#475569] hover:text-purple-600 hover:bg-purple-50 rounded transition-colors" title="AI Assessment">
+                        <Activity size={18} />
+                      </button>
+                      <button onClick={() => handleDeleteMember(member.id)} className="p-1.5 text-[#475569] hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Delete Member">
+                        <Trash2 size={18} />
+                      </button>
+                      
+                      {/* Dropdown Menu for Status */}
+                      <div className="relative inline-block text-left">
+                        <button onClick={() => setActiveDropdown(activeDropdown === member.id ? null : member.id)} className={`p-1.5 rounded transition-colors ${activeDropdown === member.id ? 'bg-[#E2E8F0] text-[#1E293B]' : 'text-[#475569] hover:bg-gray-100 hover:text-[#1E293B]'}`} title="More Actions">
+                          <MoreVertical size={18} />
+                        </button>
+                        
+                        {activeDropdown === member.id && (
+                          <>
+                            <div className="fixed inset-0 z-40" onClick={() => setActiveDropdown(null)}></div>
+                            <div className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl bg-white border border-[#CCFBF1] z-50 overflow-hidden">
+                              <div className="px-4 py-2 bg-gray-50 border-b border-[#CCFBF1] text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                Set Status
+                              </div>
+                              <div className="py-1">
+                                {['Active', 'Pending', 'Inactive', 'Suspended', 'Rejected'].map((status) => (
+                                  <button
+                                    key={status}
+                                    onClick={() => handleStatusChange(member.id, status)}
+                                    className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[#F0FDFA] transition-colors ${member.status === status ? 'text-[#16A34A] bg-[#F0FDFA]' : 'text-[#1E293B]'}`}
+                                  >
+                                    {status}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ))}
+              {filteredMembers.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-[#475569]">
+                    No members found matching your filters.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-        
-        {/* Pagination placeholder */}
-        <div className="px-6 py-4 border-t border-[#CCFBF1] flex items-center justify-between text-sm text-[#475569]">
-          <span>Showing 1 to 4 of 4 entries</span>
-          <div className="flex space-x-2">
-            <button className="px-3 py-1 bg-[#FFFFFF] border border-[#CCFBF1] rounded-md hover:text-[#16A34A] transition-colors disabled:opacity-50" disabled>Prev</button>
-            <button className="px-3 py-1 bg-[#FFFFFF] border border-[#CCFBF1] rounded-md hover:text-[#16A34A] transition-colors disabled:opacity-50" disabled>Next</button>
-          </div>
-        </div>
       </div>
-      {/* Upgrade Prompt Modal */}
+
+      {/* Modals */}
       {showUpgradeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl max-w-md w-full p-8 text-center shadow-2xl relative">
-            <button 
-              onClick={() => setShowUpgradeModal(false)}
-              className="absolute top-4 right-4 text-[#475569] hover:text-[#16A34A] transition-colors"
-            >
-              <X size={20} />
-            </button>
-            
-            <div className="w-16 h-16 bg-[#0D9488]/10 border border-[#0D9488]/20 text-[#0D9488] rounded-full flex items-center justify-center mx-auto mb-6">
-              <ShieldCheck size={32} />
-            </div>
-            
-            <h2 className="text-2xl font-bold text-[#1E293B] mb-3">Member Limit Reached</h2>
-            <p className="text-[#475569] mb-8 leading-relaxed">
-              Your current <span className="text-[#16A34A] font-semibold">Free Trial</span> allows up to 10 members. You must upgrade your subscription to add unlimited members and unlock premium features.
-            </p>
-            
-            <div className="space-y-3">
-              <button 
-                onClick={() => navigate('/admin/subscription')} 
-                className="w-full py-3.5 bg-[#16A34A] text-[#1E293B] font-bold rounded-xl hover:bg-[#15803D] transition-colors shadow-lg shadow-[#16A34A]/20"
-              >
-                View Upgrade Plans
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#FFFFFF] rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl border border-[#CCFBF1] text-center">
+            <ShieldCheck size={60} className="mx-auto text-[#16A34A] mb-4" />
+            <h2 className="text-2xl font-bold text-[#1E293B] mb-2">Member Limit Reached</h2>
+            <p className="text-[#475569] mb-6">Your current subscription plan limits you to {getMemberLimit(user?.subscriptionPlan)} members. Upgrade your plan to add more members and grow your gym!</p>
+            <div className="flex flex-col space-y-3">
+              <button onClick={() => navigate('/admin/subscription')} className="w-full py-3 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors shadow-lg shadow-[#16A34A]/20">
+                View Upgrade Options
               </button>
-              <button 
-                onClick={() => setShowUpgradeModal(false)} 
-                className="w-full py-3.5 bg-[#FFFFFF] text-[#1E293B] font-medium rounded-xl border border-[#CCFBF1] hover:bg-[#E2E8F0] transition-colors"
-              >
+              <button onClick={() => setShowUpgradeModal(false)} className="w-full py-3 bg-[#F8FAFC] text-[#475569] font-bold rounded-xl hover:bg-[#F1F5F9] transition-colors">
                 Maybe Later
               </button>
             </div>
@@ -165,50 +318,119 @@ const GymAdminMembers = () => {
         </div>
       )}
 
+      {showSelectorModal && (
+        <AddMemberSelectorModal 
+          onClose={() => setShowSelectorModal(false)}
+          onSelectExisting={() => { setShowSelectorModal(false); setShowExistingModal(true); }}
+          onSelectNew={() => { setShowSelectorModal(false); setShowNewModal(true); }}
+        />
+      )}
+
+      {showExistingModal && (
+        <AddExistingMemberModal
+          plans={mockPlans}
+          onClose={() => setShowExistingModal(false)}
+          onSubmit={handleAddExisting}
+        />
+      )}
+
+      {showNewModal && (
+        <RegisterNewMemberModal
+          plans={mockPlans}
+          onClose={() => setShowNewModal(false)}
+          onSubmit={handleAddNew}
+        />
+      )}
+
       {/* Member View Modal */}
       {selectedMember && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-[#CCFBF1]">
-            <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center bg-gradient-to-r from-[#F0FDFA] to-[#FFFFFF]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#CCFBF1] my-8 shrink-0">
+            <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center bg-[#F8FAFC]">
               <h2 className="text-xl font-bold text-[#1E293B]">Member Profile</h2>
-              <button onClick={() => setSelectedMember(null)} className="text-[#475569] hover:text-[#1E293B] transition-colors">
-                <X size={20} />
+              <button onClick={() => setSelectedMember(null)} className="text-[#475569] hover:text-[#1E293B] transition-colors p-2 hover:bg-gray-100 rounded-lg">
+                <XCircle size={24} />
               </button>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="w-16 h-16 bg-[#16A34A]/10 text-[#16A34A] rounded-full flex items-center justify-center text-2xl font-bold">
+            <div className="p-6 space-y-6">
+              
+              <div className="flex items-center space-x-4">
+                <div className="w-20 h-20 bg-[#16A34A]/10 text-[#16A34A] rounded-2xl flex items-center justify-center text-3xl font-bold border border-[#16A34A]/20 uppercase">
                   {selectedMember.name.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#1E293B]">{selectedMember.name}</h3>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${selectedMember.status === 'Active' ? 'bg-green-500/10 text-green-500' : 'bg-[#0D9488]/10 text-[#0D9488]'}`}>
-                    {selectedMember.status}
-                  </span>
+                  <h3 className="text-2xl font-bold text-[#1E293B] mb-1 capitalize">{selectedMember.name}</h3>
+                  <div className="flex gap-2">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.status === 'Active' ? 'bg-[#16A34A]/10 text-[#16A34A]' : 'bg-[#0D9488]/10 text-[#0D9488]'}`}>
+                      {selectedMember.status}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.customerType === 'NEW_CUSTOMER' ? 'bg-blue-500/10 text-blue-600' : 'bg-gray-500/10 text-gray-600'}`}>
+                      {selectedMember.customerType === 'NEW_CUSTOMER' ? 'New Customer' : 'Existing Customer'}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">
                 <div>
-                  <p className="text-[#475569] mb-1">Email</p>
-                  <p className="font-medium text-[#1E293B]">{selectedMember.email}</p>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Email</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.email}</p>
                 </div>
                 <div>
-                  <p className="text-[#475569] mb-1">Phone</p>
-                  <p className="font-medium text-[#1E293B]">{selectedMember.phone}</p>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Phone</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.phone}</p>
                 </div>
                 <div>
-                  <p className="text-[#475569] mb-1">Membership Plan</p>
-                  <p className="font-medium text-[#1E293B]">{selectedMember.plan}</p>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Membership Plan</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.plan}</p>
                 </div>
                 <div>
-                  <p className="text-[#475569] mb-1">Join Date</p>
-                  <p className="font-medium text-[#1E293B]">{selectedMember.joined}</p>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Join Date</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.joined}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Gender</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.gender || 'Not specified'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Date of Birth</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.dob || 'Not specified'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Fitness Goal</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.fitnessGoal || 'Not specified'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Assigned Trainer</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.trainer || 'Unassigned'}</p>
                 </div>
               </div>
+
+              <div className="pt-2 border-t border-[#CCFBF1]">
+                <p className="text-[#16A34A] font-bold mb-4 uppercase text-xs tracking-wider flex items-center gap-2"><Phone size={14}/> Emergency Contact</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-xs font-bold text-[#475569] mb-1">Name</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedMember.emergencyName || 'None provided'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#475569] mb-1">Phone</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedMember.emergencyPhone || 'None provided'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#475569] mb-1">Relationship</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedMember.emergencyRelation || 'None provided'}</p>
+                  </div>
+                </div>
+              </div>
+              
             </div>
-            <div className="p-4 bg-[#F8FAFC] border-t border-[#CCFBF1] flex justify-end">
-              <button onClick={() => setSelectedMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl font-bold hover:bg-[#F1F5F9] transition-colors">
-                Close
+            <div className="p-4 bg-[#F8FAFC] border-t border-[#CCFBF1] flex justify-end gap-3">
+              <button onClick={() => handleDeleteMember(selectedMember.id)} className="px-6 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors">
+                Delete Member
+              </button>
+              <button onClick={() => setSelectedMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#E2E8F0] text-[#1E293B] rounded-xl font-bold hover:bg-[#F1F5F9] transition-colors">
+                Close Profile
               </button>
             </div>
           </div>

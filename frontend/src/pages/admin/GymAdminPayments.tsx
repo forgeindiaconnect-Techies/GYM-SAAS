@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { DollarSign, ArrowUpRight, ArrowDownRight, Download, Search, Filter } from 'lucide-react';
+
+import { IndianRupee, ArrowUpRight, ArrowDownRight, Download, Search, Filter } from 'lucide-react';
 
 const mockTransactions = [
   { id: 'TRX-9012', member: 'John Doe', amount: 29.99, type: 'Subscription', date: '2026-09-08', status: 'Completed' },
@@ -24,23 +24,23 @@ const GymAdminPayments = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10"><DollarSign size={80} /></div>
+          <div className="absolute top-0 right-0 p-4 opacity-10"><IndianRupee size={80} /></div>
           <p className="text-[#475569] text-sm font-semibold mb-1">Total Revenue (This Month)</p>
-          <h3 className="text-3xl font-black text-[#1E293B]">$14,250.00</h3>
+          <h3 className="text-3xl font-black text-[#1E293B]">₹14,250.00</h3>
           <p className="text-green-500 text-sm font-bold mt-2 flex items-center">
             <ArrowUpRight size={16} className="mr-1" /> +12.5% from last month
           </p>
         </div>
         <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10"><DollarSign size={80} /></div>
+          <div className="absolute top-0 right-0 p-4 opacity-10"><IndianRupee size={80} /></div>
           <p className="text-[#475569] text-sm font-semibold mb-1">Active Subscriptions</p>
-          <h3 className="text-3xl font-black text-[#1E293B]">$11,800.00</h3>
+          <h3 className="text-3xl font-black text-[#1E293B]">₹11,800.00</h3>
           <p className="text-[#475569] text-sm font-medium mt-2">MRR (Monthly Recurring)</p>
         </div>
         <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10"><DollarSign size={80} /></div>
+          <div className="absolute top-0 right-0 p-4 opacity-10"><IndianRupee size={80} /></div>
           <p className="text-[#475569] text-sm font-semibold mb-1">Failed Payments</p>
-          <h3 className="text-3xl font-black text-[#0D9488]">$340.00</h3>
+          <h3 className="text-3xl font-black text-[#0D9488]">₹340.00</h3>
           <p className="text-[#0D9488] text-sm font-bold mt-2 flex items-center">
             <ArrowDownRight size={16} className="mr-1" /> Requires action
           </p>
@@ -80,7 +80,7 @@ const GymAdminPayments = () => {
                   <td className="px-6 py-4 font-semibold text-[#1E293B]">{trx.member}</td>
                   <td className="px-6 py-4">{trx.type}</td>
                   <td className="px-6 py-4">{trx.date}</td>
-                  <td className="px-6 py-4 font-bold text-[#1E293B]">${trx.amount.toFixed(2)}</td>
+                  <td className="px-6 py-4 font-bold text-[#1E293B]">₹{trx.amount.toFixed(2)}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${trx.status === 'Completed' ? 'bg-green-500/10 text-green-500' : 'bg-[#0D9488]/10 text-[#0D9488]'}`}>
                       {trx.status}

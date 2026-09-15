@@ -10,6 +10,16 @@ const mockNotifications = [
 ];
 
 const GymAdminNotifications = () => {
+  const [notifications, setNotifications] = useState(mockNotifications);
+
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({...n, read: true})));
+  };
+
+  const deleteNotification = (id: number) => {
+    setNotifications(notifications.filter(n => n.id !== id));
+  };
+
   const getIcon = (type: string) => {
     switch(type) {
       case 'alert': return <AlertCircle size={20} className="text-[#0D9488]" />;
@@ -38,7 +48,7 @@ const GymAdminNotifications = () => {
           <p className="text-[#475569] mt-1">System alerts, messages, and gym activity updates.</p>
         </div>
         <div className="flex space-x-3">
-          <button className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] text-sm font-bold rounded-xl hover:bg-[#FFFFFF] transition-colors">
+          <button onClick={markAllAsRead} className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] text-sm font-bold rounded-xl hover:bg-[#FFFFFF] transition-colors">
             Mark all as read
           </button>
         </div>
@@ -46,7 +56,7 @@ const GymAdminNotifications = () => {
 
       <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
         <div className="divide-y divide-[#CCFBF1]">
-          {mockNotifications.map((notif) => (
+          {notifications.map((notif) => (
             <div key={notif.id} className={`p-6 flex items-start space-x-4 transition-colors hover:bg-[#FFFFFF] ${!notif.read ? 'bg-[#FFFFFF]/50' : ''}`}>
               <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center border ${getBg(notif.type)}`}>
                 {getIcon(notif.type)}
@@ -59,7 +69,7 @@ const GymAdminNotifications = () => {
                 <p className={`mt-1 text-sm ${!notif.read ? 'text-[#e0e0e0]' : 'text-[#808080]'}`}>{notif.message}</p>
               </div>
               <div className="opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity">
-                <button className="p-2 text-[#475569] hover:text-[#0D9488] rounded-lg hover:bg-[#E2E8F0] transition-colors" title="Delete notification">
+                <button onClick={() => deleteNotification(notif.id)} className="p-2 text-[#475569] hover:text-[#0D9488] rounded-lg hover:bg-[#E2E8F0] transition-colors" title="Delete notification">
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -67,7 +77,7 @@ const GymAdminNotifications = () => {
           ))}
         </div>
         
-        {mockNotifications.length === 0 && (
+        {notifications.length === 0 && (
           <div className="p-12 text-center flex flex-col items-center justify-center">
             <Bell size={48} className="text-[#E2E8F0] mb-4" />
             <h3 className="text-lg font-bold text-[#1E293B]">All caught up!</h3>

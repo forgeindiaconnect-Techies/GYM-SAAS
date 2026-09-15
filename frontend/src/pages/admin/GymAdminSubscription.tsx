@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   CreditCard, CheckCircle, XCircle, Zap, Star, Crown, Sparkles,
   Users, Dumbbell, Building2, UserCheck, TrendingUp, Calendar,
-  AlertTriangle, ArrowUpCircle, Loader2, Shield
+  AlertTriangle, ArrowUpCircle, Loader2, Shield, Check, Gift
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
+import { plans } from '../subscription/GymOwnerSubscriptionPage';
 
 const PLAN_DETAILS: Record<string, any> = {
   FREE_TRIAL: {
@@ -36,18 +37,21 @@ const UPGRADE_PLANS = [
     priceMonthly: 799, priceAnnual: 7990, savingsAnnual: 1598,
     color: 'text-slate-300', border: 'border-[#CCFBF1]', ctaStyle: 'bg-slate-500/20 border border-slate-400/50 text-slate-300 hover:bg-slate-500/30',
     icon: Star,
+    features: ['Up to 100 Members', 'Up to 5 Trainers', 'Up to 2 Staff members', '1 Branch location', 'Basic reporting']
   },
   {
     key: 'GOLD', name: 'Gold', tagline: 'For growing gyms',
     priceMonthly: 1499, priceAnnual: 14990, savingsAnnual: 2998,
     color: 'text-[#16A34A]', border: 'border-[#16A34A]', ctaStyle: 'bg-[#16A34A] text-white hover:bg-[#15803D]',
     icon: Crown, popular: true,
+    features: ['Up to 500 Members', 'Up to 15 Trainers', 'Up to 5 Staff members', 'Up to 2 Branch locations', 'Advanced analytics', 'Priority support']
   },
   {
     key: 'PREMIUM', name: 'Premium', tagline: 'Enterprise-grade',
     priceMonthly: 2499, priceAnnual: 24990, savingsAnnual: 4998,
     color: 'text-purple-400', border: 'border-purple-500/40', ctaStyle: 'bg-purple-600/80 border border-purple-500/50 text-[#1E293B] hover:bg-purple-600',
     icon: Sparkles,
+    features: ['Unlimited Members', 'Unlimited Trainers', 'Unlimited Staff members', 'Up to 5 Branch locations', 'Custom branding', 'Dedicated account manager']
   },
 ];
 
@@ -85,13 +89,37 @@ const GymAdminSubscription = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [paymentStep, setPaymentStep] = useState<string | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [expandedPlans, setExpandedPlans] = useState<Record<string, boolean>>({});
+  const [previewPlanKey, setPreviewPlanKey] = useState<string | null>(null);
+
+  const toggleFeatures = (e: React.MouseEvent, key: string) => {
+    e.stopPropagation();
+    setExpandedPlans(prev => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const currentPlanKey = user?.subscriptionPlan || 'FREE_TRIAL';
+  const displayPlanKey = previewPlanKey || currentPlanKey;
   const currentPlan = PLAN_DETAILS[currentPlanKey] || PLAN_DETAILS.FREE_TRIAL;
+  const displayPlan = PLAN_DETAILS[displayPlanKey] || PLAN_DETAILS.FREE_TRIAL;
   const PlanIcon = currentPlan.icon;
 
-  // Simulated usage stats (in a real app these would come from API)
-  const usage = { members: 23, trainers: 2, staff: 1, branches: 1 };
+  const [usage, setUsage] = useState({ members: 0, trainers: 0, staff: 1, branches: 1 });
+
+  useEffect(() => {
+    if (user?.gymId) {
+      api.get(`/gyms/${user.gymId}`)
+        .then(res => {
+          const gym = res.data.gym;
+          setUsage({
+            members: gym?.members?.length || 0,
+            trainers: gym?.trainers?.length || 0,
+            staff: 1,
+            branches: gym?.branches?.length || 1,
+          });
+        })
+        .catch(err => console.error(err));
+    }
+  }, [user]);
 
   const isExpired = user?.subscriptionStatus === 'EXPIRED';
   const isTrial = user?.subscriptionStatus === 'TRIAL';
@@ -114,10 +142,20 @@ const GymAdminSubscription = () => {
     setLoading(paymentStep);
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      await api.post('/subscriptions/select', {
+      const selectRes = await api.post('/subscriptions/select', {
         plan: paymentStep,
         billingCycle: isAnnual ? 'annual' : 'monthly',
       });
+      
+      await api.post('/subscriptions/process', {
+        subscriptionId: selectRes.data.subscription.id,
+        paymentMethod: 'Online'
+      });
+
+      if (updateUser) {
+        updateUser({ subscriptionPlan: paymentStep, subscriptionStatus: 'ACTIVE' });
+      }
+
       setPaymentSuccess(true);
       setPaymentStep(null);
     } catch (err: any) {
@@ -211,10 +249,10 @@ const GymAdminSubscription = () => {
           <span>Platform Usage</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <LimitBar label="Members" icon={Users} used={usage.members} max={currentPlan.limits.members} color="text-blue-400" />
-          <LimitBar label="Trainers" icon={Dumbbell} used={usage.trainers} max={currentPlan.limits.trainers} color="text-green-400" />
-          <LimitBar label="Staff" icon={UserCheck} used={usage.staff} max={currentPlan.limits.staff} color="text-purple-400" />
-          <LimitBar label="Branches" icon={Building2} used={usage.branches} max={currentPlan.limits.branches} color="text-[#16A34A]" />
+          <LimitBar label="Members" icon={Users} used={usage.members} max={displayPlan.limits.members} color="text-blue-400" />
+          <LimitBar label="Trainers" icon={Dumbbell} used={usage.trainers} max={displayPlan.limits.trainers} color="text-green-400" />
+          <LimitBar label="Staff" icon={UserCheck} used={usage.staff} max={displayPlan.limits.staff} color="text-purple-400" />
+          <LimitBar label="Branches" icon={Building2} used={usage.branches} max={displayPlan.limits.branches} color="text-[#16A34A]" />
         </div>
         <p className="text-[#555] text-xs mt-4">
           💡 Usage stats update in real-time. When you reach a limit, you'll see an upgrade prompt in the respective section.
@@ -255,47 +293,130 @@ const GymAdminSubscription = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {UPGRADE_PLANS.filter(p => p.key !== currentPlanKey).map(plan => {
-            const PIcon = plan.icon;
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {plans.filter(p => p.key !== currentPlanKey && p.key !== 'FREE_TRIAL').map((plan) => {
+            const Icon = plan.icon;
+            
+            const getPrice = (p: typeof plans[0]) => {
+              if (isAnnual) {
+                return {
+                  main: `₹${p.priceAnnual?.toLocaleString('en-IN')}`,
+                  period: '/year',
+                  sub: `Equivalent to ₹${p.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo`,
+                };
+              }
+              return { main: `₹${p.priceMonthly.toLocaleString('en-IN')}`, period: '/mo', sub: null };
+            };
+            const price = getPrice(plan);
+            const isSelected = previewPlanKey === plan.key;
+
             return (
-              <div key={plan.key} className={`relative bg-[#FFFFFF] border-2 ${plan.border} rounded-2xl p-6 ${plan.popular ? 'shadow-[0_0_30px_rgba(212,175,55,0.12)]' : ''}`}>
+              <div
+                key={plan.key}
+                onClick={() => setPreviewPlanKey(isSelected ? null : plan.key)}
+                className={`relative flex flex-col bg-white rounded-2xl border-2 cursor-pointer transition-all duration-200 overflow-hidden ${isSelected ? 'border-[#16A34A] shadow-2xl -translate-y-2 ring-2 ring-[#16A34A] ring-offset-2' : `${plan.borderDefault} hover:-translate-y-1 hover:shadow-lg`}`}
+              >
+                {/* Popular badge */}
                 {plan.popular && (
-                  <span className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#16A34A] text-white text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest whitespace-nowrap">
+                  <div className="bg-[#16A34A] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                     ⭐ Most Popular
-                  </span>
+                  </div>
                 )}
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className={`w-10 h-10 ${plan.key === 'GOLD' ? 'bg-[#16A34A]/10' : plan.key === 'PREMIUM' ? 'bg-purple-400/10' : 'bg-slate-400/10'} rounded-xl flex items-center justify-center`}>
-                    <PIcon size={20} className={plan.color} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-[#1E293B]">{plan.name}</h3>
-                    <p className="text-[#475569] text-xs">{plan.tagline}</p>
-                  </div>
-                </div>
-                {(() => { const pd = getDisplayPrice(plan); return (
-                  <div className="mb-3">
-                    <div className="flex items-baseline gap-1">
-                      <span className={`text-3xl font-black ${plan.color}`}>{pd.main}</span>
-                      <span className="text-[#475569] text-sm">{isAnnual ? '/year' : '/mo'}</span>
+
+                <div className="p-6 flex flex-col flex-1">
+                  {/* Plan header */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
+                        <Icon size={20} className={plan.iconColor} />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-[#1E293B] text-sm">{plan.name}</h3>
+                        <span className="text-[10px] text-[#475569] font-medium">{plan.badge}</span>
+                      </div>
                     </div>
-                    {pd.sub && <p className="text-[#475569] text-xs mt-0.5">{pd.sub}</p>}
-                    {isAnnual ? (
-                      <p className="text-green-600 text-xs mt-1 font-bold">💰 Save ₹{plan.savingsAnnual.toLocaleString('en-IN')} vs monthly</p>
-                    ) : (
-                      <p className="text-[#94A3B8] text-xs mt-1">or save 25% with annual</p>
+                  </div>
+
+                  {/* Price */}
+                  <div className="mb-4">
+                    <div className="flex items-baseline gap-1">
+                      <span className={`text-4xl font-black tracking-tight ${plan.priceColor}`}>{price.main}</span>
+                      <span className="text-[#475569] text-sm font-medium">{price.period}</span>
+                    </div>
+                    {price.sub && (
+                      <p className="text-[#475569] text-xs mt-0.5">{price.sub}</p>
+                    )}
+                    {isAnnual && !plan.trial && plan.savingsAnnual && (
+                      <p className="text-green-600 text-xs mt-1 font-bold">
+                        💰 Save ₹{plan.savingsAnnual.toLocaleString('en-IN')} vs monthly
+                      </p>
+                    )}
+                    {!isAnnual && !plan.trial && (
+                      <p className="text-[#94A3B8] text-xs mt-1">
+                        or ₹{plan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo billed annually
+                      </p>
                     )}
                   </div>
-                );})()} 
-                <button
-                  onClick={() => handleUpgrade(plan.key)}
-                  disabled={loading !== null}
-                  className={`w-full py-3 rounded-xl font-bold text-sm transition-all mt-4 flex items-center justify-center space-x-2 ${plan.ctaStyle}`}
-                >
-                  <ArrowUpCircle size={16} />
-                  <span>Upgrade to {plan.name}</span>
-                </button>
+
+                  {/* Limits */}
+                  <div className="bg-[#F8FAFC] rounded-xl px-3 py-2 mb-4 border border-[#CCFBF1]">
+                    <p className="text-[10px] text-[#475569] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
+                    <p className="text-xs text-[#1E293B] font-medium">{plan.limits}</p>
+                  </div>
+
+                  {/* Features */}
+                  <div className="flex-1 mb-4">
+                    <button 
+                      onClick={(e) => toggleFeatures(e, plan.key)}
+                      className="text-xs font-bold text-[#16A34A] hover:text-[#15803D] underline mb-3 transition-colors"
+                    >
+                      {expandedPlans[plan.key] ? 'Hide Features' : 'View Features'}
+                    </button>
+                    {expandedPlans[plan.key] && (
+                      <ul className="space-y-2">
+                        {plan.features.map((f, i) => (
+                          <li key={i} className="flex items-start gap-2 text-xs text-[#1E293B]">
+                            <CheckCircle size={13} className={`shrink-0 mt-0.5 ${plan.checkColor}`} />
+                            <span>{f}</span>
+                          </li>
+                        ))}
+                        {plan.locked.map((f, i) => (
+                          <li key={i} className="flex items-start gap-2 text-xs text-[#CBD5E1]">
+                            <XCircle size={13} className="shrink-0 mt-0.5 text-[#E2E8F0]" />
+                            <span className="line-through">{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  {/* Annual bonus for annual mode */}
+                  {isAnnual && !plan.trial && (
+                    <div className="mb-3 bg-green-50 border border-green-200 rounded-xl px-3 py-2">
+                      <p className="text-[10px] text-green-700 font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
+                        <Gift size={9} /> Annual Bonus
+                      </p>
+                      <p className="text-xs text-green-700">2 months FREE included</p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleUpgrade(plan.key);
+                    }}
+                    disabled={loading !== null}
+                    className={`w-full py-2.5 rounded-xl text-xs font-bold text-center transition-all mt-auto ${
+                      plan.key === 'GOLD' 
+                      ? 'bg-[#16A34A] text-white hover:bg-[#15803D]' 
+                      : plan.key === 'PREMIUM'
+                      ? 'bg-purple-600/80 text-white hover:bg-purple-600'
+                      : 'bg-white border-2 border-[#CCFBF1] text-[#475569] hover:border-[#16A34A] hover:text-[#16A34A]'
+                    }`}
+                  >
+                    Upgrade to {plan.name}
+                  </button>
+                </div>
               </div>
             );
           })}

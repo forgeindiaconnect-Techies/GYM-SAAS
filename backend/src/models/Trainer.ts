@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ITrainer extends Document {
   gymId: mongoose.Types.ObjectId;
+  branchId?: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   name: string;
   email: string;
@@ -28,6 +29,7 @@ export interface ITrainer extends Document {
 
 const trainerSchema = new Schema<ITrainer>({
   gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true },
+  branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   name: { type: String, required: true },
   email: { type: String, required: true },

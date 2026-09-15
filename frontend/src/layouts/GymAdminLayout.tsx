@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
-  Calendar, CalendarCheck, DollarSign, UserPlus,
-  Bell, BarChart, Settings, Activity, Building2, Menu, X, LogOut
+  Calendar, CalendarCheck, IndianRupee, UserPlus,
+  Bell, BarChart, Settings, Activity, Building2, Menu, LogOut, Trash2, MapPin
 } from 'lucide-react';
 
 const GymAdminLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const [gym, setGym] = useState<any>(null);
+  const [branches, setBranches] = useState<any[]>([]);
+  const [selectedBranch, setSelectedBranch] = useState<string>('main');
 
   useEffect(() => {
     if (user?.gymId) {
@@ -21,13 +23,16 @@ const GymAdminLayout = () => {
         api.get(`/gyms/${user.gymId}`)
           .then(res => setGym(res.data.gym))
           .catch(err => console.error('Failed to fetch gym', err));
+
+        api.get(`/branches`)
+          .then(res => setBranches(res.data.branches || []))
+          .catch(err => console.error('Failed to fetch branches', err));
       });
     }
   }, [user]);
 
   const baseNavItems = [
     { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
-    { label: 'Gym Profile', path: '/admin/gym-profile', icon: Building2 },
     { label: 'Trainers', path: '/admin/trainers', icon: Dumbbell },
     { label: 'Members', path: '/admin/members', icon: Users },
     { label: 'Equipment', path: '/admin/equipment', icon: Activity },
@@ -46,12 +51,13 @@ const GymAdminLayout = () => {
   ];
 
   const commonBottomNav = [
-    { label: 'Payments', path: '/admin/payments', icon: DollarSign },
+    { label: 'Payments', path: '/admin/payments', icon: IndianRupee },
     { label: 'Reports', path: '/admin/reports', icon: BarChart },
     { label: 'Notifications', path: '/admin/notifications', icon: Bell },
+    { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 },
     { label: 'Subscription', path: '/admin/subscription', icon: CreditCard },
-    { label: 'Profile', path: '/admin/profile', icon: Users },
-    { label: 'Settings', path: '/admin/settings', icon: Settings },
+    { label: 'Gym Profile', path: '/admin/gym-profile', icon: Building2 },
+    { label: 'Branches', path: '/admin/branches', icon: MapPin },
   ];
 
   let navItems = [...baseNavItems];
@@ -181,11 +187,32 @@ const GymAdminLayout = () => {
           </div>
 
           <div className="flex items-center space-x-3 md:space-x-5">
-            <button className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1">
+            {branches.length > 0 && (
+              <select
+                value={selectedBranch}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSelectedBranch(val);
+                  if (val === 'main') {
+                    navigate('/admin/gym-profile');
+                  } else {
+                    navigate(`/admin/branches/${val}`);
+                  }
+                }}
+                className="bg-[#F8FAFC] border border-[#CCFBF1] text-[#1E293B] text-sm rounded-lg focus:ring-[#16A34A] focus:border-[#16A34A] block p-2 outline-none font-semibold"
+              >
+                <option value="main">Main Branch</option>
+                {branches.map(branch => (
+                  <option key={branch._id} value={branch._id}>{branch.branchName}</option>
+                ))}
+              </select>
+            )}
+            
+            <Link to="/admin/notifications" className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1 block">
               <Bell size={20} />
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#16A34A] rounded-full shadow shadow-green-300" />
-            </button>
-            <Link to="/admin/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+            </Link>
+            <Link to="/admin/gym-profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-semibold text-[#1E293B] leading-none mb-0.5">{user?.firstName || 'Gym'} {user?.lastName || 'Admin'}</p>
                 <p className="text-xs text-[#475569] leading-none">Gym Owner</p>
@@ -198,7 +225,7 @@ const GymAdminLayout = () => {
         </header>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-0">
-          <Outlet />
+          <Outlet context={{ selectedBranch }} />
         </div>
       </main>
     </div>

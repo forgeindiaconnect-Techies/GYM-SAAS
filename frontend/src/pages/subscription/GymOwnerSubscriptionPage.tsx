@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Activity, CheckCircle, XCircle, ChevronRight, Crown, Star,
   Sparkles, Zap, LogOut, Gift
@@ -7,7 +7,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
-const plans = [
+export const plans = [
   {
     key: 'FREE_TRIAL',
     name: 'Free Trial',
@@ -181,12 +181,12 @@ const GymOwnerSubscriptionPage = () => {
 
         {/* ── Header ── */}
         <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 bg-gradient-to-br from-[#16A34A] to-[#0D9488] rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
               <Activity className="text-white" size={22} />
             </div>
             <span className="text-2xl font-bold tracking-tight text-[#16A34A]">AI GYM</span>
-          </div>
+          </Link>
           <div className="flex items-center space-x-4">
             <span className="text-[#475569] text-sm">Welcome, <strong className="text-[#1E293B]">{user?.firstName}</strong></span>
             <button

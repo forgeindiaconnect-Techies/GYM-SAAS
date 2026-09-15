@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getDb, addItem, updateItem, deleteItem } from '../../utils/mockDb';
-import { Search, UserPlus, Send, Eye, Trash2, Edit, Building2, User, Mail, Phone, MapPin, Sparkles, CheckCircle2, Copy } from 'lucide-react';
+import { Search, UserPlus, Send, Eye, Trash2, Building2, User, Mail, Phone, MapPin, Sparkles, CheckCircle2, Copy } from 'lucide-react';
 
 const SuperAdminLeads = () => {
   const [leads, setLeads] = useState<any[]>([]);

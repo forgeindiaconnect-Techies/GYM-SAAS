@@ -6,9 +6,11 @@ export enum GymStatus {
   SUSPENDED = 'SUSPENDED',
   INACTIVE = 'INACTIVE',
   DELETED = 'DELETED',
+  REJECTED = 'REJECTED',
 }
 
 export interface IGymEquipment {
+  branchId?: mongoose.Types.ObjectId;
   category: string;
   name: string;
   quantity: number;
@@ -127,6 +129,7 @@ const gymSchema = new Schema<IGym>(
     memberCapacity: { type: Number },
     trainerCapacity: { type: Number },
     equipment: [{
+      branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
       category: { type: String, required: true },
       name: { type: String, required: true },
       quantity: { type: Number, required: true },

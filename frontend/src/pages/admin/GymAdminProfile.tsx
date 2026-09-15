@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Save, Building2, MapPin, Info, Edit2 } from 'lucide-react';
+import { Save, Building2, MapPin, Info, Edit2, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const GymAdminProfile = () => {
   const { user } = useAuth();
   const [gym, setGym] = useState<any>(null);
+  const [branchesCount, setBranchesCount] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     gymName: '',
@@ -16,6 +18,15 @@ const GymAdminProfile = () => {
     city: '',
     state: '',
     description: '',
+    establishedYear: '',
+    trainingMode: 'offline',
+    memberCapacity: '',
+    trainerCapacity: '',
+    website: '',
+    taxId: '',
+    ownerName: '',
+    ownerRole: 'Owner',
+    operatingHours: '',
   });
 
   useEffect(() => {
@@ -33,9 +44,22 @@ const GymAdminProfile = () => {
             city: fetchedGym.location?.city || '',
             state: fetchedGym.location?.state || '',
             description: fetchedGym.description || '',
+            establishedYear: fetchedGym.establishedYear || '',
+            trainingMode: fetchedGym.trainingMode || 'offline',
+            memberCapacity: fetchedGym.memberCapacity || '',
+            trainerCapacity: fetchedGym.trainerCapacity || '',
+            website: fetchedGym.website || 'www.messyfitness.com',
+            taxId: fetchedGym.taxId || 'GYM-TAX-09823',
+            ownerName: user?.name || 'Selva Kumar',
+            ownerRole: 'Gym Owner',
+            operatingHours: fetchedGym.operatingHours || '05:00 AM - 11:00 PM',
           });
         })
         .catch(err => console.error('Failed to fetch gym', err));
+
+      api.get(`/branches`)
+        .then(res => setBranchesCount(res.data.branches?.length || 0))
+        .catch(err => console.error('Failed to fetch branches', err));
     }
   }, [user]);
 
@@ -52,7 +76,14 @@ const GymAdminProfile = () => {
           address: formData.address,
           city: formData.city,
           state: formData.state,
-        }
+        },
+        establishedYear: formData.establishedYear,
+        trainingMode: formData.trainingMode,
+        memberCapacity: formData.memberCapacity,
+        trainerCapacity: formData.trainerCapacity,
+        website: formData.website,
+        taxId: formData.taxId,
+        operatingHours: formData.operatingHours
       });
       alert("Gym profile updated successfully!");
       setIsEditing(false);
@@ -119,6 +150,46 @@ const GymAdminProfile = () => {
           </div>
         </section>
 
+        {/* Owner Information */}
+        <section>
+          <div className="flex items-center space-x-2 text-[#1E293B] mb-4 border-b border-[#CCFBF1] pb-2">
+            <Info size={20} className="text-[#16A34A]"/>
+            <h3 className="text-xl font-bold">Owner Information</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm text-[#475569] mb-2">Owner Name</label>
+              <input disabled={!isEditing} value={formData.ownerName} onChange={e => setFormData({...formData, ownerName: e.target.value})} className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-sm text-[#475569] mb-2">Role</label>
+              <input disabled={!isEditing} value={formData.ownerRole} onChange={e => setFormData({...formData, ownerRole: e.target.value})} className={inputCls} />
+            </div>
+          </div>
+        </section>
+
+        {/* Business Details & Operating Hours */}
+        <section>
+          <div className="flex items-center space-x-2 text-[#1E293B] mb-4 border-b border-[#CCFBF1] pb-2">
+            <Info size={20} className="text-[#16A34A]"/>
+            <h3 className="text-xl font-bold">Business & Operations</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm text-[#475569] mb-2">Website</label>
+              <input disabled={!isEditing} value={formData.website} onChange={e => setFormData({...formData, website: e.target.value})} className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-sm text-[#475569] mb-2">Tax ID / Registration Number</label>
+              <input disabled={!isEditing} value={formData.taxId} onChange={e => setFormData({...formData, taxId: e.target.value})} className={inputCls} />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm text-[#475569] mb-2">Standard Operating Hours</label>
+              <input disabled={!isEditing} value={formData.operatingHours} onChange={e => setFormData({...formData, operatingHours: e.target.value})} className={inputCls} placeholder="e.g. Mon-Sun: 05:00 AM - 11:00 PM" />
+            </div>
+          </div>
+        </section>
+
         {/* Location Details */}
         <section>
           <div className="flex items-center space-x-2 text-[#1E293B] mb-4 border-b border-[#CCFBF1] pb-2">
@@ -150,27 +221,23 @@ const GymAdminProfile = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm text-[#475569] mb-2">Established Year</label>
-              <div className="w-full rounded-xl px-4 py-3 bg-[#F8FAFC] text-[#1E293B] text-opacity-80">
-                {gym?.establishedYear || 'N/A'}
-              </div>
+              <input disabled={!isEditing} type="number" value={formData.establishedYear} onChange={e => setFormData({...formData, establishedYear: e.target.value})} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm text-[#475569] mb-2">Training Mode</label>
-              <div className="w-full rounded-xl px-4 py-3 bg-[#F8FAFC] text-[#1E293B] text-opacity-80 capitalize">
-                {gym?.trainingMode || 'N/A'}
-              </div>
+              <select disabled={!isEditing} value={formData.trainingMode} onChange={e => setFormData({...formData, trainingMode: e.target.value})} className={inputCls + " appearance-none cursor-pointer"}>
+                <option value="offline">Offline</option>
+                <option value="online">Online</option>
+                <option value="both">Hybrid (Both)</option>
+              </select>
             </div>
             <div>
               <label className="block text-sm text-[#475569] mb-2">Approx Members</label>
-              <div className="w-full rounded-xl px-4 py-3 bg-[#F8FAFC] text-[#1E293B] text-opacity-80">
-                {gym?.memberCapacity || 'N/A'}
-              </div>
+              <input disabled={!isEditing} type="number" value={formData.memberCapacity} onChange={e => setFormData({...formData, memberCapacity: e.target.value})} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm text-[#475569] mb-2">Total Trainers</label>
-              <div className="w-full rounded-xl px-4 py-3 bg-[#F8FAFC] text-[#1E293B] text-opacity-80">
-                {gym?.trainerCapacity || 'N/A'}
-              </div>
+              <input disabled={!isEditing} type="number" value={formData.trainerCapacity} onChange={e => setFormData({...formData, trainerCapacity: e.target.value})} className={inputCls} />
             </div>
           </div>
         </section>
@@ -233,6 +300,16 @@ const GymAdminProfile = () => {
             </div>
           </section>
         )}
+
+        <section className="bg-green-50 border border-green-100 rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold text-green-800">Branch Management</h3>
+            <p className="text-green-700 mt-1">You currently have <strong>{branchesCount}</strong> branch{branchesCount !== 1 && 'es'} registered.</p>
+          </div>
+          <Link to="/admin/branches" className="px-6 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2">
+            Manage Branches <ArrowRight size={18} />
+          </Link>
+        </section>
 
         <div className="pt-4 flex justify-end">
           {!isEditing ? (

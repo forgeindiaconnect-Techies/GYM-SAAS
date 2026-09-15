@@ -13,7 +13,7 @@ const mockShifts = [
 ];
 
 const GymAdminTrainerSchedule = () => {
-  const [currentWeek, setCurrentWeek] = useState('Sept 14 - Sept 20, 2026');
+  const [currentWeek] = useState('Sept 14 - Sept 20, 2026');
 
   return (
     <div className="space-y-6">
@@ -66,7 +66,7 @@ const GymAdminTrainerSchedule = () => {
 
             {/* Grid */}
             <div className="relative">
-              {HOURS.map((hour, idx) => (
+              {HOURS.map((hour) => (
                 <div key={hour} className="grid grid-cols-8 border-b border-[#CCFBF1] last:border-0">
                   <div className="p-4 border-r border-[#CCFBF1] text-center text-sm text-[#475569] font-medium bg-[#FFFFFF]">
                     {hour}

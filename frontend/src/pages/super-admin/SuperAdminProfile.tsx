@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Save, User } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const SuperAdminProfile = () => {

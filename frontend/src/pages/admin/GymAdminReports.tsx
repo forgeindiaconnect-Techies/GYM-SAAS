@@ -1,7 +1,45 @@
 import { useState } from 'react';
 import { BarChart3, TrendingUp, Users, UserMinus, Download, Filter } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const GymAdminReports = () => {
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.text('Gym Analytics & Reports', 14, 22);
+    
+    doc.setFontSize(11);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+    
+    autoTable(doc, {
+      startY: 40,
+      head: [['Metric', 'Value', 'Change vs Last Month']],
+      body: [
+        ['Total Members', '1,248', '+4.2%'],
+        ['Retention Rate', '89.4%', '+1.1%'],
+        ['Churn Rate', '2.8%', '-0.4%'],
+        ['Avg. Lifetime Value', '₹485.00', '+₹12.00']
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [22, 163, 74] }
+    });
+    
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 15,
+      head: [['Plan Type', 'Revenue Share']],
+      body: [
+        ['Pro Tier', '55%'],
+        ['Basic Tier', '30%'],
+        ['Elite Tier', '15%']
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [22, 163, 74] }
+    });
+    
+    doc.save('gym_analytics_report.pdf');
+  };
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -10,10 +48,12 @@ const GymAdminReports = () => {
           <p className="text-[#475569] mt-1">Deep insights into your gym's performance and member retention.</p>
         </div>
         <div className="flex space-x-2">
-          <button className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] font-bold rounded-xl hover:bg-[#FFFFFF] transition-colors flex items-center gap-2">
-            <Filter size={18} /> Last 30 Days
-          </button>
-          <button className="px-4 py-2 bg-[#16A34A] text-[#1E293B] font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20">
+          <select className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] font-bold rounded-xl hover:bg-[#FFFFFF] transition-colors outline-none cursor-pointer appearance-none">
+            <option value="1week">One Week</option>
+            <option value="1month">One Month</option>
+            <option value="1year">One Year</option>
+          </select>
+          <button onClick={handleExportPDF} className="px-4 py-2 bg-[#16A34A] text-[#1E293B] font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20">
             <Download size={18} /> Export PDF
           </button>
         </div>
@@ -58,9 +98,9 @@ const GymAdminReports = () => {
             <TrendingUp size={24} />
           </div>
           <p className="text-[#475569] font-medium mb-1">Avg. Lifetime Value</p>
-          <h3 className="text-3xl font-bold text-[#1E293B]">$485.00</h3>
+          <h3 className="text-3xl font-bold text-[#1E293B]">₹485.00</h3>
           <p className="text-green-500 text-sm font-bold mt-2 flex items-center">
-            <TrendingUp size={16} className="mr-1" /> +$12.00 vs last month
+            <TrendingUp size={16} className="mr-1" /> +₹12.00 vs last month
           </p>
         </div>
       </div>
@@ -70,8 +110,8 @@ const GymAdminReports = () => {
           <h3 className="text-lg font-bold text-[#1E293B] mb-6 border-b border-[#CCFBF1] pb-2">Membership Growth</h3>
           <div className="h-64 flex items-end justify-between space-x-2 pt-4">
             {[40, 45, 55, 50, 65, 75, 80, 85, 90, 85, 95, 100].map((val, idx) => (
-              <div key={idx} className="w-full bg-[#FFFFFF] hover:bg-blue-500 rounded-t-sm transition-colors relative group" style={{ height: `${val}%` }}>
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-[#1E293B] text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100">{val * 10}</div>
+              <div key={idx} className="w-full bg-[#CCFBF1] hover:bg-[#16A34A] rounded-t-sm transition-colors relative group" style={{ height: `${val}%` }}>
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#1E293B] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100">{val * 10}</div>
               </div>
             ))}
           </div>

@@ -124,7 +124,13 @@ const PaymentPage = () => {
           {paymentMethod === 'qr' && (
             <div className="flex flex-col items-center justify-center py-6 animate-in fade-in zoom-in-95">
               <div className="bg-white p-4 rounded-xl border-2 border-[#16A34A] shadow-[0_0_20px_rgba(22,163,74,0.15)] mb-6">
-                <QrCode size={160} className="text-[#1E293B]" />
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(`upi://pay?pa=aigym@upi&pn=AIGym&am=${total}&cu=INR`)}`} 
+                  alt="UPI QR Code" 
+                  width={160} 
+                  height={160} 
+                  className="rounded-lg"
+                />
               </div>
               <p className="text-[#475569] font-medium mb-4 text-center">Scan with any UPI app to pay</p>
               <div className="flex gap-4">

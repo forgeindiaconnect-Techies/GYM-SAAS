@@ -11,6 +11,7 @@ export enum CustomerMembershipStatus {
 export interface ICustomerMembership extends Document {
   userId: mongoose.Types.ObjectId;
   gymId: mongoose.Types.ObjectId;
+  branchId?: mongoose.Types.ObjectId;
   planName: string;
   duration: string;
   price: number;
@@ -30,6 +31,7 @@ const customerMembershipSchema = new Schema<ICustomerMembership>(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true },
+    branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
     planName: { type: String, required: true },
     duration: { type: String, required: true },
     price: { type: Number, required: true },

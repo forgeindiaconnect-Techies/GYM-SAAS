@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { FormEvent } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Building2, MapPin, Phone, CreditCard, Save, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Building2, MapPin, Phone, CreditCard, Save } from 'lucide-react';
 import api from '../../utils/api';
 
 const COMMON_EQUIPMENT = [

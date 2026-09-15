@@ -8,6 +8,7 @@ import trainerRoutes from './routes/trainerRoutes';
 import gymRoutes from './routes/gymRoutes';
 import userRoutes from './routes/userRoutes';
 import membershipRoutes from './routes/membershipRoutes';
+import branchRoutes from './routes/branchRoutes';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use('/api/trainers', trainerRoutes);
 app.use('/api/gyms', gymRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/memberships', membershipRoutes);
+app.use('/api/branches', branchRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running' });

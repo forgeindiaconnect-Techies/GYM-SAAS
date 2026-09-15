@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Filter, Wrench, CheckCircle2, AlertTriangle, SearchCode } from 'lucide-react';
+import { Search, Plus, Filter, Wrench, CheckCircle2, AlertTriangle, SearchCode, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useOutletContext } from 'react-router-dom';
 import api from '../../utils/api';
 
 const mockEquipment = [
@@ -14,15 +15,31 @@ const mockEquipment = [
 
 const GymAdminEquipment = () => {
   const { user } = useAuth();
+  const { selectedBranch } = useOutletContext<{ selectedBranch: string }>();
   const [search, setSearch] = useState('');
   const [gym, setGym] = useState<any>(null);
+  const [localEquipmentList, setLocalEquipmentList] = useState<any[]>(mockEquipment);
   const [isLoading, setIsLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedEq, setSelectedEq] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    category: 'Cardio',
+    brand: '',
+    quantity: 1,
+    condition: 'Excellent',
+    status: 'Active',
+    nextService: ''
+  });
 
   useEffect(() => {
     if (user?.gymId) {
       api.get(`/gyms/${user.gymId}`)
         .then(res => {
           setGym(res.data.gym);
+          if (res.data.gym?.equipment?.length > 0) {
+            setLocalEquipmentList(res.data.gym.equipment);
+          }
           setIsLoading(false);
         })
         .catch(err => {
@@ -32,7 +49,12 @@ const GymAdminEquipment = () => {
     }
   }, [user]);
 
-  const equipmentToDisplay = gym?.equipment?.length > 0 ? gym.equipment : mockEquipment;
+  const equipmentToDisplay = localEquipmentList.filter(eq => {
+    if (selectedBranch === 'main') {
+      return !eq.branchId || eq.branchId === 'main';
+    }
+    return eq.branchId === selectedBranch;
+  });
 
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -52,6 +74,62 @@ const GymAdminEquipment = () => {
     }
   };
 
+  const handleAddEquipment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!gym) return;
+    
+    const newEq = {
+      id: `EQ${String(localEquipmentList.length + 1).padStart(3, '0')}`,
+      name: formData.name,
+      category: formData.category,
+      brand: formData.brand,
+      quantity: formData.quantity,
+      branchId: selectedBranch === 'main' ? undefined : selectedBranch,
+      status: formData.status,
+      nextService: formData.nextService || 'N/A'
+    };
+
+    const updatedEquipment = [newEq, ...localEquipmentList];
+    setLocalEquipmentList(updatedEquipment);
+
+    try {
+      await api.put(`/gyms/${gym._id}`, { equipment: updatedEquipment });
+    } catch (err) {
+      console.error('Error saving equipment:', err);
+    }
+
+    alert('Equipment added successfully!');
+    setShowAddModal(false);
+    setFormData({
+      name: '',
+      category: 'Cardio',
+      brand: '',
+      quantity: 1,
+      condition: 'Excellent',
+      status: 'Active',
+      nextService: ''
+    });
+  };
+
+  const handleStatusChange = async (id: string, newStatus: string) => {
+    const updated = localEquipmentList.map(eq => 
+      (eq.id === id || eq._id === id) ? { ...eq, status: newStatus } : eq
+    );
+    setLocalEquipmentList(updated);
+    if (gym) {
+      try { await api.put(`/gyms/${gym._id}`, { equipment: updated }); } catch (err) {}
+    }
+  };
+
+  const handleDeleteEquipment = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this equipment?')) return;
+    const updated = localEquipmentList.filter(eq => eq.id !== id && eq._id !== id);
+    setLocalEquipmentList(updated);
+    if (gym) {
+      try { await api.put(`/gyms/${gym._id}`, { equipment: updated }); } catch (err) {}
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -59,7 +137,7 @@ const GymAdminEquipment = () => {
           <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Equipment</h1>
           <p className="text-[#475569] mt-1">Manage inventory and track maintenance schedules.</p>
         </div>
-        <button className="px-4 py-2 bg-[#16A34A] text-[#1E293B] font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20 self-start md:self-auto">
+        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20 self-start md:self-auto">
           <Plus size={20} /> Add Equipment
         </button>
       </div>
@@ -120,17 +198,129 @@ const GymAdminEquipment = () => {
             </div>
 
             <div className="mt-6 pt-4 border-t border-[#CCFBF1] flex gap-3">
-              <button className="flex-1 py-2 bg-[#FFFFFF] hover:bg-[#E2E8F0] text-[#1E293B] text-sm font-bold rounded-xl transition-colors">
-                Log Service
+              <button onClick={() => setSelectedEq(eq)} className="flex-1 py-2 bg-[#FFFFFF] border border-[#CCFBF1] hover:bg-[#E2E8F0] text-[#1E293B] text-sm font-bold rounded-xl transition-colors">
+                View Details
               </button>
-              <button className="flex-1 py-2 bg-[#FFFFFF] hover:bg-[#E2E8F0] text-[#16A34A] text-sm font-bold rounded-xl transition-colors">
-                Report Issue
+              <button 
+                onClick={() => handleDeleteEquipment(eq.id || eq._id)}
+                className="flex-1 py-2 bg-[#FFFFFF] border border-[#CCFBF1] hover:bg-red-50 text-red-500 hover:border-red-200 text-sm font-bold rounded-xl transition-colors"
+              >
+                Delete
               </button>
             </div>
           </div>
           )
         })}
       </div>
+
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#CCFBF1] mt-10 mb-10">
+            <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
+              <h2 className="text-2xl font-bold text-[#1E293B]">Add New Equipment</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-[#475569] hover:text-[#1E293B]"><X size={24} /></button>
+            </div>
+            <form onSubmit={handleAddEquipment} className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-[#475569] mb-1">Equipment Name *</label>
+                  <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" placeholder="e.g. Treadmill Series X" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#475569] mb-1">Category *</label>
+                  <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
+                    <option value="Cardio">Cardio</option>
+                    <option value="Strength">Strength</option>
+                    <option value="Free Weights">Free Weights</option>
+                    <option value="Accessories">Accessories</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#475569] mb-1">Brand</label>
+                  <input value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" placeholder="e.g. LifeFitness" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#475569] mb-1">Quantity *</label>
+                  <input type="number" min="1" required value={formData.quantity} onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#475569] mb-1">Condition</label>
+                  <select value={formData.condition} onChange={e => setFormData({...formData, condition: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Poor">Poor</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#475569] mb-1">Status</label>
+                  <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Out of Order">Out of Order</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#475569] mb-1">Next Service Date</label>
+                  <input type="date" value={formData.nextService} onChange={e => setFormData({...formData, nextService: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4 border-t border-[#CCFBF1]">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-6 py-2 text-[#475569] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+                <button type="submit" className="px-8 py-2 bg-[#16A34A] text-white rounded-xl font-bold hover:bg-[#15803D] transition-colors shadow-lg shadow-[#16A34A]/20">Add Equipment</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {selectedEq && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#CCFBF1] mt-20 mb-10 overflow-hidden">
+            <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center bg-[#F8FAFC]">
+              <h2 className="text-xl font-bold text-[#1E293B]">Equipment Details</h2>
+              <button onClick={() => setSelectedEq(null)} className="text-[#475569] hover:text-[#1E293B]"><X size={24} /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <span className="text-sm font-bold text-[#475569]">Name</span>
+                <p className="text-[#1E293B] font-semibold">{selectedEq.name}</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <span className="text-sm font-bold text-[#475569]">Category</span>
+                  <p className="text-[#1E293B] font-semibold capitalize">{selectedEq.category}</p>
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-[#475569]">Brand</span>
+                  <p className="text-[#1E293B] font-semibold">{selectedEq.brand || 'N/A'}</p>
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-[#475569]">Quantity</span>
+                  <p className="text-[#1E293B] font-semibold">{selectedEq.quantity || 1}</p>
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-[#475569]">Status</span>
+                  <p className="text-[#1E293B] font-semibold">{selectedEq.status || (selectedEq.condition === 'Poor' ? 'Maintenance' : 'Active')}</p>
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-[#475569]">Condition</span>
+                  <p className="text-[#1E293B] font-semibold">{selectedEq.condition || 'N/A'}</p>
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-[#475569]">Next Service Date</span>
+                  <p className="text-[#1E293B] font-semibold">{selectedEq.nextService || 'N/A'}</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 border-t border-[#CCFBF1] bg-[#F8FAFC] flex justify-end">
+              <button onClick={() => setSelectedEq(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] font-bold hover:bg-gray-100 rounded-xl transition-colors">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

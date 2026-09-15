@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Send, Loader2, Building2, User, Clock } from 'lucide-react';
 import { addItem } from '../../utils/mockDb';
 
@@ -13,7 +13,7 @@ const INITIAL_DATA = {
 };
 
 const SuperAdminAddGym = () => {
-  const navigate = useNavigate();
+
   const [formData, setFormData] = useState(INITIAL_DATA);
   const [errors, setErrors] = useState<any>({});
   const [isSubmitting, setIsSubmitting] = useState(false);

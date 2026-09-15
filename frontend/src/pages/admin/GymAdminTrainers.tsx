@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Plus, Trash2, CheckCircle, XCircle, Eye, EyeOff, X, Mail, UserPlus, Check, PauseCircle, Clock, Ban } from 'lucide-react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { Plus, Trash2, CheckCircle, Eye, EyeOff, X, Mail, UserPlus, Check, PauseCircle, Clock, Ban, ShieldCheck } from 'lucide-react';
 import api from '../../utils/api';
 
 const GymAdminTrainers = () => {
   const { user } = useAuth();
-  const [gym, setGym] = useState<any>(null);
+  const { selectedBranch } = useOutletContext<{ selectedBranch: string }>();
   const [trainers, setTrainers] = useState<any[]>([]);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   const [showHireModal, setShowHireModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [hireMethod, setHireMethod] = useState<'manual' | 'invite' | null>(null);
   const [selectedTrainer, setSelectedTrainer] = useState<any>(null);
+  const navigate = useNavigate();
   
   const [manualForm, setManualForm] = useState({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '', password: '', confirmPassword: '' });
   const [inviteForm, setInviteForm] = useState({ trainerName: '', email: '', phone: '', specialization: '', trainingMode: 'offline', personalMessage: '' });
@@ -24,18 +27,12 @@ const GymAdminTrainers = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  useEffect(() => {
-    if (user?.gymId) {
-      api.get(`/gyms/${user.gymId}`)
-        .then(res => setGym(res.data.gym))
-        .catch(err => console.error(err));
-    }
-  }, [user]);
+
 
   const fetchTrainers = async () => {
     try {
       setIsLoading(true);
-      const res = await api.get('/trainers');
+      const res = await api.get(`/trainers?branchId=${selectedBranch}`);
       setTrainers(res.data.trainers || []);
       setInvitations(res.data.invitations || []);
     } catch (err) {
@@ -48,7 +45,7 @@ const GymAdminTrainers = () => {
 
   useEffect(() => {
     fetchTrainers();
-  }, []);
+  }, [selectedBranch]);
 
   const validateEmail = (email: string) => {
     return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
@@ -79,7 +76,7 @@ const GymAdminTrainers = () => {
     }
 
     try {
-      await api.post('/trainers/manual-add', manualForm);
+      await api.post('/trainers/manual-add', { ...manualForm, branchId: selectedBranch });
       alert('Trainer added successfully!');
       setShowHireModal(false);
       setHireMethod(null);
@@ -131,16 +128,7 @@ const GymAdminTrainers = () => {
     }
   };
 
-  const handleReject = async (id: string) => {
-    if(!window.confirm("Are you sure you want to reject this trainer?")) return;
-    try {
-      await api.patch(`/trainers/${id}/status`, { status: 'Rejected', reason: 'Rejected by gym owner' });
-      alert('Trainer rejected');
-      fetchTrainers();
-    } catch (err: any) {
-      alert('Failed to reject trainer');
-    }
-  };
+
 
   const handleDelete = async (id: string) => {
     if(!window.confirm("Are you sure you want to completely remove this trainer?")) return;
@@ -177,6 +165,16 @@ const GymAdminTrainers = () => {
     return options;
   };
 
+  const getTrainerLimit = (plan?: string) => {
+    switch (plan?.toUpperCase()) {
+      case 'FREE_TRIAL': return 1;
+      case 'SILVER': return 5;
+      case 'GOLD': return 15;
+      case 'PREMIUM': return Infinity;
+      default: return 1;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -184,7 +182,18 @@ const GymAdminTrainers = () => {
           <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Trainers</h1>
           <p className="text-[#475569] mt-1">Manage all trainers hired by your gym.</p>
         </div>
-        <button onClick={() => { setShowHireModal(true); setHireMethod(null); }} className="flex items-center space-x-2 px-4 py-2 bg-[#16A34A] text-white rounded-xl font-semibold hover:bg-[#15803D] transition-colors">
+        <button 
+          onClick={() => { 
+            const limit = getTrainerLimit(user?.subscriptionPlan);
+            const currentTotal = trainers.length + invitations.length;
+            if (currentTotal >= limit) {
+              setShowUpgradeModal(true);
+            } else {
+              setShowHireModal(true); setHireMethod(null); 
+            }
+          }} 
+          className="flex items-center space-x-2 px-4 py-2 bg-[#16A34A] text-white rounded-xl font-semibold hover:bg-[#15803D] transition-colors"
+        >
           <Plus size={20} />
           <span>Hire Trainer</span>
         </button>
@@ -499,12 +508,7 @@ const GymAdminTrainers = () => {
                   <label className="block text-sm font-bold text-[#475569] mb-1">Specialization</label>
                   <input value={inviteForm.specialization} onChange={e => setInviteForm({...inviteForm, specialization: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-[#475569] mb-1">Trainer Mode *</label>
-                  <select required value={inviteForm.trainingMode} onChange={e => setInviteForm({...inviteForm, trainingMode: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
-                    {renderTrainerModeOptions()}
-                  </select>
-                </div>
+
                 <div className="md:col-span-2">
                   <label className="block text-sm font-bold text-[#475569] mb-1">Personal Message</label>
                   <textarea rows={3} placeholder="Add a personal note to the email invitation..." value={inviteForm.personalMessage} onChange={e => setInviteForm({...inviteForm, personalMessage: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
@@ -576,6 +580,43 @@ const GymAdminTrainers = () => {
             <div className="p-4 bg-[#F8FAFC] border-t border-[#CCFBF1] flex justify-end">
               <button onClick={() => setSelectedTrainer(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl font-bold hover:bg-[#F1F5F9] transition-colors">
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Upgrade Prompt Modal */}
+      {showUpgradeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl max-w-md w-full p-8 text-center shadow-2xl relative">
+            <button 
+              onClick={() => setShowUpgradeModal(false)}
+              className="absolute top-4 right-4 text-[#475569] hover:text-[#16A34A] transition-colors"
+            >
+              <X size={20} />
+            </button>
+            
+            <div className="w-16 h-16 bg-[#0D9488]/10 border border-[#0D9488]/20 text-[#0D9488] rounded-full flex items-center justify-center mx-auto mb-6">
+              <ShieldCheck size={32} />
+            </div>
+            
+            <h2 className="text-2xl font-bold text-[#1E293B] mb-3">Trainer Limit Reached</h2>
+            <p className="text-[#475569] mb-8 leading-relaxed">
+              Your current <span className="text-[#16A34A] font-semibold">{user?.subscriptionPlan || 'Free Trial'}</span> plan allows up to {getTrainerLimit(user?.subscriptionPlan)} trainers. If you want to add more trainers and branches, you need to upgrade your subscription plan.
+            </p>
+            
+            <div className="space-y-3">
+              <button 
+                onClick={() => navigate('/admin/subscription')} 
+                className="w-full py-3.5 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors shadow-lg shadow-[#16A34A]/20"
+              >
+                View Upgrade Plans
+              </button>
+              <button 
+                onClick={() => setShowUpgradeModal(false)} 
+                className="w-full py-3.5 bg-[#FFFFFF] text-[#1E293B] font-medium rounded-xl border border-[#CCFBF1] hover:bg-[#E2E8F0] transition-colors"
+              >
+                Maybe Later
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bot, User, MapPin, Activity, ArrowRight, PlayCircle, Star, CheckCircle, XCircle, TrendingUp, Dumbbell, Quote, X, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Bot, User, MapPin, Activity, ArrowRight, PlayCircle, Star, CheckCircle, XCircle, TrendingUp, Dumbbell, Quote, X, Loader2 } from 'lucide-react';
 import { FaInstagram, FaTwitter, FaYoutube, FaFacebook } from 'react-icons/fa';
 import api from '../utils/api';
 import { FeaturePreview } from '../components/Landing/FeaturePreview';
@@ -52,7 +52,7 @@ const LandingPage = () => {
   }, []);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (isTourOpen && tourJourney !== 'select') {
       interval = setInterval(() => {
         setTourStep(s => {
@@ -74,7 +74,7 @@ const LandingPage = () => {
   }, [activeFeatureTab]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (isFeaturesOpen) {
       interval = setInterval(() => {
         let max = 0;
@@ -124,7 +124,9 @@ const LandingPage = () => {
           </div>
 
           <div className="flex items-center space-x-3">
-            <Link to="/login" id="nav-login" className="text-sm font-medium text-[#16A34A] hover:text-[#15803D] transition-colors mr-2">Log In</Link>
+            <Link to="/login" id="nav-login" className="px-4 py-2 bg-[#16A34A] text-white text-sm font-semibold rounded-lg hover:bg-[#15803D] transition-colors mr-2">
+              Log In
+            </Link>
             
             <Link to="/gyms" className="px-4 py-2 bg-[#16A34A] text-white text-sm font-semibold rounded-lg hover:bg-[#15803D] transition-colors flex items-center space-x-2">
               <User size={14} />

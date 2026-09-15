@@ -18,7 +18,7 @@ const GymAdminDashboard = () => {
     { title: 'Total Members', value: stats.members || 142, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
     { title: 'Active Trainers', value: stats.trainers || 0, icon: Dumbbell, color: 'text-green-500', bg: 'bg-green-500/10' },
     { title: 'Pending Bookings', value: stats.bookings || 0, icon: CalendarCheck, color: 'text-yellow-500', bg: 'bg-yellow-500/10' },
-    { title: 'Monthly Revenue', value: '$12,450', icon: TrendingUp, color: 'text-[#16A34A]', bg: 'bg-[#16A34A]/10' }
+    { title: 'Monthly Revenue', value: '₹12,450', icon: TrendingUp, color: 'text-[#16A34A]', bg: 'bg-[#16A34A]/10' }
   ];
 
   return (

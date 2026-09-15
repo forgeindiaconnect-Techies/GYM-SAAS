@@ -51,6 +51,10 @@ import GymAdminNotifications from './pages/admin/GymAdminNotifications';
 import GymAdminUserProfile from './pages/admin/GymAdminUserProfile';
 import GymAdminSettings from './pages/admin/GymAdminSettings';
 import GymAdminSubscription from './pages/admin/GymAdminSubscription';
+import GymAdminDeletedDetails from './pages/admin/GymAdminDeletedDetails';
+import GymAdminBranches from './pages/admin/GymAdminBranches';
+import GymAdminAddBranch from './pages/admin/GymAdminAddBranch';
+import GymAdminBranchProfile from './pages/admin/GymAdminBranchProfile';
 
 // Super Admin
 import SuperAdminLayout from './layouts/SuperAdminLayout';
@@ -225,6 +229,9 @@ function App() {
           }>
             <Route path="dashboard" element={<GymAdminDashboard />} />
             <Route path="gym-profile" element={<GymAdminProfile />} />
+            <Route path="branches" element={<GymAdminBranches />} />
+            <Route path="add-branch" element={<GymAdminAddBranch />} />
+            <Route path="branches/:id" element={<GymAdminBranchProfile />} />
             <Route path="trainers" element={<GymAdminTrainers />} />
             <Route path="members" element={<GymAdminMembers />} />
             <Route path="equipment" element={<GymAdminEquipment />} />
@@ -238,6 +245,7 @@ function App() {
             <Route path="profile" element={<GymAdminUserProfile />} />
             <Route path="settings" element={<GymAdminSettings />} />
             <Route path="subscription" element={<GymAdminSubscription />} />
+            <Route path="deleted-details" element={<GymAdminDeletedDetails />} />
           </Route>
 
 {/* Super Admin Routes */}
