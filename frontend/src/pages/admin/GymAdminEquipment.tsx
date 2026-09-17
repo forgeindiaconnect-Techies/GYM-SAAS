@@ -33,26 +33,27 @@ const GymAdminEquipment = () => {
   });
 
   useEffect(() => {
+    setIsLoading(true);
     if (user?.gymId) {
       api.get(`/gyms/${user.gymId}`)
         .then(res => {
           setGym(res.data.gym);
-          if (res.data.gym?.equipment?.length > 0) {
+          if (res.data.gym?.equipment) {
             setLocalEquipmentList(res.data.gym.equipment);
           }
-          setIsLoading(false);
         })
-        .catch(err => {
-          console.error(err);
-          setIsLoading(false);
-        });
+        .catch(() => {
+          // API failed — keep showing mock data
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
     }
   }, [user]);
 
   const equipmentToDisplay = localEquipmentList.filter(eq => {
-    if (selectedBranch === 'main') {
-      return !eq.branchId || eq.branchId === 'main';
-    }
+    // On main branch show everything; on a specific branch filter by branchId
+    if (selectedBranch === 'main') return true;
     return eq.branchId === selectedBranch;
   });
 
@@ -96,19 +97,11 @@ const GymAdminEquipment = () => {
       await api.put(`/gyms/${gym._id}`, { equipment: updatedEquipment });
     } catch (err) {
       console.error('Error saving equipment:', err);
+      // Revert on error
+      setLocalEquipmentList(localEquipmentList);
     }
-
-    alert('Equipment added successfully!');
     setShowAddModal(false);
-    setFormData({
-      name: '',
-      category: 'Cardio',
-      brand: '',
-      quantity: 1,
-      condition: 'Excellent',
-      status: 'Active',
-      nextService: ''
-    });
+    setFormData({ name: '', category: 'Cardio', brand: '', quantity: 1, condition: 'Excellent', status: 'Active', nextService: '' });
   };
 
   const handleStatusChange = async (id: string, newStatus: string) => {
@@ -122,27 +115,34 @@ const GymAdminEquipment = () => {
   };
 
   const handleDeleteEquipment = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this equipment?')) return;
-    const updated = localEquipmentList.filter(eq => eq.id !== id && eq._id !== id);
-    setLocalEquipmentList(updated);
-    if (gym) {
-      try { await api.put(`/gyms/${gym._id}`, { equipment: updated }); } catch (err) {}
+    if (!gym || !window.confirm('Are you sure you want to delete this equipment?')) return;
+    
+    const updatedEquipment = localEquipmentList.filter(eq => (eq.id || eq._id) !== id);
+    setLocalEquipmentList(updatedEquipment);
+    
+    try {
+      await api.put(`/gyms/${gym._id}`, { equipment: updatedEquipment });
+    } catch (err) {
+      console.error('Error deleting equipment:', err);
+      // Revert on error
+      setLocalEquipmentList(localEquipmentList);
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-0">
         <div>
           <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Equipment</h1>
           <p className="text-[#475569] mt-1">Manage inventory and track maintenance schedules.</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20 self-start md:self-auto">
-          <Plus size={20} /> Add Equipment
+        <button onClick={() => setShowAddModal(true)} className="flex items-center space-x-2 px-4 py-2 bg-[#16A34A] text-white rounded-xl font-bold hover:bg-[#15803D] transition-colors shadow-lg shadow-[#16A34A]/20">
+          <Plus size={20} />
+          <span>Add Equipment</span>
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <div className="relative flex-1">
           <input 
             type="text" 
@@ -158,6 +158,18 @@ const GymAdminEquipment = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {isLoading ? (
           <div className="col-span-1 md:col-span-2 xl:col-span-3 text-center py-10 text-[#475569]">Loading equipment...</div>
+        ) : equipmentToDisplay.length === 0 ? (
+          <div className="col-span-1 md:col-span-2 xl:col-span-3 text-center py-16 bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl flex flex-col items-center justify-center">
+            <div className="w-16 h-16 bg-[#F1F5F9] rounded-full flex items-center justify-center mb-4">
+              <Wrench size={32} className="text-[#94A3B8]" />
+            </div>
+            <h3 className="text-xl font-bold text-[#1E293B] mb-2">No Equipment Found</h3>
+            <p className="text-[#475569] max-w-md">There is no equipment in this branch yet. Add your first piece of equipment to start managing your inventory.</p>
+            <button onClick={() => setShowAddModal(true)} className="mt-6 flex items-center space-x-2 px-6 py-2 bg-[#16A34A] text-white rounded-xl font-bold hover:bg-[#15803D] transition-colors">
+              <Plus size={18} />
+              <span>Add Equipment</span>
+            </button>
+          </div>
         ) : equipmentToDisplay
           .filter((eq: any) => eq.name?.toLowerCase().includes(search.toLowerCase()))
           .map((eq: any, idx: number) => {

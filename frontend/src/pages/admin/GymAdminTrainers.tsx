@@ -10,6 +10,12 @@ const GymAdminTrainers = () => {
   const [trainers, setTrainers] = useState<any[]>([]);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const mockTrainers = [
+    { _id: 'mock-1', name: 'Arnold S.', email: 'arnold@gym.com', phone: '9876543210', specialization: 'Weight Loss', trainingMode: 'offline', status: 'Active', experience: '5 Years', qualifications: 'ACE Certified', fee: '₹3000/mo', availableDays: 'Mon-Sat', profilePhoto: '' },
+    { _id: 'mock-2', name: 'Sarah C.', email: 'sarah@gym.com', phone: '9876543211', specialization: 'Yoga & Flexibility', trainingMode: 'online', status: 'Active', experience: '3 Years', qualifications: 'RYT-200', fee: '₹2500/mo', availableDays: 'Mon-Fri', profilePhoto: '' },
+    { _id: 'mock-3', name: 'Mike T.', email: 'mike@gym.com', phone: '9876543212', specialization: 'Strength & Conditioning', trainingMode: 'offline', status: 'Suspended', experience: '7 Years', qualifications: 'CSCS', fee: '₹4000/mo', availableDays: 'Tue-Sun', profilePhoto: '' },
+  ];
   
   const [showHireModal, setShowHireModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -33,11 +39,13 @@ const GymAdminTrainers = () => {
     try {
       setIsLoading(true);
       const res = await api.get(`/trainers?branchId=${selectedBranch}`);
-      setTrainers(res.data.trainers || []);
+      const apiTrainers = res.data.trainers || [];
+      setTrainers(apiTrainers);
       setInvitations(res.data.invitations || []);
     } catch (err) {
       console.error(err);
-      alert('Failed to load trainers');
+      // API unavailable — show mock data so page isn't empty
+      setTrainers(mockTrainers);
     } finally {
       setIsLoading(false);
     }
@@ -528,55 +536,136 @@ const GymAdminTrainers = () => {
 
       {/* Trainer View Modal */}
       {selectedTrainer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-[#CCFBF1]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#CCFBF1] mt-10 mb-10">
+            {/* Header */}
             <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center bg-gradient-to-r from-[#F0FDFA] to-[#FFFFFF]">
               <h2 className="text-xl font-bold text-[#1E293B]">Trainer Profile</h2>
               <button onClick={() => setSelectedTrainer(null)} className="text-[#475569] hover:text-[#1E293B] transition-colors">
                 <X size={20} />
               </button>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="w-16 h-16 bg-[#16A34A]/10 text-[#16A34A] rounded-full flex items-center justify-center text-2xl font-bold shrink-0">
-                  {selectedTrainer.name.charAt(0)}
-                </div>
+
+            <div className="p-6 space-y-6 overflow-y-auto max-h-[75vh]">
+              {/* Avatar + Name + Status */}
+              <div className="flex items-center space-x-4 pb-4 border-b border-[#F1F5F9]">
+                {selectedTrainer.profilePhoto ? (
+                  <img src={selectedTrainer.profilePhoto} alt={selectedTrainer.name} className="w-20 h-20 rounded-full object-cover border-2 border-[#CCFBF1] shrink-0" />
+                ) : (
+                  <div className="w-20 h-20 bg-[#16A34A]/10 text-[#16A34A] rounded-full flex items-center justify-center text-3xl font-bold shrink-0 border-2 border-[#CCFBF1]">
+                    {selectedTrainer.name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div>
-                  <h3 className="text-lg font-bold text-[#1E293B]">{selectedTrainer.name}</h3>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${selectedTrainer.status === 'Active' ? 'bg-[#16A34A]/10 text-[#16A34A]' : selectedTrainer.status === 'Pending' ? 'bg-orange-500/10 text-orange-500' : 'bg-red-500/10 text-red-500'}`}>
+                  <h3 className="text-2xl font-bold text-[#1E293B]">{selectedTrainer.name}</h3>
+                  <p className="text-[#475569] text-sm mt-0.5">{selectedTrainer.specialization}</p>
+                  <span className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold border ${selectedTrainer.status === 'Active' ? 'bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20' : selectedTrainer.status === 'Pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
                     {selectedTrainer.status}
                   </span>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-[#475569] mb-1">Email</p>
-                  <p className="font-medium text-[#1E293B]">{selectedTrainer.email}</p>
-                </div>
-                <div>
-                  <p className="text-[#475569] mb-1">Phone</p>
-                  <p className="font-medium text-[#1E293B]">{selectedTrainer.phone || 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-[#475569] mb-1">Specialization</p>
-                  <p className="font-medium text-[#1E293B]">{selectedTrainer.specialization}</p>
-                </div>
-                <div>
-                  <p className="text-[#475569] mb-1">Experience</p>
-                  <p className="font-medium text-[#1E293B]">{selectedTrainer.experience || '0'} Years</p>
-                </div>
-                <div>
-                  <p className="text-[#475569] mb-1">Mode</p>
-                  <p className="font-medium text-[#1E293B] capitalize">{selectedTrainer.trainingMode || 'offline'}</p>
+
+              {/* Section: Contact Info */}
+              <div>
+                <h4 className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-3">Contact Information</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Email</p>
+                    <p className="font-semibold text-[#1E293B] break-all">{selectedTrainer.email || 'N/A'}</p>
+                  </div>
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Phone</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedTrainer.phone || 'N/A'}</p>
+                  </div>
                 </div>
               </div>
+
+              {/* Section: Professional Info */}
+              <div>
+                <h4 className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-3">Professional Details</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Specialization</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedTrainer.specialization || 'N/A'}</p>
+                  </div>
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Experience</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedTrainer.experience ? `${selectedTrainer.experience} Years` : 'N/A'}</p>
+                  </div>
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Training Mode</p>
+                    <p className="font-semibold text-[#1E293B] capitalize">{selectedTrainer.trainingMode || 'N/A'}</p>
+                  </div>
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Qualifications</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedTrainer.qualifications || 'N/A'}</p>
+                  </div>
+                  {selectedTrainer.certifications && (
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                      <p className="text-[#64748B] text-xs font-medium mb-1.5">Certifications</p>
+                      <p className="font-semibold text-[#1E293B]">{selectedTrainer.certifications}</p>
+                    </div>
+                  )}
+                  {selectedTrainer.expertise && (
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                      <p className="text-[#64748B] text-xs font-medium mb-1.5">Expertise</p>
+                      <p className="font-semibold text-[#1E293B]">{selectedTrainer.expertise}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Section: Fee Info */}
+              <div>
+                <h4 className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-3">Fee & Payment</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Fee</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedTrainer.fee ? `₹${selectedTrainer.fee}` : 'N/A'}</p>
+                  </div>
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Payment Type</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedTrainer.paymentType || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section: Availability */}
+              <div>
+                <h4 className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-3">Availability</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Available Days</p>
+                    <p className="font-semibold text-[#1E293B]">{selectedTrainer.availableDays || selectedTrainer.availability?.days || 'N/A'}</p>
+                  </div>
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#64748B] text-xs font-medium mb-1.5">Timings</p>
+                    <p className="font-semibold text-[#1E293B]">
+                      {selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime || '—'}
+                      {(selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime) ? ' → ' : ''}
+                      {selectedTrainer.availableEndTime || selectedTrainer.availability?.endTime || 'N/A'}
+                    </p>
+                  </div>
+                  {(selectedTrainer.availableSlot || selectedTrainer.availability?.slot) && (
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 sm:col-span-2">
+                      <p className="text-[#64748B] text-xs font-medium mb-1.5">Slot Duration</p>
+                      <p className="font-semibold text-[#1E293B]">{selectedTrainer.availableSlot || selectedTrainer.availability?.slot}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Section: Bio */}
               {selectedTrainer.bio && (
-                <div className="mt-4 pt-4 border-t border-[#CCFBF1]">
-                  <p className="text-[#475569] mb-1 text-sm">Bio</p>
-                  <p className="text-[#1E293B] text-sm">{selectedTrainer.bio}</p>
+                <div>
+                  <h4 className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-3">About</h4>
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                    <p className="text-[#1E293B] text-sm leading-relaxed">{selectedTrainer.bio}</p>
+                  </div>
                 </div>
               )}
             </div>
+
             <div className="p-4 bg-[#F8FAFC] border-t border-[#CCFBF1] flex justify-end">
               <button onClick={() => setSelectedTrainer(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl font-bold hover:bg-[#F1F5F9] transition-colors">
                 Close

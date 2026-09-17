@@ -1,13 +1,20 @@
 import React from 'react';
-import { X, UserCheck, UserPlus } from 'lucide-react';
+import { X, UserCheck, UserPlus, FileSpreadsheet } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   onClose: () => void;
-  onSelectExisting: () => void;
   onSelectNew: () => void;
 }
 
-export const AddMemberSelectorModal: React.FC<Props> = ({ onClose, onSelectExisting, onSelectNew }) => {
+export const AddMemberSelectorModal: React.FC<Props> = ({ onClose, onSelectNew }) => {
+  const navigate = useNavigate();
+
+  const handleBulkImport = () => {
+    onClose();
+    navigate('/admin/import-customers');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full shadow-2xl border border-[#CCFBF1] overflow-hidden">
@@ -20,31 +27,31 @@ export const AddMemberSelectorModal: React.FC<Props> = ({ onClose, onSelectExist
             <X size={24} />
           </button>
         </div>
-        <div className="p-6 space-y-4">
-          
+        <div className="p-6 space-y-3">
+
           <button 
-            onClick={onSelectExisting}
-            className="w-full text-left p-6 rounded-xl border-2 border-[#E2E8F0] hover:border-[#16A34A] hover:bg-[#F0FDFA] transition-all group flex items-start space-x-4"
+            onClick={onSelectNew}
+            className="w-full text-left p-5 rounded-xl border-2 border-[#E2E8F0] hover:border-[#16A34A] hover:bg-[#F0FDFA] transition-all group flex items-start space-x-4"
           >
             <div className="p-3 bg-[#E2E8F0] group-hover:bg-[#16A34A]/20 rounded-lg shrink-0 transition-colors">
-              <UserCheck size={28} className="text-[#475569] group-hover:text-[#16A34A] transition-colors" />
+              <UserPlus size={26} className="text-[#475569] group-hover:text-[#16A34A] transition-colors" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-[#1E293B] group-hover:text-[#16A34A] transition-colors">Existing Customer</h3>
-              <p className="text-sm text-[#475569] mt-1">Already a member of this physical gym before using the software. Add their existing details and current membership instantly.</p>
+              <h3 className="text-base font-bold text-[#1E293B] group-hover:text-[#16A34A] transition-colors">New Customer</h3>
+              <p className="text-sm text-[#475569] mt-0.5">A new person joining this gym for the first time. Go through the full registration and account creation flow.</p>
             </div>
           </button>
 
           <button 
-            onClick={onSelectNew}
-            className="w-full text-left p-6 rounded-xl border-2 border-[#E2E8F0] hover:border-[#16A34A] hover:bg-[#F0FDFA] transition-all group flex items-start space-x-4"
+            onClick={handleBulkImport}
+            className="w-full text-left p-5 rounded-xl border-2 border-[#E2E8F0] hover:border-[#16A34A] hover:bg-[#F0FDFA] transition-all group flex items-start space-x-4"
           >
             <div className="p-3 bg-[#E2E8F0] group-hover:bg-[#16A34A]/20 rounded-lg shrink-0 transition-colors">
-              <UserPlus size={28} className="text-[#475569] group-hover:text-[#16A34A] transition-colors" />
+              <FileSpreadsheet size={26} className="text-[#475569] group-hover:text-[#16A34A] transition-colors" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-[#1E293B] group-hover:text-[#16A34A] transition-colors">New Customer</h3>
-              <p className="text-sm text-[#475569] mt-1">A new person joining this gym for the first time. Go through the full registration and account creation flow.</p>
+              <h3 className="text-base font-bold text-[#1E293B] group-hover:text-[#16A34A] transition-colors">Bulk Import (Excel / CSV)</h3>
+              <p className="text-sm text-[#475569] mt-0.5">Import multiple existing customers at once from an Excel or CSV file. Supports up to 5,000 rows with full validation and duplicate detection.</p>
             </div>
           </button>
 

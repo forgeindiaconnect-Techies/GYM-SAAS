@@ -1,4 +1,5 @@
-import { Users, FileQuestion, DollarSign, Calendar, TrendingUp } from 'lucide-react';
+import { Users, FileQuestion, IndianRupee, Calendar, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const TrainerDashboard = () => {
@@ -16,7 +17,7 @@ const TrainerDashboard = () => {
           { label: 'Active Clients', value: '24', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
           { label: 'Pending Requests', value: '5', icon: FileQuestion, color: 'text-orange-500', bg: 'bg-orange-500/10' },
           { label: 'Today\'s Sessions', value: '4', icon: Calendar, color: 'text-green-500', bg: 'bg-green-500/10' },
-          { label: 'This Month Earnings', value: '$2,450', icon: DollarSign, color: 'text-[#16A34A]', bg: 'bg-[#16A34A]/10' },
+          { label: 'This Month Earnings', value: '₹2,450', icon: IndianRupee, color: 'text-[#16A34A]', bg: 'bg-[#16A34A]/10' },
         ].map((stat, i) => (
           <div key={i} className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-5 hover:-translate-y-1 transition-transform">
             <div className="flex justify-between items-start mb-4">
@@ -34,7 +35,7 @@ const TrainerDashboard = () => {
         <div className="md:col-span-2 bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">Upcoming Sessions</h2>
-            <button className="text-sm text-[#16A34A] hover:underline">View All</button>
+            <Link to="/trainer/session-bookings" className="text-sm text-[#16A34A] hover:underline font-semibold">View All →</Link>
           </div>
           <div className="space-y-4">
             {[

@@ -382,3 +382,51 @@ export const deleteTrainer = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+// 8. Get My Profile (Trainer self)
+export const getMyProfile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req.user as any)?.id || (req.user as any)?._id;
+    const trainer = await Trainer.findOne({ userId });
+    if (!trainer) {
+      res.status(404).json({ success: false, message: 'Trainer profile not found' });
+      return;
+    }
+    res.status(200).json({ success: true, trainer });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// 9. Update My Profile (Trainer self)
+export const updateMyProfile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req.user as any)?.id || (req.user as any)?._id;
+    const allowedUpdates = [
+      'phone', 'profilePhoto', 'specialization', 'experience',
+      'trainingMode', 'qualifications', 'certifications', 'expertise',
+      'bio', 'fee', 'paymentType', 'availableDays',
+      'availableStartTime', 'availableEndTime', 'availableSlot'
+    ];
+    const updateData: any = {};
+    allowedUpdates.forEach(field => {
+      if (req.body[field] !== undefined) updateData[field] = req.body[field];
+    });
+
+    const trainer = await Trainer.findOneAndUpdate(
+      { userId },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!trainer) {
+      res.status(404).json({ success: false, message: 'Trainer profile not found' });
+      return;
+    }
+
+    res.status(200).json({ success: true, trainer });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+

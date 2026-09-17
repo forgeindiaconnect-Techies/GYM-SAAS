@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, User, Users, FileText,
   Utensils, Calendar, CalendarCheck, TrendingUp,
-  MessageSquare, DollarSign, Bell, Settings,
+  MessageSquare, IndianRupee, Bell, Settings,
   Activity, Menu, LogOut
 } from 'lucide-react';
 
@@ -38,7 +38,7 @@ const TrainerLayout = () => {
     { label: 'Attendance', path: '/trainer/attendance', icon: CalendarCheck },
     { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
     { label: 'Notifications', path: '/trainer/notifications', icon: Bell },
-    { label: 'Payments / Earnings', path: '/trainer/earnings', icon: DollarSign },
+    { label: 'Payments / Earnings', path: '/trainer/earnings', icon: IndianRupee },
     { label: 'Settings', path: '/trainer/settings', icon: Settings },
   ];
 
@@ -152,10 +152,11 @@ const TrainerLayout = () => {
           </div>
 
           <div className="flex items-center space-x-3 md:space-x-5">
-            <button className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1">
+            <Link to="/trainer/notifications" className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1 block">
               <Bell size={20} />
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#16A34A] rounded-full shadow shadow-green-300" />
-            </button>
+            </Link>
+
             <Link to="/trainer/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-semibold text-[#1E293B] leading-none mb-0.5">{user?.firstName || 'Trainer'} {user?.lastName || ''}</p>

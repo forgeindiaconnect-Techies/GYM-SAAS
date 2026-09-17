@@ -34,9 +34,9 @@ const TrainerWithdrawals = () => {
         <h2 className="text-xl font-bold mb-4">Payout History</h2>
         <div className="space-y-3">
           {[
-            { date: 'Oct 01, 2026', amt: '$1,000.00', status: 'Completed', ref: 'TRX-98234' },
-            { date: 'Sep 01, 2026', amt: '$1,200.00', status: 'Completed', ref: 'TRX-88211' },
-            { date: 'Aug 01, 2026', amt: '$950.00', status: 'Completed', ref: 'TRX-78199' },
+            { date: 'Oct 01, 2026', amt: '₹1,000.00', status: 'Completed', ref: 'TRX-98234' },
+            { date: 'Sep 01, 2026', amt: '₹1,200.00', status: 'Completed', ref: 'TRX-88211' },
+            { date: 'Aug 01, 2026', amt: '₹950.00', status: 'Completed', ref: 'TRX-78199' },
           ].map((tx, i) => (
             <div key={i} className="flex justify-between items-center p-4 border border-[#CCFBF1] bg-[#FFFFFF] rounded-xl">
               <div>

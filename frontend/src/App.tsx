@@ -55,6 +55,7 @@ import GymAdminDeletedDetails from './pages/admin/GymAdminDeletedDetails';
 import GymAdminBranches from './pages/admin/GymAdminBranches';
 import GymAdminAddBranch from './pages/admin/GymAdminAddBranch';
 import GymAdminBranchProfile from './pages/admin/GymAdminBranchProfile';
+import GymAdminImportCustomers from './pages/admin/GymAdminImportCustomers';
 
 // Super Admin
 import SuperAdminLayout from './layouts/SuperAdminLayout';
@@ -246,6 +247,7 @@ function App() {
             <Route path="settings" element={<GymAdminSettings />} />
             <Route path="subscription" element={<GymAdminSubscription />} />
             <Route path="deleted-details" element={<GymAdminDeletedDetails />} />
+            <Route path="import-customers" element={<GymAdminImportCustomers />} />
           </Route>
 
 {/* Super Admin Routes */}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, MoreVertical, Settings } from 'lucide-react';
+import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, MoreVertical, Settings, FileSpreadsheet } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AddMemberSelectorModal } from '../../components/GymAdmin/AddMemberSelectorModal';
 import { AddExistingMemberModal } from '../../components/GymAdmin/AddExistingMemberModal';
@@ -23,8 +23,31 @@ const mockPlans = [
 const GymAdminMembers = () => {
   const [members, setMembers] = useState<any[]>([]);
   
+  // Auto-heal duplicate IDs from legacy fast imports
   useEffect(() => {
-    let dbMembers = getDb('members');
+    const sanitizeDatabase = () => {
+      let dbMembers = getDb('members');
+      const seenIds = new Set();
+      let needsSave = false;
+      
+      const sanitizedMembers = dbMembers.map((m: any) => {
+        if (seenIds.has(m.id)) {
+          needsSave = true;
+          return { ...m, id: m.id + '_' + Math.random().toString(36).substr(2, 9) };
+        }
+        seenIds.add(m.id);
+        return m;
+      });
+
+      if (needsSave) {
+        localStorage.setItem(`mockdb_members`, JSON.stringify(sanitizedMembers));
+        return sanitizedMembers;
+      }
+      return dbMembers;
+    };
+
+    let dbMembers = sanitizeDatabase();
+    
     // If DB is basically empty (only the 1 seed member), seed our rich UI test data
     if (dbMembers.length <= 1) {
       defaultMockMembers.forEach(m => {
@@ -124,8 +147,6 @@ const GymAdminMembers = () => {
   const filteredMembers = members.filter(m => {
     const matchesSearch = m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase()) || m.phone.includes(search);
     if (filter === 'All') return matchesSearch;
-    if (filter === 'Existing') return matchesSearch && m.customerType === 'EXISTING_CUSTOMER';
-    if (filter === 'New') return matchesSearch && m.customerType === 'NEW_CUSTOMER';
     return matchesSearch && m.status === filter;
   });
 
@@ -134,7 +155,10 @@ const GymAdminMembers = () => {
       case 'Active': return 'bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20';
       case 'Pending': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       case 'Inactive': return 'bg-[#0D9488]/10 text-[#0D9488] border-[#0D9488]/20';
-      default: return 'bg-red-500/10 text-red-500 border-red-500/20';
+      case 'Rejected': return 'bg-red-500/10 text-red-600 border-red-500/20';
+      case 'New': return 'bg-blue-500/10 text-blue-600 border-blue-500/20';
+      case 'Existing': return 'bg-purple-500/10 text-purple-600 border-purple-500/20';
+      default: return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
     }
   };
 
@@ -147,12 +171,21 @@ const GymAdminMembers = () => {
           <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Members</h1>
           <p className="text-[#475569] mt-1">Manage your gym members, subscriptions, and profiles.</p>
         </div>
-        <button 
-          onClick={handleAddMemberClick}
-          className="px-4 py-2 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20 self-start md:self-auto"
-        >
-          <Plus size={20} /> Add Member
-        </button>
+        <div className="flex gap-2 self-start md:self-auto">
+
+          <button 
+            onClick={() => navigate('/admin/import-customers')}
+            className="px-4 py-2 bg-white text-[#475569] font-bold rounded-xl border border-[#CCFBF1] hover:bg-[#F8FAFC] hover:text-[#16A34A] transition-colors flex items-center gap-2"
+          >
+            <FileSpreadsheet size={20} /> Existing Customers Data
+          </button>
+          <button 
+            onClick={handleAddMemberClick}
+            className="px-4 py-2 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20"
+          >
+            <Plus size={20} /> Add Member
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -182,7 +215,7 @@ const GymAdminMembers = () => {
       {/* Filters & Search */}
       <div className="flex flex-col lg:flex-row gap-4 justify-between items-center bg-[#FFFFFF] p-4 rounded-2xl border border-[#CCFBF1]">
         <div className="flex flex-wrap gap-2 w-full lg:w-auto">
-          {['All', 'Active', 'Pending', 'Inactive', 'Existing', 'New'].map(f => (
+          {['All', 'Active', 'Inactive', 'Pending', 'Rejected', 'Existing', 'New'].map(f => (
             <button 
               key={f}
               onClick={() => setFilter(f)}
@@ -218,8 +251,8 @@ const GymAdminMembers = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#CCFBF1]">
-              {filteredMembers.map((member) => (
-                <tr key={member.id} className="hover:bg-[#F0FDFA] transition-colors relative">
+              {filteredMembers.map((member, index) => (
+                <tr key={`${member.id}-${index}`} className="hover:bg-[#F0FDFA] transition-colors relative">
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-full bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center font-bold text-lg uppercase">
@@ -229,9 +262,6 @@ const GymAdminMembers = () => {
                         <p className="text-[#1E293B] font-bold capitalize">{member.name}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-xs text-[#475569]">#{member.id.slice(-4).padStart(4, '0')}</span>
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${member.customerType === 'NEW_CUSTOMER' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
-                            {member.customerType === 'NEW_CUSTOMER' ? 'NEW' : 'EXISTING'}
-                          </span>
                         </div>
                       </div>
                     </div>
@@ -263,32 +293,31 @@ const GymAdminMembers = () => {
                       <button onClick={() => handleEditClick(member)} className="p-1.5 text-[#475569] hover:text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Edit Profile">
                         <Edit2 size={18} />
                       </button>
-                      <button className="p-1.5 text-[#475569] hover:text-purple-600 hover:bg-purple-50 rounded transition-colors" title="AI Assessment">
-                        <Activity size={18} />
-                      </button>
+
                       <button onClick={() => handleDeleteMember(member.id)} className="p-1.5 text-[#475569] hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Delete Member">
                         <Trash2 size={18} />
                       </button>
                       
                       {/* Dropdown Menu for Status */}
-                      <div className="relative inline-block text-left">
-                        <button onClick={() => setActiveDropdown(activeDropdown === member.id ? null : member.id)} className={`p-1.5 rounded transition-colors ${activeDropdown === member.id ? 'bg-[#E2E8F0] text-[#1E293B]' : 'text-[#475569] hover:bg-gray-100 hover:text-[#1E293B]'}`} title="More Actions">
-                          <MoreVertical size={18} />
+                      <div className="relative inline-block text-left ml-2">
+                        <button onClick={() => setActiveDropdown(activeDropdown === `${member.id}-${index}` ? null : `${member.id}-${index}`)} className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 border ${activeDropdown === `${member.id}-${index}` ? 'bg-[#1E293B] text-white border-[#1E293B]' : 'bg-white text-[#475569] border-[#E2E8F0] hover:bg-[#F8FAFC]'}`} title="Set Status">
+                          <Activity size={14} className={activeDropdown === `${member.id}-${index}` ? 'text-white' : 'text-[#94A3B8]'} /> Status
                         </button>
                         
-                        {activeDropdown === member.id && (
+                        {activeDropdown === `${member.id}-${index}` && (
                           <>
                             <div className="fixed inset-0 z-40" onClick={() => setActiveDropdown(null)}></div>
-                            <div className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl bg-white border border-[#CCFBF1] z-50 overflow-hidden">
-                              <div className="px-4 py-2 bg-gray-50 border-b border-[#CCFBF1] text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <div className="absolute right-0 mt-2 w-40 rounded-xl shadow-2xl bg-white border border-[#CCFBF1] z-50 overflow-hidden">
+                              <div className="px-4 py-2 bg-gray-50 border-b border-[#CCFBF1] text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                                 Set Status
                               </div>
-                              <div className="py-1">
-                                {['Active', 'Pending', 'Inactive', 'Suspended', 'Rejected'].map((status) => (
+                              <div className="py-1 flex flex-col">
+                                {['Active', 'Inactive', 'Pending', 'Rejected', 'New', 'Existing'].map((status) => (
                                   <button
                                     key={status}
+                                    type="button"
                                     onClick={() => handleStatusChange(member.id, status)}
-                                    className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[#F0FDFA] transition-colors ${member.status === status ? 'text-[#16A34A] bg-[#F0FDFA]' : 'text-[#1E293B]'}`}
+                                    className={`block w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[#F0FDFA] transition-colors ${member.status === status ? 'text-[#16A34A] bg-[#F0FDFA]' : 'text-[#1E293B]'}`}
                                   >
                                     {status}
                                   </button>
@@ -336,7 +365,6 @@ const GymAdminMembers = () => {
       {showSelectorModal && (
         <AddMemberSelectorModal 
           onClose={() => setShowSelectorModal(false)}
-          onSelectExisting={() => { setShowSelectorModal(false); setShowExistingModal(true); }}
           onSelectNew={() => { setShowSelectorModal(false); setShowNewModal(true); }}
         />
       )}

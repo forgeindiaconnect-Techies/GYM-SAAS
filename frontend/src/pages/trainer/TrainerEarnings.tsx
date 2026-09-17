@@ -12,7 +12,7 @@ const TrainerEarnings = () => {
         <div className="md:col-span-2 bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-8 flex flex-col justify-center">
           <p className="text-[#475569] font-medium mb-2">Available Balance</p>
           <div className="flex items-end gap-4 mb-6">
-            <h2 className="text-5xl font-bold text-[#16A34A]">$1,250.00</h2>
+            <h2 className="text-5xl font-bold text-[#16A34A]">₹1,250.00</h2>
             <span className="flex items-center gap-1 text-green-500 text-sm font-medium bg-green-500/10 px-2 py-1 rounded mb-2">
               <TrendingUp size={14} /> +12% this month
             </span>
@@ -25,7 +25,7 @@ const TrainerEarnings = () => {
         <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 flex flex-col justify-between">
            <div>
              <p className="text-[#475569] text-sm mb-1">Total Earned (YTD)</p>
-             <p className="text-2xl font-bold">$14,500.00</p>
+             <p className="text-2xl font-bold">₹14,500.00</p>
            </div>
            <div className="mt-4 pt-4 border-t border-[#CCFBF1]">
              <p className="text-[#475569] text-sm mb-1">Completed Sessions</p>
@@ -50,10 +50,10 @@ const TrainerEarnings = () => {
           </thead>
           <tbody className="divide-y divide-[#CCFBF1] text-sm">
             {[
-              { date: 'Oct 12, 2026', desc: '1-on-1 Session (Sarah C.)', type: 'Session Fee', amt: '+$50.00' },
-              { date: 'Oct 11, 2026', desc: 'Group Class (HIIT)', type: 'Class Bonus', amt: '+$100.00' },
-              { date: 'Oct 10, 2026', desc: 'Diet Plan Commission', type: 'Commission', amt: '+$25.00' },
-              { date: 'Oct 01, 2026', desc: 'Bank Withdrawal', type: 'Payout', amt: '-$1,000.00' },
+              { date: 'Oct 12, 2026', desc: '1-on-1 Session (Sarah C.)', type: 'Session Fee', amt: '+₹50.00' },
+              { date: 'Oct 11, 2026', desc: 'Group Class (HIIT)', type: 'Class Bonus', amt: '+₹100.00' },
+              { date: 'Oct 10, 2026', desc: 'Diet Plan Commission', type: 'Commission', amt: '+₹25.00' },
+              { date: 'Oct 01, 2026', desc: 'Bank Withdrawal', type: 'Payout', amt: '-₹1,000.00' },
             ].map((tx, i) => (
               <tr key={i} className="hover:bg-[#FFFFFF]">
                 <td className="p-4">{tx.date}</td>

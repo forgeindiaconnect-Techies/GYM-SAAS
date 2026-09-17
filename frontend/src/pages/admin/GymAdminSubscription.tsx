@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   CreditCard, CheckCircle, XCircle, Zap, Star, Crown, Sparkles,
   Users, Dumbbell, Building2, UserCheck, TrendingUp, Calendar,
-  AlertTriangle, ArrowUpCircle, Loader2, Shield, Check, Gift
+  AlertTriangle, ArrowUpCircle, Loader2, Shield, Check, Gift, Receipt, Download
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -82,6 +82,36 @@ const LimitBar = ({ label, icon: Icon, used, max, color }: any) => {
   );
 };
 
+const MOCK_PAYMENT_HISTORY = [
+  { 
+    id: '#INV-2026-09-001', 
+    date: '17 Sep 2026, 10:30 AM', 
+    amount: '₹1,499', 
+    plan: 'Gold Plan (Monthly)', 
+    status: 'Paid',
+    paymentMethod: 'UPI (PhonePe)',
+    paymentDetails: 'UPI ID: messyfitness@ybl'
+  },
+  { 
+    id: '#INV-2025-09-001', 
+    date: '17 Sep 2025, 11:15 AM', 
+    amount: '₹7,990', 
+    plan: 'Silver Plan (Annual)', 
+    status: 'Paid',
+    paymentMethod: 'Manual Transfer',
+    paymentDetails: 'Name: Selva Kumar | Acc No: ****7890'
+  },
+  { 
+    id: '#INV-2024-09-001', 
+    date: '17 Sep 2024, 09:45 AM', 
+    amount: '₹7,990', 
+    plan: 'Silver Plan (Annual)', 
+    status: 'Paid',
+    paymentMethod: 'UPI (Google Pay)',
+    paymentDetails: 'UPI ID: selva@okaxis'
+  },
+];
+
 const GymAdminSubscription = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -95,6 +125,83 @@ const GymAdminSubscription = () => {
   const toggleFeatures = (e: React.MouseEvent, key: string) => {
     e.stopPropagation();
     setExpandedPlans(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleDownloadInvoice = (invoice: any) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    const html = `
+      <html>
+        <head>
+          <title>Invoice ${invoice.id}</title>
+          <style>
+            body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #1E293B; max-width: 800px; margin: 0 auto; }
+            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #E2E8F0; padding-bottom: 20px; margin-bottom: 40px; }
+            .title { font-size: 28px; font-weight: 900; color: #16A34A; }
+            .details { margin-bottom: 30px; }
+            .details table { width: 100%; border-collapse: collapse; }
+            .details th, .details td { padding: 16px; text-align: left; border-bottom: 1px solid #E2E8F0; }
+            .details th { background: #F8FAFC; color: #475569; font-size: 12px; text-transform: uppercase; font-weight: bold; }
+            .payment-info { background: #F8FAFC; padding: 16px; border-radius: 8px; border: 1px solid #E2E8F0; margin-bottom: 20px; }
+            .payment-info h3 { margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #475569; }
+            .payment-info p { margin: 4px 0; font-size: 14px; font-weight: 500; }
+            .total { font-size: 24px; font-weight: bold; text-align: right; padding: 16px; background: #F0FDFA; border-radius: 8px; border: 1px solid #CCFBF1; }
+            .footer { margin-top: 60px; font-size: 12px; color: #64748B; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div class="title">AI GYM SAAS</div>
+              <p style="margin: 5px 0 0 0; color: #475569;">Subscription Invoice</p>
+            </div>
+            <div style="text-align: right;">
+              <h2 style="margin: 0;">${invoice.id}</h2>
+              <p style="margin: 5px 0 0 0; color: #475569;">Date: ${invoice.date}</p>
+              <span style="display: inline-block; background: #D1FAE5; color: #047857; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: bold; margin-top: 10px;">
+                STATUS: ${invoice.status.toUpperCase()}
+              </span>
+            </div>
+          </div>
+          
+          <div class="details">
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th style="text-align: right;">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 600;">${invoice.plan}</td>
+                  <td style="text-align: right;">${invoice.amount}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="payment-info">
+            <h3>Payment Information</h3>
+            <p><strong>Method:</strong> ${invoice.paymentMethod}</p>
+            <p><strong>Details:</strong> <span style="color: #64748B;">${invoice.paymentDetails}</span></p>
+          </div>
+          
+          <div class="total">Total Paid: <span style="color: #16A34A;">${invoice.amount}</span></div>
+          
+          <div class="footer">
+            Thank you for your business!<br/>
+            AI GYM SAAS Platform
+          </div>
+          <script>
+            window.onload = () => { window.print(); window.setTimeout(() => window.close(), 500); }
+          </script>
+        </body>
+      </html>
+    `;
+    printWindow.document.write(html);
+    printWindow.document.close();
   };
 
   const currentPlanKey = user?.subscriptionPlan || 'FREE_TRIAL';
@@ -420,6 +527,60 @@ const GymAdminSubscription = () => {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* Payment Details Section */}
+      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 mb-10">
+        <h2 className="text-lg font-bold text-[#1E293B] mb-5 flex items-center space-x-2">
+          <Receipt size={20} className="text-[#16A34A]" />
+          <span>Gym Owner Subscription Payment Details</span>
+        </h2>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[800px]">
+            <thead>
+              <tr className="border-b border-[#CCFBF1]">
+                <th className="py-3 px-4 text-xs font-bold text-[#475569] uppercase tracking-wider whitespace-nowrap">Invoice ID</th>
+                <th className="py-3 px-4 text-xs font-bold text-[#475569] uppercase tracking-wider whitespace-nowrap">Date</th>
+                <th className="py-3 px-4 text-xs font-bold text-[#475569] uppercase tracking-wider whitespace-nowrap">Plan</th>
+                <th className="py-3 px-4 text-xs font-bold text-[#475569] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
+                <th className="py-3 px-4 text-xs font-bold text-[#475569] uppercase tracking-wider whitespace-nowrap">Amount</th>
+                <th className="py-3 px-4 text-xs font-bold text-[#475569] uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="py-3 px-4 text-xs font-bold text-[#475569] uppercase tracking-wider text-right whitespace-nowrap">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {MOCK_PAYMENT_HISTORY.map((invoice, idx) => (
+                <tr key={idx} className="border-b border-[#F1F5F9] hover:bg-[#F8FAFC] transition-colors last:border-0">
+                  <td className="py-4 px-4 text-sm font-semibold text-[#1E293B] whitespace-nowrap">{invoice.id}</td>
+                  <td className="py-4 px-4 text-sm text-[#475569] whitespace-nowrap">{invoice.date}</td>
+                  <td className="py-4 px-4 text-sm font-medium text-[#1E293B] whitespace-nowrap">{invoice.plan}</td>
+                  <td className="py-4 px-4 whitespace-nowrap">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-[#1E293B]">{invoice.paymentMethod}</span>
+                      <span className="text-xs text-[#64748B]">{invoice.paymentDetails}</span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-4 text-sm font-bold text-[#1E293B] whitespace-nowrap">{invoice.amount}</td>
+                  <td className="py-4 px-4 whitespace-nowrap">
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-2.5 py-1 rounded-full">
+                      {invoice.status}
+                    </span>
+                  </td>
+                  <td className="py-4 px-4 text-right whitespace-nowrap">
+                    <button 
+                      onClick={() => handleDownloadInvoice(invoice)}
+                      className="inline-flex items-center space-x-1 text-[#16A34A] hover:text-[#15803D] font-bold text-xs bg-[#F0FDFA] hover:bg-[#D1FAE5] px-3 py-1.5 rounded-lg transition-colors border border-[#CCFBF1]"
+                    >
+                      <Download size={14} />
+                      <span>Invoice</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 

@@ -21,7 +21,7 @@ export const saveDb = (collection, data) => {
 
 export const addItem = (collection, item) => {
   const items = getDb(collection);
-  const newItem = { ...item, id: Date.now().toString() };
+  const newItem = { ...item, id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9) };
   items.push(newItem);
   saveDb(collection, items);
   return newItem;

@@ -8,7 +8,9 @@ import {
   deleteTrainer,
   verifyInvitation,
   acceptInvitation,
-  completeProfile
+  completeProfile,
+  getMyProfile,
+  updateMyProfile
 } from '../controllers/trainerController';
 import { authenticate } from '../middlewares/auth';
 
@@ -18,6 +20,10 @@ const router = express.Router();
 router.get('/invitation/:token', verifyInvitation);
 router.post('/invitation/:token/accept', acceptInvitation);
 router.post('/profile', completeProfile); // Completes profile, sets to pending
+
+// Trainer self-profile routes
+router.get('/my-profile', authenticate, getMyProfile);
+router.patch('/my-profile', authenticate, updateMyProfile);
 
 // Protected gym owner routes
 router.post('/manual-add', authenticate, manualAddTrainer);

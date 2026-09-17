@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
@@ -16,6 +16,28 @@ const GymAdminLayout = () => {
   const [gym, setGym] = useState<any>(null);
   const [branches, setBranches] = useState<any[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<string>('main');
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  const MOCK_NOTIFS = [
+    { id: 1, title: 'Equipment Alert', message: 'Treadmill EQ004 requires maintenance soon.', type: 'alert', time: '10 mins ago', read: false },
+    { id: 2, title: 'New Member Signup', message: 'Emily Davis has joined the Pro Tier plan.', type: 'success', time: '2 hours ago', read: false },
+    { id: 3, title: 'Trainer Message', message: 'Sarah C. requested shift swap for tomorrow.', type: 'message', time: '5 hours ago', read: true },
+    { id: 4, title: 'System Update', message: 'AI GYM platform will undergo maintenance at 2 AM.', type: 'info', time: '1 day ago', read: true },
+    { id: 5, title: 'Payment Failed', message: 'Failed to process monthly payment for Mike Johnson.', type: 'alert', time: '1 day ago', read: true },
+  ];
+  const unreadCount = MOCK_NOTIFS.filter(n => !n.read).length;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (user?.gymId) {
@@ -208,10 +230,69 @@ const GymAdminLayout = () => {
               </select>
             )}
             
-            <Link to="/admin/notifications" className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1 block">
-              <Bell size={20} />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#16A34A] rounded-full shadow shadow-green-300" />
-            </Link>
+            {/* Notification Dropdown */}
+            <div className="relative" ref={notifRef}>
+              <button
+                onClick={() => setNotifOpen(prev => !prev)}
+                className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1 block"
+              >
+                <Bell size={20} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#16A34A] text-white rounded-full text-[10px] font-bold flex items-center justify-center shadow shadow-green-300">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <div className="absolute right-0 top-10 w-80 bg-white border border-[#CCFBF1] rounded-2xl shadow-2xl z-50 overflow-hidden">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9]">
+                    <h3 className="font-bold text-[#1E293B] text-sm">Notifications</h3>
+                    {unreadCount > 0 && (
+                      <span className="bg-[#16A34A]/10 text-[#16A34A] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                    )}
+                  </div>
+
+                  {/* Notification list */}
+                  <div className="divide-y divide-[#F1F5F9] max-h-72 overflow-y-auto">
+                    {MOCK_NOTIFS.slice(0, 4).map(notif => (
+                      <div
+                        key={notif.id}
+                        className={`flex items-start gap-3 px-4 py-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer ${!notif.read ? 'bg-[#F0FDFA]' : ''}`}
+                      >
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                          notif.type === 'alert' ? 'bg-orange-100 text-orange-500' :
+                          notif.type === 'success' ? 'bg-green-100 text-green-500' :
+                          notif.type === 'message' ? 'bg-blue-100 text-blue-500' :
+                          'bg-purple-100 text-purple-500'
+                        }`}>
+                          {notif.type === 'alert' ? '⚠️' :
+                           notif.type === 'success' ? '✅' :
+                           notif.type === 'message' ? '💬' : 'ℹ️'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-semibold text-[#1E293B] ${!notif.read ? 'font-bold' : ''}`}>{notif.title}</p>
+                          <p className="text-xs text-[#475569] mt-0.5 leading-snug">{notif.message}</p>
+                          <p className="text-xs text-[#94A3B8] mt-1">{notif.time}</p>
+                        </div>
+                        {!notif.read && <div className="w-2 h-2 bg-[#16A34A] rounded-full mt-2 shrink-0" />}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* View All button */}
+                  <div className="border-t border-[#F1F5F9]">
+                    <button
+                      onClick={() => { setNotifOpen(false); navigate('/admin/notifications'); }}
+                      className="w-full py-3 text-sm font-bold text-[#16A34A] hover:bg-[#F0FDFA] transition-colors"
+                    >
+                      View All Notifications →
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             <Link to="/admin/gym-profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-semibold text-[#1E293B] leading-none mb-0.5">{user?.firstName || 'Gym'} {user?.lastName || 'Admin'}</p>
