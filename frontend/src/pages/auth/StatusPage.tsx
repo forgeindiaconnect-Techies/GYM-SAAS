@@ -17,7 +17,9 @@ const StatusPage = () => {
             </div>
             <h1 className="text-3xl font-bold text-[#1E293B] mb-3 text-center">Application Rejected</h1>
             <p className="text-[#475569] max-w-md mb-6 leading-relaxed text-center mx-auto">
-              Your gym registration has been rejected by the Super Admin.
+              {user?.role === 'MEMBER' 
+                ? 'Your gym membership has been rejected by the Gym Admin.'
+                : 'Your gym registration has been rejected by the Super Admin.'}
             </p>
             {user?.rejectionReason && (
               <div className="bg-[#FFFFFF] border border-red-500/30 rounded-2xl p-6 max-w-md w-full mb-8 text-left mx-auto">
@@ -84,7 +86,10 @@ const StatusPage = () => {
             </div>
             <h1 className="text-3xl font-bold text-[#1E293B] mb-3 text-center">Application Pending Review</h1>
             <p className="text-[#475569] max-w-md mb-6 leading-relaxed text-center mx-auto">
-              Hi <strong className="text-[#1E293B]">{user?.firstName}</strong>, your gym registration is currently pending approval. Please wait for Super Admin approval.
+              Hi <strong className="text-[#1E293B]">{user?.firstName}</strong>, 
+              {user?.role === 'MEMBER'
+                ? ' your membership request is currently pending gym approval.'
+                : ' your gym registration is currently pending approval. Please wait for Super Admin approval.'}
             </p>
             <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 max-w-sm w-full mb-8 space-y-4 text-left mx-auto">
               <div className="flex items-center space-x-3 text-sm">

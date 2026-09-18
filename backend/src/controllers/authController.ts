@@ -14,7 +14,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       dateOfBirth, gender, city, pinCode,
       fitnessGoal, experienceLevel, preferredTraining, preferredWorkoutTime,
       height, weight,
-      emergencyContact,
+      emergencyContact, gymId, branchId
     } = req.body;
 
     if (!firstName || !lastName || !email || !mobile || !password) {
@@ -38,9 +38,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       mobile,
       passwordHash,
       role: Role.MEMBER,
-      approvalStatus: ApprovalStatus.APPROVED,
+      approvalStatus: ApprovalStatus.PENDING,
       isActive: true,
       subscriptionStatus: SubscriptionStatus.NONE,
+      customerType: 'PUBLIC_SIGNUP',
+      gymId,
+      branchId,
       dateOfBirth,
       gender,
       city,

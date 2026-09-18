@@ -52,7 +52,7 @@ const GymAdminProfile = () => {
             trainerCapacity: fetchedGym.trainerCapacity || '',
             website: fetchedGym.website || 'www.messyfitness.com',
             taxId: fetchedGym.taxId || 'GYM-TAX-09823',
-            ownerName: user?.name || 'Selva Kumar',
+            ownerName: user?.firstName || 'Selva Kumar',
             ownerRole: 'Gym Owner',
             operatingHours: fetchedGym.operatingHours || '05:00 AM - 11:00 PM',
           });

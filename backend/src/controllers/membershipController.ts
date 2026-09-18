@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
+import User, { SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
 
 export const joinGym = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -11,7 +12,7 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       return;
     }
 
-    const { gymId, planName, duration, price, discount, paymentMethod, paymentReference, paymentProofUrl } = req.body;
+    const { gymId, branchId, planName, duration, price, discount, paymentMethod, paymentReference, paymentProofUrl } = req.body;
     
     const gym = await Gym.findById(gymId);
     if (!gym) {
@@ -24,6 +25,7 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     const membership = new CustomerMembership({
       userId,
       gymId,
+      branchId,
       planName,
       duration,
       price,
@@ -48,6 +50,23 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     }
 
     await membership.save();
+
+    // Update User model
+    const paymentStatus = paymentMethod !== 'Bank Transfer' ? 'PAID' : 'PENDING';
+    const subStatus = paymentMethod !== 'Bank Transfer' ? 
+      (planName.toLowerCase().includes('trial') ? SubscriptionStatus.TRIAL : SubscriptionStatus.ACTIVE) 
+      : SubscriptionStatus.NONE;
+
+    await User.findByIdAndUpdate(userId, {
+      $set: {
+        paymentStatus,
+        subscriptionStatus: subStatus,
+        subscriptionPlan: planName,
+        subscriptionExpiry: membership.endDate,
+        branchId: branchId || undefined,
+        gymId: gymId,
+      }
+    });
 
     res.status(201).json({ success: true, message: 'Membership processed successfully', membership });
   } catch (error: any) {

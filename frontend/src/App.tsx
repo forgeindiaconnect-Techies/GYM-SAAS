@@ -134,7 +134,7 @@ function App() {
           <Route path="/gyms" element={<GymMarketplace />} />
           <Route path="/gyms/:id" element={<GymDetails />} />
           <Route path="/gyms/:id/checkout" element={
-            <ProtectedRoute allowedRoles={['MEMBER']}><GymCheckout /></ProtectedRoute>
+            <ProtectedRoute><GymCheckout /></ProtectedRoute>
           } />
 
           {/* Company Routes */}

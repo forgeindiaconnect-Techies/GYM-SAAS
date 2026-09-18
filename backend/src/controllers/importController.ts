@@ -309,7 +309,7 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
         { email: { $in: allEmails } },
         { mobile: { $in: allMobiles } },
       ],
-    }).select('_id email mobile firstName lastName');
+    }).select('_id email mobile firstName lastName gender dateOfBirth height weight');
 
     const existingEmailMap = new Map<string, any>(); // email → user doc
     const existingMobileMap = new Map<string, any>(); // mobile → user doc
@@ -317,6 +317,14 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
       existingEmailMap.set(u.email.toLowerCase(), u);
       existingMobileMap.set(u.mobile, u);
     });
+
+    const existingMemberships = await CustomerMembership.find({
+      userId: { $in: existingUsers.map(u => u._id) },
+      gymId,
+      status: { $in: [CustomerMembershipStatus.ACTIVE, CustomerMembershipStatus.PENDING_VERIFICATION] },
+    });
+    const membershipMap = new Map<string, any>();
+    existingMemberships.forEach(m => membershipMap.set(m.userId.toString(), m));
 
     // Build result rows
     type RowStatus = 'valid' | 'error' | 'duplicate' | 'existing';
@@ -328,6 +336,7 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
       warnings: string[];
       existingUserId?: string;
       existingUserName?: string;
+      existingData?: Record<string, any>;
       branchId?: string;
       trainerId?: string;
       action: 'import' | 'skip' | 'update' | 'none';
@@ -413,6 +422,25 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
         }
       }
 
+      let existingData: Record<string, any> | undefined = undefined;
+      if (existingUserId) {
+        const existing = existingEmailMap.get(parsed.email || '') || existingMobileMap.get(parsed.mobile || '');
+        const existingMembership = membershipMap.get(existingUserId);
+        let branchName = undefined;
+        if (existingMembership?.branchId) {
+          const branch = branches.find(b => b._id.toString() === existingMembership.branchId.toString());
+          branchName = branch?.branchName;
+        }
+        existingData = {
+          planName: existingMembership?.planName,
+          branchName: branchName,
+          gender: existing?.gender,
+          dateOfBirth: existing?.dateOfBirth,
+          height: existing?.height,
+          weight: existing?.weight,
+        };
+      }
+
       if (status === 'error') action = 'none';
 
       results.push({
@@ -423,6 +451,7 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
         warnings,
         existingUserId,
         existingUserName,
+        existingData,
         branchId,
         trainerId,
         action,
@@ -496,6 +525,7 @@ export const executeImport = async (req: AuthRequest, res: Response): Promise<vo
     let skippedCustomers = 0;
     let failedRecords = 0;
     const failedRows: any[] = [];
+    const successfulCustomers: any[] = [];
 
     for (const row of rows) {
       try {
@@ -538,6 +568,21 @@ export const executeImport = async (req: AuthRequest, res: Response): Promise<vo
               await existingMembership.save();
             }
           }
+
+          successfulCustomers.push({
+            id: existingUserId,
+            name: `${data.firstName || ''} ${data.lastName !== 'N/A' ? data.lastName : ''}`.trim(),
+            email: data.email,
+            phone: data.mobile,
+            plan: data.membershipPlan,
+            status: data.status ? data.status.charAt(0).toUpperCase() + data.status.slice(1).toLowerCase() : 'Active',
+            joined: data.membershipStartDate ? new Date(data.membershipStartDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+            customerType: 'EXISTING_CUSTOMER',
+            trainer: data.trainer,
+            gender: data.gender,
+            dob: data.dateOfBirth ? new Date(data.dateOfBirth).toISOString().split('T')[0] : undefined,
+            emergencyName: data.emergencyContact,
+          });
 
           updatedCustomers++;
           continue;
@@ -610,6 +655,21 @@ export const executeImport = async (req: AuthRequest, res: Response): Promise<vo
           // Log invitation (no email service yet — log temp password to server console for demo)
           console.log(`[IMPORT] New customer created: ${data.email} | Temp password (to be emailed): ${tempPassword}`);
 
+          successfulCustomers.push({
+            id: newUser._id.toString(),
+            name: `${newUser.firstName} ${newUser.lastName !== 'N/A' ? newUser.lastName : ''}`.trim(),
+            email: newUser.email,
+            phone: newUser.mobile,
+            plan: data.membershipPlan,
+            status: data.status ? data.status.charAt(0).toUpperCase() + data.status.slice(1).toLowerCase() : 'Active',
+            joined: data.membershipStartDate ? new Date(data.membershipStartDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+            customerType: 'EXISTING_CUSTOMER',
+            trainer: data.trainer,
+            gender: newUser.gender,
+            dob: newUser.dateOfBirth ? new Date(newUser.dateOfBirth).toISOString().split('T')[0] : undefined,
+            emergencyName: data.emergencyContact,
+          });
+
           newCustomers++;
         }
       } catch (rowErr: any) {
@@ -647,6 +707,7 @@ export const executeImport = async (req: AuthRequest, res: Response): Promise<vo
       skippedCustomers,
       failedRecords,
       failedRows,
+      successfulCustomers,
       status: finalStatus,
     });
   } catch (error: any) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Activity, AlertCircle, Loader2, ChevronRight, ChevronLeft, Check, Eye, EyeOff, ArrowLeft } from 'lucide-react';
@@ -21,6 +21,8 @@ const initialForm = {
   dateOfBirth: '', gender: '', city: '', pinCode: '', height: '', weight: '',
   // Fitness
   fitnessGoal: '', experienceLevel: '', preferredTraining: '', preferredWorkoutTime: '', preferredWorkoutDays: '',
+  // Emergency Contact
+  emergencyContactName: '', emergencyContactMobile: '', emergencyContactRelation: '',
   // Terms
   acceptTerms: false, acceptPrivacy: false,
 };
@@ -35,6 +37,18 @@ const CustomerRegisterPage = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [intentData, setIntentData] = useState<any>(null);
+
+  useEffect(() => {
+    const intentStr = sessionStorage.getItem('checkout_intent');
+    if (intentStr) {
+      try {
+        setIntentData(JSON.parse(intentStr));
+      } catch (e) {
+        console.error('Failed to parse checkout intent');
+      }
+    }
+  }, []);
 
   const set = (field: string, value: string | boolean) => {
     setForm(f => ({ ...f, [field]: value }));
@@ -60,6 +74,9 @@ const CustomerRegisterPage = () => {
       if (!form.dateOfBirth) e.dateOfBirth = 'Date of birth is required';
       if (!form.height) e.height = 'Height is required';
       if (!form.weight) e.weight = 'Weight is required';
+      if (!form.emergencyContactName.trim()) e.emergencyContactName = 'Emergency contact name is required';
+      if (!form.emergencyContactMobile.trim()) e.emergencyContactMobile = 'Emergency contact mobile is required';
+      if (!form.emergencyContactRelation.trim()) e.emergencyContactRelation = 'Emergency contact relationship is required';
     }
     if (step === 2) {
       if (!form.fitnessGoal) e.fitnessGoal = 'Please select a fitness goal';
@@ -101,6 +118,13 @@ const CustomerRegisterPage = () => {
         preferredWorkoutTime: form.preferredWorkoutTime || undefined,
         height: form.height ? Number(form.height) : undefined,
         weight: form.weight ? Number(form.weight) : undefined,
+        emergencyContact: {
+          name: form.emergencyContactName,
+          mobile: form.emergencyContactMobile,
+          relationship: form.emergencyContactRelation
+        },
+        gymId: intentData?.gymId,
+        branchId: intentData?.branchId,
       });
       
       if (res.data.token && res.data.user) {
@@ -270,6 +294,24 @@ const CustomerRegisterPage = () => {
                 <label className="block text-sm text-[#475569] mb-2">PIN Code</label>
                 <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
               </div>
+              {/* Emergency Contact */}
+              <div className="pt-4 border-t border-[#CCFBF1]">
+                <h3 className="text-[#1E293B] font-bold mb-4">Emergency Contact</h3>
+                <div className="space-y-4">
+                  <div>
+                    <input type="text" placeholder="Contact Name" value={form.emergencyContactName} onChange={e => set('emergencyContactName', e.target.value)} className={inputCls('emergencyContactName')} />
+                    {errors.emergencyContactName && <p className="text-[#0D9488] text-xs mt-1">{errors.emergencyContactName}</p>}
+                  </div>
+                  <div>
+                    <input type="tel" placeholder="Contact Number" value={form.emergencyContactMobile} onChange={e => set('emergencyContactMobile', e.target.value)} className={inputCls('emergencyContactMobile')} />
+                    {errors.emergencyContactMobile && <p className="text-[#0D9488] text-xs mt-1">{errors.emergencyContactMobile}</p>}
+                  </div>
+                  <div>
+                    <input type="text" placeholder="Relationship (e.g., Parent, Spouse)" value={form.emergencyContactRelation} onChange={e => set('emergencyContactRelation', e.target.value)} className={inputCls('emergencyContactRelation')} />
+                    {errors.emergencyContactRelation && <p className="text-[#0D9488] text-xs mt-1">{errors.emergencyContactRelation}</p>}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -327,9 +369,34 @@ const CustomerRegisterPage = () => {
 
           {/* STEP 3 — Terms */}
           {step === 3 && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
               <h2 className="text-lg font-semibold text-[#1E293B] mb-1">Terms & Conditions</h2>
               <p className="text-[#475569] text-sm">Please read and accept the following before creating your account.</p>
+              {intentData && intentData.plan && (
+                <div className="p-4 bg-[#F0FDFA] border border-[#CCFBF1] rounded-xl mb-6">
+                  <h3 className="font-bold text-[#1E293B] mb-3">Selected Membership Plan</h3>
+                  <div className="space-y-2 text-sm text-[#475569]">
+                    <div className="flex justify-between">
+                      <span>Plan:</span>
+                      <span className="font-semibold text-[#1E293B]">{intentData.plan.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Duration:</span>
+                      <span className="font-semibold text-[#1E293B]">{intentData.plan.duration}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Price:</span>
+                      <span className="font-semibold text-[#16A34A]">₹{intentData.plan.price}</span>
+                    </div>
+                    {intentData.branchId && (
+                      <div className="flex justify-between">
+                        <span>Branch:</span>
+                        <span className="font-semibold text-[#1E293B]">Selected</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4 text-sm text-[#475569] max-h-40 overflow-y-auto leading-relaxed">
                 <strong className="text-[#1E293B] block mb-2">Terms & Conditions</strong>
                 By creating an account on AI GYM, you agree to use the platform in compliance with all applicable laws. Your personal data will be used to provide fitness coaching and gym management services. AI-generated plans are for guidance only and not a substitute for professional medical advice. Subscriptions are billed according to your chosen plan. You may cancel at any time.

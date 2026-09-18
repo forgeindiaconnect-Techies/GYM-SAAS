@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, User, Users, FileText,
   Utensils, Calendar, CalendarCheck, TrendingUp,
-  MessageSquare, IndianRupee, Bell, Settings,
+  MessageSquare, IndianRupee, Bell,
   Activity, Menu, LogOut
 } from 'lucide-react';
 
@@ -39,7 +39,6 @@ const TrainerLayout = () => {
     { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
     { label: 'Notifications', path: '/trainer/notifications', icon: Bell },
     { label: 'Payments / Earnings', path: '/trainer/earnings', icon: IndianRupee },
-    { label: 'Settings', path: '/trainer/settings', icon: Settings },
   ];
 
   const currentNav = navItems.find(item => item.path === location.pathname);

@@ -6,9 +6,8 @@ import Gym from '../models/Gym';
 
 const PLAN_PRICING: Record<string, { monthly: number; annual: number; trial: number; trialDays: number }> = {
   FREE_TRIAL: { monthly: 0, annual: 0, trial: 0, trialDays: 7 },
-  SILVER:     { monthly: 799, annual: 7999, trial: 0, trialDays: 0 },
-  GOLD:       { monthly: 1499, annual: 14999, trial: 0, trialDays: 0 },
-  PREMIUM:    { monthly: 2499, annual: 24999, trial: 0, trialDays: 0 },
+  BASIC:      { monthly: 399, annual: 3990, trial: 0, trialDays: 0 },
+  PREMIUM:    { monthly: 799, annual: 7990, trial: 0, trialDays: 0 },
 };
 
 export const selectPlan = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -103,8 +102,10 @@ export const processPayment = async (req: AuthRequest, res: Response): Promise<v
     }
 
     // Simulate successful payment processing
+    const generatedTransactionId = 'txn_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
     subscription.status = SubscriptionPaymentStatus.ACTIVE;
     subscription.paymentMethod = paymentMethod || 'Online';
+    subscription.transactionId = generatedTransactionId;
     await subscription.save();
 
     await User.findByIdAndUpdate(userId, {
@@ -160,12 +161,14 @@ export const getAllSubscriptions = async (req: AuthRequest, res: Response): Prom
 
         return {
           id: sub._id,
+          userId: sub.userId,
           gymName,
           owner: ownerName,
           plan: sub.plan,
           billing: sub.billingCycle,
           amount: `₹${sub.amount.toLocaleString('en-IN')}`,
           paymentMethod: sub.paymentMethod || 'Manual',
+          transactionId: sub.transactionId,
           start: start,
           renewal: renewal,
           status: formattedStatus,

@@ -10,6 +10,7 @@ const GymCheckout = () => {
   const { user } = useAuth();
   
   const [gym, setGym] = useState<any>(null);
+  const [branch, setBranch] = useState<any>(null);
   const [plan, setPlan] = useState<any>(null);
   const [paymentMethod, setPaymentMethod] = useState('bank');
   const [paymentReference, setPaymentReference] = useState('');
@@ -24,6 +25,7 @@ const GymCheckout = () => {
     }
     setGym(location.state.gym);
     setPlan(location.state.plan);
+    setBranch(location.state.branch);
   }, [location, navigate]);
 
   const handlePayment = async (method: string = paymentMethod === 'bank' ? 'Bank Transfer' : 'Online') => {
@@ -39,6 +41,7 @@ const GymCheckout = () => {
 
       const payload = {
         gymId: gym._id,
+        branchId: branch?._id,
         planName: plan.name,
         duration: plan.duration,
         price: plan.price,
@@ -51,10 +54,10 @@ const GymCheckout = () => {
       const res = await api.post('/memberships/join', payload);
 
       if (paymentMethod === 'qr') {
-        alert('Payment successful! Your membership is now ACTIVE.');
+        alert('Payment successful! Your membership request is now PENDING GYM APPROVAL.');
         navigate('/member/dashboard');
       } else {
-        alert('Payment submitted! Your membership is PENDING VERIFICATION by the gym admin.');
+        alert('Payment submitted! Your membership is PENDING GYM APPROVAL.');
         navigate('/member/dashboard');
       }
 

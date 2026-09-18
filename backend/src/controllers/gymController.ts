@@ -297,10 +297,12 @@ export const getPublicGyms = async (req: Request, res: Response): Promise<void> 
   }
 };
 
+import Branch from '../models/Branch';
+
 export const getPublicGymById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const gym = await Gym.findById(id).select('-subscription').populate('ownerId', 'firstName lastName email mobile');
+    const gym = await Gym.findById(id).select('-subscription').populate('ownerId', 'firstName lastName email mobile subscriptionPlan');
     if (!gym || (gym.status !== GymStatus.ACTIVE && (gym.status as string) !== 'APPROVED')) {
       res.status(404).json({ success: false, message: 'Gym not found or not active' });
       return;
@@ -309,7 +311,10 @@ export const getPublicGymById = async (req: Request, res: Response): Promise<voi
     // Also fetch trainers for this gym
     const trainers = await User.find({ gymId: gym._id.toString(), role: 'TRAINER', isActive: true } as any).select('firstName lastName specialization experienceYears profilePhoto bio');
 
-    res.status(200).json({ success: true, gym, trainers });
+    // Fetch branches for this gym
+    const branches = await Branch.find({ gymId: gym._id.toString(), isActive: true });
+
+    res.status(200).json({ success: true, gym, trainers, branches });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

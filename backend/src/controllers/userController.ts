@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import User, { Role } from '../models/User';
+import { AuthRequest } from '../middlewares/auth';
 import Gym from '../models/Gym';
 
-export const getUsersByRole = async (req: Request, res: Response): Promise<void> => {
+export const getUsersByRole = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { role, status } = req.query;
+    const { role, status, gymId } = req.query;
     
     let filter: any = {};
     if (role) {
@@ -16,7 +17,18 @@ export const getUsersByRole = async (req: Request, res: Response): Promise<void>
       filter.approvalStatus = { $ne: 'DELETED' };
     }
 
-    const users = await User.find(filter).populate('gymId').select('-passwordHash').sort({ createdAt: -1 });
+    // Role-based filtering
+    if (req.user?.role === 'GYM_OWNER' || req.user?.role === 'GYM_MANAGER') {
+      filter.gymId = req.user.gymId;
+    } else if (req.user?.role === 'SUPER_ADMIN' && gymId) {
+      filter.gymId = gymId;
+    }
+
+    const users = await User.find(filter)
+      .populate('gymId', 'name')
+      .populate('branchId', 'name')
+      .select('-passwordHash')
+      .sort({ createdAt: -1 });
     res.status(200).json({ success: true, users });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });

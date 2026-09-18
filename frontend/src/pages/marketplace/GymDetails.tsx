@@ -7,10 +7,12 @@ import { useAuth } from '../../contexts/AuthContext';
 const GymDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   
   const [gym, setGym] = useState<any>(null);
   const [trainers, setTrainers] = useState<any[]>([]);
+  const [branches, setBranches] = useState<any[]>([]);
+  const [selectedBranch, setSelectedBranch] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,15 +23,19 @@ const GymDetails = () => {
     try {
       setLoading(true);
       try {
-        // First try the public endpoint (works for ACTIVE/APPROVED gyms)
         const res = await api.get(`/gyms/public/${id}`);
         setGym(res.data.gym);
         setTrainers(res.data.trainers || []);
+        setBranches(res.data.branches || []);
+        if (res.data.branches?.length > 0) {
+          setSelectedBranch(res.data.branches[0]);
+        }
       } catch (pubErr: any) {
         // If public fails (gym is PENDING), try admin endpoint for admins
-        const res = await api.get(`/gyms/${id}`);
-        setGym(res.data.gym);
+        const resAdmin = await api.get(`/gyms/${id}`);
+        setGym(resAdmin.data.gym);
         setTrainers([]);
+        setBranches([]);
       }
     } catch (err) {
       console.error('Error fetching gym details:', err);
@@ -39,12 +45,31 @@ const GymDetails = () => {
   };
 
   const handleJoin = (plan: any) => {
+    if (branches.length > 0 && !selectedBranch) {
+      alert("Please select a branch first.");
+      return;
+    }
+
     if (!user) {
       // Store checkout intent so we can return here after login
-      sessionStorage.setItem('checkout_intent', JSON.stringify({ gymId: id, plan }));
-      navigate('/login');
+      sessionStorage.setItem('checkout_intent', JSON.stringify({ 
+        gymId: id, 
+        branchId: selectedBranch?._id,
+        plan 
+      }));
+      navigate('/register/customer');
+    } else if (user.role !== 'MEMBER') {
+      if (window.confirm(`You are currently logged in as a ${user.role}. To register as a new customer and see the registration flow, you must log out first. Log out now?`)) {
+        logout();
+        sessionStorage.setItem('checkout_intent', JSON.stringify({ 
+          gymId: id, 
+          branchId: selectedBranch?._id,
+          plan 
+        }));
+        navigate('/register/customer');
+      }
     } else {
-      navigate(`/gyms/${id}/checkout`, { state: { plan, gym } });
+      navigate(`/gyms/${id}/checkout`, { state: { plan, gym, branch: selectedBranch } });
     }
   };
 
@@ -230,6 +255,27 @@ const GymDetails = () => {
           <section id="membership-plans" className="pt-8 scroll-mt-24">
             <h2 className="text-3xl font-bold text-[#1E293B] mb-2">Membership Plans</h2>
             <p className="text-[#475569] mb-8">Choose the perfect plan that fits your goals and budget.</p>
+
+            {/* Branch Selection */}
+            {branches.length > 0 && (
+              <div className="mb-8 p-6 bg-white border border-[#CCFBF1] rounded-2xl shadow-sm">
+                <h3 className="text-lg font-bold text-[#1E293B] mb-4">Select your preferred branch</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {branches.map((b) => (
+                    <button
+                      key={b._id}
+                      onClick={() => setSelectedBranch(b)}
+                      className={`p-4 text-left rounded-xl border transition-all ${selectedBranch?._id === b._id ? 'border-[#16A34A] bg-[#16A34A]/5 ring-2 ring-[#16A34A]/20' : 'border-slate-200 hover:border-[#16A34A]/50 bg-white'}`}
+                    >
+                      <div className="font-bold text-[#1E293B] mb-1">{b.name}</div>
+                      <div className="text-sm text-[#475569] truncate">
+                        {b.address?.city || 'Local Branch'}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             
             {(!gym.subscriptionPlans || gym.subscriptionPlans.length === 0) ? (
               <div className="bg-[#FFFFFF] border border-[#CCFBF1] p-8 rounded-2xl text-center">
@@ -268,7 +314,7 @@ const GymDetails = () => {
                       onClick={() => handleJoin(plan)}
                       className="w-full mt-8 py-3 rounded-xl font-bold transition-all bg-[#16A34A] text-white hover:bg-[#15803D]"
                     >
-                      Join Now
+                      Pay Now
                     </button>
                   </div>
                 ))}
@@ -323,8 +369,16 @@ const GymDetails = () => {
               
               <div className="flex items-start gap-3">
                 <ShieldCheck className="text-green-500 shrink-0 mt-0.5" size={18} />
-                <div className="text-[#475569] text-sm">
-                  <span className="text-[#1E293B] block font-medium mb-1">Verified Partner</span>
+                <div className="text-[#475569] text-sm flex-1">
+                  <span className="text-[#1E293B] block font-medium mb-1 flex items-center gap-2">
+                    Verified Partner
+                    {gym.ownerId?.subscriptionPlan && gym.ownerId.subscriptionPlan !== 'FREE_TRIAL' && (
+                      <span className="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded-full border border-amber-200 uppercase tracking-wide flex items-center gap-1">
+                        <Star size={10} className="fill-amber-500" />
+                        {gym.ownerId.subscriptionPlan}
+                      </span>
+                    )}
+                  </span>
                   This gym is an officially approved partner of the AI GYM network.
                 </div>
               </div>

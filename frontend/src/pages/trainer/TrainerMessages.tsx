@@ -1,6 +1,21 @@
-import { MessageSquare, Send, Search } from 'lucide-react';
+import { useState } from 'react';
+import { Send, Search } from 'lucide-react';
+
+const defaultContacts = [
+  { id: '1', name: 'Sarah Connor', lastMsg: "I'll do the new diet plan today as well!", online: true, active: true },
+  { id: '2', name: 'John Doe', lastMsg: "Thanks coach!", online: false, active: false },
+  { id: '3', name: 'Mike Tyson', lastMsg: "See you at 5 PM tomorrow", online: true, active: false },
+  { id: '4', name: 'Jane Smith', lastMsg: "Can we reschedule Thursday's slot?", online: false, active: false },
+];
 
 const TrainerMessages = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedContact, setSelectedContact] = useState(defaultContacts[0]);
+  const [messageText, setMessageText] = useState('');
+
+  const filteredContacts = defaultContacts.filter(c =>
+    c.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   return (
     <div className="max-w-5xl mx-auto h-[calc(100vh-8rem)] flex bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
       {/* Sidebar Contacts */}
@@ -8,22 +23,42 @@ const TrainerMessages = () => {
         <div className="p-4 border-b border-[#CCFBF1]">
           <div className="relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#475569]" />
-            <input type="text" placeholder="Search clients..." className="w-full bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-[#16A34A]" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search clients..."
+              className="w-full bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-[#16A34A]"
+            />
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">
-          {['Sarah Connor', 'John Doe', 'Mike Tyson', 'Jane Smith'].map((name, i) => (
-            <div key={i} className={`p-4 flex items-center gap-3 cursor-pointer border-b border-[#CCFBF1] ${i===0 ? 'bg-[#FFFFFF] border-l-2 border-l-[#EF4444]' : 'hover:bg-[#FFFFFF]'}`}>
-              <div className="relative">
-                <div className="w-10 h-10 bg-[#E2E8F0] rounded-full flex items-center justify-center font-bold">{name[0]}</div>
-                {i === 0 && <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#FFFFFF] rounded-full"></span>}
+          {filteredContacts.length === 0 ? (
+            <div className="p-6 text-center text-sm text-[#94A3B8]">No clients found</div>
+          ) : (
+            filteredContacts.map((contact) => (
+              <div
+                key={contact.id}
+                onClick={() => setSelectedContact(contact)}
+                className={`p-4 flex items-center gap-3 cursor-pointer border-b border-[#CCFBF1] ${
+                  selectedContact.id === contact.id ? 'bg-[#16A34A]/10 border-l-4 border-l-[#16A34A]' : 'hover:bg-[#F0FDFA]'
+                }`}
+              >
+                <div className="relative">
+                  <div className="w-10 h-10 bg-[#E2E8F0] rounded-full flex items-center justify-center font-bold text-[#1E293B]">
+                    {contact.name[0]}
+                  </div>
+                  {contact.online && (
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#FFFFFF] rounded-full"></span>
+                  )}
+                </div>
+                <div className="flex-1 overflow-hidden">
+                  <h4 className="font-medium text-sm truncate text-[#1E293B]">{contact.name}</h4>
+                  <p className="text-xs text-[#475569] truncate">{contact.lastMsg}</p>
+                </div>
               </div>
-              <div className="flex-1 overflow-hidden">
-                <h4 className="font-medium text-sm truncate">{name}</h4>
-                <p className="text-xs text-[#475569] truncate">{i === 0 ? "I'll do the new plan today!" : "Thanks coach!"}</p>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
@@ -61,16 +96,24 @@ const TrainerMessages = () => {
         </div>
 
         <div className="p-4 border-t border-[#CCFBF1] bg-[#FFFFFF]">
-          <div className="relative flex items-center">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (messageText.trim()) setMessageText('');
+            }}
+            className="relative flex items-center"
+          >
             <input 
               type="text" 
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
               placeholder="Type your message..." 
               className="w-full bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-[#16A34A]"
             />
-            <button className="absolute right-2 p-2 text-[#16A34A] hover:bg-[#16A34A]/10 rounded-lg">
+            <button type="submit" className="absolute right-2 p-2 text-[#16A34A] hover:bg-[#16A34A]/10 rounded-lg">
               <Send size={18} />
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>

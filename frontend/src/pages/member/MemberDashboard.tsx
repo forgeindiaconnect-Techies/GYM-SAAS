@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Bot, Dumbbell, TrendingUp, Calendar, MapPin, AlertCircle, Loader2 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 
 const MemberDashboard = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [memberships, setMemberships] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,6 +62,11 @@ const MemberDashboard = () => {
              <AlertCircle size={20} />
              <p className="text-sm font-medium">Payment Pending Verification</p>
            </div>
+        ) : user?.subscriptionStatus === 'EXPIRED' ? (
+           <div className="mt-4 md:mt-0 bg-red-500/10 border border-red-500/20 rounded-xl px-5 py-3 flex items-center space-x-3 text-red-500">
+             <AlertCircle size={20} />
+             <p className="text-sm font-medium">Subscription Expired</p>
+           </div>
         ) : (
           <div className="mt-4 md:mt-0">
              <Link to="/gyms" className="px-6 py-2.5 bg-[#16A34A] text-[#1E293B] font-bold rounded-lg hover:bg-[#15803D] transition-colors shadow-lg">
@@ -72,7 +76,18 @@ const MemberDashboard = () => {
         )}
       </div>
 
-      {!hasActive && !pendingMembership && (
+      {!hasActive && !pendingMembership && user?.subscriptionStatus === 'EXPIRED' && (
+        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-10 text-center mb-10 shadow-xl">
+          <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
+          <h2 className="text-2xl font-bold text-[#1E293B] mb-2">Your subscription has expired</h2>
+          <p className="text-[#475569] mb-6 max-w-md mx-auto">Please renew your membership to continue accessing your AI GYM dashboard and features.</p>
+          <Link to="/subscription-plans" className="inline-block px-8 py-3 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-all hover:scale-105">
+            Renew Membership
+          </Link>
+        </div>
+      )}
+
+      {!hasActive && !pendingMembership && user?.subscriptionStatus !== 'EXPIRED' && (
         <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-10 text-center mb-10 shadow-xl">
           <MapPin size={48} className="mx-auto text-[#555] mb-4" />
           <h2 className="text-2xl font-bold text-[#1E293B] mb-2">You haven't joined a gym yet</h2>

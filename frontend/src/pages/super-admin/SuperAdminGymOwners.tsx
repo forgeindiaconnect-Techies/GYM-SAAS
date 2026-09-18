@@ -12,6 +12,13 @@ interface GymOwner {
   city?: string;
   approvalStatus: string;
   createdAt: string;
+  subscriptionPlan?: string;
+  subscriptionExpiry?: string;
+  billingCycle?: string;
+  paymentStatus?: string;
+  subscriptionStatus?: string;
+  subscriptionStart?: string;
+  transactionId?: string;
   gymId?: {
     _id: string;
     name: string;
@@ -40,6 +47,24 @@ interface GymOwner {
   };
 }
 
+const SAAS_PLANS: Record<string, { name: string, price: string, features: string[] }> = {
+  FREE_TRIAL: {
+    name: 'Free Trial',
+    price: '₹0',
+    features: ['Gym Setup', 'Member Management (Up to 10)', 'Trainer Management (1 Trainer)', 'Membership Plans (1 Plan)', 'Exercise Plans', 'Basic Diet Plans', 'Limited AI Suggestions']
+  },
+  BASIC: {
+    name: 'Basic',
+    price: '₹399 / 1 Month',
+    features: ['Gym Setup', 'Member Management (Up to 100)', 'Trainer Management (Up to 5)', 'Membership Plans (5 Plans)', 'Exercise & Diet Plans', 'AI Suggestions', 'Reports & Analytics']
+  },
+  PREMIUM: {
+    name: 'Premium',
+    price: '₹799 / 3 Months',
+    features: ['Gym Setup', 'Unlimited Members & Trainers', 'Unlimited Membership Plans', 'Exercise & Diet Plans', 'Advanced AI Suggestions', 'Multiple Branches', 'Priority Support']
+  }
+};
+
 const TABS = [
   { id: 'ALL', label: 'All Owners', icon: Users },
   { id: 'PENDING', label: 'Pending', icon: Clock },
@@ -60,6 +85,7 @@ const SuperAdminGymOwners = () => {
   // Modals state
   const [viewOwner, setViewOwner] = useState<GymOwner | null>(null);
   const [editOwner, setEditOwner] = useState<GymOwner | null>(null);
+  const [viewSubscription, setViewSubscription] = useState<GymOwner | null>(null);
   const [editForm, setEditForm] = useState<any>({});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -70,8 +96,27 @@ const SuperAdminGymOwners = () => {
   const fetchOwners = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/users?role=GYM_OWNER');
-      setOwners(res.data.users);
+      const [res, subsRes] = await Promise.all([
+        api.get('/users?role=GYM_OWNER'),
+        api.get('/subscriptions/all').catch(() => ({ data: { subscriptions: [] } }))
+      ]);
+      
+      const users = res.data.users;
+      const subscriptions = subsRes.data.subscriptions || [];
+      
+      const mergedUsers = users.map((u: any) => {
+        const sub = subscriptions.find((s: any) => s.userId === u._id);
+        return {
+          ...u,
+          billingCycle: sub?.billing,
+          paymentStatus: sub ? 'Paid' : 'N/A', // If we have an active subscription
+          subscriptionStatus: sub?.status || 'N/A',
+          subscriptionStart: sub?.start,
+          transactionId: sub?.transactionId
+        };
+      });
+      
+      setOwners(mergedUsers);
       setError('');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch gym owners');
@@ -142,6 +187,8 @@ const SuperAdminGymOwners = () => {
       email: owner.email,
       mobile: owner.mobile,
       city: owner.city || '',
+      subscriptionPlan: owner.subscriptionPlan || '',
+      subscriptionExpiry: owner.subscriptionExpiry ? new Date(owner.subscriptionExpiry).toISOString().split('T')[0] : '',
       gymData: owner.gymId ? {
         name: owner.gymId.name,
         gymType: owner.gymId.gymType || '',
@@ -277,12 +324,12 @@ const SuperAdminGymOwners = () => {
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-[#475569] uppercase bg-[#FFFFFF] border-b border-[#CCFBF1]">
                 <tr>
-                  <th className="px-6 py-4 font-medium">Gym Owner</th>
+                  <th className="px-6 py-4 font-medium">Gym & Owner</th>
                   <th className="px-6 py-4 font-medium">Contact</th>
-                  <th className="px-6 py-4 font-medium">Location</th>
-                  <th className="px-6 py-4 font-medium">Login Date</th>
-                  <th className="px-6 py-4 font-medium">Expiry Date</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
+                  <th className="px-6 py-4 font-medium">Plan & Billing</th>
+                  <th className="px-6 py-4 font-medium">Sub & Payment</th>
+                  <th className="px-6 py-4 font-medium">Start & Expiry</th>
+                  <th className="px-6 py-4 font-medium">Approval</th>
                   <th className="px-6 py-4 font-medium text-right">Actions</th>
                 </tr>
               </thead>
@@ -296,7 +343,8 @@ const SuperAdminGymOwners = () => {
                         </div>
                         <div>
                           <div className="font-medium text-[#1E293B]">{owner.firstName} {owner.lastName}</div>
-                          <div className="text-xs text-[#475569]">Gym Owner</div>
+                          <div className="text-xs text-[#475569]">{owner.gymId?.name || 'No Gym'}</div>
+                          {owner.gymId?.location?.city && <div className="text-[10px] text-[#94A3B8]">{owner.gymId.location.city}</div>}
                         </div>
                       </div>
                     </td>
@@ -312,21 +360,35 @@ const SuperAdminGymOwners = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-[#475569]">
-                      {(owner.city || owner.gymId?.location?.city) ? (
-                        <div className="flex items-center space-x-1">
-                          <MapPin size={14} />
-                          <span>{owner.city || owner.gymId?.location?.city}</span>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1">
+                        {owner.subscriptionPlan && SAAS_PLANS[owner.subscriptionPlan] ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#F1F5F9] text-[#475569] border border-[#E2E8F0]">
+                            {SAAS_PLANS[owner.subscriptionPlan].name}
+                          </span>
+                        ) : (
+                          <span className="text-[#94A3B8] text-xs">No Plan</span>
+                        )}
+                        <div className="text-xs text-[#475569]">{owner.billingCycle ? owner.billingCycle.charAt(0).toUpperCase() + owner.billingCycle.slice(1) : 'N/A'}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1 text-xs">
+                        <div>
+                          <span className="text-[#64748B]">Status:</span>{' '}
+                          <span className={`font-medium ${owner.subscriptionStatus === 'Active' ? 'text-[#16A34A]' : 'text-[#EF4444]'}`}>
+                            {owner.subscriptionStatus || 'N/A'}
+                          </span>
                         </div>
-                      ) : (
-                        <span className="text-[#555]">Not provided</span>
-                      )}
+                        <div>
+                          <span className="text-[#64748B]">Payment:</span>{' '}
+                          <span className="font-medium text-[#1E293B]">{owner.paymentStatus || 'N/A'}</span>
+                        </div>
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-[#475569] whitespace-nowrap">
-                      {owner.createdAt ? new Date(owner.createdAt).toLocaleDateString() : 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 text-[#475569] whitespace-nowrap">
-                      {owner.subscriptionExpiry ? new Date(owner.subscriptionExpiry).toLocaleDateString() : 'N/A'}
+                    <td className="px-6 py-4 text-[#475569] text-xs whitespace-nowrap">
+                      <div><span className="text-[#94A3B8]">Start:</span> {owner.subscriptionStart ? new Date(owner.subscriptionStart).toLocaleDateString() : 'N/A'}</div>
+                      <div><span className="text-[#94A3B8]">Expiry:</span> {owner.subscriptionExpiry ? new Date(owner.subscriptionExpiry).toLocaleDateString() : 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${getStatusColor(owner.approvalStatus)}`}>
@@ -385,18 +447,18 @@ const SuperAdminGymOwners = () => {
                         <div className="w-px h-5 bg-[#E2E8F0] mx-1"></div>
 
                         {/* View, Edit, Delete buttons */}
-                        <div className="flex items-center justify-end space-x-1 w-[96px]">
+                        <div className="flex items-center justify-end space-x-1">
                           <button 
                             onClick={() => setViewOwner(owner)}
-                            className="p-1.5 text-[#475569] hover:text-[#1E293B] hover:bg-[#E2E8F0] rounded-md transition-colors"
-                            title="View Details"
+                            className="p-1.5 text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                            title="View Owner Details"
                           >
                             <Eye size={16} />
                           </button>
                           <button 
                             onClick={() => handleEditClick(owner)}
-                            className="p-1.5 text-[#475569] hover:text-[#16A34A] hover:bg-[#E2E8F0] rounded-md transition-colors"
-                            title="Edit"
+                            className="p-1.5 text-orange-500 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
+                            title="Edit Owner Details"
                           >
                             <Edit2 size={16} />
                           </button>
@@ -423,7 +485,15 @@ const SuperAdminGymOwners = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F0FDFA]/90 backdrop-blur-sm">
           <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-3 z-20 border-b border-[#CCFBF1] mb-6">
-              <h2 className="text-xl font-bold text-[#1E293B]">Gym Owner Details</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-bold text-[#1E293B]">Gym Owner Details</h2>
+                {viewOwner.subscriptionPlan && SAAS_PLANS[viewOwner.subscriptionPlan] && (
+                  <span className="px-3 py-1 bg-gradient-to-r from-amber-100 to-amber-50 text-amber-700 text-xs font-bold rounded-full border border-amber-200 shadow-sm flex items-center gap-1">
+                    <Star size={12} className="fill-amber-500 text-amber-500" />
+                    {SAAS_PLANS[viewOwner.subscriptionPlan].name} SaaS Plan
+                  </span>
+                )}
+              </div>
               <div className="flex items-center gap-4">
                 {viewOwner.gymId && (
                   <a 
@@ -474,6 +544,22 @@ const SuperAdminGymOwners = () => {
                   <div>
                     <p className="text-[#475569] mb-1">Joined Date</p>
                     <p className="font-medium text-[#1E293B]">{new Date(viewOwner.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-[#475569] mb-1">Platform Subscription Plan</p>
+                    <p className="font-medium text-[#1E293B]">
+                      {viewOwner.subscriptionPlan && SAAS_PLANS[viewOwner.subscriptionPlan] 
+                        ? SAAS_PLANS[viewOwner.subscriptionPlan].name 
+                        : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[#475569] mb-1">Plan Expiry Date</p>
+                    <p className="font-medium text-[#1E293B]">
+                      {viewOwner.subscriptionExpiry 
+                        ? new Date(viewOwner.subscriptionExpiry).toLocaleDateString() 
+                        : 'N/A'}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -638,7 +724,7 @@ const SuperAdminGymOwners = () => {
             <div className="mt-8 flex justify-end sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#CCFBF1]">
               <button 
                 onClick={() => setViewOwner(null)}
-                className="px-4 py-2 bg-[#E2E8F0] text-white rounded-lg hover:bg-[#333] transition-colors text-sm font-medium"
+                className="px-4 py-2 bg-[#E2E8F0] text-[#1E293B] rounded-lg hover:bg-[#CBD5E1] transition-colors text-sm font-medium"
               >
                 Close
               </button>
@@ -698,7 +784,7 @@ const SuperAdminGymOwners = () => {
                       className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
                     />
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-2 md:col-span-1">
                     <label className="block text-sm text-[#475569] mb-2">City</label>
                     <input 
                       value={editForm.city || ''} 
@@ -706,7 +792,36 @@ const SuperAdminGymOwners = () => {
                       className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
                     />
                   </div>
+                  <div className="col-span-2 md:col-span-1">
+                    <label className="block text-sm text-[#475569] mb-2">Platform Subscription Plan</label>
+                    <div className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
+                      {editForm.subscriptionPlan ? (SAAS_PLANS[editForm.subscriptionPlan]?.name || editForm.subscriptionPlan) : 'N/A'}
+                    </div>
+                    {editForm.subscriptionPlan && SAAS_PLANS[editForm.subscriptionPlan] && (
+                      <div className="bg-[#F8FAFC] border border-[#CCFBF1] rounded-lg p-3 mt-2">
+                        <div className="flex justify-between items-center mb-1.5">
+                           <p className="text-xs font-semibold text-[#16A34A]">Included Features:</p>
+                           <span className="text-xs font-bold text-[#1E293B] bg-white px-2 py-0.5 rounded border border-[#E2E8F0] shadow-sm">{SAAS_PLANS[editForm.subscriptionPlan].price}</span>
+                        </div>
+                        <ul className="space-y-1">
+                          {SAAS_PLANS[editForm.subscriptionPlan].features.map((feature, idx) => (
+                            <li key={idx} className="text-xs text-[#475569] flex items-start gap-1.5">
+                              <CheckCircle size={12} className="text-[#16A34A] shrink-0 mt-0.5" />
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                  <div className="col-span-2 md:col-span-1">
+                    <label className="block text-sm text-[#475569] mb-2">Plan Expiry Date</label>
+                    <div className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
+                      {editForm.subscriptionExpiry || 'N/A'}
+                    </div>
+                  </div>
                 </div>
+                <p className="text-xs text-[#94A3B8] mt-2 italic flex items-center gap-1"><AlertCircle size={12}/> Note: Platform subscription and payment details are read-only and cannot be manually modified by administrators.</p>
               </div>
 
               {/* Gym Details */}
@@ -810,7 +925,7 @@ const SuperAdminGymOwners = () => {
             <div className="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#CCFBF1]">
               <button 
                 onClick={() => setEditOwner(null)}
-                className="px-4 py-2 border border-[#CCFBF1] text-white rounded-lg hover:bg-[#202020] transition-colors text-sm font-medium"
+                className="px-4 py-2 border border-[#CCFBF1] text-[#475569] rounded-lg hover:bg-[#F8FAFC] transition-colors text-sm font-medium"
               >
                 Cancel
               </button>
@@ -822,6 +937,107 @@ const SuperAdminGymOwners = () => {
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                 <span>Save Changes</span>
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Platform Subscription Modal */}
+      {viewSubscription && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-[#CCFBF1] flex justify-between items-center bg-gradient-to-r from-[#F0FDFA] to-[#FFFFFF]">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
+                  <FileText size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E293B]">Platform Subscription</h2>
+                  <p className="text-[#475569] text-xs">Payment & Plan details for {viewSubscription.firstName} {viewSubscription.lastName}</p>
+                </div>
+              </div>
+              <button onClick={() => setViewSubscription(null)} className="p-2 text-[#475569] hover:text-[#1E293B] bg-white rounded-full border border-[#E2E8F0] shadow-sm">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto flex-1 custom-scrollbar space-y-6">
+              
+              {/* Active Plan Card */}
+              <div className="bg-gradient-to-br from-[#F8FAFC] to-[#F1F5F9] rounded-xl p-5 border border-[#E2E8F0] shadow-sm">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1 block">Current Plan</span>
+                    <h3 className="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+                      {viewSubscription.subscriptionPlan && SAAS_PLANS[viewSubscription.subscriptionPlan] 
+                        ? SAAS_PLANS[viewSubscription.subscriptionPlan].name 
+                        : 'No Active Plan'}
+                      {viewSubscription.subscriptionStatus === 'Active' && (
+                        <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full border border-green-200 uppercase tracking-wide">Active</span>
+                      )}
+                    </h3>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-[#0F172A]">
+                      {viewSubscription.subscriptionPlan && SAAS_PLANS[viewSubscription.subscriptionPlan] 
+                        ? SAAS_PLANS[viewSubscription.subscriptionPlan].price.split('/')[0] 
+                        : '₹0'}
+                    </div>
+                    <div className="text-xs text-[#64748B]">{viewSubscription.billingCycle || 'N/A'} billing</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 border-t border-[#E2E8F0] pt-4">
+                  <div>
+                    <p className="text-[10px] text-[#64748B] uppercase font-semibold">Start Date</p>
+                    <p className="text-sm font-medium text-[#1E293B] mt-1">{viewSubscription.subscriptionStart ? new Date(viewSubscription.subscriptionStart).toLocaleDateString() : 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[#64748B] uppercase font-semibold">Renewal Date</p>
+                    <p className="text-sm font-medium text-[#1E293B] mt-1">{viewSubscription.subscriptionExpiry ? new Date(viewSubscription.subscriptionExpiry).toLocaleDateString() : 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[#64748B] uppercase font-semibold">Payment Status</p>
+                    <p className="text-sm font-medium text-[#1E293B] mt-1">{viewSubscription.paymentStatus || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[#64748B] uppercase font-semibold">Transaction ID</p>
+                    <p className="text-sm font-medium text-[#1E293B] mt-1 truncate" title={viewSubscription.transactionId || ''}>{viewSubscription.transactionId || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* History Section (Simulated) */}
+              <div>
+                <h3 className="text-sm font-bold text-[#1E293B] mb-3">Subscription History</h3>
+                {viewSubscription.transactionId ? (
+                  <div className="border border-[#E2E8F0] rounded-lg overflow-hidden">
+                    <table className="w-full text-sm text-left">
+                      <thead className="text-xs text-[#64748B] uppercase bg-[#F8FAFC] border-b border-[#E2E8F0]">
+                        <tr>
+                          <th className="px-4 py-3 font-semibold">Date</th>
+                          <th className="px-4 py-3 font-semibold">Plan</th>
+                          <th className="px-4 py-3 font-semibold">Amount</th>
+                          <th className="px-4 py-3 font-semibold">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#E2E8F0]">
+                        <tr className="bg-white">
+                          <td className="px-4 py-3 text-[#1E293B]">{viewSubscription.subscriptionStart ? new Date(viewSubscription.subscriptionStart).toLocaleDateString() : 'N/A'}</td>
+                          <td className="px-4 py-3 text-[#1E293B]">{viewSubscription.subscriptionPlan || 'N/A'}</td>
+                          <td className="px-4 py-3 text-[#1E293B]">{viewSubscription.subscriptionPlan ? SAAS_PLANS[viewSubscription.subscriptionPlan]?.price.split('/')[0] : '₹0'}</td>
+                          <td className="px-4 py-3"><span className="text-green-600 bg-green-50 px-2 py-0.5 rounded text-xs border border-green-200">Paid</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-[#64748B] border border-dashed border-[#CBD5E1] rounded-lg bg-[#F8FAFC]">
+                    No previous subscription history found.
+                  </div>
+                )}
+              </div>
+              
             </div>
           </div>
         </div>

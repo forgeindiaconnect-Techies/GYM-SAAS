@@ -32,7 +32,12 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
   if (requireSubscription && user.role === 'MEMBER') {
     if (user.approvalStatus === 'PENDING') return <Navigate to="/status?type=pending" replace />;
     if (user.approvalStatus === 'REJECTED') return <Navigate to="/status?type=rejected" replace />;
-    if (user.subscriptionStatus === 'NONE') return <Navigate to="/subscription-plans" replace />;
+    if (user.approvalStatus === 'SUSPENDED') return <Navigate to="/status?type=suspended" replace />;
+    if (user.isActive === false) return <Navigate to="/status?type=inactive" replace />;
+    
+    // If they are approved but haven't paid, they shouldn't be in the dashboard.
+    // They are redirected to checkout during login if `subscriptionStatus === NONE`.
+    // We can allow them access to dashboard, but MemberDashboard.tsx will lock features if EXPIRED or NONE.
   }
 
   // Subscription & Approval gate for gym owner dashboard

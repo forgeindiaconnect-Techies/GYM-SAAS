@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { addItem, updateItem, getDb } from '../../utils/mockDb';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 type RowStatus = 'valid' | 'error' | 'duplicate' | 'existing';
@@ -156,6 +157,10 @@ const GymAdminImportCustomers: React.FC = () => {
   const [importProgress, setImportProgress] = useState(0);
   const [updateAllExisting, setUpdateAllExisting] = useState<'skip' | 'update' | null>(null);
 
+  const [fixRowData, setFixRowData] = useState<ImportRow | null>(null);
+  const [updateRowData, setUpdateRowData] = useState<ImportRow | null>(null);
+  const [reviewRowData, setReviewRowData] = useState<ImportRow | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load history on mount
@@ -254,6 +259,20 @@ const GymAdminImportCustomers: React.FC = () => {
       setImportProgress(100);
       await new Promise(r => setTimeout(r, 400));
       setImportResult(res.data);
+      
+      // Update mockDb
+      if (res.data.successfulCustomers && res.data.successfulCustomers.length > 0) {
+        let dbMembers = getDb('members');
+        res.data.successfulCustomers.forEach((c: any) => {
+          const existing = dbMembers.find((m: any) => m.email === c.email || m.phone === c.phone);
+          if (existing) {
+             updateItem('members', existing.id, { ...c, id: existing.id });
+          } else {
+             addItem('members', c);
+          }
+        });
+      }
+
       setStep('result');
     } catch (err: any) {
       clearInterval(interval);
@@ -277,6 +296,31 @@ const GymAdminImportCustomers: React.FC = () => {
   const readyToImport = rows.filter(r => r.action === 'import').length;
   const toUpdate = rows.filter(r => r.action === 'update').length;
   const toSkip = rows.filter(r => r.action === 'skip' || r.action === 'none').length;
+
+  // ── Modal Handlers ───────────────────────────────────────────────────────
+  const handleFixSave = (fixedData: Record<string, any>) => {
+    if (!fixRowData) return;
+    setRows(prev => prev.map(r => r.rowNumber === fixRowData.rowNumber ? {
+       ...r,
+       data: fixedData,
+       status: 'valid',
+       errors: [],
+       action: 'import'
+    } : r));
+    setFixRowData(null);
+  };
+
+  const handleUpdateConfirm = () => {
+    if (!updateRowData) return;
+    toggleExistingAction(updateRowData.rowNumber, 'update');
+    setUpdateRowData(null);
+  };
+
+  const handleReviewKeep = (action: 'skip' | 'import') => {
+    if (!reviewRowData) return;
+    setRows(prev => prev.map(r => r.rowNumber === reviewRowData.rowNumber ? { ...r, action } : r));
+    setReviewRowData(null);
+  };
 
   // ─────────────────────────────────────────────────────────────────────────
   // RENDER
@@ -567,14 +611,27 @@ const GymAdminImportCustomers: React.FC = () => {
                                 className={`px-2 py-1 rounded text-xs font-bold transition-colors ${row.action === 'skip' ? 'bg-amber-500 text-white' : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'}`}
                               >Skip</button>
                               <button
-                                onClick={() => toggleExistingAction(row.rowNumber, 'update')}
+                                onClick={() => setUpdateRowData(row)}
                                 className={`px-2 py-1 rounded text-xs font-bold transition-colors ${row.action === 'update' ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'}`}
                               >Update</button>
                             </div>
                           )}
                           {row.status === 'valid' && <span className="text-xs text-emerald-600 font-semibold">Will Import</span>}
-                          {row.status === 'error' && <span className="text-xs text-red-500 font-semibold">Will Skip</span>}
-                          {row.status === 'duplicate' && <span className="text-xs text-amber-600 font-semibold">Will Skip</span>}
+                          {row.status === 'error' && (
+                            <button onClick={() => setFixRowData(row)} className="px-3 py-1.5 rounded-md text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shadow-sm">Fix Errors</button>
+                          )}
+                          {row.status === 'duplicate' && (
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => toggleExistingAction(row.rowNumber, 'skip')}
+                                className={`px-2 py-1 rounded text-xs font-bold transition-colors ${row.action === 'skip' || row.action === 'none' ? 'bg-amber-500 text-white' : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'}`}
+                              >Skip</button>
+                              <button
+                                onClick={() => setReviewRowData(row)}
+                                className="px-2 py-1 rounded text-xs font-bold transition-colors bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100"
+                              >Review</button>
+                            </div>
+                          )}
                         </td>
                         <td className="px-4 py-3 flex items-center justify-center">
                           <button
@@ -955,6 +1012,150 @@ const GymAdminImportCustomers: React.FC = () => {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── FIX ERROR MODAL ── */}
+      {fixRowData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-[#CCFBF1] overflow-hidden">
+            <div className="p-5 border-b border-[#CCFBF1] bg-[#F8FAFC] flex justify-between items-start">
+              <div>
+                <h2 className="text-lg font-bold text-[#1E293B]">Fix Row {fixRowData.rowNumber}</h2>
+                <p className="text-xs text-red-600 font-semibold mt-1">Please correct the errors below</p>
+              </div>
+              <button onClick={() => setFixRowData(null)} className="p-1.5 rounded-lg hover:bg-[#E2E8F0] transition-colors text-[#475569]">
+                <XCircle size={20} />
+              </button>
+            </div>
+            <div className="p-5">
+              <div className="mb-4 space-y-2">
+                {fixRowData.errors.map((e, i) => (
+                  <p key={i} className="text-xs text-red-600 flex items-start gap-1">
+                    <XCircle size={14} className="shrink-0 mt-0.5" /> {e}
+                  </p>
+                ))}
+              </div>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const fd = new FormData(e.currentTarget);
+                const newData = { ...fixRowData.data };
+                fd.forEach((val, key) => { newData[key] = val; });
+                handleFixSave(newData);
+              }} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-[#475569] mb-1">First Name</label>
+                    <input name="firstName" defaultValue={fixRowData.data.firstName} className="w-full text-sm p-2 border border-[#E2E8F0] rounded-lg" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#475569] mb-1">Last Name</label>
+                    <input name="lastName" defaultValue={fixRowData.data.lastName} className="w-full text-sm p-2 border border-[#E2E8F0] rounded-lg" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#475569] mb-1">Email</label>
+                    <input name="email" type="email" defaultValue={fixRowData.data.email} className="w-full text-sm p-2 border border-[#E2E8F0] rounded-lg" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#475569] mb-1">Mobile</label>
+                    <input name="mobile" defaultValue={fixRowData.data.mobile} className="w-full text-sm p-2 border border-[#E2E8F0] rounded-lg" required />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-3 pt-4 border-t border-[#F1F5F9]">
+                  <button type="button" onClick={() => setFixRowData(null)} className="px-4 py-2 rounded-xl text-sm font-semibold text-[#475569] hover:bg-[#F8FAFC]">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded-xl text-sm font-bold bg-[#16A34A] text-white hover:bg-[#15803D]">Save & Validate</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── UPDATE EXISTING MODAL ── */}
+      {updateRowData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-3xl w-full shadow-2xl border border-blue-200 overflow-hidden flex flex-col max-h-[85vh]">
+            <div className="p-5 border-b border-blue-100 bg-blue-50 flex justify-between items-start">
+              <div>
+                <h2 className="text-lg font-bold text-blue-900">Update Existing Customer</h2>
+                <p className="text-xs text-blue-700 mt-1">Review the differences before updating</p>
+              </div>
+              <button onClick={() => setUpdateRowData(null)} className="p-1.5 rounded-lg hover:bg-blue-200 transition-colors text-blue-800">
+                <XCircle size={20} />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto">
+              <div className="grid grid-cols-2 gap-6">
+                {/* Existing Data */}
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                  <h3 className="font-bold text-[#1E293B] mb-4 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#94A3B8]" /> Existing Data
+                  </h3>
+                  <div className="space-y-3 text-sm">
+                    <ConfirmRow label="Name" value={updateRowData.existingUserName || 'N/A'} />
+                    <ConfirmRow label="Email" value={updateRowData.data.email || 'N/A'} />
+                    <ConfirmRow label="Mobile" value={updateRowData.data.mobile || 'N/A'} />
+                    <ConfirmRow label="Plan" value={updateRowData.existingData?.planName || 'No Plan'} />
+                    <ConfirmRow label="Branch" value={updateRowData.existingData?.branchName || 'Unassigned'} />
+                  </div>
+                </div>
+                {/* Uploaded Data */}
+                <div className="bg-[#F0FDFA] border border-[#CCFBF1] rounded-xl p-4">
+                  <h3 className="font-bold text-[#0F766E] mb-4 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#14B8A6]" /> Uploaded Data
+                  </h3>
+                  <div className="space-y-3 text-sm">
+                    <ConfirmRow label="Name" value={`${updateRowData.data.firstName || ''} ${updateRowData.data.lastName || ''}`.trim() || 'N/A'} highlight />
+                    <ConfirmRow label="Email" value={updateRowData.data.email || 'N/A'} highlight />
+                    <ConfirmRow label="Mobile" value={updateRowData.data.mobile || 'N/A'} highlight />
+                    <ConfirmRow label="Plan" value={updateRowData.data.membershipPlan || 'No Plan'} highlight />
+                    <ConfirmRow label="Branch" value={updateRowData.data.branch || 'Unassigned'} highlight />
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 pt-6 mt-2">
+                <button onClick={() => setUpdateRowData(null)} className="px-5 py-2.5 rounded-xl text-sm font-semibold text-[#475569] hover:bg-[#F8FAFC]">Cancel</button>
+                <button onClick={handleUpdateConfirm} className="px-5 py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-md">Confirm Update</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── REVIEW DUPLICATE MODAL ── */}
+      {reviewRowData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-amber-200 overflow-hidden">
+            <div className="p-5 border-b border-amber-100 bg-amber-50 flex justify-between items-start">
+              <div>
+                <h2 className="text-lg font-bold text-amber-900">Review Duplicate Record</h2>
+                <p className="text-xs text-amber-700 mt-1">Row {reviewRowData.rowNumber} conflicts with another row in this file</p>
+              </div>
+              <button onClick={() => setReviewRowData(null)} className="p-1.5 rounded-lg hover:bg-amber-200 transition-colors text-amber-800">
+                <XCircle size={20} />
+              </button>
+            </div>
+            <div className="p-5">
+              <div className="mb-4 space-y-2">
+                {reviewRowData.errors.map((e, i) => (
+                  <p key={i} className="text-xs text-amber-600 flex items-start gap-1 font-semibold">
+                    <AlertTriangle size={14} className="shrink-0 mt-0.5" /> {e}
+                  </p>
+                ))}
+              </div>
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 mb-6">
+                 <div className="space-y-2 text-sm">
+                    <ConfirmRow label="Name" value={`${reviewRowData.data.firstName || ''} ${reviewRowData.data.lastName || ''}`} />
+                    <ConfirmRow label="Email" value={reviewRowData.data.email || 'N/A'} />
+                    <ConfirmRow label="Mobile" value={reviewRowData.data.mobile || 'N/A'} />
+                 </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => handleReviewKeep('skip')} className="flex-1 px-4 py-2.5 rounded-xl border border-amber-200 text-amber-700 hover:bg-amber-50 font-bold transition-colors">Skip this Row</button>
+                <button onClick={() => handleReviewKeep('import')} className="flex-1 px-4 py-2.5 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors shadow-sm">Keep this Row</button>
+              </div>
             </div>
           </div>
         </div>

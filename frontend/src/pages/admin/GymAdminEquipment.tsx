@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Filter, Wrench, CheckCircle2, AlertTriangle, SearchCode, X } from 'lucide-react';
+import { Search, Plus, Wrench, CheckCircle2, AlertTriangle, SearchCode, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useOutletContext } from 'react-router-dom';
 import api from '../../utils/api';
@@ -102,16 +102,6 @@ const GymAdminEquipment = () => {
     }
     setShowAddModal(false);
     setFormData({ name: '', category: 'Cardio', brand: '', quantity: 1, condition: 'Excellent', status: 'Active', nextService: '' });
-  };
-
-  const handleStatusChange = async (id: string, newStatus: string) => {
-    const updated = localEquipmentList.map(eq => 
-      (eq.id === id || eq._id === id) ? { ...eq, status: newStatus } : eq
-    );
-    setLocalEquipmentList(updated);
-    if (gym) {
-      try { await api.put(`/gyms/${gym._id}`, { equipment: updated }); } catch (err) {}
-    }
   };
 
   const handleDeleteEquipment = async (id: string) => {

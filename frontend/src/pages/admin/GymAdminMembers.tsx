@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { AddMemberSelectorModal } from '../../components/GymAdmin/AddMemberSelectorModal';
 import { AddExistingMemberModal } from '../../components/GymAdmin/AddExistingMemberModal';
 import { RegisterNewMemberModal } from '../../components/GymAdmin/RegisterNewMemberModal';
-import { getDb, addItem, updateItem, deleteItem } from '../../utils/mockDb';
+import api from '../../utils/api';
 
 const defaultMockMembers = [
   { id: '1', name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', plan: 'Pro', status: 'Active', joined: '2025-10-15', customerType: 'EXISTING_CUSTOMER', trainer: 'Mike Johnson', gender: 'Male', dob: '1990-05-12', emergencyName: 'Jane Doe', emergencyPhone: '098-765-4321', emergencyRelation: 'Spouse', fitnessGoal: 'Muscle Gain' },
@@ -23,42 +23,45 @@ const mockPlans = [
 const GymAdminMembers = () => {
   const [members, setMembers] = useState<any[]>([]);
   
-  // Auto-heal duplicate IDs from legacy fast imports
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const sanitizeDatabase = () => {
-      let dbMembers = getDb('members');
-      const seenIds = new Set();
-      let needsSave = false;
-      
-      const sanitizedMembers = dbMembers.map((m: any) => {
-        if (seenIds.has(m.id)) {
-          needsSave = true;
-          return { ...m, id: m.id + '_' + Math.random().toString(36).substr(2, 9) };
-        }
-        seenIds.add(m.id);
-        return m;
-      });
-
-      if (needsSave) {
-        localStorage.setItem(`mockdb_members`, JSON.stringify(sanitizedMembers));
-        return sanitizedMembers;
-      }
-      return dbMembers;
-    };
-
-    let dbMembers = sanitizeDatabase();
-    
-    // If DB is basically empty (only the 1 seed member), seed our rich UI test data
-    if (dbMembers.length <= 1) {
-      defaultMockMembers.forEach(m => {
-        if (!dbMembers.find((dbm: any) => dbm.email === m.email)) {
-          addItem('members', m);
-        }
-      });
-      dbMembers = getDb('members');
-    }
-    setMembers(dbMembers);
+    fetchMembers();
   }, []);
+
+  const fetchMembers = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/users?role=MEMBER');
+      if (res.data.success) {
+        const mapped = res.data.users.map((u: any) => ({
+          id: u._id,
+          name: `${u.firstName} ${u.lastName}`,
+          email: u.email,
+          phone: u.mobile,
+          plan: u.subscriptionPlan || 'None',
+          status: u.approvalStatus === 'PENDING' ? 'Pending' :
+                  u.approvalStatus === 'APPROVED' ? 'Active' :
+                  u.approvalStatus === 'REJECTED' ? 'Rejected' :
+                  u.approvalStatus === 'SUSPENDED' ? 'Inactive' : 'Inactive',
+          joined: new Date(u.createdAt).toISOString().split('T')[0],
+          customerType: u.customerType,
+          gender: u.gender,
+          dob: u.dateOfBirth,
+          fitnessGoal: u.fitnessGoal,
+          emergencyName: u.emergencyContact?.name,
+          emergencyPhone: u.emergencyContact?.mobile,
+          emergencyRelation: u.emergencyContact?.relationship,
+          originalUser: u, // Keep original data for reference if needed
+        }));
+        setMembers(mapped);
+      }
+    } catch (err) {
+      console.error('Error fetching members:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('All');
@@ -115,10 +118,23 @@ const GymAdminMembers = () => {
     }
   };
 
-  const handleStatusChange = (id: string, newStatus: string) => {
-    updateItem('members', id, { status: newStatus });
-    setMembers(members.map(m => m.id === id ? { ...m, status: newStatus } : m));
-    setActiveDropdown(null);
+  const handleStatusChange = async (id: string, newStatus: string) => {
+    let apiStatus = 'PENDING';
+    if (newStatus === 'Active') apiStatus = 'APPROVED';
+    else if (newStatus === 'Inactive') apiStatus = 'SUSPENDED';
+    else if (newStatus === 'Rejected') apiStatus = 'REJECTED';
+
+    try {
+      const res = await api.put(`/users/${id}/status`, { status: apiStatus });
+      if (res.data.success) {
+        setMembers(members.map(m => m.id === id ? { ...m, status: newStatus } : m));
+      }
+    } catch (err) {
+      console.error('Error updating status:', err);
+      alert('Failed to update member status.');
+    } finally {
+      setActiveDropdown(null);
+    }
   };
 
   const handleEditClick = (member: any) => {

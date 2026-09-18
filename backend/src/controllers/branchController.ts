@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthRequest } from '../middlewares/auth';
 import Branch from '../models/Branch';
 import Gym, { GymStatus } from '../models/Gym';
 import User, { Role } from '../models/User';
@@ -11,7 +12,7 @@ const PLAN_BRANCH_LIMITS: Record<string, number> = {
   PREMIUM: 5
 };
 
-export const createBranch = async (req: Request, res: Response): Promise<void> => {
+export const createBranch = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = req.user;
     if (!user || user.role !== Role.GYM_OWNER) {
@@ -32,7 +33,7 @@ export const createBranch = async (req: Request, res: Response): Promise<void> =
     }
 
     // Check Subscription Limit
-    const userDoc = await User.findById(user._id || user.id);
+    const userDoc = await User.findById(user.id);
     const currentPlan = userDoc?.subscriptionPlan || gym.subscription?.plan || 'FREE_TRIAL';
     const limit = PLAN_BRANCH_LIMITS[currentPlan] || 1;
     
@@ -85,7 +86,7 @@ export const createBranch = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-export const getBranches = async (req: Request, res: Response): Promise<void> => {
+export const getBranches = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = req.user;
     if (!user || !user.gymId) {
@@ -101,7 +102,7 @@ export const getBranches = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const getBranchById = async (req: Request, res: Response): Promise<void> => {
+export const getBranchById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const branch = await Branch.findOne({ _id: id, gymId: req.user?.gymId }).populate('managerId', 'firstName lastName email phone');
@@ -116,7 +117,7 @@ export const getBranchById = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-export const updateBranch = async (req: Request, res: Response): Promise<void> => {
+export const updateBranch = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -132,7 +133,7 @@ export const updateBranch = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-export const updateBranchStatus = async (req: Request, res: Response): Promise<void> => {
+export const updateBranchStatus = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -148,7 +149,7 @@ export const updateBranchStatus = async (req: Request, res: Response): Promise<v
   }
 };
 
-export const deleteBranch = async (req: Request, res: Response): Promise<void> => {
+export const deleteBranch = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const branch = await Branch.findOneAndDelete({ _id: id, gymId: req.user?.gymId });

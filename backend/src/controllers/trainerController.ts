@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthRequest } from '../middlewares/auth';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import User, { Role, ApprovalStatus } from '../models/User';
@@ -8,7 +9,7 @@ import Gym from '../models/Gym';
 import mongoose from 'mongoose';
 
 // 1. Manual Add Trainer
-export const manualAddTrainer = async (req: Request, res: Response): Promise<void> => {
+export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const gymOwner = req.user;
     if (!gymOwner || gymOwner.role !== Role.GYM_OWNER) {
@@ -99,7 +100,7 @@ export const manualAddTrainer = async (req: Request, res: Response): Promise<voi
 };
 
 // 2. Send Invitation
-export const inviteTrainer = async (req: Request, res: Response): Promise<void> => {
+export const inviteTrainer = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const gymOwner = req.user;
     if (!gymOwner || gymOwner.role !== Role.GYM_OWNER) {
@@ -139,7 +140,7 @@ export const inviteTrainer = async (req: Request, res: Response): Promise<void> 
 
     const invitation = new TrainerInvitation({
       gymId: gymOwner.gymId,
-      invitedBy: gymOwner._id,
+      invitedBy: gymOwner.id,
       email,
       trainerName,
       tokenHash,
@@ -161,9 +162,9 @@ export const inviteTrainer = async (req: Request, res: Response): Promise<void> 
 };
 
 // 3. Verify Invitation (Public)
-export const verifyInvitation = async (req: Request, res: Response): Promise<void> => {
+export const verifyInvitation = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { token } = req.params;
+    const token = req.params.token as string;
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
     const invitation = await TrainerInvitation.findOne({ tokenHash }).populate('gymId', 'name location trainingMode');
@@ -189,9 +190,9 @@ export const verifyInvitation = async (req: Request, res: Response): Promise<voi
 };
 
 // 4. Accept Invitation (Public)
-export const acceptInvitation = async (req: Request, res: Response): Promise<void> => {
+export const acceptInvitation = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { token } = req.params;
+    const token = req.params.token as string;
     const { name, phone, password } = req.body;
 
     if (!name || !phone || !password) {
@@ -231,14 +232,14 @@ export const acceptInvitation = async (req: Request, res: Response): Promise<voi
     invitation.acceptedAt = new Date();
     await invitation.save();
 
-    res.status(200).json({ success: true, message: 'Account created successfully. Please complete your profile.', userId: user._id });
+    res.status(200).json({ success: true, message: 'Account created successfully. Please complete your profile.', userId: user.id });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
 
 // 5. Complete Profile (Public/Trainer)
-export const completeProfile = async (req: Request, res: Response): Promise<void> => {
+export const completeProfile = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { userId, specialization, experience, profilePhoto, qualifications, certifications, expertise, bio, availability, trainingMode } = req.body;
 
@@ -275,7 +276,7 @@ export const completeProfile = async (req: Request, res: Response): Promise<void
 };
 
 // 6. Get Trainers (Admin)
-export const getTrainers = async (req: Request, res: Response): Promise<void> => {
+export const getTrainers = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const gymOwner = req.user;
     if (!gymOwner || gymOwner.role !== Role.GYM_OWNER) {
@@ -303,7 +304,7 @@ export const getTrainers = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const getTrainerById = async (req: Request, res: Response): Promise<void> => {
+export const getTrainerById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const trainer = await Trainer.findOne({ _id: req.params.id });
     if (!trainer) {
@@ -316,7 +317,7 @@ export const getTrainerById = async (req: Request, res: Response): Promise<void>
   }
 };
 
-export const updateTrainerStatus = async (req: Request, res: Response): Promise<void> => {
+export const updateTrainerStatus = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const gymOwner = req.user;
     if (!gymOwner || gymOwner.role !== Role.GYM_OWNER) {
@@ -359,7 +360,7 @@ export const updateTrainerStatus = async (req: Request, res: Response): Promise<
   }
 };
 
-export const deleteTrainer = async (req: Request, res: Response): Promise<void> => {
+export const deleteTrainer = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const gymOwner = req.user;
     if (!gymOwner || gymOwner.role !== Role.GYM_OWNER) {
@@ -384,9 +385,9 @@ export const deleteTrainer = async (req: Request, res: Response): Promise<void> 
 };
 
 // 8. Get My Profile (Trainer self)
-export const getMyProfile = async (req: Request, res: Response): Promise<void> => {
+export const getMyProfile = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const userId = (req.user as any)?.id || (req.user as any)?._id;
+    const userId = req.user?.id;
     const trainer = await Trainer.findOne({ userId });
     if (!trainer) {
       res.status(404).json({ success: false, message: 'Trainer profile not found' });
@@ -399,9 +400,9 @@ export const getMyProfile = async (req: Request, res: Response): Promise<void> =
 };
 
 // 9. Update My Profile (Trainer self)
-export const updateMyProfile = async (req: Request, res: Response): Promise<void> => {
+export const updateMyProfile = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const userId = (req.user as any)?.id || (req.user as any)?._id;
+    const userId = req.user?.id;
     const allowedUpdates = [
       'phone', 'profilePhoto', 'specialization', 'experience',
       'trainingMode', 'qualifications', 'certifications', 'expertise',

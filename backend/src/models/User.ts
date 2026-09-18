@@ -34,6 +34,7 @@ export interface IUser extends Document {
   mobile: string;
   role: Role;
   gymId?: mongoose.Types.ObjectId;
+  branchId?: mongoose.Types.ObjectId;
   isActive: boolean;
 
   // Approval workflow
@@ -44,10 +45,10 @@ export interface IUser extends Document {
   // Onboarding origin
   customerType?: 'EXISTING_CUSTOMER' | 'NEW_CUSTOMER' | 'PUBLIC_SIGNUP';
 
-  // Subscription
   subscriptionStatus: SubscriptionStatus;
   subscriptionPlan?: string;
   subscriptionExpiry?: Date;
+  paymentStatus?: 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 
   // Personal details
   dateOfBirth?: Date;
@@ -100,6 +101,7 @@ const userSchema = new Schema<IUser>(
     mobile: { type: String, required: true },
     role: { type: String, enum: Object.values(Role), default: Role.MEMBER },
     gymId: { type: Schema.Types.ObjectId, ref: 'Gym' },
+    branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
     isActive: { type: Boolean, default: true },
     customerType: { type: String, enum: ['EXISTING_CUSTOMER', 'NEW_CUSTOMER', 'PUBLIC_SIGNUP'] },
 
@@ -118,6 +120,7 @@ const userSchema = new Schema<IUser>(
     },
     subscriptionPlan: { type: String },
     subscriptionExpiry: { type: Date },
+    paymentStatus: { type: String, enum: ['PENDING', 'PAID', 'FAILED', 'REFUNDED'], default: 'PENDING' },
 
     dateOfBirth: { type: Date },
     gender: { type: String, enum: ['Male', 'Female', 'Other', 'Prefer not to say'] },

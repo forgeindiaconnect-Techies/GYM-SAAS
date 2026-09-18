@@ -2,8 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export enum SubscriptionPlan {
   FREE_TRIAL = 'FREE_TRIAL',
-  SILVER = 'SILVER',
-  GOLD = 'GOLD',
+  BASIC = 'BASIC',
   PREMIUM = 'PREMIUM',
 }
 
@@ -31,6 +30,7 @@ export interface ISubscription extends Document {
   endDate: Date;
   amount: number;
   paymentMethod?: string;
+  transactionId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -49,6 +49,7 @@ const subscriptionSchema = new Schema<ISubscription>(
     endDate: { type: Date, required: true },
     amount: { type: Number, required: true },
     paymentMethod: { type: String, default: 'Manual' },
+    transactionId: { type: String },
   },
   { timestamps: true }
 );

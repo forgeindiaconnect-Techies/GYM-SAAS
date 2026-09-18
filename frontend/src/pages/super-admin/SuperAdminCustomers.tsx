@@ -20,6 +20,10 @@ interface Customer {
   preferredTraining?: string;
   preferredWorkoutTime?: string;
   approvalStatus: string;
+  subscriptionPlan?: string;
+  paymentStatus?: string;
+  gymId?: { _id: string; name: string };
+  branchId?: { _id: string; name: string };
   createdAt: string;
 }
 
@@ -255,9 +259,8 @@ const SuperAdminCustomers = () => {
                 <tr>
                   <th className="px-6 py-4 font-medium">Customer</th>
                   <th className="px-6 py-4 font-medium">Contact</th>
-                  <th className="px-6 py-4 font-medium">Location</th>
-                  <th className="px-6 py-4 font-medium">Login Date</th>
-                  <th className="px-6 py-4 font-medium">Expiry Date</th>
+                  <th className="px-6 py-4 font-medium">Gym / Branch</th>
+                  <th className="px-6 py-4 font-medium">Plan / Payment</th>
                   <th className="px-6 py-4 font-medium">Status</th>
                   <th className="px-6 py-4 font-medium text-right">Actions</th>
                 </tr>
@@ -288,21 +291,15 @@ const SuperAdminCustomers = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-[#475569]">
-                      {customer.city ? (
-                        <div className="flex items-center space-x-1">
-                          <MapPin size={14} />
-                          <span>{customer.city}</span>
-                        </div>
-                      ) : (
-                        <span className="text-[#555]">Not provided</span>
-                      )}
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-[#1E293B]">{customer.gymId?.name || 'No Gym'}</div>
+                      <div className="text-xs text-[#475569]">{customer.branchId?.name || 'Local'}</div>
                     </td>
-                    <td className="px-6 py-4 text-[#475569] whitespace-nowrap">
-                      {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 text-[#475569] whitespace-nowrap">
-                      {customer.subscriptionExpiry ? new Date(customer.subscriptionExpiry).toLocaleDateString() : 'N/A'}
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-[#1E293B]">{customer.subscriptionPlan || 'No Plan'}</div>
+                      <div className={`text-xs font-bold ${customer.paymentStatus === 'PAID' ? 'text-green-500' : 'text-orange-500'}`}>
+                        {customer.paymentStatus || 'PENDING'}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${getStatusColor(customer.approvalStatus)}`}>

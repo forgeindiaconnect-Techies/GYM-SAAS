@@ -30,9 +30,9 @@ const SAAS_PLANS = [
     ],
   },
   {
-    key: 'SILVER', name: 'Silver', tagline: 'Perfect for starting gyms',
-    icon: Star, iconColor: 'text-slate-300', iconBg: 'bg-slate-300/10',
-    priceMonthly: 799, priceAnnual: 7990, savingsAnnual: 1598,
+    key: 'BASIC', name: 'Basic', tagline: 'Perfect for starting gyms',
+    icon: Star, iconColor: 'text-teal-500', iconBg: 'bg-teal-500/10',
+    priceMonthly: 399, priceAnnual: 3990, savingsAnnual: 798,
     limits: { members: 100, trainers: 5, staff: 2, branches: 1 },
     status: 'Active',
     subscribedGyms: 38,
@@ -50,34 +50,14 @@ const SAAS_PLANS = [
     ],
   },
   {
-    key: 'GOLD', name: 'Gold', tagline: 'For growing gyms',
-    icon: Crown, iconColor: 'text-teal-400', iconBg: 'bg-teal-400/10',
-    priceMonthly: 1499, priceAnnual: 14990, savingsAnnual: 2998,
-    limits: { members: 500, trainers: 15, staff: 5, branches: 2 },
-    status: 'Active',
-    subscribedGyms: 61,
-    features: [
-      { text: 'Everything in Silver', included: true },
-      { text: 'Advanced AI Workout & Diet Plans', included: true },
-      { text: 'AI Fitness Assistant', included: true },
-      { text: 'Trainer Discovery & Booking', included: true },
-      { text: 'Trainer Scheduling', included: true },
-      { text: 'Detailed Progress Analytics', included: true },
-      { text: 'Revenue & Membership Analytics', included: true },
-      { text: 'AI-based Member Progress Analysis', included: true },
-      { text: '1-on-1 Coaching', included: false },
-      { text: 'Live Trainer Sessions', included: false },
-    ],
-  },
-  {
     key: 'PREMIUM', name: 'Premium', tagline: 'Enterprise-grade power',
     icon: Sparkles, iconColor: 'text-purple-400', iconBg: 'bg-purple-400/10',
-    priceMonthly: 2499, priceAnnual: 24990, savingsAnnual: 4998,
+    priceMonthly: 799, priceAnnual: 7990, savingsAnnual: 1598,
     limits: { members: -1, trainers: -1, staff: -1, branches: 5 },
     status: 'Active',
     subscribedGyms: 27,
     features: [
-      { text: 'Everything in Gold', included: true },
+      { text: 'Everything in Basic', included: true },
       { text: '1-on-1 Online Coaching', included: true },
       { text: 'Live Trainer Sessions', included: true },
       { text: 'Priority Trainer Booking', included: true },
@@ -103,8 +83,7 @@ const SUBSCRIBED_CUSTOMERS = [
 
 const PLAN_COLORS: Record<string, string> = {
   FREE_TRIAL: 'bg-slate-500/10 text-slate-400 border-slate-500/30',
-  SILVER: 'bg-slate-400/10 text-slate-300 border-slate-400/30',
-  GOLD: 'bg-[#0D9488]/10 text-teal-400 border-[#0D9488]/30',
+  BASIC: 'bg-[#0D9488]/10 text-teal-500 border-[#0D9488]/30',
   PREMIUM: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
 };
 
