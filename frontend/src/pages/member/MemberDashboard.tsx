@@ -28,7 +28,7 @@ const MemberDashboard = () => {
   const activeMembership = memberships.find(m => m.status === 'ACTIVE');
   const pendingMembership = memberships.find(m => m.status === 'PENDING_VERIFICATION');
 
-  const hasActive = !!activeMembership;
+  const hasActive = !!activeMembership || !!user?.gymId;
 
   const quickLinks = [
     { icon: Bot, label: 'AI Assistant', desc: 'Chat with your AI coach', path: '/member/ai-assistant', color: 'text-[#16A34A] bg-[#16A34A]/10 border-[#16A34A]' },
@@ -54,7 +54,7 @@ const MemberDashboard = () => {
             <span className="w-3 h-3 rounded-full bg-[#16A34A] shadow-[0_0_8px_#16A34A] animate-pulse"></span>
             <div>
               <p className="text-xs text-[#475569]">Current Gym</p>
-              <p className="text-sm font-bold text-[#1E293B]">{activeMembership.gymId?.name}</p>
+              <p className="text-sm font-bold text-[#1E293B]">{activeMembership?.gymId?.name || 'Your Gym'}</p>
             </div>
           </div>
         ) : pendingMembership ? (
@@ -69,7 +69,7 @@ const MemberDashboard = () => {
            </div>
         ) : (
           <div className="mt-4 md:mt-0">
-             <Link to="/gyms" className="px-6 py-2.5 bg-[#16A34A] text-[#1E293B] font-bold rounded-lg hover:bg-[#15803D] transition-colors shadow-lg">
+             <Link to="/gyms" className="px-6 py-2.5 bg-[#16A34A] text-white font-bold rounded-lg hover:bg-[#15803D] transition-colors shadow-lg">
                Find a Gym
              </Link>
           </div>
@@ -92,7 +92,7 @@ const MemberDashboard = () => {
           <MapPin size={48} className="mx-auto text-[#555] mb-4" />
           <h2 className="text-2xl font-bold text-[#1E293B] mb-2">You haven't joined a gym yet</h2>
           <p className="text-[#475569] mb-6 max-w-md mx-auto">Discover premium gyms near you, select a membership plan, and unlock all features of the AI GYM platform.</p>
-          <Link to="/gyms" className="inline-block px-8 py-3 bg-[#16A34A] text-[#1E293B] font-bold rounded-xl hover:bg-[#15803D] transition-all hover:scale-105">
+          <Link to="/gyms" className="inline-block px-8 py-3 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-all hover:scale-105">
             Browse Gyms
           </Link>
         </div>

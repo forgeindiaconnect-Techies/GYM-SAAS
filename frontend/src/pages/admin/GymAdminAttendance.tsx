@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { UserCheck, Clock, Users, ArrowUpRight, UserX } from 'lucide-react';
+import { UserCheck, Clock, Users, UserX } from 'lucide-react';
 
 const mockCheckins = [
   { id: 1, name: 'John Doe', time: '10:45 AM', type: 'Member', method: 'RFID Card' },

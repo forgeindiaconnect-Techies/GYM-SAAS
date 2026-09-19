@@ -1,7 +1,21 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Activity, ArrowLeft } from 'lucide-react';
 
 const PrivacyPolicy = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else if (window.opener) {
+      window.close();
+      // fallback in case window.close() is blocked
+      setTimeout(() => navigate('/'), 100);
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F0FDFA] text-[#1E293B] selection:bg-[#16A34A] selection:text-black">
       <nav className="border-b border-[#CCFBF1] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
@@ -12,9 +26,9 @@ const PrivacyPolicy = () => {
             </div>
             <span className="text-xl font-bold tracking-tight text-[#16A34A]">AI GYM</span>
           </Link>
-          <Link to="/" className="text-sm font-medium text-[#475569] hover:text-[#16A34A] flex items-center space-x-2">
-            <ArrowLeft size={16} /> <span>Back to Home</span>
-          </Link>
+          <button onClick={handleBack} className="text-sm font-medium text-[#475569] hover:text-[#16A34A] flex items-center space-x-2">
+            <ArrowLeft size={16} /> <span>Back</span>
+          </button>
         </div>
       </nav>
 

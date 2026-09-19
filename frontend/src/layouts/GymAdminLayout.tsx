@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
+import { ExpiryPopup } from '../components/ExpiryPopup';
 import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
-  Bell, BarChart, Settings, Activity, Building2, Menu, LogOut, Trash2, MapPin
+  Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare
 } from 'lucide-react';
 
 const GymAdminLayout = () => {
@@ -57,6 +58,7 @@ const GymAdminLayout = () => {
     { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
     { label: 'Trainers', path: '/admin/trainers', icon: Dumbbell },
     { label: 'Members', path: '/admin/members', icon: Users },
+    { label: 'Customer Enquiries', path: '/admin/enquiries', icon: MessageSquare },
     { label: 'Equipment', path: '/admin/equipment', icon: Activity },
     { label: 'Membership Plans', path: '/admin/membership-plans', icon: CreditCard },
   ];
@@ -122,6 +124,9 @@ const GymAdminLayout = () => {
         </div>
       </div>
 
+      {/* Expiry Popup */}
+      <ExpiryPopup />
+
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
         {navItems.map((item) => {
@@ -135,8 +140,8 @@ const GymAdminLayout = () => {
               className={clsx(
                 'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
                 isActive
-                  ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold border-l-4 border-[#16A34A]'
-                  : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A] border-l-4 border-transparent'
+                  ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold'
+                  : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
               )}
             >
               <Icon

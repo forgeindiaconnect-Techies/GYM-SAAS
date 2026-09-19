@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { BarChart3, TrendingUp, Users, UserMinus, Download, Filter } from 'lucide-react';
+import { BarChart3, TrendingUp, Users, UserMinus, Download } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 

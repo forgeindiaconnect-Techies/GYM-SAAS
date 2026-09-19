@@ -272,8 +272,8 @@ export const deleteGym = async (req: Request, res: Response): Promise<void> => {
 export const getPublicGyms = async (req: Request, res: Response): Promise<void> => {
   try {
     const { city, pinCode, search, gymType } = req.query;
-    // Show gyms that are ACTIVE or APPROVED (PENDING gyms are not shown publicly until approved)
-    let filter: any = { status: { $in: ['ACTIVE', 'APPROVED'] } };
+    // Show gyms that are ACTIVE, APPROVED, Active, or PENDING (for testing)
+    let filter: any = { status: { $in: ['ACTIVE', 'APPROVED', 'Active', 'PENDING', 'Pending'] } };
     
     if (city) filter['location.city'] = { $regex: new RegExp(city as string, 'i') };
     if (pinCode) filter['location.pinCode'] = pinCode;

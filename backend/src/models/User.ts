@@ -90,6 +90,7 @@ export interface IUser extends Document {
 
   createdAt: Date;
   updatedAt: Date;
+  lastLogin?: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -156,6 +157,7 @@ const userSchema = new Schema<IUser>(
     bio: { type: String },
     resumeUrl: { type: String },
     certificationUrl: { type: String },
+    lastLogin: { type: Date },
   },
   { timestamps: true }
 );

@@ -8,7 +8,6 @@ import LoginPage from './pages/auth/LoginPage';
 import CustomerRegisterPage from './pages/auth/CustomerRegisterPage';
 import GymOwnerRegisterPage from './pages/auth/GymOwnerRegisterPage';
 import GymOwnerIntroduction from './pages/auth/GymOwnerIntroduction';
-import PendingPage from './pages/auth/PendingPage';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import StatusPage from './pages/auth/StatusPage';
 import TrainerInvitationPage from './pages/auth/TrainerInvitationPage';
@@ -42,6 +41,7 @@ import GymAdminTrainers from './pages/admin/GymAdminTrainers';
 import GymAdminMembers from './pages/admin/GymAdminMembers';
 import GymAdminEquipment from './pages/admin/GymAdminEquipment';
 import GymAdminMembershipPlans from './pages/admin/GymAdminMembershipPlans';
+import { GymAdminEnquiries } from './pages/admin/GymAdminEnquiries';
 import GymAdminTrainerSchedule from './pages/admin/GymAdminTrainerSchedule';
 import GymAdminSessionBookings from './pages/admin/GymAdminSessionBookings';
 import GymAdminPayments from './pages/admin/GymAdminPayments';
@@ -64,6 +64,7 @@ import SuperAdminLeads from './pages/super-admin/SuperAdminLeads';
 import SuperAdminAddGym from './pages/super-admin/SuperAdminAddGym';
 import SuperAdminGymApprovals from './pages/super-admin/SuperAdminGymApprovals';
 import SuperAdminInvitations from './pages/super-admin/SuperAdminInvitations';
+import { SuperAdminEnquiries } from './pages/super-admin/SuperAdminEnquiries';
 import SuperAdminProfile from './pages/super-admin/SuperAdminProfile';
 import SuperAdminSettings from './pages/super-admin/SuperAdminSettings';
 import SuperAdminGymsDetails from './pages/super-admin/SuperAdminGymsDetails';
@@ -76,6 +77,7 @@ import SuperAdminDeletedDetails from './pages/super-admin/SuperAdminDeletedDetai
 // Member
 import MemberLayout from './layouts/MemberLayout';
 import MemberDashboard from './pages/member/MemberDashboard';
+import { MemberEnquiries } from './pages/member/MemberEnquiries';
 import MemberProfile from './pages/member/MemberProfile';
 import MemberGymProfile from './pages/member/MemberGymProfile';
 import MemberFindTrainers from './pages/member/MemberFindTrainers';
@@ -108,6 +110,8 @@ import TrainerMessages from './pages/trainer/TrainerMessages';
 import TrainerNotifications from './pages/trainer/TrainerNotifications';
 import TrainerEarnings from './pages/trainer/TrainerEarnings';
 import TrainerSettings from './pages/trainer/TrainerSettings';
+import TrainerAIAssistant from './pages/trainer/TrainerAIAssistant';
+import TrainerAIReview from './pages/trainer/TrainerAIReview';
 
 // Stub dashboards
 import stubDashboard from './pages/StubDashboard';
@@ -184,6 +188,7 @@ function App() {
             <Route path="payments" element={<MemberPayments />} />
             <Route path="chat" element={<MemberMessages />} />
             <Route path="notifications" element={<MemberNotifications />} />
+            <Route path="enquiries" element={<MemberEnquiries />} />
             <Route path="settings" element={<MemberSettings />} />
           </Route>
 
@@ -206,6 +211,8 @@ function App() {
             <Route path="earnings" element={<TrainerEarnings />} />
             <Route path="notifications" element={<TrainerNotifications />} />
             <Route path="settings" element={<TrainerSettings />} />
+            <Route path="ai-assistant" element={<TrainerAIAssistant />} />
+            <Route path="ai-review/:customerId" element={<TrainerAIReview />} />
           </Route>
 
 {/* Manager Dashboard */}
@@ -237,6 +244,7 @@ function App() {
             <Route path="members" element={<GymAdminMembers />} />
             <Route path="equipment" element={<GymAdminEquipment />} />
             <Route path="membership-plans" element={<GymAdminMembershipPlans />} />
+            <Route path="enquiries" element={<GymAdminEnquiries />} />
             <Route path="trainer-schedule" element={<GymAdminTrainerSchedule />} />
             <Route path="session-bookings" element={<GymAdminSessionBookings />} />
             <Route path="payments" element={<GymAdminPayments />} />
@@ -262,6 +270,7 @@ function App() {
             <Route path="gyms/details" element={<SuperAdminGymsDetails />} />
             <Route path="gyms/edit/:id" element={<SuperAdminGymsEdit />} />
             <Route path="customers" element={<SuperAdminCustomers />} />
+            <Route path="enquiries" element={<SuperAdminEnquiries />} />
             <Route path="gym-owners" element={<SuperAdminGymOwners />} />
             <Route path="gym-approvals" element={<SuperAdminGymApprovals />} />
             <Route path="invitations" element={<SuperAdminInvitations />} />

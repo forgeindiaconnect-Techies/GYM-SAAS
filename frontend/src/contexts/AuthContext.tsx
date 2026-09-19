@@ -12,6 +12,7 @@ export interface AuthUser {
   approvalStatus: string;
   subscriptionStatus: string;
   subscriptionPlan?: string;
+  subscriptionExpiry?: string;
   phone?: string;
 }
 

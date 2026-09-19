@@ -6,15 +6,35 @@ import {
   LayoutDashboard, User, CreditCard, Dumbbell,
   Utensils, Bot, UserCheck, Calendar, CalendarCheck,
   TrendingUp, DollarSign, Bell, MessageSquare,
-  Settings, Activity, Building2, Menu, LogOut
+  Settings, Activity, Building2, Menu, LogOut, Clock
 } from 'lucide-react';
 
 const MemberLayout = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const [showExpiryWarning, setShowExpiryWarning] = useState(false);
   const [gym, setGym] = useState<any>(null);
+
+  useEffect(() => {
+    if (user?.subscriptionExpiry) {
+      const checkExpiry = () => {
+        const expiry = new Date(user.subscriptionExpiry!).getTime();
+        const now = new Date().getTime();
+        const diff = expiry - now;
+        // If within 1 hour (3600000 ms) and not already expired
+        if (diff > 0 && diff <= 3600000) {
+          setShowExpiryWarning(true);
+        } else {
+          setShowExpiryWarning(false);
+        }
+      };
+      
+      checkExpiry();
+      const interval = setInterval(checkExpiry, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [user?.subscriptionExpiry]);
 
   useEffect(() => {
     if (user?.gymId) {
@@ -26,27 +46,44 @@ const MemberLayout = () => {
     }
   }, [user]);
 
-  const navItems = [
-    { label: 'Dashboard', path: '/member/dashboard', icon: LayoutDashboard },
-    { label: 'My Profile', path: '/member/profile', icon: User },
-    { label: 'My Gym', path: '/member/my-gym', icon: Building2 },
-    { label: 'Find Trainers', path: '/member/find-trainers', icon: UserCheck },
-    { label: 'My Trainer', path: '/member/trainer', icon: UserCheck },
-    { label: 'Book Session', path: '/member/book-session', icon: Calendar },
-    { label: 'My Bookings', path: '/member/bookings', icon: CalendarCheck },
-    { label: 'Workout Plan', path: '/member/workout', icon: Dumbbell },
-    { label: 'Diet Plan', path: '/member/diet', icon: Utensils },
-    { label: 'AI Fitness', path: '/member/ai-assistant', icon: Bot },
-    { label: 'Progress', path: '/member/progress', icon: TrendingUp },
-    { label: 'Attendance', path: '/member/attendance', icon: CalendarCheck },
-    { label: 'Membership', path: '/member/subscription', icon: CreditCard },
-    { label: 'Payments', path: '/member/payments', icon: DollarSign },
-    { label: 'Messages', path: '/member/chat', icon: MessageSquare },
-    { label: 'Notifications', path: '/member/notifications', icon: Bell },
-    { label: 'Settings', path: '/member/settings', icon: Settings },
+  const navGroups = [
+    {
+      title: 'Overview',
+      items: [
+        { label: 'Dashboard', path: '/member/dashboard', icon: LayoutDashboard },
+        { label: 'My Gym', path: '/member/my-gym', icon: Building2 },
+      ]
+    },
+    {
+      title: 'Training',
+      items: [
+        { label: 'Find Trainers', path: '/member/find-trainers', icon: UserCheck },
+        { label: 'My Trainer', path: '/member/trainer', icon: UserCheck },
+        { label: 'My Bookings', path: '/member/bookings', icon: CalendarCheck },
+      ]
+    },
+    {
+      title: 'Fitness',
+      items: [
+        { label: 'Workout Plan', path: '/member/workout', icon: Dumbbell },
+        { label: 'Diet Plan', path: '/member/diet', icon: Utensils },
+        { label: 'AI Fitness', path: '/member/ai-assistant', icon: Bot },
+        { label: 'Progress', path: '/member/progress', icon: TrendingUp },
+      ]
+    },
+    {
+      title: 'Account',
+      items: [
+        { label: 'Profile', path: '/member/profile', icon: User },
+        { label: 'Membership', path: '/member/subscription', icon: CreditCard },
+        { label: 'Messages', path: '/member/chat', icon: MessageSquare },
+        { label: 'Notifications', path: '/member/notifications', icon: Bell },
+        { label: 'Settings', path: '/member/settings', icon: Settings },
+      ]
+    }
   ];
 
-  const currentNav = navItems.find(item => item.path === location.pathname);
+  const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname);
 
   const SidebarContent = () => (
     <>
@@ -72,33 +109,40 @@ const MemberLayout = () => {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setSidebarOpen(false)}
-              className={clsx(
-                'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
-                isActive
-                  ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold border-l-4 border-[#16A34A]'
-                  : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A] border-l-4 border-transparent'
-              )}
-            >
-              <Icon
-                size={17}
-                className={clsx(
-                  'shrink-0 transition-colors',
-                  isActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]'
-                )}
-              />
-              <span className="truncate">{item.label}</span>
-            </Link>
-          );
-        })}
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
+        {navGroups.map((group, groupIdx) => (
+          <div key={groupIdx}>
+            <h4 className="px-3 mb-2 text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">{group.title}</h4>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive = location.pathname === item.path;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={clsx(
+                      'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
+                      isActive
+                        ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold'
+                        : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
+                    )}
+                  >
+                    <Icon
+                      size={17}
+                      className={clsx(
+                        'shrink-0 transition-colors',
+                        isActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]'
+                      )}
+                    />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Logout */}
@@ -123,6 +167,37 @@ const MemberLayout = () => {
           className="fixed inset-0 bg-black/40 z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
+      )}
+
+      {/* Expiry Warning Popup */}
+      {showExpiryWarning && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border-2 border-red-500 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Clock className="text-red-500" size={32} />
+            </div>
+            <h2 className="text-2xl font-bold text-[#1E293B] mb-2">Plan Expiring Soon!</h2>
+            <p className="text-[#475569] mb-6">
+              Your <span className="font-bold text-[#1E293B]">{user?.subscriptionPlan}</span> will expire in less than 1 hour. 
+              Please renew to continue accessing the gym seamlessly.
+            </p>
+            <div className="flex gap-4">
+              <button 
+                onClick={() => setShowExpiryWarning(false)}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors"
+              >
+                Dismiss
+              </button>
+              <Link 
+                to="/member/subscription"
+                onClick={() => setShowExpiryWarning(false)}
+                className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors flex items-center justify-center"
+              >
+                Renew Now
+              </Link>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Sidebar */}
@@ -156,10 +231,10 @@ const MemberLayout = () => {
           </div>
 
           <div className="flex items-center space-x-3 md:space-x-5">
-            <button className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1">
+            <Link to="/member/notifications" className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1">
               <Bell size={20} />
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#06B6D4] rounded-full shadow shadow-cyan-300" />
-            </button>
+            </Link>
             <Link to="/member/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-semibold text-[#1E293B] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>

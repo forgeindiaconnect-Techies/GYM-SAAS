@@ -30,14 +30,57 @@ const initialForm = {
 const CustomerRegisterPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [step, setStep] = useState(0);
-  const [form, setForm] = useState(initialForm);
+  const [step, setStep] = useState(() => {
+    const saved = sessionStorage.getItem('customer_reg_step');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+  const [form, setForm] = useState(() => {
+    const saved = sessionStorage.getItem('customer_reg_form');
+    return saved ? JSON.parse(saved) : initialForm;
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [intentData, setIntentData] = useState<any>(null);
+  
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(() => {
+    return sessionStorage.getItem('customer_reg_otp') === 'true';
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('customer_reg_step', step.toString());
+  }, [step]);
+
+  useEffect(() => {
+    sessionStorage.setItem('customer_reg_form', JSON.stringify(form));
+  }, [form]);
+
+  useEffect(() => {
+    sessionStorage.setItem('customer_reg_otp', otpVerified.toString());
+  }, [otpVerified]);
+
+  const handleSendOtp = () => {
+    if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
+      setErrors(e => ({ ...e, email: 'Enter a valid email first' }));
+      return;
+    }
+    setOtpSent(true);
+    alert('Demo OTP: 123456');
+  };
+
+  const handleVerifyOtp = () => {
+    if (otp === '123456') {
+      setOtpVerified(true);
+      setErrors(e => { const n = { ...e }; delete n['email']; return n; });
+      alert('OTP Verified Successfully!');
+    } else {
+      alert('Invalid OTP');
+    }
+  };
 
   useEffect(() => {
     const intentStr = sessionStorage.getItem('checkout_intent');
@@ -62,6 +105,7 @@ const CustomerRegisterPage = () => {
       if (!form.lastName.trim()) e.lastName = 'Last name is required';
       if (!form.email.trim()) e.email = 'Email is required';
       else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email';
+      else if (!otpVerified) e.email = 'Please verify your email with OTP';
       if (!form.mobile.trim()) e.mobile = 'Mobile is required';
       else if (!/^\d{10}$/.test(form.mobile)) e.mobile = 'Enter a valid 10-digit mobile number';
       if (!form.password) e.password = 'Password is required';
@@ -128,6 +172,9 @@ const CustomerRegisterPage = () => {
       });
       
       if (res.data.token && res.data.user) {
+        sessionStorage.removeItem('customer_reg_step');
+        sessionStorage.removeItem('customer_reg_form');
+        sessionStorage.removeItem('customer_reg_otp');
         alert('Registration successful!');
         await login(res.data.user, res.data.token, false); // fix arguments if needed, AuthContext uses (userData, token)
         
@@ -146,6 +193,9 @@ const CustomerRegisterPage = () => {
         navigate('/member/ai-assistant');
       } else {
         // Fallback if backend doesn't auto-approve
+        sessionStorage.removeItem('customer_reg_step');
+        sessionStorage.removeItem('customer_reg_form');
+        sessionStorage.removeItem('customer_reg_otp');
         alert('Registration successful!');
         navigate('/pending');
       }
@@ -222,12 +272,35 @@ const CustomerRegisterPage = () => {
               </div>
               <div>
                 <label className="block text-sm text-[#475569] mb-2">Email Address *</label>
-                <input id="reg-email" type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@example.com" className={inputCls('email')} />
-                {errors.email && <p className="text-teal-400 text-xs mt-1">{errors.email}</p>}
+                <div className="flex gap-2">
+                  <input id="reg-email" type="email" value={form.email} onChange={e => { set('email', e.target.value); setOtpVerified(false); setOtpSent(false); }} disabled={otpVerified} placeholder="you@example.com" className={inputCls('email') + ' flex-1'} />
+                  {!otpVerified && (
+                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#16A34A] text-white rounded-xl text-sm font-bold hover:bg-[#15803D] transition-colors whitespace-nowrap">
+                      {otpSent ? 'Resend' : 'Send OTP'}
+                    </button>
+                  )}
+                  {otpVerified && (
+                    <button type="button" onClick={() => { setOtpVerified(false); setOtpSent(false); setOtp(''); }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition-colors whitespace-nowrap">
+                      Change
+                    </button>
+                  )}
+                </div>
+                {errors.email && <p className="text-[#0D9488] text-xs mt-1">{errors.email}</p>}
+                {otpSent && !otpVerified && (
+                  <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl">
+                    <label className="block text-xs font-semibold text-[#16A34A] mb-2">Enter OTP sent to your email</label>
+                    <div className="flex gap-2">
+                      <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors flex-1" maxLength={6} />
+                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#1E293B] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">
+                        Verify
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-sm text-[#475569] mb-2">Mobile Number *</label>
-                <input id="reg-mobile" value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="10-digit number" className={inputCls('mobile')} />
+                <input id="reg-mobile" type="tel" maxLength={10} value={form.mobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if(v.length <= 10) set('mobile', v); }} placeholder="10-digit number" className={inputCls('mobile')} />
                 {errors.mobile && <p className="text-teal-400 text-xs mt-1">{errors.mobile}</p>}
               </div>
               <div>
@@ -303,7 +376,7 @@ const CustomerRegisterPage = () => {
                     {errors.emergencyContactName && <p className="text-[#0D9488] text-xs mt-1">{errors.emergencyContactName}</p>}
                   </div>
                   <div>
-                    <input type="tel" placeholder="Contact Number" value={form.emergencyContactMobile} onChange={e => set('emergencyContactMobile', e.target.value)} className={inputCls('emergencyContactMobile')} />
+                    <input type="tel" maxLength={10} placeholder="Contact Number" value={form.emergencyContactMobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if(v.length <= 10) set('emergencyContactMobile', v); }} className={inputCls('emergencyContactMobile')} />
                     {errors.emergencyContactMobile && <p className="text-[#0D9488] text-xs mt-1">{errors.emergencyContactMobile}</p>}
                   </div>
                   <div>
@@ -406,14 +479,14 @@ const CustomerRegisterPage = () => {
                   <button type="button" onClick={() => set('acceptTerms', !form.acceptTerms)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptTerms ? 'bg-[#16A34A] border-[#16A34A]' : 'border-[#555]'}`}>
                     {form.acceptTerms && <Check size={12} className="text-black" />}
                   </button>
-                  <span className="text-sm text-[#475569]">I accept the <Link to="/terms-of-service" target="_blank" className="text-[#16A34A] hover:underline">Terms & Conditions</Link></span>
+                  <span className="text-sm text-[#475569]">I accept the <Link to="/terms-of-service" className="text-[#16A34A] hover:underline">Terms & Conditions</Link></span>
                 </label>
                 {errors.acceptTerms && <p className="text-teal-400 text-xs ml-8">{errors.acceptTerms}</p>}
                 <label className="flex items-start space-x-3 cursor-pointer">
                   <button type="button" onClick={() => set('acceptPrivacy', !form.acceptPrivacy)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptPrivacy ? 'bg-[#16A34A] border-[#16A34A]' : 'border-[#555]'}`}>
                     {form.acceptPrivacy && <Check size={12} className="text-black" />}
                   </button>
-                  <span className="text-sm text-[#475569]">I accept the <Link to="/privacy-policy" target="_blank" className="text-[#16A34A] hover:underline">Privacy Policy</Link></span>
+                  <span className="text-sm text-[#475569]">I accept the <Link to="/privacy-policy" className="text-[#16A34A] hover:underline">Privacy Policy</Link></span>
                 </label>
                 {errors.acceptPrivacy && <p className="text-teal-400 text-xs ml-8">{errors.acceptPrivacy}</p>}
               </div>

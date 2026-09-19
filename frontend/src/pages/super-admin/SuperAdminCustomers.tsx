@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Loader2, AlertCircle, Phone, Mail, User, MoreVertical, Edit2, Eye, X, Check, Clock, CheckCircle, XCircle, ShieldAlert, Users, Trash2, Download, FileText, Table as TableIcon } from 'lucide-react';
+import { Search, MapPin, Loader2, AlertCircle, Phone, Mail, User, UserPlus, MoreVertical, Edit2, Eye, X, Check, Clock, CheckCircle, XCircle, ShieldAlert, Users, Trash2, Download, FileText, Table as TableIcon } from 'lucide-react';
 import api from '../../utils/api';
 import { exportToPDF, exportToExcel, exportToWord } from '../../utils/export';
 
@@ -24,15 +24,18 @@ interface Customer {
   paymentStatus?: string;
   gymId?: { _id: string; name: string };
   branchId?: { _id: string; name: string };
+  lastLogin?: string;
+  subscriptionExpiry?: string;
   createdAt: string;
 }
 
 const TABS = [
   { id: 'ALL', label: 'All Customers', icon: Users },
+  { id: 'NEW', label: 'New', icon: UserPlus },
+  { id: 'APPROVED', label: 'Active', icon: CheckCircle },
+  { id: 'SUSPENDED', label: 'Inactive', icon: XCircle },
   { id: 'PENDING', label: 'Pending', icon: Clock },
-  { id: 'APPROVED', label: 'Approved', icon: CheckCircle },
-  { id: 'REJECTED', label: 'Rejected', icon: XCircle },
-  { id: 'SUSPENDED', label: 'Suspended', icon: ShieldAlert },
+  { id: 'REJECTED', label: 'Rejected', icon: ShieldAlert },
 ];
 
 const SuperAdminCustomers = () => {
@@ -155,16 +158,34 @@ const SuperAdminCustomers = () => {
   };
 
   const filteredCustomers = customers.filter(c => {
-    const matchesTab = activeTab === 'ALL' || c.approvalStatus === activeTab;
+    let matchesTab = false;
+    if (activeTab === 'ALL') {
+      matchesTab = true;
+    } else if (activeTab === 'NEW') {
+      matchesTab = (new Date().getTime() - new Date(c.createdAt).getTime()) < 7 * 24 * 60 * 60 * 1000;
+    } else {
+      matchesTab = c.approvalStatus === activeTab;
+    }
+    
     const matchesSearch = c.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           c.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           c.email.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesTab && matchesSearch;
   });
 
+  const getFormattedStatus = (status: string) => {
+    switch (status) {
+      case 'APPROVED': return 'Active';
+      case 'SUSPENDED': return 'Inactive';
+      case 'PENDING': return 'Pending';
+      case 'REJECTED': return 'Rejected';
+      default: return status;
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'APPROVED': return 'bg-green-500/10 text-green-500 border-green-500/20';
+      case 'APPROVED': return 'bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20';
       case 'REJECTED': return 'bg-[#0D9488]/10 text-[#0D9488] border-[#0D9488]/20';
       case 'SUSPENDED': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       default: return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
@@ -194,7 +215,9 @@ const SuperAdminCustomers = () => {
             <tab.icon size={16} />
             <span>{tab.label}</span>
             <span className="bg-[#E2E8F0] text-xs px-2 py-0.5 rounded-full ml-2 text-[#1E293B]">
-              {tab.id === 'ALL' ? customers.length : customers.filter(c => c.approvalStatus === tab.id).length}
+              {tab.id === 'ALL' ? customers.length : 
+               tab.id === 'NEW' ? customers.filter(c => (new Date().getTime() - new Date(c.createdAt).getTime()) < 7 * 24 * 60 * 60 * 1000).length :
+               customers.filter(c => c.approvalStatus === tab.id).length}
             </span>
           </button>
         ))}
@@ -303,60 +326,11 @@ const SuperAdminCustomers = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${getStatusColor(customer.approvalStatus)}`}>
-                        {customer.approvalStatus}
+                        {getFormattedStatus(customer.approvalStatus)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end space-x-2">
-                        {/* Quick Actions based on status - Fixed width to prevent shifting */}
-                        <div className="flex items-center justify-end space-x-1 w-[104px]">
-                          {customer.approvalStatus !== 'APPROVED' && (
-                            <button 
-                              onClick={() => handleStatusChange(customer._id, 'APPROVED')}
-                              disabled={statusUpdating === customer._id}
-                              className="p-1 text-green-500 hover:bg-green-500/10 rounded-md transition-colors disabled:opacity-50"
-                              title="Approve"
-                            >
-                              <CheckCircle size={18} />
-                            </button>
-                          )}
-                          
-                          {customer.approvalStatus !== 'PENDING' && (
-                            <button 
-                              onClick={() => handleStatusChange(customer._id, 'PENDING')}
-                              disabled={statusUpdating === customer._id}
-                              className="p-1 text-yellow-500 hover:bg-yellow-500/10 rounded-md transition-colors disabled:opacity-50"
-                              title="Mark as Pending"
-                            >
-                              <Clock size={18} />
-                            </button>
-                          )}
-
-                          {customer.approvalStatus !== 'REJECTED' && (
-                            <button 
-                              onClick={() => handleStatusChange(customer._id, 'REJECTED')}
-                              disabled={statusUpdating === customer._id}
-                              className="p-1 text-red-500 hover:bg-red-500/10 rounded-md transition-colors disabled:opacity-50"
-                              title="Reject"
-                            >
-                              <XCircle size={18} />
-                            </button>
-                          )}
-                          
-                          {customer.approvalStatus !== 'SUSPENDED' && (
-                            <button 
-                              onClick={() => handleStatusChange(customer._id, 'SUSPENDED')}
-                              disabled={statusUpdating === customer._id}
-                              className="p-1 text-orange-500 hover:bg-orange-500/10 rounded-md transition-colors disabled:opacity-50"
-                              title="Suspend"
-                            >
-                              <ShieldAlert size={18} />
-                            </button>
-                          )}
-                        </div>
-
-                        <div className="w-px h-5 bg-[#E2E8F0] mx-1"></div>
-
                         {/* View, Edit, Delete buttons */}
                         <div className="flex items-center justify-end space-x-1 w-[96px]">
                           <button 
@@ -438,6 +412,16 @@ const SuperAdminCustomers = () => {
                       {new Date(viewCustomer.createdAt).toLocaleDateString()} at {new Date(viewCustomer.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </p>
                   </div>
+                  <div>
+                    <p className="text-[#475569] mb-1">Last Login</p>
+                    <p className="font-medium text-[#1E293B]">
+                      {viewCustomer.lastLogin ? (
+                        <>{new Date(viewCustomer.lastLogin).toLocaleDateString()} at {new Date(viewCustomer.lastLogin).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</>
+                      ) : (
+                        'Never'
+                      )}
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -467,7 +451,11 @@ const SuperAdminCustomers = () => {
                   <div>
                     <p className="text-[#475569] mb-1">Subscription Expiry</p>
                     <p className="font-medium text-red-400">
-                      {new Date(new Date(viewCustomer.createdAt).getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()} at {new Date(new Date(viewCustomer.createdAt).getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      {viewCustomer.subscriptionExpiry ? (
+                        <>{new Date(viewCustomer.subscriptionExpiry).toLocaleDateString()} at {new Date(viewCustomer.subscriptionExpiry).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</>
+                      ) : (
+                        'Not set'
+                      )}
                     </p>
                   </div>
                   <div>

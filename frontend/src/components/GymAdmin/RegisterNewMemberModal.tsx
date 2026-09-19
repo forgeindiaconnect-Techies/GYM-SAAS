@@ -5,14 +5,15 @@ interface Props {
   onClose: () => void;
   onSubmit: (data: any) => void;
   plans: any[];
+  initialData?: any;
 }
 
-export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, plans }) => {
+export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, plans, initialData }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
+    name: initialData?.firstName && initialData?.lastName ? `${initialData.firstName} ${initialData.lastName}` : (initialData?.name || ''),
+    email: initialData?.email || '',
+    phone: initialData?.mobile || '',
     gender: 'Male',
     dob: '',
     plan: plans.length > 0 ? plans[0].name : 'Basic',
@@ -49,6 +50,7 @@ export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
     onSubmit({ 
       ...formData, 
       customerType: 'NEW_CUSTOMER',
+      enquiryId: initialData?.enquiryId,
       endDate: end.toISOString().split('T')[0]
     });
   };

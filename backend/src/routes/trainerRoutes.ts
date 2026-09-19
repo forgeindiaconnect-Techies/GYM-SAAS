@@ -10,7 +10,8 @@ import {
   acceptInvitation,
   completeProfile,
   getMyProfile,
-  updateMyProfile
+  updateMyProfile,
+  getMyGymTrainers
 } from '../controllers/trainerController';
 import { authenticate } from '../middlewares/auth';
 
@@ -24,6 +25,9 @@ router.post('/profile', completeProfile); // Completes profile, sets to pending
 // Trainer self-profile routes
 router.get('/my-profile', authenticate, getMyProfile);
 router.patch('/my-profile', authenticate, updateMyProfile);
+
+// Member routes
+router.get('/my-gym', authenticate, getMyGymTrainers);
 
 // Protected gym owner routes
 router.post('/manual-add', authenticate, manualAddTrainer);

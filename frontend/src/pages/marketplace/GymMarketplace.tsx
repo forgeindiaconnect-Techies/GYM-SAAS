@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, MapPin, Star, Activity, Loader2, Navigation, ChevronDown, Volume2, VolumeX } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Star, MapPin, Search, Navigation, Filter, Check, Activity, Loader2, PlayCircle, Volume2, VolumeX, Menu, X, ChevronDown } from 'lucide-react';
 import api from '../../utils/api';
+import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
 
 // Each slide has: a YouTube video ID (gym-specific) and matching title/description text
 const HERO_SLIDES = [
@@ -32,8 +33,27 @@ const GymMarketplace = () => {
   const [locationCity, setLocationCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [slideIdx, setSlideIdx] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [enquiryGym, setEnquiryGym] = useState<{ id: string, name: string } | null>(null);
   const [muted, setMuted] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const location = useLocation();
+
+  // If navigated here with openEnquiry state (from landing page "Enquire Now"), scroll to gyms
+  useEffect(() => {
+    if ((location.state as any)?.openEnquiry) {
+      // Wait for gyms to load then scroll
+      const tryScroll = (attempts = 0) => {
+        const el = document.getElementById('gym-results');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        } else if (attempts < 10) {
+          setTimeout(() => tryScroll(attempts + 1), 300);
+        }
+      };
+      setTimeout(() => tryScroll(), 1200);
+    }
+  }, [location.state]);
 
   // Auto-cycle slides every 12 seconds
   useEffect(() => {
@@ -339,7 +359,7 @@ const GymMarketplace = () => {
         </div>
 
         {/* Results Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div id="gym-results" className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-extrabold text-[#1E293B]">
               {loading ? 'Searching...' : `${gyms.length} Gym${gyms.length !== 1 ? 's' : ''} Found`}
@@ -445,12 +465,20 @@ const GymMarketplace = () => {
                         </span>
                       </p>
                     </div>
-                    <Link
-                      to={`/gyms/${gym._id}`}
-                      className="px-5 py-2.5 bg-[#FFFFFF] text-[#1E293B] hover:bg-[#16A34A] hover:text-black rounded-xl text-sm font-bold transition-all border border-[#CCFBF1] hover:border-[#16A34A] hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]"
-                    >
-                      View Details
-                    </Link>
+                    <div className="flex flex-col gap-2">
+                      <Link
+                        to={`/gyms/${gym._id}`}
+                        className="px-5 py-2 text-center bg-[#FFFFFF] text-[#1E293B] hover:bg-[#16A34A] hover:text-white rounded-xl text-sm font-bold transition-all border border-[#CCFBF1] hover:border-[#16A34A]"
+                      >
+                        View Details
+                      </Link>
+                      <button
+                        onClick={() => setEnquiryGym({ id: gym._id, name: gym.name })}
+                        className="px-5 py-2 text-center bg-[#16A34A] text-white hover:bg-[#15803D] rounded-xl text-sm font-bold transition-all border border-[#16A34A]"
+                      >
+                        Enquire Now
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -458,6 +486,13 @@ const GymMarketplace = () => {
           </div>
         )}
       </div>
+
+      <CustomerEnquiryModal
+        isOpen={!!enquiryGym}
+        onClose={() => setEnquiryGym(null)}
+        gymId={enquiryGym?.id || ''}
+        gymName={enquiryGym?.name || ''}
+      />
     </div>
   );
 };

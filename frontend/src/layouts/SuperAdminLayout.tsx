@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, Building2, Send, User, Settings, LogOut,
-  Users, CreditCard, Trash2, ShieldCheck, Menu
+  Users, CreditCard, Trash2, ShieldCheck, Menu, MessageSquare
 } from 'lucide-react';
 
 const SuperAdminLayout = () => {
@@ -15,6 +15,7 @@ const SuperAdminLayout = () => {
   const navItems = [
     { label: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard },
     { label: 'Customer Details', path: '/super-admin/customers', icon: Users },
+    { label: 'Customer Enquiries', path: '/super-admin/enquiries', icon: MessageSquare },
     { label: 'Gym Owner Details', path: '/super-admin/gym-owners', icon: Building2 },
     { label: 'Add Gym Manually', path: '/super-admin/gyms/add', icon: Building2 },
     { label: 'Gym Invitations', path: '/super-admin/invitations', icon: Send },
@@ -62,8 +63,8 @@ const SuperAdminLayout = () => {
               className={clsx(
                 'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
                 isActive
-                  ? 'bg-[#0D9488]/10 text-[#0D9488] font-semibold border-l-4 border-[#0D9488]'
-                  : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#0D9488] border-l-4 border-transparent'
+                  ? 'bg-[#0D9488]/10 text-[#0D9488] font-semibold'
+                  : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#0D9488]'
               )}
             >
               <Icon

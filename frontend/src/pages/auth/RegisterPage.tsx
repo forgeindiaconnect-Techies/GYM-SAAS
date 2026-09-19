@@ -36,6 +36,29 @@ const RegisterPage = () => {
   const [apiError, setApiError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+
+  const handleSendOtp = () => {
+    if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
+      setErrors(e => ({ ...e, email: 'Enter a valid email first' }));
+      return;
+    }
+    setOtpSent(true);
+    alert('Demo OTP: 123456');
+  };
+
+  const handleVerifyOtp = () => {
+    if (otp === '123456') {
+      setOtpVerified(true);
+      setErrors(e => { const n = { ...e }; delete n['email']; return n; });
+      alert('OTP Verified Successfully!');
+    } else {
+      alert('Invalid OTP');
+    }
+  };
+
   const set = (field: string, value: string | boolean) => {
     setForm(f => ({ ...f, [field]: value }));
     setErrors(e => { const n = { ...e }; delete n[field]; return n; });
@@ -48,6 +71,7 @@ const RegisterPage = () => {
       if (!form.lastName.trim()) e.lastName = 'Last name is required';
       if (!form.email.trim()) e.email = 'Email is required';
       else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email';
+      else if (!otpVerified) e.email = 'Please verify your email with OTP';
       if (!form.mobile.trim()) e.mobile = 'Mobile is required';
       else if (!/^\d{10}$/.test(form.mobile)) e.mobile = 'Enter a valid 10-digit mobile number';
       if (!form.password) e.password = 'Password is required';
@@ -181,12 +205,35 @@ const RegisterPage = () => {
               </div>
               <div>
                 <label className="block text-sm text-[#475569] mb-2">Email Address *</label>
-                <input id="reg-email" type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@example.com" className={inputCls('email')} />
-                {errors.email && <p className="text-teal-400 text-xs mt-1">{errors.email}</p>}
+                <div className="flex gap-2">
+                  <input id="reg-email" type="email" value={form.email} onChange={e => { set('email', e.target.value); setOtpVerified(false); setOtpSent(false); }} disabled={otpVerified} placeholder="you@example.com" className={inputCls('email') + ' flex-1'} />
+                  {!otpVerified && (
+                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#16A34A] text-white rounded-xl text-sm font-bold hover:bg-[#15803D] transition-colors whitespace-nowrap">
+                      {otpSent ? 'Resend' : 'Send OTP'}
+                    </button>
+                  )}
+                  {otpVerified && (
+                    <button type="button" onClick={() => { setOtpVerified(false); setOtpSent(false); setOtp(''); }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition-colors whitespace-nowrap">
+                      Change
+                    </button>
+                  )}
+                </div>
+                {errors.email && <p className="text-[#0D9488] text-xs mt-1">{errors.email}</p>}
+                {otpSent && !otpVerified && (
+                  <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl">
+                    <label className="block text-xs font-semibold text-[#16A34A] mb-2">Enter OTP sent to your email</label>
+                    <div className="flex gap-2">
+                      <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors flex-1" maxLength={6} />
+                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#1E293B] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">
+                        Verify
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-sm text-[#475569] mb-2">Mobile Number *</label>
-                <input id="reg-mobile" value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="10-digit number" className={inputCls('mobile')} />
+                <input id="reg-mobile" type="tel" maxLength={10} value={form.mobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if(v.length <= 10) set('mobile', v); }} placeholder="10-digit number" className={inputCls('mobile')} />
                 {errors.mobile && <p className="text-teal-400 text-xs mt-1">{errors.mobile}</p>}
               </div>
               <div>
@@ -315,7 +362,7 @@ const RegisterPage = () => {
               </div>
               <div>
                 <label className="block text-sm text-[#475569] mb-2">Mobile Number *</label>
-                <input id="reg-emergencyMobile" value={form.emergencyMobile} onChange={e => set('emergencyMobile', e.target.value)} placeholder="10-digit number" className={inputCls('emergencyMobile')} />
+                <input id="reg-emergencyMobile" type="tel" maxLength={10} value={form.emergencyMobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if(v.length <= 10) set('emergencyMobile', v); }} placeholder="10-digit number" className={inputCls('emergencyMobile')} />
                 {errors.emergencyMobile && <p className="text-teal-400 text-xs mt-1">{errors.emergencyMobile}</p>}
               </div>
             </div>

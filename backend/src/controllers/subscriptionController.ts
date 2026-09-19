@@ -5,7 +5,7 @@ import User, { SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
 
 const PLAN_PRICING: Record<string, { monthly: number; annual: number; trial: number; trialDays: number }> = {
-  FREE_TRIAL: { monthly: 0, annual: 0, trial: 0, trialDays: 7 },
+  FREE_TRIAL: { monthly: 0, annual: 0, trial: 0, trialDays: 1 },
   BASIC:      { monthly: 399, annual: 3990, trial: 0, trialDays: 0 },
   PREMIUM:    { monthly: 799, annual: 7990, trial: 0, trialDays: 0 },
 };
@@ -31,7 +31,7 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
     let amount = 0;
 
     if (plan === 'FREE_TRIAL') {
-      endDate.setDate(endDate.getDate() + 7);
+      endDate.setDate(endDate.getDate() + 1);
       amount = 0;
     } else if (billingCycle === 'annual') {
       endDate.setFullYear(endDate.getFullYear() + 1);

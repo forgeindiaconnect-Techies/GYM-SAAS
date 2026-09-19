@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Star, Activity, CheckCircle, Clock, Users, Phone, Mail, Globe, ArrowLeft, Loader2, ShieldCheck, Dumbbell } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
 
 const GymDetails = () => {
   const { id } = useParams();
@@ -14,6 +15,7 @@ const GymDetails = () => {
   const [branches, setBranches] = useState<any[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showEnquiry, setShowEnquiry] = useState(false);
 
   useEffect(() => {
     fetchGymDetails();
@@ -55,7 +57,8 @@ const GymDetails = () => {
       sessionStorage.setItem('checkout_intent', JSON.stringify({ 
         gymId: id, 
         branchId: selectedBranch?._id,
-        plan 
+        plan,
+        gym
       }));
       navigate('/register/customer');
     } else if (user.role !== 'MEMBER') {
@@ -64,7 +67,8 @@ const GymDetails = () => {
         sessionStorage.setItem('checkout_intent', JSON.stringify({ 
           gymId: id, 
           branchId: selectedBranch?._id,
-          plan 
+          plan,
+          gym
         }));
         navigate('/register/customer');
       }
@@ -85,7 +89,7 @@ const GymDetails = () => {
     return (
       <div className="min-h-screen bg-[#F0FDFA] flex flex-col justify-center items-center text-[#1E293B]">
         <h2 className="text-2xl font-bold mb-4">Gym not found</h2>
-        <Link to="/gyms" className="text-[#16A34A] hover:underline flex items-center"><ArrowLeft size={16} className="mr-2" /> Back to Marketplace</Link>
+        <button onClick={() => navigate(-1)} className="text-[#16A34A] hover:underline flex items-center"><ArrowLeft size={16} className="mr-2" /> Back to Marketplace</button>
       </div>
     );
   }
@@ -106,9 +110,9 @@ const GymDetails = () => {
         <div className="absolute bottom-0 left-0 w-full px-4 sm:px-6 lg:px-8 pb-8">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <Link to="/gyms" className="text-[#475569] hover:text-[#16A34A] flex items-center text-sm font-medium mb-4 transition-colors">
+              <button onClick={() => navigate('/')} className="text-[#475569] hover:text-[#16A34A] flex items-center text-sm font-medium mb-4 transition-colors">
                 <ArrowLeft size={16} className="mr-2" /> Back to Search
-              </Link>
+              </button>
               <div className="flex items-center gap-3 mb-3">
                 {gym.gymType && (
                   <span className="px-3 py-1 bg-[#16A34A] text-white text-xs font-bold rounded-full">
@@ -133,6 +137,12 @@ const GymDetails = () => {
             </div>
             
             <div className="flex gap-4">
+              <button 
+                onClick={() => setShowEnquiry(true)}
+                className="px-8 py-4 bg-[#F8FAFC] border border-[#E2E8F0] text-[#1E293B] font-bold rounded-xl hover:bg-[#F1F5F9] transition-all whitespace-nowrap"
+              >
+                Enquire Now
+              </button>
               <button 
                 onClick={() => {
                   const plansSection = document.getElementById('membership-plans');
@@ -384,10 +394,15 @@ const GymDetails = () => {
               </div>
             </div>
           </div>
-          
         </div>
-
       </div>
+
+      <CustomerEnquiryModal
+        isOpen={showEnquiry}
+        onClose={() => setShowEnquiry(false)}
+        gymId={gym._id}
+        gymName={gym.name}
+      />
     </div>
   );
 };

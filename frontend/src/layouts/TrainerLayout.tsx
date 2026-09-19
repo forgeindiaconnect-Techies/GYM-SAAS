@@ -6,7 +6,7 @@ import {
   LayoutDashboard, User, Users, FileText,
   Utensils, Calendar, CalendarCheck, TrendingUp,
   MessageSquare, IndianRupee, Bell,
-  Activity, Menu, LogOut
+  Activity, Menu, LogOut, Bot, Settings
 } from 'lucide-react';
 
 const TrainerLayout = () => {
@@ -26,22 +26,53 @@ const TrainerLayout = () => {
     }
   }, [user]);
 
-  const navItems = [
-    { label: 'Dashboard', path: '/trainer/dashboard', icon: LayoutDashboard },
-    { label: 'My Profile', path: '/trainer/profile', icon: User },
-    { label: 'My Members', path: '/trainer/members', icon: Users },
-    { label: 'Schedule', path: '/trainer/schedule', icon: Calendar },
-    { label: 'Session Bookings', path: '/trainer/session-bookings', icon: CalendarCheck },
-    { label: 'Workout Plans', path: '/trainer/workout-plans', icon: FileText },
-    { label: 'Diet Plans', path: '/trainer/diet-plans', icon: Utensils },
-    { label: 'Member Progress', path: '/trainer/member-progress', icon: TrendingUp },
-    { label: 'Attendance', path: '/trainer/attendance', icon: CalendarCheck },
-    { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
-    { label: 'Notifications', path: '/trainer/notifications', icon: Bell },
-    { label: 'Payments / Earnings', path: '/trainer/earnings', icon: IndianRupee },
+  const navGroups = [
+    {
+      title: 'Main',
+      items: [
+        { label: 'Dashboard', path: '/trainer/dashboard', icon: LayoutDashboard },
+        { label: 'My Profile', path: '/trainer/profile', icon: User },
+      ]
+    },
+    {
+      title: 'AI Tools',
+      items: [
+        { label: 'AI Trainer Assistant', path: '/trainer/ai-assistant', icon: Bot },
+      ]
+    },
+    {
+      title: 'Clients',
+      items: [
+        { label: 'My Members', path: '/trainer/members', icon: Users },
+        { label: 'Member Progress', path: '/trainer/member-progress', icon: TrendingUp },
+        { label: 'Attendance', path: '/trainer/attendance', icon: CalendarCheck },
+      ]
+    },
+    {
+      title: 'Scheduling',
+      items: [
+        { label: 'Schedule', path: '/trainer/schedule', icon: Calendar },
+        { label: 'Session Bookings', path: '/trainer/session-bookings', icon: CalendarCheck },
+      ]
+    },
+    {
+      title: 'Programs',
+      items: [
+        { label: 'Workout Plans', path: '/trainer/workout-plans', icon: FileText },
+        { label: 'Diet Plans', path: '/trainer/diet-plans', icon: Utensils },
+      ]
+    },
+    {
+      title: 'Communication & Finance',
+      items: [
+        { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
+        { label: 'Notifications', path: '/trainer/notifications', icon: Bell },
+        { label: 'Earnings', path: '/trainer/earnings', icon: IndianRupee },
+      ]
+    }
   ];
 
-  const currentNav = navItems.find(item => item.path === location.pathname);
+  const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname);
 
   const SidebarContent = () => (
     <>
@@ -67,33 +98,40 @@ const TrainerLayout = () => {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setSidebarOpen(false)}
-              className={clsx(
-                'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
-                isActive
-                  ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold border-l-4 border-[#16A34A]'
-                  : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A] border-l-4 border-transparent'
-              )}
-            >
-              <Icon
-                size={18}
-                className={clsx(
-                  'shrink-0 transition-colors',
-                  isActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]'
-                )}
-              />
-              <span className="truncate">{item.label}</span>
-            </Link>
-          );
-        })}
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        {navGroups.map((group, idx) => (
+          <div key={idx}>
+            <h3 className="px-3 text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-2">{group.title}</h3>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive = location.pathname === item.path;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={clsx(
+                      'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
+                      isActive
+                        ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold'
+                        : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
+                    )}
+                  >
+                    <Icon
+                      size={18}
+                      className={clsx(
+                        'shrink-0 transition-colors',
+                        isActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]'
+                      )}
+                    />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Logout */}

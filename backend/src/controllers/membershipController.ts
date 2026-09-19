@@ -41,10 +41,16 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     if (paymentMethod !== 'Bank Transfer') {
       // Calculate end date based on duration
       const endDate = new Date();
-      if (duration.toLowerCase().includes('month')) {
-        endDate.setMonth(endDate.getMonth() + parseInt(duration) || 1);
+      if (planName.toLowerCase().includes('trial')) {
+        endDate.setDate(endDate.getDate() + 1);
+      } else if (duration.toLowerCase().includes('month')) {
+        endDate.setMonth(endDate.getMonth() + (parseInt(duration) || 1));
       } else if (duration.toLowerCase().includes('year')) {
-        endDate.setFullYear(endDate.getFullYear() + parseInt(duration) || 1);
+        endDate.setFullYear(endDate.getFullYear() + (parseInt(duration) || 1));
+      } else if (duration.toLowerCase().includes('day')) {
+        endDate.setDate(endDate.getDate() + (parseInt(duration) || 1));
+      } else if (duration.toLowerCase().includes('week')) {
+        endDate.setDate(endDate.getDate() + ((parseInt(duration) || 1) * 7));
       }
       membership.endDate = endDate;
     }
@@ -104,10 +110,16 @@ export const verifyMembership = async (req: AuthRequest, res: Response): Promise
     membership.startDate = new Date();
     
     const endDate = new Date();
-    if (membership.duration.toLowerCase().includes('month')) {
-      endDate.setMonth(endDate.getMonth() + parseInt(membership.duration) || 1);
+    if (membership.planName.toLowerCase().includes('trial')) {
+      endDate.setDate(endDate.getDate() + 1);
+    } else if (membership.duration.toLowerCase().includes('month')) {
+      endDate.setMonth(endDate.getMonth() + (parseInt(membership.duration) || 1));
     } else if (membership.duration.toLowerCase().includes('year')) {
-      endDate.setFullYear(endDate.getFullYear() + parseInt(membership.duration) || 1);
+      endDate.setFullYear(endDate.getFullYear() + (parseInt(membership.duration) || 1));
+    } else if (membership.duration.toLowerCase().includes('day')) {
+      endDate.setDate(endDate.getDate() + (parseInt(membership.duration) || 1));
+    } else if (membership.duration.toLowerCase().includes('week')) {
+      endDate.setDate(endDate.getDate() + ((parseInt(membership.duration) || 1) * 7));
     }
     membership.endDate = endDate;
 

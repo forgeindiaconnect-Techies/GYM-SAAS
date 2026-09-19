@@ -1,18 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, MoreVertical, Settings, FileSpreadsheet } from 'lucide-react';
+import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, FileSpreadsheet } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AddMemberSelectorModal } from '../../components/GymAdmin/AddMemberSelectorModal';
 import { AddExistingMemberModal } from '../../components/GymAdmin/AddExistingMemberModal';
 import { RegisterNewMemberModal } from '../../components/GymAdmin/RegisterNewMemberModal';
 import api from '../../utils/api';
+import { addItem, updateItem, deleteItem } from '../../utils/mockDb';
 
-const defaultMockMembers = [
-  { id: '1', name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', plan: 'Pro', status: 'Active', joined: '2025-10-15', customerType: 'EXISTING_CUSTOMER', trainer: 'Mike Johnson', gender: 'Male', dob: '1990-05-12', emergencyName: 'Jane Doe', emergencyPhone: '098-765-4321', emergencyRelation: 'Spouse', fitnessGoal: 'Muscle Gain' },
-  { id: '2', name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210', plan: 'Elite', status: 'Active', joined: '2025-11-02', customerType: 'NEW_CUSTOMER', trainer: 'Sarah Williams', gender: 'Female', dob: '1985-08-22', emergencyName: 'Mark Smith', emergencyPhone: '555-444-3333', emergencyRelation: 'Brother', fitnessGoal: 'Weight Loss' },
-  { id: '3', name: 'Mike Johnson', email: 'mike@example.com', phone: '555-123-4567', plan: 'Basic', status: 'Inactive', joined: '2025-08-20', customerType: 'EXISTING_CUSTOMER', trainer: '', gender: 'Male', dob: '1992-11-05', emergencyName: 'Sarah Johnson', emergencyPhone: '111-222-3333', emergencyRelation: 'Sister', fitnessGoal: 'General Fitness' },
-  { id: '4', name: 'Emily Davis', email: 'emily@example.com', phone: '444-987-1234', plan: 'Pro', status: 'Pending', joined: '2025-12-01', customerType: 'NEW_CUSTOMER', trainer: 'Mike Johnson', gender: 'Female', dob: '1995-02-14', emergencyName: 'Tom Davis', emergencyPhone: '999-888-7777', emergencyRelation: 'Father', fitnessGoal: 'Endurance' },
-];
+
 
 const mockPlans = [
   { id: '1', name: 'Basic' },
@@ -23,15 +19,12 @@ const mockPlans = [
 const GymAdminMembers = () => {
   const [members, setMembers] = useState<any[]>([]);
   
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     fetchMembers();
   }, []);
 
   const fetchMembers = async () => {
     try {
-      setLoading(true);
       const res = await api.get('/users?role=MEMBER');
       if (res.data.success) {
         const mapped = res.data.users.map((u: any) => ({
@@ -58,8 +51,6 @@ const GymAdminMembers = () => {
       }
     } catch (err) {
       console.error('Error fetching members:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -293,7 +284,12 @@ const GymAdminMembers = () => {
                       <span className="px-2 py-0.5 bg-[#1E293B] text-white rounded text-xs font-bold inline-flex items-center gap-1">
                         <ShieldCheck size={12} className="text-[#CCFBF1]" /> {member.plan}
                       </span>
-                      <p className="flex items-center text-[11px] text-[#475569]"><Calendar size={10} className="mr-1"/> Since {member.joined}</p>
+                      <p className="flex items-center text-[11px] text-[#475569]">
+                        <Calendar size={10} className="mr-1"/> Joined: {member.originalUser?.createdAt ? new Date(member.originalUser.createdAt).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : member.joined}
+                      </p>
+                      <p className="flex items-center text-[11px] text-red-500 font-medium mt-0.5">
+                        <Calendar size={10} className="mr-1"/> Expiry: {member.originalUser?.subscriptionExpiry ? new Date(member.originalUser.subscriptionExpiry).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : 'N/A'}
+                      </p>
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -452,12 +448,40 @@ const GymAdminMembers = () => {
                   <p className="font-semibold text-[#1E293B]">{selectedMember.gender || 'Not specified'}</p>
                 </div>
                 <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Renewal Date</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.originalUser?.subscriptionExpiry ? new Date(selectedMember.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Last Login</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.originalUser?.lastLogin ? new Date(selectedMember.originalUser.lastLogin).toLocaleString() : 'Never'}</p>
+                </div>
+                <div>
                   <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Date of Birth</p>
                   <p className="font-semibold text-[#1E293B]">{selectedMember.dob || 'Not specified'}</p>
                 </div>
                 <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">City & PIN</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.originalUser?.city || 'Not specified'} - {selectedMember.originalUser?.pinCode || ''}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Height / Weight</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.originalUser?.height ? `${selectedMember.originalUser.height} cm` : '--'} / {selectedMember.originalUser?.weight ? `${selectedMember.originalUser.weight} kg` : '--'}</p>
+                </div>
+                <div>
                   <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Fitness Goal</p>
                   <p className="font-semibold text-[#1E293B]">{selectedMember.fitnessGoal || 'Not specified'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Experience Level</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.originalUser?.experienceLevel || 'Not specified'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Pref. Training</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.originalUser?.preferredTraining || 'Not specified'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Pref. Workout Time</p>
+                  <p className="font-semibold text-[#1E293B]">{selectedMember.originalUser?.preferredWorkoutTime || 'Not specified'}</p>
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-1">Assigned Trainer</p>

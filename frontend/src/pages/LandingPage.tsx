@@ -124,10 +124,10 @@ const LandingPage = () => {
           </div>
 
           <div className="flex items-center space-x-3">
-            <Link to="/login" id="nav-login" className="px-4 py-2 bg-[#16A34A] text-white text-sm font-semibold rounded-lg hover:bg-[#15803D] transition-colors mr-2">
+            <Link to="/login" id="nav-login" className="px-4 py-2 bg-[#16A34A] text-white text-sm font-semibold rounded-lg hover:bg-[#15803D] transition-colors">
               Log In
             </Link>
-            
+
             <Link to="/gyms" className="px-4 py-2 bg-[#16A34A] text-white text-sm font-semibold rounded-lg hover:bg-[#15803D] transition-colors flex items-center space-x-2">
               <User size={14} />
               <span>Find a Gym</span>
@@ -136,6 +136,10 @@ const LandingPage = () => {
             <Link to="/gym-owner-introduction" className="px-4 py-2 bg-[#16A34A] text-white text-sm font-semibold rounded-lg hover:bg-[#15803D] transition-colors flex items-center space-x-2">
               <Activity size={14} />
               <span>Manage Your Gym</span>
+            </Link>
+
+            <Link to="/gyms" state={{ openEnquiry: true }} className="px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#EF4444] text-white text-sm font-bold rounded-lg hover:from-[#D97706] hover:to-[#DC2626] transition-all shadow-md shadow-orange-300/40 flex items-center space-x-2">
+              <span>Enquire Now</span>
             </Link>
           </div>
         </div>

@@ -84,6 +84,8 @@ const GymCheckout = () => {
   const tax = plan.price * 0.18; // 18% GST example
   const total = Number(plan.price) + tax;
 
+  const isFreeTrial = Number(plan.price) === 0 || plan.name.toLowerCase().includes('trial');
+
   return (
     <div className="min-h-screen bg-[#F0FDFA] pt-24 pb-12 px-4 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
@@ -99,7 +101,30 @@ const GymCheckout = () => {
           <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-8 shadow-2xl">
             <h2 className="text-2xl font-bold text-[#1E293B] mb-6 border-b border-[#CCFBF1] pb-4">Checkout</h2>
             
-            <h3 className="text-lg font-bold text-[#1E293B] mb-4">Select Payment Method</h3>
+            {isFreeTrial ? (
+              <div className="text-center py-8">
+                <ShieldCheck size={64} className="mx-auto text-[#16A34A] mb-4" />
+                <h3 className="text-2xl font-bold text-[#1E293B] mb-2">Start Your Free Trial</h3>
+                <p className="text-[#475569] mb-8">No payment is required for this plan. You can start exploring the gym immediately after approval.</p>
+                <button 
+                  disabled={isProcessing}
+                  onClick={() => handlePayment('Free Trial')}
+                  className={`px-8 py-4 rounded-xl font-bold text-lg inline-flex items-center space-x-2 transition-all ${
+                    isProcessing
+                      ? 'bg-[#E2E8F0] text-[#777] cursor-not-allowed'
+                      : 'bg-[#16A34A] text-white hover:bg-[#15803D] hover:shadow-[0_0_30px_rgba(22,163,74,0.4)] hover:-translate-y-1'
+                  }`}
+                >
+                  {isProcessing ? (
+                    <span className="flex items-center"><Loader2 className="animate-spin mr-2" size={20} /> Processing...</span>
+                  ) : (
+                    <span>Confirm Free Trial</span>
+                  )}
+                </button>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-lg font-bold text-[#1E293B] mb-4">Select Payment Method</h3>
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
               <label className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bank' ? 'border-[#16A34A] bg-[#16A34A]/5' : 'border-[#CCFBF1] hover:border-[#16A34A]/50'}`}>
                 <div className="flex items-center justify-between mb-2">
@@ -125,7 +150,13 @@ const GymCheckout = () => {
             {paymentMethod === 'qr' && (
               <div className="flex flex-col items-center justify-center py-6 animate-in fade-in zoom-in-95 border border-[#CCFBF1] rounded-xl bg-white mb-6">
                 <div className="bg-white p-4 rounded-xl border-2 border-[#16A34A] shadow-[0_0_20px_rgba(22,163,74,0.15)] mb-6">
-                  <QrCode size={160} className="text-[#1E293B]" />
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(`upi://pay?pa=${(gym.name || 'gym').toLowerCase().replace(/\s+/g, '')}@upi&pn=${encodeURIComponent(gym.name || 'Gym')}&am=${total}&cu=INR`)}`} 
+                    alt="UPI QR Code" 
+                    width={160} 
+                    height={160} 
+                    className="rounded-lg"
+                  />
                 </div>
                 <p className="text-[#475569] font-medium mb-4 text-center">Scan with any UPI app to pay</p>
                 <div className="flex gap-4">
@@ -159,8 +190,8 @@ const GymCheckout = () => {
                 <div>
                   <h4 className="text-[#1E293B] font-bold mb-2 text-sm">Gym Payment Details</h4>
                   <div className="p-4 bg-[#F0FDFA] rounded-lg border border-[#CCFBF1] text-sm text-[#475569]">
-                    <p><span className="text-[#1E293B]">UPI ID:</span> {gym.name.toLowerCase().replace(/\s+/g, '')}@upi</p>
-                    <p className="mt-2"><span className="text-[#1E293B]">Account Name:</span> {gym.name}</p>
+                    <p><span className="text-[#1E293B]">UPI ID:</span> {(gym.name || 'gym').toLowerCase().replace(/\s+/g, '')}@upi</p>
+                    <p className="mt-2"><span className="text-[#1E293B]">Account Name:</span> {gym.name || 'Gym Account'}</p>
                     <p className="mt-1"><span className="text-[#1E293B]">Bank:</span> HDFC Bank (IFSC: HDFC0001234)</p>
                     <p className="mt-1"><span className="text-[#1E293B]">Account No:</span> 50200012345678</p>
                   </div>
@@ -214,6 +245,8 @@ const GymCheckout = () => {
                 </>
               )}
             </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -228,8 +261,8 @@ const GymCheckout = () => {
             <div className="space-y-4 mb-6">
               <div>
                 <p className="text-xs text-[#475569] mb-1">Gym</p>
-                <p className="font-bold text-[#1E293B] truncate">{gym.name}</p>
-                <p className="text-xs text-[#555]">{gym.location.city}</p>
+                <p className="font-bold text-[#1E293B] truncate">{gym.name || 'Selected Gym'}</p>
+                <p className="text-xs text-[#555]">{gym.location?.city || 'Location unavailable'}</p>
               </div>
               
               <div className="w-full h-px bg-[#E2E8F0]"></div>

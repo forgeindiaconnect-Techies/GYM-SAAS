@@ -276,6 +276,29 @@ export const completeProfile = async (req: AuthRequest, res: Response): Promise<
 };
 
 // 6. Get Trainers (Admin)
+export const getMyGymTrainers = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const user = req.user;
+    if (!user || user.role !== Role.MEMBER) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    if (!user.gymId) {
+      res.status(400).json({ success: false, message: 'User is not associated with any gym' });
+      return;
+    }
+
+    console.log('Fetching trainers for gymId:', user.gymId);
+    const trainers = await Trainer.find({ gymId: user.gymId, status: 'Active' }).sort({ name: 1 });
+    console.log('Found trainers:', trainers.length);
+
+    res.status(200).json({ success: true, trainers });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
 export const getTrainers = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const gymOwner = req.user;

@@ -224,9 +224,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     if (user.subscriptionStatus === SubscriptionStatus.TRIAL && user.subscriptionExpiry) {
       if (new Date(user.subscriptionExpiry) < new Date()) {
         user.subscriptionStatus = SubscriptionStatus.EXPIRED;
-        await user.save();
       }
     }
+
+    user.lastLogin = new Date();
+    await user.save();
 
     const payload = {
       id: user._id,
@@ -259,6 +261,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         approvalStatus: user.approvalStatus,
         subscriptionStatus: user.subscriptionStatus,
         subscriptionPlan: user.subscriptionPlan,
+        subscriptionExpiry: user.subscriptionExpiry,
         rejectionReason: user.rejectionReason,
         suspensionReason: user.suspensionReason,
       },

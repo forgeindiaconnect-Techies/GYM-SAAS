@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Building2, MapPin, Phone, Mail, Globe } from 'lucide-react';
+import { Building2, MapPin, Phone, Mail, Globe, CheckCircle2, Calendar, Dumbbell, Wind, Star } from 'lucide-react';
 import api from '../../utils/api';
 
 const MemberGymProfile = () => {
@@ -37,97 +37,247 @@ const MemberGymProfile = () => {
     return <div className="text-center py-20 text-[#475569]">You are not assigned to any specific gym yet.</div>;
   }
 
+  // Combine services and facilities, removing duplicates
+  const allAmenities = Array.from(new Set([...(gym.services || []), ...(gym.facilities || [])]));
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 border-b border-[#CCFBF1] pb-8">
-        <div className="flex items-center space-x-6">
-          <div className="w-24 h-24 bg-[#FFFFFF] border border-[#CCFBF1] rounded-3xl flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
+    <div className="max-w-6xl mx-auto space-y-8 animate-fade-in pb-12">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4 border-b border-[#CCFBF1] pb-8">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 text-center sm:text-left">
+          <div className="w-32 h-32 bg-[#FFFFFF] border-4 border-white rounded-3xl flex items-center justify-center overflow-hidden shrink-0 shadow-2xl">
             {gym.logo ? (
               <img src={gym.logo} alt={gym.name} className="w-full h-full object-cover" />
             ) : (
-              <Building2 className="text-[#555]" size={40} />
+              <Building2 className="text-[#94A3B8]" size={48} />
             )}
           </div>
-          <div>
+          <div className="pt-2">
             <h1 className="text-4xl font-black text-[#1E293B] tracking-tight">{gym.name}</h1>
-            <div className="flex items-center gap-3 mt-3">
-              <span className="text-[#EF4444] font-bold text-sm tracking-wide uppercase">{gym.gymType || 'Fitness Facility'}</span>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
+              <span className="bg-red-50 text-[#EF4444] px-3 py-1 rounded-full font-bold text-xs tracking-wide uppercase border border-red-100">
+                {gym.gymType || 'Fitness Facility'}
+              </span>
+              {gym.trainingMode && (
+                <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full font-bold text-xs tracking-wide uppercase border border-blue-100">
+                  {gym.trainingMode === 'both' ? 'Online & Offline' : gym.trainingMode}
+                </span>
+              )}
+              {gym.establishedYear && (
+                <span className="text-[#64748B] text-sm font-medium flex items-center gap-1">
+                  <Calendar size={14} /> Est. {gym.establishedYear}
+                </span>
+              )}
+              {gym.rating && (
+                <span className="text-yellow-600 text-sm font-medium flex items-center gap-1 bg-yellow-50 px-2 py-0.5 rounded-full border border-yellow-200">
+                  <Star size={14} className="fill-yellow-500 text-yellow-500" /> {gym.rating} ({gym.reviewCount || 0})
+                </span>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Contact Info */}
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 md:p-8 shadow-xl">
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2 border-b border-[#CCFBF1] pb-3 text-[#1E293B]">
-            <Phone className="text-[#16A34A]" size={20} />
-            Contact Info
-          </h2>
-          <div className="space-y-5">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#FFFFFF] flex items-center justify-center text-[#475569]">
-                <Mail size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-[#475569] uppercase tracking-wider font-semibold mb-0.5">Email</p>
-                <p className="text-[#1E293B] font-medium">{gym.email}</p>
+      {/* Image Gallery */}
+      {gym.images && gym.images.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {gym.images.slice(0, 4).map((img: string, idx: number) => (
+            <div key={idx} className={`rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm ${idx === 0 ? 'col-span-2 row-span-2 h-64 md:h-80' : 'h-32 md:h-38'}`}>
+              <img src={img} alt={`${gym.name} gallery ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          {/* About */}
+          {gym.description && (
+            <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-3xl p-6 md:p-8 shadow-xl">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-[#1E293B]">
+                <Building2 className="text-[#16A34A]" size={20} />
+                About the Gym
+              </h2>
+              <p className="text-[#475569] leading-relaxed whitespace-pre-wrap">{gym.description}</p>
+            </div>
+          )}
+
+          {/* Amenities & Services */}
+          {allAmenities.length > 0 && (
+            <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-3xl p-6 md:p-8 shadow-xl">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#1E293B]">
+                <CheckCircle2 className="text-[#16A34A]" size={20} />
+                Amenities & Services
+              </h2>
+              <div className="flex flex-wrap gap-3">
+                {allAmenities.map((amenity, idx) => (
+                  <span key={idx} className="bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] px-4 py-2 rounded-xl text-sm font-medium">
+                    {amenity}
+                  </span>
+                ))}
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#FFFFFF] flex items-center justify-center text-[#475569]">
-                <Phone size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-[#475569] uppercase tracking-wider font-semibold mb-0.5">Phone</p>
-                <p className="text-[#1E293B] font-medium">{gym.phone}</p>
+          )}
+
+          {/* Equipment & AC Details */}
+          {(gym.equipment?.length > 0 || gym.acDetails) && (
+            <div className="grid sm:grid-cols-2 gap-6">
+              {gym.equipment?.length > 0 && (
+                <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-3xl p-6 shadow-xl">
+                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-[#1E293B]">
+                    <Dumbbell className="text-[#16A34A]" size={18} />
+                    Equipment
+                  </h2>
+                  <ul className="space-y-3">
+                    {gym.equipment.slice(0, 5).map((eq: any, idx: number) => (
+                      <li key={idx} className="flex justify-between items-center text-sm">
+                        <span className="text-[#475569] font-medium">{eq.name}</span>
+                        <span className="bg-[#F1F5F9] text-[#64748B] px-2 py-0.5 rounded-md">{eq.quantity}</span>
+                      </li>
+                    ))}
+                    {gym.equipment.length > 5 && (
+                      <li className="text-sm text-[#16A34A] font-semibold pt-2 text-center">
+                        + {gym.equipment.length - 5} more
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              )}
+              
+              {gym.acDetails && (
+                <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-3xl p-6 shadow-xl h-fit">
+                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-[#1E293B]">
+                    <Wind className="text-[#16A34A]" size={18} />
+                    AC Details
+                  </h2>
+                  <p className="text-[#475569] font-medium mb-3">{gym.acDetails.type}</p>
+                  {gym.acDetails.areas?.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {gym.acDetails.areas.map((area: string, idx: number) => (
+                        <span key={idx} className="text-xs bg-blue-50 text-blue-600 border border-blue-100 px-2 py-1 rounded-md">
+                          {area}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Subscription Plans */}
+          {gym.subscriptionPlans && gym.subscriptionPlans.length > 0 && (
+            <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-3xl p-6 md:p-8 shadow-xl">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#1E293B]">
+                <Calendar className="text-[#16A34A]" size={20} />
+                Available Plans
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {gym.subscriptionPlans.map((plan: any, idx: number) => {
+                  const featureList = plan.features 
+                    ? plan.features.split(',').map((f: string) => f.trim()).filter(Boolean)
+                    : (plan.featuresList || []);
+
+                  return (
+                    <div key={idx} className="border border-[#E2E8F0] rounded-2xl p-6 hover:border-[#16A34A] transition-colors group flex flex-col h-full bg-white relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-1 h-full bg-[#16A34A] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-[#1E293B] text-xl capitalize mb-1">{plan.name || plan.planName}</h3>
+                        <p className="text-sm text-[#64748B] mb-4 font-medium">{plan.duration}</p>
+                        
+                        <div className="mb-6 flex items-baseline gap-1">
+                          <span className="text-[#16A34A] font-black text-3xl">₹{plan.price || plan.finalPrice || plan.monthly || 0}</span>
+                        </div>
+
+                        {featureList.length > 0 ? (
+                          <ul className="space-y-3">
+                            {featureList.map((feature: string, fIdx: number) => (
+                              <li key={fIdx} className="flex items-start gap-2 text-sm text-[#475569]">
+                                <CheckCircle2 className="text-[#16A34A] shrink-0 mt-0.5" size={16} />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-[#64748B] italic">No specific features listed.</p>
+                        )}
+                      </div>
+                      
+                      <button className="mt-6 w-full py-2.5 bg-[#F1F5F9] text-[#1E293B] font-semibold rounded-xl group-hover:bg-[#16A34A] group-hover:text-white transition-colors">
+                        Select Plan
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-            {gym.website && (
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#FFFFFF] flex items-center justify-center text-[#475569]">
-                  <Globe size={18} />
-                </div>
-                <div>
-                  <p className="text-xs text-[#475569] uppercase tracking-wider font-semibold mb-0.5">Website</p>
-                  <a href={gym.website} target="_blank" rel="noopener noreferrer" className="text-[#16A34A] hover:underline font-medium">
-                    {gym.website.replace(/^https?:\/\//, '')}
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* Location Info */}
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 md:p-8 shadow-xl">
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2 border-b border-[#CCFBF1] pb-3 text-[#1E293B]">
-            <MapPin className="text-[#16A34A]" size={20} />
-            Location
-          </h2>
-          <div className="space-y-4">
+        {/* Sidebar Info */}
+        <div className="space-y-6">
+          {/* Contact Info */}
+          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-3xl p-6 shadow-xl">
+            <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-[#1E293B]">
+              <Phone className="text-[#16A34A]" size={18} />
+              Contact Info
+            </h2>
+            <div className="space-y-5">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#F8FAFC] flex items-center justify-center text-[#475569] shrink-0">
+                  <Mail size={18} />
+                </div>
+                <div>
+                  <p className="text-xs text-[#64748B] uppercase tracking-wider font-semibold mb-0.5">Email</p>
+                  <p className="text-[#1E293B] font-medium break-all">{gym.email || 'N/A'}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#F8FAFC] flex items-center justify-center text-[#475569] shrink-0">
+                  <Phone size={18} />
+                </div>
+                <div>
+                  <p className="text-xs text-[#64748B] uppercase tracking-wider font-semibold mb-0.5">Phone</p>
+                  <p className="text-[#1E293B] font-medium">{gym.phone || 'N/A'}</p>
+                </div>
+              </div>
+              {gym.website && (
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-[#F8FAFC] flex items-center justify-center text-[#475569] shrink-0">
+                    <Globe size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-[#64748B] uppercase tracking-wider font-semibold mb-0.5">Website</p>
+                    <a href={gym.website} target="_blank" rel="noopener noreferrer" className="text-[#16A34A] hover:underline font-medium break-all">
+                      {gym.website.replace(/^https?:\/\//, '')}
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Location Info */}
+          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-3xl p-6 shadow-xl">
+            <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-[#1E293B]">
+              <MapPin className="text-[#16A34A]" size={18} />
+              Location
+            </h2>
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#FFFFFF] flex items-center justify-center text-[#475569] shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[#F8FAFC] flex items-center justify-center text-[#475569] shrink-0">
                 <MapPin size={18} />
               </div>
               <div>
-                <p className="text-xs text-[#475569] uppercase tracking-wider font-semibold mb-0.5">Address</p>
+                <p className="text-xs text-[#64748B] uppercase tracking-wider font-semibold mb-0.5">Address</p>
                 <p className="text-[#1E293B] font-medium leading-relaxed">
                   {gym.location?.address}<br />
+                  {gym.location?.area && <>{gym.location.area}<br /></>}
                   {gym.location?.city}, {gym.location?.state} {gym.location?.pinCode}
                 </p>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Description */}
-        {gym.description && (
-          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 md:p-8 shadow-xl md:col-span-2">
-            <h2 className="text-xl font-bold mb-4 border-b border-[#CCFBF1] pb-3 text-[#1E293B]">About the Gym</h2>
-            <p className="text-[#475569] leading-relaxed whitespace-pre-wrap">{gym.description}</p>
-          </div>
-        )}
       </div>
     </div>
   );

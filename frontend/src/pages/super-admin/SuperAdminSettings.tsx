@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Bell, Shield, Settings as SettingsIcon } from 'lucide-react';
+import { Save, Bell, Shield } from 'lucide-react';
 
 const SuperAdminSettings = () => {
   const [settings, setSettings] = useState({
