@@ -20,10 +20,13 @@ export enum ApprovalStatus {
 }
 
 export enum SubscriptionStatus {
-  NONE = 'NONE',
-  ACTIVE = 'ACTIVE',
-  EXPIRED = 'EXPIRED',
-  TRIAL = 'TRIAL',
+  NONE = 'None',
+  FREE_TRIAL = 'Free Trial',
+  ACTIVE = 'Active',
+  PAYMENT_VERIFICATION_PENDING = 'Payment Verification Pending',
+  EXPIRED = 'Expired',
+  REJECTED = 'Rejected',
+  CANCELLED = 'Cancelled',
 }
 
 export interface IUser extends Document {
@@ -48,7 +51,7 @@ export interface IUser extends Document {
   subscriptionStatus: SubscriptionStatus;
   subscriptionPlan?: string;
   subscriptionExpiry?: Date;
-  paymentStatus?: 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
+  paymentStatus?: 'Pending Verification' | 'Approved' | 'Rejected' | 'Refunded';
 
   // Personal details
   dateOfBirth?: Date;
@@ -121,7 +124,7 @@ const userSchema = new Schema<IUser>(
     },
     subscriptionPlan: { type: String },
     subscriptionExpiry: { type: Date },
-    paymentStatus: { type: String, enum: ['PENDING', 'PAID', 'FAILED', 'REFUNDED'], default: 'PENDING' },
+    paymentStatus: { type: String, enum: ['Pending Verification', 'Approved', 'Rejected', 'Refunded'] },
 
     dateOfBirth: { type: Date },
     gender: { type: String, enum: ['Male', 'Female', 'Other', 'Prefer not to say'] },

@@ -56,6 +56,12 @@ import GymAdminBranches from './pages/admin/GymAdminBranches';
 import GymAdminAddBranch from './pages/admin/GymAdminAddBranch';
 import GymAdminBranchProfile from './pages/admin/GymAdminBranchProfile';
 import GymAdminImportCustomers from './pages/admin/GymAdminImportCustomers';
+import GymAdminTrainerFeesHub from './pages/admin/GymAdminTrainerFeesHub';
+import GymAdminTrainerFees from './pages/admin/GymAdminTrainerFees';
+import GymAdminPendingTrainerPayments from './pages/admin/GymAdminPendingTrainerPayments';
+import GymAdminWithdrawalRequests from './pages/admin/GymAdminWithdrawalRequests';
+import GymAdminTrainerPaymentHistory from './pages/admin/GymAdminTrainerPaymentHistory';
+import GymAdminTrainerEarnings from './pages/admin/GymAdminTrainerEarnings';
 
 // Super Admin
 import SuperAdminLayout from './layouts/SuperAdminLayout';
@@ -93,6 +99,7 @@ import MemberSubscription from './pages/member/MemberSubscription';
 import MemberPayments from './pages/member/MemberPayments';
 import MemberMessages from './pages/member/MemberMessages';
 import MemberNotifications from './pages/member/MemberNotifications';
+import MemberUpgrade from './pages/member/MemberUpgrade';
 import MemberSettings from './pages/member/MemberSettings';
 
 // Trainer
@@ -109,6 +116,8 @@ import TrainerAttendance from './pages/trainer/TrainerAttendance';
 import TrainerMessages from './pages/trainer/TrainerMessages';
 import TrainerNotifications from './pages/trainer/TrainerNotifications';
 import TrainerEarnings from './pages/trainer/TrainerEarnings';
+import TrainerFeeView from './pages/trainer/TrainerFeeView';
+import TrainerPaymentHistoryPage from './pages/trainer/TrainerPaymentHistoryPage';
 import TrainerSettings from './pages/trainer/TrainerSettings';
 import TrainerAIAssistant from './pages/trainer/TrainerAIAssistant';
 import TrainerAIReview from './pages/trainer/TrainerAIReview';
@@ -185,6 +194,7 @@ function App() {
             <Route path="progress" element={<MemberProgress />} />
             <Route path="attendance" element={<MemberAttendance />} />
             <Route path="subscription" element={<MemberSubscription />} />
+            <Route path="upgrade" element={<MemberUpgrade />} />
             <Route path="payments" element={<MemberPayments />} />
             <Route path="chat" element={<MemberMessages />} />
             <Route path="notifications" element={<MemberNotifications />} />
@@ -209,6 +219,8 @@ function App() {
             <Route path="attendance" element={<TrainerAttendance />} />
             <Route path="messages" element={<TrainerMessages />} />
             <Route path="earnings" element={<TrainerEarnings />} />
+            <Route path="my-fee" element={<TrainerFeeView />} />
+            <Route path="payment-history" element={<TrainerPaymentHistoryPage />} />
             <Route path="notifications" element={<TrainerNotifications />} />
             <Route path="settings" element={<TrainerSettings />} />
             <Route path="ai-assistant" element={<TrainerAIAssistant />} />
@@ -256,6 +268,12 @@ function App() {
             <Route path="subscription" element={<GymAdminSubscription />} />
             <Route path="deleted-details" element={<GymAdminDeletedDetails />} />
             <Route path="import-customers" element={<GymAdminImportCustomers />} />
+            <Route path="trainer-fees" element={<GymAdminTrainerFeesHub />} />
+            <Route path="trainer-fees/settings" element={<GymAdminTrainerFees />} />
+            <Route path="trainer-fees/pending" element={<GymAdminPendingTrainerPayments />} />
+            <Route path="trainer-fees/withdrawals" element={<GymAdminWithdrawalRequests />} />
+            <Route path="trainer-fees/history" element={<GymAdminTrainerPaymentHistory />} />
+            <Route path="trainer-fees/earnings" element={<GymAdminTrainerEarnings />} />
           </Route>
 
 {/* Super Admin Routes */}

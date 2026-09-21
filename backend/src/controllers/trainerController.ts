@@ -454,3 +454,56 @@ export const updateMyProfile = async (req: AuthRequest, res: Response): Promise<
   }
 };
 
+// 10. Update Trainer (Admin)
+export const updateTrainer = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const gymOwner = req.user;
+    if (!gymOwner || gymOwner.role !== Role.GYM_OWNER) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const { id } = req.params;
+    
+    const allowedUpdates = [
+      'name', 'phone', 'profilePhoto', 'specialization', 'experience',
+      'trainingMode', 'qualifications', 'certifications', 'expertise',
+      'bio', 'fee', 'paymentType', 'availableDays',
+      'availableStartTime', 'availableEndTime', 'availableSlot', 'branchId'
+    ];
+    
+    const updateData: any = {};
+    allowedUpdates.forEach(field => {
+      if (req.body[field] !== undefined) updateData[field] = req.body[field];
+    });
+
+    const trainer = await Trainer.findOneAndUpdate(
+      { _id: id, gymId: gymOwner.gymId },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!trainer) {
+      res.status(404).json({ success: false, message: 'Trainer not found' });
+      return;
+    }
+
+    // Also update User if name or phone changed
+    if (updateData.name || updateData.phone) {
+      const userUpdate: any = {};
+      if (updateData.name) {
+        const [firstName, ...lastNames] = updateData.name.split(' ');
+        userUpdate.firstName = firstName;
+        userUpdate.lastName = lastNames.join(' ') || ' ';
+      }
+      if (updateData.phone) {
+        userUpdate.mobile = updateData.phone;
+      }
+      await User.findByIdAndUpdate(trainer.userId, { $set: userUpdate });
+    }
+
+    res.status(200).json({ success: true, message: 'Trainer updated successfully', trainer });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};

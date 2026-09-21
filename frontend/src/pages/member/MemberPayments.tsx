@@ -1,52 +1,106 @@
-import { DollarSign, Download } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CreditCard, Loader2, CheckCircle, Clock, XCircle, FileText } from 'lucide-react';
+import api from '../../utils/api';
 
 const MemberPayments = () => {
-  return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Payments & Invoices</h1>
-        <p className="text-[#475569]">View your billing history</p>
-      </div>
+  const [payments, setPayments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-[#CCFBF1] bg-[#FFFFFF]">
-                <th className="p-4 font-medium text-[#475569]">Date</th>
-                <th className="p-4 font-medium text-[#475569]">Description</th>
-                <th className="p-4 font-medium text-[#475569]">Amount</th>
-                <th className="p-4 font-medium text-[#475569]">Status</th>
-                <th className="p-4 font-medium text-[#475569]">Invoice</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#CCFBF1]">
-              {[
-                { date: 'Sep 01, 2026', desc: 'Pro Plan Monthly', amt: '$49.99', status: 'Paid' },
-                { date: 'Aug 01, 2026', desc: 'Pro Plan Monthly', amt: '$49.99', status: 'Paid' },
-                { date: 'Jul 15, 2026', desc: 'Personal Training (1 Session)', amt: '$30.00', status: 'Paid' },
-                { date: 'Jul 01, 2026', desc: 'Pro Plan Monthly', amt: '$49.99', status: 'Paid' },
-              ].map((tx, i) => (
-                <tr key={i} className="hover:bg-[#FFFFFF] transition-colors">
-                  <td className="p-4">{tx.date}</td>
-                  <td className="p-4 font-medium">{tx.desc}</td>
-                  <td className="p-4">{tx.amt}</td>
-                  <td className="p-4">
-                    <span className="px-2 py-1 text-xs font-medium bg-green-500/10 text-green-500 rounded-full">
-                      {tx.status}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <button className="text-[#475569] hover:text-[#16A34A] transition transition-colors">
-                      <Download size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  useEffect(() => {
+    fetchPayments();
+  }, []);
+
+  const fetchPayments = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/payments/my-history');
+      setPayments(res.data.payments || []);
+    } catch (err) {
+      console.error('Error fetching payments:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'Approved':
+        return <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center w-fit"><CheckCircle size={12} className="mr-1" /> Approved</span>;
+      case 'Pending Verification':
+        return <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold flex items-center w-fit"><Clock size={12} className="mr-1" /> Pending Verification</span>;
+      case 'Rejected':
+        return <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold flex items-center w-fit"><XCircle size={12} className="mr-1" /> Rejected</span>;
+      default:
+        return <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold flex items-center w-fit">{status}</span>;
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2 text-[#1E293B]">Payment History</h1>
+          <p className="text-[#475569]">View and track all your subscription payments.</p>
         </div>
       </div>
+
+      {loading ? (
+        <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#16A34A]" size={40} /></div>
+      ) : payments.length === 0 ? (
+        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-10 text-center shadow-xl">
+          <CreditCard size={48} className="mx-auto text-[#16A34A] mb-4" />
+          <h2 className="text-2xl font-bold text-[#1E293B] mb-2">No Payments Found</h2>
+          <p className="text-[#475569] max-w-md mx-auto">
+            Your payment history and invoices will appear here once you make a transaction.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl border border-[#CCFBF1] shadow-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[#F0FDFA] border-b border-[#CCFBF1]">
+                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Plan</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Method</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Transaction ID</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Proof</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#CCFBF1]">
+                {payments.map((payment) => (
+                  <tr key={payment._id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-[#1E293B]">
+                      {new Date(payment.paymentDate || payment.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-[#1E293B] font-bold">{payment.planName}</td>
+                    <td className="px-6 py-4 text-sm font-bold text-[#16A34A]">₹{payment.amount.toLocaleString('en-IN')}</td>
+                    <td className="px-6 py-4 text-sm text-[#475569]">{payment.paymentMethod}</td>
+                    <td className="px-6 py-4 text-sm text-[#475569] font-mono">{payment.transactionId || 'N/A'}</td>
+                    <td className="px-6 py-4">
+                      {getStatusBadge(payment.status)}
+                      {payment.status === 'Rejected' && payment.rejectionReason && (
+                        <p className="text-xs text-red-500 mt-1 max-w-xs">{payment.rejectionReason}</p>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      {payment.paymentProofUrl ? (
+                        <a href={payment.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 flex items-center">
+                          <FileText size={16} className="mr-1"/> View
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 text-sm">None</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

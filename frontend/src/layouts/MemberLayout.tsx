@@ -15,6 +15,7 @@ const MemberLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showExpiryWarning, setShowExpiryWarning] = useState(false);
   const [gym, setGym] = useState<any>(null);
+  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     if (user?.subscriptionExpiry) {
@@ -44,6 +45,26 @@ const MemberLayout = () => {
           .catch(err => console.error('Failed to fetch gym', err));
       });
     }
+
+    import('../utils/api').then(({ default: api }) => {
+      api.get('/memberships/my').then(res => {
+        const mems = res.data.memberships || [];
+        const active = mems.find((m: any) => (m.status === 'Active' || m.status === 'Free Trial') && (!m.endDate || new Date(m.endDate) >= new Date()));
+        const pending = mems.find((m: any) => m.status === 'Payment Verification Pending');
+        const expired = mems.find((m: any) => m.status === 'Expired' || ((m.status === 'Active' || m.status === 'Free Trial') && m.endDate && new Date(m.endDate) < new Date()));
+        
+        const isSubExpired = user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED';
+        const isSubPending = user?.subscriptionStatus === 'Payment Verification Pending';
+        const isSubRejected = user?.subscriptionStatus === 'Rejected' || user?.subscriptionStatus === 'REJECTED';
+        const isSubNone = user?.subscriptionStatus === 'None';
+
+        if (!active && (expired || pending || isSubExpired || isSubPending || isSubRejected || isSubNone)) {
+          setIsExpired(true);
+        } else {
+          setIsExpired(false);
+        }
+      }).catch(err => console.error('Failed to fetch memberships', err));
+    });
   }, [user]);
 
   const navGroups = [
@@ -83,6 +104,16 @@ const MemberLayout = () => {
     }
   ];
 
+  const displayNavGroups = isExpired ? [
+    {
+      title: 'Action Required',
+      items: [
+        { label: 'Dashboard', path: '/member/dashboard', icon: LayoutDashboard },
+        { label: 'Membership Plans', path: '/member/upgrade', icon: CreditCard },
+      ]
+    }
+  ] : navGroups;
+
   const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname);
 
   const SidebarContent = () => (
@@ -110,7 +141,7 @@ const MemberLayout = () => {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
-        {navGroups.map((group, groupIdx) => (
+        {displayNavGroups.map((group, groupIdx) => (
           <div key={groupIdx}>
             <h4 className="px-3 mb-2 text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">{group.title}</h4>
             <div className="space-y-0.5">
@@ -226,7 +257,7 @@ const MemberLayout = () => {
             </button>
             {currentNav && <currentNav.icon size={20} className="text-[#16A34A] hidden sm:block" />}
             <h2 className="text-base md:text-lg font-bold tracking-tight text-[#1E293B]">
-              {currentNav?.label || 'Member Portal'}
+              {currentNav?.label || 'Customer Dashboard'}
             </h2>
           </div>
 

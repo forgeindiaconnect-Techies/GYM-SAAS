@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import Gym, { GymStatus } from '../models/Gym';
 import User, { Role, ApprovalStatus } from '../models/User';
+import { AuthRequest } from '../middlewares/auth';
 
 export const createGym = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -315,6 +316,32 @@ export const getPublicGymById = async (req: Request, res: Response): Promise<voi
     const branches = await Branch.find({ gymId: gym._id.toString(), isActive: true });
 
     res.status(200).json({ success: true, gym, trainers, branches });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const updatePaymentSettings = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { paymentSettings } = req.body;
+    
+    const gym = await Gym.findById(id);
+    if (!gym) {
+      res.status(404).json({ success: false, message: 'Gym not found' });
+      return;
+    }
+
+    // Authorization: Only the owner or an admin can update these
+    if (req.user?.role !== 'SUPER_ADMIN' && gym.ownerId.toString() !== req.user?.id) {
+       res.status(403).json({ success: false, message: 'Unauthorized' });
+       return;
+    }
+
+    gym.paymentSettings = { ...gym.paymentSettings, ...paymentSettings };
+    await gym.save();
+
+    res.status(200).json({ success: true, message: 'Payment settings updated successfully', gym });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

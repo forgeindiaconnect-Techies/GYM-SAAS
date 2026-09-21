@@ -84,6 +84,16 @@ export interface IGym extends Document {
   rejectionReason?: string;
   rating?: number;
   reviewCount?: number;
+  paymentSettings?: {
+    upiId?: string;
+    qrCodeUrl?: string;
+    accountName?: string;
+    instructions?: string;
+    bankName?: string;
+    accountNumber?: string;
+    ifscCode?: string;
+    isQrPaymentEnabled?: boolean;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -158,6 +168,16 @@ const gymSchema = new Schema<IGym>(
     }],
     status: { type: String, enum: Object.values(GymStatus), default: GymStatus.PENDING },
     rejectionReason: { type: String },
+    paymentSettings: {
+      upiId: { type: String },
+      qrCodeUrl: { type: String },
+      accountName: { type: String },
+      instructions: { type: String },
+      bankName: { type: String },
+      accountNumber: { type: String },
+      ifscCode: { type: String },
+      isQrPaymentEnabled: { type: Boolean, default: true }
+    },
   },
   { timestamps: true }
 );

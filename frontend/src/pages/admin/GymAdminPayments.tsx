@@ -1,141 +1,402 @@
-
-import { useState } from 'react';
-import { IndianRupee, ArrowUpRight, ArrowDownRight, Download, Search } from 'lucide-react';
-
-const mockTransactions = [
-  { id: 'TRX-9012', member: 'John Doe', amount: 29.99, type: 'Subscription', date: '2026-09-08', status: 'Completed' },
-  { id: 'TRX-9013', member: 'Emily Davis', amount: 89.99, type: 'Subscription', date: '2026-09-08', status: 'Completed' },
-  { id: 'TRX-9014', member: 'Mike Johnson', amount: 45.00, type: 'PT Session', date: '2026-09-07', status: 'Failed' },
-  { id: 'TRX-9015', member: 'Jane Smith', amount: 49.99, type: 'Subscription', date: '2026-09-07', status: 'Completed' },
-  { id: 'TRX-9016', member: 'Walk-in Guest', amount: 15.00, type: 'Day Pass', date: '2026-09-07', status: 'Completed' },
-];
-
-const exportToCSV = () => {
-  const headers = ['Transaction ID', 'Member', 'Type', 'Date', 'Amount (₹)', 'Status'];
-  const rows = mockTransactions.map(trx => [
-    trx.id,
-    trx.member,
-    trx.type,
-    trx.date,
-    trx.amount.toFixed(2),
-    trx.status,
-  ]);
-
-  const csvContent = [headers, ...rows]
-    .map(row => row.map(cell => `"${cell}"`).join(','))
-    .join('\n');
-
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `payments_${new Date().toISOString().split('T')[0]}.csv`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-};
+import { useState, useEffect } from 'react';
+import { IndianRupee, Download, Search, CheckCircle, XCircle, Loader2, Save, FileText, RotateCcw } from 'lucide-react';
+import api from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const GymAdminPayments = () => {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('all');
+  const [payments, setPayments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [selectedTrx, setSelectedTrx] = useState<any>(null);
+  const [rejectingPaymentId, setRejectingPaymentId] = useState<string | null>(null);
+  const [rejectionReasonInput, setRejectionReasonInput] = useState('');
+  
+  // Settings State
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [paymentSettings, setPaymentSettings] = useState({
+    upiId: '',
+    accountName: '',
+    bankName: '',
+    accountNumber: '',
+    ifscCode: '',
+    instructions: '',
+    isQrPaymentEnabled: true,
+  });
 
-  const filtered = mockTransactions.filter(trx =>
-    trx.id.toLowerCase().includes(search.toLowerCase()) ||
-    trx.member.toLowerCase().includes(search.toLowerCase()) ||
-    trx.type.toLowerCase().includes(search.toLowerCase()) ||
-    trx.status.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    fetchPayments();
+    if (user?.gymId) {
+      fetchGymSettings();
+    }
+  }, [user]);
+
+  const fetchPayments = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/payments/gym');
+      setPayments(res.data.payments || []);
+    } catch (err) {
+      console.error('Error fetching payments:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchGymSettings = async () => {
+    try {
+      const res = await api.get(`/gyms/${user?.gymId}`);
+      if (res.data.gym?.paymentSettings) {
+        setPaymentSettings({
+          ...res.data.gym.paymentSettings,
+          isQrPaymentEnabled: res.data.gym.paymentSettings.isQrPaymentEnabled !== false
+        });
+      }
+    } catch (err) {
+      console.error('Error fetching gym settings', err);
+    }
+  };
+
+  const handleVerify = async (id: string, status: 'Approve' | 'Reject' | 'Pending', reason?: string) => {
+    if (status !== 'Reject' && !window.confirm(`Are you sure you want to ${status.toLowerCase()} this payment?`)) return;
+
+    try {
+      await api.post(`/payments/verify/${id}`, { status, rejectionReason: reason || '' });
+      alert(`Payment ${status.toLowerCase()}d successfully.`);
+      fetchPayments();
+      setRejectingPaymentId(null);
+      setRejectionReasonInput('');
+    } catch (err: any) {
+      console.error('Verification error:', err);
+      alert(err.response?.data?.message || 'Verification failed');
+    }
+  };
+
+  const handleSaveSettings = async () => {
+    try {
+      setSettingsLoading(true);
+      await api.patch(`/gyms/${user?.gymId}/payment-settings`, { paymentSettings });
+      alert('Payment settings updated successfully');
+    } catch (err: any) {
+      console.error('Settings update error:', err);
+      alert('Failed to update settings');
+    } finally {
+      setSettingsLoading(false);
+    }
+  };
+
+  const exportToCSV = () => {
+    const headers = ['Transaction ID', 'Customer', 'Plan', 'Date', 'Amount (₹)', 'Method', 'Status'];
+    const rows = filtered.map(trx => [
+      trx.transactionId || 'N/A',
+      `${trx.customerId?.firstName || ''} ${trx.customerId?.lastName || ''}`,
+      trx.planName,
+      new Date(trx.paymentDate || trx.createdAt).toLocaleDateString(),
+      trx.amount,
+      trx.paymentMethod,
+      trx.status,
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `payments_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const filtered = payments.filter(trx => {
+    if (activeTab === 'manual' && trx.paymentMethod !== 'Bank Transfer') return false;
+    if (activeTab === 'qr' && trx.paymentMethod === 'Bank Transfer') return false;
+
+    const s = search.toLowerCase();
+    const fullName = `${trx.customerId?.firstName || ''} ${trx.customerId?.lastName || ''}`.toLowerCase();
+    
+    return (
+      (trx.transactionId || '').toLowerCase().includes(s) ||
+      fullName.includes(s) ||
+      (trx.planName || '').toLowerCase().includes(s) ||
+      (trx.status || '').toLowerCase().includes(s) ||
+      (trx.paymentMethod || '').toLowerCase().includes(s) ||
+      (trx.customerBankDetails?.accountNumber || '').toLowerCase().includes(s) ||
+      (trx.customerBankDetails?.bankName || '').toLowerCase().includes(s)
+    );
+  });
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Payments & Revenue</h1>
-          <p className="text-[#475569] mt-1">Track gym revenue, subscriptions, and financial health.</p>
+          <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Payments & Subscriptions</h1>
+          <p className="text-[#475569] mt-1">Manage member payments and configure payment settings.</p>
         </div>
-        <button
-          onClick={exportToCSV}
-          className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] font-bold rounded-xl hover:bg-[#F0FDFA] hover:border-[#16A34A] transition-colors flex items-center gap-2"
+      </div>
+
+      <div className="flex border-b border-[#CCFBF1] space-x-8 mb-6">
+        <button 
+          onClick={() => setActiveTab('all')}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'all' ? 'border-[#16A34A] text-[#16A34A]' : 'border-transparent text-[#475569] hover:text-[#1E293B]'}`}
         >
-          <Download size={18} /> Export CSV
+          All Payments
+        </button>
+        <button 
+          onClick={() => setActiveTab('manual')}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'manual' ? 'border-[#16A34A] text-[#16A34A]' : 'border-transparent text-[#475569] hover:text-[#1E293B]'}`}
+        >
+          Manual Payments
+        </button>
+        <button 
+          onClick={() => setActiveTab('qr')}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'qr' ? 'border-[#16A34A] text-[#16A34A]' : 'border-transparent text-[#475569] hover:text-[#1E293B]'}`}
+        >
+          QR Code Payments
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10"><IndianRupee size={80} /></div>
-          <p className="text-[#475569] text-sm font-semibold mb-1">Total Revenue (This Month)</p>
-          <h3 className="text-3xl font-black text-[#1E293B]">₹14,250.00</h3>
-          <p className="text-green-500 text-sm font-bold mt-2 flex items-center">
-            <ArrowUpRight size={16} className="mr-1" /> +12.5% from last month
-          </p>
-        </div>
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10"><IndianRupee size={80} /></div>
-          <p className="text-[#475569] text-sm font-semibold mb-1">Active Subscriptions</p>
-          <h3 className="text-3xl font-black text-[#1E293B]">₹11,800.00</h3>
-          <p className="text-[#475569] text-sm font-medium mt-2">MRR (Monthly Recurring)</p>
-        </div>
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10"><IndianRupee size={80} /></div>
-          <p className="text-[#475569] text-sm font-semibold mb-1">Failed Payments</p>
-          <h3 className="text-3xl font-black text-[#0D9488]">₹340.00</h3>
-          <p className="text-[#0D9488] text-sm font-bold mt-2 flex items-center">
-            <ArrowDownRight size={16} className="mr-1" /> Requires action
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-[#CCFBF1] flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h3 className="text-lg font-bold text-[#1E293B]">Recent Transactions</h3>
-          <div className="relative w-full md:w-72">
-            <input
-              type="text"
-              placeholder="Search by ID, member, type or status..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl pl-9 pr-4 py-2 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none"
-            />
-            <Search className="absolute left-2.5 top-2.5 text-[#475569]" size={16} />
+      <div className="space-y-6">
+          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6 relative overflow-hidden flex items-center justify-between">
+            <div>
+              <p className="text-[#475569] text-sm font-semibold mb-1">Total Revenue</p>
+              <h3 className="text-3xl font-black text-[#1E293B]">₹{payments.filter(p => p.status === 'Approved').reduce((acc, curr) => acc + (curr.amount || 0), 0).toLocaleString('en-IN')}</h3>
+            </div>
+            <IndianRupee size={48} className="text-[#16A34A]/20" />
           </div>
+
+          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
+            <div className="p-6 border-b border-[#CCFBF1] flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <h3 className="text-lg font-bold text-[#1E293B]">Payment Verification</h3>
+              <div className="flex gap-4 w-full md:w-auto">
+                <div className="relative flex-1 md:w-72">
+                  <input
+                    type="text"
+                    placeholder="Search transactions..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl pl-9 pr-4 py-2 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none"
+                  />
+                  <Search className="absolute left-2.5 top-2.5 text-[#475569]" size={16} />
+                </div>
+                <button
+                  onClick={exportToCSV}
+                  className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] font-bold rounded-xl hover:bg-[#F0FDFA] transition-colors flex items-center gap-2 text-sm shrink-0"
+                >
+                  <Download size={16} /> Export
+                </button>
+              </div>
+            </div>
+            
+            {loading ? (
+              <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#16A34A]" size={40} /></div>
+            ) : (
+              <div className="overflow-x-auto custom-scrollbar">
+                <table className="w-full text-left text-sm text-[#475569] whitespace-nowrap">
+                  <thead className="bg-[#FFFFFF] border-b border-[#CCFBF1] text-[#1E293B]">
+                    <tr>
+                      <th className="px-6 py-4 font-semibold">Date</th>
+                      <th className="px-6 py-4 font-semibold">Customer</th>
+                      <th className="px-6 py-4 font-semibold">Plan & Amount</th>
+                      <th className="px-6 py-4 font-semibold">Method & TRX ID</th>
+                      <th className="px-6 py-4 font-semibold">Status</th>
+                      <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#CCFBF1]">
+                    {filtered.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="px-6 py-8 text-center text-[#475569]">No transactions match your search.</td>
+                      </tr>
+                    ) : filtered.map((trx) => (
+                      <tr key={trx._id} className="hover:bg-[#F0FDFA] transition-colors">
+                        <td className="px-6 py-4">{new Date(trx.paymentDate || trx.createdAt).toLocaleDateString()}</td>
+                        <td className="px-6 py-4 font-semibold text-[#1E293B]">{trx.customerId?.firstName} {trx.customerId?.lastName}</td>
+                        <td className="px-6 py-4">
+                          <p className="font-bold text-[#1E293B]">{trx.planName}</p>
+                          <p className="text-green-600 font-bold">₹{trx.amount}</p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="text-[#1E293B] font-medium">{trx.paymentMethod}</p>
+                          <p className="font-mono text-xs text-gray-500">{trx.transactionId || 'N/A'}</p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            trx.status === 'Approved' ? 'bg-green-100 text-green-700' :
+                            trx.status === 'Rejected' ? 'bg-red-100 text-red-700' :
+                            'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {trx.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2 items-center">
+                            <button 
+                              onClick={() => setSelectedTrx(trx)}
+                              className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold whitespace-nowrap"
+                            >
+                              View Details
+                            </button>
+                            {trx.status === 'Pending Verification' ? (
+                              <>
+                                <button onClick={() => handleVerify(trx._id, 'Approve')} className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors" title="Approve">
+                                  <CheckCircle size={18} />
+                                </button>
+                                <button onClick={() => setRejectingPaymentId(trx._id)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" title="Reject">
+                                  <XCircle size={18} />
+                                </button>
+                              </>
+                            ) : (
+                              <button onClick={() => handleVerify(trx._id, 'Pending')} className="p-1.5 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors" title="Revert to Pending">
+                                <RotateCcw size={18} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+          
+          {selectedTrx && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+              <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+                <button onClick={() => setSelectedTrx(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                  <XCircle size={24} />
+                </button>
+                <h2 className="text-2xl font-bold text-[#1E293B] mb-6 border-b pb-4">Transaction Details</h2>
+                
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase">Customer</p>
+                      <p className="font-bold text-[#1E293B]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase">Date</p>
+                      <p className="font-bold text-[#1E293B]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase">Plan</p>
+                      <p className="font-bold text-[#1E293B]">{selectedTrx.planName}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase">Amount</p>
+                      <p className="font-bold text-green-600">₹{selectedTrx.amount}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase">Payment Method</p>
+                      <p className="font-bold text-[#1E293B]">{selectedTrx.paymentMethod}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase">Status</p>
+                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                        selectedTrx.status === 'Approved' ? 'bg-green-100 text-green-700' :
+                        selectedTrx.status === 'Rejected' ? 'bg-red-100 text-red-700' :
+                        'bg-yellow-100 text-yellow-700'
+                      }`}>
+                        {selectedTrx.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  {selectedTrx.paymentMethod === 'Bank Transfer' ? (
+                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                      <p className="text-xs text-gray-500 font-semibold uppercase mb-3 border-b border-gray-200 pb-2">Customer Bank Details</p>
+                      <div className="grid grid-cols-2 gap-y-2">
+                        <p className="text-sm"><span className="text-gray-500">Bank Name:</span> <span className="font-semibold">{selectedTrx.customerBankDetails?.bankName || 'N/A'}</span></p>
+                        <p className="text-sm"><span className="text-gray-500">Account:</span> <span className="font-semibold">{selectedTrx.customerBankDetails?.accountNumber || 'N/A'}</span></p>
+                        <p className="text-sm"><span className="text-gray-500">IFSC:</span> <span className="font-semibold">{selectedTrx.customerBankDetails?.ifscCode || 'N/A'}</span></p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Transaction ID / Reference Number</p>
+                      <p className="font-mono bg-gray-50 p-2 rounded border border-gray-200 break-all">{selectedTrx.transactionId || 'Not Provided'}</p>
+                    </div>
+                  )}
+
+                  {selectedTrx.notes && (
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Additional Notes</p>
+                      <p className="bg-gray-50 p-3 rounded border border-gray-200 text-sm text-[#1E293B] italic">{selectedTrx.notes}</p>
+                    </div>
+                  )}
+
+                  {selectedTrx.paymentMethod !== 'Bank Transfer' && (
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Payment Proof</p>
+                      {selectedTrx.paymentProofUrl ? (
+                        <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 font-bold rounded-lg hover:bg-blue-100 transition-colors">
+                          <FileText size={18} className="mr-2"/> View Attached Proof Document
+                        </a>
+                      ) : (
+                        <p className="text-gray-400 italic bg-gray-50 p-3 rounded border border-gray-200">No proof document uploaded for this transaction.</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+                
+                <div className="mt-8 pt-6 border-t border-gray-100">
+                  <button 
+                    onClick={() => setSelectedTrx(null)} 
+                    className="w-full py-3 bg-gray-100 text-[#475569] font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                  >
+                    Close Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {rejectingPaymentId && (
+            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+              <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+                <h2 className="text-xl font-bold text-[#1E293B] mb-4">Reject Payment</h2>
+                <p className="text-[#475569] mb-4 text-sm">Please provide a reason for rejecting this payment (optional). This will be shown to the customer.</p>
+                <textarea
+                  value={rejectionReasonInput}
+                  onChange={(e) => setRejectionReasonInput(e.target.value)}
+                  placeholder="e.g., The payment screenshot is blurry or invalid."
+                  rows={4}
+                  className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl p-3 text-[#1E293B] focus:border-red-500 outline-none resize-none mb-6 text-sm"
+                ></textarea>
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => {
+                      setRejectingPaymentId(null);
+                      setRejectionReasonInput('');
+                    }}
+                    className="flex-1 py-2.5 bg-gray-100 text-[#475569] font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleVerify(rejectingPaymentId, 'Reject', rejectionReasonInput)}
+                    className="flex-1 py-2.5 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
+                  >
+                    Confirm Rejection
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-sm text-[#475569] whitespace-nowrap">
-            <thead className="bg-[#FFFFFF] border-b border-[#CCFBF1] text-[#1E293B]">
-              <tr>
-                <th className="px-6 py-4 font-semibold">Transaction ID</th>
-                <th className="px-6 py-4 font-semibold">Member</th>
-                <th className="px-6 py-4 font-semibold">Type</th>
-                <th className="px-6 py-4 font-semibold">Date</th>
-                <th className="px-6 py-4 font-semibold">Amount</th>
-                <th className="px-6 py-4 font-semibold">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#CCFBF1]">
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-[#475569]">No transactions match your search.</td>
-                </tr>
-              ) : filtered.map((trx) => (
-                <tr key={trx.id} className="hover:bg-[#F0FDFA] transition-colors">
-                  <td className="px-6 py-4 font-mono text-xs">{trx.id}</td>
-                  <td className="px-6 py-4 font-semibold text-[#1E293B]">{trx.member}</td>
-                  <td className="px-6 py-4">{trx.type}</td>
-                  <td className="px-6 py-4">{trx.date}</td>
-                  <td className="px-6 py-4 font-bold text-[#1E293B]">₹{trx.amount.toFixed(2)}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${trx.status === 'Completed' ? 'bg-green-500/10 text-green-500' : 'bg-[#0D9488]/10 text-[#0D9488]'}`}>
-                      {trx.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+
     </div>
   );
 };

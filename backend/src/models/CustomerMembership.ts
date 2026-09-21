@@ -1,10 +1,12 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export enum CustomerMembershipStatus {
-  PENDING_VERIFICATION = 'PENDING_VERIFICATION',
-  ACTIVE = 'ACTIVE',
-  EXPIRED = 'EXPIRED',
-  CANCELLED = 'CANCELLED',
+  FREE_TRIAL = 'Free Trial',
+  ACTIVE = 'Active',
+  PAYMENT_VERIFICATION_PENDING = 'Payment Verification Pending',
+  EXPIRED = 'Expired',
+  REJECTED = 'Rejected',
+  CANCELLED = 'Cancelled',
 }
 
 
@@ -40,7 +42,7 @@ const customerMembershipSchema = new Schema<ICustomerMembership>(
     status: {
       type: String,
       enum: Object.values(CustomerMembershipStatus),
-      default: CustomerMembershipStatus.PENDING_VERIFICATION,
+      default: CustomerMembershipStatus.FREE_TRIAL,
     },
     paymentMethod: {
       type: String,

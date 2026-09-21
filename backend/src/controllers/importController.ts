@@ -321,8 +321,8 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
     const existingMemberships = await CustomerMembership.find({
       userId: { $in: existingUsers.map(u => u._id) },
       gymId,
-      status: { $in: [CustomerMembershipStatus.ACTIVE, CustomerMembershipStatus.PENDING_VERIFICATION] },
-    });
+      status: { $in: [CustomerMembershipStatus.ACTIVE, CustomerMembershipStatus.PAYMENT_VERIFICATION_PENDING] },
+    }).populate('planId');
     const membershipMap = new Map<string, any>();
     existingMemberships.forEach(m => membershipMap.set(m.userId.toString(), m));
 
@@ -631,7 +631,7 @@ export const executeImport = async (req: AuthRequest, res: Response): Promise<vo
               expired: CustomerMembershipStatus.EXPIRED,
               cancelled: CustomerMembershipStatus.CANCELLED,
               inactive: CustomerMembershipStatus.EXPIRED,
-              pending: CustomerMembershipStatus.PENDING_VERIFICATION,
+              pending: CustomerMembershipStatus.PAYMENT_VERIFICATION_PENDING,
             };
             const membershipStatus = statusMap[(data.status || 'active').toLowerCase()] || CustomerMembershipStatus.ACTIVE;
 

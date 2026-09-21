@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { Plus, Trash2, CheckCircle, Eye, EyeOff, X, Mail, UserPlus, Check, PauseCircle, Clock, Ban, ShieldCheck } from 'lucide-react';
+import { Plus, Trash2, CheckCircle, Eye, EyeOff, X, Mail, UserPlus, Check, PauseCircle, Clock, Ban, ShieldCheck, Edit } from 'lucide-react';
 import api from '../../utils/api';
 
 const GymAdminTrainers = () => {
@@ -21,6 +21,8 @@ const GymAdminTrainers = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [hireMethod, setHireMethod] = useState<'manual' | 'invite' | null>(null);
   const [selectedTrainer, setSelectedTrainer] = useState<any>(null);
+  const [editTrainer, setEditTrainer] = useState<any>(null);
+  const [editForm, setEditForm] = useState({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '' });
   const navigate = useNavigate();
   
   const [manualForm, setManualForm] = useState({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '', password: '', confirmPassword: '' });
@@ -149,6 +151,50 @@ const GymAdminTrainers = () => {
     }
   };
 
+  const openEditModal = (trainer: any) => {
+    setEditTrainer(trainer);
+    setEditForm({
+      name: trainer.name || '',
+      email: trainer.email || '',
+      phone: trainer.phone || '',
+      profilePhoto: trainer.profilePhoto || '',
+      specialization: trainer.specialization || '',
+      experience: trainer.experience || '',
+      trainingMode: trainer.trainingMode || 'offline',
+      qualifications: trainer.qualifications || '',
+      certifications: trainer.certifications || '',
+      expertise: trainer.expertise || '',
+      bio: trainer.bio || '',
+      fee: trainer.fee || '',
+      paymentType: trainer.paymentType || 'Per Month',
+      availableDays: trainer.availableDays || trainer.availability?.days || 'Monday to Friday',
+      availableStartTime: trainer.availableStartTime || trainer.availability?.startTime || '06:00 AM',
+      availableEndTime: trainer.availableEndTime || trainer.availability?.endTime || '08:00 PM',
+      availableSlot: trainer.availableSlot || trainer.availability?.slot || ''
+    });
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateEmail(editForm.email)) {
+      alert('Invalid email address format.');
+      return;
+    }
+    if (!validatePhone(editForm.phone)) {
+      alert('Phone number must be exactly 10 digits.');
+      return;
+    }
+
+    try {
+      await api.put(`/trainers/${editTrainer._id}`, editForm);
+      alert('Trainer updated successfully!');
+      setEditTrainer(null);
+      fetchTrainers();
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to update trainer');
+    }
+  };
+
   const renderTrainerModeOptions = () => {
     return (
       <>
@@ -245,6 +291,9 @@ const GymAdminTrainers = () => {
                     <td className="px-6 py-4 flex space-x-3 items-center">
                       <button onClick={() => setSelectedTrainer(trainer)} className="text-[#475569] hover:text-[#16A34A] transition-colors" title="View Profile">
                         <Eye size={18} />
+                      </button>
+                      <button onClick={() => openEditModal(trainer)} className="text-[#475569] hover:text-blue-500 transition-colors" title="Edit Trainer">
+                        <Edit size={18} />
                       </button>
                       
                       <div className="flex space-x-2 border-l border-r border-[#CCFBF1] px-3">
@@ -475,7 +524,6 @@ const GymAdminTrainers = () => {
                     <select value={manualForm.paymentType} onChange={e => setManualForm({...manualForm, paymentType: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
                       <option value="Per Week">Per Week</option>
                       <option value="Per Month">Per Month</option>
-                      <option value="Per Session">Per Session</option>
                     </select>
                   </div>
                 </div>
@@ -671,6 +719,126 @@ const GymAdminTrainers = () => {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Trainer Form Modal */}
+      {editTrainer && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#CCFBF1] mt-10 mb-10">
+            <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
+              <h2 className="text-2xl font-bold text-[#1E293B]">Edit Trainer</h2>
+              <button onClick={() => setEditTrainer(null)} className="text-[#475569] hover:text-[#1E293B]"><X size={24} /></button>
+            </div>
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-6">
+              
+              <section>
+                <h3 className="text-lg font-bold text-[#1E293B] mb-4 border-b pb-2">Basic Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Full Name *</label>
+                    <input required value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Email *</label>
+                    <input type="email" required value={editForm.email} onChange={e => setEditForm({...editForm, email: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Phone Number *</label>
+                    <input required type="text" maxLength={10} placeholder="10-digit number" value={editForm.phone} onChange={e => setEditForm({...editForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Trainer Mode *</label>
+                    <select required value={editForm.trainingMode} onChange={e => setEditForm({...editForm, trainingMode: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
+                      {renderTrainerModeOptions()}
+                    </select>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-lg font-bold text-[#1E293B] mb-4 border-b pb-2">Professional Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Specialization *</label>
+                    <input required value={editForm.specialization} onChange={e => setEditForm({...editForm, specialization: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Experience (Years)</label>
+                    <input type="number" value={editForm.experience} onChange={e => setEditForm({...editForm, experience: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Qualifications *</label>
+                    <input required value={editForm.qualifications} onChange={e => setEditForm({...editForm, qualifications: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Certifications</label>
+                    <input value={editForm.certifications} onChange={e => setEditForm({...editForm, certifications: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Areas of Expertise *</label>
+                    <textarea required rows={2} value={editForm.expertise} onChange={e => setEditForm({...editForm, expertise: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Short Bio</label>
+                    <textarea rows={3} value={editForm.bio} onChange={e => setEditForm({...editForm, bio: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                </div>
+              </section>
+              <section>
+                <h3 className="text-lg font-bold text-[#1E293B] mb-4 border-b pb-2">Availability Settings</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Available Days</label>
+                    <select value={editForm.availableDays} onChange={e => setEditForm({...editForm, availableDays: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
+                      <option value="Monday to Friday">Monday to Friday</option>
+                      <option value="Monday to Saturday">Monday to Saturday</option>
+                      <option value="Weekends (Sat & Sun)">Weekends (Sat & Sun)</option>
+                      <option value="Everyday">Everyday</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Available Slots per Day</label>
+                    <input type="number" min="1" placeholder="e.g. 5" value={editForm.availableSlot} onChange={e => setEditForm({...editForm, availableSlot: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Start Time</label>
+                    <select value={editForm.availableStartTime} onChange={e => setEditForm({...editForm, availableStartTime: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
+                      {renderTimeOptions()}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">End Time</label>
+                    <select value={editForm.availableEndTime} onChange={e => setEditForm({...editForm, availableEndTime: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
+                      {renderTimeOptions()}
+                    </select>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-lg font-bold text-[#1E293B] mb-4 border-b pb-2">Employment / Payment</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Trainer Fee</label>
+                    <input type="number" value={editForm.fee} onChange={e => setEditForm({...editForm, fee: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#475569] mb-1">Payment Type</label>
+                    <select value={editForm.paymentType} onChange={e => setEditForm({...editForm, paymentType: e.target.value})} className="w-full border border-[#CCFBF1] rounded-lg px-4 py-2 outline-none focus:border-[#16A34A]">
+                      <option value="Per Week">Per Week</option>
+                      <option value="Per Month">Per Month</option>
+                    </select>
+                  </div>
+                </div>
+              </section>
+
+              <div className="flex justify-end space-x-3 pt-4 border-t border-[#CCFBF1]">
+                <button type="button" onClick={() => setEditTrainer(null)} className="px-6 py-2 text-[#475569] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+                <button type="submit" className="px-8 py-2 bg-[#16A34A] text-white rounded-xl font-bold hover:bg-[#15803D] transition-colors shadow-lg shadow-green-600/20">Save Changes</button>
+              </div>
+            </form>
           </div>
         </div>
       )}

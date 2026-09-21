@@ -61,7 +61,7 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
 
     if (plan === 'FREE_TRIAL') {
       await User.findByIdAndUpdate(userId, {
-        subscriptionStatus: SubscriptionStatus.TRIAL,
+        subscriptionStatus: SubscriptionStatus.FREE_TRIAL,
         subscriptionPlan: plan,
         subscriptionExpiry: endDate,
       });

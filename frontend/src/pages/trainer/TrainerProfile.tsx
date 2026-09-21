@@ -377,7 +377,6 @@ const TrainerProfile = () => {
                     <select value={form.paymentType} onChange={e => setForm({...form, paymentType: e.target.value})} className={inputCls}>
                       <option value="Per Month">Per Month</option>
                       <option value="Per Week">Per Week</option>
-                      <option value="Per Session">Per Session</option>
                     </select>
                   </div>
                 </div>

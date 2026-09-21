@@ -20,61 +20,38 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       return;
     }
 
-    const finalAmount = price - (discount || 0);
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 7);
 
     const membership = new CustomerMembership({
       userId,
       gymId,
       branchId,
-      planName,
-      duration,
-      price,
-      discount: discount || 0,
-      finalAmount,
-      paymentMethod,
-      paymentReference,
-      paymentProofUrl,
-      status: paymentMethod !== 'Bank Transfer' ? CustomerMembershipStatus.ACTIVE : CustomerMembershipStatus.PENDING_VERIFICATION,
-      startDate: paymentMethod !== 'Bank Transfer' ? new Date() : undefined,
+      planName: planName, // Record their intended plan
+      duration: '1 Week',
+      price: 0,
+      discount: 0,
+      finalAmount: 0,
+      paymentMethod: 'Trial',
+      status: CustomerMembershipStatus.FREE_TRIAL,
+      startDate: new Date(),
+      endDate: trialEndDate,
     });
-
-    if (paymentMethod !== 'Bank Transfer') {
-      // Calculate end date based on duration
-      const endDate = new Date();
-      if (planName.toLowerCase().includes('trial')) {
-        endDate.setDate(endDate.getDate() + 1);
-      } else if (duration.toLowerCase().includes('month')) {
-        endDate.setMonth(endDate.getMonth() + (parseInt(duration) || 1));
-      } else if (duration.toLowerCase().includes('year')) {
-        endDate.setFullYear(endDate.getFullYear() + (parseInt(duration) || 1));
-      } else if (duration.toLowerCase().includes('day')) {
-        endDate.setDate(endDate.getDate() + (parseInt(duration) || 1));
-      } else if (duration.toLowerCase().includes('week')) {
-        endDate.setDate(endDate.getDate() + ((parseInt(duration) || 1) * 7));
-      }
-      membership.endDate = endDate;
-    }
 
     await membership.save();
 
-    // Update User model
-    const paymentStatus = paymentMethod !== 'Bank Transfer' ? 'PAID' : 'PENDING';
-    const subStatus = paymentMethod !== 'Bank Transfer' ? 
-      (planName.toLowerCase().includes('trial') ? SubscriptionStatus.TRIAL : SubscriptionStatus.ACTIVE) 
-      : SubscriptionStatus.NONE;
-
     await User.findByIdAndUpdate(userId, {
       $set: {
-        paymentStatus,
-        subscriptionStatus: subStatus,
+        paymentStatus: 'Approved',
+        subscriptionStatus: SubscriptionStatus.FREE_TRIAL,
         subscriptionPlan: planName,
-        subscriptionExpiry: membership.endDate,
+        subscriptionExpiry: trialEndDate,
         branchId: branchId || undefined,
         gymId: gymId,
       }
     });
 
-    res.status(201).json({ success: true, message: 'Membership processed successfully', membership });
+    res.status(201).json({ success: true, message: 'Free trial activated successfully', membership });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

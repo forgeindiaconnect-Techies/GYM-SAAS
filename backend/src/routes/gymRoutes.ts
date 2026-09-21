@@ -8,7 +8,8 @@ import {
   updateGym,
   deleteGym,
   getPublicGyms,
-  getPublicGymById
+  getPublicGymById,
+  updatePaymentSettings
 } from '../controllers/gymController';
 import { authenticate } from '../middlewares/auth';
 
@@ -21,6 +22,7 @@ router.get('/public/:id', getPublicGymById);
 router.get('/my-gym', authenticate, getMyGym);
 router.get('/:id', getGymById);
 router.patch('/:id/status', updateGymStatus);
+router.patch('/:id/payment-settings', authenticate, updatePaymentSettings);
 router.put('/:id', updateGym);
 router.delete('/:id', deleteGym);
 

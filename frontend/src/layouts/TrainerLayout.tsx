@@ -63,11 +63,18 @@ const TrainerLayout = () => {
       ]
     },
     {
-      title: 'Communication & Finance',
+      title: 'Communication',
       items: [
         { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
         { label: 'Notifications', path: '/trainer/notifications', icon: Bell },
-        { label: 'Earnings', path: '/trainer/earnings', icon: IndianRupee },
+      ]
+    },
+    {
+      title: 'Earnings & Payments',
+      items: [
+        { label: 'My Trainer Fee', path: '/trainer/my-fee', icon: IndianRupee },
+        { label: 'Earnings', path: '/trainer/earnings', icon: TrendingUp },
+        { label: 'Payment History', path: '/trainer/payment-history', icon: FileText },
       ]
     }
   ];

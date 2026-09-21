@@ -6,7 +6,8 @@ import { ExpiryPopup } from '../components/ExpiryPopup';
 import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
-  Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare
+  Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
+  ChevronDown, Settings, Clock, History, TrendingUp
 } from 'lucide-react';
 
 const GymAdminLayout = () => {
@@ -14,6 +15,7 @@ const GymAdminLayout = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [trainerFeesOpen, setTrainerFeesOpen] = useState(false);
   const [gym, setGym] = useState<any>(null);
   const [branches, setBranches] = useState<any[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<string>('main');
@@ -57,6 +59,7 @@ const GymAdminLayout = () => {
   const baseNavItems = [
     { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
     { label: 'Trainers', path: '/admin/trainers', icon: Dumbbell },
+    { label: 'Trainer Fees & Payments', path: '/admin/trainer-fees', icon: IndianRupee },
     { label: 'Members', path: '/admin/members', icon: Users },
     { label: 'Customer Enquiries', path: '/admin/enquiries', icon: MessageSquare },
     { label: 'Equipment', path: '/admin/equipment', icon: Activity },
@@ -75,7 +78,7 @@ const GymAdminLayout = () => {
   ];
 
   const commonBottomNav = [
-    { label: 'Payments', path: '/admin/payments', icon: IndianRupee },
+    { label: 'Membership Payments', path: '/admin/payments', icon: IndianRupee },
     { label: 'Reports', path: '/admin/reports', icon: BarChart },
     { label: 'Notifications', path: '/admin/notifications', icon: Bell },
     { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 },
@@ -130,6 +133,71 @@ const GymAdminLayout = () => {
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
         {navItems.map((item) => {
+          // Trainer Fees & Payments — collapsible group
+          if (item.path === '/admin/trainer-fees') {
+            let subLinks = [
+              { label: 'Fee Settings', path: '/admin/trainer-fees/settings', icon: Settings },
+              { label: 'Pending Payments', path: '/admin/trainer-fees/pending', icon: Clock },
+              { label: 'Withdrawal Requests', path: '/admin/trainer-fees/withdrawals', icon: CreditCard },
+              { label: 'Payment History', path: '/admin/trainer-fees/history', icon: History },
+              { label: 'Earnings Overview', path: '/admin/trainer-fees/earnings', icon: TrendingUp },
+            ];
+            const isGroupActive = location.pathname.startsWith('/admin/trainer-fees');
+            if (isGroupActive && !trainerFeesOpen) setTrainerFeesOpen(true);
+            return (
+              <div key={item.path}>
+                <button
+                  onClick={() => setTrainerFeesOpen(o => !o)}
+                  className={clsx(
+                    'w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
+                    isGroupActive
+                      ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold'
+                      : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
+                  )}
+                >
+                  <span className="flex items-center space-x-3">
+                    <IndianRupee
+                      size={18}
+                      className={clsx('shrink-0 transition-colors', isGroupActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]')}
+                    />
+                    <span className="truncate">Trainer Fees & Payments</span>
+                  </span>
+                  <ChevronDown
+                    size={15}
+                    className={clsx('shrink-0 transition-transform duration-200', trainerFeesOpen ? 'rotate-180 text-[#16A34A]' : 'text-[#94A3B8]')}
+                  />
+                </button>
+                {trainerFeesOpen && (
+                  <div className="ml-4 mt-0.5 space-y-0.5 border-l-2 border-[#CCFBF1] pl-3">
+                    {subLinks.map(sub => {
+                      const SubIcon = sub.icon;
+                      const subActive = location.pathname === sub.path;
+                      return (
+                        <Link
+                          key={sub.path}
+                          to={sub.path}
+                          onClick={() => setSidebarOpen(false)}
+                          className={clsx(
+                            'flex items-center space-x-2.5 px-3 py-2 rounded-xl transition-all duration-150 text-xs font-medium group',
+                            subActive
+                              ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold'
+                              : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
+                          )}
+                        >
+                          <SubIcon
+                            size={14}
+                            className={clsx('shrink-0', subActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]')}
+                          />
+                          <span>{sub.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
           return (
@@ -209,7 +277,7 @@ const GymAdminLayout = () => {
             </button>
             {currentNav && <currentNav.icon size={20} className="text-[#16A34A] hidden sm:block" />}
             <h2 className="text-base md:text-lg font-bold tracking-tight text-[#1E293B]">
-              {currentNav?.label || 'Gym Dashboard'}
+              {currentNav?.label || 'Gym Owner Dashboard'}
             </h2>
           </div>
 

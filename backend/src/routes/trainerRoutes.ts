@@ -11,7 +11,8 @@ import {
   completeProfile,
   getMyProfile,
   updateMyProfile,
-  getMyGymTrainers
+  getMyGymTrainers,
+  updateTrainer
 } from '../controllers/trainerController';
 import { authenticate } from '../middlewares/auth';
 
@@ -35,6 +36,7 @@ router.post('/invite', authenticate, inviteTrainer);
 router.get('/', authenticate, getTrainers);
 router.get('/:id', authenticate, getTrainerById);
 router.patch('/:id/status', authenticate, updateTrainerStatus);
+router.put('/:id', authenticate, updateTrainer);
 router.delete('/:id', authenticate, deleteTrainer);
 
 export default router;

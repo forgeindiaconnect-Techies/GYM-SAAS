@@ -221,7 +221,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Check trial expiration
-    if (user.subscriptionStatus === SubscriptionStatus.TRIAL && user.subscriptionExpiry) {
+    if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL && user.subscriptionExpiry) {
       if (new Date(user.subscriptionExpiry) < new Date()) {
         user.subscriptionStatus = SubscriptionStatus.EXPIRED;
       }
@@ -281,7 +281,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     }
     
     // Check trial expiration
-    if (user.subscriptionStatus === SubscriptionStatus.TRIAL && user.subscriptionExpiry) {
+    if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL && user.subscriptionExpiry) {
       if (new Date(user.subscriptionExpiry) < new Date()) {
         user.subscriptionStatus = SubscriptionStatus.EXPIRED;
         await user.save();

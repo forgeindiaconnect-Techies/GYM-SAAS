@@ -12,6 +12,8 @@ import branchRoutes from './routes/branchRoutes';
 import importRoutes from './routes/importRoutes';
 import enquiryRoutes from './routes/enquiryRoutes';
 import aiRoutes from './routes/aiRoutes';
+import paymentRoutes from './routes/paymentRoutes';
+import trainerPaymentRoutes from './routes/trainerPayment.routes';
 
 dotenv.config();
 
@@ -32,7 +34,9 @@ app.use('/api/memberships', membershipRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/import', importRoutes);
 app.use('/api/enquiries', enquiryRoutes);
+app.use('/api/trainer-payments', trainerPaymentRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/payments', paymentRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running' });
