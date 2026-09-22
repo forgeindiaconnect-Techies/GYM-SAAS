@@ -61,7 +61,16 @@ const SAAS_PLANS: Record<string, { name: string, price: string, features: string
   PREMIUM: {
     name: 'Premium',
     price: '₹799 / 3 Months',
-    features: ['Gym Setup', 'Unlimited Members & Trainers', 'Unlimited Membership Plans', 'Exercise & Diet Plans', 'Advanced AI Suggestions', 'Multiple Branches', 'Priority Support']
+    features: [
+      'Gym Setup', 'Unlimited Member Management', 'Unlimited Trainer Management',
+      'Unlimited Membership Plans', 'Exercise Plans', 'Diet Plans',
+      'Advanced AI Suggestions', 'Advanced Member Progress Tracking',
+      'Attendance Management', 'Payment Tracking', 'Advanced Reports & Analytics',
+      'Unlimited AI Workout Generation', 'Unlimited AI Diet Generation',
+      'Gym Store — Sell Supplements & Merch', 'Gym Store — Online Orders & Payments',
+      'Gym Store — Inventory & Offline Sales', 'Notifications',
+      'Multiple Branches', 'Priority Support'
+    ]
   }
 };
 

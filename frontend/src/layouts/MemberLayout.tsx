@@ -6,7 +6,8 @@ import {
   LayoutDashboard, User, CreditCard, Dumbbell,
   Utensils, Bot, UserCheck, Calendar, CalendarCheck,
   TrendingUp, DollarSign, Bell, MessageSquare,
-  Settings, Activity, Building2, Menu, LogOut, Clock
+  Settings, Activity, Building2, Menu, LogOut, Clock,
+  ShoppingBag, ShoppingCart
 } from 'lucide-react';
 
 const MemberLayout = () => {
@@ -16,6 +17,15 @@ const MemberLayout = () => {
   const [showExpiryWarning, setShowExpiryWarning] = useState(false);
   const [gym, setGym] = useState<any>(null);
   const [isExpired, setIsExpired] = useState(false);
+  const [storeEnabled, setStoreEnabled] = useState(false);
+
+  useEffect(() => {
+    import('../utils/api').then(({ default: api }) => {
+      api.get('/store/customer/status')
+        .then(res => setStoreEnabled(!!res.data?.enabled))
+        .catch(() => setStoreEnabled(false));
+    });
+  }, [user]);
 
   useEffect(() => {
     if (user?.subscriptionExpiry) {
@@ -92,6 +102,14 @@ const MemberLayout = () => {
         { label: 'Progress', path: '/member/progress', icon: TrendingUp },
       ]
     },
+    ...(storeEnabled ? [{
+      title: 'Gym Store',
+      items: [
+        { label: 'Store', path: '/member/store', icon: ShoppingBag },
+        { label: 'My Cart', path: '/member/store/cart', icon: ShoppingCart },
+        { label: 'My Orders', path: '/member/store/orders', icon: ShoppingBag },
+      ]
+    }] : []),
     {
       title: 'Account',
       items: [

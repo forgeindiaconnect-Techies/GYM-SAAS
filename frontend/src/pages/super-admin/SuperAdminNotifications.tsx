@@ -1,65 +1,181 @@
-import { Bell } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Bell, AlertCircle, MessageSquare, Info, CheckCircle2, XCircle, CheckCheck } from 'lucide-react';
+import api from '../../utils/api';
+
+const getIcon = (type: string) => {
+  switch (type) {
+    case 'alert': return <AlertCircle size={20} className="text-[#0D9488]" />;
+    case 'success': return <CheckCircle2 size={20} className="text-green-500" />;
+    case 'message': return <MessageSquare size={20} className="text-blue-500" />;
+    case 'info': return <Info size={20} className="text-purple-500" />;
+    default: return <Bell size={20} className="text-gray-500" />;
+  }
+};
+
+const getBg = (type: string) => {
+  switch (type) {
+    case 'alert': return 'bg-[#0D9488]/10 border-[#0D9488]/20';
+    case 'success': return 'bg-green-500/10 border-green-500/20';
+    case 'message': return 'bg-blue-500/10 border-blue-500/20';
+    case 'info': return 'bg-purple-500/10 border-purple-500/20';
+    default: return 'bg-gray-500/10 border-gray-500/20';
+  }
+};
 
 const SuperAdminNotifications = () => {
+  const navigate = useNavigate();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<any>(null);
+
+  const fetchNotifications = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get('/notifications');
+      setNotifications(res.data.notifications || []);
+    } catch (err) {
+      console.error('Failed to fetch notifications', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const markAsRead = async (id: string) => {
+    try {
+      await api.put(`/notifications/${id}/read`);
+      setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
+    } catch (err) {
+      console.error('Failed to mark notification read', err);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      await api.put('/notifications/mark-all-read');
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+    } catch (err) {
+      console.error('Failed to mark all as read', err);
+    }
+  };
+
+  const openNotification = (notif: any) => {
+    if (!notif.isRead) markAsRead(notif._id);
+    setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+    if (notif.link) {
+      navigate(notif.link);
+      return;
+    }
+    setSelected(notif);
+  };
+
+  useEffect(() => { fetchNotifications(); }, []);
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex justify-between items-end mb-8 border-b border-[#CCFBF1] pb-6">
+    <div className="space-y-6 max-w-4xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Bell className="text-[#0D9488]" size={32} />
-            System Notifications
-          </h1>
-          <p className="text-[#475569] mt-2 font-mono text-sm">Global broadcast messaging.</p>
+          <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">System Notifications</h1>
+          <p className="text-[#475569] mt-1">Global alerts, system updates, and messages.</p>
         </div>
-        <button className="px-6 py-2 bg-[#0D9488]/10 text-[#0D9488] border border-[#0D9488]/30 rounded-xl font-bold hover:bg-[#0D9488] hover:text-[#16A34A] transition-colors">
-          Execute Protocol
-        </button>
+        <div className="flex space-x-3 items-center">
+          <span className="text-xs text-[#475569]">{unreadCount} unread</span>
+          <button onClick={markAllAsRead} disabled={unreadCount === 0} className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] text-sm font-bold rounded-xl hover:bg-[#F0FDFA] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+            <CheckCheck size={15} />
+            Mark all as read
+          </button>
+        </div>
       </div>
 
-      <div className="grid md:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Nodes', val: '1,492' },
-          { label: 'Active Streams', val: '384' },
-          { label: 'Error Rate', val: '0.04%' },
-          { label: 'System Load', val: '42%' }
-        ].map((stat, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-5 relative overflow-hidden group">
-             <div className="absolute top-0 right-0 w-16 h-16 bg-[#0D9488]/5 rounded-full blur-xl group-hover:bg-[#0D9488]/10 transition-colors"></div>
-             <p className="text-[#475569] text-xs font-mono uppercase mb-1">{stat.label}</p>
-             <p className="text-2xl font-bold text-[#1E293B] relative z-10">{stat.val}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-[#CCFBF1] bg-[#FFFFFF]">
-          <h2 className="text-sm font-bold font-mono text-[#0D9488] uppercase tracking-widest">Global Registry Table</h2>
+      {loading ? (
+        <div className="flex items-center justify-center py-20 bg-white border border-[#E2E8F0] rounded-2xl">
+          <div className="w-8 h-8 border-4 border-[#0D9488] border-t-transparent rounded-full animate-spin" />
         </div>
-        <table className="w-full text-left font-mono text-sm">
-          <thead>
-            <tr className="bg-[#0a0a0a] text-[#555] border-b border-[#CCFBF1]">
-              <th className="p-4 font-normal">SYS_ID</th>
-              <th className="p-4 font-normal">STATUS</th>
-              <th className="p-4 font-normal">TIMESTAMP</th>
-              <th className="p-4 font-normal text-right">OVERRIDE</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[#CCFBF1]">
-            {[1, 2, 3, 4, 5, 6].map((row) => (
-              <tr key={row} className="hover:bg-[#FFFFFF] transition-colors">
-                <td className="p-4 text-[#475569]">0x00A${row}F${9-row}</td>
-                <td className="p-4">
-                   <span className="px-2 py-0.5 bg-green-500/10 text-green-500 rounded-full text-[10px] uppercase border border-green-500/20">Operational</span>
-                </td>
-                <td className="p-4 text-[#475569]">2026-10-12T14:43:0${row}Z</td>
-                <td className="p-4 text-right">
-                  <button className="text-[#555] hover:text-[#0D9488] transition-colors">Modify</button>
-                </td>
-              </tr>
+      ) : (
+        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
+          <div className="divide-y divide-[#CCFBF1]">
+            {notifications.map((notif) => (
+              <button
+                key={notif._id}
+                onClick={() => openNotification(notif)}
+                className={`w-full text-left p-6 flex items-start space-x-4 transition-colors hover:bg-[#F0FDFA] ${!notif.isRead ? 'bg-[#FFFFFF]/50' : ''}`}
+              >
+                <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center border ${getBg(notif.type)}`}>
+                  {getIcon(notif.type)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start gap-3">
+                    <h3 className={`text-base truncate ${!notif.isRead ? 'font-bold text-[#1E293B]' : 'font-semibold text-[#475569]'}`}>{notif.title}</h3>
+                    <span className="text-xs text-[#475569] whitespace-nowrap">
+                      {notif.createdAt ? new Date(notif.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }) : ''}
+                    </span>
+                  </div>
+                  <p className={`mt-1 text-sm line-clamp-2 ${!notif.isRead ? 'text-[#1E293B]' : 'text-[#475569]'}`}>{notif.message}</p>
+                </div>
+                {!notif.isRead && (
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0D9488] shrink-0 self-center mt-1" />
+                )}
+              </button>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+
+          {notifications.length === 0 && (
+            <div className="p-12 text-center flex flex-col items-center justify-center">
+              <Bell size={48} className="text-[#E2E8F0] mb-4" />
+              <h3 className="text-lg font-bold text-[#1E293B]">All caught up!</h3>
+              <p className="text-[#475569] text-sm mt-1">You have no new notifications.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Details Modal */}
+      {selected && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-[#E2E8F0] bg-[#F8FAFC]">
+              <div className="flex items-center gap-2">
+                {getIcon(selected.type)}
+                <h3 className="font-bold text-[#1E293B]">Notification Details</h3>
+              </div>
+              <button onClick={() => setSelected(null)} className="text-[#64748B] hover:text-[#1E293B]">
+                <XCircle size={20} />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <p className="text-xs text-[#94A3B8] uppercase tracking-wide font-semibold mb-1">Title</p>
+                <p className="font-bold text-[#1E293B]">{selected.title}</p>
+              </div>
+              <div>
+                <p className="text-xs text-[#94A3B8] uppercase tracking-wide font-semibold mb-1">Message</p>
+                <p className="text-sm text-[#475569] leading-relaxed">{selected.message}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+                <div>
+                  <p className="text-xs text-[#94A3B8] uppercase tracking-wide font-semibold mb-1">Type</p>
+                  <p className="text-sm font-semibold text-[#1E293B] capitalize">{selected.type || 'info'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-[#94A3B8] uppercase tracking-wide font-semibold mb-1">Status</p>
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${selected.isRead ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-700'}`}>
+                    <CheckCircle2 size={12} />
+                    {selected.isRead ? 'Read' : 'Unread'}
+                  </span>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-xs text-[#94A3B8] uppercase tracking-wide font-semibold mb-1">Received At</p>
+                  <p className="text-sm font-semibold text-[#1E293B]">
+                    {selected.createdAt ? new Date(selected.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '-'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

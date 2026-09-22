@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, Building2, Send, User, Settings, LogOut,
-  Users, CreditCard, Trash2, ShieldCheck, Menu, MessageSquare
+  Users, CreditCard, Trash2, ShieldCheck, Menu, MessageSquare, Wallet, Bell, Store
 } from 'lucide-react';
 
 const SuperAdminLayout = () => {
@@ -20,6 +20,9 @@ const SuperAdminLayout = () => {
     { label: 'Add Gym Manually', path: '/super-admin/gyms/add', icon: Building2 },
     { label: 'Gym Invitations', path: '/super-admin/invitations', icon: Send },
     { label: 'Subscription Plans', path: '/super-admin/subscriptions', icon: CreditCard },
+    { label: 'Gym Store', path: '/super-admin/store', icon: Store },
+    { label: 'Payout Management', path: '/super-admin/payouts', icon: Wallet },
+    { label: 'Notifications', path: '/super-admin/notifications', icon: Bell },
     { label: 'Deleted Details', path: '/super-admin/deleted', icon: Trash2 },
     { label: 'Profile', path: '/super-admin/profile', icon: User },
   ];

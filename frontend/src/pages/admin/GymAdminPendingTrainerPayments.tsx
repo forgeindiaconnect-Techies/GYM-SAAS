@@ -3,7 +3,7 @@ import { Clock, CheckCircle, XCircle, CreditCard, Banknote, Smartphone, ArrowRig
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 
-const PAYMENT_METHODS = ['Bank Transfer', 'UPI', 'Manual Payment'];
+const PAYMENT_METHODS = ['Bank Transfer', 'UPI', 'Cash'];
 
 const defaultPayForm = {
   amount: '',

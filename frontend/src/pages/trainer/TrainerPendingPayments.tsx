@@ -3,20 +3,20 @@ import { History, CheckCircle, XCircle, Clock, AlertCircle, Lock } from 'lucide-
 import api from '../../utils/api';
 
 const STATUS_COLORS: Record<string, string> = {
-  Paid: 'bg-green-100 text-green-700',
   Pending: 'bg-amber-100 text-amber-700',
+  Processing: 'bg-blue-100 text-blue-700',
   Failed: 'bg-red-100 text-red-700',
   Cancelled: 'bg-gray-100 text-gray-500',
 };
 
 const STATUS_ICONS: Record<string, any> = {
-  Paid: CheckCircle,
   Pending: Clock,
+  Processing: Clock,
   Failed: XCircle,
   Cancelled: AlertCircle,
 };
 
-const TrainerPaymentHistoryPage = () => {
+const TrainerPendingPayments = () => {
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,8 +25,8 @@ const TrainerPaymentHistoryPage = () => {
   const fetchHistory = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get('/trainer-payments/my-history');
-      setPayments(res.data.payments || []);
+      const res = await api.get('/trainer-payments/my-pending');
+      setPayments(res.data.pending || []);
     } catch {
       /* silent */
     } finally {
@@ -36,20 +36,20 @@ const TrainerPaymentHistoryPage = () => {
 
   useEffect(() => { fetchHistory(); }, [fetchHistory]);
 
-  const totalReceived = payments.filter(p => p.paymentStatus === 'Paid').reduce((s, p) => s + p.amount, 0);
+  const totalPending = payments.reduce((s, p) => s + p.amount, 0);
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#1E293B]">Payment History</h1>
-          <p className="text-[#64748B] text-sm mt-1">Your complete payment record from your Gym Owner</p>
+          <h1 className="text-2xl font-bold text-[#1E293B]">Pending Payments</h1>
+          <p className="text-[#64748B] text-sm mt-1">Payments that are pending, processing, or have failed</p>
         </div>
-        {totalReceived > 0 && (
-          <div className="bg-[#F0FDFA] border border-[#CCFBF1] rounded-xl px-5 py-3 text-right">
-            <p className="text-xs text-[#64748B]">Total Received</p>
-            <p className="text-xl font-bold text-[#16A34A]">₹{totalReceived.toLocaleString('en-IN')}</p>
+        {totalPending > 0 && (
+          <div className="bg-[#FFFBEB] border border-[#FEF3C7] rounded-xl px-5 py-3 text-right">
+            <p className="text-xs text-[#64748B]">Total Pending</p>
+            <p className="text-xl font-bold text-[#D97706]">₹{totalPending.toLocaleString('en-IN')}</p>
           </div>
         )}
       </div>
@@ -69,18 +69,18 @@ const TrainerPaymentHistoryPage = () => {
         ) : payments.length === 0 ? (
           <div className="text-center py-20">
             <History size={40} className="mx-auto text-[#CBD5E1] mb-3" />
-            <p className="text-[#64748B] font-semibold">No payment records yet</p>
-            <p className="text-[#94A3B8] text-sm mt-1">Your payment history will appear here once your Gym Owner processes payments</p>
+            <p className="text-[#64748B] font-semibold">No pending payments</p>
+            <p className="text-[#94A3B8] text-sm mt-1">All your payments from Gym Owners are currently up to date</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Date</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Gym Details</th>
                   <th className="px-5 py-3.5 font-semibold text-[#64748B]">Training Type</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Date</th>
                   <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Amount</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Payment Method</th>
                   <th className="px-5 py-3.5 font-semibold text-[#64748B]">Status</th>
                   <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Actions</th>
                 </tr>
@@ -90,15 +90,18 @@ const TrainerPaymentHistoryPage = () => {
                   const Icon = STATUS_ICONS[p.paymentStatus] || Clock;
                   return (
                     <tr key={p._id} className="hover:bg-[#F8FAFC] transition-colors">
-                      <td className="px-5 py-4 text-[#475569] whitespace-nowrap">
-                        {p.createdAt
-                          ? new Date(p.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
-                          : '-'}
+                      <td className="px-5 py-4">
+                          <p className="font-bold text-[#1E293B]">{p.gymId?.name || 'Unknown Gym'}</p>
+                          <p className="text-xs text-[#64748B]">{p.branchId ? 'Branch ID: ' + p.branchId : 'Main Branch'}</p>
                       </td>
                       <td className="px-5 py-4 text-[#475569]">{p.trainerFeeId?.trainingType || '-'}</td>
+                      <td className="px-5 py-4 text-[#475569] whitespace-nowrap">
+                        {p.paymentDate
+                          ? new Date(p.paymentDate).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                          : '-'}
+                      </td>
                       <td className="px-5 py-4 text-right font-bold text-[#1E293B]">₹{p.amount?.toLocaleString('en-IN')}</td>
-                      <td className="px-5 py-4 text-[#475569]">{p.paymentMethod}</td>
-
+                      
                       <td className="px-5 py-4">
                         <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${STATUS_COLORS[p.paymentStatus] || 'bg-gray-100 text-gray-500'}`}>
                           <Icon size={12} />
@@ -152,16 +155,16 @@ const TrainerPaymentHistoryPage = () => {
                 <div>
                   <p className="text-gray-500 mb-1">Date</p>
                   <p className="font-semibold text-gray-900">
-                    {selectedPayment.createdAt ? new Date(selectedPayment.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}
+                    {selectedPayment.paymentDate ? new Date(selectedPayment.paymentDate).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
                   </p>
+                </div>
+                <div>
+                  <p className="text-gray-500 mb-1">Training Type</p>
+                  <p className="font-semibold text-gray-900">{selectedPayment.trainerFeeId?.trainingType || '-'}</p>
                 </div>
                 <div>
                   <p className="text-gray-500 mb-1">Payment Method</p>
                   <p className="font-semibold text-gray-900">{selectedPayment.paymentMethod || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 mb-1">Transaction ID</p>
-                  <p className="font-semibold text-gray-900">{selectedPayment.transactionId || 'N/A'}</p>
                 </div>
               </div>
               
@@ -179,4 +182,4 @@ const TrainerPaymentHistoryPage = () => {
   );
 };
 
-export default TrainerPaymentHistoryPage;
+export default TrainerPendingPayments;

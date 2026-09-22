@@ -22,6 +22,10 @@ export interface ITrainer extends Document {
   availableSlot?: number;
   fee?: number;
   paymentType?: 'Per Week' | 'Per Month' | 'Per Session';
+  totalEarnings: number;
+  availableBalance: number;
+  withdrawnAmount: number;
+  pendingWithdrawal: number;
   status: 'Pending' | 'Active' | 'Rejected' | 'Suspended';
   createdAt: Date;
   updatedAt: Date;
@@ -49,6 +53,10 @@ const trainerSchema = new Schema<ITrainer>({
   availableSlot: { type: Number },
   fee: { type: Number },
   paymentType: { type: String, enum: ['Per Week', 'Per Month', 'Per Session'] },
+  totalEarnings: { type: Number, default: 0 },
+  availableBalance: { type: Number, default: 0 },
+  withdrawnAmount: { type: Number, default: 0 },
+  pendingWithdrawal: { type: Number, default: 0 },
   status: { type: String, enum: ['Pending', 'Active', 'Rejected', 'Suspended'], default: 'Pending' }
 }, { timestamps: true });
 

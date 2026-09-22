@@ -56,12 +56,29 @@ import GymAdminBranches from './pages/admin/GymAdminBranches';
 import GymAdminAddBranch from './pages/admin/GymAdminAddBranch';
 import GymAdminBranchProfile from './pages/admin/GymAdminBranchProfile';
 import GymAdminImportCustomers from './pages/admin/GymAdminImportCustomers';
-import GymAdminTrainerFeesHub from './pages/admin/GymAdminTrainerFeesHub';
+
 import GymAdminTrainerFees from './pages/admin/GymAdminTrainerFees';
-import GymAdminPendingTrainerPayments from './pages/admin/GymAdminPendingTrainerPayments';
-import GymAdminWithdrawalRequests from './pages/admin/GymAdminWithdrawalRequests';
+import GymAdminTrainerPayments from './pages/admin/GymAdminTrainerPayments';
 import GymAdminTrainerPaymentHistory from './pages/admin/GymAdminTrainerPaymentHistory';
-import GymAdminTrainerEarnings from './pages/admin/GymAdminTrainerEarnings';
+
+// Gym Store (Admin)
+import GymStoreDashboard from './pages/admin/store/GymStoreDashboard';
+import GymStoreProducts from './pages/admin/store/GymStoreProducts';
+import GymStoreCategories from './pages/admin/store/GymStoreCategories';
+import GymStoreInventory from './pages/admin/store/GymStoreInventory';
+import GymStoreOrders from './pages/admin/store/GymStoreOrders';
+import GymStoreOfflineSales from './pages/admin/store/GymStoreOfflineSales';
+import GymStoreSalesHistory from './pages/admin/store/GymStoreSalesHistory';
+import GymStoreSettings from './pages/admin/store/GymStoreSettings';
+
+// Gym Store (Member)
+import MemberStore from './pages/member/MemberStore';
+import MemberCart from './pages/member/MemberCart';
+import MemberCheckout from './pages/member/MemberCheckout';
+import MemberOrders from './pages/member/MemberOrders';
+
+// Gym Store (Super Admin)
+import SuperAdminGymStore from './pages/super-admin/SuperAdminGymStore';
 
 // Super Admin
 import SuperAdminLayout from './layouts/SuperAdminLayout';
@@ -79,6 +96,8 @@ import SuperAdminCustomers from './pages/super-admin/SuperAdminCustomers';
 import SuperAdminGymOwners from './pages/super-admin/SuperAdminGymOwners';
 import SuperAdminSubscriptions from './pages/super-admin/SuperAdminSubscriptions';
 import SuperAdminDeletedDetails from './pages/super-admin/SuperAdminDeletedDetails';
+import SuperAdminPayouts from './pages/super-admin/SuperAdminPayouts';
+import SuperAdminNotifications from './pages/super-admin/SuperAdminNotifications';
 
 // Member
 import MemberLayout from './layouts/MemberLayout';
@@ -116,8 +135,9 @@ import TrainerAttendance from './pages/trainer/TrainerAttendance';
 import TrainerMessages from './pages/trainer/TrainerMessages';
 import TrainerNotifications from './pages/trainer/TrainerNotifications';
 import TrainerEarnings from './pages/trainer/TrainerEarnings';
-import TrainerFeeView from './pages/trainer/TrainerFeeView';
 import TrainerPaymentHistoryPage from './pages/trainer/TrainerPaymentHistoryPage';
+import TrainerMyAssignedFee from './pages/trainer/TrainerMyAssignedFee';
+import TrainerPaymentsReceived from './pages/trainer/TrainerPaymentsReceived';
 import TrainerSettings from './pages/trainer/TrainerSettings';
 import TrainerAIAssistant from './pages/trainer/TrainerAIAssistant';
 import TrainerAIReview from './pages/trainer/TrainerAIReview';
@@ -198,6 +218,10 @@ function App() {
             <Route path="payments" element={<MemberPayments />} />
             <Route path="chat" element={<MemberMessages />} />
             <Route path="notifications" element={<MemberNotifications />} />
+            <Route path="store" element={<MemberStore />} />
+            <Route path="store/cart" element={<MemberCart />} />
+            <Route path="store/checkout" element={<MemberCheckout />} />
+            <Route path="store/orders" element={<MemberOrders />} />
             <Route path="enquiries" element={<MemberEnquiries />} />
             <Route path="settings" element={<MemberSettings />} />
           </Route>
@@ -219,8 +243,9 @@ function App() {
             <Route path="attendance" element={<TrainerAttendance />} />
             <Route path="messages" element={<TrainerMessages />} />
             <Route path="earnings" element={<TrainerEarnings />} />
-            <Route path="my-fee" element={<TrainerFeeView />} />
             <Route path="payment-history" element={<TrainerPaymentHistoryPage />} />
+            <Route path="my-fee" element={<TrainerMyAssignedFee />} />
+            <Route path="payments-received" element={<TrainerPaymentsReceived />} />
             <Route path="notifications" element={<TrainerNotifications />} />
             <Route path="settings" element={<TrainerSettings />} />
             <Route path="ai-assistant" element={<TrainerAIAssistant />} />
@@ -268,12 +293,17 @@ function App() {
             <Route path="subscription" element={<GymAdminSubscription />} />
             <Route path="deleted-details" element={<GymAdminDeletedDetails />} />
             <Route path="import-customers" element={<GymAdminImportCustomers />} />
-            <Route path="trainer-fees" element={<GymAdminTrainerFeesHub />} />
-            <Route path="trainer-fees/settings" element={<GymAdminTrainerFees />} />
-            <Route path="trainer-fees/pending" element={<GymAdminPendingTrainerPayments />} />
-            <Route path="trainer-fees/withdrawals" element={<GymAdminWithdrawalRequests />} />
-            <Route path="trainer-fees/history" element={<GymAdminTrainerPaymentHistory />} />
-            <Route path="trainer-fees/earnings" element={<GymAdminTrainerEarnings />} />
+            <Route path="trainer-fees" element={<GymAdminTrainerFees />} />
+            <Route path="trainer-payments" element={<GymAdminTrainerPayments />} />
+            <Route path="trainer-payments-history" element={<GymAdminTrainerPaymentHistory />} />
+            <Route path="store" element={<GymStoreDashboard />} />
+            <Route path="store/products" element={<GymStoreProducts />} />
+            <Route path="store/categories" element={<GymStoreCategories />} />
+            <Route path="store/inventory" element={<GymStoreInventory />} />
+            <Route path="store/orders" element={<GymStoreOrders />} />
+            <Route path="store/offline-sales" element={<GymStoreOfflineSales />} />
+            <Route path="store/sales" element={<GymStoreSalesHistory />} />
+            <Route path="store/settings" element={<GymStoreSettings />} />
           </Route>
 
 {/* Super Admin Routes */}
@@ -294,8 +324,11 @@ function App() {
             <Route path="invitations" element={<SuperAdminInvitations />} />
             <Route path="subscriptions" element={<SuperAdminSubscriptions />} />
             <Route path="deleted" element={<SuperAdminDeletedDetails />} />
+            <Route path="payouts" element={<SuperAdminPayouts />} />
+            <Route path="notifications" element={<SuperAdminNotifications />} />
             <Route path="profile" element={<SuperAdminProfile />} />
             <Route path="settings" element={<SuperAdminSettings />} />
+            <Route path="store" element={<SuperAdminGymStore />} />
           </Route>
 
           {/* Catch-all */}

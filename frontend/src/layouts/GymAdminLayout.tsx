@@ -7,7 +7,8 @@ import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
-  ChevronDown, Settings, Clock, History, TrendingUp
+  ChevronDown, Settings, Clock, History, TrendingUp,
+  Store, Package, Tag, Boxes, ShoppingCart
 } from 'lucide-react';
 
 const GymAdminLayout = () => {
@@ -15,21 +16,57 @@ const GymAdminLayout = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [trainerFeesOpen, setTrainerFeesOpen] = useState(false);
+  const [trainerFeesOpen, setTrainerFeesOpen] = useState(() => location.pathname.startsWith('/admin/trainer-fees'));
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/admin/trainer-fees') && !trainerFeesOpen) {
+      setTrainerFeesOpen(true);
+    }
+  }, [location.pathname]);
   const [gym, setGym] = useState<any>(null);
   const [branches, setBranches] = useState<any[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<string>('main');
   const [notifOpen, setNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
-  const MOCK_NOTIFS = [
-    { id: 1, title: 'Equipment Alert', message: 'Treadmill EQ004 requires maintenance soon.', type: 'alert', time: '10 mins ago', read: false },
-    { id: 2, title: 'New Member Signup', message: 'Emily Davis has joined the Pro Tier plan.', type: 'success', time: '2 hours ago', read: false },
-    { id: 3, title: 'Trainer Message', message: 'Sarah C. requested shift swap for tomorrow.', type: 'message', time: '5 hours ago', read: true },
-    { id: 4, title: 'System Update', message: 'AI GYM platform will undergo maintenance at 2 AM.', type: 'info', time: '1 day ago', read: true },
-    { id: 5, title: 'Payment Failed', message: 'Failed to process monthly payment for Mike Johnson.', type: 'alert', time: '1 day ago', read: true },
-  ];
-  const unreadCount = MOCK_NOTIFS.filter(n => !n.read).length;
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  const fetchNotifications = async () => {
+    try {
+      const api = (await import('../utils/api')).default;
+      const res = await api.get('/notifications');
+      if (res.data.success) {
+        setNotifications(res.data.notifications);
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications', err);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id) fetchNotifications();
+  }, [user]);
+
+  const markAsRead = async (id: string) => {
+    try {
+      const api = (await import('../utils/api')).default;
+      await api.put(`/notifications/${id}/read`);
+      setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
+    } catch (err) {
+      console.error('Failed to mark read', err);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      const api = (await import('../utils/api')).default;
+      await api.put('/notifications/mark-all-read');
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+    } catch (err) {
+      console.error('Failed to mark all read', err);
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -56,53 +93,104 @@ const GymAdminLayout = () => {
     }
   }, [user]);
 
-  const baseNavItems = [
-    { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
-    { label: 'Trainers', path: '/admin/trainers', icon: Dumbbell },
-    { label: 'Trainer Fees & Payments', path: '/admin/trainer-fees', icon: IndianRupee },
-    { label: 'Members', path: '/admin/members', icon: Users },
-    { label: 'Customer Enquiries', path: '/admin/enquiries', icon: MessageSquare },
-    { label: 'Equipment', path: '/admin/equipment', icon: Activity },
-    { label: 'Membership Plans', path: '/admin/membership-plans', icon: CreditCard },
-  ];
+  const getNavGroups = () => {
+    const groups = [
+      {
+        title: 'Main',
+        items: [
+          { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard }
+        ]
+      },
+      {
+        title: 'Trainers',
+        items: [
+          { label: 'Trainers List', path: '/admin/trainers', icon: Dumbbell },
+          { label: 'Trainer Fees', path: '/admin/trainer-fees', icon: IndianRupee },
+          { label: 'Trainer Payments', path: '/admin/trainer-payments', icon: CreditCard },
+          { label: 'Payment History', path: '/admin/trainer-payments-history', icon: History }
+        ]
+      },
+      {
+        title: 'Members & Enquiries',
+        items: [
+          { label: 'Members', path: '/admin/members', icon: Users },
+          { label: 'Customer Enquiries', path: '/admin/enquiries', icon: MessageSquare }
+        ]
+      },
+      {
+        title: 'Gym & Operations',
+        items: [
+          { label: 'Equipment', path: '/admin/equipment', icon: Activity },
+          { label: 'Membership Plans', path: '/admin/membership-plans', icon: CreditCard },
+          { label: 'Membership Payments', path: '/admin/payments', icon: IndianRupee }
+        ]
+      },
+      {
+        title: 'Gym Store',
+        items: [
+          { label: 'Store Overview', path: '/admin/store', icon: Store },
+          { label: 'Products', path: '/admin/store/products', icon: Package },
+          { label: 'Categories', path: '/admin/store/categories', icon: Tag },
+          { label: 'Inventory', path: '/admin/store/inventory', icon: Boxes },
+          { label: 'Orders', path: '/admin/store/orders', icon: ShoppingCart },
+          { label: 'Offline Sales', path: '/admin/store/offline-sales', icon: IndianRupee },
+          { label: 'Sales History', path: '/admin/store/sales', icon: BarChart },
+          { label: 'Store Settings', path: '/admin/store/settings', icon: Settings }
+        ]
+      },
+      {
+        title: 'Scheduling',
+        items: [] as any[]
+      },
+      {
+        title: 'Admin & Settings',
+        items: [
+          { label: 'Reports', path: '/admin/reports', icon: BarChart },
+          { label: 'Branches', path: '/admin/branches', icon: MapPin },
+          { label: 'Gym Profile', path: '/admin/gym-profile', icon: Building2 },
+          { label: 'Subscription', path: '/admin/subscription', icon: CreditCard },
+          { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 },
+          { label: 'Notifications', path: '/admin/notifications', icon: Bell }
+        ]
+      }
+    ];
 
-  const onlineSessionsNav = [
-    { label: 'Online Sessions', path: '/admin/online-sessions', icon: CalendarCheck },
-    { label: 'Video Bookings', path: '/admin/video-bookings', icon: Calendar },
-  ];
+    const schedulingGroup = groups.find(g => g.title === 'Scheduling');
+    if (schedulingGroup) {
+      if (gym?.trainingMode === 'online') {
+        schedulingGroup.items.push(
+          { label: 'Online Sessions', path: '/admin/online-sessions', icon: CalendarCheck },
+          { label: 'Video Bookings', path: '/admin/video-bookings', icon: Calendar }
+        );
+      } else if (gym?.trainingMode === 'offline') {
+        schedulingGroup.items.push(
+          { label: 'In-Person Bookings', path: '/admin/session-bookings', icon: CalendarCheck },
+          { label: 'Trainer Schedule', path: '/admin/trainer-schedule', icon: Calendar },
+          { label: 'Attendance', path: '/admin/attendance', icon: UserPlus }
+        );
+      } else if (gym?.trainingMode === 'both') {
+        schedulingGroup.items.push(
+          { label: 'In-Person Bookings', path: '/admin/session-bookings', icon: CalendarCheck },
+          { label: 'Online Sessions', path: '/admin/online-sessions', icon: CalendarCheck },
+          { label: 'Trainer Schedule', path: '/admin/trainer-schedule', icon: Calendar },
+          { label: 'Video Bookings', path: '/admin/video-bookings', icon: Calendar },
+          { label: 'Attendance', path: '/admin/attendance', icon: UserPlus }
+        );
+      } else {
+        // Default fallback
+        schedulingGroup.items.push(
+          { label: 'Session Bookings', path: '/admin/session-bookings', icon: CalendarCheck },
+          { label: 'Trainer Schedule', path: '/admin/trainer-schedule', icon: Calendar },
+          { label: 'Attendance', path: '/admin/attendance', icon: UserPlus }
+        );
+      }
+    }
 
-  const offlineSessionsNav = [
-    { label: 'In-Person Bookings', path: '/admin/session-bookings', icon: CalendarCheck },
-    { label: 'Trainer Schedule', path: '/admin/trainer-schedule', icon: Calendar },
-    { label: 'Attendance', path: '/admin/attendance', icon: UserPlus },
-  ];
+    return groups;
+  };
 
-  const commonBottomNav = [
-    { label: 'Membership Payments', path: '/admin/payments', icon: IndianRupee },
-    { label: 'Reports', path: '/admin/reports', icon: BarChart },
-    { label: 'Notifications', path: '/admin/notifications', icon: Bell },
-    { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 },
-    { label: 'Subscription', path: '/admin/subscription', icon: CreditCard },
-    { label: 'Gym Profile', path: '/admin/gym-profile', icon: Building2 },
-    { label: 'Branches', path: '/admin/branches', icon: MapPin },
-  ];
-
-  let navItems = [...baseNavItems];
-  
-  if (gym?.trainingMode === 'online') {
-    navItems = [...navItems, ...onlineSessionsNav];
-  } else if (gym?.trainingMode === 'offline') {
-    navItems = [...navItems, ...offlineSessionsNav];
-  } else if (gym?.trainingMode === 'both') {
-    navItems = [...navItems, ...onlineSessionsNav, ...offlineSessionsNav];
-  } else {
-    // Default fallback
-    navItems = [...navItems, { label: 'Session Bookings', path: '/admin/session-bookings', icon: CalendarCheck }, { label: 'Trainer Schedule', path: '/admin/trainer-schedule', icon: Calendar }, { label: 'Attendance', path: '/admin/attendance', icon: UserPlus }];
-  }
-
-  navItems = [...navItems, ...commonBottomNav];
-
-  const currentNav = navItems.find(item => item.path === location.pathname);
+  const navGroups = getNavGroups();
+  const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname);
 
   const SidebarContent = () => (
     <>
@@ -131,98 +219,40 @@ const GymAdminLayout = () => {
       <ExpiryPopup />
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {navItems.map((item) => {
-          // Trainer Fees & Payments — collapsible group
-          if (item.path === '/admin/trainer-fees') {
-            let subLinks = [
-              { label: 'Fee Settings', path: '/admin/trainer-fees/settings', icon: Settings },
-              { label: 'Pending Payments', path: '/admin/trainer-fees/pending', icon: Clock },
-              { label: 'Withdrawal Requests', path: '/admin/trainer-fees/withdrawals', icon: CreditCard },
-              { label: 'Payment History', path: '/admin/trainer-fees/history', icon: History },
-              { label: 'Earnings Overview', path: '/admin/trainer-fees/earnings', icon: TrendingUp },
-            ];
-            const isGroupActive = location.pathname.startsWith('/admin/trainer-fees');
-            if (isGroupActive && !trainerFeesOpen) setTrainerFeesOpen(true);
-            return (
-              <div key={item.path}>
-                <button
-                  onClick={() => setTrainerFeesOpen(o => !o)}
-                  className={clsx(
-                    'w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
-                    isGroupActive
-                      ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold'
-                      : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
-                  )}
-                >
-                  <span className="flex items-center space-x-3">
-                    <IndianRupee
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        {navGroups.map((group, idx) => (
+          <div key={idx}>
+            <h3 className="px-3 text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-2">{group.title}</h3>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive = location.pathname === item.path;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={clsx(
+                      'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
+                      isActive
+                        ? 'bg-[#16A34A] text-white shadow-md shadow-green-200'
+                        : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
+                    )}
+                  >
+                    <Icon
                       size={18}
-                      className={clsx('shrink-0 transition-colors', isGroupActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]')}
+                      className={clsx(
+                        'shrink-0 transition-colors',
+                        isActive ? 'text-white' : 'text-[#94A3B8] group-hover:text-[#16A34A]'
+                      )}
                     />
-                    <span className="truncate">Trainer Fees & Payments</span>
-                  </span>
-                  <ChevronDown
-                    size={15}
-                    className={clsx('shrink-0 transition-transform duration-200', trainerFeesOpen ? 'rotate-180 text-[#16A34A]' : 'text-[#94A3B8]')}
-                  />
-                </button>
-                {trainerFeesOpen && (
-                  <div className="ml-4 mt-0.5 space-y-0.5 border-l-2 border-[#CCFBF1] pl-3">
-                    {subLinks.map(sub => {
-                      const SubIcon = sub.icon;
-                      const subActive = location.pathname === sub.path;
-                      return (
-                        <Link
-                          key={sub.path}
-                          to={sub.path}
-                          onClick={() => setSidebarOpen(false)}
-                          className={clsx(
-                            'flex items-center space-x-2.5 px-3 py-2 rounded-xl transition-all duration-150 text-xs font-medium group',
-                            subActive
-                              ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold'
-                              : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
-                          )}
-                        >
-                          <SubIcon
-                            size={14}
-                            className={clsx('shrink-0', subActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]')}
-                          />
-                          <span>{sub.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          const isActive = location.pathname === item.path;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setSidebarOpen(false)}
-              className={clsx(
-                'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
-                isActive
-                  ? 'bg-[#16A34A]/10 text-[#16A34A] font-semibold'
-                  : 'text-[#475569] hover:bg-[#F0FDFA] hover:text-[#16A34A]'
-              )}
-            >
-              <Icon
-                size={18}
-                className={clsx(
-                  'shrink-0 transition-colors',
-                  isActive ? 'text-[#16A34A]' : 'text-[#94A3B8] group-hover:text-[#16A34A]'
-                )}
-              />
-              <span className="truncate">{item.label}</span>
-            </Link>
-          );
-        })}
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Logout */}
@@ -329,29 +359,36 @@ const GymAdminLayout = () => {
 
                   {/* Notification list */}
                   <div className="divide-y divide-[#F1F5F9] max-h-72 overflow-y-auto">
-                    {MOCK_NOTIFS.slice(0, 4).map(notif => (
-                      <div
-                        key={notif.id}
-                        className={`flex items-start gap-3 px-4 py-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer ${!notif.read ? 'bg-[#F0FDFA]' : ''}`}
-                      >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                          notif.type === 'alert' ? 'bg-orange-100 text-orange-500' :
-                          notif.type === 'success' ? 'bg-green-100 text-green-500' :
-                          notif.type === 'message' ? 'bg-blue-100 text-blue-500' :
-                          'bg-purple-100 text-purple-500'
-                        }`}>
-                          {notif.type === 'alert' ? '⚠️' :
-                           notif.type === 'success' ? '✅' :
-                           notif.type === 'message' ? '💬' : 'ℹ️'}
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-[#64748B]">No notifications</div>
+                    ) : (
+                      notifications.slice(0, 4).map(notif => (
+                        <div
+                          key={notif._id}
+                          onClick={() => {
+                            if (!notif.isRead) markAsRead(notif._id);
+                          }}
+                          className={`flex items-start gap-3 px-4 py-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[#F0FDFA]' : ''}`}
+                        >
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                            notif.type === 'alert' ? 'bg-orange-100 text-orange-500' :
+                            notif.type === 'success' ? 'bg-green-100 text-green-500' :
+                            notif.type === 'message' ? 'bg-blue-100 text-blue-500' :
+                            'bg-purple-100 text-purple-500'
+                          }`}>
+                            {notif.type === 'alert' ? '⚠️' :
+                             notif.type === 'success' ? '✅' :
+                             notif.type === 'message' ? '💬' : 'ℹ️'}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-sm font-semibold text-[#1E293B] ${!notif.isRead ? 'font-bold' : ''}`}>{notif.title}</p>
+                            <p className="text-xs text-[#475569] mt-0.5 leading-snug">{notif.message}</p>
+                            <p className="text-xs text-[#94A3B8] mt-1">{new Date(notif.createdAt).toLocaleDateString()}</p>
+                          </div>
+                          {!notif.isRead && <div className="w-2 h-2 bg-[#16A34A] rounded-full mt-2 shrink-0" />}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-semibold text-[#1E293B] ${!notif.read ? 'font-bold' : ''}`}>{notif.title}</p>
-                          <p className="text-xs text-[#475569] mt-0.5 leading-snug">{notif.message}</p>
-                          <p className="text-xs text-[#94A3B8] mt-1">{notif.time}</p>
-                        </div>
-                        {!notif.read && <div className="w-2 h-2 bg-[#16A34A] rounded-full mt-2 shrink-0" />}
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
 
                   {/* View All button */}

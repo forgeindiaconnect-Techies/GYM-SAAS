@@ -1,0 +1,6 @@
+ValidationError: TrainerFee validation failed: paymentMethod: Path `paymentMethod` is required.
+    at model.validate (C:\AI GYM FINAL\backend\node_modules\mongoose\lib\document.js:2945:36)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async model.$__save (C:\AI GYM FINAL\backend\node_modules\mongoose\lib\model.js:399:7)
+    at async maybeTracedSave (C:\AI GYM FINAL\backend\node_modules\mongoose\lib\model.js:676:7)
+    at async setTrainerFee (C:\AI GYM FINAL\backend\src\controllers\trainerPayment.controller.ts:34:7)

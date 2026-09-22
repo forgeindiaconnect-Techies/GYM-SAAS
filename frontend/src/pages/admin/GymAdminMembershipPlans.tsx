@@ -4,9 +4,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const mockPlans = [
-  { _id: '1', name: 'Basic Tier', price: '29.99', duration: 'Monthly', subscribers: 145, isPopular: false, features: 'Access to gym equipment, Locker room access, 1 free personal training session' },
-  { _id: '2', name: 'Pro Tier', price: '49.99', duration: 'Monthly', subscribers: 312, isPopular: true, features: 'All Basic features, Group fitness classes, Access to sauna/pool, Guest passes (2/month)' },
-  { _id: '3', name: 'Elite Tier', price: '89.99', duration: 'Monthly', subscribers: 84, isPopular: false, features: 'All Pro features, Unlimited guest passes, 1 PT session per week, Free nutrition consultation' },
+  { _id: '1', name: 'Free Trial', price: '0', duration: '1 day', subscribers: 145, isPopular: false, features: 'Gym Setup, Member Management (Up to 10), Trainer Management (1 Trainer), Membership Plans (1 Plan), Exercise Plans, Basic Diet Plans, Limited AI Suggestions' },
+  { _id: '2', name: 'Basic', price: '399', duration: '1 month', subscribers: 312, isPopular: true, features: 'Gym Setup, Member Management (Up to 100), Trainer Management (Up to 5), Membership Plans (5 Plans), Exercise & Diet Plans, AI Suggestions, Reports & Analytics' },
+  { _id: '3', name: 'Premium', price: '799', duration: '3 months', subscribers: 84, isPopular: false, features: 'Gym Setup, Unlimited Member Management, Unlimited Trainer Management, Unlimited Membership Plans, Exercise Plans, Diet Plans, Advanced AI Suggestions, Advanced Member Progress Tracking, Attendance Management, Payment Tracking, Advanced Reports & Analytics, Unlimited AI Workout Generation, Unlimited AI Diet Generation, Gym Store — Sell Supplements & Merch, Gym Store — Online Orders & Payments, Gym Store — Inventory & Offline Sales, Notifications, Multiple Branches, Priority Support' },
 ];
 
 const GymAdminMembershipPlans = () => {

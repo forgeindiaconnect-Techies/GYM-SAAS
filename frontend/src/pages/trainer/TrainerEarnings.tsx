@@ -6,7 +6,6 @@ import api from '../../utils/api';
 const TrainerEarnings = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [withdrawing, setWithdrawing] = useState(false);
 
   const fetchEarnings = useCallback(async () => {
     setLoading(true);
@@ -19,20 +18,6 @@ const TrainerEarnings = () => {
       setLoading(false);
     }
   }, []);
-
-  const handleWithdraw = async () => {
-    if (!data?.pendingAmount || data.pendingAmount <= 0) return;
-    setWithdrawing(true);
-    try {
-      await api.post('/trainer-payments/withdraw', { amount: data.pendingAmount });
-      // Refresh data to show it as requested
-      await fetchEarnings();
-    } catch (err) {
-      console.error('Failed to withdraw', err);
-    } finally {
-      setWithdrawing(false);
-    }
-  };
 
   useEffect(() => { fetchEarnings(); }, [fetchEarnings]);
 
@@ -85,35 +70,35 @@ const TrainerEarnings = () => {
             <CheckCircle size={16} className="text-green-500" />
             <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Total Earned</p>
           </div>
-          <p className="text-2xl font-bold text-[#1E293B] mt-1">₹{(data?.totalEarnings || 0).toLocaleString('en-IN')}</p>
+          <p className="text-2xl font-bold text-[#1E293B] mt-1">₹{(data?.trainer?.totalEarnings || 0).toLocaleString('en-IN')}</p>
           <p className="text-xs text-[#94A3B8] mt-1">All time</p>
         </div>
 
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2">
-              <Clock size={16} className="text-amber-500" />
-              <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Pending</p>
-            </div>
-            {data?.hasPendingWithdrawal && (
-              <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full uppercase tracking-wider">
-                Requested
-              </span>
-            )}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <IndianRupee size={16} className="text-blue-500" />
+            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Available</p>
           </div>
-          <p className="text-2xl font-bold text-[#1E293B] mt-1">₹{(data?.pendingAmount || 0).toLocaleString('en-IN')}</p>
-          <div className="flex justify-between items-end mt-1">
-            <p className="text-xs text-[#94A3B8]">Awaiting payment</p>
-            {!data?.hasPendingWithdrawal && (data?.pendingAmount || 0) > 0 && (
-              <button
-                onClick={handleWithdraw}
-                disabled={withdrawing}
-                className="text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#15803D] px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-              >
-                {withdrawing ? 'Requesting...' : 'Withdraw'}
-              </button>
-            )}
+          <p className="text-2xl font-bold text-[#1E293B] mt-1">₹{(data?.trainer?.availableBalance || 0).toLocaleString('en-IN')}</p>
+          <p className="text-xs text-[#94A3B8] mt-1">Ready to withdraw</p>
+        </div>
+
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <Clock size={16} className="text-amber-500" />
+            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Pending</p>
           </div>
+          <p className="text-2xl font-bold text-[#1E293B] mt-1">₹{(data?.trainer?.pendingWithdrawal || 0).toLocaleString('en-IN')}</p>
+          <p className="text-xs text-[#94A3B8] mt-1">Processing</p>
+        </div>
+
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <CheckCircle size={16} className="text-purple-500" />
+            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Withdrawn</p>
+          </div>
+          <p className="text-2xl font-bold text-[#1E293B] mt-1">₹{(data?.trainer?.withdrawnAmount || 0).toLocaleString('en-IN')}</p>
+          <p className="text-xs text-[#94A3B8] mt-1">Lifetime</p>
         </div>
       </div>
 

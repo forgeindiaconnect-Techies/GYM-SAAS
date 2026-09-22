@@ -6,7 +6,8 @@ import {
   LayoutDashboard, User, Users, FileText,
   Utensils, Calendar, CalendarCheck, TrendingUp,
   MessageSquare, IndianRupee, Bell,
-  Activity, Menu, LogOut, Bot, Settings
+  Activity, Menu, LogOut, Bot, Settings,
+  Clock, FileQuestion
 } from 'lucide-react';
 
 const TrainerLayout = () => {
@@ -14,6 +15,7 @@ const TrainerLayout = () => {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const [unreadCount, setUnreadCount] = useState(0);
   const [gym, setGym] = useState<any>(null);
 
   useEffect(() => {
@@ -22,6 +24,14 @@ const TrainerLayout = () => {
         api.get(`/gyms/${user.gymId}`)
           .then(res => setGym(res.data.gym))
           .catch(err => console.error('Failed to fetch gym', err));
+        
+        api.get('/notifications')
+          .then(res => {
+            if (res.data.success) {
+              setUnreadCount(res.data.unreadCount || 0);
+            }
+          })
+          .catch(err => console.error('Failed to fetch notifications', err));
       });
     }
   }, [user]);
@@ -63,18 +73,18 @@ const TrainerLayout = () => {
       ]
     },
     {
+      title: 'Financials',
+      items: [
+        { label: 'My Assigned Fee', path: '/trainer/my-fee', icon: IndianRupee },
+        { label: 'Payments Received', path: '/trainer/payments-received', icon: Clock },
+        { label: 'Earnings & Balance', path: '/trainer/earnings', icon: TrendingUp },
+      ]
+    },
+    {
       title: 'Communication',
       items: [
         { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
         { label: 'Notifications', path: '/trainer/notifications', icon: Bell },
-      ]
-    },
-    {
-      title: 'Earnings & Payments',
-      items: [
-        { label: 'My Trainer Fee', path: '/trainer/my-fee', icon: IndianRupee },
-        { label: 'Earnings', path: '/trainer/earnings', icon: TrendingUp },
-        { label: 'Payment History', path: '/trainer/payment-history', icon: FileText },
       ]
     }
   ];
@@ -198,7 +208,11 @@ const TrainerLayout = () => {
           <div className="flex items-center space-x-3 md:space-x-5">
             <Link to="/trainer/notifications" className="relative text-[#475569] hover:text-[#16A34A] transition-colors p-1 block">
               <Bell size={20} />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#16A34A] rounded-full shadow shadow-green-300" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </Link>
 
             <Link to="/trainer/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">

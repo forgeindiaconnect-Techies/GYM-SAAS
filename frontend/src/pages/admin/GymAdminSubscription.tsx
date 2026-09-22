@@ -51,7 +51,7 @@ const UPGRADE_PLANS = [
     priceMonthly: 2499, priceAnnual: 24990, savingsAnnual: 4998,
     color: 'text-purple-400', border: 'border-purple-500/40', ctaStyle: 'bg-purple-600/80 border border-purple-500/50 text-[#1E293B] hover:bg-purple-600',
     icon: Sparkles,
-    features: ['Unlimited Members', 'Unlimited Trainers', 'Unlimited Staff members', 'Up to 5 Branch locations', 'Custom branding', 'Dedicated account manager']
+    features: ['Unlimited Members', 'Unlimited Trainers', 'Unlimited Staff members', 'Up to 5 Branch locations', 'Custom branding', 'Dedicated account manager', 'Gym Store — Sell Supplements & Merch', 'Gym Store — Online Orders & Payments', 'Gym Store — Inventory & Offline Sales']
   },
 ];
 

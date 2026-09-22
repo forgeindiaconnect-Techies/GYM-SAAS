@@ -4,7 +4,7 @@ import api from '../../utils/api';
 
 const TRAINING_TYPES = ['Online Training', 'Offline Training', 'Hybrid Training'];
 const BILLING_CYCLES = ['Weekly', 'Monthly'];
-const PAYMENT_METHODS = ['Bank Transfer', 'UPI', 'Manual Payment', 'Other'];
+const PAYMENT_METHODS = ['Bank Transfer', 'UPI', 'Cash', 'Other'];
 
 const defaultForm = {
   trainerId: '',
@@ -105,18 +105,24 @@ const GymAdminTrainerFees = () => {
   };
 
   const handleSave = async () => {
-    if (!form.trainerId || !form.feeAmount || !form.billingCycle || !form.effectiveFrom || !form.paymentMethod) {
-      showToast('Please fill all required fields', 'error');
+    if (!form.trainerId || !form.feeAmount || !form.billingCycle || !form.effectiveFrom) {
+      const msg = 'Please fill all required fields (Fee Amount, etc)';
+      showToast(msg, 'error');
+      alert(msg);
       return;
     }
     setSaving(true);
     try {
-      await api.post('/trainer-payments/fee', form);
+      // Ensure paymentMethod is provided since it is required by the schema
+      const payload = { ...form, paymentMethod: form.paymentMethod || 'Bank Transfer' };
+      await api.post('/trainer-payments/fee', payload);
       showToast(editFee ? 'Trainer fee updated successfully!' : 'Trainer fee set successfully!');
       setShowModal(false);
       fetchData();
     } catch (err: any) {
-      showToast(err?.response?.data?.message || 'Failed to save fee', 'error');
+      const errorMsg = err?.response?.data?.message || err.message || 'Failed to save fee';
+      showToast(errorMsg, 'error');
+      alert('Error: ' + errorMsg);
     } finally {
       setSaving(false);
     }
@@ -124,13 +130,6 @@ const GymAdminTrainerFees = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Toast */}
-      {toast && (
-        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-xl font-semibold text-white text-sm flex items-center gap-2 transition-all ${toast.type === 'success' ? 'bg-[#16A34A]' : 'bg-red-500'}`}>
-          {toast.type === 'success' ? <CheckCircle size={16} /> : <XCircle size={16} />}
-          {toast.msg}
-        </div>
-      )}
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -446,12 +445,14 @@ const GymAdminTrainerFees = () => {
 
             <div className="p-6 border-t border-[#E2E8F0] flex gap-3">
               <button
+                type="button"
                 onClick={() => setShowModal(false)}
                 className="flex-1 py-2.5 border border-[#E2E8F0] rounded-xl text-sm font-semibold text-[#64748B] hover:bg-[#F8FAFC] transition-colors"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleSave}
                 disabled={saving}
                 className="flex-1 py-2.5 bg-[#16A34A] text-white rounded-xl text-sm font-bold hover:bg-[#15803D] transition-colors disabled:opacity-60 shadow-lg shadow-green-200"
@@ -461,6 +462,13 @@ const GymAdminTrainerFees = () => {
             </div>
             </form>
           </div>
+        </div>
+      )}
+      {/* Toast - Moved to end of DOM so it's always on top */}
+      {toast && (
+        <div className={`fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl shadow-xl font-semibold text-white text-sm flex items-center gap-2 transition-all ${toast.type === 'success' ? 'bg-[#16A34A]' : 'bg-red-500'}`}>
+          {toast.type === 'success' ? <CheckCircle size={16} /> : <XCircle size={16} />}
+          {toast.msg}
         </div>
       )}
     </div>

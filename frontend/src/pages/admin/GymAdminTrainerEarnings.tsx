@@ -229,7 +229,7 @@ const GymAdminTrainerEarnings = () => {
                           <div>
                             <p className="text-gray-500 text-xs mb-1">Date</p>
                             <p className="font-semibold text-gray-900">
-                              {p.paymentDate ? new Date(p.paymentDate).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}
+                              {p.createdAt ? new Date(p.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}
                             </p>
                           </div>
                           <div>
