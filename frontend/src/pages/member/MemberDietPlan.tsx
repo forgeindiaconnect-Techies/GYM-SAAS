@@ -44,8 +44,8 @@ const MemberDietPlan = () => {
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Your Diet Plan</h1>
-          <p className="text-[#475569] mt-1">Fuel your body to achieve maximum results.</p>
+          <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Your Diet Plan</h1>
+          <p className="text-[#4A514D] mt-1">Fuel your body to achieve maximum results.</p>
         </div>
       </div>
 
@@ -54,12 +54,12 @@ const MemberDietPlan = () => {
         {macros.map((macro, idx) => {
           const percentage = Math.round((macro.current / macro.target) * 100);
           return (
-            <div key={idx} className="bg-white rounded-2xl p-6 border border-[#E2E8F0] shadow-sm flex flex-col items-center justify-center relative overflow-hidden group hover:border-[#16A34A] transition-all">
+            <div key={idx} className="bg-white rounded-2xl p-6 border border-[#E8E5DA] shadow-sm flex flex-col items-center justify-center relative overflow-hidden group hover:border-[#34483F] transition-all">
               <div className="text-center relative z-10">
-                <p className="text-[#64748B] text-sm font-semibold mb-2">{macro.label}</p>
+                <p className="text-[#727975] text-sm font-semibold mb-2">{macro.label}</p>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-3xl font-bold text-[#1E293B]">{macro.current}</span>
-                  <span className="text-[#94A3B8] font-medium text-sm">/ {macro.target} {macro.unit}</span>
+                  <span className="text-3xl font-bold text-[#202522]">{macro.current}</span>
+                  <span className="text-[#A8ADA9] font-medium text-sm">/ {macro.target} {macro.unit}</span>
                 </div>
               </div>
               {/* Progress Bar Background */}
@@ -75,8 +75,8 @@ const MemberDietPlan = () => {
       </div>
 
       {/* Daily Meals Timeline */}
-      <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#E2E8F0] shadow-sm">
-        <h2 className="text-xl font-bold text-[#1E293B] mb-8">Today's Meals</h2>
+      <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#E8E5DA] shadow-sm">
+        <h2 className="text-xl font-bold text-[#202522] mb-8">Today's Meals</h2>
         
         <div className="space-y-6 relative before:absolute before:inset-0 before:ml-7 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-200 before:to-transparent">
           {meals.map((meal, index) => (
@@ -90,15 +90,15 @@ const MemberDietPlan = () => {
               
               {/* Content Card */}
               <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-5 rounded-2xl border transition-all ${
-                meal.completed ? 'bg-green-50/30 border-green-200' : 'bg-white border-[#E2E8F0] hover:border-gray-300 hover:shadow-md'
+                meal.completed ? 'bg-green-50/30 border-green-200' : 'bg-white border-[#E8E5DA] hover:border-gray-300 hover:shadow-md'
               }`}>
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-bold text-[#1E293B] text-lg">{meal.type}</h3>
-                  <span className="text-sm font-semibold text-[#64748B] bg-[#F1F5F9] px-3 py-1 rounded-full">{meal.time}</span>
+                  <h3 className="font-bold text-[#202522] text-lg">{meal.type}</h3>
+                  <span className="text-sm font-semibold text-[#727975] bg-[#F1F5F9] px-3 py-1 rounded-full">{meal.time}</span>
                 </div>
                 <ul className="space-y-2">
                   {meal.items.map((item, i) => (
-                    <li key={i} className="text-[#475569] text-sm flex items-start gap-2">
+                    <li key={i} className="text-[#4A514D] text-sm flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0"></span>
                       <span>{item}</span>
                     </li>

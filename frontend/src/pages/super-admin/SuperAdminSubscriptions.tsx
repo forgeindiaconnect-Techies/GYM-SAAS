@@ -83,15 +83,15 @@ const SUBSCRIBED_CUSTOMERS = [
 
 const PLAN_COLORS: Record<string, string> = {
   FREE_TRIAL: 'bg-slate-500/10 text-slate-400 border-slate-500/30',
-  BASIC: 'bg-[#0D9488]/10 text-teal-500 border-[#0D9488]/30',
+  BASIC: 'bg-[#8FA89B]/10 text-teal-500 border-[#8FA89B]/30',
   PREMIUM: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
 };
 
 const STATUS_COLORS: Record<string, string> = {
   Active: 'bg-green-500/10 text-green-400 border-green-500/20',
-  Expired: 'bg-[#0D9488]/10 text-teal-400 border-[#0D9488]/20',
+  Expired: 'bg-[#8FA89B]/10 text-teal-400 border-[#8FA89B]/20',
   Pending: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  Inactive: 'bg-[#333] text-[#475569] border-[#444]',
+  Inactive: 'bg-[#333] text-[#4A514D] border-[#444]',
   Rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
@@ -109,37 +109,37 @@ const EditPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-8 max-w-xl w-full shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-8 max-w-xl w-full shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar overflow-hidden">
         <div className="flex items-center space-x-3 mb-6">
           <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
             <Icon size={22} className={plan.iconColor} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#1E293B]">Edit {plan.name} Plan</h2>
-            <p className="text-[#475569] text-sm">{plan.tagline}</p>
+            <h2 className="text-xl font-bold text-[#202522]">Edit {plan.name} Plan</h2>
+            <p className="text-[#4A514D] text-sm">{plan.tagline}</p>
           </div>
         </div>
 
         <div className="space-y-5">
-          <h3 className="text-[#1E293B] font-semibold text-sm uppercase tracking-wider border-b border-[#CCFBF1] pb-2">Pricing</h3>
+          <h3 className="text-[#202522] font-semibold text-sm uppercase tracking-wider border-b border-[#DCD9CD] pb-2">Pricing</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-[#475569] mb-2">Monthly Price (₹)</label>
+              <label className="block text-xs font-medium text-[#4A514D] mb-2">Monthly Price (₹)</label>
               <input type="number" value={form.priceMonthly}
                 onChange={e => setForm(f => ({ ...f, priceMonthly: +e.target.value }))}
-                className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#475569] mb-2">Annual Price (₹)</label>
+              <label className="block text-xs font-medium text-[#4A514D] mb-2">Annual Price (₹)</label>
               <input type="number" value={form.priceAnnual}
                 onChange={e => setForm(f => ({ ...f, priceAnnual: +e.target.value }))}
-                className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
               />
             </div>
           </div>
 
-          <h3 className="text-[#1E293B] font-semibold text-sm uppercase tracking-wider border-b border-[#CCFBF1] pb-2 mt-4">Platform Limits</h3>
+          <h3 className="text-[#202522] font-semibold text-sm uppercase tracking-wider border-b border-[#DCD9CD] pb-2 mt-4">Platform Limits</h3>
           <div className="grid grid-cols-2 gap-4">
             {[
               { key: 'members', label: 'Max Members (-1 = Unlimited)' },
@@ -148,10 +148,10 @@ const EditPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
               { key: 'branches', label: 'Max Branches' },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs font-medium text-[#475569] mb-2">{label}</label>
+                <label className="block text-xs font-medium text-[#4A514D] mb-2">{label}</label>
                 <input type="number" value={(form as any)[key]}
                   onChange={e => setForm(f => ({ ...f, [key]: +e.target.value }))}
-                  className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                  className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
                 />
               </div>
             ))}
@@ -159,8 +159,8 @@ const EditPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
         </div>
 
         <div className="flex space-x-3 mt-8">
-          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#1E293B] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Cancel</button>
-          <button onClick={onClose} className="flex-1 py-3 bg-[#0D9488] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">Save Changes</button>
+          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#202522] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Cancel</button>
+          <button onClick={onClose} className="flex-1 py-3 bg-[#8FA89B] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">Save Changes</button>
         </div>
       </div>
     </div>
@@ -172,32 +172,32 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
   const Icon = plan.icon;
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-8 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-8 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar overflow-hidden">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
               <Icon size={22} className={plan.iconColor} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#1E293B]">{plan.name} Plan</h2>
-              <p className="text-[#475569] text-sm">{plan.tagline}</p>
+              <h2 className="text-xl font-bold text-[#202522]">{plan.name} Plan</h2>
+              <p className="text-[#4A514D] text-sm">{plan.tagline}</p>
             </div>
           </div>
           <span className="bg-green-500/10 text-green-400 border border-green-500/20 text-xs px-2.5 py-1 rounded-full font-bold">{plan.status}</span>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4">
+          <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4">
             <p className="text-[#555] text-xs uppercase tracking-widest font-bold mb-1">Monthly Price</p>
-            <p className="text-[#1E293B] font-bold text-xl">₹{plan.priceMonthly.toLocaleString('en-IN')}</p>
+            <p className="text-[#202522] font-bold text-xl">₹{plan.priceMonthly.toLocaleString('en-IN')}</p>
           </div>
-          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4">
+          <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4">
             <p className="text-[#555] text-xs uppercase tracking-widest font-bold mb-1">Annual Price</p>
-            <p className="text-[#1E293B] font-bold text-xl">₹{plan.priceAnnual.toLocaleString('en-IN')}</p>
+            <p className="text-[#202522] font-bold text-xl">₹{plan.priceAnnual.toLocaleString('en-IN')}</p>
           </div>
         </div>
 
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4 mb-6">
+        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4 mb-6">
           <p className="text-[#555] text-xs uppercase tracking-widest font-bold mb-3">Platform Limits</p>
           <div className="grid grid-cols-2 gap-3 text-sm">
             {[
@@ -208,8 +208,8 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
             ].map(({ label, value, icon: LimitIcon }) => (
               <div key={label} className="flex items-center space-x-2">
                 <LimitIcon size={14} className="text-teal-400" />
-                <span className="text-[#475569]">{label}:</span>
-                <span className="text-[#1E293B] font-bold">{value === -1 ? '∞' : value}</span>
+                <span className="text-[#4A514D]">{label}:</span>
+                <span className="text-[#202522] font-bold">{value === -1 ? '∞' : value}</span>
               </div>
             ))}
           </div>
@@ -227,12 +227,12 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
           </ul>
         </div>
 
-        <div className="flex items-center justify-between bg-[#0D9488]/10 border border-[#0D9488]/20 rounded-xl p-4 mb-6">
-          <span className="text-[#475569] text-sm">Active Subscribers</span>
+        <div className="flex items-center justify-between bg-[#8FA89B]/10 border border-[#8FA89B]/20 rounded-xl p-4 mb-6">
+          <span className="text-[#4A514D] text-sm">Active Subscribers</span>
           <span className="text-teal-400 font-bold text-xl">{plan.subscribedGyms} Gyms</span>
         </div>
 
-        <button onClick={onClose} className="w-full py-3 bg-[#FFFFFF] text-[#1E293B] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Close</button>
+        <button onClick={onClose} className="w-full py-3 bg-[#FFFFFF] text-[#202522] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Close</button>
       </div>
     </div>
   );
@@ -242,41 +242,41 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
 const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => void }) => {
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-8 max-w-md w-full shadow-2xl">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-8 max-w-md w-full shadow-2xl">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
               <IndianRupee size={22} className="text-blue-500" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#1E293B]">Payment Details</h2>
-              <p className="text-[#475569] text-sm">{payment.gymName || payment.name}</p>
+              <h2 className="text-xl font-bold text-[#202522]">Payment Details</h2>
+              <p className="text-[#4A514D] text-sm">{payment.gymName || payment.name}</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#475569] hover:text-[#1E293B]">
+          <button onClick={onClose} className="text-[#4A514D] hover:text-[#202522]">
             <XCircle size={20} />
           </button>
         </div>
 
         <div className="space-y-4 mb-6">
-          <div className="flex justify-between items-center py-2 border-b border-[#CCFBF1]">
-            <span className="text-[#475569] text-sm">Plan</span>
-            <span className="text-[#1E293B] font-bold">{payment.plan} ({payment.billing})</span>
+          <div className="flex justify-between items-center py-2 border-b border-[#DCD9CD]">
+            <span className="text-[#4A514D] text-sm">Plan</span>
+            <span className="text-[#202522] font-bold">{payment.plan} ({payment.billing})</span>
           </div>
-          <div className="flex justify-between items-center py-2 border-b border-[#CCFBF1]">
-            <span className="text-[#475569] text-sm">Amount Paid</span>
-            <span className="text-[#1E293B] font-bold text-lg">{payment.amount}</span>
+          <div className="flex justify-between items-center py-2 border-b border-[#DCD9CD]">
+            <span className="text-[#4A514D] text-sm">Amount Paid</span>
+            <span className="text-[#202522] font-bold text-lg">{payment.amount}</span>
           </div>
-          <div className="flex justify-between items-center py-2 border-b border-[#CCFBF1]">
-            <span className="text-[#475569] text-sm">Payment Method</span>
-            <span className="text-[#1E293B] font-bold capitalize">{payment.paymentMethod}</span>
+          <div className="flex justify-between items-center py-2 border-b border-[#DCD9CD]">
+            <span className="text-[#4A514D] text-sm">Payment Method</span>
+            <span className="text-[#202522] font-bold capitalize">{payment.paymentMethod}</span>
           </div>
-          <div className="flex justify-between items-center py-2 border-b border-[#CCFBF1]">
-            <span className="text-[#475569] text-sm">Date</span>
-            <span className="text-[#1E293B] font-bold">{payment.start}</span>
+          <div className="flex justify-between items-center py-2 border-b border-[#DCD9CD]">
+            <span className="text-[#4A514D] text-sm">Date</span>
+            <span className="text-[#202522] font-bold">{payment.start}</span>
           </div>
           <div className="flex justify-between items-center py-2">
-            <span className="text-[#475569] text-sm">Status</span>
+            <span className="text-[#4A514D] text-sm">Status</span>
             <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${STATUS_COLORS[payment.status] || 'bg-gray-100 text-gray-500'}`}>
               {payment.status}
             </span>
@@ -284,15 +284,15 @@ const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => v
         </div>
 
         {(payment.paymentMethod?.toLowerCase().includes('manual') || payment.paymentMethod?.toLowerCase().includes('qr') || payment.paymentMethod?.toLowerCase().includes('paytm') || payment.paymentMethod?.toLowerCase().includes('phonepe') || payment.paymentMethod?.toLowerCase().includes('google')) && (
-          <div className="bg-[#F0FDFA] border border-[#0D9488]/30 rounded-xl p-4 mb-6">
+          <div className="bg-[#F5F3EE] border border-[#8FA89B]/30 rounded-xl p-4 mb-6">
             <h3 className="text-teal-600 font-bold text-sm mb-2">Manual / QR Payment Verification</h3>
-            <p className="text-[#475569] text-xs leading-relaxed">
+            <p className="text-[#4A514D] text-xs leading-relaxed">
               This payment was completed via {payment.paymentMethod}. The transaction ID and screenshot have been verified by the billing team.
             </p>
           </div>
         )}
 
-        <button onClick={onClose} className="w-full py-3 bg-[#0D9488] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">
+        <button onClick={onClose} className="w-full py-3 bg-[#8FA89B] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">
           Close
         </button>
       </div>
@@ -412,8 +412,8 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
           <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={36} className="text-green-400" />
           </div>
-          <h2 className="text-xl font-bold text-[#1E293B] mb-2">Plan Saved!</h2>
-          <p className="text-[#475569] text-sm">Your new plan has been added successfully.</p>
+          <h2 className="text-xl font-bold text-[#202522] mb-2">Plan Saved!</h2>
+          <p className="text-[#4A514D] text-sm">Your new plan has been added successfully.</p>
         </div>
       </div>
     );
@@ -421,19 +421,19 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#CCFBF1] shrink-0 bg-white">
+        <div className="flex items-center justify-between p-6 border-b border-[#DCD9CD] shrink-0 bg-white">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-[#0D9488]/10 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#8FA89B]/10 rounded-xl flex items-center justify-center">
               <Plus size={20} className="text-teal-400" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#1E293B]">Create New Plan</h2>
-              <p className="text-[#475569] text-sm">Fill in the details to add a new subscription plan</p>
+              <h2 className="text-xl font-bold text-[#202522]">Create New Plan</h2>
+              <p className="text-[#4A514D] text-sm">Fill in the details to add a new subscription plan</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#475569] hover:text-[#1E293B]">
+          <button onClick={onClose} className="text-[#4A514D] hover:text-[#202522]">
             <XCircle size={20} />
           </button>
         </div>
@@ -444,26 +444,26 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Basic Info */}
             <div>
-              <h3 className="text-[#1E293B] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#CCFBF1]">Basic Information</h3>
+              <h3 className="text-[#202522] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#DCD9CD]">Basic Information</h3>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-[#475569] mb-2">Plan Name *</label>
+                    <label className="block text-xs font-medium text-[#4A514D] mb-2">Plan Name *</label>
                     <input
                       type="text"
                       value={form.name}
                       onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: '' })); }}
                       placeholder="e.g. Enterprise"
-                      className={`w-full bg-[#FFFFFF] border ${errors.name ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488] transition-colors`}
+                      className={`w-full bg-[#FFFFFF] border ${errors.name ? 'border-[#8FA89B]' : 'border-[#DCD9CD]'} text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B] transition-colors`}
                     />
                     {errors.name && <p className="text-teal-400 text-xs mt-1">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[#475569] mb-2">Icon Style</label>
+                    <label className="block text-xs font-medium text-[#4A514D] mb-2">Icon Style</label>
                     <select
                       value={form.selectedIconIdx}
                       onChange={e => setForm(f => ({ ...f, selectedIconIdx: +e.target.value }))}
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
                     >
                       {ICON_OPTIONS.map((opt, i) => (
                         <option key={i} value={i}>{opt.label}</option>
@@ -472,13 +472,13 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#475569] mb-2">Tagline *</label>
+                  <label className="block text-xs font-medium text-[#4A514D] mb-2">Tagline *</label>
                   <input
                     type="text"
                     value={form.tagline}
                     onChange={e => { setForm(f => ({ ...f, tagline: e.target.value })); setErrors(er => ({ ...er, tagline: '' })); }}
                     placeholder="e.g. For large-scale gym chains"
-                    className={`w-full bg-[#FFFFFF] border ${errors.tagline ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]`}
+                    className={`w-full bg-[#FFFFFF] border ${errors.tagline ? 'border-[#8FA89B]' : 'border-[#DCD9CD]'} text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]`}
                   />
                   {errors.tagline && <p className="text-teal-400 text-xs mt-1">{errors.tagline}</p>}
                 </div>
@@ -487,24 +487,24 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Pricing */}
             <div>
-              <h3 className="text-[#1E293B] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#CCFBF1]">Pricing (₹)</h3>
+              <h3 className="text-[#202522] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#DCD9CD]">Pricing (₹)</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#475569] mb-2">Monthly Price</label>
+                  <label className="block text-xs font-medium text-[#4A514D] mb-2">Monthly Price</label>
                   <input
                     type="number" min={0}
                     value={form.priceMonthly}
                     onChange={e => setForm(f => ({ ...f, priceMonthly: +e.target.value }))}
-                    className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                    className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#475569] mb-2">Annual Price</label>
+                  <label className="block text-xs font-medium text-[#4A514D] mb-2">Annual Price</label>
                   <input
                     type="number" min={0}
                     value={form.priceAnnual}
                     onChange={e => setForm(f => ({ ...f, priceAnnual: +e.target.value }))}
-                    className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                    className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
                   />
                 </div>
               </div>
@@ -517,7 +517,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Limits */}
             <div>
-              <h3 className="text-[#1E293B] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#CCFBF1]">Platform Limits <span className="text-[#555] font-normal normal-case text-xs ml-2">(use -1 for Unlimited)</span></h3>
+              <h3 className="text-[#202522] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#DCD9CD]">Platform Limits <span className="text-[#555] font-normal normal-case text-xs ml-2">(use -1 for Unlimited)</span></h3>
               <div className="grid grid-cols-2 gap-4">
                 {[
                   { key: 'members', label: 'Max Members', icon: Users },
@@ -526,7 +526,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   { key: 'branches', label: 'Max Branches', icon: Building2 },
                 ].map(({ key, label, icon: LimitIcon }) => (
                   <div key={key}>
-                    <label className="flex items-center space-x-1.5 text-xs font-medium text-[#475569] mb-2">
+                    <label className="flex items-center space-x-1.5 text-xs font-medium text-[#4A514D] mb-2">
                       <LimitIcon size={12} className="text-teal-400" />
                       <span>{label}</span>
                     </label>
@@ -534,7 +534,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                       type="number"
                       value={(form as any)[key]}
                       onChange={e => setForm(f => ({ ...f, [key]: +e.target.value }))}
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
                     />
                   </div>
                 ))}
@@ -543,27 +543,27 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Features */}
             <div>
-              <h3 className="text-[#1E293B] font-bold text-sm uppercase tracking-wider mb-1 pb-2 border-b border-[#CCFBF1]">Features</h3>
+              <h3 className="text-[#202522] font-bold text-sm uppercase tracking-wider mb-1 pb-2 border-b border-[#DCD9CD]">Features</h3>
               <p className="text-[#555] text-xs mb-4">✅ Check = Included &nbsp;|&nbsp; 🚫 Lock = Not available (shown as locked)</p>
               <div className="grid grid-cols-1 gap-2 mb-4">
                 {FEATURE_OPTIONS.map(feat => {
                   const isIncluded = selectedFeatures.includes(feat);
                   const isLocked = lockedFeatures.includes(feat);
                   return (
-                    <div key={feat} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-colors ${isIncluded ? 'bg-green-500/5 border-green-500/20' : isLocked ? 'bg-[#0D9488]/5 border-[#0D9488]/20' : 'bg-[#FFFFFF] border-[#CCFBF1]'}`}>
-                      <span className={isIncluded ? 'text-[#1E293B]' : isLocked ? 'text-[#475569] line-through' : 'text-[#475569]'}>{feat}</span>
+                    <div key={feat} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-colors ${isIncluded ? 'bg-green-500/5 border-green-500/20' : isLocked ? 'bg-[#8FA89B]/5 border-[#8FA89B]/20' : 'bg-[#FFFFFF] border-[#DCD9CD]'}`}>
+                      <span className={isIncluded ? 'text-[#202522]' : isLocked ? 'text-[#4A514D] line-through' : 'text-[#4A514D]'}>{feat}</span>
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => toggleFeature(feat)}
                           title="Include feature"
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isIncluded ? 'bg-green-500 text-[#1E293B]' : 'bg-[#333] text-[#555] hover:bg-green-500/20 hover:text-green-400'}`}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isIncluded ? 'bg-green-500 text-[#202522]' : 'bg-[#333] text-[#555] hover:bg-green-500/20 hover:text-green-400'}`}
                         >
                           <CheckCircle size={14} />
                         </button>
                         <button
                           onClick={() => toggleLocked(feat)}
                           title="Mark as locked/unavailable"
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isLocked ? 'bg-[#0D9488]/80 text-black' : 'bg-[#333] text-[#555] hover:bg-[#0D9488]/20 hover:text-teal-400'}`}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isLocked ? 'bg-[#8FA89B]/80 text-black' : 'bg-[#333] text-[#555] hover:bg-[#8FA89B]/20 hover:text-teal-400'}`}
                         >
                           <XCircle size={14} />
                         </button>
@@ -581,11 +581,11 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   onChange={e => setNewFeatureText(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addCustomFeature()}
                   placeholder="Add a custom feature..."
-                  className="flex-1 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                  className="flex-1 bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
                 />
                 <button
                   onClick={addCustomFeature}
-                  className="px-4 py-2.5 bg-[#0D9488]/10 border border-[#0D9488]/30 text-teal-400 rounded-xl text-sm font-bold hover:bg-[#0D9488]/20 transition-colors"
+                  className="px-4 py-2.5 bg-[#8FA89B]/10 border border-[#8FA89B]/30 text-teal-400 rounded-xl text-sm font-bold hover:bg-[#8FA89B]/20 transition-colors"
                 >
                   + Add
                 </button>
@@ -594,12 +594,12 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Preview */}
             {(form.name || selectedFeatures.length > 0) && (
-              <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4">
+              <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4">
                 <p className="text-[#555] text-xs uppercase tracking-wider font-bold mb-3">Preview</p>
-                <p className="text-[#1E293B] font-bold text-base">{form.name || 'Plan Name'}</p>
-                <p className="text-[#475569] text-xs mb-2">{form.tagline || 'Tagline'}</p>
+                <p className="text-[#202522] font-bold text-base">{form.name || 'Plan Name'}</p>
+                <p className="text-[#4A514D] text-xs mb-2">{form.tagline || 'Tagline'}</p>
                 <p className="text-teal-400 font-bold">₹{form.priceMonthly.toLocaleString('en-IN')}/mo · ₹{form.priceAnnual.toLocaleString('en-IN')}/yr</p>
-                <div className="mt-2 text-xs text-[#475569]">
+                <div className="mt-2 text-xs text-[#4A514D]">
                   {selectedFeatures.length} included · {lockedFeatures.length} locked
                 </div>
               </div>
@@ -608,11 +608,11 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
         </div>
 
         {/* Footer */}
-        <div className="flex space-x-3 p-6 border-t border-[#CCFBF1] shrink-0 bg-white">
-          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#1E293B] rounded-xl font-bold border border-[#CCFBF1] hover:bg-slate-50 transition-colors text-sm">Cancel</button>
+        <div className="flex space-x-3 p-6 border-t border-[#DCD9CD] shrink-0 bg-white">
+          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#202522] rounded-xl font-bold border border-[#DCD9CD] hover:bg-slate-50 transition-colors text-sm">Cancel</button>
           <button
             onClick={handleSave}
-            className="flex-1 py-3 bg-[#0D9488] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/30"
+            className="flex-1 py-3 bg-[#8FA89B] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/30"
           >
             <CheckCircle size={16} />
             <span>Save Plan</span>
@@ -763,15 +763,15 @@ const SuperAdminSubscriptions = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight flex items-center space-x-3">
-            <CreditCard className="text-[#0D9488]" size={30} />
+          <h1 className="text-3xl font-bold text-[#202522] tracking-tight flex items-center space-x-3">
+            <CreditCard className="text-[#8FA89B]" size={30} />
             <span>Subscription Plans</span>
           </h1>
-          <p className="text-[#475569] mt-1">Manage SaaS plans for gym owners on the platform.</p>
+          <p className="text-[#4A514D] mt-1">Manage SaaS plans for gym owners on the platform.</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center space-x-2 px-5 py-2.5 bg-[#0D9488] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm shadow-lg shadow-amber-500/20"
+          className="flex items-center space-x-2 px-5 py-2.5 bg-[#8FA89B] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm shadow-lg shadow-amber-500/20"
         >
           <Plus size={16} />
           <span>Create New Plan</span>
@@ -807,20 +807,20 @@ const SuperAdminSubscriptions = () => {
             icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/10' 
           },
         ].map((stat, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-5 flex items-center space-x-4">
+          <div key={i} className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-5 flex items-center space-x-4">
             <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center`}>
               <stat.icon size={22} className={stat.color} />
             </div>
             <div>
-              <p className="text-[#475569] text-xs font-medium">{stat.label}</p>
-              <p className="text-[#1E293B] font-bold text-xl">{stat.value}</p>
+              <p className="text-[#4A514D] text-xs font-medium">{stat.label}</p>
+              <p className="text-[#202522] font-bold text-xl">{stat.value}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-2 bg-[#FFFFFF] p-1.5 rounded-xl border border-[#CCFBF1] w-fit">
+      <div className="flex space-x-2 bg-[#FFFFFF] p-1.5 rounded-xl border border-[#DCD9CD] w-fit">
         {[
           { key: 'plans', label: 'Plan Management', icon: CreditCard },
           { key: 'subscribers', label: 'Subscribed Gyms', icon: Building2 },
@@ -829,7 +829,7 @@ const SuperAdminSubscriptions = () => {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as any)}
-            className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.key ? 'bg-[#0D9488] text-black shadow' : 'text-[#475569] hover:text-[#1E293B]'}`}
+            className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.key ? 'bg-[#8FA89B] text-black shadow' : 'text-[#4A514D] hover:text-[#202522]'}`}
           >
             <tab.icon size={15} />
             <span>{tab.label}</span>
@@ -854,10 +854,10 @@ const SuperAdminSubscriptions = () => {
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <h3 className="text-[#1E293B] font-bold text-lg">{sp.name} Plan</h3>
+                      <h3 className="text-[#202522] font-bold text-lg">{sp.name} Plan</h3>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border uppercase tracking-wider ${acc.badge}`}>Selected</span>
                     </div>
-                    <p className="text-[#475569] text-sm mt-0.5">{sp.tagline}</p>
+                    <p className="text-[#4A514D] text-sm mt-0.5">{sp.tagline}</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-4">
@@ -881,7 +881,7 @@ const SuperAdminSubscriptions = () => {
                 <div className="flex items-center space-x-2">
                   <button onClick={() => setViewPlan(sp)} className={`px-4 py-2 rounded-xl text-sm font-bold border ${acc.badge} transition-colors`}>View Details</button>
                   <button onClick={() => setEditPlan(sp)} className={`px-4 py-2 rounded-xl text-sm font-bold ${acc.border.replace('border-', 'bg-').replace('400', '500')} text-black transition-colors`}>Edit Plan</button>
-                  <button onClick={() => setSelectedPlan(null)} className="px-3 py-2 rounded-xl text-xs text-[#555] hover:text-[#16A34A] transition-colors">✕</button>
+                  <button onClick={() => setSelectedPlan(null)} className="px-3 py-2 rounded-xl text-xs text-[#555] hover:text-[#34483F] transition-colors">✕</button>
                 </div>
               </div>
             );
@@ -902,7 +902,7 @@ const SuperAdminSubscriptions = () => {
                     isSelected
                       ? `${acc.bg} border-2 ${acc.border} ${acc.glow} -translate-y-2 scale-[1.02]`
                       : isPlanActive
-                      ? 'bg-[#FFFFFF] border-2 border-[#CCFBF1] hover:border-[#444] hover:-translate-y-1 hover:shadow-lg'
+                      ? 'bg-[#FFFFFF] border-2 border-[#DCD9CD] hover:border-[#444] hover:-translate-y-1 hover:shadow-lg'
                       : 'bg-[#FFFFFF] border-2 border-[#2a2a2a] opacity-50 grayscale cursor-not-allowed'
                   }`
                 }
@@ -925,7 +925,7 @@ const SuperAdminSubscriptions = () => {
                 </button>
 
                 {plan.key === 'GOLD' && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#0D9488] text-black text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#8FA89B] text-black text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">
                     ⭐ Most Popular
                   </span>
                 )}
@@ -935,24 +935,24 @@ const SuperAdminSubscriptions = () => {
                     <Icon size={20} className={isSelected ? acc.labelColor : plan.iconColor} />
                   </div>
                   <div>
-                    <h3 className={`font-bold ${isSelected ? acc.priceColor : 'text-[#1E293B]'}`}>{plan.name}</h3>
-                    <p className="text-[#475569] text-xs">{plan.tagline}</p>
+                    <h3 className={`font-bold ${isSelected ? acc.priceColor : 'text-[#202522]'}`}>{plan.name}</h3>
+                    <p className="text-[#4A514D] text-xs">{plan.tagline}</p>
                   </div>
                 </div>
 
                 {/* Pricing */}
                 <div className={`rounded-xl p-3 mb-4 space-y-1.5 transition-colors ${isSelected ? acc.pricingBg : 'bg-[#FFFFFF]'}`}>
                   <div className="flex justify-between text-xs">
-                    <span className="text-[#475569]">Monthly</span>
-                    <span className={`font-bold ${isSelected ? acc.priceColor : 'text-[#1E293B]'}`}>₹{plan.priceMonthly.toLocaleString('en-IN')}</span>
+                    <span className="text-[#4A514D]">Monthly</span>
+                    <span className={`font-bold ${isSelected ? acc.priceColor : 'text-[#202522]'}`}>₹{plan.priceMonthly.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-[#475569]">Annual</span>
-                    <span className={`font-bold ${isSelected ? acc.priceColor : 'text-[#1E293B]'}`}>₹{plan.priceAnnual.toLocaleString('en-IN')}</span>
+                    <span className="text-[#4A514D]">Annual</span>
+                    <span className={`font-bold ${isSelected ? acc.priceColor : 'text-[#202522]'}`}>₹{plan.priceAnnual.toLocaleString('en-IN')}</span>
                   </div>
                   {plan.savingsAnnual > 0 && (
-                    <div className="flex justify-between text-xs border-t border-[#CCFBF1] pt-1.5">
-                      <span className="text-[#475569]">Annual Savings</span>
+                    <div className="flex justify-between text-xs border-t border-[#DCD9CD] pt-1.5">
+                      <span className="text-[#4A514D]">Annual Savings</span>
                       <span className="text-green-400 font-bold">₹{plan.savingsAnnual.toLocaleString('en-IN')}</span>
                     </div>
                   )}
@@ -967,16 +967,16 @@ const SuperAdminSubscriptions = () => {
                     { label: 'Staff', value: plan.limits.staff },
                     { label: 'Branches', value: plan.limits.branches },
                   ].map(({ label, value }) => (
-                    <div key={label} className="flex justify-between text-[#475569]">
+                    <div key={label} className="flex justify-between text-[#4A514D]">
                       <span>{label}</span>
-                      <span className={`font-semibold ${isSelected ? acc.priceColor : 'text-[#1E293B]'}`}>{value === -1 ? '∞' : value}</span>
+                      <span className={`font-semibold ${isSelected ? acc.priceColor : 'text-[#202522]'}`}>{value === -1 ? '∞' : value}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* Subscribers count */}
-                <div className="mt-auto pt-3 border-t border-[#CCFBF1] flex items-center justify-between mb-4">
-                  <span className="text-[#475569] text-xs">Active Gyms</span>
+                <div className="mt-auto pt-3 border-t border-[#DCD9CD] flex items-center justify-between mb-4">
+                  <span className="text-[#4A514D] text-xs">Active Gyms</span>
                   <span className={`font-bold text-sm ${isSelected ? acc.labelColor : 'text-teal-400'}`}>{plan.subscribedGyms}</span>
                 </div>
 
@@ -985,7 +985,7 @@ const SuperAdminSubscriptions = () => {
                   <button
                     onClick={e => { e.stopPropagation(); setViewPlan(plan); }}
                     className={`flex-1 flex items-center justify-center space-x-1.5 py-2.5 border rounded-xl text-xs font-semibold transition-colors
-                      ${isSelected ? `${acc.limitsBg} ${acc.border.replace('border-', 'border-')} ${acc.labelColor} hover:opacity-80` : 'bg-[#FFFFFF] hover:bg-[#2a2a2a] border-[#CCFBF1] text-[#475569] hover:text-[#1E293B]'}`}
+                      ${isSelected ? `${acc.limitsBg} ${acc.border.replace('border-', 'border-')} ${acc.labelColor} hover:opacity-80` : 'bg-[#FFFFFF] hover:bg-[#2a2a2a] border-[#DCD9CD] text-[#4A514D] hover:text-[#202522]'}`}
                   >
                     <Eye size={13} />
                     <span>View</span>
@@ -993,7 +993,7 @@ const SuperAdminSubscriptions = () => {
                   <button
                     onClick={e => { e.stopPropagation(); setEditPlan(plan); }}
                     className={`flex-1 flex items-center justify-center space-x-1.5 py-2.5 border rounded-xl text-xs font-semibold transition-colors
-                      ${isSelected ? `${acc.headerBg} ${acc.border} ${acc.labelColor} hover:opacity-80` : 'bg-[#0D9488]/10 hover:bg-[#0D9488]/20 border-[#0D9488]/30 text-teal-400'}`}
+                      ${isSelected ? `${acc.headerBg} ${acc.border} ${acc.labelColor} hover:opacity-80` : 'bg-[#8FA89B]/10 hover:bg-[#8FA89B]/20 border-[#8FA89B]/30 text-teal-400'}`}
                   >
                     <Edit3 size={13} />
                     <span>Edit</span>
@@ -1008,9 +1008,9 @@ const SuperAdminSubscriptions = () => {
 
       {/* ── Tab: Subscribed Gyms ── */}
       {activeTab === 'subscribers' && (
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
+        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl overflow-hidden">
           {/* Filters */}
-          <div className="p-5 border-b border-[#CCFBF1] flex flex-col md:flex-row md:items-center gap-3">
+          <div className="p-5 border-b border-[#DCD9CD] flex flex-col md:flex-row md:items-center gap-3">
             <div className="relative flex-1">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555]" />
               <input
@@ -1018,11 +1018,11 @@ const SuperAdminSubscriptions = () => {
                 placeholder="Search gym or owner..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
               />
             </div>
             <select value={filterPlan} onChange={e => setFilterPlan(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]">
+              className="bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]">
               <option value="ALL">All Plans</option>
               <option value="FREE_TRIAL">Free Trial</option>
               <option value="SILVER">Silver</option>
@@ -1030,7 +1030,7 @@ const SuperAdminSubscriptions = () => {
               <option value="PREMIUM">Premium</option>
             </select>
             <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#0D9488]">
+              className="bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]">
               <option value="ALL">All Statuses</option>
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
@@ -1043,23 +1043,23 @@ const SuperAdminSubscriptions = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#CCFBF1] bg-[#FFFFFF]">
+                <tr className="border-b border-[#DCD9CD] bg-[#FFFFFF]">
                   {['Gym Name', 'Owner', 'Plan', 'Billing', 'Amount', 'Payment Method', 'Start Date', 'Renewal Date', 'Status', 'Action'].map(h => (
-                    <th key={h} className="text-left text-xs font-bold text-[#475569] uppercase tracking-wider px-5 py-3.5">{h}</th>
+                    <th key={h} className="text-left text-xs font-bold text-[#4A514D] uppercase tracking-wider px-5 py-3.5">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#CCFBF1]">
+              <tbody className="divide-y divide-[#DCD9CD]">
                 {loadingGyms ? (
                   <tr><td colSpan={10} className="text-center py-16">
-                    <div className="flex flex-col items-center gap-3 text-[#475569]">
-                      <div className="w-8 h-8 border-2 border-[#0D9488] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex flex-col items-center gap-3 text-[#4A514D]">
+                      <div className="w-8 h-8 border-2 border-[#8FA89B] border-t-transparent rounded-full animate-spin"></div>
                       <span className="text-sm">Loading subscription data...</span>
                     </div>
                   </td></tr>
                 ) : filteredGyms.length === 0 ? (
                   <tr><td colSpan={10} className="text-center py-16">
-                    <div className="flex flex-col items-center gap-2 text-[#475569]">
+                    <div className="flex flex-col items-center gap-2 text-[#4A514D]">
                       <CreditCard size={40} className="opacity-30" />
                       <p>No subscriptions found.</p>
                     </div>
@@ -1068,27 +1068,27 @@ const SuperAdminSubscriptions = () => {
                   <tr key={gym.id} className="hover:bg-[#FFFFFF] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-[#0D9488]/10 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-[#8FA89B]/10 rounded-lg flex items-center justify-center">
                           <Building2 size={14} className="text-teal-400" />
                         </div>
-                        <span className="text-[#1E293B] font-semibold text-sm">{gym.gymName}</span>
+                        <span className="text-[#202522] font-semibold text-sm">{gym.gymName}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#475569] text-sm">{gym.owner}</td>
+                    <td className="px-5 py-4 text-[#4A514D] text-sm">{gym.owner}</td>
                     <td className="px-5 py-4">
                       <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${PLAN_COLORS[gym.plan]}`}>
                         {SAAS_PLANS.find(p => p.key === gym.plan)?.name || gym.plan}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#475569] text-sm">{gym.billing}</td>
-                    <td className="px-5 py-4 text-[#1E293B] font-bold text-sm">{gym.amount}</td>
+                    <td className="px-5 py-4 text-[#4A514D] text-sm">{gym.billing}</td>
+                    <td className="px-5 py-4 text-[#202522] font-bold text-sm">{gym.amount}</td>
                     <td className="px-5 py-4">
-                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#CCFBF1] rounded-md text-xs text-[#475569]">
+                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#DCD9CD] rounded-md text-xs text-[#4A514D]">
                         {gym.paymentMethod}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#475569] text-sm">{gym.start}</td>
-                    <td className="px-5 py-4 text-[#475569] text-sm">{gym.renewal}</td>
+                    <td className="px-5 py-4 text-[#4A514D] text-sm">{gym.start}</td>
+                    <td className="px-5 py-4 text-[#4A514D] text-sm">{gym.renewal}</td>
                     <td className="px-5 py-4">
                       <select 
                         value={gym.status}
@@ -1108,7 +1108,7 @@ const SuperAdminSubscriptions = () => {
                         className={`outline-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border appearance-none ${STATUS_COLORS[gym.status] || 'bg-gray-100 text-gray-500'}`}
                       >
                         <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                        <option value="Inactive" className="bg-[#FFFFFF] text-[#475569]">Inactive</option>
+                        <option value="Inactive" className="bg-[#FFFFFF] text-[#4A514D]">Inactive</option>
                         <option value="Pending" className="bg-[#FFFFFF] text-blue-500">Pending</option>
                         <option value="Rejected" className="bg-[#FFFFFF] text-red-500">Rejected</option>
                         <option value="Expired" className="bg-[#FFFFFF] text-teal-400">Expired</option>
@@ -1117,7 +1117,7 @@ const SuperAdminSubscriptions = () => {
                     <td className="px-5 py-4">
                       <button
                         onClick={() => setViewPayment(gym)}
-                        className="p-1.5 bg-[#0D9488]/10 text-teal-500 rounded-lg hover:bg-[#0D9488]/20 transition-colors"
+                        className="p-1.5 bg-[#8FA89B]/10 text-teal-500 rounded-lg hover:bg-[#8FA89B]/20 transition-colors"
                         title="View Details"
                       >
                         <Eye size={16} />
@@ -1133,8 +1133,8 @@ const SuperAdminSubscriptions = () => {
       )}
       {/* ── Tab: Subscribed Customers ── */}
       {activeTab === 'customers' && (
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden shadow-lg mt-6">
-          <div className="p-5 border-b border-[#CCFBF1] flex flex-col md:flex-row md:items-center gap-3">
+        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl overflow-hidden shadow-lg mt-6">
+          <div className="p-5 border-b border-[#DCD9CD] flex flex-col md:flex-row md:items-center gap-3">
             <div className="relative flex-1">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555]" />
               <input
@@ -1142,7 +1142,7 @@ const SuperAdminSubscriptions = () => {
                 placeholder="Search customer..."
                 value={customerSearchQuery}
                 onChange={e => setCustomerSearchQuery(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#0D9488]"
+                className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#8FA89B]"
               />
             </div>
           </div>
@@ -1150,9 +1150,9 @@ const SuperAdminSubscriptions = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#CCFBF1] bg-[#FFFFFF]">
+                <tr className="border-b border-[#DCD9CD] bg-[#FFFFFF]">
                   {['Customer Name', 'Gym', 'Plan', 'Billing', 'Amount', 'Payment Method', 'Start Date', 'Renewal Date', 'Status', 'Action'].map(h => (
-                    <th key={h} className="text-left text-xs font-bold text-[#475569] uppercase tracking-wider px-5 py-3.5">{h}</th>
+                    <th key={h} className="text-left text-xs font-bold text-[#4A514D] uppercase tracking-wider px-5 py-3.5">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -1161,27 +1161,27 @@ const SuperAdminSubscriptions = () => {
                   <tr key={customer.id} className="hover:bg-[#FFFFFF] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-[#333] rounded-full flex items-center justify-center text-[#1E293B] font-bold text-xs">
+                        <div className="w-8 h-8 bg-[#333] rounded-full flex items-center justify-center text-[#202522] font-bold text-xs">
                           {customer.name.charAt(0)}
                         </div>
-                        <span className="text-[#1E293B] font-semibold text-sm">{customer.name}</span>
+                        <span className="text-[#202522] font-semibold text-sm">{customer.name}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#475569] text-sm">{customer.gymName}</td>
+                    <td className="px-5 py-4 text-[#4A514D] text-sm">{customer.gymName}</td>
                     <td className="px-5 py-4">
                       <span className="text-xs px-2.5 py-1 rounded-full font-bold border bg-blue-500/10 text-blue-400 border-blue-500/30">
                         {customer.plan}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#475569] text-sm">{customer.billing}</td>
-                    <td className="px-5 py-4 text-[#1E293B] font-bold text-sm">{customer.amount}</td>
+                    <td className="px-5 py-4 text-[#4A514D] text-sm">{customer.billing}</td>
+                    <td className="px-5 py-4 text-[#202522] font-bold text-sm">{customer.amount}</td>
                     <td className="px-5 py-4">
-                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#CCFBF1] rounded-md text-xs text-[#475569]">
+                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#DCD9CD] rounded-md text-xs text-[#4A514D]">
                         {customer.paymentMethod}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#475569] text-sm">{customer.start}</td>
-                    <td className="px-5 py-4 text-[#475569] text-sm">{customer.renewal}</td>
+                    <td className="px-5 py-4 text-[#4A514D] text-sm">{customer.start}</td>
+                    <td className="px-5 py-4 text-[#4A514D] text-sm">{customer.renewal}</td>
                     <td className="px-5 py-4">
                       <select 
                         value={customer.status}
@@ -1192,7 +1192,7 @@ const SuperAdminSubscriptions = () => {
                         className={`outline-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border appearance-none ${STATUS_COLORS[customer.status] || 'bg-gray-100 text-gray-500'}`}
                       >
                         <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                        <option value="Inactive" className="bg-[#FFFFFF] text-[#475569]">Inactive</option>
+                        <option value="Inactive" className="bg-[#FFFFFF] text-[#4A514D]">Inactive</option>
                         <option value="Pending" className="bg-[#FFFFFF] text-blue-500">Pending</option>
                         <option value="Rejected" className="bg-[#FFFFFF] text-red-500">Rejected</option>
                         <option value="Expired" className="bg-[#FFFFFF] text-teal-400">Expired</option>
@@ -1201,7 +1201,7 @@ const SuperAdminSubscriptions = () => {
                     <td className="px-5 py-4">
                       <button
                         onClick={() => setViewPayment(customer)}
-                        className="p-1.5 bg-[#0D9488]/10 text-teal-500 rounded-lg hover:bg-[#0D9488]/20 transition-colors"
+                        className="p-1.5 bg-[#8FA89B]/10 text-teal-500 rounded-lg hover:bg-[#8FA89B]/20 transition-colors"
                         title="View Details"
                       >
                         <Eye size={16} />

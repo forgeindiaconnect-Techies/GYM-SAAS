@@ -7,7 +7,7 @@ const cards = [
     description: 'Configure and manage fees for each trainer in your gym.',
     icon: Settings,
     path: '/admin/trainer-fees/settings',
-    color: 'from-[#16A34A] to-[#0D9488]',
+    color: 'from-[#34483F] to-[#8FA89B]',
     bg: 'bg-green-50',
     iconColor: 'text-green-600',
   },
@@ -44,8 +44,8 @@ const GymAdminTrainerFeesHub = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1E293B]">Trainer Fees & Payments</h1>
-        <p className="text-[#64748B] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
+        <h1 className="text-2xl font-bold text-[#202522]">Trainer Fees & Payments</h1>
+        <p className="text-[#727975] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-5">
@@ -55,16 +55,16 @@ const GymAdminTrainerFeesHub = () => {
             <Link
               key={card.path}
               to={card.path}
-              className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#CCFBF1] transition-all group"
+              className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#DCD9CD] transition-all group"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl ${card.bg} flex items-center justify-center`}>
                   <Icon size={22} className={card.iconColor} />
                 </div>
-                <ChevronRight size={18} className="text-[#CBD5E1] group-hover:text-[#16A34A] group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight size={18} className="text-[#CBD5E1] group-hover:text-[#34483F] group-hover:translate-x-0.5 transition-all" />
               </div>
-              <h3 className="font-bold text-[#1E293B] mb-1">{card.title}</h3>
-              <p className="text-sm text-[#64748B]">{card.description}</p>
+              <h3 className="font-bold text-[#202522] mb-1">{card.title}</h3>
+              <p className="text-sm text-[#727975]">{card.description}</p>
             </Link>
           );
         })}

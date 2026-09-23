@@ -39,46 +39,46 @@ const MemberPayments = () => {
     <div className="max-w-6xl mx-auto">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2 text-[#1E293B]">Payment History</h1>
-          <p className="text-[#475569]">View and track all your subscription payments.</p>
+          <h1 className="text-3xl font-bold mb-2 text-[#202522]">Payment History</h1>
+          <p className="text-[#4A514D]">View and track all your subscription payments.</p>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#16A34A]" size={40} /></div>
+        <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#34483F]" size={40} /></div>
       ) : payments.length === 0 ? (
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-10 text-center shadow-xl">
-          <CreditCard size={48} className="mx-auto text-[#16A34A] mb-4" />
-          <h2 className="text-2xl font-bold text-[#1E293B] mb-2">No Payments Found</h2>
-          <p className="text-[#475569] max-w-md mx-auto">
+        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-10 text-center shadow-xl">
+          <CreditCard size={48} className="mx-auto text-[#34483F] mb-4" />
+          <h2 className="text-2xl font-bold text-[#202522] mb-2">No Payments Found</h2>
+          <p className="text-[#4A514D] max-w-md mx-auto">
             Your payment history and invoices will appear here once you make a transaction.
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-[#CCFBF1] shadow-xl overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#DCD9CD] shadow-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#F0FDFA] border-b border-[#CCFBF1]">
-                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Plan</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Amount</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Method</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Transaction ID</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#475569] uppercase tracking-wider">Proof</th>
+                <tr className="bg-[#F5F3EE] border-b border-[#DCD9CD]">
+                  <th className="px-6 py-4 text-xs font-bold text-[#4A514D] uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#4A514D] uppercase tracking-wider">Plan</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#4A514D] uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#4A514D] uppercase tracking-wider">Method</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#4A514D] uppercase tracking-wider">Transaction ID</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#4A514D] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#4A514D] uppercase tracking-wider">Proof</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#CCFBF1]">
+              <tbody className="divide-y divide-[#DCD9CD]">
                 {payments.map((payment) => (
                   <tr key={payment._id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-[#1E293B]">
+                    <td className="px-6 py-4 text-sm font-medium text-[#202522]">
                       {new Date(payment.paymentDate || payment.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#1E293B] font-bold">{payment.planName}</td>
-                    <td className="px-6 py-4 text-sm font-bold text-[#16A34A]">₹{payment.amount.toLocaleString('en-IN')}</td>
-                    <td className="px-6 py-4 text-sm text-[#475569]">{payment.paymentMethod}</td>
-                    <td className="px-6 py-4 text-sm text-[#475569] font-mono">{payment.transactionId || 'N/A'}</td>
+                    <td className="px-6 py-4 text-sm text-[#202522] font-bold">{payment.planName}</td>
+                    <td className="px-6 py-4 text-sm font-bold text-[#34483F]">₹{payment.amount.toLocaleString('en-IN')}</td>
+                    <td className="px-6 py-4 text-sm text-[#4A514D]">{payment.paymentMethod}</td>
+                    <td className="px-6 py-4 text-sm text-[#4A514D] font-mono">{payment.transactionId || 'N/A'}</td>
                     <td className="px-6 py-4">
                       {getStatusBadge(payment.status)}
                       {payment.status === 'Rejected' && payment.rejectionReason && (

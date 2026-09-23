@@ -241,7 +241,7 @@ const SuperAdminGymOwners = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'APPROVED': return 'bg-green-500/10 text-green-500 border-green-500/20';
-      case 'REJECTED': return 'bg-[#0D9488]/10 text-[#0D9488] border-[#0D9488]/20';
+      case 'REJECTED': return 'bg-[#8FA89B]/10 text-[#8FA89B] border-[#8FA89B]/20';
       case 'SUSPENDED': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       default: return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
     }
@@ -251,59 +251,59 @@ const SuperAdminGymOwners = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1E293B]">Gym Owner Details</h1>
-          <p className="text-[#475569] text-sm mt-1">Manage all registered gym owners and their approval statuses.</p>
+          <h1 className="text-2xl font-bold text-[#202522]">Gym Owner Details</h1>
+          <p className="text-[#4A514D] text-sm mt-1">Manage all registered gym owners and their approval statuses.</p>
         </div>
       </div>
 
-      <div className="flex space-x-2 border-b border-[#CCFBF1] pb-2 overflow-x-auto custom-scrollbar">
+      <div className="flex space-x-2 border-b border-[#DCD9CD] pb-2 overflow-x-auto custom-scrollbar">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
               activeTab === tab.id
-                ? 'border-[#16A34A] text-[#16A34A] bg-[#16A34A]/10'
-                : 'border-transparent text-[#475569] hover:text-[#1E293B] hover:bg-[#FFFFFF]'
+                ? 'border-[#34483F] text-[#34483F] bg-[#34483F]/10'
+                : 'border-transparent text-[#4A514D] hover:text-[#202522] hover:bg-[#FFFFFF]'
             }`}
           >
             <tab.icon size={16} />
             <span>{tab.label}</span>
-            <span className="bg-[#E2E8F0] text-xs px-2 py-0.5 rounded-full ml-2 text-[#1E293B]">
+            <span className="bg-[#E8E5DA] text-xs px-2 py-0.5 rounded-full ml-2 text-[#202522]">
               {tab.id === 'ALL' ? owners.length : owners.filter(o => o.approvalStatus === tab.id).length}
             </span>
           </button>
         ))}
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4 flex flex-wrap gap-4 items-center justify-between">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4 flex flex-wrap gap-4 items-center justify-between">
         <div className="flex-1 min-w-[250px] relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#475569]" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A514D]" />
           <input 
             type="text" 
             placeholder="Search by name, gym or email..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
           />
         </div>
         <div className="relative">
           <button 
             onClick={() => setShowExportMenu(!showExportMenu)}
-            className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg hover:bg-[#E2E8F0] transition-colors text-sm font-medium"
+            className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg hover:bg-[#E8E5DA] transition-colors text-sm font-medium"
           >
-            <Download size={16} className="text-[#16A34A]" />
+            <Download size={16} className="text-[#34483F]" />
             <span>Download Report</span>
           </button>
           {showExportMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg shadow-xl z-10 py-1 overflow-hidden">
-              <button onClick={() => handleExport('pdf')} className="w-full text-left px-4 py-2 text-sm text-[#1E293B] hover:bg-[#E2E8F0] flex items-center space-x-2">
+            <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#DCD9CD] rounded-lg shadow-xl z-10 py-1 overflow-hidden">
+              <button onClick={() => handleExport('pdf')} className="w-full text-left px-4 py-2 text-sm text-[#202522] hover:bg-[#E8E5DA] flex items-center space-x-2">
                 <FileText size={14} className="text-red-400" /><span>PDF Document</span>
               </button>
-              <button onClick={() => handleExport('excel')} className="w-full text-left px-4 py-2 text-sm text-[#1E293B] hover:bg-[#E2E8F0] flex items-center space-x-2">
+              <button onClick={() => handleExport('excel')} className="w-full text-left px-4 py-2 text-sm text-[#202522] hover:bg-[#E8E5DA] flex items-center space-x-2">
                 <TableIcon size={14} className="text-green-400" /><span>Excel Spreadsheet</span>
               </button>
-              <button onClick={() => handleExport('word')} className="w-full text-left px-4 py-2 text-sm text-[#1E293B] hover:bg-[#E2E8F0] flex items-center space-x-2">
+              <button onClick={() => handleExport('word')} className="w-full text-left px-4 py-2 text-sm text-[#202522] hover:bg-[#E8E5DA] flex items-center space-x-2">
                 <FileText size={14} className="text-blue-400" /><span>Word Document</span>
               </button>
             </div>
@@ -311,27 +311,27 @@ const SuperAdminGymOwners = () => {
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl overflow-hidden relative min-h-[400px]">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl overflow-hidden relative min-h-[400px]">
         {loading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#475569]">
-            <Loader2 size={32} className="animate-spin mb-4 text-[#16A34A]" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#4A514D]">
+            <Loader2 size={32} className="animate-spin mb-4 text-[#34483F]" />
             <p>Loading gym owners...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0D9488]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#8FA89B]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
         ) : filteredOwners.length === 0 ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#475569]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#4A514D]">
             <Building2 size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium text-[#1E293B] mb-1">No gym owners found</p>
+            <p className="text-lg font-medium text-[#202522] mb-1">No gym owners found</p>
             <p className="text-sm text-center max-w-md">There are no gym owners matching your search criteria.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-[#475569] uppercase bg-[#FFFFFF] border-b border-[#CCFBF1]">
+              <thead className="text-xs text-[#4A514D] uppercase bg-[#FFFFFF] border-b border-[#DCD9CD]">
                 <tr>
                   <th className="px-6 py-4 font-medium">Gym & Owner</th>
                   <th className="px-6 py-4 font-medium">Contact</th>
@@ -342,28 +342,28 @@ const SuperAdminGymOwners = () => {
                   <th className="px-6 py-4 font-medium text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#CCFBF1]">
+              <tbody className="divide-y divide-[#DCD9CD]">
                 {filteredOwners.map((owner) => (
-                  <tr key={owner._id} className="hover:bg-[#F8FAFC] transition-colors">
+                  <tr key={owner._id} className="hover:bg-[#F2EFE8] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-[#E2E8F0] flex items-center justify-center text-blue-500 font-bold">
+                        <div className="w-8 h-8 rounded-full bg-[#E8E5DA] flex items-center justify-center text-blue-500 font-bold">
                           {owner.firstName[0]}
                         </div>
                         <div>
-                          <div className="font-medium text-[#1E293B]">{owner.firstName} {owner.lastName}</div>
-                          <div className="text-xs text-[#475569]">{owner.gymId?.name || 'No Gym'}</div>
-                          {owner.gymId?.location?.city && <div className="text-[10px] text-[#94A3B8]">{owner.gymId.location.city}</div>}
+                          <div className="font-medium text-[#202522]">{owner.firstName} {owner.lastName}</div>
+                          <div className="text-xs text-[#4A514D]">{owner.gymId?.name || 'No Gym'}</div>
+                          {owner.gymId?.location?.city && <div className="text-[10px] text-[#A8ADA9]">{owner.gymId.location.city}</div>}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        <div className="flex items-center space-x-2 text-[#475569]">
+                        <div className="flex items-center space-x-2 text-[#4A514D]">
                           <Mail size={14} />
                           <span className="truncate max-w-[150px]">{owner.email}</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-[#475569]">
+                        <div className="flex items-center space-x-2 text-[#4A514D]">
                           <Phone size={14} />
                           <span>{owner.mobile}</span>
                         </div>
@@ -372,32 +372,32 @@ const SuperAdminGymOwners = () => {
                     <td className="px-6 py-4">
                       <div className="space-y-1">
                         {owner.subscriptionPlan && SAAS_PLANS[owner.subscriptionPlan] ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#F1F5F9] text-[#475569] border border-[#E2E8F0]">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#F1F5F9] text-[#4A514D] border border-[#E8E5DA]">
                             {SAAS_PLANS[owner.subscriptionPlan].name}
                           </span>
                         ) : (
-                          <span className="text-[#94A3B8] text-xs">No Plan</span>
+                          <span className="text-[#A8ADA9] text-xs">No Plan</span>
                         )}
-                        <div className="text-xs text-[#475569]">{owner.billingCycle ? owner.billingCycle.charAt(0).toUpperCase() + owner.billingCycle.slice(1) : 'N/A'}</div>
+                        <div className="text-xs text-[#4A514D]">{owner.billingCycle ? owner.billingCycle.charAt(0).toUpperCase() + owner.billingCycle.slice(1) : 'N/A'}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1 text-xs">
                         <div>
-                          <span className="text-[#64748B]">Status:</span>{' '}
-                          <span className={`font-medium ${owner.subscriptionStatus === 'Active' ? 'text-[#16A34A]' : 'text-[#EF4444]'}`}>
+                          <span className="text-[#727975]">Status:</span>{' '}
+                          <span className={`font-medium ${owner.subscriptionStatus === 'Active' ? 'text-[#34483F]' : 'text-[#EF4444]'}`}>
                             {owner.subscriptionStatus || 'N/A'}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[#64748B]">Payment:</span>{' '}
-                          <span className="font-medium text-[#1E293B]">{owner.paymentStatus || 'N/A'}</span>
+                          <span className="text-[#727975]">Payment:</span>{' '}
+                          <span className="font-medium text-[#202522]">{owner.paymentStatus || 'N/A'}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-[#475569] text-xs whitespace-nowrap">
-                      <div><span className="text-[#94A3B8]">Start:</span> {owner.subscriptionStart ? new Date(owner.subscriptionStart).toLocaleDateString() : 'N/A'}</div>
-                      <div><span className="text-[#94A3B8]">Expiry:</span> {owner.subscriptionExpiry ? new Date(owner.subscriptionExpiry).toLocaleDateString() : 'N/A'}</div>
+                    <td className="px-6 py-4 text-[#4A514D] text-xs whitespace-nowrap">
+                      <div><span className="text-[#A8ADA9]">Start:</span> {owner.subscriptionStart ? new Date(owner.subscriptionStart).toLocaleDateString() : 'N/A'}</div>
+                      <div><span className="text-[#A8ADA9]">Expiry:</span> {owner.subscriptionExpiry ? new Date(owner.subscriptionExpiry).toLocaleDateString() : 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${getStatusColor(owner.approvalStatus)}`}>
@@ -453,7 +453,7 @@ const SuperAdminGymOwners = () => {
                           )}
                         </div>
 
-                        <div className="w-px h-5 bg-[#E2E8F0] mx-1"></div>
+                        <div className="w-px h-5 bg-[#E8E5DA] mx-1"></div>
 
                         {/* View, Edit, Delete buttons */}
                         <div className="flex items-center justify-end space-x-1">
@@ -473,7 +473,7 @@ const SuperAdminGymOwners = () => {
                           </button>
                           <button 
                             onClick={() => handleDelete(owner._id)}
-                            className="p-1.5 text-[#475569] hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors"
+                            className="p-1.5 text-[#4A514D] hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors"
                             title="Delete"
                           >
                             <Trash2 size={16} />
@@ -491,11 +491,11 @@ const SuperAdminGymOwners = () => {
 
       {/* View Details Modal */}
       {viewOwner && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F0FDFA]/90 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-3 z-20 border-b border-[#CCFBF1] mb-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F5F3EE]/90 backdrop-blur-sm">
+          <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-3 z-20 border-b border-[#DCD9CD] mb-6">
               <div className="flex items-center gap-3">
-                <h2 className="text-xl font-bold text-[#1E293B]">Gym Owner Details</h2>
+                <h2 className="text-xl font-bold text-[#202522]">Gym Owner Details</h2>
                 {viewOwner.subscriptionPlan && SAAS_PLANS[viewOwner.subscriptionPlan] && (
                   <span className="px-3 py-1 bg-gradient-to-r from-amber-100 to-amber-50 text-amber-700 text-xs font-bold rounded-full border border-amber-200 shadow-sm flex items-center gap-1">
                     <Star size={12} className="fill-amber-500 text-amber-500" />
@@ -509,14 +509,14 @@ const SuperAdminGymOwners = () => {
                     href={`/gyms/${viewOwner.gymId._id}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-sm font-semibold text-[#16A34A] hover:underline flex items-center"
+                    className="text-sm font-semibold text-[#34483F] hover:underline flex items-center"
                   >
                     <Eye size={16} className="mr-1" /> View Public Page
                   </a>
                 )}
                 <button 
                   onClick={() => setViewOwner(null)}
-                  className="p-1 text-[#475569] hover:text-[#16A34A] transition-colors"
+                  className="p-1 text-[#4A514D] hover:text-[#34483F] transition-colors"
                 >
                   <X size={24} />
                 </button>
@@ -526,45 +526,45 @@ const SuperAdminGymOwners = () => {
             <div className="space-y-8 text-sm">
               {/* Owner Details */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Owner Information</h3>
+                <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Owner Information</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div>
-                    <p className="text-[#475569] mb-1">First Name</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.firstName}</p>
+                    <p className="text-[#4A514D] mb-1">First Name</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.firstName}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Last Name</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.lastName}</p>
+                    <p className="text-[#4A514D] mb-1">Last Name</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.lastName}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Email</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.email}</p>
+                    <p className="text-[#4A514D] mb-1">Email</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.email}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Mobile</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.mobile}</p>
+                    <p className="text-[#4A514D] mb-1">Mobile</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.mobile}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Status</p>
+                    <p className="text-[#4A514D] mb-1">Status</p>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(viewOwner.approvalStatus)}`}>
                       {viewOwner.approvalStatus}
                     </span>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Joined Date</p>
-                    <p className="font-medium text-[#1E293B]">{new Date(viewOwner.createdAt).toLocaleDateString()}</p>
+                    <p className="text-[#4A514D] mb-1">Joined Date</p>
+                    <p className="font-medium text-[#202522]">{new Date(viewOwner.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Platform Subscription Plan</p>
-                    <p className="font-medium text-[#1E293B]">
+                    <p className="text-[#4A514D] mb-1">Platform Subscription Plan</p>
+                    <p className="font-medium text-[#202522]">
                       {viewOwner.subscriptionPlan && SAAS_PLANS[viewOwner.subscriptionPlan] 
                         ? SAAS_PLANS[viewOwner.subscriptionPlan].name 
                         : 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Plan Expiry Date</p>
-                    <p className="font-medium text-[#1E293B]">
+                    <p className="text-[#4A514D] mb-1">Plan Expiry Date</p>
+                    <p className="font-medium text-[#202522]">
                       {viewOwner.subscriptionExpiry 
                         ? new Date(viewOwner.subscriptionExpiry).toLocaleDateString() 
                         : 'N/A'}
@@ -574,36 +574,36 @@ const SuperAdminGymOwners = () => {
               </div>
 
               {/* Member Subscription Plans */}
-              <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4">
-                <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Member Subscription Plans</h3>
+              <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4">
+                <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Member Subscription Plans</h3>
                 {viewOwner.gymId?.subscriptionPlans && viewOwner.gymId.subscriptionPlans.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {viewOwner.gymId.subscriptionPlans.map((plan: any, idx: number) => (
-                      <div key={idx} className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4 flex flex-col justify-between">
+                      <div key={idx} className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4 flex flex-col justify-between">
                         <div>
                           <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-semibold text-[#1E293B]">{plan.name}</h4>
+                            <h4 className="font-semibold text-[#202522]">{plan.name}</h4>
                             <span className="text-[#EF4444] font-bold">₹{plan.price}</span>
                           </div>
-                          <p className="text-sm text-[#475569] mb-2">{plan.duration}</p>
+                          <p className="text-sm text-[#4A514D] mb-2">{plan.duration}</p>
                         </div>
                         <p className="text-xs text-[#777] break-words line-clamp-3">{plan.features}</p>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-[#475569]">No subscription plans defined for this gym.</p>
+                  <p className="text-sm text-[#4A514D]">No subscription plans defined for this gym.</p>
                 )}
               </div>
 
               {/* Gym Images */}
               {viewOwner.gymId?.images && viewOwner.gymId.images.length > 0 && (
                 <div>
-                  <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Gym Images</h3>
-                  <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4">
+                  <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Gym Images</h3>
+                  <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       {viewOwner.gymId.images.map((url: string, i: number) => (
-                        <img key={i} src={url} alt={`Gym Image ${i+1}`} className="w-full h-24 object-cover rounded-lg border border-[#CCFBF1]" />
+                        <img key={i} src={url} alt={`Gym Image ${i+1}`} className="w-full h-24 object-cover rounded-lg border border-[#DCD9CD]" />
                       ))}
                     </div>
                   </div>
@@ -612,23 +612,23 @@ const SuperAdminGymOwners = () => {
 
               {/* Gym Details */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Gym Information</h3>
+                <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Gym Information</h3>
                 {viewOwner.gymId?.logo && (
                   <div className="mb-4">
-                    <img src={viewOwner.gymId.logo} alt={viewOwner.gymId.name} className="w-full h-40 object-cover rounded-xl border border-[#CCFBF1]" />
+                    <img src={viewOwner.gymId.logo} alt={viewOwner.gymId.name} className="w-full h-40 object-cover rounded-xl border border-[#DCD9CD]" />
                   </div>
                 )}
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Name</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.name || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Gym Name</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.name || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Type</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.gymType || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Gym Type</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.gymType || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Status</p>
+                    <p className="text-[#4A514D] mb-1">Gym Status</p>
                     <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold border ${
                       viewOwner.gymId?.status === 'ACTIVE' ? 'bg-green-500/10 text-green-400 border-green-500/30' :
                       viewOwner.gymId?.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' :
@@ -637,89 +637,89 @@ const SuperAdminGymOwners = () => {
                     }`}>{viewOwner.gymId?.status || 'PENDING'}</span>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Rating</p>
-                    <p className="font-medium text-[#1E293B]">⭐ {viewOwner.gymId?.rating || 'N/A'} {viewOwner.gymId?.reviewCount ? `(${viewOwner.gymId.reviewCount} reviews)` : ''}</p>
+                    <p className="text-[#4A514D] mb-1">Rating</p>
+                    <p className="font-medium text-[#202522]">⭐ {viewOwner.gymId?.rating || 'N/A'} {viewOwner.gymId?.reviewCount ? `(${viewOwner.gymId.reviewCount} reviews)` : ''}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Email</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.email || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Gym Email</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.email || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Phone</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.phone || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Gym Phone</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.phone || 'Not provided'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Location & Operations */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Location & Operations</h3>
+                <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Location & Operations</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div className="col-span-2">
-                    <p className="text-[#475569] mb-1">Address</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.location?.address || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Address</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.location?.address || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">City</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.location?.city || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">City</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.location?.city || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">State</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.location?.state || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">State</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.location?.state || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">PIN Code</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">PIN Code</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Approx. Members</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.memberCapacity || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Approx. Members</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.memberCapacity || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Num Trainers</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.trainerCapacity || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Num Trainers</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.trainerCapacity || 'Not provided'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Equipment */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Equipment</h3>
+                <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Equipment</h3>
                 {viewOwner.gymId?.equipment && viewOwner.gymId.equipment.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {viewOwner.gymId.equipment.map((eq: any, i: number) => (
-                      <div key={i} className="bg-[#FFFFFF] p-3 rounded-lg border border-[#CCFBF1]">
-                        <p className="text-sm font-medium text-[#1E293B]">{eq.name} <span className="text-[#475569] text-xs">x{eq.quantity}</span></p>
-                        <p className="text-xs text-[#475569] mt-1">{eq.category} • {eq.condition} • {eq.availability}</p>
+                      <div key={i} className="bg-[#FFFFFF] p-3 rounded-lg border border-[#DCD9CD]">
+                        <p className="text-sm font-medium text-[#202522]">{eq.name} <span className="text-[#4A514D] text-xs">x{eq.quantity}</span></p>
+                        <p className="text-xs text-[#4A514D] mt-1">{eq.category} • {eq.condition} • {eq.availability}</p>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-[#475569]">No equipment listed.</p>
+                  <p className="text-sm text-[#4A514D]">No equipment listed.</p>
                 )}
               </div>
 
               {/* AC Details & Facilities */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">AC Details</h3>
+                  <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">AC Details</h3>
                   <div className="text-sm">
-                    <p className="mb-1"><span className="text-[#475569]">Type:</span> <span className="text-[#1E293B] font-medium">{viewOwner.gymId?.acDetails?.type || 'Not Specified'}</span></p>
+                    <p className="mb-1"><span className="text-[#4A514D]">Type:</span> <span className="text-[#202522] font-medium">{viewOwner.gymId?.acDetails?.type || 'Not Specified'}</span></p>
                     {viewOwner.gymId?.acDetails?.areas && viewOwner.gymId.acDetails.areas.length > 0 && (
-                      <p><span className="text-[#475569]">Areas:</span> <span className="text-[#1E293B] font-medium">{viewOwner.gymId.acDetails.areas.join(', ')}</span></p>
+                      <p><span className="text-[#4A514D]">Areas:</span> <span className="text-[#202522] font-medium">{viewOwner.gymId.acDetails.areas.join(', ')}</span></p>
                     )}
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Facilities</h3>
+                  <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Facilities</h3>
                   {viewOwner.gymId?.facilities && viewOwner.gymId.facilities.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {viewOwner.gymId.facilities.map((f: string, i: number) => (
-                        <span key={i} className="bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] text-xs px-2.5 py-1 rounded-md">{f}</span>
+                        <span key={i} className="bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] text-xs px-2.5 py-1 rounded-md">{f}</span>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-[#475569]">No facilities selected.</p>
+                    <p className="text-sm text-[#4A514D]">No facilities selected.</p>
                   )}
                 </div>
               </div>
@@ -730,10 +730,10 @@ const SuperAdminGymOwners = () => {
 
             </div>
             
-            <div className="mt-8 flex justify-end sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#CCFBF1]">
+            <div className="mt-8 flex justify-end sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#DCD9CD]">
               <button 
                 onClick={() => setViewOwner(null)}
-                className="px-4 py-2 bg-[#E2E8F0] text-[#1E293B] rounded-lg hover:bg-[#CBD5E1] transition-colors text-sm font-medium"
+                className="px-4 py-2 bg-[#E8E5DA] text-[#202522] rounded-lg hover:bg-[#CBD5E1] transition-colors text-sm font-medium"
               >
                 Close
               </button>
@@ -744,13 +744,13 @@ const SuperAdminGymOwners = () => {
 
       {/* Edit Owner Modal */}
       {editOwner && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F0FDFA]/90 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-3 z-20 border-b border-[#CCFBF1] mb-6">
-              <h2 className="text-xl font-bold text-[#1E293B]">Edit Gym Owner</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F5F3EE]/90 backdrop-blur-sm">
+          <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-3 z-20 border-b border-[#DCD9CD] mb-6">
+              <h2 className="text-xl font-bold text-[#202522]">Edit Gym Owner</h2>
               <button 
                 onClick={() => setEditOwner(null)}
-                className="p-1 text-[#475569] hover:text-[#16A34A] transition-colors"
+                className="p-1 text-[#4A514D] hover:text-[#34483F] transition-colors"
               >
                 <X size={24} />
               </button>
@@ -759,63 +759,63 @@ const SuperAdminGymOwners = () => {
             <div className="space-y-6">
               {/* Account Information */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-3">Owner Information</h3>
+                <h3 className="text-[#34483F] font-semibold mb-3">Owner Information</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">First Name</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">First Name</label>
                     <input 
                       value={editForm.firstName || ''} 
                       onChange={e => setEditForm({...editForm, firstName: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Last Name</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Last Name</label>
                     <input 
                       value={editForm.lastName || ''} 
                       onChange={e => setEditForm({...editForm, lastName: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Email</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Email</label>
                     <input 
                       value={editForm.email || ''} 
                       onChange={e => setEditForm({...editForm, email: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Mobile</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Mobile</label>
                     <input 
                       value={editForm.mobile || ''} 
                       onChange={e => setEditForm({...editForm, mobile: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div className="col-span-2 md:col-span-1">
-                    <label className="block text-sm text-[#475569] mb-2">City</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">City</label>
                     <input 
                       value={editForm.city || ''} 
                       onChange={e => setEditForm({...editForm, city: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div className="col-span-2 md:col-span-1">
-                    <label className="block text-sm text-[#475569] mb-2">Platform Subscription Plan</label>
-                    <div className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
+                    <label className="block text-sm text-[#4A514D] mb-2">Platform Subscription Plan</label>
+                    <div className="w-full bg-[#F2EFE8] border border-[#E8E5DA] text-[#4A514D] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
                       {editForm.subscriptionPlan ? (SAAS_PLANS[editForm.subscriptionPlan]?.name || editForm.subscriptionPlan) : 'N/A'}
                     </div>
                     {editForm.subscriptionPlan && SAAS_PLANS[editForm.subscriptionPlan] && (
-                      <div className="bg-[#F8FAFC] border border-[#CCFBF1] rounded-lg p-3 mt-2">
+                      <div className="bg-[#F2EFE8] border border-[#DCD9CD] rounded-lg p-3 mt-2">
                         <div className="flex justify-between items-center mb-1.5">
-                           <p className="text-xs font-semibold text-[#16A34A]">Included Features:</p>
-                           <span className="text-xs font-bold text-[#1E293B] bg-white px-2 py-0.5 rounded border border-[#E2E8F0] shadow-sm">{SAAS_PLANS[editForm.subscriptionPlan].price}</span>
+                           <p className="text-xs font-semibold text-[#34483F]">Included Features:</p>
+                           <span className="text-xs font-bold text-[#202522] bg-white px-2 py-0.5 rounded border border-[#E8E5DA] shadow-sm">{SAAS_PLANS[editForm.subscriptionPlan].price}</span>
                         </div>
                         <ul className="space-y-1">
                           {SAAS_PLANS[editForm.subscriptionPlan].features.map((feature, idx) => (
-                            <li key={idx} className="text-xs text-[#475569] flex items-start gap-1.5">
-                              <CheckCircle size={12} className="text-[#16A34A] shrink-0 mt-0.5" />
+                            <li key={idx} className="text-xs text-[#4A514D] flex items-start gap-1.5">
+                              <CheckCircle size={12} className="text-[#34483F] shrink-0 mt-0.5" />
                               <span>{feature}</span>
                             </li>
                           ))}
@@ -824,49 +824,49 @@ const SuperAdminGymOwners = () => {
                     )}
                   </div>
                   <div className="col-span-2 md:col-span-1">
-                    <label className="block text-sm text-[#475569] mb-2">Plan Expiry Date</label>
-                    <div className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
+                    <label className="block text-sm text-[#4A514D] mb-2">Plan Expiry Date</label>
+                    <div className="w-full bg-[#F2EFE8] border border-[#E8E5DA] text-[#4A514D] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
                       {editForm.subscriptionExpiry || 'N/A'}
                     </div>
                   </div>
                 </div>
-                <p className="text-xs text-[#94A3B8] mt-2 italic flex items-center gap-1"><AlertCircle size={12}/> Note: Platform subscription and payment details are read-only and cannot be manually modified by administrators.</p>
+                <p className="text-xs text-[#A8ADA9] mt-2 italic flex items-center gap-1"><AlertCircle size={12}/> Note: Platform subscription and payment details are read-only and cannot be manually modified by administrators.</p>
               </div>
 
               {/* Gym Details */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-3">Gym Information</h3>
+                <h3 className="text-[#34483F] font-semibold mb-3">Gym Information</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Gym Name</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Gym Name</label>
                     <input 
                       value={editForm.gymData?.name || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, name: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Gym Type</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Gym Type</label>
                     <input 
                       value={editForm.gymData?.gymType || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, gymType: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Gym Email</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Gym Email</label>
                     <input 
                       value={editForm.gymData?.email || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, email: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Gym Phone</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Gym Phone</label>
                     <input 
                       value={editForm.gymData?.phone || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, phone: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                 </div>
@@ -874,56 +874,56 @@ const SuperAdminGymOwners = () => {
 
               {/* Location & Operations */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-3">Location & Operations</h3>
+                <h3 className="text-[#34483F] font-semibold mb-3">Location & Operations</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
-                    <label className="block text-sm text-[#475569] mb-2">Address</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Address</label>
                     <input 
                       value={editForm.gymData?.location?.address || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, address: e.target.value}}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">City</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">City</label>
                     <input 
                       value={editForm.gymData?.location?.city || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, city: e.target.value}}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">State</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">State</label>
                     <input 
                       value={editForm.gymData?.location?.state || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, state: e.target.value}}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">PIN Code</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">PIN Code</label>
                     <input 
                       value={editForm.gymData?.location?.pinCode || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, pinCode: e.target.value}}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Approx. Members</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Approx. Members</label>
                     <input 
                       type="number"
                       value={editForm.gymData?.memberCapacity || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, memberCapacity: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#475569] mb-2">Number of Trainers</label>
+                    <label className="block text-sm text-[#4A514D] mb-2">Number of Trainers</label>
                     <input 
                       type="number"
                       value={editForm.gymData?.trainerCapacity || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, trainerCapacity: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
                     />
                   </div>
                 </div>
@@ -931,17 +931,17 @@ const SuperAdminGymOwners = () => {
 
             </div>
             
-            <div className="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#CCFBF1]">
+            <div className="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#DCD9CD]">
               <button 
                 onClick={() => setEditOwner(null)}
-                className="px-4 py-2 border border-[#CCFBF1] text-[#475569] rounded-lg hover:bg-[#F8FAFC] transition-colors text-sm font-medium"
+                className="px-4 py-2 border border-[#DCD9CD] text-[#4A514D] rounded-lg hover:bg-[#F2EFE8] transition-colors text-sm font-medium"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleSaveEdit}
                 disabled={isSaving}
-                className="px-4 py-2 bg-[#16A34A] text-white rounded-lg hover:bg-[#15803D] transition-colors text-sm font-semibold flex items-center space-x-2"
+                className="px-4 py-2 bg-[#34483F] text-white rounded-lg hover:bg-[#C6A77D] transition-colors text-sm font-semibold flex items-center space-x-2"
               >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                 <span>Save Changes</span>
@@ -955,17 +955,17 @@ const SuperAdminGymOwners = () => {
       {viewSubscription && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
           <div className="bg-[#FFFFFF] w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-[#CCFBF1] flex justify-between items-center bg-gradient-to-r from-[#F0FDFA] to-[#FFFFFF]">
+            <div className="px-6 py-4 border-b border-[#DCD9CD] flex justify-between items-center bg-gradient-to-r from-[#F5F3EE] to-[#FFFFFF]">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
                   <FileText size={20} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#1E293B]">Platform Subscription</h2>
-                  <p className="text-[#475569] text-xs">Payment & Plan details for {viewSubscription.firstName} {viewSubscription.lastName}</p>
+                  <h2 className="text-xl font-bold text-[#202522]">Platform Subscription</h2>
+                  <p className="text-[#4A514D] text-xs">Payment & Plan details for {viewSubscription.firstName} {viewSubscription.lastName}</p>
                 </div>
               </div>
-              <button onClick={() => setViewSubscription(null)} className="p-2 text-[#475569] hover:text-[#1E293B] bg-white rounded-full border border-[#E2E8F0] shadow-sm">
+              <button onClick={() => setViewSubscription(null)} className="p-2 text-[#4A514D] hover:text-[#202522] bg-white rounded-full border border-[#E8E5DA] shadow-sm">
                 <X size={20} />
               </button>
             </div>
@@ -973,11 +973,11 @@ const SuperAdminGymOwners = () => {
             <div className="p-6 overflow-y-auto flex-1 custom-scrollbar space-y-6">
               
               {/* Active Plan Card */}
-              <div className="bg-gradient-to-br from-[#F8FAFC] to-[#F1F5F9] rounded-xl p-5 border border-[#E2E8F0] shadow-sm">
+              <div className="bg-gradient-to-br from-[#F2EFE8] to-[#F1F5F9] rounded-xl p-5 border border-[#E8E5DA] shadow-sm">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1 block">Current Plan</span>
-                    <h3 className="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#727975] mb-1 block">Current Plan</span>
+                    <h3 className="text-xl font-bold text-[#202522] flex items-center gap-2">
                       {viewSubscription.subscriptionPlan && SAAS_PLANS[viewSubscription.subscriptionPlan] 
                         ? SAAS_PLANS[viewSubscription.subscriptionPlan].name 
                         : 'No Active Plan'}
@@ -992,37 +992,37 @@ const SuperAdminGymOwners = () => {
                         ? SAAS_PLANS[viewSubscription.subscriptionPlan].price.split('/')[0] 
                         : '₹0'}
                     </div>
-                    <div className="text-xs text-[#64748B]">{viewSubscription.billingCycle || 'N/A'} billing</div>
+                    <div className="text-xs text-[#727975]">{viewSubscription.billingCycle || 'N/A'} billing</div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 border-t border-[#E2E8F0] pt-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 border-t border-[#E8E5DA] pt-4">
                   <div>
-                    <p className="text-[10px] text-[#64748B] uppercase font-semibold">Start Date</p>
-                    <p className="text-sm font-medium text-[#1E293B] mt-1">{viewSubscription.subscriptionStart ? new Date(viewSubscription.subscriptionStart).toLocaleDateString() : 'N/A'}</p>
+                    <p className="text-[10px] text-[#727975] uppercase font-semibold">Start Date</p>
+                    <p className="text-sm font-medium text-[#202522] mt-1">{viewSubscription.subscriptionStart ? new Date(viewSubscription.subscriptionStart).toLocaleDateString() : 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#64748B] uppercase font-semibold">Renewal Date</p>
-                    <p className="text-sm font-medium text-[#1E293B] mt-1">{viewSubscription.subscriptionExpiry ? new Date(viewSubscription.subscriptionExpiry).toLocaleDateString() : 'N/A'}</p>
+                    <p className="text-[10px] text-[#727975] uppercase font-semibold">Renewal Date</p>
+                    <p className="text-sm font-medium text-[#202522] mt-1">{viewSubscription.subscriptionExpiry ? new Date(viewSubscription.subscriptionExpiry).toLocaleDateString() : 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#64748B] uppercase font-semibold">Payment Status</p>
-                    <p className="text-sm font-medium text-[#1E293B] mt-1">{viewSubscription.paymentStatus || 'N/A'}</p>
+                    <p className="text-[10px] text-[#727975] uppercase font-semibold">Payment Status</p>
+                    <p className="text-sm font-medium text-[#202522] mt-1">{viewSubscription.paymentStatus || 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#64748B] uppercase font-semibold">Transaction ID</p>
-                    <p className="text-sm font-medium text-[#1E293B] mt-1 truncate" title={viewSubscription.transactionId || ''}>{viewSubscription.transactionId || 'N/A'}</p>
+                    <p className="text-[10px] text-[#727975] uppercase font-semibold">Transaction ID</p>
+                    <p className="text-sm font-medium text-[#202522] mt-1 truncate" title={viewSubscription.transactionId || ''}>{viewSubscription.transactionId || 'N/A'}</p>
                   </div>
                 </div>
               </div>
 
               {/* History Section (Simulated) */}
               <div>
-                <h3 className="text-sm font-bold text-[#1E293B] mb-3">Subscription History</h3>
+                <h3 className="text-sm font-bold text-[#202522] mb-3">Subscription History</h3>
                 {viewSubscription.transactionId ? (
-                  <div className="border border-[#E2E8F0] rounded-lg overflow-hidden">
+                  <div className="border border-[#E8E5DA] rounded-lg overflow-hidden">
                     <table className="w-full text-sm text-left">
-                      <thead className="text-xs text-[#64748B] uppercase bg-[#F8FAFC] border-b border-[#E2E8F0]">
+                      <thead className="text-xs text-[#727975] uppercase bg-[#F2EFE8] border-b border-[#E8E5DA]">
                         <tr>
                           <th className="px-4 py-3 font-semibold">Date</th>
                           <th className="px-4 py-3 font-semibold">Plan</th>
@@ -1030,18 +1030,18 @@ const SuperAdminGymOwners = () => {
                           <th className="px-4 py-3 font-semibold">Status</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#E2E8F0]">
+                      <tbody className="divide-y divide-[#E8E5DA]">
                         <tr className="bg-white">
-                          <td className="px-4 py-3 text-[#1E293B]">{viewSubscription.subscriptionStart ? new Date(viewSubscription.subscriptionStart).toLocaleDateString() : 'N/A'}</td>
-                          <td className="px-4 py-3 text-[#1E293B]">{viewSubscription.subscriptionPlan || 'N/A'}</td>
-                          <td className="px-4 py-3 text-[#1E293B]">{viewSubscription.subscriptionPlan ? SAAS_PLANS[viewSubscription.subscriptionPlan]?.price.split('/')[0] : '₹0'}</td>
+                          <td className="px-4 py-3 text-[#202522]">{viewSubscription.subscriptionStart ? new Date(viewSubscription.subscriptionStart).toLocaleDateString() : 'N/A'}</td>
+                          <td className="px-4 py-3 text-[#202522]">{viewSubscription.subscriptionPlan || 'N/A'}</td>
+                          <td className="px-4 py-3 text-[#202522]">{viewSubscription.subscriptionPlan ? SAAS_PLANS[viewSubscription.subscriptionPlan]?.price.split('/')[0] : '₹0'}</td>
                           <td className="px-4 py-3"><span className="text-green-600 bg-green-50 px-2 py-0.5 rounded text-xs border border-green-200">Paid</span></td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-[#64748B] border border-dashed border-[#CBD5E1] rounded-lg bg-[#F8FAFC]">
+                  <div className="text-center py-8 text-[#727975] border border-dashed border-[#CBD5E1] rounded-lg bg-[#F2EFE8]">
                     No previous subscription history found.
                   </div>
                 )}

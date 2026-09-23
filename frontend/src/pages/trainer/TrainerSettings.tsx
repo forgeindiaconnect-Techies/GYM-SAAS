@@ -5,49 +5,49 @@ const TrainerSettings = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-[#475569]">Manage your trainer portal preferences</p>
+        <p className="text-[#4A514D]">Manage your trainer portal preferences</p>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden divide-y divide-[#CCFBF1]">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl overflow-hidden divide-y divide-[#DCD9CD]">
         <div className="p-6 flex items-center justify-between hover:bg-[#FFFFFF] cursor-pointer transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#E2E8F0] rounded-lg flex items-center justify-center text-[#475569]"><Shield size={20} /></div>
+            <div className="w-10 h-10 bg-[#E8E5DA] rounded-lg flex items-center justify-center text-[#4A514D]"><Shield size={20} /></div>
             <div>
-              <h3 className="font-bold text-[#1E293B]">Public Profile Setup</h3>
-              <p className="text-sm text-[#475569]">Manage how you appear to new members</p>
+              <h3 className="font-bold text-[#202522]">Public Profile Setup</h3>
+              <p className="text-sm text-[#4A514D]">Manage how you appear to new members</p>
             </div>
           </div>
-          <span className="text-[#475569]">→</span>
+          <span className="text-[#4A514D]">→</span>
         </div>
         <div className="p-6 flex items-center justify-between hover:bg-[#FFFFFF] cursor-pointer transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#E2E8F0] rounded-lg flex items-center justify-center text-[#475569]"><Clock size={20} /></div>
+            <div className="w-10 h-10 bg-[#E8E5DA] rounded-lg flex items-center justify-center text-[#4A514D]"><Clock size={20} /></div>
             <div>
-              <h3 className="font-bold text-[#1E293B]">Booking Preferences</h3>
-              <p className="text-sm text-[#475569]">Set your working hours and session gaps</p>
+              <h3 className="font-bold text-[#202522]">Booking Preferences</h3>
+              <p className="text-sm text-[#4A514D]">Set your working hours and session gaps</p>
             </div>
           </div>
-          <span className="text-[#475569]">→</span>
+          <span className="text-[#4A514D]">→</span>
         </div>
         <div className="p-6 flex items-center justify-between hover:bg-[#FFFFFF] cursor-pointer transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#E2E8F0] rounded-lg flex items-center justify-center text-[#475569]"><Bell size={20} /></div>
+            <div className="w-10 h-10 bg-[#E8E5DA] rounded-lg flex items-center justify-center text-[#4A514D]"><Bell size={20} /></div>
             <div>
-              <h3 className="font-bold text-[#1E293B]">Notification Alerts</h3>
-              <p className="text-sm text-[#475569]">Configure email and push notifications</p>
+              <h3 className="font-bold text-[#202522]">Notification Alerts</h3>
+              <p className="text-sm text-[#4A514D]">Configure email and push notifications</p>
             </div>
           </div>
-          <span className="text-[#475569]">→</span>
+          <span className="text-[#4A514D]">→</span>
         </div>
         <div className="p-6 flex items-center justify-between hover:bg-[#FFFFFF] cursor-pointer transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#E2E8F0] rounded-lg flex items-center justify-center text-[#475569]"><Lock size={20} /></div>
+            <div className="w-10 h-10 bg-[#E8E5DA] rounded-lg flex items-center justify-center text-[#4A514D]"><Lock size={20} /></div>
             <div>
-              <h3 className="font-bold text-[#1E293B]">Security</h3>
-              <p className="text-sm text-[#475569]">Change password and 2FA</p>
+              <h3 className="font-bold text-[#202522]">Security</h3>
+              <p className="text-sm text-[#4A514D]">Change password and 2FA</p>
             </div>
           </div>
-          <span className="text-[#475569]">→</span>
+          <span className="text-[#4A514D]">→</span>
         </div>
       </div>
     </div>

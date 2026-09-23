@@ -93,65 +93,65 @@ const SuperAdminGymApprovals = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1E293B]">Gym Approvals</h1>
-          <p className="text-[#475569] text-sm mt-1">Manage gym statuses and review applications.</p>
+          <h1 className="text-2xl font-bold text-[#202522]">Gym Approvals</h1>
+          <p className="text-[#4A514D] text-sm mt-1">Manage gym statuses and review applications.</p>
         </div>
       </div>
 
-      <div className="flex space-x-2 border-b border-[#CCFBF1] pb-2">
+      <div className="flex space-x-2 border-b border-[#DCD9CD] pb-2">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 ${
               activeTab === tab.id
-                ? 'border-[#16A34A] text-[#16A34A] bg-[#16A34A]/10'
-                : 'border-transparent text-[#475569] hover:text-[#1E293B] hover:bg-[#FFFFFF]'
+                ? 'border-[#34483F] text-[#34483F] bg-[#34483F]/10'
+                : 'border-transparent text-[#4A514D] hover:text-[#202522] hover:bg-[#FFFFFF]'
             }`}
           >
             <tab.icon size={16} />
             <span>{tab.label}</span>
-            <span className="bg-[#E2E8F0] text-xs px-2 py-0.5 rounded-full ml-2 text-[#1E293B]">
+            <span className="bg-[#E8E5DA] text-xs px-2 py-0.5 rounded-full ml-2 text-[#202522]">
               {owners.filter(o => o.approvalStatus === tab.id).length}
             </span>
           </button>
         ))}
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-4 flex flex-wrap gap-4">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4 flex flex-wrap gap-4">
         <div className="flex-1 min-w-[250px] relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#475569]" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A514D]" />
           <input 
             type="text" 
             placeholder="Search by gym name, owner name or email..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#16A34A] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
           />
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl overflow-hidden relative min-h-[400px]">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl overflow-hidden relative min-h-[400px]">
         {loading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#475569]">
-            <Loader2 size={32} className="animate-spin mb-4 text-[#16A34A]" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#4A514D]">
+            <Loader2 size={32} className="animate-spin mb-4 text-[#34483F]" />
             <p>Loading gyms...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0D9488]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#8FA89B]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
         ) : filteredOwners.length === 0 ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#475569]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#4A514D]">
             <Building2 size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium text-[#1E293B] mb-1">No gyms found</p>
+            <p className="text-lg font-medium text-[#202522] mb-1">No gyms found</p>
             <p className="text-sm text-center max-w-md">There are no gyms in the {activeTab} status matching your search criteria.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-[#475569] uppercase bg-[#FFFFFF] border-b border-[#CCFBF1]">
+              <thead className="text-xs text-[#4A514D] uppercase bg-[#FFFFFF] border-b border-[#DCD9CD]">
                 <tr>
                   <th className="px-6 py-4 font-medium">Gym Name</th>
                   <th className="px-6 py-4 font-medium">Owner & Contact</th>
@@ -160,32 +160,32 @@ const SuperAdminGymApprovals = () => {
                   <th className="px-6 py-4 font-medium text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#CCFBF1]">
+              <tbody className="divide-y divide-[#DCD9CD]">
                 {filteredOwners.map((owner) => (
-                  <tr key={owner._id} className="hover:bg-[#F8FAFC] transition-colors">
+                  <tr key={owner._id} className="hover:bg-[#F2EFE8] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-[#1E293B]">{owner.gymId?.name || 'Not provided'}</div>
-                      <div className="text-xs text-[#475569] mt-1">{owner.gymId?.gymType || 'Unspecified Type'}</div>
+                      <div className="font-semibold text-[#202522]">{owner.gymId?.name || 'Not provided'}</div>
+                      <div className="text-xs text-[#4A514D] mt-1">{owner.gymId?.gymType || 'Unspecified Type'}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2 text-[#1E293B] font-medium mb-1">
-                        <div className="w-6 h-6 rounded-full bg-[#E2E8F0] flex items-center justify-center text-[#16A34A] text-xs">
+                      <div className="flex items-center space-x-2 text-[#202522] font-medium mb-1">
+                        <div className="w-6 h-6 rounded-full bg-[#E8E5DA] flex items-center justify-center text-[#34483F] text-xs">
                           {owner.firstName[0]}
                         </div>
                         <span>{owner.firstName} {owner.lastName}</span>
                       </div>
                       <div className="space-y-1 mt-2">
-                        <div className="flex items-center space-x-2 text-[#475569] text-xs">
+                        <div className="flex items-center space-x-2 text-[#4A514D] text-xs">
                           <Mail size={12} />
                           <span className="truncate max-w-[150px]">{owner.email}</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-[#475569] text-xs">
+                        <div className="flex items-center space-x-2 text-[#4A514D] text-xs">
                           <Phone size={12} />
                           <span>{owner.mobile}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-[#475569]">
+                    <td className="px-6 py-4 text-[#4A514D]">
                       {owner.gymId?.location?.city ? (
                         <div className="flex items-center space-x-1">
                           <MapPin size={14} />
@@ -195,14 +195,14 @@ const SuperAdminGymApprovals = () => {
                         <span className="text-[#555]">Not provided</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-[#475569]">
+                    <td className="px-6 py-4 text-[#4A514D]">
                       {new Date(owner.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end space-x-2">
                         <button 
                           onClick={() => setViewOwner(owner)}
-                          className="p-1.5 text-[#475569] hover:text-[#1E293B] hover:bg-[#E2E8F0] rounded-md transition-colors"
+                          className="p-1.5 text-[#4A514D] hover:text-[#202522] hover:bg-[#E8E5DA] rounded-md transition-colors"
                           title="View Details"
                         >
                           <Eye size={18} />
@@ -222,7 +222,7 @@ const SuperAdminGymApprovals = () => {
                             <button 
                               onClick={() => setActionModal({ id: owner._id, status: 'REJECTED' })}
                               disabled={statusUpdating === owner._id}
-                              className="p-1.5 text-[#0D9488] hover:bg-[#0D9488]/10 rounded-md transition-colors disabled:opacity-50"
+                              className="p-1.5 text-[#8FA89B] hover:bg-[#8FA89B]/10 rounded-md transition-colors disabled:opacity-50"
                               title="Reject"
                             >
                               <XCircle size={18} />
@@ -264,12 +264,12 @@ const SuperAdminGymApprovals = () => {
       {/* View Details Modal */}
       {viewOwner && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-2 z-10 border-b border-[#CCFBF1] mb-6">
-              <h2 className="text-xl font-bold text-[#1E293B]">Gym Details</h2>
+          <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-2 z-10 border-b border-[#DCD9CD] mb-6">
+              <h2 className="text-xl font-bold text-[#202522]">Gym Details</h2>
               <button 
                 onClick={() => setViewOwner(null)}
-                className="text-[#475569] hover:text-[#1E293B]"
+                className="text-[#4A514D] hover:text-[#202522]"
               >
                 <XCircle size={20} />
               </button>
@@ -278,87 +278,87 @@ const SuperAdminGymApprovals = () => {
             <div className="space-y-8 text-sm">
               {/* Gym Details */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Gym Information</h3>
+                <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Gym Information</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Name</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.name || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Gym Name</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.name || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Type</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.gymType || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Gym Type</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.gymType || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Email</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.email || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Gym Email</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.email || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Gym Phone</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.phone || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Gym Phone</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.phone || 'Not provided'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Location & Operations */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Location & Operations</h3>
+                <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Location & Operations</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div className="col-span-2">
-                    <p className="text-[#475569] mb-1">Address</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.location?.address || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Address</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.location?.address || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">City</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.location?.city || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">City</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.location?.city || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">State</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.location?.state || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">State</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.location?.state || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">PIN Code</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">PIN Code</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Approx. Members</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.memberCapacity || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Approx. Members</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.memberCapacity || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Num Trainers</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.gymId?.trainerCapacity || 'Not provided'}</p>
+                    <p className="text-[#4A514D] mb-1">Num Trainers</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.gymId?.trainerCapacity || 'Not provided'}</p>
                   </div>
                 </div>
               </div>
               
               {/* Owner Details */}
               <div>
-                <h3 className="text-[#16A34A] font-semibold mb-4 border-b border-[#CCFBF1] pb-2">Owner Information</h3>
+                <h3 className="text-[#34483F] font-semibold mb-4 border-b border-[#DCD9CD] pb-2">Owner Information</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div>
-                    <p className="text-[#475569] mb-1">First Name</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.firstName}</p>
+                    <p className="text-[#4A514D] mb-1">First Name</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.firstName}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Last Name</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.lastName}</p>
+                    <p className="text-[#4A514D] mb-1">Last Name</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.lastName}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Email</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.email}</p>
+                    <p className="text-[#4A514D] mb-1">Email</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.email}</p>
                   </div>
                   <div>
-                    <p className="text-[#475569] mb-1">Mobile</p>
-                    <p className="font-medium text-[#1E293B]">{viewOwner.mobile}</p>
+                    <p className="text-[#4A514D] mb-1">Mobile</p>
+                    <p className="font-medium text-[#202522]">{viewOwner.mobile}</p>
                   </div>
                 </div>
               </div>
 
             </div>
             
-            <div className="mt-8 flex justify-end sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#CCFBF1]">
+            <div className="mt-8 flex justify-end sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#DCD9CD]">
               <button 
                 onClick={() => setViewOwner(null)}
-                className="px-4 py-2 bg-[#E2E8F0] text-white rounded-lg hover:bg-[#333] transition-colors text-sm font-medium"
+                className="px-4 py-2 bg-[#E8E5DA] text-white rounded-lg hover:bg-[#333] transition-colors text-sm font-medium"
               >
                 Close
               </button>
@@ -370,31 +370,31 @@ const SuperAdminGymApprovals = () => {
       {/* Action Reason Modal */}
       {actionModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-[#FFFFFF] rounded-xl max-w-md w-full border border-[#CCFBF1] overflow-hidden">
+          <div className="bg-[#FFFFFF] rounded-xl max-w-md w-full border border-[#DCD9CD] overflow-hidden">
             <div className="p-6">
-              <h3 className="text-xl font-bold text-[#1E293B] mb-2">
+              <h3 className="text-xl font-bold text-[#202522] mb-2">
                 {actionModal.status === 'REJECTED' ? 'Reject Application' : 'Suspend Account'}
               </h3>
-              <p className="text-[#475569] text-sm mb-4">
+              <p className="text-[#4A514D] text-sm mb-4">
                 Please provide a reason. This will be visible to the gym owner.
               </p>
               <textarea
                 value={actionReason}
                 onChange={(e) => setActionReason(e.target.value)}
-                className="w-full bg-[#F0FDFA] border border-[#CCFBF1] rounded-lg px-4 py-3 text-[#1E293B] focus:outline-none focus:border-[#16A34A] min-h-[100px]"
+                className="w-full bg-[#F5F3EE] border border-[#DCD9CD] rounded-lg px-4 py-3 text-[#202522] focus:outline-none focus:border-[#34483F] min-h-[100px]"
                 placeholder={`Reason for ${actionModal.status.toLowerCase()}...`}
               />
               <div className="flex justify-end space-x-3 mt-6">
                 <button
                   onClick={() => { setActionModal(null); setActionReason(''); }}
-                  className="px-4 py-2 bg-[#FFFFFF] border border-[#CCFBF1] text-[#1E293B] hover:bg-[#333] transition-colors rounded-lg text-sm font-medium"
+                  className="px-4 py-2 bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] hover:bg-[#333] transition-colors rounded-lg text-sm font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleStatusChange(actionModal.id, actionModal.status, actionReason)}
                   disabled={!actionReason.trim() || statusUpdating === actionModal.id}
-                  className="px-4 py-2 bg-[#16A34A] text-white hover:bg-[#15803D] transition-colors rounded-lg text-sm font-bold disabled:opacity-50"
+                  className="px-4 py-2 bg-[#34483F] text-white hover:bg-[#C6A77D] transition-colors rounded-lg text-sm font-bold disabled:opacity-50"
                 >
                   {statusUpdating === actionModal.id ? 'Processing...' : 'Confirm'}
                 </button>

@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IStoreCartItem {
   productId: mongoose.Types.ObjectId;
+  variantId?: mongoose.Types.ObjectId;
   quantity: number;
 }
 
@@ -22,6 +23,7 @@ const storeCartSchema = new Schema<IStoreCart>(
     items: [
       {
         productId: { type: Schema.Types.ObjectId, ref: 'StoreProduct', required: true },
+        variantId: { type: Schema.Types.ObjectId },
         quantity: { type: Number, required: true, min: 1 },
         _id: false,
       },

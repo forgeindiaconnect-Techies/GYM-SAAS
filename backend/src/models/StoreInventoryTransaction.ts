@@ -11,6 +11,7 @@ export interface IStoreInventoryTransaction extends Document {
   gymId: mongoose.Types.ObjectId;
   branchId?: mongoose.Types.ObjectId;
   productId: mongoose.Types.ObjectId;
+  variantId?: mongoose.Types.ObjectId;
   type: StoreInventoryTransactionType;
   quantityChange: number;
   stockAfter: number;
@@ -26,6 +27,7 @@ const storeInventoryTransactionSchema = new Schema<IStoreInventoryTransaction>(
     gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true },
     branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
     productId: { type: Schema.Types.ObjectId, ref: 'StoreProduct', required: true },
+    variantId: { type: Schema.Types.ObjectId },
     type: { type: String, enum: Object.values(StoreInventoryTransactionType), required: true },
     quantityChange: { type: Number, required: true },
     stockAfter: { type: Number, required: true },

@@ -1,5 +1,15 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export interface IStoreProductVariant {
+  _id?: mongoose.Types.ObjectId;
+  sku?: string;
+  attributes: Record<string, string>;
+  price: number;
+  discountPrice?: number;
+  stock: number;
+  image?: string;
+}
+
 export interface IStoreProduct extends Document {
   gymId: mongoose.Types.ObjectId;
   branchId?: mongoose.Types.ObjectId;
@@ -17,9 +27,22 @@ export interface IStoreProduct extends Document {
   availability: 'Online' | 'Offline' | 'Both';
   fulfilmentType: 'Gym Pickup' | 'Delivery' | 'Both';
   lowStockThreshold: number;
+  productType: string;
+  attributes: Record<string, any>;
+  hasVariants: boolean;
+  variants: IStoreProductVariant[];
   createdAt: Date;
   updatedAt: Date;
 }
+
+const storeProductVariantSchema = new Schema<IStoreProductVariant>({
+  sku: { type: String, trim: true },
+  attributes: { type: Schema.Types.Mixed, default: {} },
+  price: { type: Number, required: true, min: 0 },
+  discountPrice: { type: Number, min: 0 },
+  stock: { type: Number, required: true, min: 0, default: 0 },
+  image: { type: String }
+});
 
 const storeProductSchema = new Schema<IStoreProduct>(
   {
@@ -39,6 +62,10 @@ const storeProductSchema = new Schema<IStoreProduct>(
     availability: { type: String, enum: ['Online', 'Offline', 'Both'], default: 'Both' },
     fulfilmentType: { type: String, enum: ['Gym Pickup', 'Delivery', 'Both'], default: 'Gym Pickup' },
     lowStockThreshold: { type: Number, min: 0, default: 5 },
+    productType: { type: String, required: true, trim: true },
+    attributes: { type: Schema.Types.Mixed, default: {} },
+    hasVariants: { type: Boolean, default: false },
+    variants: { type: [storeProductVariantSchema], default: [] },
   },
   { timestamps: true }
 );

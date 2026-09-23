@@ -79,16 +79,16 @@ const GymStoreInventory = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Inventory</h1>
-        <p className="text-[#475569] mt-1">Track stock levels and adjustments across your store.</p>
+        <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Inventory</h1>
+        <p className="text-[#4A514D] mt-1">Track stock levels and adjustments across your store.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((s) => (
-          <div key={s.label} className="bg-white border border-[#CCFBF1] rounded-2xl p-4 flex items-center justify-between">
+          <div key={s.label} className="bg-white border border-[#DCD9CD] rounded-2xl p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">{s.label}</p>
-              <h3 className="text-2xl font-black text-[#1E293B]">{s.value}</h3>
+              <p className="text-xs font-bold text-[#A8ADA9] uppercase tracking-wider">{s.label}</p>
+              <h3 className="text-2xl font-black text-[#202522]">{s.value}</h3>
             </div>
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.tint}`}>
               {s.label === 'Out of Stock' ? <AlertTriangle size={20} /> : <Package size={20} />}
@@ -97,11 +97,11 @@ const GymStoreInventory = () => {
         ))}
       </div>
 
-      <div className="flex border-b border-[#CCFBF1] space-x-8">
-        <button onClick={() => setTab('products')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'products' ? 'border-[#16A34A] text-[#16A34A]' : 'border-transparent text-[#475569] hover:text-[#1E293B]'}`}>
+      <div className="flex border-b border-[#DCD9CD] space-x-8">
+        <button onClick={() => setTab('products')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'products' ? 'border-[#34483F] text-[#34483F]' : 'border-transparent text-[#4A514D] hover:text-[#202522]'}`}>
           Products
         </button>
-        <button onClick={() => setTab('transactions')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'transactions' ? 'border-[#16A34A] text-[#16A34A]' : 'border-transparent text-[#475569] hover:text-[#1E293B]'}`}>
+        <button onClick={() => setTab('transactions')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'transactions' ? 'border-[#34483F] text-[#34483F]' : 'border-transparent text-[#4A514D] hover:text-[#202522]'}`}>
           Stock Transactions
         </button>
       </div>
@@ -110,10 +110,10 @@ const GymStoreInventory = () => {
         <>
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name, brand, SKU..." className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl pl-9 pr-4 py-2 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none" />
-              <Search className="absolute left-3 top-2.5 text-[#475569]" size={16} />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name, brand, SKU..." className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none" />
+              <Search className="absolute left-3 top-2.5 text-[#4A514D]" size={16} />
             </div>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-3 py-2 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none md:w-48">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none md:w-48">
               <option value="all">All Stock</option>
               <option value="outOfStock">Out of Stock</option>
               <option value="lowStock">Low Stock</option>
@@ -121,12 +121,12 @@ const GymStoreInventory = () => {
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#16A34A]" size={40} /></div>
+            <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#34483F]" size={40} /></div>
           ) : (
-            <div className="bg-white border border-[#CCFBF1] rounded-2xl overflow-hidden">
+            <div className="bg-white border border-[#DCD9CD] rounded-2xl overflow-hidden">
               <div className="overflow-x-auto custom-scrollbar">
-                <table className="w-full text-left text-sm text-[#475569] whitespace-nowrap">
-                  <thead className="bg-[#FFFFFF] border-b border-[#CCFBF1] text-[#1E293B]">
+                <table className="w-full text-left text-sm text-[#4A514D] whitespace-nowrap">
+                  <thead className="bg-[#FFFFFF] border-b border-[#DCD9CD] text-[#202522]">
                     <tr>
                       <th className="px-6 py-4 font-semibold">Product</th>
                       <th className="px-6 py-4 font-semibold">SKU</th>
@@ -137,20 +137,20 @@ const GymStoreInventory = () => {
                       <th className="px-6 py-4 font-semibold text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#CCFBF1]">
+                  <tbody className="divide-y divide-[#DCD9CD]">
                     {products.length === 0 ? (
                       <tr><td colSpan={7} className="px-6 py-10 text-center">No products found.</td></tr>
                     ) : products.map((p) => {
                       const level = p.stock <= 0 ? 'out' : p.stock <= p.lowStockThreshold ? 'low' : 'ok';
                       return (
-                        <tr key={p._id} className="hover:bg-[#F0FDFA] transition-colors">
+                        <tr key={p._id} className="hover:bg-[#F5F3EE] transition-colors">
                           <td className="px-6 py-4">
-                            <p className="font-bold text-[#1E293B]">{p.name}</p>
-                            {p.brand && <p className="text-xs text-[#475569]">{p.brand}</p>}
+                            <p className="font-bold text-[#202522]">{p.name}</p>
+                            {p.brand && <p className="text-xs text-[#4A514D]">{p.brand}</p>}
                           </td>
                           <td className="px-6 py-4 font-mono text-xs">{p.sku || '—'}</td>
                           <td className="px-6 py-4">{p.categoryName}</td>
-                          <td className="px-6 py-4 text-center font-black text-[#1E293B]">{p.stock}</td>
+                          <td className="px-6 py-4 text-center font-black text-[#202522]">{p.stock}</td>
                           <td className="px-6 py-4 text-center">{p.lowStockThreshold}</td>
                           <td className="px-6 py-4">
                             <span className={`px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1 ${
@@ -160,7 +160,7 @@ const GymStoreInventory = () => {
                             </span>
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <button onClick={() => { setAdjusting(p); setAdjustQty(''); setAdjustNote(''); }} className="px-3 py-1.5 bg-[#F0FDFA] text-[#16A34A] rounded-lg hover:bg-[#CCFBF1] transition-colors text-xs font-bold">
+                            <button onClick={() => { setAdjusting(p); setAdjustQty(''); setAdjustNote(''); }} className="px-3 py-1.5 bg-[#F5F3EE] text-[#34483F] rounded-lg hover:bg-[#DCD9CD] transition-colors text-xs font-bold">
                               Adjust Stock
                             </button>
                           </td>
@@ -176,10 +176,10 @@ const GymStoreInventory = () => {
       )}
 
       {tab === 'transactions' && (
-        <div className="bg-white border border-[#CCFBF1] rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[#DCD9CD] rounded-2xl overflow-hidden">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left text-sm text-[#475569] whitespace-nowrap">
-              <thead className="bg-[#FFFFFF] border-b border-[#CCFBF1] text-[#1E293B]">
+            <table className="w-full text-left text-sm text-[#4A514D] whitespace-nowrap">
+              <thead className="bg-[#FFFFFF] border-b border-[#DCD9CD] text-[#202522]">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Date</th>
                   <th className="px-6 py-4 font-semibold">Product</th>
@@ -189,13 +189,13 @@ const GymStoreInventory = () => {
                   <th className="px-6 py-4 font-semibold">Note</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#CCFBF1]">
+              <tbody className="divide-y divide-[#DCD9CD]">
                 {transactions.length === 0 ? (
                   <tr><td colSpan={6} className="px-6 py-10 text-center">No stock transactions yet.</td></tr>
                 ) : transactions.map((t: any) => (
-                  <tr key={t._id} className="hover:bg-[#F0FDFA] transition-colors">
+                  <tr key={t._id} className="hover:bg-[#F5F3EE] transition-colors">
                     <td className="px-6 py-4">{new Date(t.createdAt).toLocaleString()}</td>
-                    <td className="px-6 py-4 font-bold text-[#1E293B]">{t.productId?.name || '—'}</td>
+                    <td className="px-6 py-4 font-bold text-[#202522]">{t.productId?.name || '—'}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                         t.type === 'stock_in' ? 'bg-blue-100 text-blue-700' :
@@ -209,7 +209,7 @@ const GymStoreInventory = () => {
                       {t.quantityChange > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                       {t.quantityChange > 0 ? '+' : ''}{t.quantityChange}
                     </td>
-                    <td className="px-6 py-4 text-center font-bold text-[#1E293B]">{t.stockAfter}</td>
+                    <td className="px-6 py-4 text-center font-bold text-[#202522]">{t.stockAfter}</td>
                     <td className="px-6 py-4 text-xs">{t.note || '—'}</td>
                   </tr>
                 ))}
@@ -223,15 +223,15 @@ const GymStoreInventory = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
             <button onClick={() => setAdjusting(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={22} /></button>
-            <h2 className="text-xl font-bold text-[#1E293B] mb-1">Adjust Stock</h2>
-            <p className="text-sm text-[#475569] mb-4">{adjusting.name} · current stock: <span className="font-bold text-[#1E293B]">{adjusting.stock}</span></p>
+            <h2 className="text-xl font-bold text-[#202522] mb-1">Adjust Stock</h2>
+            <p className="text-sm text-[#4A514D] mb-4">{adjusting.name} · current stock: <span className="font-bold text-[#202522]">{adjusting.stock}</span></p>
 
             <div className="flex items-center gap-3 mb-4">
               <input
                 type="number"
                 value={adjustQty}
                 onChange={(e) => setAdjustQty(e.target.value)}
-                className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-3 py-3 text-lg font-bold text-center text-[#1E293B] focus:border-[#16A34A] outline-none"
+                className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-3 text-lg font-bold text-center text-[#202522] focus:border-[#34483F] outline-none"
                 placeholder="0"
               />
             </div>
@@ -244,12 +244,12 @@ const GymStoreInventory = () => {
               </button>
             </div>
 
-            <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Note (optional)</label>
-            <textarea value={adjustNote} onChange={(e) => setAdjustNote(e.target.value)} className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-3 py-2 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none resize-none" rows={2} placeholder="e.g., Received new shipment" />
+            <label className="text-xs font-bold text-[#727975] uppercase mb-1 block">Note (optional)</label>
+            <textarea value={adjustNote} onChange={(e) => setAdjustNote(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none resize-none" rows={2} placeholder="e.g., Received new shipment" />
 
             <div className="mt-5 flex gap-3">
-              <button onClick={() => setAdjusting(null)} className="flex-1 py-3 bg-gray-100 text-[#475569] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
-              <button onClick={saveAdjustment} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#16A34A] to-[#0D9488] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+              <button onClick={() => setAdjusting(null)} className="flex-1 py-3 bg-gray-100 text-[#4A514D] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
+              <button onClick={saveAdjustment} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#34483F] to-[#8FA89B] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                 {saving ? <Loader2 className="animate-spin" size={18} /> : <ArrowDownUp size={16} />} Apply Change
               </button>
             </div>

@@ -77,7 +77,7 @@ const TrainerWithdrawFunds = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center py-32">
-      <div className="w-10 h-10 border-4 border-[#16A34A] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#34483F] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -86,8 +86,8 @@ const TrainerWithdrawFunds = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6 p-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1E293B]">Request Withdrawal</h1>
-        <p className="text-[#64748B] text-sm mt-1">Withdraw your available earnings directly to your bank account or UPI.</p>
+        <h1 className="text-2xl font-bold text-[#202522]">Request Withdrawal</h1>
+        <p className="text-[#727975] text-sm mt-1">Withdraw your available earnings directly to your bank account or UPI.</p>
       </div>
 
       {toast && (
@@ -99,30 +99,30 @@ const TrainerWithdrawFunds = () => {
         </div>
       )}
 
-      <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row">
+      <div className="bg-white border border-[#E8E5DA] rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row">
         
         {/* Left side: Available Balance */}
-        <div className="bg-[#F0FDFA] p-8 md:w-1/3 flex flex-col justify-center items-center text-center border-b md:border-b-0 md:border-r border-[#CCFBF1]">
-          <p className="text-[#16A34A] font-semibold text-sm uppercase tracking-wider mb-2">Available Balance</p>
-          <h2 className="text-4xl font-bold text-[#1E293B]">₹{available.toLocaleString('en-IN')}</h2>
-          <p className="text-[#64748B] text-xs mt-3">Minimum withdrawal: ₹100</p>
+        <div className="bg-[#F5F3EE] p-8 md:w-1/3 flex flex-col justify-center items-center text-center border-b md:border-b-0 md:border-r border-[#DCD9CD]">
+          <p className="text-[#34483F] font-semibold text-sm uppercase tracking-wider mb-2">Available Balance</p>
+          <h2 className="text-4xl font-bold text-[#202522]">₹{available.toLocaleString('en-IN')}</h2>
+          <p className="text-[#727975] text-xs mt-3">Minimum withdrawal: ₹100</p>
         </div>
 
         {/* Right side: Form */}
         <div className="p-8 md:w-2/3">
           {available < 100 ? (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-3">
-              <Clock className="w-12 h-12 text-[#94A3B8]" />
-              <p className="text-[#475569] font-medium">Insufficient Balance</p>
-              <p className="text-[#64748B] text-sm">You need at least ₹100 in available balance to request a withdrawal.</p>
+              <Clock className="w-12 h-12 text-[#A8ADA9]" />
+              <p className="text-[#4A514D] font-medium">Insufficient Balance</p>
+              <p className="text-[#727975] text-sm">You need at least ₹100 in available balance to request a withdrawal.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               
               <div>
-                <label className="block text-sm font-semibold text-[#1E293B] mb-1.5">Amount to Withdraw</label>
+                <label className="block text-sm font-semibold text-[#202522] mb-1.5">Amount to Withdraw</label>
                 <div className="relative">
-                  <IndianRupee size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+                  <IndianRupee size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A8ADA9]" />
                   <input
                     type="number"
                     required
@@ -130,18 +130,18 @@ const TrainerWithdrawFunds = () => {
                     max={available}
                     value={form.amount}
                     onChange={e => setForm({ ...form, amount: e.target.value })}
-                    className="w-full pl-9 pr-4 py-2 border border-[#E2E8F0] rounded-xl outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A]/30 transition-shadow"
+                    className="w-full pl-9 pr-4 py-2 border border-[#E8E5DA] rounded-xl outline-none focus:border-[#34483F] focus:ring-1 focus:ring-[#34483F]/30 transition-shadow"
                     placeholder={`Max ₹${available}`}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#1E293B] mb-1.5">Withdrawal Method</label>
+                <label className="block text-sm font-semibold text-[#202522] mb-1.5">Withdrawal Method</label>
                 <select
                   value={form.withdrawalMethod}
                   onChange={e => setForm({ ...form, withdrawalMethod: e.target.value })}
-                  className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A]/30"
+                  className="w-full px-4 py-2 border border-[#E8E5DA] rounded-xl outline-none focus:border-[#34483F] focus:ring-1 focus:ring-[#34483F]/30"
                 >
                   {WITHDRAWAL_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
@@ -170,7 +170,7 @@ const TrainerWithdrawFunds = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-2.5 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors disabled:opacity-50 mt-2"
+                className="w-full py-2.5 bg-[#34483F] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-colors disabled:opacity-50 mt-2"
               >
                 {submitting ? 'Submitting...' : 'Submit Request'}
               </button>

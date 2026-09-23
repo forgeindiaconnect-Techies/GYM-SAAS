@@ -44,7 +44,7 @@ const GymAdminTrainerEarnings = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center py-32">
-      <div className="w-10 h-10 border-4 border-[#16A34A] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#34483F] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -52,73 +52,73 @@ const GymAdminTrainerEarnings = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#1E293B]">Trainer Earnings Overview</h1>
-        <p className="text-[#64748B] text-sm mt-1">Summary of all trainer fee configurations and payments</p>
+        <h1 className="text-2xl font-bold text-[#202522]">Trainer Earnings Overview</h1>
+        <p className="text-[#727975] text-sm mt-1">Summary of all trainer fee configurations and payments</p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
               <CheckCircle size={16} className="text-green-600" />
             </div>
-            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Total Paid Out</p>
+            <p className="text-xs font-semibold text-[#727975] uppercase tracking-wide">Total Paid Out</p>
           </div>
-          <p className="text-2xl font-bold text-[#1E293B]">₹{(data?.totalPaidOut || 0).toLocaleString('en-IN')}</p>
-          <p className="text-xs text-[#94A3B8] mt-1">{data?.paymentsCount || 0} payments</p>
+          <p className="text-2xl font-bold text-[#202522]">₹{(data?.totalPaidOut || 0).toLocaleString('en-IN')}</p>
+          <p className="text-xs text-[#A8ADA9] mt-1">{data?.paymentsCount || 0} payments</p>
         </div>
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
               <Users size={16} className="text-blue-600" />
             </div>
-            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Active Trainers</p>
+            <p className="text-xs font-semibold text-[#727975] uppercase tracking-wide">Active Trainers</p>
           </div>
-          <p className="text-2xl font-bold text-[#1E293B]">{fees.length}</p>
-          <p className="text-xs text-[#94A3B8] mt-1">With active fee config</p>
+          <p className="text-2xl font-bold text-[#202522]">{fees.length}</p>
+          <p className="text-xs text-[#A8ADA9] mt-1">With active fee config</p>
         </div>
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
               <IndianRupee size={16} className="text-purple-600" />
             </div>
-            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Monthly Commitment</p>
+            <p className="text-xs font-semibold text-[#727975] uppercase tracking-wide">Monthly Commitment</p>
           </div>
-          <p className="text-2xl font-bold text-[#1E293B]">₹{totalConfiguredMonthly.toLocaleString('en-IN')}</p>
-          <p className="text-xs text-[#94A3B8] mt-1">Monthly trainers only</p>
+          <p className="text-2xl font-bold text-[#202522]">₹{totalConfiguredMonthly.toLocaleString('en-IN')}</p>
+          <p className="text-xs text-[#A8ADA9] mt-1">Monthly trainers only</p>
         </div>
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
               <TrendingUp size={16} className="text-amber-600" />
             </div>
-            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Avg Payout</p>
+            <p className="text-xs font-semibold text-[#727975] uppercase tracking-wide">Avg Payout</p>
           </div>
-          <p className="text-2xl font-bold text-[#1E293B]">
+          <p className="text-2xl font-bold text-[#202522]">
             ₹{data?.paymentsCount ? Math.round((data?.totalPaidOut || 0) / data.paymentsCount).toLocaleString('en-IN') : '0'}
           </p>
-          <p className="text-xs text-[#94A3B8] mt-1">Per payment</p>
+          <p className="text-xs text-[#A8ADA9] mt-1">Per payment</p>
         </div>
       </div>
 
       {/* Per-Trainer Breakdown */}
-      <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-sm">
-        <div className="px-6 py-4 border-b border-[#E2E8F0]">
-          <h2 className="font-bold text-[#1E293B]">Trainer Earnings Breakdown</h2>
+      <div className="bg-white border border-[#E8E5DA] rounded-2xl overflow-hidden shadow-sm">
+        <div className="px-6 py-4 border-b border-[#E8E5DA]">
+          <h2 className="font-bold text-[#202522]">Trainer Earnings Breakdown</h2>
         </div>
         {trainerSummary.length === 0 ? (
           <div className="text-center py-16 px-6">
             <div className="w-16 h-16 rounded-full bg-purple-50 flex items-center justify-center mx-auto mb-4">
               <TrendingUp size={28} className="text-purple-300" />
             </div>
-            <p className="text-[#1E293B] font-bold text-lg">No trainer fee data yet</p>
-            <p className="text-[#64748B] text-sm mt-2 max-w-sm mx-auto">
+            <p className="text-[#202522] font-bold text-lg">No trainer fee data yet</p>
+            <p className="text-[#727975] text-sm mt-2 max-w-sm mx-auto">
               Earnings overview will populate once you configure fees for your trainers.
             </p>
             <Link
               to="/admin/trainer-fees/settings"
-              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-[#16A34A] text-white rounded-xl text-sm font-bold hover:bg-[#15803D] transition-colors shadow-lg shadow-green-200"
+              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-[#34483F] text-white rounded-xl text-sm font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-green-200"
             >
               Configure Trainer Fees
               <ArrowRight size={15} />
@@ -128,36 +128,36 @@ const GymAdminTrainerEarnings = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Trainer</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Training Type</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Configured Fee</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Billing Cycle</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Total Paid</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Payments</th>
+                <tr className="bg-[#F2EFE8] border-b border-[#E8E5DA]">
+                  <th className="px-5 py-3.5 font-semibold text-[#727975]">Trainer</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#727975]">Training Type</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#727975] text-right">Configured Fee</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#727975]">Billing Cycle</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#727975] text-right">Total Paid</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#727975]">Payments</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F1F5F9]">
                 {trainerSummary.map(({ fee, paid, paymentsCount }) => (
-                  <tr key={fee._id} className="hover:bg-[#F8FAFC] transition-colors">
+                  <tr key={fee._id} className="hover:bg-[#F2EFE8] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#16A34A] to-[#0D9488] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#34483F] to-[#8FA89B] flex items-center justify-center text-white font-bold text-sm shrink-0">
                           {fee.trainerId?.name?.[0] || 'T'}
                         </div>
                         <div>
-                          <p className="font-semibold text-[#1E293B]">{fee.trainerId?.name || 'Unknown'}</p>
-                          <p className="text-xs text-[#94A3B8]">{fee.trainerId?.email}</p>
+                          <p className="font-semibold text-[#202522]">{fee.trainerId?.name || 'Unknown'}</p>
+                          <p className="text-xs text-[#A8ADA9]">{fee.trainerId?.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#475569]">{fee.trainingType}</td>
-                    <td className="px-5 py-4 text-right font-bold text-[#1E293B]">₹{fee.feeAmount?.toLocaleString('en-IN')}</td>
+                    <td className="px-5 py-4 text-[#4A514D]">{fee.trainingType}</td>
+                    <td className="px-5 py-4 text-right font-bold text-[#202522]">₹{fee.feeAmount?.toLocaleString('en-IN')}</td>
                     <td className="px-5 py-4">
                       <span className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-700 text-xs font-semibold">{fee.billingCycle}</span>
                     </td>
                     <td className="px-5 py-4 text-right font-bold text-green-600">₹{paid.toLocaleString('en-IN')}</td>
-                    <td className="px-5 py-4 text-[#64748B]">{paymentsCount} payments</td>
+                    <td className="px-5 py-4 text-[#727975]">{paymentsCount} payments</td>
                     <td className="px-5 py-4 text-right">
                       <button
                         onClick={() => setSelectedTrainer(fee.trainerId)}
@@ -178,14 +178,14 @@ const GymAdminTrainerEarnings = () => {
       {selectedTrainer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
-            <div className="flex items-center justify-between p-5 border-b border-[#E2E8F0] bg-[#F8FAFC]">
+            <div className="flex items-center justify-between p-5 border-b border-[#E8E5DA] bg-[#F2EFE8]">
               <div>
-                <h3 className="text-lg font-bold text-[#1E293B]">{selectedTrainer.name}'s Payments</h3>
-                <p className="text-xs text-[#64748B]">{selectedTrainer.email}</p>
+                <h3 className="text-lg font-bold text-[#202522]">{selectedTrainer.name}'s Payments</h3>
+                <p className="text-xs text-[#727975]">{selectedTrainer.email}</p>
               </div>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="text-[#64748B] hover:text-[#1E293B] bg-white rounded-full p-1 border border-gray-200"
+                className="text-[#727975] hover:text-[#202522] bg-white rounded-full p-1 border border-gray-200"
               >
                 ✕
               </button>
@@ -200,7 +200,7 @@ const GymAdminTrainerEarnings = () => {
                 if (trainerPayments.length === 0) {
                   return (
                     <div className="text-center py-10">
-                      <p className="text-[#64748B]">No payments recorded for this trainer yet.</p>
+                      <p className="text-[#727975]">No payments recorded for this trainer yet.</p>
                     </div>
                   );
                 }
@@ -208,11 +208,11 @@ const GymAdminTrainerEarnings = () => {
                 return (
                   <div className="space-y-4">
                     {trainerPayments.map((p, i) => (
-                      <div key={i} className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-sm hover:border-[#CBD5E1] transition-colors">
-                        <div className="flex justify-between items-center bg-[#F8FAFC] p-4 border-b border-[#E2E8F0]">
+                      <div key={i} className="bg-white border border-[#E8E5DA] rounded-xl overflow-hidden shadow-sm hover:border-[#CBD5E1] transition-colors">
+                        <div className="flex justify-between items-center bg-[#F2EFE8] p-4 border-b border-[#E8E5DA]">
                           <div>
                             <span className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1 block">Payment Amount</span>
-                            <span className="text-xl font-bold text-[#1E293B]">₹{p.amount?.toLocaleString('en-IN')}</span>
+                            <span className="text-xl font-bold text-[#202522]">₹{p.amount?.toLocaleString('en-IN')}</span>
                           </div>
                           <div className="text-right">
                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${

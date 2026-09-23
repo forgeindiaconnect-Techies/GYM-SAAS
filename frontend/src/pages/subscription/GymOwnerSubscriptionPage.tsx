@@ -13,13 +13,13 @@ export const plans = [
     name: 'Free Trial',
     badge: '1 Day',
     icon: Zap,
-    iconBg: 'bg-[#F0FDFA]',
-    iconColor: 'text-[#0D9488]',
-    borderDefault: 'border-[#CCFBF1]',
-    borderSelected: 'border-[#16A34A]',
-    accentBar: 'bg-[#0D9488]',
-    priceColor: 'text-[#1E293B]',
-    checkColor: 'text-[#0D9488]',
+    iconBg: 'bg-[#F5F3EE]',
+    iconColor: 'text-[#8FA89B]',
+    borderDefault: 'border-[#DCD9CD]',
+    borderSelected: 'border-[#34483F]',
+    accentBar: 'bg-[#8FA89B]',
+    priceColor: 'text-[#202522]',
+    checkColor: 'text-[#8FA89B]',
     trial: true,
     priceMonthly: 0,
     priceAnnual: 0,
@@ -44,11 +44,11 @@ export const plans = [
     icon: Star,
     iconBg: 'bg-slate-100',
     iconColor: 'text-slate-500',
-    borderDefault: 'border-[#CCFBF1]',
-    borderSelected: 'border-[#0D9488]',
-    accentBar: 'bg-[#0D9488]',
-    priceColor: 'text-[#0D9488]',
-    checkColor: 'text-[#0D9488]',
+    borderDefault: 'border-[#DCD9CD]',
+    borderSelected: 'border-[#8FA89B]',
+    accentBar: 'bg-[#8FA89B]',
+    priceColor: 'text-[#8FA89B]',
+    checkColor: 'text-[#8FA89B]',
     trial: false,
     priceMonthly: 799,
     priceAnnual: 7190,
@@ -73,13 +73,13 @@ export const plans = [
     name: 'Gold',
     badge: 'Most Popular',
     icon: Crown,
-    iconBg: 'bg-[#16A34A]/10',
-    iconColor: 'text-[#16A34A]',
-    borderDefault: 'border-[#16A34A]',
-    borderSelected: 'border-[#16A34A]',
-    accentBar: 'bg-[#16A34A]',
-    priceColor: 'text-[#16A34A]',
-    checkColor: 'text-[#16A34A]',
+    iconBg: 'bg-[#34483F]/10',
+    iconColor: 'text-[#34483F]',
+    borderDefault: 'border-[#34483F]',
+    borderSelected: 'border-[#34483F]',
+    accentBar: 'bg-[#34483F]',
+    priceColor: 'text-[#34483F]',
+    checkColor: 'text-[#34483F]',
     popular: true,
     trial: false,
     priceMonthly: 1499,
@@ -176,7 +176,7 @@ const GymOwnerSubscriptionPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0FDFA] flex flex-col px-4 py-12">
+    <div className="min-h-screen bg-[#F5F3EE] flex flex-col px-4 py-12">
       {/* Subtle top gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(22,163,74,0.07)_0%,_transparent_60%)] pointer-events-none" />
 
@@ -185,16 +185,16 @@ const GymOwnerSubscriptionPage = () => {
         {/* ── Header ── */}
         <div className="flex justify-between items-center mb-12">
           <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#16A34A] to-[#0D9488] rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#34483F] to-[#8FA89B] rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
               <Activity className="text-white" size={22} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-[#16A34A]">AI GYM</span>
+            <span className="text-2xl font-bold tracking-tight text-[#34483F]">AI GYM</span>
           </Link>
           <div className="flex items-center space-x-4">
-            <span className="text-[#475569] text-sm">Welcome, <strong className="text-[#1E293B]">{user?.firstName}</strong></span>
+            <span className="text-[#4A514D] text-sm">Welcome, <strong className="text-[#202522]">{user?.firstName}</strong></span>
             <button
               onClick={logout}
-              className="flex items-center space-x-2 text-[#475569] hover:text-[#16A34A] transition-colors text-sm bg-white px-4 py-2 rounded-lg border border-[#CCFBF1] hover:border-[#16A34A]"
+              className="flex items-center space-x-2 text-[#4A514D] hover:text-[#34483F] transition-colors text-sm bg-white px-4 py-2 rounded-lg border border-[#DCD9CD] hover:border-[#34483F]"
             >
               <LogOut size={16} /><span>Sign out</span>
             </button>
@@ -203,34 +203,34 @@ const GymOwnerSubscriptionPage = () => {
 
         {/* ── Title ── */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-[#16A34A]/10 border border-[#16A34A]/20 rounded-full px-4 py-1.5 text-[#16A34A] text-xs font-bold uppercase tracking-widest mb-5">
+          <div className="inline-flex items-center gap-2 bg-[#34483F]/10 border border-[#34483F]/20 rounded-full px-4 py-1.5 text-[#34483F] text-xs font-bold uppercase tracking-widest mb-5">
             <Sparkles size={12} /> Choose Your Plan
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold text-[#1E293B] mb-4 tracking-tight">
-            Power Your Gym with <span className="text-[#16A34A]">AI GYM</span>
+          <h1 className="text-3xl md:text-5xl font-bold text-[#202522] mb-4 tracking-tight">
+            Power Your Gym with <span className="text-[#34483F]">AI GYM</span>
           </h1>
-          <p className="text-[#475569] max-w-2xl mx-auto text-lg mb-8">
+          <p className="text-[#4A514D] max-w-2xl mx-auto text-lg mb-8">
             Your gym registration is approved! Select a subscription plan to access the Gym Dashboard and start managing your gym with AI.
           </p>
 
           {/* ── Billing Toggle ── */}
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#1E293B]' : 'text-[#94A3B8]'}`}>Monthly</span>
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#202522]' : 'text-[#A8ADA9]'}`}>Monthly</span>
             <button
               onClick={() => setIsAnnual(!isAnnual)}
               aria-pressed={isAnnual}
-              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#16A34A] focus:ring-offset-2 ${isAnnual ? 'bg-[#16A34A]' : 'bg-[#CBD5E1]'}`}
+              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#34483F] focus:ring-offset-2 ${isAnnual ? 'bg-[#34483F]' : 'bg-[#CBD5E1]'}`}
             >
               <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-9' : 'translate-x-1'}`} />
             </button>
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#1E293B]' : 'text-[#94A3B8]'}`}>Annual</span>
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#202522]' : 'text-[#A8ADA9]'}`}>Annual</span>
               {isAnnual ? (
                 <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 border border-green-200 text-xs px-3 py-1 rounded-full font-bold">
                   <Gift size={11} /> 2 months FREE — Save up to 25%
                 </span>
               ) : (
-                <span className="text-xs bg-white text-[#0D9488] border border-[#CCFBF1] px-3 py-1 rounded-full">
+                <span className="text-xs bg-white text-[#8FA89B] border border-[#DCD9CD] px-3 py-1 rounded-full">
                   Switch to annual & save 25%
                 </span>
               )}
@@ -269,12 +269,12 @@ const GymOwnerSubscriptionPage = () => {
 
                 {/* Popular badge */}
                 {plan.popular && !isSelected && (
-                  <div className="bg-[#16A34A] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
+                  <div className="bg-[#34483F] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                     ⭐ Most Popular
                   </div>
                 )}
                 {plan.popular && isSelected && (
-                  <div className="bg-[#16A34A] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
+                  <div className="bg-[#34483F] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                     ⭐ Most Popular
                   </div>
                 )}
@@ -294,8 +294,8 @@ const GymOwnerSubscriptionPage = () => {
                         <Icon size={20} className={plan.iconColor} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-[#1E293B] text-sm">{plan.name}</h3>
-                        <span className="text-[10px] text-[#475569] font-medium">{plan.badge}</span>
+                        <h3 className="font-bold text-[#202522] text-sm">{plan.name}</h3>
+                        <span className="text-[10px] text-[#4A514D] font-medium">{plan.badge}</span>
                       </div>
                     </div>
                   </div>
@@ -304,10 +304,10 @@ const GymOwnerSubscriptionPage = () => {
                   <div className="mb-4">
                     <div className="flex items-baseline gap-1">
                       <span className={`text-4xl font-black tracking-tight ${plan.priceColor}`}>{price.main}</span>
-                      <span className="text-[#475569] text-sm font-medium">{price.period}</span>
+                      <span className="text-[#4A514D] text-sm font-medium">{price.period}</span>
                     </div>
                     {price.sub && (
-                      <p className="text-[#475569] text-xs mt-0.5">{price.sub}</p>
+                      <p className="text-[#4A514D] text-xs mt-0.5">{price.sub}</p>
                     )}
                     {isAnnual && !plan.trial && plan.savingsAnnual && (
                       <p className="text-green-600 text-xs mt-1 font-bold">
@@ -315,29 +315,29 @@ const GymOwnerSubscriptionPage = () => {
                       </p>
                     )}
                     {!isAnnual && !plan.trial && (
-                      <p className="text-[#94A3B8] text-xs mt-1">
+                      <p className="text-[#A8ADA9] text-xs mt-1">
                         or ₹{plan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo billed annually
                       </p>
                     )}
                   </div>
 
                   {/* Limits */}
-                  <div className="bg-[#F8FAFC] rounded-xl px-3 py-2 mb-4 border border-[#CCFBF1]">
-                    <p className="text-[10px] text-[#475569] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
-                    <p className="text-xs text-[#1E293B] font-medium">{plan.limits}</p>
+                  <div className="bg-[#F2EFE8] rounded-xl px-3 py-2 mb-4 border border-[#DCD9CD]">
+                    <p className="text-[10px] text-[#4A514D] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
+                    <p className="text-xs text-[#202522] font-medium">{plan.limits}</p>
                   </div>
 
                   {/* Features */}
                   <ul className="space-y-2 mb-4 flex-1">
                     {plan.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-[#1E293B]">
+                      <li key={i} className="flex items-start gap-2 text-xs text-[#202522]">
                         <CheckCircle size={13} className={`shrink-0 mt-0.5 ${plan.checkColor}`} />
                         <span>{f}</span>
                       </li>
                     ))}
                     {plan.locked.map((f, i) => (
                       <li key={i} className="flex items-start gap-2 text-xs text-[#CBD5E1]">
-                        <XCircle size={13} className="shrink-0 mt-0.5 text-[#E2E8F0]" />
+                        <XCircle size={13} className="shrink-0 mt-0.5 text-[#E8E5DA]" />
                         <span className="line-through">{f}</span>
                       </li>
                     ))}
@@ -357,7 +357,7 @@ const GymOwnerSubscriptionPage = () => {
                   <div className={`w-full py-2.5 rounded-xl text-xs font-bold text-center transition-all border-2 ${
                     isSelected
                       ? `${plan.accentBar} text-white border-transparent`
-                      : `bg-white border-[#CCFBF1] text-[#475569] hover:border-[#16A34A] hover:text-[#16A34A]`
+                      : `bg-white border-[#DCD9CD] text-[#4A514D] hover:border-[#34483F] hover:text-[#34483F]`
                   }`}>
                     {isSelected ? `✓ ${plan.ctaText} Selected` : plan.ctaText}
                   </div>
@@ -374,8 +374,8 @@ const GymOwnerSubscriptionPage = () => {
             onClick={handleSelectPlan}
             className={`px-14 py-4 rounded-2xl font-bold text-lg flex items-center gap-2 transition-all duration-200 shadow-lg ${
               !selectedPlan || isLoading
-                ? 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed'
-                : 'bg-gradient-to-r from-[#16A34A] to-[#0D9488] text-white hover:from-[#15803D] hover:to-[#0F766E] hover:-translate-y-0.5 shadow-green-200'
+                ? 'bg-[#E8E5DA] text-[#A8ADA9] cursor-not-allowed'
+                : 'bg-gradient-to-r from-[#34483F] to-[#8FA89B] text-white hover:from-[#C6A77D] hover:to-[#0F766E] hover:-translate-y-0.5 shadow-green-200'
             }`}
           >
             {isLoading ? (
@@ -391,7 +391,7 @@ const GymOwnerSubscriptionPage = () => {
             )}
           </button>
           {!selectedPlan && (
-            <p className="text-[#94A3B8] text-sm">Select a plan above to continue</p>
+            <p className="text-[#A8ADA9] text-sm">Select a plan above to continue</p>
           )}
         </div>
 

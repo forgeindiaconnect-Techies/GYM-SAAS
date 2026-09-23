@@ -57,7 +57,7 @@ const TrainerMyAssignedFee = () => {
         </div>
         <Link
           to="/trainer/payments-received"
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#16A34A] text-white text-sm font-bold rounded-xl hover:bg-[#15803D] transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#34483F] text-white text-sm font-bold rounded-xl hover:bg-[#C6A77D] transition-colors shadow-sm"
         >
           <Clock size={16} />
           View Payments Received
@@ -198,11 +198,11 @@ const TrainerMyAssignedFee = () => {
       {selectedFee && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-[#E2E8F0] bg-[#F8FAFC]">
-              <h3 className="font-bold text-[#1E293B]">Assigned Fee Details</h3>
+            <div className="flex items-center justify-between p-4 border-b border-[#E8E5DA] bg-[#F2EFE8]">
+              <h3 className="font-bold text-[#202522]">Assigned Fee Details</h3>
               <button
                 onClick={() => setSelectedFee(null)}
-                className="text-[#64748B] hover:text-[#1E293B]"
+                className="text-[#727975] hover:text-[#202522]"
               >
                 <XCircle size={20} />
               </button>
@@ -211,7 +211,7 @@ const TrainerMyAssignedFee = () => {
             <div className="p-5 space-y-4">
               <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <span className="text-gray-500 text-sm font-medium">Fee Amount</span>
-                <span className="text-2xl font-bold text-[#1E293B]">₹{selectedFee.feeAmount?.toLocaleString('en-IN')}</span>
+                <span className="text-2xl font-bold text-[#202522]">₹{selectedFee.feeAmount?.toLocaleString('en-IN')}</span>
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-sm">

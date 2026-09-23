@@ -35,45 +35,45 @@ const TrainerWithdrawals = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#1E293B]">Withdrawal History</h1>
-          <p className="text-[#64748B] text-sm mt-1">Your past payout requests and their status</p>
+          <h1 className="text-2xl font-bold text-[#202522]">Withdrawal History</h1>
+          <p className="text-[#727975] text-sm mt-1">Your past payout requests and their status</p>
         </div>
       </div>
 
-      <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#E8E5DA] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#16A34A] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#34483F] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : history.length === 0 ? (
           <div className="text-center py-20">
             <History size={40} className="mx-auto text-[#CBD5E1] mb-3" />
-            <p className="text-[#64748B] font-semibold">No withdrawal history</p>
-            <p className="text-[#94A3B8] text-sm mt-1">You haven't had any processed withdrawals yet</p>
+            <p className="text-[#727975] font-semibold">No withdrawal history</p>
+            <p className="text-[#A8ADA9] text-sm mt-1">You haven't had any processed withdrawals yet</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Date Requested</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Processed At</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Amount</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Status</th>
+                <tr className="bg-[#F2EFE8] border-b border-[#E8E5DA]">
+                  <th className="px-5 py-3.5 font-semibold text-[#727975]">Date Requested</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#727975]">Processed At</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#727975] text-right">Amount</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#727975] text-right">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F1F5F9]">
                 {history.map((h, idx) => {
                   const Icon = STATUS_ICONS[h.status] || AlertCircle;
                   return (
-                    <tr key={idx} className="hover:bg-[#F8FAFC] transition-colors">
-                      <td className="px-5 py-4 text-[#475569] whitespace-nowrap">
+                    <tr key={idx} className="hover:bg-[#F2EFE8] transition-colors">
+                      <td className="px-5 py-4 text-[#4A514D] whitespace-nowrap">
                         {new Date(h.requestedAt || h.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
                       </td>
-                      <td className="px-5 py-4 text-[#475569] whitespace-nowrap">
+                      <td className="px-5 py-4 text-[#4A514D] whitespace-nowrap">
                         {h.processedAt ? new Date(h.processedAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
                       </td>
-                      <td className="px-5 py-4 text-right font-bold text-[#1E293B]">₹{h.amount?.toLocaleString('en-IN')}</td>
+                      <td className="px-5 py-4 text-right font-bold text-[#202522]">₹{h.amount?.toLocaleString('en-IN')}</td>
                       <td className="px-5 py-4 text-right">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${STATUS_COLORS[h.status] || 'bg-gray-100 text-gray-500'}`}>
                           <Icon size={12} />

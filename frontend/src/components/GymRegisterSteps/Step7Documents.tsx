@@ -13,28 +13,28 @@ const Step7Documents: React.FC<StepProps> = ({ form, set, errors }) => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#CCFBF1] pb-2 flex justify-between items-center">
+      <div className="border-b border-[#DCD9CD] pb-2 flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold text-[#1E293B]">Verification & Documents</h2>
-          <p className="text-sm text-[#475569]">Acknowledge the requirements for gym verification.</p>
+          <h2 className="text-lg font-semibold text-[#202522]">Verification & Documents</h2>
+          <p className="text-sm text-[#4A514D]">Acknowledge the requirements for gym verification.</p>
         </div>
-        <FileCheck className="text-[#16A34A]" size={24} />
+        <FileCheck className="text-[#34483F]" size={24} />
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-6 space-y-4">
-        <p className="text-sm text-[#475569] leading-relaxed">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-6 space-y-4">
+        <p className="text-sm text-[#4A514D] leading-relaxed">
           To ensure the quality and safety of our platform, all registered gyms must be verified. 
           Our onboarding team will contact you shortly after registration to collect the following documents:
         </p>
         
-        <ul className="list-disc pl-5 text-sm text-[#475569] space-y-2">
+        <ul className="list-disc pl-5 text-sm text-[#4A514D] space-y-2">
           <li>Business Registration / Trade License</li>
           <li>Owner's Government ID Proof</li>
           <li>Gym Establishment Photos</li>
           <li>Bank Account Details for Payouts</li>
         </ul>
 
-        <div className="pt-4 border-t border-[#CCFBF1] space-y-4">
+        <div className="pt-4 border-t border-[#DCD9CD] space-y-4">
           <div>
             <label className="flex items-start space-x-3 cursor-pointer group">
               <div className="relative flex items-center justify-center mt-0.5">
@@ -44,18 +44,18 @@ const Step7Documents: React.FC<StepProps> = ({ form, set, errors }) => {
                   checked={form.acceptTerms || false} 
                   onChange={(e) => set('acceptTerms', e.target.checked)} 
                 />
-                <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors ${form.acceptTerms ? 'bg-[#16A34A] border-[#16A34A]' : 'border-[#555] group-hover:border-[#16A34A]'}`}>
+                <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors ${form.acceptTerms ? 'bg-[#34483F] border-[#34483F]' : 'border-[#555] group-hover:border-[#34483F]'}`}>
                   {form.acceptTerms && <FileCheck size={14} className="text-black" />}
                 </div>
               </div>
-              <div className="text-sm text-[#475569] flex-1">
-                I confirm that I have the required documents ready for verification and I accept the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTerms(!showTerms); }} className="text-[#16A34A] hover:underline font-medium inline-flex items-center">Terms & Conditions {showTerms ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />}</button>.
+              <div className="text-sm text-[#4A514D] flex-1">
+                I confirm that I have the required documents ready for verification and I accept the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTerms(!showTerms); }} className="text-[#34483F] hover:underline font-medium inline-flex items-center">Terms & Conditions {showTerms ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />}</button>.
               </div>
             </label>
             {errors.acceptTerms && <p className="text-teal-400 text-xs ml-8 mt-1">{errors.acceptTerms}</p>}
             
             {showTerms && (
-              <div className="ml-8 mt-3 p-4 bg-[#F8FAFC] border border-[#CCFBF1] rounded-lg text-xs text-[#475569] space-y-2">
+              <div className="ml-8 mt-3 p-4 bg-[#F2EFE8] border border-[#DCD9CD] rounded-lg text-xs text-[#4A514D] space-y-2">
                 <p><strong>1. Agreement to Terms:</strong> By accessing our platform, you agree to these terms.</p>
                 <p><strong>2. User Responsibilities:</strong> You must provide accurate and verifiable information about your gym facility.</p>
                 <p><strong>3. Platform Fees:</strong> AI GYM charges a standard platform fee for transactions processed through the system.</p>
@@ -74,18 +74,18 @@ const Step7Documents: React.FC<StepProps> = ({ form, set, errors }) => {
                   checked={form.acceptPrivacy || false} 
                   onChange={(e) => set('acceptPrivacy', e.target.checked)} 
                 />
-                <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors ${form.acceptPrivacy ? 'bg-[#16A34A] border-[#16A34A]' : 'border-[#555] group-hover:border-[#16A34A]'}`}>
+                <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors ${form.acceptPrivacy ? 'bg-[#34483F] border-[#34483F]' : 'border-[#555] group-hover:border-[#34483F]'}`}>
                   {form.acceptPrivacy && <FileCheck size={14} className="text-black" />}
                 </div>
               </div>
-              <div className="text-sm text-[#475569] flex-1">
-                I accept the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowPrivacy(!showPrivacy); }} className="text-[#16A34A] hover:underline font-medium inline-flex items-center">Privacy Policy {showPrivacy ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />}</button>.
+              <div className="text-sm text-[#4A514D] flex-1">
+                I accept the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowPrivacy(!showPrivacy); }} className="text-[#34483F] hover:underline font-medium inline-flex items-center">Privacy Policy {showPrivacy ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />}</button>.
               </div>
             </label>
             {errors.acceptPrivacy && <p className="text-teal-400 text-xs ml-8 mt-1">{errors.acceptPrivacy}</p>}
             
             {showPrivacy && (
-              <div className="ml-8 mt-3 p-4 bg-[#F8FAFC] border border-[#CCFBF1] rounded-lg text-xs text-[#475569] space-y-2">
+              <div className="ml-8 mt-3 p-4 bg-[#F2EFE8] border border-[#DCD9CD] rounded-lg text-xs text-[#4A514D] space-y-2">
                 <p><strong>1. Data Collection:</strong> We collect business details, contact information, and location data to list your gym on our platform.</p>
                 <p><strong>2. Data Usage:</strong> Your data is used exclusively to facilitate bookings, manage memberships, and improve our services.</p>
                 <p><strong>3. Data Security:</strong> We employ industry-standard security measures to protect your sensitive business information.</p>

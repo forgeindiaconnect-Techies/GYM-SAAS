@@ -1,4 +1,4 @@
-﻿import { Response } from 'express';
+import { Response } from 'express';
 import mongoose from 'mongoose';
 import { AuthRequest } from '../middlewares/auth';
 import User, { IUser } from '../models/User';
@@ -216,7 +216,12 @@ export const getCategories = async (req: AuthRequest, res: Response): Promise<vo
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
-    const categories = await StoreProductCategory.find({ gymId, $or: [{ status: 'Active' }, { status: 'Inactive' }] })
+    const { productType } = req.query;
+    const filter: any = { gymId, $or: [{ status: 'Active' }, { status: 'Inactive' }] };
+    if (productType && typeof productType === 'string' && productType.trim() !== 'all') {
+      filter.productType = productType.trim();
+    }
+    const categories = await StoreProductCategory.find(filter)
       .sort({ name: 1 });
     const counts: Record<string, number> = {};
     const products = await StoreProduct.find({ gymId }).select('categoryName status');
@@ -241,18 +246,23 @@ export const createCategory = async (req: AuthRequest, res: Response): Promise<v
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
-    const { name, description, status } = req.body;
+    const { name, description, status, productType } = req.body;
     if (!name?.trim()) {
       res.status(400).json({ success: false, message: 'Category name is required' });
       return;
     }
-    const existing = await StoreProductCategory.findOne({ gymId, name: name.trim() });
+    if (!productType?.trim()) {
+      res.status(400).json({ success: false, message: 'Product type is required' });
+      return;
+    }
+    const existing = await StoreProductCategory.findOne({ gymId, productType: productType.trim(), name: name.trim() });
     if (existing) {
-      res.status(409).json({ success: false, message: 'A category with this name already exists' });
+      res.status(409).json({ success: false, message: 'A category with this name already exists for this product type' });
       return;
     }
     const category = await StoreProductCategory.create({
       gymId,
+      productType: productType.trim(),
       name: name.trim(),
       description,
       status: status || 'Active',
@@ -277,15 +287,18 @@ export const updateCategory = async (req: AuthRequest, res: Response): Promise<v
       res.status(404).json({ success: false, message: 'Category not found' });
       return;
     }
-    const { name, description, status } = req.body;
+    const { name, description, status, productType } = req.body;
+    if (productType && productType.trim()) {
+      category.productType = productType.trim();
+    }
     if (name && name.trim() && name.trim() !== category.name) {
-      const clash = await StoreProductCategory.findOne({ gymId, name: name.trim(), _id: { $ne: id } });
+      const clash = await StoreProductCategory.findOne({ gymId, productType: category.productType, name: name.trim(), _id: { $ne: id } });
       if (clash) {
-        res.status(409).json({ success: false, message: 'A category with this name already exists' });
+        res.status(409).json({ success: false, message: 'A category with this name already exists in this product type' });
         return;
       }
       const oldName = category.name;
-      await StoreProduct.updateMany({ gymId, categoryName: oldName }, { $set: { categoryName: name.trim() } });
+      await StoreProduct.updateMany({ gymId, productType: category.productType, categoryName: oldName }, { $set: { categoryName: name.trim() } });
       category.name = name.trim();
     }
     if (description !== undefined) category.description = description;
@@ -377,20 +390,29 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
     }
     const {
       name, description, brand, sku, categoryName, image, sellingPrice, discountPrice,
-      stock, status, availability, fulfilmentType, lowStockThreshold,
+      stock, status, availability, fulfilmentType, lowStockThreshold, productType,
+      attributes, hasVariants, variants,
     } = req.body;
 
     if (!name?.trim()) {
       res.status(400).json({ success: false, message: 'Product name is required' });
       return;
     }
+    if (!productType?.trim()) {
+      res.status(400).json({ success: false, message: 'Product type is required' });
+      return;
+    }
     if (sellingPrice === undefined || sellingPrice === null || Number(sellingPrice) < 0) {
       res.status(400).json({ success: false, message: 'A valid selling price is required' });
       return;
     }
+    if (discountPrice !== undefined && discountPrice !== null && Number(discountPrice) > Number(sellingPrice)) {
+      res.status(400).json({ success: false, message: 'Discount price cannot be greater than selling price' });
+      return;
+    }
     const catName = (categoryName || 'Uncategorized').trim();
-    if (!(await StoreProductCategory.exists({ gymId, name: catName }))) {
-      await StoreProductCategory.create({ gymId, name: catName, status: 'Active' });
+    if (!(await StoreProductCategory.exists({ gymId, productType: productType.trim(), name: catName }))) {
+      await StoreProductCategory.create({ gymId, productType: productType.trim(), name: catName, status: 'Active' });
     }
     if (sku) {
       const clash = await StoreProduct.exists({ gymId, sku: sku.trim() });
@@ -414,8 +436,12 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
       availability: availability || 'Both',
       fulfilmentType: fulfilmentType || 'Gym Pickup',
       lowStockThreshold: Number(lowStockThreshold ?? 5),
+      productType: productType.trim(),
+      attributes: attributes || {},
+      hasVariants: !!hasVariants,
+      variants: Array.isArray(variants) ? variants : [],
     });
-    if (product.stock > 0) {
+    if (!product.hasVariants && product.stock > 0) {
       await StoreInventoryTransaction.create({
         gymId,
         productId: product._id,
@@ -425,6 +451,21 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
         sourceType: 'manual',
         note: 'Initial stock on product creation',
       });
+    } else if (product.hasVariants && product.variants.length > 0) {
+      for (const v of product.variants) {
+        if (v.stock > 0) {
+          await StoreInventoryTransaction.create({
+            gymId,
+            productId: product._id,
+            variantId: v._id,
+            type: StoreInventoryTransactionType.STOCK_IN,
+            quantityChange: v.stock,
+            stockAfter: v.stock,
+            sourceType: 'manual',
+            note: 'Initial stock on variant creation',
+          });
+        }
+      }
     }
     res.status(201).json({ success: true, product });
   } catch (error: any) {
@@ -448,7 +489,8 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
     }
     const {
       name, description, brand, sku, categoryName, image, sellingPrice, discountPrice,
-      stock, status, availability, fulfilmentType, lowStockThreshold,
+      stock, status, availability, fulfilmentType, lowStockThreshold, productType,
+      attributes, hasVariants, variants,
     } = req.body;
 
     if (sku && sku.trim() && sku.trim() !== product.sku) {
@@ -459,9 +501,10 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
       }
     }
     const catName = (categoryName || product.categoryName).trim();
-    if (catName !== product.categoryName) {
-      if (!(await StoreProductCategory.exists({ gymId, name: catName }))) {
-        await StoreProductCategory.create({ gymId, name: catName, status: 'Active' });
+    const prodType = productType !== undefined ? productType.trim() : product.productType;
+    if (catName !== product.categoryName || prodType !== product.productType) {
+      if (!(await StoreProductCategory.exists({ gymId, productType: prodType, name: catName }))) {
+        await StoreProductCategory.create({ gymId, productType: prodType, name: catName, status: 'Active' });
       }
     }
     if (name !== undefined) product.name = name.trim() || product.name;
@@ -472,11 +515,22 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
     if (image !== undefined) product.image = image;
     if (sellingPrice !== undefined) product.sellingPrice = Number(sellingPrice);
     if (discountPrice !== undefined) product.discountPrice = discountPrice ? Number(discountPrice) : undefined;
+    
+    if (product.discountPrice !== undefined && product.discountPrice > product.sellingPrice) {
+      res.status(400).json({ success: false, message: 'Discount price cannot be greater than selling price' });
+      return;
+    }
     if (status !== undefined) product.status = status;
     if (availability !== undefined) product.availability = availability;
     if (fulfilmentType !== undefined) product.fulfilmentType = fulfilmentType;
     if (lowStockThreshold !== undefined) product.lowStockThreshold = Number(lowStockThreshold);
-    if (stock !== undefined) {
+    if (productType !== undefined) product.productType = productType.trim();
+    if (attributes !== undefined) product.attributes = attributes || {};
+    if (hasVariants !== undefined) product.hasVariants = !!hasVariants;
+    if (variants !== undefined && Array.isArray(variants)) {
+      product.variants = variants;
+    }
+    if (!product.hasVariants && stock !== undefined) {
       const delta = Number(stock) - product.stock;
       if (delta !== 0) {
         if (Number(stock) < 0) {
@@ -620,37 +674,68 @@ export const getCart = async (req: AuthRequest, res: Response): Promise<void> =>
   try {
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
-    const cart = await StoreCart.findOne({ customerId: user._id, gymId: user.gymId }).populate<
-      { items: { productId: any }[] }
-    >('items.productId');
-    const products = cart?.items?.map((i: any) => ({ product: i.productId, quantity: i.quantity })) || [];
+    const cart = await StoreCart.findOne({ customerId: user._id, gymId: user.gymId }).populate<{ items: { productId: any }[] }>('items.productId');
+    
+    const products = cart?.items?.map((i: any) => ({ product: i.productId, variantId: i.variantId, quantity: i.quantity })) || [];
     const valid: any[] = [];
     const removed: any[] = [];
+    
     for (const row of products) {
       if (!row.product || row.product.status !== 'Active' || !(row.product.availability === 'Online' || row.product.availability === 'Both')) {
-        removed.push(row.product?._id);
+        removed.push({ productId: row.product?._id, variantId: row.variantId });
         continue;
       }
-      const quantity = Math.min(row.quantity, row.product.stock);
-      valid.push({ product: { ...row.product.toObject(), stock: row.product.stock }, requestedQuantity: row.quantity, quantity, match: quantity === row.quantity });
+      
+      let targetStock = row.product.stock;
+      let variantDetails = null;
+      if (row.product.hasVariants) {
+        if (!row.variantId) {
+          removed.push({ productId: row.product._id, variantId: row.variantId });
+          continue;
+        }
+        const v = row.product.variants.find((v: any) => String(v._id) === String(row.variantId));
+        if (!v) {
+          removed.push({ productId: row.product._id, variantId: row.variantId });
+          continue;
+        }
+        targetStock = v.stock;
+        variantDetails = v;
+      }
+
+      const quantity = Math.min(row.quantity, targetStock);
+      valid.push({ 
+        product: { ...row.product.toObject(), stock: row.product.stock },
+        variant: variantDetails,
+        variantId: row.variantId,
+        requestedQuantity: row.quantity, 
+        quantity, 
+        match: quantity === row.quantity 
+      });
+      
       if (!valid[valid.length - 1].match) {
+        const filter: any = { customerId: user._id, gymId: user.gymId, 'items.productId': row.product._id };
+        if (row.variantId) filter['items.variantId'] = row.variantId;
+        await StoreCart.updateOne(filter, { $set: { 'items.$.quantity': Math.max(quantity, 1) } });
+      }
+    }
+    
+    if (removed.length) {
+      for (const item of removed) {
+        const pullCond: any = { productId: item.productId };
+        if (item.variantId) pullCond.variantId = item.variantId;
         await StoreCart.updateOne(
-          { customerId: user._id, gymId: user.gymId, 'items.productId': row.product._id },
-          { $set: { 'items.$.quantity': Math.max(quantity, 1) } }
+          { customerId: user._id, gymId: user.gymId },
+          { $pull: { items: pullCond } }
         );
       }
     }
-    const knownIds = new Set(valid.map((v) => String(v.product._id)));
-    const removedIds = cart?.items
-      ? cart.items.filter((i) => !knownIds.has(String(i.productId))).map((i) => i.productId)
-      : [];
-    if (removedIds.length) {
-      await StoreCart.updateOne(
-        { customerId: user._id, gymId: user.gymId },
-        { $pull: { items: { productId: { $in: removedIds } } } }
-      );
-    }
-    const subtotal = valid.reduce((s: number, v: any) => s + v.quantity * priceFor(v.product), 0);
+    
+    const priceFor = (p: any, v?: any) => {
+      if (v) return v.discountPrice ?? v.price;
+      return p.discountPrice ?? p.sellingPrice;
+    };
+    
+    const subtotal = valid.reduce((s: number, v: any) => s + v.quantity * priceFor(v.product, v.variant), 0);
     res.status(200).json({ success: true, cart: valid, subtotal, removed });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
@@ -661,7 +746,7 @@ export const addToCart = async (req: AuthRequest, res: Response): Promise<void> 
   try {
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
-    const { productId, quantity = 1 } = req.body;
+    const { productId, variantId, quantity = 1 } = req.body;
     if (!isObjectId(productId)) {
       res.status(400).json({ success: false, message: 'Invalid product id' });
       return;
@@ -672,12 +757,27 @@ export const addToCart = async (req: AuthRequest, res: Response): Promise<void> 
       res.status(404).json({ success: false, message: 'Product not found or not available online' });
       return;
     }
-    if (product.stock <= 0) {
-      res.status(400).json({ success: false, message: 'This product is currently out of stock' });
+
+    let targetStock = product.stock;
+    if (product.hasVariants) {
+      if (!variantId) {
+        res.status(400).json({ success: false, message: 'Variant is required for this product' });
+        return;
+      }
+      const variant = product.variants.find((v: any) => String(v._id) === String(variantId));
+      if (!variant) {
+        res.status(404).json({ success: false, message: 'Variant not found' });
+        return;
+      }
+      targetStock = variant.stock;
+    }
+
+    if (targetStock <= 0) {
+      res.status(400).json({ success: false, message: 'This item is currently out of stock' });
       return;
     }
-    if (qty > product.stock) {
-      res.status(400).json({ success: false, message: `Only ${product.stock} unit(s) available in stock` });
+    if (qty > targetStock) {
+      res.status(400).json({ success: false, message: `Only ${targetStock} unit(s) available in stock` });
       return;
     }
     const cart = await StoreCart.findOneAndUpdate(
@@ -685,16 +785,16 @@ export const addToCart = async (req: AuthRequest, res: Response): Promise<void> 
       { $setOnInsert: { customerId: user._id, gymId: user.gymId } },
       { upsert: true, new: true }
     );
-    const existing = cart.items.find((i) => i.productId.toString() === productId);
+    const existing = cart.items.find((i) => i.productId.toString() === productId && (!i.variantId || i.variantId.toString() === variantId));
     if (existing) {
       const newQty = existing.quantity + qty;
-      if (newQty > product.stock) {
-        res.status(400).json({ success: false, message: `Only ${product.stock} unit(s) available in stock` });
+      if (newQty > targetStock) {
+        res.status(400).json({ success: false, message: `Only ${targetStock} unit(s) available in stock` });
         return;
       }
       existing.quantity = newQty;
     } else {
-      cart.items.push({ productId: product._id, quantity: qty });
+      cart.items.push({ productId: product._id, variantId: variantId || undefined, quantity: qty });
     }
     await cart.save();
     res.status(200).json({ success: true, message: 'Added to cart', cart });
@@ -707,19 +807,30 @@ export const updateCartItem = async (req: AuthRequest, res: Response): Promise<v
   try {
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
-    const { productId, quantity } = req.body;
+    const { productId, variantId, quantity } = req.body;
     const qty = Math.max(1, Number(quantity));
     const product = await StoreProduct.findOne({ _id: productId, gymId: user.gymId, status: 'Active' });
     if (!product) {
       res.status(404).json({ success: false, message: 'Product not found' });
       return;
     }
-    if (qty > product.stock) {
-      res.status(400).json({ success: false, message: `Only ${product.stock} unit(s) available in stock` });
+
+    let targetStock = product.stock;
+    if (product.hasVariants && variantId) {
+      const variant = product.variants.find((v: any) => String(v._id) === String(variantId));
+      if (variant) targetStock = variant.stock;
+    }
+
+    if (qty > targetStock) {
+      res.status(400).json({ success: false, message: `Only ${targetStock} unit(s) available in stock` });
       return;
     }
+
+    const filter: any = { customerId: user._id, gymId: user.gymId, 'items.productId': productId };
+    if (variantId) filter['items.variantId'] = variantId;
+
     const updated = await StoreCart.findOneAndUpdate(
-      { customerId: user._id, gymId: user.gymId, 'items.productId': productId },
+      filter,
       { $set: { 'items.$.quantity': qty } },
       { new: true }
     );
@@ -738,9 +849,14 @@ export const removeCartItem = async (req: AuthRequest, res: Response): Promise<v
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
     const { productId } = req.params;
+    const variantId = req.query.variantId as string;
+    
+    const pullCondition: any = { productId };
+    if (variantId) pullCondition.variantId = variantId;
+
     await StoreCart.updateOne(
       { customerId: user._id, gymId: user.gymId },
-      { $pull: { items: { productId } } }
+      { $pull: { items: pullCondition } }
     );
     res.status(200).json({ success: true, message: 'Item removed from cart' });
   } catch (error: any) {
@@ -777,18 +893,41 @@ const buildOrderBlock = async (user: IUser, cart: any): Promise<{ error?: string
     if (!p || p.status !== 'Active' || (p.availability !== 'Online' && p.availability !== 'Both')) {
       return { error: `A product in your cart is no longer available. Please review your cart.` };
     }
-    if (p.stock < row.quantity) {
-      return { error: `"${p.name}" is low on stock (only ${p.stock} available). Please reduce the quantity.` };
+
+    let targetStock = p.stock;
+    let sellingPrice = p.sellingPrice;
+    let discountPrice = p.discountPrice;
+    let sku = p.sku;
+    let attributes = p.attributes;
+
+    if (p.hasVariants && row.variantId) {
+      const variant = (p.variants || []).find((v: any) => String(v._id) === String(row.variantId));
+      if (!variant) return { error: `A selected variant for "${p.name}" is no longer available.` };
+      targetStock = variant.stock;
+      sellingPrice = variant.price;
+      discountPrice = variant.discountPrice;
+      sku = variant.sku;
+      attributes = variant.attributes;
+    } else if (p.hasVariants && !row.variantId) {
+      return { error: `"${p.name}" requires a variant selection.` };
     }
-    const unitPrice = priceFor(p);
+
+    if (targetStock < row.quantity) {
+      return { error: `"${p.name}" is low on stock (only ${targetStock} available). Please reduce the quantity.` };
+    }
+    
+    const unitPrice = discountPrice !== undefined ? discountPrice : sellingPrice;
+
     items.push({
       productId: p._id,
+      variantId: row.variantId,
       name: p.name,
       image: p.image,
-      sku: p.sku,
+      sku,
+      attributes,
       quantity: row.quantity,
-      sellingPrice: p.sellingPrice,
-      discountPrice: p.discountPrice ?? undefined,
+      sellingPrice,
+      discountPrice,
       unitPrice,
       total: unitPrice * row.quantity,
     });
@@ -865,31 +1004,59 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
     // Atomic stock deduction
     let stockFailure = false;
     for (const it of built.items!) {
-      const updated = await StoreProduct.findOneAndUpdate(
-        { _id: it.productId, stock: { $gte: it.quantity } },
-        { $inc: { stock: -it.quantity } },
-        { new: true }
-      );
-      if (!updated) {
-        stockFailure = true;
-        break;
+      if (it.variantId) {
+        const updated = await StoreProduct.findOneAndUpdate(
+          { _id: it.productId, 'variants._id': it.variantId, 'variants.stock': { $gte: it.quantity } },
+          { $inc: { 'variants.$.stock': -it.quantity } },
+          { new: true }
+        );
+        if (!updated) {
+          stockFailure = true;
+          break;
+        }
+        const varData = updated.variants.find((v: any) => String(v._id) === String(it.variantId));
+        await StoreInventoryTransaction.create({
+          gymId,
+          productId: it.productId,
+          variantId: it.variantId,
+          type: StoreInventoryTransactionType.ONLINE_SALE,
+          quantityChange: -it.quantity,
+          stockAfter: varData.stock,
+          sourceType: 'online',
+          referenceId: order._id,
+        });
+        await notifyLowStockIfNeeded(updated, gymId); // Note: might need variant low stock check in future
+      } else {
+        const updated = await StoreProduct.findOneAndUpdate(
+          { _id: it.productId, stock: { $gte: it.quantity } },
+          { $inc: { stock: -it.quantity } },
+          { new: true }
+        );
+        if (!updated) {
+          stockFailure = true;
+          break;
+        }
+        await StoreInventoryTransaction.create({
+          gymId,
+          productId: it.productId,
+          type: StoreInventoryTransactionType.ONLINE_SALE,
+          quantityChange: -it.quantity,
+          stockAfter: updated.stock,
+          sourceType: 'online',
+          referenceId: order._id,
+        });
+        await notifyLowStockIfNeeded(updated, gymId);
       }
-      await StoreInventoryTransaction.create({
-        gymId,
-        productId: it.productId,
-        type: StoreInventoryTransactionType.ONLINE_SALE,
-        quantityChange: -it.quantity,
-        stockAfter: updated.stock,
-        sourceType: 'online',
-        referenceId: order._id,
-      });
-      await notifyLowStockIfNeeded(updated, gymId);
     }
 
     if (stockFailure) {
       // rollback
       for (const it of built.items!) {
-        await StoreProduct.updateOne({ _id: it.productId }, { $inc: { stock: it.quantity } });
+        if (it.variantId) {
+          await StoreProduct.updateOne({ _id: it.productId, 'variants._id': it.variantId }, { $inc: { 'variants.$.stock': it.quantity } });
+        } else {
+          await StoreProduct.updateOne({ _id: it.productId }, { $inc: { stock: it.quantity } });
+        }
       }
       order.paymentStatus = StoreOrderPaymentStatus.FAILED;
       order.status = StoreOrderStatus.CANCELLED;
@@ -968,22 +1135,43 @@ const TRANSITIONS: Record<string, string[]> = {
 
 const restockOrderItems = async (order: IStoreOrder): Promise<void> => {
   for (const it of order.items) {
-    const updated = await StoreProduct.findOneAndUpdate(
-      { _id: it.productId, stock: { $gte: -it.quantity } },
-      { $inc: { stock: it.quantity } },
-      { new: true }
-    );
-    if (!updated) continue;
-    await StoreInventoryTransaction.create({
-      gymId: order.gymId,
-      productId: it.productId,
-      type: StoreInventoryTransactionType.ADJUSTMENT,
-      quantityChange: it.quantity,
-      stockAfter: updated.stock,
-      sourceType: 'manual',
-      referenceId: order._id,
-      note: `Restock on ${order.status === StoreOrderStatus.REFUNDED ? 'refund' : 'cancellation'} of ${order.orderNumber}`,
-    });
+    if (it.variantId) {
+      const updated = await StoreProduct.findOneAndUpdate(
+        { _id: it.productId, 'variants._id': it.variantId, 'variants.stock': { $gte: -it.quantity } },
+        { $inc: { 'variants.$.stock': it.quantity } },
+        { new: true }
+      );
+      if (!updated) continue;
+      const varData = updated.variants.find((v: any) => String(v._id) === String(it.variantId));
+      await StoreInventoryTransaction.create({
+        gymId: order.gymId,
+        productId: it.productId,
+        variantId: it.variantId,
+        type: StoreInventoryTransactionType.ADJUSTMENT,
+        quantityChange: it.quantity,
+        stockAfter: varData.stock,
+        sourceType: 'manual',
+        referenceId: order._id,
+        note: `Restock on ${order.status === StoreOrderStatus.REFUNDED ? 'refund' : 'cancellation'} of ${order.orderNumber}`,
+      });
+    } else {
+      const updated = await StoreProduct.findOneAndUpdate(
+        { _id: it.productId, stock: { $gte: -it.quantity } },
+        { $inc: { stock: it.quantity } },
+        { new: true }
+      );
+      if (!updated) continue;
+      await StoreInventoryTransaction.create({
+        gymId: order.gymId,
+        productId: it.productId,
+        type: StoreInventoryTransactionType.ADJUSTMENT,
+        quantityChange: it.quantity,
+        stockAfter: updated.stock,
+        sourceType: 'manual',
+        referenceId: order._id,
+        note: `Restock on ${order.status === StoreOrderStatus.REFUNDED ? 'refund' : 'cancellation'} of ${order.orderNumber}`,
+      });
+    }
   }
 };
 
@@ -1225,20 +1413,44 @@ export const recordOfflineSale = async (req: AuthRequest, res: Response): Promis
         res.status(400).json({ success: false, message: 'A selected product is not active' });
         return;
       }
-      const qty = Math.max(1, Number(row.quantity) || 1);
-      if (p.stock < qty) {
-        res.status(400).json({ success: false, message: `"${p.name}" has only ${p.stock} unit(s) in stock` });
+      let targetStock = p.stock;
+      let sellingPrice = p.sellingPrice;
+      let discountPrice = p.discountPrice;
+      let sku = p.sku;
+      let attributes = p.attributes;
+
+      if (p.hasVariants && row.variantId) {
+        const variant = (p.variants || []).find((v: any) => String(v._id) === String(row.variantId));
+        if (!variant) {
+          res.status(400).json({ success: false, message: `A selected variant for "${p.name}" is not available.` });
+          return;
+        }
+        targetStock = variant.stock;
+        sellingPrice = variant.price;
+        discountPrice = variant.discountPrice;
+        sku = variant.sku;
+        attributes = variant.attributes;
+      } else if (p.hasVariants && !row.variantId) {
+        res.status(400).json({ success: false, message: `"${p.name}" requires a variant selection.` });
         return;
       }
-      const unitPrice = priceFor(p);
+
+      const qty = Math.max(1, Number(row.quantity) || 1);
+      if (targetStock < qty) {
+        res.status(400).json({ success: false, message: `"${p.name}" has only ${targetStock} unit(s) in stock` });
+        return;
+      }
+      const unitPrice = discountPrice !== undefined ? discountPrice : sellingPrice;
       saleItems.push({
         productId: p._id,
+        variantId: row.variantId,
         name: p.name,
         image: p.image,
-        sku: p.sku,
+        sku,
+        attributes,
         quantity: qty,
-        sellingPrice: p.sellingPrice,
-        discountPrice: p.discountPrice ?? undefined,
+        sellingPrice,
+        discountPrice,
         unitPrice,
         total: unitPrice * qty,
       });
@@ -1262,31 +1474,67 @@ export const recordOfflineSale = async (req: AuthRequest, res: Response): Promis
     });
 
     for (const it of saleItems) {
-      const updated = await StoreProduct.findOneAndUpdate(
-        { _id: it.productId, stock: { $gte: it.quantity } },
-        { $inc: { stock: -it.quantity } },
-        { new: true }
-      );
-      if (!updated) {
-        // roll back any stock already deducted and abort
-        for (const prev of saleItems) {
-          if (prev.productId.toString() === it.productId.toString()) break;
-          await StoreProduct.updateOne({ _id: prev.productId }, { $inc: { stock: prev.quantity } });
+      if (it.variantId) {
+        const updated = await StoreProduct.findOneAndUpdate(
+          { _id: it.productId, 'variants._id': it.variantId, 'variants.stock': { $gte: it.quantity } },
+          { $inc: { 'variants.$.stock': -it.quantity } },
+          { new: true }
+        );
+        if (!updated) {
+          for (const prev of saleItems) {
+            if (prev.productId.toString() === it.productId.toString() && String(prev.variantId) === String(it.variantId)) break;
+            if (prev.variantId) {
+              await StoreProduct.updateOne({ _id: prev.productId, 'variants._id': prev.variantId }, { $inc: { 'variants.$.stock': prev.quantity } });
+            } else {
+              await StoreProduct.updateOne({ _id: prev.productId }, { $inc: { stock: prev.quantity } });
+            }
+          }
+          await StoreOfflineSale.deleteOne({ _id: sale._id });
+          res.status(400).json({ success: false, message: `"${it.name}" went out of stock while recording the sale. No items were deducted.` });
+          return;
         }
-        await StoreOfflineSale.deleteOne({ _id: sale._id });
-        res.status(400).json({ success: false, message: `"${it.name}" went out of stock while recording the sale. No items were deducted.` });
-        return;
+        const varData = updated.variants.find((v: any) => String(v._id) === String(it.variantId));
+        await StoreInventoryTransaction.create({
+          gymId,
+          productId: it.productId,
+          variantId: it.variantId,
+          type: StoreInventoryTransactionType.OFFLINE_SALE,
+          quantityChange: -it.quantity,
+          stockAfter: varData.stock,
+          sourceType: 'offline',
+          referenceId: sale._id,
+        });
+        await notifyLowStockIfNeeded(updated, gymId);
+      } else {
+        const updated = await StoreProduct.findOneAndUpdate(
+          { _id: it.productId, stock: { $gte: it.quantity } },
+          { $inc: { stock: -it.quantity } },
+          { new: true }
+        );
+        if (!updated) {
+          for (const prev of saleItems) {
+            if (prev.productId.toString() === it.productId.toString()) break;
+            if (prev.variantId) {
+              await StoreProduct.updateOne({ _id: prev.productId, 'variants._id': prev.variantId }, { $inc: { 'variants.$.stock': prev.quantity } });
+            } else {
+              await StoreProduct.updateOne({ _id: prev.productId }, { $inc: { stock: prev.quantity } });
+            }
+          }
+          await StoreOfflineSale.deleteOne({ _id: sale._id });
+          res.status(400).json({ success: false, message: `"${it.name}" went out of stock while recording the sale. No items were deducted.` });
+          return;
+        }
+        await StoreInventoryTransaction.create({
+          gymId,
+          productId: it.productId,
+          type: StoreInventoryTransactionType.OFFLINE_SALE,
+          quantityChange: -it.quantity,
+          stockAfter: updated.stock,
+          sourceType: 'offline',
+          referenceId: sale._id,
+        });
+        await notifyLowStockIfNeeded(updated, gymId);
       }
-      await StoreInventoryTransaction.create({
-        gymId,
-        productId: it.productId,
-        type: StoreInventoryTransactionType.OFFLINE_SALE,
-        quantityChange: -it.quantity,
-        stockAfter: updated.stock,
-        sourceType: 'offline',
-        referenceId: sale._id,
-      });
-      await notifyLowStockIfNeeded(updated, gymId);
     }
 
     if (customerId) {

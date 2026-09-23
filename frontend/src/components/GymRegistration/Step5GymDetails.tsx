@@ -41,15 +41,15 @@ const TimePicker = ({ value, onChange }: { value: string, onChange: (v: string) 
   };
 
   return (
-    <div className="flex items-center bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg px-3 py-2 focus-within:border-[#16A34A] transition-colors">
-      <select value={displayH.toString().padStart(2, '0')} onChange={handleH} className="bg-transparent text-[#1E293B] text-sm outline-none cursor-pointer">
+    <div className="flex items-center bg-[#FFFFFF] border border-[#DCD9CD] rounded-lg px-3 py-2 focus-within:border-[#34483F] transition-colors">
+      <select value={displayH.toString().padStart(2, '0')} onChange={handleH} className="bg-transparent text-[#202522] text-sm outline-none cursor-pointer">
         {Array.from({length: 12}, (_, i) => (i + 1).toString().padStart(2, '0')).map(h => <option key={h} className="bg-[#FFFFFF]">{h}</option>)}
       </select>
-      <span className="text-[#475569] text-sm font-bold mx-1">:</span>
-      <select value={mins} onChange={handleM} className="bg-transparent text-[#1E293B] text-sm outline-none cursor-pointer">
+      <span className="text-[#4A514D] text-sm font-bold mx-1">:</span>
+      <select value={mins} onChange={handleM} className="bg-transparent text-[#202522] text-sm outline-none cursor-pointer">
         {['00','15','30','45'].map(m => <option key={m} className="bg-[#FFFFFF]">{m}</option>)}
       </select>
-      <select value={ampm} onChange={handleAmpm} className="bg-transparent text-[#EF4444] font-bold text-sm outline-none cursor-pointer ml-2 pl-2 border-l border-[#CCFBF1]">
+      <select value={ampm} onChange={handleAmpm} className="bg-transparent text-[#EF4444] font-bold text-sm outline-none cursor-pointer ml-2 pl-2 border-l border-[#DCD9CD]">
         <option className="bg-[#FFFFFF]">AM</option>
         <option className="bg-[#FFFFFF]">PM</option>
       </select>
@@ -132,48 +132,48 @@ export const Step5GymDetails = ({ data, updateData, errors }: any) => {
       
       {/* SECTION A: COUNTS */}
       <section>
-        <h3 className="text-xl font-bold text-[#1E293B] mb-4 border-b border-[#CCFBF1] pb-2">A. Staff & Member Information</h3>
+        <h3 className="text-xl font-bold text-[#202522] mb-4 border-b border-[#DCD9CD] pb-2">A. Staff & Member Information</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm text-[#475569] mb-2">Number of Trainers *</label>
-            <input type="number" min="0" value={data.trainersCount} onChange={e => updateData({ trainersCount: Math.max(0, parseInt(e.target.value) || 0) })} className={`w-full bg-[#FFFFFF] border ${errors.trainersCount ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} rounded-xl px-4 py-3 text-[#1E293B] outline-none focus:border-[#16A34A]`} />
-            {errors.trainersCount && <p className="text-[#0D9488] text-xs mt-1">{errors.trainersCount}</p>}
+            <label className="block text-sm text-[#4A514D] mb-2">Number of Trainers *</label>
+            <input type="number" min="0" value={data.trainersCount} onChange={e => updateData({ trainersCount: Math.max(0, parseInt(e.target.value) || 0) })} className={`w-full bg-[#FFFFFF] border ${errors.trainersCount ? 'border-[#8FA89B]' : 'border-[#DCD9CD]'} rounded-xl px-4 py-3 text-[#202522] outline-none focus:border-[#34483F]`} />
+            {errors.trainersCount && <p className="text-[#8FA89B] text-xs mt-1">{errors.trainersCount}</p>}
           </div>
           <div>
-            <label className="block text-sm text-[#475569] mb-2">Current Members *</label>
-            <input type="number" min="0" value={data.membersCount} onChange={e => updateData({ membersCount: Math.max(0, parseInt(e.target.value) || 0) })} className={`w-full bg-[#FFFFFF] border ${errors.membersCount ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} rounded-xl px-4 py-3 text-[#1E293B] outline-none focus:border-[#16A34A]`} />
-            {errors.membersCount && <p className="text-[#0D9488] text-xs mt-1">{errors.membersCount}</p>}
+            <label className="block text-sm text-[#4A514D] mb-2">Current Members *</label>
+            <input type="number" min="0" value={data.membersCount} onChange={e => updateData({ membersCount: Math.max(0, parseInt(e.target.value) || 0) })} className={`w-full bg-[#FFFFFF] border ${errors.membersCount ? 'border-[#8FA89B]' : 'border-[#DCD9CD]'} rounded-xl px-4 py-3 text-[#202522] outline-none focus:border-[#34483F]`} />
+            {errors.membersCount && <p className="text-[#8FA89B] text-xs mt-1">{errors.membersCount}</p>}
           </div>
         </div>
       </section>
 
       {/* SECTION B: SPECIALTIES */}
       <section>
-        <h3 className="text-xl font-bold text-[#1E293B] mb-4 border-b border-[#CCFBF1] pb-2">B. Gym Specialties</h3>
+        <h3 className="text-xl font-bold text-[#202522] mb-4 border-b border-[#DCD9CD] pb-2">B. Gym Specialties</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {DEFAULT_SPECIALTIES.map(sp => (
-            <button key={sp} type="button" onClick={() => toggleSpecialty(sp)} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${data.specialties?.includes(sp) ? 'bg-[#0D9488]/20 border-[#0D9488] text-[#0D9488]' : 'bg-[#FFFFFF] border-[#CCFBF1] text-[#475569] hover:text-[#1E293B] hover:border-[#444]'}`}>
+            <button key={sp} type="button" onClick={() => toggleSpecialty(sp)} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${data.specialties?.includes(sp) ? 'bg-[#8FA89B]/20 border-[#8FA89B] text-[#8FA89B]' : 'bg-[#FFFFFF] border-[#DCD9CD] text-[#4A514D] hover:text-[#202522] hover:border-[#444]'}`}>
               {sp}
             </button>
           ))}
           {data.specialties?.filter((s: string) => !DEFAULT_SPECIALTIES.includes(s)).map((sp: string) => (
-             <button key={sp} type="button" onClick={() => toggleSpecialty(sp)} className="px-4 py-2 rounded-full text-sm font-medium transition-colors border bg-[#0D9488]/20 border-[#0D9488] text-[#0D9488] flex items-center gap-1">
+             <button key={sp} type="button" onClick={() => toggleSpecialty(sp)} className="px-4 py-2 rounded-full text-sm font-medium transition-colors border bg-[#8FA89B]/20 border-[#8FA89B] text-[#8FA89B] flex items-center gap-1">
                {sp} <X size={14} />
              </button>
           ))}
         </div>
         <div className="flex gap-2">
-          <input type="text" value={customSpecialty} onChange={e => setCustomSpecialty(e.target.value)} placeholder="Add custom specialty..." className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl px-4 py-2 text-sm text-[#1E293B] outline-none focus:border-[#16A34A]" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCustomSpecialty())} />
-          <button type="button" onClick={addCustomSpecialty} className="px-4 py-2 bg-[#E2E8F0] hover:bg-[#333] rounded-xl text-white text-sm font-medium transition-colors">Add</button>
+          <input type="text" value={customSpecialty} onChange={e => setCustomSpecialty(e.target.value)} placeholder="Add custom specialty..." className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-2 text-sm text-[#202522] outline-none focus:border-[#34483F]" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCustomSpecialty())} />
+          <button type="button" onClick={addCustomSpecialty} className="px-4 py-2 bg-[#E8E5DA] hover:bg-[#333] rounded-xl text-white text-sm font-medium transition-colors">Add</button>
         </div>
       </section>
 
       {/* SECTION C: FACILITIES */}
       <section>
-        <h3 className="text-xl font-bold text-[#1E293B] mb-4 border-b border-[#CCFBF1] pb-2">C. Available Facilities</h3>
+        <h3 className="text-xl font-bold text-[#202522] mb-4 border-b border-[#DCD9CD] pb-2">C. Available Facilities</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {DEFAULT_FACILITIES.map(fac => (
-            <button key={fac} type="button" onClick={() => toggleFacility(fac)} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${data.facilities?.includes(fac) ? 'bg-blue-500/20 border-blue-500 text-blue-400' : 'bg-[#FFFFFF] border-[#CCFBF1] text-[#475569] hover:text-[#1E293B] hover:border-[#444]'}`}>
+            <button key={fac} type="button" onClick={() => toggleFacility(fac)} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${data.facilities?.includes(fac) ? 'bg-blue-500/20 border-blue-500 text-blue-400' : 'bg-[#FFFFFF] border-[#DCD9CD] text-[#4A514D] hover:text-[#202522] hover:border-[#444]'}`}>
               {fac}
             </button>
           ))}
@@ -184,46 +184,46 @@ export const Step5GymDetails = ({ data, updateData, errors }: any) => {
           ))}
         </div>
         <div className="flex gap-2">
-          <input type="text" value={customFacility} onChange={e => setCustomFacility(e.target.value)} placeholder="Add custom facility..." className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl px-4 py-2 text-sm text-[#1E293B] outline-none focus:border-[#16A34A]" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCustomFacility())} />
-          <button type="button" onClick={addCustomFacility} className="px-4 py-2 bg-[#E2E8F0] hover:bg-[#333] rounded-xl text-white text-sm font-medium transition-colors">Add</button>
+          <input type="text" value={customFacility} onChange={e => setCustomFacility(e.target.value)} placeholder="Add custom facility..." className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-2 text-sm text-[#202522] outline-none focus:border-[#34483F]" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCustomFacility())} />
+          <button type="button" onClick={addCustomFacility} className="px-4 py-2 bg-[#E8E5DA] hover:bg-[#333] rounded-xl text-white text-sm font-medium transition-colors">Add</button>
         </div>
       </section>
 
       {/* SECTION D: OPERATING HOURS */}
       <section>
-        <div className="flex justify-between items-end border-b border-[#CCFBF1] pb-2 mb-4">
-          <h3 className="text-xl font-bold text-[#1E293B] flex items-center gap-2"><Clock className="text-[#0D9488]" size={20} /> D. Operating Hours</h3>
-          <button type="button" onClick={copyMonday} className="text-xs font-medium text-[#16A34A] hover:underline bg-[#16A34A]/10 px-3 py-1 rounded-full">Copy Monday to Weekdays</button>
+        <div className="flex justify-between items-end border-b border-[#DCD9CD] pb-2 mb-4">
+          <h3 className="text-xl font-bold text-[#202522] flex items-center gap-2"><Clock className="text-[#8FA89B]" size={20} /> D. Operating Hours</h3>
+          <button type="button" onClick={copyMonday} className="text-xs font-medium text-[#34483F] hover:underline bg-[#34483F]/10 px-3 py-1 rounded-full">Copy Monday to Weekdays</button>
         </div>
         
         <div className="space-y-3">
           {data.operatingHours.map((hour: any, idx: number) => (
-            <div key={hour.dayOfWeek} className="flex flex-col md:flex-row md:items-center gap-4 bg-[#FFFFFF] p-3 rounded-xl border border-[#CCFBF1]">
+            <div key={hour.dayOfWeek} className="flex flex-col md:flex-row md:items-center gap-4 bg-[#FFFFFF] p-3 rounded-xl border border-[#DCD9CD]">
               <div className="w-32 flex items-center justify-between">
-                <span className={`font-semibold ${hour.isOpen ? 'text-[#1E293B]' : 'text-[#475569]'}`}>{hour.dayOfWeek}</span>
+                <span className={`font-semibold ${hour.isOpen ? 'text-[#202522]' : 'text-[#4A514D]'}`}>{hour.dayOfWeek}</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" checked={hour.isOpen} onChange={e => handleHourChange(idx, 'isOpen', e.target.checked)} />
-                  <div className="w-9 h-5 bg-[#E2E8F0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#16A34A]"></div>
+                  <div className="w-9 h-5 bg-[#E8E5DA] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#34483F]"></div>
                 </label>
               </div>
               
               {hour.isOpen ? (
                 <div className="flex-1 flex flex-wrap items-center gap-3">
-                  <label className="flex items-center space-x-2 text-sm text-[#475569]">
-                    <input type="checkbox" checked={hour.is24Hours} onChange={e => handleHourChange(idx, 'is24Hours', e.target.checked)} className="rounded border-[#CCFBF1] bg-[#FFFFFF] text-[#16A34A] focus:ring-0 accent-[#EF4444]" />
+                  <label className="flex items-center space-x-2 text-sm text-[#4A514D]">
+                    <input type="checkbox" checked={hour.is24Hours} onChange={e => handleHourChange(idx, 'is24Hours', e.target.checked)} className="rounded border-[#DCD9CD] bg-[#FFFFFF] text-[#34483F] focus:ring-0 accent-[#EF4444]" />
                     <span>24 Hours</span>
                   </label>
                   
                   {!hour.is24Hours && (
                     <>
                       <TimePicker value={hour.openingTime} onChange={(v: string) => handleHourChange(idx, 'openingTime', v)} />
-                      <span className="text-[#475569] text-sm">to</span>
+                      <span className="text-[#4A514D] text-sm">to</span>
                       <TimePicker value={hour.closingTime} onChange={(v: string) => handleHourChange(idx, 'closingTime', v)} />
                     </>
                   )}
                 </div>
               ) : (
-                <div className="flex-1 text-sm text-[#0D9488] italic font-medium">Closed</div>
+                <div className="flex-1 text-sm text-[#8FA89B] italic font-medium">Closed</div>
               )}
             </div>
           ))}
@@ -232,28 +232,28 @@ export const Step5GymDetails = ({ data, updateData, errors }: any) => {
 
       {/* SECTION E: SESSIONS */}
       <section>
-        <div className="flex justify-between items-end border-b border-[#CCFBF1] pb-2 mb-4">
-          <h3 className="text-xl font-bold text-[#1E293B] flex items-center gap-2"><Calendar className="text-blue-500" size={20} /> E. Session Planning</h3>
-          <button type="button" onClick={() => setShowSessionForm(true)} className="text-xs font-medium text-[#1E293B] hover:bg-[#333] bg-[#E2E8F0] px-3 py-1.5 rounded-xl flex items-center gap-1 transition-colors"><Plus size={14}/> Add Session</button>
+        <div className="flex justify-between items-end border-b border-[#DCD9CD] pb-2 mb-4">
+          <h3 className="text-xl font-bold text-[#202522] flex items-center gap-2"><Calendar className="text-blue-500" size={20} /> E. Session Planning</h3>
+          <button type="button" onClick={() => setShowSessionForm(true)} className="text-xs font-medium text-[#202522] hover:bg-[#333] bg-[#E8E5DA] px-3 py-1.5 rounded-xl flex items-center gap-1 transition-colors"><Plus size={14}/> Add Session</button>
         </div>
 
         {showSessionForm && (
           <div className="bg-[#FFFFFF] p-4 rounded-xl border border-blue-500/30 mb-4 grid md:grid-cols-5 gap-4 items-end">
             <div className="md:col-span-2">
-              <label className="block text-xs text-[#475569] mb-1">Session Name *</label>
-              <input type="text" placeholder="e.g. Morning Cardio" value={sessionForm.name} onChange={e => setSessionForm({...sessionForm, name: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg px-3 py-2 text-sm text-[#1E293B]" />
+              <label className="block text-xs text-[#4A514D] mb-1">Session Name *</label>
+              <input type="text" placeholder="e.g. Morning Cardio" value={sessionForm.name} onChange={e => setSessionForm({...sessionForm, name: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-lg px-3 py-2 text-sm text-[#202522]" />
             </div>
             <div>
-              <label className="block text-xs text-[#475569] mb-1">Start *</label>
+              <label className="block text-xs text-[#4A514D] mb-1">Start *</label>
               <TimePicker value={sessionForm.start} onChange={(v: string) => setSessionForm({...sessionForm, start: v})} />
             </div>
             <div>
-              <label className="block text-xs text-[#475569] mb-1">End *</label>
+              <label className="block text-xs text-[#4A514D] mb-1">End *</label>
               <TimePicker value={sessionForm.end} onChange={(v: string) => setSessionForm({...sessionForm, end: v})} />
             </div>
             <div className="flex gap-2">
               <button type="button" onClick={addSession} className="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2 text-sm font-bold">Save</button>
-              <button type="button" onClick={() => setShowSessionForm(false)} className="px-3 bg-[#E2E8F0] hover:bg-[#333] text-white rounded-lg py-2"><X size={16}/></button>
+              <button type="button" onClick={() => setShowSessionForm(false)} className="px-3 bg-[#E8E5DA] hover:bg-[#333] text-white rounded-lg py-2"><X size={16}/></button>
             </div>
           </div>
         )}
@@ -261,17 +261,17 @@ export const Step5GymDetails = ({ data, updateData, errors }: any) => {
         {data.sessions?.length > 0 ? (
           <div className="grid md:grid-cols-2 gap-4">
             {data.sessions.map((sess: any) => (
-              <div key={sess.id} className="bg-[#FFFFFF] border border-[#CCFBF1] p-4 rounded-xl flex justify-between items-center">
+              <div key={sess.id} className="bg-[#FFFFFF] border border-[#DCD9CD] p-4 rounded-xl flex justify-between items-center">
                 <div>
-                  <h4 className="font-bold text-[#1E293B] text-sm">{sess.name}</h4>
-                  <p className="text-xs text-[#475569] mt-1">{sess.start} - {sess.end}</p>
+                  <h4 className="font-bold text-[#202522] text-sm">{sess.name}</h4>
+                  <p className="text-xs text-[#4A514D] mt-1">{sess.start} - {sess.end}</p>
                 </div>
-                <button type="button" onClick={() => removeSession(sess.id)} className="text-[#475569] hover:text-[#0D9488] transition-colors p-2"><X size={18} /></button>
+                <button type="button" onClick={() => removeSession(sess.id)} className="text-[#4A514D] hover:text-[#8FA89B] transition-colors p-2"><X size={18} /></button>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-[#475569] italic text-center py-4 bg-[#FFFFFF] rounded-xl border border-dashed border-[#CCFBF1]">No sessions added yet. You can add common training periods.</p>
+          <p className="text-sm text-[#4A514D] italic text-center py-4 bg-[#FFFFFF] rounded-xl border border-dashed border-[#DCD9CD]">No sessions added yet. You can add common training periods.</p>
         )}
       </section>
 

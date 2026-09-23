@@ -56,30 +56,30 @@ const GymAdminTrainerSchedule = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Trainer Schedule</h1>
-          <p className="text-[#475569] mt-1">Manage staff shifts, classes, and floor coverage.</p>
+          <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Trainer Schedule</h1>
+          <p className="text-[#4A514D] mt-1">Manage staff shifts, classes, and floor coverage.</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 shadow-lg shadow-[#16A34A]/20 self-start md:self-auto"
+          className="px-4 py-2 bg-[#34483F] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shadow-lg shadow-[#34483F]/20 self-start md:self-auto"
         >
           <Plus size={20} /> Assign Shift
         </button>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-4">
             <div className="flex space-x-1">
-              <button className="p-2 bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg hover:bg-[#E2E8F0] transition-colors text-[#1E293B]">
+              <button className="p-2 bg-[#FFFFFF] border border-[#DCD9CD] rounded-lg hover:bg-[#E8E5DA] transition-colors text-[#202522]">
                 <ChevronLeft size={18} />
               </button>
-              <button className="p-2 bg-[#FFFFFF] border border-[#CCFBF1] rounded-lg hover:bg-[#E2E8F0] transition-colors text-[#1E293B]">
+              <button className="p-2 bg-[#FFFFFF] border border-[#DCD9CD] rounded-lg hover:bg-[#E8E5DA] transition-colors text-[#202522]">
                 <ChevronRight size={18} />
               </button>
             </div>
-            <h2 className="text-lg font-bold text-[#1E293B] flex items-center">
-              <CalendarIcon size={18} className="mr-2 text-[#16A34A]" />
+            <h2 className="text-lg font-bold text-[#202522] flex items-center">
+              <CalendarIcon size={18} className="mr-2 text-[#34483F]" />
               {currentWeek}
             </h2>
           </div>
@@ -91,15 +91,15 @@ const GymAdminTrainerSchedule = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto custom-scrollbar border border-[#CCFBF1] rounded-xl bg-[#FFFFFF]">
+        <div className="overflow-x-auto custom-scrollbar border border-[#DCD9CD] rounded-xl bg-[#FFFFFF]">
           <div className="min-w-[800px]">
             {/* Header */}
-            <div className="grid grid-cols-8 border-b border-[#CCFBF1] bg-[#F8FAFC]">
-              <div className="p-4 border-r border-[#CCFBF1] flex items-center justify-center text-[#475569] font-semibold text-sm">
+            <div className="grid grid-cols-8 border-b border-[#DCD9CD] bg-[#F2EFE8]">
+              <div className="p-4 border-r border-[#DCD9CD] flex items-center justify-center text-[#4A514D] font-semibold text-sm">
                 Time
               </div>
               {DAYS.map(day => (
-                <div key={day} className="p-4 border-r border-[#CCFBF1] text-center font-semibold text-[#1E293B] last:border-0">
+                <div key={day} className="p-4 border-r border-[#DCD9CD] text-center font-semibold text-[#202522] last:border-0">
                   {day}
                 </div>
               ))}
@@ -108,14 +108,14 @@ const GymAdminTrainerSchedule = () => {
             {/* Grid */}
             <div className="relative">
               {HOURS.map((hour) => (
-                <div key={hour} className="grid grid-cols-8 border-b border-[#CCFBF1] last:border-0">
-                  <div className="p-4 border-r border-[#CCFBF1] text-center text-sm text-[#475569] font-medium bg-[#FFFFFF]">
+                <div key={hour} className="grid grid-cols-8 border-b border-[#DCD9CD] last:border-0">
+                  <div className="p-4 border-r border-[#DCD9CD] text-center text-sm text-[#4A514D] font-medium bg-[#FFFFFF]">
                     {hour}
                   </div>
                   {DAYS.map(day => {
                     const shift = shifts.find(s => s.day === day && s.time === hour);
                     return (
-                      <div key={`${day}-${hour}`} className="p-2 border-r border-[#CCFBF1] last:border-0 min-h-[100px] relative">
+                      <div key={`${day}-${hour}`} className="p-2 border-r border-[#DCD9CD] last:border-0 min-h-[100px] relative">
                         {shift && (
                           <div className={`absolute top-2 left-2 right-2 p-2 rounded-lg border shadow-lg z-10 flex flex-col ${shift.color}`} style={{ height: `calc(${shift.duration * 25}px)` }}>
                             <span className="text-xs font-black uppercase tracking-wider">{shift.type}</span>
@@ -136,13 +136,13 @@ const GymAdminTrainerSchedule = () => {
       {/* Assign Shift Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full shadow-2xl border border-[#CCFBF1] overflow-hidden">
-            <div className="p-6 border-b border-[#CCFBF1] flex justify-between items-center bg-[#F8FAFC]">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full shadow-2xl border border-[#DCD9CD] overflow-hidden">
+            <div className="p-6 border-b border-[#DCD9CD] flex justify-between items-center bg-[#F2EFE8]">
               <div>
-                <h2 className="text-xl font-bold text-[#1E293B]">Assign Shift</h2>
-                <p className="text-sm text-[#475569] mt-0.5">Schedule a new shift for a trainer</p>
+                <h2 className="text-xl font-bold text-[#202522]">Assign Shift</h2>
+                <p className="text-sm text-[#4A514D] mt-0.5">Schedule a new shift for a trainer</p>
               </div>
-              <button onClick={() => setShowModal(false)} className="p-2 text-[#475569] hover:text-[#1E293B] hover:bg-gray-100 rounded-lg transition-colors">
+              <button onClick={() => setShowModal(false)} className="p-2 text-[#4A514D] hover:text-[#202522] hover:bg-gray-100 rounded-lg transition-colors">
                 <X size={22} />
               </button>
             </div>
@@ -152,12 +152,12 @@ const GymAdminTrainerSchedule = () => {
 
                 {/* Trainer */}
                 <div>
-                  <label className="block text-xs font-bold text-[#475569] uppercase tracking-wider mb-2">Trainer *</label>
+                  <label className="block text-xs font-bold text-[#4A514D] uppercase tracking-wider mb-2">Trainer *</label>
                   <select
                     required
                     value={form.trainer}
                     onChange={e => setForm({ ...form, trainer: e.target.value })}
-                    className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-3 outline-none focus:border-[#16A34A] text-sm font-medium text-[#1E293B]"
+                    className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-4 py-3 outline-none focus:border-[#34483F] text-sm font-medium text-[#202522]"
                   >
                     {MOCK_TRAINERS.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
@@ -165,12 +165,12 @@ const GymAdminTrainerSchedule = () => {
 
                 {/* Day */}
                 <div>
-                  <label className="block text-xs font-bold text-[#475569] uppercase tracking-wider mb-2">Day *</label>
+                  <label className="block text-xs font-bold text-[#4A514D] uppercase tracking-wider mb-2">Day *</label>
                   <select
                     required
                     value={form.day}
                     onChange={e => setForm({ ...form, day: e.target.value })}
-                    className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-3 outline-none focus:border-[#16A34A] text-sm font-medium text-[#1E293B]"
+                    className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-4 py-3 outline-none focus:border-[#34483F] text-sm font-medium text-[#202522]"
                   >
                     {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
                   </select>
@@ -179,23 +179,23 @@ const GymAdminTrainerSchedule = () => {
                 {/* Time & Duration */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-[#475569] uppercase tracking-wider mb-2">Start Time *</label>
+                    <label className="block text-xs font-bold text-[#4A514D] uppercase tracking-wider mb-2">Start Time *</label>
                     <select
                       required
                       value={form.time}
                       onChange={e => setForm({ ...form, time: e.target.value })}
-                      className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-3 outline-none focus:border-[#16A34A] text-sm font-medium text-[#1E293B]"
+                      className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-4 py-3 outline-none focus:border-[#34483F] text-sm font-medium text-[#202522]"
                     >
                       {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[#475569] uppercase tracking-wider mb-2">Duration (hrs) *</label>
+                    <label className="block text-xs font-bold text-[#4A514D] uppercase tracking-wider mb-2">Duration (hrs) *</label>
                     <select
                       required
                       value={form.duration}
                       onChange={e => setForm({ ...form, duration: Number(e.target.value) })}
-                      className="w-full bg-[#F8FAFC] border border-[#CCFBF1] rounded-xl px-4 py-3 outline-none focus:border-[#16A34A] text-sm font-medium text-[#1E293B]"
+                      className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-4 py-3 outline-none focus:border-[#34483F] text-sm font-medium text-[#202522]"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option key={n} value={n}>{n} {n === 1 ? 'Hour' : 'Hours'}</option>)}
                     </select>
@@ -204,14 +204,14 @@ const GymAdminTrainerSchedule = () => {
 
                 {/* Shift Type */}
                 <div>
-                  <label className="block text-xs font-bold text-[#475569] uppercase tracking-wider mb-2">Shift Type *</label>
+                  <label className="block text-xs font-bold text-[#4A514D] uppercase tracking-wider mb-2">Shift Type *</label>
                   <div className="grid grid-cols-2 gap-3">
                     {SHIFT_TYPES.map(st => (
                       <button
                         key={st.label}
                         type="button"
                         onClick={() => setForm({ ...form, type: st.label })}
-                        className={`px-4 py-3 rounded-xl border-2 text-sm font-bold transition-all text-left ${form.type === st.label ? `${st.color} border-opacity-100 scale-[1.02] shadow-md` : 'border-[#CCFBF1] text-[#475569] hover:border-[#16A34A]/30 bg-[#F8FAFC]'}`}
+                        className={`px-4 py-3 rounded-xl border-2 text-sm font-bold transition-all text-left ${form.type === st.label ? `${st.color} border-opacity-100 scale-[1.02] shadow-md` : 'border-[#DCD9CD] text-[#4A514D] hover:border-[#34483F]/30 bg-[#F2EFE8]'}`}
                       >
                         {st.label}
                       </button>
@@ -221,17 +221,17 @@ const GymAdminTrainerSchedule = () => {
 
               </div>
 
-              <div className="p-5 bg-[#F8FAFC] border-t border-[#CCFBF1] flex justify-end gap-3">
+              <div className="p-5 bg-[#F2EFE8] border-t border-[#DCD9CD] flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-6 py-2.5 border border-[#E2E8F0] text-[#475569] rounded-xl font-bold hover:bg-gray-100 transition-colors"
+                  className="px-6 py-2.5 border border-[#E8E5DA] text-[#4A514D] rounded-xl font-bold hover:bg-gray-100 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-8 py-2.5 bg-[#16A34A] text-white rounded-xl font-bold hover:bg-[#15803D] transition-colors shadow-lg shadow-[#16A34A]/20 flex items-center gap-2"
+                  className="px-8 py-2.5 bg-[#34483F] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#34483F]/20 flex items-center gap-2"
                 >
                   <Save size={16} /> Assign Shift
                 </button>

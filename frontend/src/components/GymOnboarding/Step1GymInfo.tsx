@@ -3,30 +3,30 @@ import { Building2 } from 'lucide-react';
 export const Step1GymInfo = ({ data, updateData, errors }: any) => {
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#CCFBF1]">
-        <Building2 className="text-[#16A34A]" size={24} />
+      <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#DCD9CD]">
+        <Building2 className="text-[#34483F]" size={24} />
         <h2 className="text-xl font-bold">Gym Information</h2>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-[#475569] mb-2">Gym Name *</label>
+          <label className="block text-sm font-medium text-[#4A514D] mb-2">Gym Name *</label>
           <input
             type="text"
             value={data.gymName}
             onChange={(e) => updateData({ gymName: e.target.value })}
-            className={`w-full bg-[#FFFFFF] border ${errors.gymName ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} rounded-xl px-4 py-3 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none transition-colors`}
+            className={`w-full bg-[#FFFFFF] border ${errors.gymName ? 'border-[#8FA89B]' : 'border-[#DCD9CD]'} rounded-xl px-4 py-3 text-sm text-[#202522] focus:border-[#34483F] outline-none transition-colors`}
             placeholder="e.g. FitZone Elite"
           />
-          {errors.gymName && <p className="text-[#0D9488] text-xs mt-1">{errors.gymName}</p>}
+          {errors.gymName && <p className="text-[#8FA89B] text-xs mt-1">{errors.gymName}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-[#475569] mb-2">Gym Type *</label>
+          <label className="block text-sm font-medium text-[#4A514D] mb-2">Gym Type *</label>
           <select
             value={data.gymType}
             onChange={(e) => updateData({ gymType: e.target.value })}
-            className={`w-full bg-[#FFFFFF] border ${errors.gymType ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} rounded-xl px-4 py-3 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none transition-colors appearance-none cursor-pointer`}
+            className={`w-full bg-[#FFFFFF] border ${errors.gymType ? 'border-[#8FA89B]' : 'border-[#DCD9CD]'} rounded-xl px-4 py-3 text-sm text-[#202522] focus:border-[#34483F] outline-none transition-colors appearance-none cursor-pointer`}
           >
             <option value="">Select Type</option>
             <option value="Commercial Gym">Commercial Gym</option>
@@ -37,29 +37,29 @@ export const Step1GymInfo = ({ data, updateData, errors }: any) => {
             <option value="Women's Fitness Center">Women's Fitness Center</option>
             <option value="Multi-Sport Fitness Center">Multi-Sport Fitness Center</option>
           </select>
-          {errors.gymType && <p className="text-[#0D9488] text-xs mt-1">{errors.gymType}</p>}
+          {errors.gymType && <p className="text-[#8FA89B] text-xs mt-1">{errors.gymType}</p>}
         </div>
       </div>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-[#475569] mb-2">Training Mode *</label>
-          <p className="text-xs text-[#475569] mb-2">Select how your gym provides trainer-led fitness services.</p>
+          <label className="block text-sm font-medium text-[#4A514D] mb-2">Training Mode *</label>
+          <p className="text-xs text-[#4A514D] mb-2">Select how your gym provides trainer-led fitness services.</p>
           <select
             value={data.trainingMode || ''}
             onChange={(e) => updateData({ trainingMode: e.target.value })}
-            className={`w-full bg-[#FFFFFF] border ${errors.trainingMode ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} rounded-xl px-4 py-3 text-sm text-[#1E293B] focus:border-[#16A34A] outline-none transition-colors appearance-none cursor-pointer`}
+            className={`w-full bg-[#FFFFFF] border ${errors.trainingMode ? 'border-[#8FA89B]' : 'border-[#DCD9CD]'} rounded-xl px-4 py-3 text-sm text-[#202522] focus:border-[#34483F] outline-none transition-colors appearance-none cursor-pointer`}
           >
             <option value="">Select Mode</option>
             <option value="online">Online Training</option>
             <option value="offline">Offline Training</option>
             <option value="both">Both Online & Offline</option>
           </select>
-          {errors.trainingMode && <p className="text-[#0D9488] text-xs mt-1">{errors.trainingMode}</p>}
+          {errors.trainingMode && <p className="text-[#8FA89B] text-xs mt-1">{errors.trainingMode}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-[#475569] mb-2">Services Offered *</label>
-          <div className={`grid grid-cols-2 gap-3 p-4 border rounded-xl ${errors.services ? 'border-[#0D9488] bg-[#F0FDFA]/30' : 'border-[#CCFBF1] bg-[#F8FAFC]'}`}>
+          <label className="block text-sm font-medium text-[#4A514D] mb-2">Services Offered *</label>
+          <div className={`grid grid-cols-2 gap-3 p-4 border rounded-xl ${errors.services ? 'border-[#8FA89B] bg-[#F5F3EE]/30' : 'border-[#DCD9CD] bg-[#F2EFE8]'}`}>
             {['Gym Membership', 'Personal Training', 'Group Classes', 'Online Training', 'Offline Training', 'AI Fitness Coaching', 'Diet Guidance'].map(service => (
               <label key={service} className="flex items-center space-x-2 cursor-pointer">
                 <input
@@ -70,13 +70,13 @@ export const Step1GymInfo = ({ data, updateData, errors }: any) => {
                     if (e.target.checked) updateData({ services: [...current, service] });
                     else updateData({ services: current.filter((s: string) => s !== service) });
                   }}
-                  className="rounded text-[#16A34A] focus:ring-[#16A34A] border-[#CBD5E1]"
+                  className="rounded text-[#34483F] focus:ring-[#34483F] border-[#CBD5E1]"
                 />
-                <span className="text-sm text-[#1E293B]">{service}</span>
+                <span className="text-sm text-[#202522]">{service}</span>
               </label>
             ))}
           </div>
-          {errors.services && <p className="text-[#0D9488] text-xs mt-1">{errors.services}</p>}
+          {errors.services && <p className="text-[#8FA89B] text-xs mt-1">{errors.services}</p>}
         </div>
       </div>
     </div>

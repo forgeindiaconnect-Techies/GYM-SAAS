@@ -152,39 +152,39 @@ const GymOwnerRegisterPage = () => {
   };
 
   const inputCls = (field: string) =>
-    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#0D9488]' : 'border-[#CCFBF1]'} text-[#1E293B] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#16A34A] transition-colors placeholder-[#555]`;
+    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#8FA89B]' : 'border-[#DCD9CD]'} text-[#202522] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F] transition-colors placeholder-[#555]`;
 
   const selBtnCls = (active: boolean) =>
-    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#16A34A] text-white border-[#16A34A] font-semibold' : 'bg-[#FFFFFF] border-[#CCFBF1] text-[#475569] hover:border-[#16A34A]/50'}`;
+    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#34483F] text-white border-[#34483F] font-semibold' : 'bg-[#FFFFFF] border-[#DCD9CD] text-[#4A514D] hover:border-[#34483F]/50'}`;
 
   return (
-    <div className="min-h-screen bg-[#F0FDFA] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#F5F3EE] flex flex-col items-center justify-center px-4 py-12">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
-      <Link to="/" className="absolute top-8 left-8 text-[#475569] hover:text-[#16A34A] flex items-center gap-2 transition-colors z-10">
+      <Link to="/" className="absolute top-8 left-8 text-[#4A514D] hover:text-[#34483F] flex items-center gap-2 transition-colors z-10">
         <ArrowLeft size={20} />
         <span className="font-medium text-sm">Back to Home</span>
       </Link>
 
       <Link to="/" className="flex items-center space-x-2 mb-8 group z-10">
-        <div className="w-9 h-9 bg-[#16A34A] rounded-md flex items-center justify-center">
+        <div className="w-9 h-9 bg-[#34483F] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#16A34A]">AI GYM</span>
+        <span className="text-2xl font-bold tracking-tight text-[#34483F]">AI GYM</span>
       </Link>
 
-      <div className="w-full max-w-3xl bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[85vh]">
+      <div className="w-full max-w-3xl bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[85vh]">
         {/* Header and Progress Indicator */}
-        <div className="bg-[#FFFFFF] border-b border-[#CCFBF1] px-8 py-5 flex items-center justify-between shrink-0 overflow-x-auto custom-scrollbar">
-          <h1 className="text-xl font-bold text-[#1E293B] shrink-0 mr-8 whitespace-nowrap">Gym Owner Registration</h1>
+        <div className="bg-[#FFFFFF] border-b border-[#DCD9CD] px-8 py-5 flex items-center justify-between shrink-0 overflow-x-auto custom-scrollbar">
+          <h1 className="text-xl font-bold text-[#202522] shrink-0 mr-8 whitespace-nowrap">Gym Owner Registration</h1>
           <div className="flex items-center space-x-2">
             {STEPS.map((s, i) => (
               <div key={i} className="flex items-center space-x-2 shrink-0" title={s}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#16A34A] text-white' : i === step ? 'bg-[#16A34A] text-white ring-2 ring-[#EF4444]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#E2E8F0] text-[#555]'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#34483F] text-white' : i === step ? 'bg-[#34483F] text-white ring-2 ring-[#EF4444]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#E8E5DA] text-[#555]'}`}>
                   {i < step ? <Check size={14} /> : i + 1}
                 </div>
-                <span className={`text-xs hidden sm:block whitespace-nowrap ${i === step ? 'text-[#1E293B] font-medium' : 'text-[#555]'}`}>{s}</span>
-                {i < STEPS.length - 1 && <div className={`h-px w-6 sm:w-8 ${i < step ? 'bg-[#16A34A]' : 'bg-[#E2E8F0]'}`} />}
+                <span className={`text-xs hidden sm:block whitespace-nowrap ${i === step ? 'text-[#202522] font-medium' : 'text-[#555]'}`}>{s}</span>
+                {i < STEPS.length - 1 && <div className={`h-px w-6 sm:w-8 ${i < step ? 'bg-[#34483F]' : 'bg-[#E8E5DA]'}`} />}
               </div>
             ))}
           </div>
@@ -204,14 +204,14 @@ const GymOwnerRegisterPage = () => {
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t border-[#CCFBF1] p-6 bg-[#FFFFFF] shrink-0 flex flex-col">
+        <div className="border-t border-[#DCD9CD] p-6 bg-[#FFFFFF] shrink-0 flex flex-col">
           {apiError && (
-            <div className="flex items-center space-x-3 bg-[#0D9488]/10 border border-[#0D9488]/30 text-teal-400 rounded-xl px-4 py-3 mb-4 text-sm">
+            <div className="flex items-center space-x-3 bg-[#8FA89B]/10 border border-[#8FA89B]/30 text-teal-400 rounded-xl px-4 py-3 mb-4 text-sm">
               <AlertCircle size={18} className="shrink-0" /><span>{apiError}</span>
             </div>
           )}
           <div className="flex justify-between items-center w-full">
-            <button type="button" onClick={step === 0 ? () => navigate('/login') : prev} className="px-6 py-3 rounded-xl border border-[#CCFBF1] text-[#475569] hover:text-[#1E293B] hover:border-[#555] transition-colors flex items-center space-x-2">
+            <button type="button" onClick={step === 0 ? () => navigate('/login') : prev} className="px-6 py-3 rounded-xl border border-[#DCD9CD] text-[#4A514D] hover:text-[#202522] hover:border-[#555] transition-colors flex items-center space-x-2">
               {step === 0 ? <span>Back to Login</span> : <><ChevronLeft size={18} /><span>Back</span></>}
             </button>
             
@@ -219,7 +219,7 @@ const GymOwnerRegisterPage = () => {
               type="button" 
               onClick={step === STEPS.length - 1 ? handleSubmit : next}
               disabled={isLoading}
-              className="px-8 py-3 bg-[#16A34A] text-[#1E293B] font-semibold rounded-xl hover:bg-[#15803D] transition-colors flex items-center space-x-2 disabled:opacity-50"
+              className="px-8 py-3 bg-[#34483F] text-[#202522] font-semibold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center space-x-2 disabled:opacity-50"
             >
               {isLoading ? (
                 <><Loader2 size={18} className="animate-spin" /><span>Processing...</span></>

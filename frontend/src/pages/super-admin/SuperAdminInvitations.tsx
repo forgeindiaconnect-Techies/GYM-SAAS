@@ -27,13 +27,13 @@ const SuperAdminInvitations = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#1E293B] tracking-tight">Gym Invitations</h1>
-        <p className="text-[#475569] mt-1">Track and manage invitations sent to potential gym partners.</p>
+        <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Gym Invitations</h1>
+        <p className="text-[#4A514D] mt-1">Track and manage invitations sent to potential gym partners.</p>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden">
-        <table className="w-full text-left text-sm text-[#475569]">
-          <thead className="bg-[#FFFFFF] border-b border-[#CCFBF1] text-[#1E293B]">
+      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl overflow-hidden">
+        <table className="w-full text-left text-sm text-[#4A514D]">
+          <thead className="bg-[#FFFFFF] border-b border-[#DCD9CD] text-[#202522]">
             <tr>
               <th className="px-6 py-4 font-medium">Gym Name</th>
               <th className="px-6 py-4 font-medium">Recipient</th>
@@ -43,12 +43,12 @@ const SuperAdminInvitations = () => {
               <th className="px-6 py-4 font-medium">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#CCFBF1]">
+          <tbody className="divide-y divide-[#DCD9CD]">
             {invites.map(invite => (
-              <tr key={invite.id} className="hover:bg-[#F0FDFA]">
-                <td className="px-6 py-4 font-semibold text-[#1E293B]">{invite.gymName}</td>
+              <tr key={invite.id} className="hover:bg-[#F5F3EE]">
+                <td className="px-6 py-4 font-semibold text-[#202522]">{invite.gymName}</td>
                 <td className="px-6 py-4">
-                  <div className="text-[#1E293B]">{invite.owner}</div>
+                  <div className="text-[#202522]">{invite.owner}</div>
                   <div className="text-xs">{invite.email}</div>
                 </td>
                 <td className="px-6 py-4">{invite.date}</td>
@@ -58,7 +58,7 @@ const SuperAdminInvitations = () => {
                 </td>
                 <td className="px-6 py-4 flex space-x-3">
                   <button onClick={() => handleResend(invite)} className="text-blue-500 hover:text-blue-400 flex items-center gap-1" title="Resend"><Send size={16}/></button>
-                  <button onClick={() => handleCancel(invite)} className="text-[#0D9488] hover:text-teal-400 flex items-center gap-1" title="Cancel"><Trash2 size={16}/></button>
+                  <button onClick={() => handleCancel(invite)} className="text-[#8FA89B] hover:text-teal-400 flex items-center gap-1" title="Cancel"><Trash2 size={16}/></button>
                 </td>
               </tr>
             ))}

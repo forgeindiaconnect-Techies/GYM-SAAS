@@ -2,9 +2,11 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IStoreOfflineSaleItem {
   productId: mongoose.Types.ObjectId;
+  variantId?: mongoose.Types.ObjectId;
   name: string;
   image?: string;
   sku?: string;
+  attributes?: Record<string, any>;
   quantity: number;
   sellingPrice: number;
   discountPrice?: number;
@@ -38,9 +40,11 @@ const storeOfflineSaleSchema = new Schema<IStoreOfflineSale>(
     items: [
       {
         productId: { type: Schema.Types.ObjectId, ref: 'StoreProduct', required: true },
+        variantId: { type: Schema.Types.ObjectId },
         name: { type: String, required: true },
         image: { type: String },
         sku: { type: String },
+        attributes: { type: Schema.Types.Mixed },
         quantity: { type: Number, required: true, min: 1 },
         sellingPrice: { type: Number, required: true, min: 0 },
         discountPrice: { type: Number, min: 0 },

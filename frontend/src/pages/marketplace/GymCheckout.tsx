@@ -70,24 +70,24 @@ const GymCheckout = () => {
   const isFreeTrial = Number(plan.price) === 0 || plan.name.toLowerCase().includes('trial');
 
   return (
-    <div className="min-h-screen bg-[#F0FDFA] pt-24 pb-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F5F3EE] pt-24 pb-12 px-4 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col lg:flex-row gap-8">
         
         {/* Left Column - Payment Details */}
         <div className="flex-1 space-y-6">
-          <button onClick={() => navigate(-1)} className="text-[#475569] hover:text-[#16A34A] flex items-center gap-2 text-sm font-medium transition-colors mb-4">
+          <button onClick={() => navigate(-1)} className="text-[#4A514D] hover:text-[#34483F] flex items-center gap-2 text-sm font-medium transition-colors mb-4">
             <ArrowLeft size={16} /> Back to Gym Details
           </button>
           
-          <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-8 shadow-2xl">
-            <h2 className="text-2xl font-bold text-[#1E293B] mb-6 border-b border-[#CCFBF1] pb-4">Checkout</h2>
+          <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-8 shadow-2xl">
+            <h2 className="text-2xl font-bold text-[#202522] mb-6 border-b border-[#DCD9CD] pb-4">Checkout</h2>
             
             <div className="text-center py-8">
-              <ShieldCheck size={64} className="mx-auto text-[#16A34A] mb-4" />
-              <h3 className="text-2xl font-bold text-[#1E293B] mb-2">Start Your 1-Week Free Trial</h3>
-              <p className="text-[#475569] mb-8">
+              <ShieldCheck size={64} className="mx-auto text-[#34483F] mb-4" />
+              <h3 className="text-2xl font-bold text-[#202522] mb-2">Start Your 1-Week Free Trial</h3>
+              <p className="text-[#4A514D] mb-8">
                 You will receive a 1-week free trial for the selected plan. You can upgrade to a paid subscription at any time from your dashboard.
               </p>
               <button 
@@ -95,8 +95,8 @@ const GymCheckout = () => {
                 onClick={() => handlePayment()}
                 className={`px-8 py-4 rounded-xl font-bold text-lg inline-flex items-center space-x-2 transition-all ${
                   isProcessing
-                    ? 'bg-[#E2E8F0] text-[#777] cursor-not-allowed'
-                    : 'bg-[#16A34A] text-white hover:bg-[#15803D] hover:shadow-[0_0_30px_rgba(22,163,74,0.4)] hover:-translate-y-1'
+                    ? 'bg-[#E8E5DA] text-[#777] cursor-not-allowed'
+                    : 'bg-[#34483F] text-white hover:bg-[#C6A77D] hover:shadow-[0_0_30px_rgba(22,163,74,0.4)] hover:-translate-y-1'
                 }`}
               >
                 {isProcessing ? (
@@ -111,47 +111,47 @@ const GymCheckout = () => {
 
         {/* Right Column - Order Summary */}
         <div className="lg:w-1/3">
-          <div className="bg-[#F8FAFC] border border-[#CCFBF1] rounded-2xl p-6 h-fit sticky top-24 shadow-2xl">
-            <h3 className="text-lg font-bold text-[#1E293B] mb-6 border-b border-[#CCFBF1] pb-4 flex items-center gap-2">
-              <FileText className="text-[#16A34A]" size={20} />
+          <div className="bg-[#F2EFE8] border border-[#DCD9CD] rounded-2xl p-6 h-fit sticky top-24 shadow-2xl">
+            <h3 className="text-lg font-bold text-[#202522] mb-6 border-b border-[#DCD9CD] pb-4 flex items-center gap-2">
+              <FileText className="text-[#34483F]" size={20} />
               Order Summary
             </h3>
             
             <div className="space-y-4 mb-6">
               <div>
-                <p className="text-xs text-[#475569] mb-1">Gym</p>
-                <p className="font-bold text-[#1E293B] truncate">{gym.name || 'Selected Gym'}</p>
+                <p className="text-xs text-[#4A514D] mb-1">Gym</p>
+                <p className="font-bold text-[#202522] truncate">{gym.name || 'Selected Gym'}</p>
                 <p className="text-xs text-[#555]">{gym.location?.city || 'Location unavailable'}</p>
               </div>
               
-              <div className="w-full h-px bg-[#E2E8F0]"></div>
+              <div className="w-full h-px bg-[#E8E5DA]"></div>
               
               <div>
-                <p className="text-xs text-[#475569] mb-1">Plan Selected</p>
-                <p className="font-bold text-[#1E293B]">{plan.name}</p>
+                <p className="text-xs text-[#4A514D] mb-1">Plan Selected</p>
+                <p className="font-bold text-[#202522]">{plan.name}</p>
                 <p className="text-xs text-[#555]">Duration: {plan.duration}</p>
               </div>
             </div>
 
-            <div className="border-t border-[#CCFBF1] pt-6 space-y-3 mb-6">
+            <div className="border-t border-[#DCD9CD] pt-6 space-y-3 mb-6">
               <div className="flex justify-between text-sm">
-                <span className="text-[#475569]">Plan Amount</span>
-                <span className="text-[#1E293B] font-medium">₹{Number(plan.price).toLocaleString('en-IN')}</span>
+                <span className="text-[#4A514D]">Plan Amount</span>
+                <span className="text-[#202522] font-medium">₹{Number(plan.price).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#475569]">Discount</span>
+                <span className="text-[#4A514D]">Discount</span>
                 <span className="text-green-500 font-medium">-₹0</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#475569]">Taxes (18% GST)</span>
-                <span className="text-[#1E293B] font-medium">₹{tax.toLocaleString('en-IN')}</span>
+                <span className="text-[#4A514D]">Taxes (18% GST)</span>
+                <span className="text-[#202522] font-medium">₹{tax.toLocaleString('en-IN')}</span>
               </div>
             </div>
 
             <div className="border-t border-dashed border-[#555] pt-4 flex justify-between items-end">
-              <span className="text-[#475569] font-medium">Total Payable</span>
+              <span className="text-[#4A514D] font-medium">Total Payable</span>
               <div className="text-right">
-                <div className="text-2xl font-extrabold text-[#16A34A]">₹{total.toLocaleString('en-IN')}</div>
+                <div className="text-2xl font-extrabold text-[#34483F]">₹{total.toLocaleString('en-IN')}</div>
               </div>
             </div>
             

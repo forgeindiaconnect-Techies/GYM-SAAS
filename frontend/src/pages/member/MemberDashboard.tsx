@@ -55,30 +55,30 @@ const MemberDashboard = () => {
   }, [loading, activeMembership, expiredMembership, user]);
 
   const quickLinks = [
-    { icon: Bot, label: 'AI Assistant', desc: 'Chat with your AI coach', path: '/member/ai-assistant', color: 'text-[#16A34A] bg-[#16A34A]/10 border-[#16A34A]' },
+    { icon: Bot, label: 'AI Assistant', desc: 'Chat with your AI coach', path: '/member/ai-assistant', color: 'text-[#34483F] bg-[#34483F]/10 border-[#34483F]' },
     { icon: Dumbbell, label: 'Log Workout', desc: 'Track today\'s session', path: '/member/workout', color: 'text-[#22C55E] bg-[#22C55E]/10 border-[#22C55E]' },
     { icon: TrendingUp, label: 'My Progress', desc: 'View body analytics', path: '/member/progress', color: 'text-[#aa3bff] bg-[#aa3bff]/10 border-[#aa3bff]' },
     { icon: Calendar, label: 'Book Class', desc: 'Reserve your spot', path: '/member/bookings', color: 'text-[#F59E0B] bg-[#F59E0B]/10 border-[#F59E0B]' },
   ];
 
   if (loading) {
-    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#16A34A]" size={40} /></div>;
+    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#34483F]" size={40} /></div>;
   }
 
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Welcome back, <span className="text-[#16A34A]">{user?.firstName}!</span></h1>
-          <p className="text-[#475569]">Here's your fitness overview for today.</p>
+          <h1 className="text-3xl font-bold mb-2">Welcome back, <span className="text-[#34483F]">{user?.firstName}!</span></h1>
+          <p className="text-[#4A514D]">Here's your fitness overview for today.</p>
         </div>
         
         {hasActive ? (
-          <div className="mt-4 md:mt-0 flex items-center space-x-3 bg-[#FFFFFF] px-5 py-3 rounded-2xl border border-[#CCFBF1] shadow-sm">
-            <MapPin className="text-[#16A34A]" size={20} />
+          <div className="mt-4 md:mt-0 flex items-center space-x-3 bg-[#FFFFFF] px-5 py-3 rounded-2xl border border-[#DCD9CD] shadow-sm">
+            <MapPin className="text-[#34483F]" size={20} />
             <div>
-              <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider">Current Gym</p>
-              <p className="font-bold text-[#1E293B]">{activeMembership?.gymId?.name || 'N/A'}</p>
+              <p className="text-xs text-[#A8ADA9] font-semibold uppercase tracking-wider">Current Gym</p>
+              <p className="font-bold text-[#202522]">{activeMembership?.gymId?.name || 'N/A'}</p>
             </div>
           </div>
         ) : pendingMembership ? (
@@ -124,11 +124,11 @@ const MemberDashboard = () => {
       )}
 
       {!hasActive && !pendingMembership && (user?.subscriptionStatus?.toUpperCase() === 'EXPIRED') && (
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-10 text-center mb-10 shadow-xl">
+        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-10 text-center mb-10 shadow-xl">
           <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
-          <h2 className="text-2xl font-bold text-[#1E293B] mb-2">Your subscription has expired</h2>
-          <p className="text-[#475569] mb-6 max-w-md mx-auto">Please renew your membership to continue accessing your AI GYM dashboard and features.</p>
-          <Link to="/member/upgrade" className="inline-block px-8 py-3 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-all hover:scale-105">
+          <h2 className="text-2xl font-bold text-[#202522] mb-2">Your subscription has expired</h2>
+          <p className="text-[#4A514D] mb-6 max-w-md mx-auto">Please renew your membership to continue accessing your AI GYM dashboard and features.</p>
+          <Link to="/member/upgrade" className="inline-block px-8 py-3 bg-[#34483F] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105">
             Renew Membership
           </Link>
         </div>
@@ -154,11 +154,11 @@ const MemberDashboard = () => {
       )}
 
       {!hasActive && !pendingMembership && user?.subscriptionStatus?.toUpperCase() !== 'EXPIRED' && !rejectedMembership && user?.subscriptionStatus?.toUpperCase() !== 'REJECTED' && (
-        <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-10 text-center mb-10 shadow-xl">
+        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-10 text-center mb-10 shadow-xl">
           <MapPin size={48} className="mx-auto text-[#555] mb-4" />
-          <h2 className="text-2xl font-bold text-[#1E293B] mb-2">You haven't joined a gym yet</h2>
-          <p className="text-[#475569] mb-6 max-w-md mx-auto">Discover premium gyms near you, select a membership plan, and unlock all features of the AI GYM platform.</p>
-          <Link to="/gyms" className="inline-block px-8 py-3 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-all hover:scale-105">
+          <h2 className="text-2xl font-bold text-[#202522] mb-2">You haven't joined a gym yet</h2>
+          <p className="text-[#4A514D] mb-6 max-w-md mx-auto">Discover premium gyms near you, select a membership plan, and unlock all features of the AI GYM platform.</p>
+          <Link to="/gyms" className="inline-block px-8 py-3 bg-[#34483F] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105">
             Browse Gyms
           </Link>
         </div>
@@ -179,41 +179,41 @@ const MemberDashboard = () => {
         <>
           <div className="grid md:grid-cols-4 gap-4 mb-10">
             {quickLinks.map((item, i) => (
-              <Link key={i} to={item.path} className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-5 hover:-translate-y-1 transition-transform group cursor-pointer block">
+              <Link key={i} to={item.path} className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-5 hover:-translate-y-1 transition-transform group cursor-pointer block">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${item.color}`}><item.icon size={20} /></div>
-                <h3 className="font-semibold text-[#1E293B] group-hover:text-[#16A34A] transition transition-colors">{item.label}</h3>
-                <p className="text-xs text-[#475569]">{item.desc}</p>
+                <h3 className="font-semibold text-[#202522] group-hover:text-[#34483F] transition transition-colors">{item.label}</h3>
+                <p className="text-xs text-[#4A514D]">{item.desc}</p>
               </Link>
             ))}
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="md:col-span-2 space-y-6">
-              <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6">
+              <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6">
                 <h3 className="text-lg font-bold mb-4">Today's AI Workout</h3>
-                <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-xl p-6 flex flex-col items-center justify-center text-center h-48 border-dashed">
+                <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-6 flex flex-col items-center justify-center text-center h-48 border-dashed">
                   <Dumbbell size={32} className="text-[#555] mb-3" />
-                  <p className="text-[#475569]">Generate your personalized workout plan for today.</p>
-                  <Link to="/member/ai-assistant" className="mt-4 text-[#16A34A] text-sm font-semibold hover:underline">Start Generator</Link>
+                  <p className="text-[#4A514D]">Generate your personalized workout plan for today.</p>
+                  <Link to="/member/ai-assistant" className="mt-4 text-[#34483F] text-sm font-semibold hover:underline">Start Generator</Link>
                 </div>
               </div>
             </div>
 
             <div className="space-y-6">
-              <div className="bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl p-6">
+              <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6">
                 <h3 className="text-lg font-bold mb-4">Upcoming Schedule</h3>
                 <div className="space-y-4">
                   <div className="flex space-x-3 items-start">
-                    <div className="w-2 h-2 mt-1.5 rounded-full bg-[#16A34A]"></div>
+                    <div className="w-2 h-2 mt-1.5 rounded-full bg-[#34483F]"></div>
                     <div>
                       <p className="font-medium text-sm">1-on-1 Training</p>
-                      <p className="text-xs text-[#475569]">Today at 5:00 PM</p>
+                      <p className="text-xs text-[#4A514D]">Today at 5:00 PM</p>
                     </div>
                   </div>
                   <div className="flex space-x-3 items-start">
                     <div className="w-2 h-2 mt-1.5 rounded-full bg-[#555]"></div>
                     <div>
-                      <p className="font-medium text-sm text-[#475569]">No other bookings</p>
+                      <p className="font-medium text-sm text-[#4A514D]">No other bookings</p>
                     </div>
                   </div>
                 </div>
@@ -221,13 +221,13 @@ const MemberDashboard = () => {
             </div>
           </div>
 
-          <div className="mt-10 bg-[#FFFFFF] border border-[#CCFBF1] rounded-2xl overflow-hidden shadow-sm">
-            <div className="p-6 border-b border-[#CCFBF1]">
-              <h3 className="text-lg font-bold text-[#1E293B]">Payment History</h3>
+          <div className="mt-10 bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-[#DCD9CD]">
+              <h3 className="text-lg font-bold text-[#202522]">Payment History</h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-[#475569]">
-                <thead className="bg-[#F8FAFC] border-b border-[#CCFBF1] text-[#1E293B]">
+              <table className="w-full text-left text-sm text-[#4A514D]">
+                <thead className="bg-[#F2EFE8] border-b border-[#DCD9CD] text-[#202522]">
                   <tr>
                     <th className="px-6 py-4 font-semibold">Date</th>
                     <th className="px-6 py-4 font-semibold">Plan</th>
@@ -237,17 +237,17 @@ const MemberDashboard = () => {
                     <th className="px-6 py-4 font-semibold">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#CCFBF1]">
+                <tbody className="divide-y divide-[#DCD9CD]">
                   {payments.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-6 py-8 text-center text-[#475569]">No payment history found.</td>
+                      <td colSpan={6} className="px-6 py-8 text-center text-[#4A514D]">No payment history found.</td>
                     </tr>
                   ) : payments.map((p, idx) => (
-                    <tr key={idx} className="hover:bg-[#F0FDFA] transition-colors">
+                    <tr key={idx} className="hover:bg-[#F5F3EE] transition-colors">
                       <td className="px-6 py-4">{new Date(p.paymentDate || p.createdAt).toLocaleDateString()}</td>
-                      <td className="px-6 py-4 font-medium text-[#1E293B]">{p.planName}</td>
+                      <td className="px-6 py-4 font-medium text-[#202522]">{p.planName}</td>
                       <td className="px-6 py-4 font-bold text-green-600">₹{p.amount}</td>
-                      <td className="px-6 py-4 text-[#1E293B]">{p.paymentMethod}</td>
+                      <td className="px-6 py-4 text-[#202522]">{p.paymentMethod}</td>
                       <td className="px-6 py-4 font-mono text-xs">{p.transactionId || 'N/A'}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${
@@ -269,25 +269,25 @@ const MemberDashboard = () => {
 
       {/* Membership Expired Popup */}
       {showExpiredPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E293B]/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#CCFBF1]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#202522]/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#DCD9CD]">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="text-red-500" size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-[#1E293B] mb-2 text-center">Free Trial / Subscription Expired</h2>
-            <p className="text-[#475569] mb-8 text-center">
+            <h2 className="text-2xl font-bold text-[#202522] mb-2 text-center">Free Trial / Subscription Expired</h2>
+            <p className="text-[#4A514D] mb-8 text-center">
               Your free trial has ended. Choose a subscription plan to continue accessing premium gym services.
             </p>
             <div className="flex flex-col gap-3">
               <Link 
                 to="/member/upgrade"
-                className="w-full py-4 bg-[#16A34A] text-white font-bold rounded-xl hover:bg-[#15803D] transition-colors shadow-lg shadow-green-200 text-center"
+                className="w-full py-4 bg-[#34483F] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-colors shadow-lg shadow-green-200 text-center"
               >
                 Upgrade Subscription
               </Link>
               <button 
                 onClick={logout}
-                className="w-full py-3 text-[#475569] font-semibold hover:text-[#1E293B] hover:bg-[#F8FAFC] rounded-xl transition-colors"
+                className="w-full py-3 text-[#4A514D] font-semibold hover:text-[#202522] hover:bg-[#F2EFE8] rounded-xl transition-colors"
               >
                 Logout
               </button>
