@@ -161,7 +161,7 @@ const TrainerPaymentHistoryPage = () => {
                 </div>
                 <div>
                   <p className="text-gray-500 mb-1">Transaction ID</p>
-                  <p className="font-semibold text-gray-900">{selectedPayment.transactionId || 'N/A'}</p>
+                  <p className="font-semibold text-gray-900 break-all">{selectedPayment.transactionId || 'N/A'}</p>
                 </div>
               </div>
               

@@ -4,9 +4,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const mockPlans = [
-  { _id: '1', name: 'Free Trial', price: '0', duration: '1 day', subscribers: 145, isPopular: false, features: 'Gym Setup, Member Management (Up to 10), Trainer Management (1 Trainer), Membership Plans (1 Plan), Exercise Plans, Basic Diet Plans, Limited AI Suggestions' },
-  { _id: '2', name: 'Basic', price: '399', duration: '1 month', subscribers: 312, isPopular: true, features: 'Gym Setup, Member Management (Up to 100), Trainer Management (Up to 5), Membership Plans (5 Plans), Exercise & Diet Plans, AI Suggestions, Reports & Analytics' },
-  { _id: '3', name: 'Premium', price: '799', duration: '3 months', subscribers: 84, isPopular: false, features: 'Gym Setup, Unlimited Member Management, Unlimited Trainer Management, Unlimited Membership Plans, Exercise Plans, Diet Plans, Advanced AI Suggestions, Advanced Member Progress Tracking, Attendance Management, Payment Tracking, Advanced Reports & Analytics, Unlimited AI Workout Generation, Unlimited AI Diet Generation, Gym Store — Sell Supplements & Merch, Gym Store — Online Orders & Payments, Gym Store — Inventory & Offline Sales, Notifications, Multiple Branches, Priority Support' },
+  { _id: '1', name: 'free trial', price: '0', duration: '1 day', subscribers: 145, isPopular: false, features: 'Gym Setup, Member Management (Up to 10), Trainer Management (1 Trainer), Membership Plans (1 Plan), Exercise Plans, Basic Diet Plans, Limited AI Suggestions' },
+  { _id: '2', name: 'basic', price: '399', duration: '1 month', subscribers: 312, isPopular: true, features: 'Gym Setup, Member Management (Up to 100), Trainer Management (Up to 5), Membership Plans (5 Plans), Exercise & Diet Plans, AI Suggestions, Reports & Analytics' },
+  { _id: '3', name: 'premium', price: '799', duration: '3 months', subscribers: 84, isPopular: false, features: 'Gym Setup, Unlimited Member Management, Unlimited Trainer Management, Unlimited Membership Plans, Exercise Plans, Diet Plans, Advanced AI Suggestions, Advanced Member Progress Tracking, Attendance Management, Payment Tracking, Advanced Reports & Analytics, Unlimited AI Workout Generation, Unlimited AI Diet Generation, Gym Store — Sell Supplements & Merch, Gym Store — Online Orders & Payments, Gym Store — Inventory & Offline Sales, Notifications, Multiple Branches, Priority Support' },
+  { _id: '4', name: 'basic annual', price: '3990', duration: '1 year', subscribers: 45, isPopular: true, features: 'Gym Setup, Member Management (Up to 100), Trainer Management (Up to 5), Membership Plans (5 Plans), Exercise & Diet Plans, AI Suggestions, Reports & Analytics' },
+  { _id: '5', name: 'premium annual', price: '7990', duration: '1 year', subscribers: 12, isPopular: false, features: 'Gym Setup, Unlimited Member Management, Unlimited Trainer Management, Unlimited Membership Plans, Exercise Plans, Diet Plans, Advanced AI Suggestions, Advanced Member Progress Tracking, Attendance Management, Payment Tracking, Advanced Reports & Analytics, Unlimited AI Workout Generation, Unlimited AI Diet Generation, Gym Store — Sell Supplements & Merch, Gym Store — Online Orders & Payments, Gym Store — Inventory & Offline Sales, Notifications, Multiple Branches, Priority Support' },
 ];
 
 const GymAdminMembershipPlans = () => {
@@ -14,13 +16,14 @@ const GymAdminMembershipPlans = () => {
   const [gym, setGym] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     duration: 'Monthly',
     features: ''
   });
+  const [billingCycle, setBillingCycle] = useState('monthly');
 
   useEffect(() => {
     if (user?.gymId) {
@@ -37,8 +40,22 @@ const GymAdminMembershipPlans = () => {
   }, [user]);
 
   const plansToDisplay = gym?.subscriptionPlans?.length > 0 ? gym.subscriptionPlans : mockPlans;
+  
+  let filteredPlans = plansToDisplay.filter((plan: any) => {
+    const dur = (plan.duration || '').toLowerCase();
+    if (billingCycle === 'monthly') {
+      return !dur.includes('year') && !dur.includes('annual');
+    } else {
+      return dur.includes('year') || dur.includes('annual');
+    }
+  });
 
-  const handleOpenModal = (plan?: any, index?: number) => {
+  // Inject annual mock plans if none exist so the user can see/save them
+  if (billingCycle === 'annually' && filteredPlans.length === 0) {
+    filteredPlans = mockPlans.filter(p => p.duration.includes('year'));
+  }
+
+  const handleOpenModal = (plan?: any) => {
     if (plan) {
       setFormData({
         name: plan.name || '',
@@ -46,10 +63,10 @@ const GymAdminMembershipPlans = () => {
         duration: plan.duration || 'Monthly',
         features: plan.features || ''
       });
-      setEditingIndex(index as number);
+      setEditingId(plan._id);
     } else {
       setFormData({ name: '', price: '', duration: 'Monthly', features: '' });
-      setEditingIndex(null);
+      setEditingId(null);
     }
     setShowModal(true);
   };
@@ -60,8 +77,14 @@ const GymAdminMembershipPlans = () => {
     
     let currentPlans = gym.subscriptionPlans || [];
     
-    if (editingIndex !== null) {
-      currentPlans = currentPlans.map((p: any, i: number) => i === editingIndex ? { ...p, ...formData } : p);
+    if (editingId) {
+      // If it's a mock plan being saved for the first time, it won't be in currentPlans yet
+      const exists = currentPlans.some((p: any) => p._id === editingId);
+      if (exists) {
+        currentPlans = currentPlans.map((p: any) => p._id === editingId ? { ...p, ...formData } : p);
+      } else {
+        currentPlans = [...currentPlans, { ...formData }];
+      }
     } else {
       currentPlans = [...currentPlans, formData];
     }
@@ -83,15 +106,39 @@ const GymAdminMembershipPlans = () => {
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Membership Plans</h1>
           <p className="text-[#455250] mt-1">Configure pricing tiers and subscription options for your gym.</p>
         </div>
-        <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-[#164A4A] text-[#202828] font-bold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shadow-lg shadow-[#164A4A]/20 self-start md:self-auto">
+        <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#164A4A]/90 transition-colors flex items-center gap-2 shadow-lg shadow-[#164A4A]/20 self-start md:self-auto">
           <Plus size={20} /> Create New Plan
         </button>
       </div>
+      
+      <div className="flex justify-center mt-4">
+        <div className="bg-[#FFFFFF] p-1.5 rounded-xl border border-[#D3DFDA] inline-flex shadow-sm">
+          <button 
+            onClick={() => setBillingCycle('monthly')}
+            className={`px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${billingCycle === 'monthly' ? 'bg-[#164A4A] text-white shadow-md' : 'text-[#455250] hover:bg-gray-50'}`}
+          >
+            Monthly
+          </button>
+          <button 
+            onClick={() => setBillingCycle('annually')}
+            className={`px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${billingCycle === 'annually' ? 'bg-[#164A4A] text-white shadow-md' : 'text-[#455250] hover:bg-gray-50'}`}
+          >
+            Annually
+          </button>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {isLoading ? (
-          <div className="col-span-3 text-center py-10 text-[#455250]">Loading plans...</div>
-        ) : plansToDisplay.map((plan: any, index: number) => {
+      {filteredPlans.length === 0 ? (
+        <div className="text-center py-20 bg-white border border-[#D3DFDA] rounded-3xl">
+          <h3 className="text-lg font-bold text-[#202828] mb-2">No {billingCycle} plans found</h3>
+          <p className="text-[#455250] mb-4">You haven't created any {billingCycle} membership plans yet.</p>
+          <button onClick={() => handleOpenModal()} className="px-6 py-2 bg-[#164A4A] text-white font-bold rounded-xl">Create One Now</button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {isLoading ? (
+            <div className="col-span-3 text-center py-10 text-[#455250]">Loading plans...</div>
+          ) : filteredPlans.map((plan: any, index: number) => {
           const isPopular = plan.isPopular || index === 1; // Highlight the middle plan normally
           const featureList = typeof plan.features === 'string' 
             ? plan.features.split(',').map((f: string) => f.trim()).filter(Boolean)
@@ -116,7 +163,7 @@ const GymAdminMembershipPlans = () => {
             </div>
             
             <div className="mb-6 flex items-baseline">
-              <span className="text-4xl font-black text-[#202828]">${plan.price}</span>
+              <span className="text-4xl font-black text-[#202828]">₹{plan.price}</span>
               <span className="text-[#455250] ml-2 font-medium">/ {plan.duration.toLowerCase()}</span>
             </div>
 
@@ -146,7 +193,8 @@ const GymAdminMembershipPlans = () => {
           </div>
           );
         })}
-      </div>
+        </div>
+      )}
 
       {showModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
@@ -167,7 +215,7 @@ const GymAdminMembershipPlans = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-[#455250] mb-1">Price ($)</label>
+                  <label className="block text-sm font-bold text-[#455250] mb-1">Price (₹)</label>
                   <input required type="number" step="0.01" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" placeholder="49.99" />
                 </div>
                 <div>
