@@ -9,7 +9,7 @@ const statusColor: Record<string, string> = {
   'Preparing': 'bg-purple-100 text-purple-700',
   'Ready for Pickup': 'bg-teal-100 text-teal-700',
   'Out for Delivery': 'bg-indigo-100 text-indigo-700',
-  'Completed': 'bg-green-100 text-green-700',
+  'Completed': 'bg-[#D2B48C]/10 text-[#164A4A]',
   'Cancelled': 'bg-red-100 text-red-700',
   'Refunded': 'bg-orange-100 text-orange-700',
 };
@@ -56,53 +56,64 @@ const MemberOrders = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#202522] tracking-tight">My Orders</h1>
-        <p className="text-[#4A514D] mt-1">Track your gym store orders from placement to pickup/delivery.</p>
+        <h1 className="text-3xl font-bold text-[#202828] tracking-tight">My Orders</h1>
+        <p className="text-[#455250] mt-1">Track your gym store orders from placement to pickup/delivery.</p>
       </div>
 
-      <div className="flex border-b border-[#DCD9CD] space-x-6 overflow-x-auto">
+      <div className="flex border-b border-[#D3DFDA] space-x-6 overflow-x-auto">
         {['all', 'Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Out for Delivery', 'Completed', 'Cancelled', 'Refunded'].map((s) => (
-          <button key={s} onClick={() => setStatus(s)} className={`py-3 font-semibold text-sm transition-colors border-b-2 whitespace-nowrap ${status === s ? 'border-[#34483F] text-[#34483F]' : 'border-transparent text-[#4A514D] hover:text-[#202522]'}`}>
+          <button key={s} onClick={() => setStatus(s)} className={`py-3 font-semibold text-sm transition-colors border-b-2 whitespace-nowrap ${status === s ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}>
             {s === 'all' ? 'All Orders' : s}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#34483F]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-[#DCD9CD] rounded-2xl">
-          <ShoppingBag className="mx-auto text-[#34483F]/30 mb-4" size={52} />
-          <p className="text-[#727975] font-medium mb-4">No orders here yet.</p>
-          <button onClick={() => navigate('/member/store')} className="px-5 py-2.5 bg-gradient-to-r from-[#34483F] to-[#8FA89B] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity">
+        <div className="text-center py-20 bg-white border border-[#D3DFDA] rounded-2xl">
+          <ShoppingBag className="mx-auto text-[#164A4A]/30 mb-4" size={52} />
+          <p className="text-[#687B78] font-medium mb-4">No orders here yet.</p>
+          <button onClick={() => navigate('/member/store')} className="px-5 py-2.5 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity">
             Browse Store
           </button>
         </div>
       ) : (
         <div className="space-y-4">
           {orders.map((o) => (
-            <div key={o._id} className="bg-white border border-[#DCD9CD] rounded-2xl p-5">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-xs font-black ${o.status === 'Completed' ? 'bg-green-100 text-green-700' : o.status === 'Cancelled' || o.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-[#F5F3EE] text-[#34483F]'}`}>
-                    {o.items.reduce((s: number, i: any) => s + i.quantity, 0)}
+            <div key={o._id} className="bg-white border border-[#D3DFDA] rounded-2xl p-5 hover:border-[#164A4A]/30 hover:shadow-md transition-all">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                
+                <div className="flex items-start sm:items-center gap-4">
+                  <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${o.status === 'Completed' ? 'bg-green-50 text-green-700 border border-green-200' : o.status === 'Cancelled' || o.status === 'Refunded' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-[#F1F5F3] text-[#164A4A] border border-[#D3DFDA]'}`}>
+                    <span className="text-lg font-black leading-none mb-0.5">{o.items.reduce((s: number, i: any) => s + i.quantity, 0)}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-opacity-80">Items</span>
                   </div>
+                  
                   <div>
-                    <p className="font-bold text-[#202522]">{o.orderNumber}</p>
-                    <p className="text-xs text-[#4A514D]">
-                      {new Date(o.createdAt).toLocaleString()} · {o.fulfilmentType === 'Delivery' ? 'Delivery' : 'Gym Pickup'}
-                    </p>
+                    <p className="font-black text-[#202828] text-lg mb-1 tracking-tight">{o.orderNumber}</p>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-[#455250]">
+                      <span className="font-medium">{new Date(o.createdAt).toLocaleDateString()} at {new Date(o.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                      <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                      <span className={`font-semibold inline-flex items-center gap-1 ${o.fulfilmentType === 'Delivery' ? 'text-[#164A4A]' : 'text-amber-600'}`}>
+                        {o.fulfilmentType === 'Delivery' ? <Truck size={12} /> : <MapPin size={12} />} 
+                        {o.fulfilmentType === 'Delivery' ? 'Delivery' : 'Gym Pickup'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-right">
-                    <p className="font-black text-[#34483F] text-lg">₹{o.total}</p>
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold inline-block ${statusColor[o.status] || 'bg-gray-100'}`}>{o.status}</span>
+
+                <div className="flex items-center justify-between sm:justify-end gap-6 sm:border-l sm:border-gray-200 sm:pl-6 mt-2 sm:mt-0 pt-3 sm:pt-0 border-t border-gray-100 sm:border-t-0">
+                  <div className="flex flex-col gap-1.5 min-w-[90px]">
+                    <p className="font-black text-[#164A4A] text-xl leading-none">₹{o.total}</p>
+                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider inline-block text-center w-fit ${statusColor[o.status] || 'bg-gray-100 text-gray-700'}`}>{o.status}</span>
                   </div>
-                  <button onClick={() => setSelected(o)} className="px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold inline-flex items-center gap-1">
-                    <Eye size={14} /> Details
+                  
+                  <button onClick={() => setSelected(o)} className="px-4 py-2.5 bg-white border border-[#D3DFDA] text-[#202828] rounded-xl hover:bg-[#F1F5F3] hover:border-[#164A4A] transition-all text-sm font-bold inline-flex items-center gap-2 shadow-sm shrink-0 group">
+                    <Eye size={16} className="text-[#6fa3a0] group-hover:text-[#164A4A] transition-colors" /> View Details
                   </button>
                 </div>
+                
               </div>
             </div>
           ))}
@@ -114,44 +125,44 @@ const MemberOrders = () => {
           <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl relative my-8">
             <button onClick={() => setSelected(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={22} /></button>
             <div className="flex items-center justify-between pr-8 mb-2">
-              <h2 className="text-2xl font-bold text-[#202522]">{selected.orderNumber}</h2>
+              <h2 className="text-2xl font-bold text-[#202828]">{selected.orderNumber}</h2>
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColor[selected.status]}`}>{selected.status}</span>
             </div>
-            <p className="text-sm text-[#4A514D] mb-4">
+            <p className="text-sm text-[#455250] mb-4">
               Placed {new Date(selected.createdAt).toLocaleString()} ·{' '}
               {selected.fulfilmentType === 'Delivery' ? <span className="inline-flex items-center gap-1 font-semibold"><Truck size={14} /> Delivery</span> : <span className="inline-flex items-center gap-1 font-semibold"><MapPin size={14} /> Gym Pickup</span>}
             </p>
 
             {selected.cancellationReason && (
-              <p className="text-sm text-red-500 bg-red-50 rounded-xl px-4 py-3 mb-4">Reason: {selected.cancellationReason}</p>
+              <p className="text-sm text-[#6fa3a0] bg-red-50 rounded-xl px-4 py-3 mb-4">Reason: {selected.cancellationReason}</p>
             )}
 
-            <div className="border border-[#DCD9CD] rounded-xl overflow-hidden mb-4">
-              <div className="px-4 py-3 bg-[#F5F3EE] font-bold text-[#202522] text-sm border-b border-[#DCD9CD]">Items</div>
+            <div className="border border-[#D3DFDA] rounded-xl overflow-hidden mb-4">
+              <div className="px-4 py-3 bg-[#F1F5F3] font-bold text-[#202828] text-sm border-b border-[#D3DFDA]">Items</div>
               {selected.items.map((it: any, idx: number) => (
                 <div key={idx} className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9] last:border-0">
                   <div>
                     <div className="flex items-center gap-1.5 flex-wrap my-0.5">
-                      <p className="font-semibold text-[#202522] text-sm mr-2">{it.name}</p>
+                      <p className="font-semibold text-[#202828] text-sm mr-2">{it.name}</p>
                       {it.attributes && Object.entries(it.attributes).map(([k, v]) => (
                          <span key={k} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">{String(v)}</span>
                       ))}
                     </div>
-                    <p className="text-xs text-[#4A514D]">Qty {it.quantity} × ₹{it.unitPrice}</p>
+                    <p className="text-xs text-[#455250]">Qty {it.quantity} × ₹{it.unitPrice}</p>
                   </div>
-                  <p className="font-bold text-[#202522]">₹{it.total}</p>
+                  <p className="font-bold text-[#202828]">₹{it.total}</p>
                 </div>
               ))}
               <div className="px-4 py-3 bg-[#F2EFE8] flex justify-between text-sm">
-                <span className="text-[#4A514D]">{selected.discount ? `Subtotal ₹${selected.subtotal} − discount ₹${selected.discount}` : 'Total'}</span>
-                <span className="font-black text-[#202522]">₹{selected.total}</span>
+                <span className="text-[#455250]">{selected.discount ? `Subtotal ₹${selected.subtotal} − discount ₹${selected.discount}` : 'Total'}</span>
+                <span className="font-black text-[#202828]">₹{selected.total}</span>
               </div>
             </div>
 
             {selected.deliveryDetails && (
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
                 <p className="text-xs text-gray-500 font-semibold uppercase mb-2">Delivery Address</p>
-                <p className="text-sm text-[#4A514D]">
+                <p className="text-sm text-[#455250]">
                   {selected.deliveryDetails.name} · {selected.deliveryDetails.phone}<br />
                   {selected.deliveryDetails.address}, {selected.deliveryDetails.city}, {selected.deliveryDetails.state} — {selected.deliveryDetails.pinCode}
                 </p>
@@ -159,14 +170,14 @@ const MemberOrders = () => {
             )}
 
             <div className="mb-5">
-              <p className="text-xs font-bold text-[#727975] uppercase mb-2">Status Timeline</p>
+              <p className="text-xs font-bold text-[#687B78] uppercase mb-2">Status Timeline</p>
               <div className="space-y-2">
                 {selected.statusHistory.map((h: any, i: number) => (
                   <div key={i} className={`flex items-start gap-3 text-sm ${i === selected.statusHistory.length - 1 ? '' : ''}`}>
-                    <span className={`w-2.5 h-2.5 mt-1.5 rounded-full shrink-0 ${i === selected.statusHistory.length - 1 ? 'bg-[#34483F]' : 'bg-[#DCD9CD]'}`} />
+                    <span className={`w-2.5 h-2.5 mt-1.5 rounded-full shrink-0 ${i === selected.statusHistory.length - 1 ? 'bg-[#164A4A]' : 'bg-[#D3DFDA]'}`} />
                     <div>
-                      <p className="font-semibold text-[#202522]">{h.status}</p>
-                      <p className="text-xs text-[#4A514D]">{new Date(h.at).toLocaleString()}{h.note && (h.note !== h.status ? ` — ${h.note}` : '')}</p>
+                      <p className="font-semibold text-[#202828]">{h.status}</p>
+                      <p className="text-xs text-[#455250]">{new Date(h.at).toLocaleString()}{h.note && (h.note !== h.status ? ` — ${h.note}` : '')}</p>
                     </div>
                   </div>
                 ))}

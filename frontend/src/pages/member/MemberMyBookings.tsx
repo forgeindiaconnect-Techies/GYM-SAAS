@@ -51,10 +51,10 @@ const MemberMyBookings = () => {
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202522] tracking-tight">My Bookings</h1>
-          <p className="text-[#4A514D] mt-1">Manage your upcoming and past training sessions.</p>
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">My Bookings</h1>
+          <p className="text-[#455250] mt-1">Manage your upcoming and past training sessions.</p>
         </div>
-        <button className="px-6 py-2.5 bg-[#34483F] text-white rounded-xl font-semibold hover:bg-[#C6A77D] transition-colors shadow-md shadow-green-500/20">
+        <button className="px-6 py-2.5 bg-[#164A4A] text-white rounded-xl font-semibold hover:bg-[#C6A77D] transition-colors shadow-md shadow-green-500/20">
           Book New Session
         </button>
       </div>
@@ -67,8 +67,8 @@ const MemberMyBookings = () => {
             onClick={() => setActiveTab(tab)}
             className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 ${
               activeTab === tab 
-                ? 'border-[#34483F] text-[#34483F]' 
-                : 'border-transparent text-[#727975] hover:text-[#202522] hover:border-[#CBD5E1]'
+                ? 'border-[#164A4A] text-[#164A4A]' 
+                : 'border-transparent text-[#687B78] hover:text-[#202828] hover:border-[#CBD5E1]'
             }`}
           >
             {tab}
@@ -86,22 +86,22 @@ const MemberMyBookings = () => {
                   <div className="flex items-center space-x-4">
                     <img src={booking.image} alt={booking.trainer} className="w-14 h-14 rounded-full object-cover border-2 border-[#F1F5F9]" />
                     <div>
-                      <h3 className="font-bold text-[#202522]">{booking.trainer}</h3>
-                      <p className="text-xs text-[#34483F] font-medium bg-green-50 px-2 py-0.5 rounded-full inline-block mt-1">
+                      <h3 className="font-bold text-[#202828]">{booking.trainer}</h3>
+                      <p className="text-xs text-[#164A4A] font-medium bg-green-50 px-2 py-0.5 rounded-full inline-block mt-1">
                         {booking.type}
                       </p>
                     </div>
                   </div>
                   {booking.status === 'Completed' && <CheckCircle2 className="text-green-500" size={24} />}
-                  {booking.status === 'Cancelled' && <XCircle className="text-red-500" size={24} />}
+                  {booking.status === 'Cancelled' && <XCircle className="text-[#6fa3a0]" size={24} />}
                 </div>
 
                 <div className="space-y-3">
-                  <div className="flex items-center text-[#4A514D] text-sm">
+                  <div className="flex items-center text-[#455250] text-sm">
                     <CalendarIcon size={16} className="mr-3 text-[#A8ADA9]" />
                     <span>{booking.date}</span>
                   </div>
-                  <div className="flex items-center text-[#4A514D] text-sm">
+                  <div className="flex items-center text-[#455250] text-sm">
                     <Clock size={16} className="mr-3 text-[#A8ADA9]" />
                     <span>{booking.time}</span>
                   </div>
@@ -110,7 +110,7 @@ const MemberMyBookings = () => {
               
               {activeTab === 'Upcoming' && (
                 <div className="bg-[#F2EFE8] p-4 border-t border-[#E8E5DA] flex gap-3">
-                  <button className="flex-1 py-2 text-sm font-semibold text-[#727975] bg-white border border-[#E8E5DA] rounded-lg hover:bg-gray-50 transition-colors">
+                  <button className="flex-1 py-2 text-sm font-semibold text-[#687B78] bg-white border border-[#E8E5DA] rounded-lg hover:bg-gray-50 transition-colors">
                     Reschedule
                   </button>
                   <button className="flex-1 py-2 text-sm font-semibold text-red-600 bg-white border border-[#E8E5DA] rounded-lg hover:bg-red-50 transition-colors">
@@ -123,8 +123,8 @@ const MemberMyBookings = () => {
         ) : (
           <div className="col-span-full py-16 text-center bg-white rounded-2xl border border-dashed border-[#CBD5E1]">
             <CalendarIcon size={48} className="mx-auto text-[#CBD5E1] mb-4" />
-            <h3 className="text-lg font-bold text-[#202522]">No {activeTab.toLowerCase()} bookings found</h3>
-            <p className="text-[#727975] mt-2 max-w-sm mx-auto">You don't have any {activeTab.toLowerCase()} training sessions at the moment.</p>
+            <h3 className="text-lg font-bold text-[#202828]">No {activeTab.toLowerCase()} bookings found</h3>
+            <p className="text-[#687B78] mt-2 max-w-sm mx-auto">You don't have any {activeTab.toLowerCase()} training sessions at the moment.</p>
           </div>
         )}
       </div>

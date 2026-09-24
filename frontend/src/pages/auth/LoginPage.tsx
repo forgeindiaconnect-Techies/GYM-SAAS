@@ -75,27 +75,27 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F3EE] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F1F5F3] flex flex-col items-center justify-center px-4">
       {/* Background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(22,163,74,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
       {/* Back to Home Arrow */}
-      <Link to="/" className="absolute top-8 left-8 text-[#4A514D] hover:text-[#34483F] flex items-center gap-2 transition-colors">
+      <Link to="/" className="absolute top-8 left-8 text-[#455250] hover:text-[#164A4A] flex items-center gap-2 transition-colors">
         <ArrowLeft size={20} />
         <span className="font-medium text-sm">Back to Home</span>
       </Link>
 
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2 mb-10 group">
-        <div className="w-9 h-9 bg-gradient-to-br from-[#34483F] to-[#8FA89B] rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
-          <Activity className="text-[#202522]" size={20} />
+        <div className="w-9 h-9 bg-gradient-to-br from-[#164A4A] to-[#6fa3a0] rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
+          <Activity className="text-[#202828]" size={20} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#34483F]">AI GYM</span>
+        <span className="text-2xl font-bold tracking-tight text-[#164A4A]">AI GYM</span>
       </Link>
 
-      <div className="w-full max-w-md bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-8 shadow-2xl">
-        <h1 className="text-2xl font-bold text-[#202522] mb-1">Welcome back</h1>
-        <p className="text-[#4A514D] text-sm mb-8">Log in to your AI GYM account</p>
+      <div className="w-full max-w-md bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-8 shadow-2xl">
+        <h1 className="text-2xl font-bold text-[#202828] mb-1">Welcome back</h1>
+        <p className="text-[#455250] text-sm mb-8">Log in to your AI GYM account</p>
 
         {error && (
           <div className="flex items-center space-x-3 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-6 text-sm">
@@ -107,23 +107,23 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit} noValidate className="space-y-5">
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-[#4A514D] mb-2">Email Address</label>
+            <label className="block text-sm font-medium text-[#455250] mb-2">Email Address</label>
             <input
               id="login-email"
               type="email"
               value={form.email}
               onChange={(e) => { setForm({ ...form, email: e.target.value }); setFieldErrors({ ...fieldErrors, email: '' }); }}
               placeholder="you@example.com"
-              className={`w-full bg-[#FFFFFF] border ${fieldErrors.email ? 'border-red-400' : 'border-[#DCD9CD]'} text-[#202522] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F] transition-colors`}
+              className={`w-full bg-[#FFFFFF] border ${fieldErrors.email ? 'border-red-400' : 'border-[#D3DFDA]'} text-[#202828] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A] transition-colors`}
             />
-            {fieldErrors.email && <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>}
+            {fieldErrors.email && <p className="text-[#6fa3a0] text-xs mt-1">{fieldErrors.email}</p>}
           </div>
 
           {/* Password */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-[#4A514D]">Password</label>
-              <Link to="/forgot-password" className="text-xs text-[#34483F] hover:underline">Forgot Password?</Link>
+              <label className="block text-sm font-medium text-[#455250]">Password</label>
+              <Link to="/forgot-password" className="text-xs text-[#164A4A] hover:underline">Forgot Password?</Link>
             </div>
             <div className="relative">
               <input
@@ -132,17 +132,17 @@ const LoginPage = () => {
                 value={form.password}
                 onChange={(e) => { setForm({ ...form, password: e.target.value }); setFieldErrors({ ...fieldErrors, password: '' }); }}
                 placeholder="Enter your password"
-                className={`w-full bg-[#FFFFFF] border ${fieldErrors.password ? 'border-red-400' : 'border-[#DCD9CD]'} text-[#202522] rounded-xl px-4 py-3 pr-12 text-sm outline-none focus:border-[#34483F] transition-colors`}
+                className={`w-full bg-[#FFFFFF] border ${fieldErrors.password ? 'border-red-400' : 'border-[#D3DFDA]'} text-[#202828] rounded-xl px-4 py-3 pr-12 text-sm outline-none focus:border-[#164A4A] transition-colors`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#4A514D] hover:text-[#34483F] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#455250] hover:text-[#164A4A] transition-colors"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {fieldErrors.password && <p className="text-red-500 text-xs mt-1">{fieldErrors.password}</p>}
+            {fieldErrors.password && <p className="text-[#6fa3a0] text-xs mt-1">{fieldErrors.password}</p>}
           </div>
 
           {/* Remember Me */}
@@ -151,11 +151,11 @@ const LoginPage = () => {
               type="button"
               id="remember-me"
               onClick={() => setRememberMe(!rememberMe)}
-              className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${rememberMe ? 'bg-[#34483F] border-[#34483F]' : 'border-[#555] bg-transparent'}`}
+              className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${rememberMe ? 'bg-[#164A4A] border-[#164A4A]' : 'border-[#555] bg-transparent'}`}
             >
               {rememberMe && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="black" strokeWidth="2" strokeLinecap="round"/></svg>}
             </button>
-            <label className="text-sm text-[#4A514D] cursor-pointer" onClick={() => setRememberMe(!rememberMe)}>Remember me</label>
+            <label className="text-sm text-[#455250] cursor-pointer" onClick={() => setRememberMe(!rememberMe)}>Remember me</label>
           </div>
 
           {/* Submit */}
@@ -163,19 +163,19 @@ const LoginPage = () => {
             id="login-submit"
             type="submit"
             disabled={isLoading}
-            className="w-full py-3.5 bg-gradient-to-r from-[#34483F] to-[#8FA89B] text-[#202522] font-bold rounded-xl hover:from-[#C6A77D] hover:to-[#0F766E] transition-all disabled:opacity-60 flex items-center justify-center space-x-2 shadow-lg shadow-green-200"
+            className="w-full py-3.5 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-[#202828] font-bold rounded-xl hover:from-[#C6A77D] hover:to-[#0F766E] transition-all disabled:opacity-60 flex items-center justify-center space-x-2 shadow-lg shadow-green-200"
           >
             {isLoading ? <><Loader2 size={18} className="animate-spin" /><span>Logging in...</span></> : <span>Log In</span>}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-[#4A514D]">
+        <div className="mt-6 text-center text-sm text-[#455250]">
           Don't have an account?{' '}
-          <Link to="/register" className="text-[#34483F] font-semibold hover:underline">Sign Up</Link>
+          <Link to="/register" className="text-[#164A4A] font-semibold hover:underline">Sign Up</Link>
         </div>
       </div>
 
-      <p className="mt-8 text-xs text-[#4A514D]">&copy; {new Date().getFullYear()} AI GYM Technologies. All rights reserved.</p>
+      <p className="mt-8 text-xs text-[#455250]">&copy; {new Date().getFullYear()} AI GYM Technologies. All rights reserved.</p>
     </div>
   );
 };

@@ -44,7 +44,7 @@ export const createBranch = async (req: AuthRequest, res: Response): Promise<voi
        return;
     }
 
-    const { branchName, branchCode, phone, email, managerId, location, operatingHours, trainingMode, services, facilities, images, memberCapacity, trainerCapacity } = req.body;
+    const { branchName, branchCode, phone, email, managerId, location, operatingHours, trainingMode, services, facilities, images, memberCapacity, trainerCapacity, subscriptionPlans } = req.body;
 
     // Validate Branch Code Uniqueness
     const existingBranch = await Branch.findOne({ gymId, branchCode });
@@ -74,6 +74,7 @@ export const createBranch = async (req: AuthRequest, res: Response): Promise<voi
       images,
       memberCapacity,
       trainerCapacity,
+      subscriptionPlans,
       status: GymStatus.ACTIVE,
     });
 

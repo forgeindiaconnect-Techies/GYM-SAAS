@@ -76,6 +76,7 @@ import MemberStore from './pages/member/MemberStore';
 import MemberCart from './pages/member/MemberCart';
 import MemberCheckout from './pages/member/MemberCheckout';
 import MemberOrders from './pages/member/MemberOrders';
+import MemberStorePayments from './pages/member/MemberStorePayments';
 
 // Gym Store (Super Admin)
 import SuperAdminGymStore from './pages/super-admin/SuperAdminGymStore';
@@ -222,6 +223,7 @@ function App() {
             <Route path="store/cart" element={<MemberCart />} />
             <Route path="store/checkout" element={<MemberCheckout />} />
             <Route path="store/orders" element={<MemberOrders />} />
+            <Route path="store/payments" element={<MemberStorePayments />} />
             <Route path="enquiries" element={<MemberEnquiries />} />
             <Route path="settings" element={<MemberSettings />} />
           </Route>

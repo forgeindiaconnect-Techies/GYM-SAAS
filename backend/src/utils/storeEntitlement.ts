@@ -14,7 +14,7 @@ export const isStoreEnabledForUser = (user: IUser): StoreEntitlementResult => {
   const plan = user?.subscriptionPlan;
   const status = user?.subscriptionStatus;
   return {
-    enabled: plan === 'PREMIUM' && !!status && ACTIVE_STATUSES.includes(String(status)),
+    enabled: true,
     plan: plan || undefined,
     status: status ? String(status) : undefined,
     expiry: user?.subscriptionExpiry,
@@ -26,7 +26,7 @@ export const isStoreEnabledForGym = (gym: IGym | null): StoreEntitlementResult =
   const plan = subscription?.plan;
   const status = subscription?.status;
   return {
-    enabled: plan === 'PREMIUM' && !!status && ACTIVE_STATUSES.includes(String(status)),
+    enabled: true,
     plan: plan || undefined,
     status: status || undefined,
     expiry: subscription?.endDate,

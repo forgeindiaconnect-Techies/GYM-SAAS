@@ -57,59 +57,59 @@ const GymStoreSalesHistory = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Sales History</h1>
-          <p className="text-[#4A514D] mt-1">Every online order and offline sale in one place.</p>
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Sales History</h1>
+          <p className="text-[#455250] mt-1">Every online order and offline sale in one place.</p>
         </div>
-        <button onClick={exportCSV} className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#DCD9CD] text-[#202522] font-bold rounded-xl hover:bg-[#F5F3EE] transition-colors">
+        <button onClick={exportCSV} className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#D3DFDA] text-[#202828] font-bold rounded-xl hover:bg-[#F1F5F3] transition-colors">
           <Download size={18} /> Export CSV
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-[#DCD9CD] rounded-2xl p-5 flex items-center justify-between">
+        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-5 flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-[#A8ADA9] uppercase tracking-wider">Total Revenue</p>
-            <h3 className="text-2xl font-black text-[#202522]">₹{totals.all.toLocaleString('en-IN')}</h3>
+            <h3 className="text-2xl font-black text-[#202828]">₹{totals.all.toLocaleString('en-IN')}</h3>
           </div>
-          <IndianRupee className="text-[#34483F]/20" size={36} />
+          <IndianRupee className="text-[#164A4A]/20" size={36} />
         </div>
-        <div className="bg-white border border-[#DCD9CD] rounded-2xl p-5 flex items-center justify-between">
+        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-5 flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-[#A8ADA9] uppercase tracking-wider">Online Orders</p>
-            <h3 className="text-2xl font-black text-[#8FA89B]">₹{totals.online.toLocaleString('en-IN')}</h3>
+            <h3 className="text-2xl font-black text-[#6fa3a0]">₹{totals.online.toLocaleString('en-IN')}</h3>
           </div>
-          <ShoppingBag className="text-[#8FA89B]/20" size={36} />
+          <ShoppingBag className="text-[#6fa3a0]/20" size={36} />
         </div>
-        <div className="bg-white border border-[#DCD9CD] rounded-2xl p-5 flex items-center justify-between">
+        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-5 flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-[#A8ADA9] uppercase tracking-wider">Offline Sales</p>
-            <h3 className="text-2xl font-black text-[#202522]">₹{totals.offline.toLocaleString('en-IN')}</h3>
+            <h3 className="text-2xl font-black text-[#202828]">₹{totals.offline.toLocaleString('en-IN')}</h3>
           </div>
-          <Store className="text-[#34483F]/20" size={36} />
+          <Store className="text-[#164A4A]/20" size={36} />
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-3">
-        <select value={source} onChange={(e) => setSource(e.target.value)} className="bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none lg:w-44">
+        <select value={source} onChange={(e) => setSource(e.target.value)} className="bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none lg:w-44">
           <option value="all">All Sales</option>
           <option value="online">Online Orders</option>
           <option value="offline">Offline Sales</option>
         </select>
         <div className="relative flex-1">
-          <input value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="Filter by product name..." className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none" />
-          <Search className="absolute left-3 top-2.5 text-[#4A514D]" size={16} />
+          <input value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="Filter by product name..." className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" />
+          <Search className="absolute left-3 top-2.5 text-[#455250]" size={16} />
         </div>
-        <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none" />
-        <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none" />
+        <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" />
+        <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" />
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#34483F]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>
       ) : (
-        <div className="bg-white border border-[#DCD9CD] rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left text-sm text-[#4A514D] whitespace-nowrap">
-              <thead className="bg-[#FFFFFF] border-b border-[#DCD9CD] text-[#202522]">
+            <table className="w-full text-left text-sm text-[#455250] whitespace-nowrap">
+              <thead className="bg-[#FFFFFF] border-b border-[#D3DFDA] text-[#202828]">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Reference</th>
                   <th className="px-6 py-4 font-semibold">Type</th>
@@ -121,12 +121,12 @@ const GymStoreSalesHistory = () => {
                   <th className="px-6 py-4 font-semibold text-right">Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#DCD9CD]">
+              <tbody className="divide-y divide-[#D3DFDA]">
                 {sales.length === 0 ? (
                   <tr><td colSpan={8} className="px-6 py-10 text-center">No sales found for the selected filters.</td></tr>
                 ) : sales.map((s) => (
-                  <tr key={s._id} className="hover:bg-[#F5F3EE] transition-colors">
-                    <td className="px-6 py-4 font-bold text-[#202522]">{s.recordNumber}</td>
+                  <tr key={s._id} className="hover:bg-[#F1F5F3] transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#202828]">{s.recordNumber}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${s.sourceType === 'Online Order' ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700'}`}>
                         {s.sourceType}
@@ -135,20 +135,20 @@ const GymStoreSalesHistory = () => {
                     <td className="px-6 py-4">{new Date(s.date).toLocaleString()}</td>
                     <td className="px-6 py-4 font-semibold">{s.customer ? `${s.customer.firstName} ${s.customer.lastName}` : 'Walk-in'}</td>
                     <td className="px-6 py-4">
-                      <span className="font-bold text-[#202522]">{s.items.reduce((sum: number, i: any) => sum + i.quantity, 0)}</span> item(s)
+                      <span className="font-bold text-[#202828]">{s.items.reduce((sum: number, i: any) => sum + i.quantity, 0)}</span> item(s)
                     </td>
                     <td className="px-6 py-4">{s.paymentMethod}</td>
                     <td className="px-6 py-4">
                       {s.sourceType === 'Online Order' ? (
                         <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                          s.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                          s.status === 'Completed' ? 'bg-[#D2B48C]/10 text-[#164A4A]' :
                           s.status === 'Cancelled' || s.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
                         }`}>{s.status}</span>
                       ) : (
-                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">Completed</span>
+                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#D2B48C]/10 text-[#164A4A]">Completed</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-right font-black text-green-600">₹{s.total}</td>
+                    <td className="px-6 py-4 text-right font-black text-[#164A4A]">₹{s.total}</td>
                   </tr>
                 ))}
               </tbody>

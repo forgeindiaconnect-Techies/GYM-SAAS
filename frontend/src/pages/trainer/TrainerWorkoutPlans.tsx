@@ -39,22 +39,22 @@ const TrainerWorkoutPlans = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">Workout Plans</h1>
-          <p className="text-[#4A514D]">Manage templates and custom routines</p>
+          <p className="text-[#455250]">Manage templates and custom routines</p>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A514D]" />
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#455250]" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search plans..."
-              className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl pl-10 pr-9 py-2 text-sm focus:border-[#34483F] outline-none"
+              className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl pl-10 pr-9 py-2 text-sm focus:border-[#164A4A] outline-none"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A8ADA9] hover:text-[#202522]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A8ADA9] hover:text-[#202828]"
               >
                 <X size={16} />
               </button>
@@ -62,7 +62,7 @@ const TrainerWorkoutPlans = () => {
           </div>
           <button 
             onClick={() => setIsCreateModalOpen(true)}
-            className="px-4 py-2 bg-[#34483F] text-white rounded-xl font-bold flex items-center gap-2 shrink-0 hover:bg-[#C6A77D] transition-colors"
+            className="px-4 py-2 bg-[#164A4A] text-white rounded-xl font-bold flex items-center gap-2 shrink-0 hover:bg-[#C6A77D] transition-colors"
           >
             <Plus size={18} /> Create Plan
           </button>
@@ -70,21 +70,21 @@ const TrainerWorkoutPlans = () => {
       </div>
 
       {filteredPlans.length === 0 ? (
-        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-12 text-center">
+        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-12 text-center">
           <Dumbbell size={48} className="mx-auto text-[#A8ADA9] mb-3" />
-          <h3 className="text-lg font-bold text-[#202522]">No workout plans found</h3>
-          <p className="text-sm text-[#4A514D] mt-1">No plans matching &quot;{searchTerm}&quot;.</p>
+          <h3 className="text-lg font-bold text-[#202828]">No workout plans found</h3>
+          <p className="text-sm text-[#455250] mt-1">No plans matching &quot;{searchTerm}&quot;.</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
           {filteredPlans.map((plan, i) => (
-            <div key={i} className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-5 relative group hover:border-[#34483F]/50 transition-colors cursor-pointer">
+            <div key={i} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-5 relative group hover:border-[#164A4A]/50 transition-colors cursor-pointer">
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
                   setActiveDropdown(activeDropdown === i ? null : i);
                 }}
-                className="absolute top-4 right-4 p-1 text-[#4A514D] hover:text-[#202522] hover:bg-gray-100 rounded-lg transition-colors z-10"
+                className="absolute top-4 right-4 p-1 text-[#455250] hover:text-[#202828] hover:bg-gray-100 rounded-lg transition-colors z-10"
               >
                 <MoreVertical size={18}/>
               </button>
@@ -92,11 +92,11 @@ const TrainerWorkoutPlans = () => {
               {activeDropdown === i && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={(e) => { e.stopPropagation(); setActiveDropdown(null); }}></div>
-                  <div className="absolute top-12 right-4 w-40 bg-[#FFFFFF] border border-[#DCD9CD] shadow-xl rounded-xl overflow-hidden z-20 animate-in fade-in zoom-in-95">
-                    <button className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#202522] hover:bg-[#F5F3EE] flex items-center gap-2 transition-colors">
+                  <div className="absolute top-12 right-4 w-40 bg-[#FFFFFF] border border-[#D3DFDA] shadow-xl rounded-xl overflow-hidden z-20 animate-in fade-in zoom-in-95">
+                    <button className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#202828] hover:bg-[#F1F5F3] flex items-center gap-2 transition-colors">
                       <Edit size={14} /> Edit Plan
                     </button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#202522] hover:bg-[#F5F3EE] flex items-center gap-2 transition-colors">
+                    <button className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#202828] hover:bg-[#F1F5F3] flex items-center gap-2 transition-colors">
                       <UserPlus size={14} /> Assign
                     </button>
                     <button 
@@ -105,29 +105,29 @@ const TrainerWorkoutPlans = () => {
                         setPlans(plans.filter((_, idx) => idx !== i));
                         setActiveDropdown(null);
                       }}
-                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors border-t border-[#DCD9CD]"
+                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors border-t border-[#D3DFDA]"
                     >
                       <Trash2 size={14} /> Delete
                     </button>
                   </div>
                 </>
               )}
-              <div className="w-12 h-12 bg-[#34483F]/10 rounded-xl flex items-center justify-center mb-4 text-[#34483F]">
+              <div className="w-12 h-12 bg-[#164A4A]/10 rounded-xl flex items-center justify-center mb-4 text-[#164A4A]">
                 <Dumbbell size={24} />
               </div>
               <h3 className="font-bold text-lg mb-1">{plan.name}</h3>
-              <span className="inline-block px-2 py-1 bg-[#FFFFFF] rounded text-xs text-[#4A514D] mb-4 border border-[#DCD9CD]">
+              <span className="inline-block px-2 py-1 bg-[#FFFFFF] rounded text-xs text-[#455250] mb-4 border border-[#D3DFDA]">
                 {plan.category}
               </span>
               
-              <div className="grid grid-cols-2 gap-4 text-sm mt-2 pt-4 border-t border-[#DCD9CD]">
+              <div className="grid grid-cols-2 gap-4 text-sm mt-2 pt-4 border-t border-[#D3DFDA]">
                 <div>
-                  <p className="text-[#4A514D] text-xs">Level</p>
+                  <p className="text-[#455250] text-xs">Level</p>
                   <p className="font-medium">{plan.level}</p>
                 </div>
                 <div>
-                  <p className="text-[#4A514D] text-xs">Assigned</p>
-                  <p className="font-medium text-[#34483F]">{plan.users} Clients</p>
+                  <p className="text-[#455250] text-xs">Assigned</p>
+                  <p className="font-medium text-[#164A4A]">{plan.users} Clients</p>
                 </div>
               </div>
             </div>
@@ -137,12 +137,12 @@ const TrainerWorkoutPlans = () => {
 
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#DCD9CD] overflow-hidden">
-            <div className="p-6 border-b border-[#DCD9CD] flex justify-between items-center bg-[#F2EFE8]">
-              <h2 className="text-xl font-bold text-[#202522]">Create Workout Plan</h2>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#D3DFDA] overflow-hidden">
+            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8]">
+              <h2 className="text-xl font-bold text-[#202828]">Create Workout Plan</h2>
               <button 
                 onClick={() => setIsCreateModalOpen(false)} 
-                className="p-2 text-[#4A514D] hover:text-[#202522] hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 text-[#455250] hover:text-[#202828] hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <X size={22} />
               </button>
@@ -150,24 +150,24 @@ const TrainerWorkoutPlans = () => {
             
             <form onSubmit={handleCreatePlan} className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-[#4A514D] mb-2">Plan Name *</label>
+                <label className="block text-sm font-medium text-[#455250] mb-2">Plan Name *</label>
                 <input 
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. 4-Week Shred"
-                  className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F]"
+                  className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A]"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#4A514D] mb-2">Category *</label>
+                  <label className="block text-sm font-medium text-[#455250] mb-2">Category *</label>
                   <select 
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F]"
+                    className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A]"
                     required
                   >
                     <option value="General">General</option>
@@ -178,11 +178,11 @@ const TrainerWorkoutPlans = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#4A514D] mb-2">Level *</label>
+                  <label className="block text-sm font-medium text-[#455250] mb-2">Level *</label>
                   <select 
                     value={form.level}
                     onChange={(e) => setForm({ ...form, level: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F]"
+                    className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A]"
                     required
                   >
                     <option value="Beginner">Beginner</option>
@@ -193,28 +193,28 @@ const TrainerWorkoutPlans = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#4A514D] mb-2">Duration per session *</label>
+                <label className="block text-sm font-medium text-[#455250] mb-2">Duration per session *</label>
                 <input 
                   type="text"
                   value={form.duration}
                   onChange={(e) => setForm({ ...form, duration: e.target.value })}
                   placeholder="e.g. 45 Min"
-                  className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F]"
+                  className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A]"
                   required
                 />
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-[#DCD9CD]">
+              <div className="pt-4 flex justify-end gap-3 border-t border-[#D3DFDA]">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl font-bold text-[#4A514D] hover:bg-[#E8E5DA] transition-colors text-sm"
+                  className="px-5 py-2.5 rounded-xl font-bold text-[#455250] hover:bg-[#E8E5DA] transition-colors text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl font-bold bg-[#34483F] text-white hover:bg-[#C6A77D] transition-colors text-sm"
+                  className="px-5 py-2.5 rounded-xl font-bold bg-[#164A4A] text-white hover:bg-[#C6A77D] transition-colors text-sm"
                 >
                   Create Plan
                 </button>

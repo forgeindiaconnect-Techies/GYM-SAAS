@@ -5,7 +5,7 @@ import api from '../../utils/api';
 
 const getIcon = (type: string) => {
   switch (type) {
-    case 'alert': return <AlertCircle size={20} className="text-[#8FA89B]" />;
+    case 'alert': return <AlertCircle size={20} className="text-[#6fa3a0]" />;
     case 'success': return <CheckCircle2 size={20} className="text-green-500" />;
     case 'message': return <MessageSquare size={20} className="text-blue-500" />;
     case 'info': return <Info size={20} className="text-purple-500" />;
@@ -15,9 +15,9 @@ const getIcon = (type: string) => {
 
 const getBg = (type: string) => {
   switch (type) {
-    case 'alert': return 'bg-[#8FA89B]/10 border-[#8FA89B]/20';
+    case 'alert': return 'bg-[#6fa3a0]/10 border-[#6fa3a0]/20';
     case 'success': return 'bg-green-500/10 border-green-500/20';
-    case 'message': return 'bg-blue-500/10 border-blue-500/20';
+    case 'message': return 'bg-blue-500/10 border-[#D2B48C]/20';
     case 'info': return 'bg-purple-500/10 border-purple-500/20';
     default: return 'bg-gray-500/10 border-gray-500/20';
   }
@@ -77,12 +77,12 @@ const GymAdminNotifications = () => {
     <div className="space-y-6 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Notifications</h1>
-          <p className="text-[#4A514D] mt-1">System alerts, messages, and gym activity updates.</p>
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Notifications</h1>
+          <p className="text-[#455250] mt-1">System alerts, messages, and gym activity updates.</p>
         </div>
         <div className="flex space-x-3 items-center">
-          <span className="text-xs text-[#4A514D]">{unreadCount} unread</span>
-          <button onClick={markAllAsRead} disabled={unreadCount === 0} className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] text-sm font-bold rounded-xl hover:bg-[#F5F3EE] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+          <span className="text-xs text-[#455250]">{unreadCount} unread</span>
+          <button onClick={markAllAsRead} disabled={unreadCount === 0} className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] text-sm font-bold rounded-xl hover:bg-[#F1F5F3] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
             <CheckCheck size={15} />
             Mark all as read
           </button>
@@ -91,31 +91,31 @@ const GymAdminNotifications = () => {
 
       {loading ? (
         <div className="flex items-center justify-center py-20 bg-white border border-[#E8E5DA] rounded-2xl">
-          <div className="w-8 h-8 border-4 border-[#34483F] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#164A4A] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl overflow-hidden">
-          <div className="divide-y divide-[#DCD9CD]">
+        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden">
+          <div className="divide-y divide-[#D3DFDA]">
             {notifications.map((notif) => (
               <button
                 key={notif._id}
                 onClick={() => openNotification(notif)}
-                className={`w-full text-left p-6 flex items-start space-x-4 transition-colors hover:bg-[#F5F3EE] ${!notif.isRead ? 'bg-[#FFFFFF]/50' : ''}`}
+                className={`w-full text-left p-6 flex items-start space-x-4 transition-colors hover:bg-[#F1F5F3] ${!notif.isRead ? 'bg-[#FFFFFF]/50' : ''}`}
               >
                 <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center border ${getBg(notif.type)}`}>
                   {getIcon(notif.type)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start gap-3">
-                    <h3 className={`text-base truncate ${!notif.isRead ? 'font-bold text-[#202522]' : 'font-semibold text-[#4A514D]'}`}>{notif.title}</h3>
-                    <span className="text-xs text-[#4A514D] whitespace-nowrap">
+                    <h3 className={`text-base truncate ${!notif.isRead ? 'font-bold text-[#202828]' : 'font-semibold text-[#455250]'}`}>{notif.title}</h3>
+                    <span className="text-xs text-[#455250] whitespace-nowrap">
                       {notif.createdAt ? new Date(notif.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }) : ''}
                     </span>
                   </div>
-                  <p className={`mt-1 text-sm line-clamp-2 ${!notif.isRead ? 'text-[#202522]' : 'text-[#4A514D]'}`}>{notif.message}</p>
+                  <p className={`mt-1 text-sm line-clamp-2 ${!notif.isRead ? 'text-[#202828]' : 'text-[#455250]'}`}>{notif.message}</p>
                 </div>
                 {!notif.isRead && (
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#34483F] shrink-0 self-center mt-1" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#164A4A] shrink-0 self-center mt-1" />
                 )}
               </button>
             ))}
@@ -124,8 +124,8 @@ const GymAdminNotifications = () => {
           {notifications.length === 0 && (
             <div className="p-12 text-center flex flex-col items-center justify-center">
               <Bell size={48} className="text-[#E8E5DA] mb-4" />
-              <h3 className="text-lg font-bold text-[#202522]">All caught up!</h3>
-              <p className="text-[#4A514D] text-sm mt-1">You have no new notifications.</p>
+              <h3 className="text-lg font-bold text-[#202828]">All caught up!</h3>
+              <p className="text-[#455250] text-sm mt-1">You have no new notifications.</p>
             </div>
           )}
         </div>
@@ -138,36 +138,36 @@ const GymAdminNotifications = () => {
             <div className="flex items-center justify-between p-4 border-b border-[#E8E5DA] bg-[#F2EFE8]">
               <div className="flex items-center gap-2">
                 {getIcon(selected.type)}
-                <h3 className="font-bold text-[#202522]">Notification Details</h3>
+                <h3 className="font-bold text-[#202828]">Notification Details</h3>
               </div>
-              <button onClick={() => setSelected(null)} className="text-[#727975] hover:text-[#202522]">
+              <button onClick={() => setSelected(null)} className="text-[#687B78] hover:text-[#202828]">
                 <XCircle size={20} />
               </button>
             </div>
             <div className="p-5 space-y-4">
               <div>
                 <p className="text-xs text-[#A8ADA9] uppercase tracking-wide font-semibold mb-1">Title</p>
-                <p className="font-bold text-[#202522]">{selected.title}</p>
+                <p className="font-bold text-[#202828]">{selected.title}</p>
               </div>
               <div>
                 <p className="text-xs text-[#A8ADA9] uppercase tracking-wide font-semibold mb-1">Message</p>
-                <p className="text-sm text-[#4A514D] leading-relaxed">{selected.message}</p>
+                <p className="text-sm text-[#455250] leading-relaxed">{selected.message}</p>
               </div>
               <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
                 <div>
                   <p className="text-xs text-[#A8ADA9] uppercase tracking-wide font-semibold mb-1">Type</p>
-                  <p className="text-sm font-semibold text-[#202522] capitalize">{selected.type || 'info'}</p>
+                  <p className="text-sm font-semibold text-[#202828] capitalize">{selected.type || 'info'}</p>
                 </div>
                 <div>
                   <p className="text-xs text-[#A8ADA9] uppercase tracking-wide font-semibold mb-1">Status</p>
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${selected.isRead ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-700'}`}>
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${selected.isRead ? 'bg-gray-100 text-gray-600' : 'bg-[#D2B48C]/10 text-[#164A4A]'}`}>
                     <CheckCircle2 size={12} />
                     {selected.isRead ? 'Read' : 'Unread'}
                   </span>
                 </div>
                 <div className="col-span-2">
                   <p className="text-xs text-[#A8ADA9] uppercase tracking-wide font-semibold mb-1">Received At</p>
-                  <p className="text-sm font-semibold text-[#202522]">
+                  <p className="text-sm font-semibold text-[#202828]">
                     {selected.createdAt ? new Date(selected.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '-'}
                   </p>
                 </div>

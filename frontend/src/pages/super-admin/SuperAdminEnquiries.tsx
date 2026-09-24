@@ -35,7 +35,7 @@ export const SuperAdminEnquiries = () => {
       case 'NEW': return 'bg-blue-100 text-blue-700';
       case 'CONTACTED': return 'bg-yellow-100 text-yellow-700';
       case 'FOLLOW_UP': return 'bg-purple-100 text-purple-700';
-      case 'CONVERTED': return 'bg-green-100 text-green-700';
+      case 'CONVERTED': return 'bg-[#D2B48C]/10 text-[#164A4A]';
       case 'CLOSED': return 'bg-gray-100 text-gray-700';
       default: return 'bg-gray-100 text-gray-700';
     }
@@ -45,8 +45,8 @@ export const SuperAdminEnquiries = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Platform Enquiries</h1>
-          <p className="text-[#4A514D] mt-1">Overview of all customer leads across all gyms.</p>
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Platform Enquiries</h1>
+          <p className="text-[#455250] mt-1">Overview of all customer leads across all gyms.</p>
         </div>
         <div className="flex items-center">
           <div className="relative">
@@ -56,7 +56,7 @@ export const SuperAdminEnquiries = () => {
               placeholder="Search enquiries, gyms..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-[#E8E5DA] rounded-xl text-sm focus:border-[#8FA89B] focus:ring-1 focus:ring-[#8FA89B] outline-none"
+              className="pl-10 pr-4 py-2 border border-[#E8E5DA] rounded-xl text-sm focus:border-[#6fa3a0] focus:ring-1 focus:ring-[#6fa3a0] outline-none"
             />
           </div>
         </div>
@@ -64,7 +64,7 @@ export const SuperAdminEnquiries = () => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin text-[#8FA89B]" size={40} />
+          <Loader2 className="animate-spin text-[#6fa3a0]" size={40} />
         </div>
       ) : (
         <div className="bg-white border border-[#E8E5DA] rounded-2xl overflow-hidden shadow-sm">
@@ -72,29 +72,29 @@ export const SuperAdminEnquiries = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#F2EFE8] border-b border-[#E8E5DA]">
-                  <th className="px-6 py-4 text-xs font-semibold text-[#727975] uppercase tracking-wider">Customer</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#727975] uppercase tracking-wider">Contact</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#727975] uppercase tracking-wider">Gym Target</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#727975] uppercase tracking-wider">Date & Status</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider">Customer</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider">Contact</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider">Gym Target</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider">Date & Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E8E5DA]">
                 {filteredEnquiries.map((enq) => (
                   <tr key={enq._id} className="hover:bg-[#F2EFE8] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-[#202522]">{enq.customerName}</div>
-                      <div className="text-sm text-[#4A514D]">{enq.enquiryId}</div>
+                      <div className="font-semibold text-[#202828]">{enq.customerName}</div>
+                      <div className="text-sm text-[#455250]">{enq.enquiryId}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-[#202522] flex items-center gap-1"><Phone size={12}/> {enq.mobileNumber}</div>
-                      <div className="text-sm text-[#727975] flex items-center gap-1 mt-1"><Mail size={12}/> {enq.email}</div>
+                      <div className="text-sm text-[#202828] flex items-center gap-1"><Phone size={12}/> {enq.mobileNumber}</div>
+                      <div className="text-sm text-[#687B78] flex items-center gap-1 mt-1"><Mail size={12}/> {enq.email}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-[#8FA89B]">{enq.gymId?.name || 'Unknown Gym'}</div>
-                      <div className="text-xs text-[#727975] flex items-center gap-1 mt-0.5"><MapPin size={10}/> {enq.branchId?.name || enq.city || 'Main Branch'}</div>
+                      <div className="text-sm font-semibold text-[#6fa3a0]">{enq.gymId?.name || 'Unknown Gym'}</div>
+                      <div className="text-xs text-[#687B78] flex items-center gap-1 mt-0.5"><MapPin size={10}/> {enq.branchId?.name || enq.city || 'Main Branch'}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-[#202522] mb-2">{new Date(enq.createdAt).toLocaleDateString()}</div>
+                      <div className="text-sm text-[#202828] mb-2">{new Date(enq.createdAt).toLocaleDateString()}</div>
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${getStatusColor(enq.status)}`}>
                         {enq.status.replace('_', ' ')}
                       </span>
@@ -103,7 +103,7 @@ export const SuperAdminEnquiries = () => {
                 ))}
                 {filteredEnquiries.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-6 py-12 text-center text-[#4A514D]">
+                    <td colSpan={4} className="px-6 py-12 text-center text-[#455250]">
                       <MessageSquare size={40} className="mx-auto text-[#E8E5DA] mb-3" />
                       No enquiries found.
                     </td>

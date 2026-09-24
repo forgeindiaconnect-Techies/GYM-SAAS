@@ -33,6 +33,12 @@ export interface IBranch extends Document {
   status: GymStatus;
   memberCapacity?: number;
   trainerCapacity?: number;
+  subscriptionPlans?: {
+    name: string;
+    price: string | number;
+    duration: string;
+    features: string;
+  }[];
   
   createdAt: Date;
   updatedAt: Date;
@@ -72,6 +78,12 @@ const branchSchema = new Schema<IBranch>(
     status: { type: String, enum: Object.values(GymStatus), default: GymStatus.ACTIVE },
     memberCapacity: { type: Number },
     trainerCapacity: { type: Number },
+    subscriptionPlans: [{
+      name: { type: String },
+      price: { type: Schema.Types.Mixed },
+      duration: { type: String },
+      features: { type: String },
+    }],
   },
   { timestamps: true }
 );

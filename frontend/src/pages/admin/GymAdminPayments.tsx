@@ -135,44 +135,44 @@ const GymAdminPayments = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Payments & Subscriptions</h1>
-          <p className="text-[#4A514D] mt-1">Manage member payments and configure payment settings.</p>
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Payments & Subscriptions</h1>
+          <p className="text-[#455250] mt-1">Manage member payments and configure payment settings.</p>
         </div>
       </div>
 
-      <div className="flex border-b border-[#DCD9CD] space-x-8 mb-6">
+      <div className="flex border-b border-[#D3DFDA] space-x-8 mb-6">
         <button 
           onClick={() => setActiveTab('all')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'all' ? 'border-[#34483F] text-[#34483F]' : 'border-transparent text-[#4A514D] hover:text-[#202522]'}`}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'all' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}
         >
           All Payments
         </button>
         <button 
           onClick={() => setActiveTab('manual')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'manual' ? 'border-[#34483F] text-[#34483F]' : 'border-transparent text-[#4A514D] hover:text-[#202522]'}`}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'manual' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}
         >
           Manual Payments
         </button>
         <button 
           onClick={() => setActiveTab('qr')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'qr' ? 'border-[#34483F] text-[#34483F]' : 'border-transparent text-[#4A514D] hover:text-[#202522]'}`}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'qr' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}
         >
           QR Code Payments
         </button>
       </div>
 
       <div className="space-y-6">
-          <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6 relative overflow-hidden flex items-center justify-between">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 relative overflow-hidden flex items-center justify-between">
             <div>
-              <p className="text-[#4A514D] text-sm font-semibold mb-1">Total Revenue</p>
-              <h3 className="text-3xl font-black text-[#202522]">₹{payments.filter(p => p.status === 'Approved').reduce((acc, curr) => acc + (curr.amount || 0), 0).toLocaleString('en-IN')}</h3>
+              <p className="text-[#455250] text-sm font-semibold mb-1">Total Revenue</p>
+              <h3 className="text-3xl font-black text-[#202828]">₹{payments.filter(p => p.status === 'Approved').reduce((acc, curr) => acc + (curr.amount || 0), 0).toLocaleString('en-IN')}</h3>
             </div>
-            <IndianRupee size={48} className="text-[#34483F]/20" />
+            <IndianRupee size={48} className="text-[#164A4A]/20" />
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl overflow-hidden">
-            <div className="p-6 border-b border-[#DCD9CD] flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h3 className="text-lg font-bold text-[#202522]">Payment Verification</h3>
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden">
+            <div className="p-6 border-b border-[#D3DFDA] flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <h3 className="text-lg font-bold text-[#202828]">Payment Verification</h3>
               <div className="flex gap-4 w-full md:w-auto">
                 <div className="relative flex-1 md:w-72">
                   <input
@@ -180,13 +180,13 @@ const GymAdminPayments = () => {
                     placeholder="Search transactions..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none"
+                    className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none"
                   />
-                  <Search className="absolute left-2.5 top-2.5 text-[#4A514D]" size={16} />
+                  <Search className="absolute left-2.5 top-2.5 text-[#455250]" size={16} />
                 </div>
                 <button
                   onClick={exportToCSV}
-                  className="px-4 py-2 bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] font-bold rounded-xl hover:bg-[#F5F3EE] transition-colors flex items-center gap-2 text-sm shrink-0"
+                  className="px-4 py-2 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] font-bold rounded-xl hover:bg-[#F1F5F3] transition-colors flex items-center gap-2 text-sm shrink-0"
                 >
                   <Download size={16} /> Export
                 </button>
@@ -194,11 +194,11 @@ const GymAdminPayments = () => {
             </div>
             
             {loading ? (
-              <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#34483F]" size={40} /></div>
+              <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>
             ) : (
               <div className="overflow-x-auto custom-scrollbar">
-                <table className="w-full text-left text-sm text-[#4A514D] whitespace-nowrap">
-                  <thead className="bg-[#FFFFFF] border-b border-[#DCD9CD] text-[#202522]">
+                <table className="w-full text-left text-sm text-[#455250] whitespace-nowrap">
+                  <thead className="bg-[#FFFFFF] border-b border-[#D3DFDA] text-[#202828]">
                     <tr>
                       <th className="px-6 py-4 font-semibold">Date</th>
                       <th className="px-6 py-4 font-semibold">Customer</th>
@@ -208,26 +208,26 @@ const GymAdminPayments = () => {
                       <th className="px-6 py-4 font-semibold text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#DCD9CD]">
+                  <tbody className="divide-y divide-[#D3DFDA]">
                     {filtered.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="px-6 py-8 text-center text-[#4A514D]">No transactions match your search.</td>
+                        <td colSpan={7} className="px-6 py-8 text-center text-[#455250]">No transactions match your search.</td>
                       </tr>
                     ) : filtered.map((trx) => (
-                      <tr key={trx._id} className="hover:bg-[#F5F3EE] transition-colors">
+                      <tr key={trx._id} className="hover:bg-[#F1F5F3] transition-colors">
                         <td className="px-6 py-4">{new Date(trx.paymentDate || trx.createdAt).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 font-semibold text-[#202522]">{trx.customerId?.firstName} {trx.customerId?.lastName}</td>
+                        <td className="px-6 py-4 font-semibold text-[#202828]">{trx.customerId?.firstName} {trx.customerId?.lastName}</td>
                         <td className="px-6 py-4">
-                          <p className="font-bold text-[#202522]">{trx.planName}</p>
-                          <p className="text-green-600 font-bold">₹{trx.amount}</p>
+                          <p className="font-bold text-[#202828]">{trx.planName}</p>
+                          <p className="text-[#164A4A] font-bold">₹{trx.amount}</p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-[#202522] font-medium">{trx.paymentMethod}</p>
+                          <p className="text-[#202828] font-medium">{trx.paymentMethod}</p>
                           <p className="font-mono text-xs text-gray-500">{trx.transactionId || 'N/A'}</p>
                         </td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            trx.status === 'Approved' ? 'bg-green-100 text-green-700' :
+                            trx.status === 'Approved' ? 'bg-[#D2B48C]/10 text-[#164A4A]' :
                             trx.status === 'Rejected' ? 'bg-red-100 text-red-700' :
                             'bg-yellow-100 text-yellow-700'
                           }`}>
@@ -238,13 +238,13 @@ const GymAdminPayments = () => {
                           <div className="flex justify-end gap-2 items-center">
                             <button 
                               onClick={() => setSelectedTrx(trx)}
-                              className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold whitespace-nowrap"
+                              className="px-3 py-1.5 bg-blue-50 text-[#D2B48C] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold whitespace-nowrap"
                             >
                               View Details
                             </button>
                             {trx.status === 'Pending Verification' ? (
                               <>
-                                <button onClick={() => handleVerify(trx._id, 'Approve')} className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors" title="Approve">
+                                <button onClick={() => handleVerify(trx._id, 'Approve')} className="p-1.5 bg-green-50 text-[#164A4A] rounded-lg hover:bg-green-100 transition-colors" title="Approve">
                                   <CheckCircle size={18} />
                                 </button>
                                 <button onClick={() => setRejectingPaymentId(trx._id)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" title="Reject">
@@ -272,40 +272,40 @@ const GymAdminPayments = () => {
                 <button onClick={() => setSelectedTrx(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                   <XCircle size={24} />
                 </button>
-                <h2 className="text-2xl font-bold text-[#202522] mb-6 border-b pb-4">Transaction Details</h2>
+                <h2 className="text-2xl font-bold text-[#202828] mb-6 border-b pb-4">Transaction Details</h2>
                 
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-gray-500 font-semibold uppercase">Customer</p>
-                      <p className="font-bold text-[#202522]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</p>
+                      <p className="font-bold text-[#202828]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-semibold uppercase">Date</p>
-                      <p className="font-bold text-[#202522]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleDateString()}</p>
+                      <p className="font-bold text-[#202828]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleDateString()}</p>
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-gray-500 font-semibold uppercase">Plan</p>
-                      <p className="font-bold text-[#202522]">{selectedTrx.planName}</p>
+                      <p className="font-bold text-[#202828]">{selectedTrx.planName}</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-semibold uppercase">Amount</p>
-                      <p className="font-bold text-green-600">₹{selectedTrx.amount}</p>
+                      <p className="font-bold text-[#164A4A]">₹{selectedTrx.amount}</p>
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-gray-500 font-semibold uppercase">Payment Method</p>
-                      <p className="font-bold text-[#202522]">{selectedTrx.paymentMethod}</p>
+                      <p className="font-bold text-[#202828]">{selectedTrx.paymentMethod}</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-semibold uppercase">Status</p>
                       <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        selectedTrx.status === 'Approved' ? 'bg-green-100 text-green-700' :
+                        selectedTrx.status === 'Approved' ? 'bg-[#D2B48C]/10 text-[#164A4A]' :
                         selectedTrx.status === 'Rejected' ? 'bg-red-100 text-red-700' :
                         'bg-yellow-100 text-yellow-700'
                       }`}>
@@ -333,7 +333,7 @@ const GymAdminPayments = () => {
                   {selectedTrx.notes && (
                     <div>
                       <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Additional Notes</p>
-                      <p className="bg-gray-50 p-3 rounded border border-gray-200 text-sm text-[#202522] italic">{selectedTrx.notes}</p>
+                      <p className="bg-gray-50 p-3 rounded border border-gray-200 text-sm text-[#202828] italic">{selectedTrx.notes}</p>
                     </div>
                   )}
 
@@ -341,7 +341,7 @@ const GymAdminPayments = () => {
                     <div>
                       <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Payment Proof</p>
                       {selectedTrx.paymentProofUrl ? (
-                        <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 font-bold rounded-lg hover:bg-blue-100 transition-colors">
+                        <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-blue-50 text-[#D2B48C] font-bold rounded-lg hover:bg-blue-100 transition-colors">
                           <FileText size={18} className="mr-2"/> View Attached Proof Document
                         </a>
                       ) : (
@@ -354,7 +354,7 @@ const GymAdminPayments = () => {
                 <div className="mt-8 pt-6 border-t border-gray-100">
                   <button 
                     onClick={() => setSelectedTrx(null)} 
-                    className="w-full py-3 bg-gray-100 text-[#4A514D] font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                    className="w-full py-3 bg-gray-100 text-[#455250] font-bold rounded-xl hover:bg-gray-200 transition-colors"
                   >
                     Close Details
                   </button>
@@ -366,14 +366,14 @@ const GymAdminPayments = () => {
           {rejectingPaymentId && (
             <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
               <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-                <h2 className="text-xl font-bold text-[#202522] mb-4">Reject Payment</h2>
-                <p className="text-[#4A514D] mb-4 text-sm">Please provide a reason for rejecting this payment (optional). This will be shown to the customer.</p>
+                <h2 className="text-xl font-bold text-[#202828] mb-4">Reject Payment</h2>
+                <p className="text-[#455250] mb-4 text-sm">Please provide a reason for rejecting this payment (optional). This will be shown to the customer.</p>
                 <textarea
                   value={rejectionReasonInput}
                   onChange={(e) => setRejectionReasonInput(e.target.value)}
                   placeholder="e.g., The payment screenshot is blurry or invalid."
                   rows={4}
-                  className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl p-3 text-[#202522] focus:border-red-500 outline-none resize-none mb-6 text-sm"
+                  className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl p-3 text-[#202828] focus:border-red-500 outline-none resize-none mb-6 text-sm"
                 ></textarea>
                 <div className="flex gap-3">
                   <button 
@@ -381,7 +381,7 @@ const GymAdminPayments = () => {
                       setRejectingPaymentId(null);
                       setRejectionReasonInput('');
                     }}
-                    className="flex-1 py-2.5 bg-gray-100 text-[#4A514D] font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                    className="flex-1 py-2.5 bg-gray-100 text-[#455250] font-bold rounded-xl hover:bg-gray-200 transition-colors"
                   >
                     Cancel
                   </button>

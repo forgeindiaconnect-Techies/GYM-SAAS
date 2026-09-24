@@ -7,7 +7,7 @@ const GymStoreCategories = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
-  const [form, setForm] = useState({ name: '', description: '', status: 'Active' });
+  const [form, setForm] = useState({ name: '', description: '', status: 'Active', productType: 'Supplements' });
   const [saving, setSaving] = useState(false);
 
   const load = async () => {
@@ -26,13 +26,13 @@ const GymStoreCategories = () => {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ name: '', description: '', status: 'Active' });
+    setForm({ name: '', description: '', status: 'Active', productType: 'Supplements' });
     setModalOpen(true);
   };
 
   const openEdit = (c: any) => {
     setEditing(c);
-    setForm({ name: c.name, description: c.description || '', status: c.status });
+    setForm({ name: c.name, description: c.description || '', status: c.status, productType: c.productType || 'Supplements' });
     setModalOpen(true);
   };
 
@@ -48,11 +48,13 @@ const GymStoreCategories = () => {
       setModalOpen(false);
       load();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to save category');
+      setErrorMsg(err.response?.data?.message || 'Failed to save category');
     } finally {
       setSaving(false);
     }
   };
+
+  const [errorMsg, setErrorMsg] = useState('');
 
   const remove = async (c: any) => {
     if (!window.confirm(`Delete category "${c.name}"?`)) return;
@@ -60,7 +62,7 @@ const GymStoreCategories = () => {
       await api.delete(`/store/admin/categories/${c._id}`);
       load();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to delete category');
+      setErrorMsg(err.response?.data?.message || 'Failed to delete category');
     }
   };
 
@@ -68,33 +70,33 @@ const GymStoreCategories = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Product Categories</h1>
-          <p className="text-[#4A514D] mt-1">Organise your store products into categories.</p>
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Product Categories</h1>
+          <p className="text-[#455250] mt-1">Organise your store products into categories.</p>
         </div>
-        <button onClick={openCreate} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#34483F] to-[#8FA89B] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity">
+        <button onClick={openCreate} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity">
           <Plus size={18} /> Add Category
         </button>
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#34483F]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {categories.map((c) => (
-            <div key={c._id} className="bg-white border border-[#DCD9CD] rounded-2xl p-5">
+            <div key={c._id} className="bg-white border border-[#D3DFDA] rounded-2xl p-5">
               <div className="flex items-start justify-between">
-                <div className="w-11 h-11 rounded-xl bg-[#34483F]/10 flex items-center justify-center">
-                  <Tag className="text-[#34483F]" size={22} />
+                <div className="w-11 h-11 rounded-xl bg-[#164A4A]/10 flex items-center justify-center">
+                  <Tag className="text-[#164A4A]" size={22} />
                 </div>
-                <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${c.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${c.status === 'Active' ? 'bg-[#D2B48C]/10 text-[#164A4A]' : 'bg-gray-100 text-gray-500'}`}>
                   {c.status}
                 </span>
               </div>
-              <h3 className="font-bold text-[#202522] text-lg mt-3">{c.name}</h3>
-              {c.description && <p className="text-sm text-[#4A514D] mt-1 line-clamp-2">{c.description}</p>}
-              <p className="text-xs text-[#8FA89B] font-bold mt-2">{c.productCount || 0} active product(s)</p>
+              <h3 className="font-bold text-[#202828] text-lg mt-3">{c.name}</h3>
+              {c.description && <p className="text-sm text-[#455250] mt-1 line-clamp-2">{c.description}</p>}
+              <p className="text-xs text-[#6fa3a0] font-bold mt-2">{c.productCount || 0} active product(s)</p>
               <div className="mt-4 flex gap-2 pt-3 border-t border-[#F1F5F9]">
-                <button onClick={() => openEdit(c)} className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
+                <button onClick={() => openEdit(c)} className="flex-1 px-3 py-1.5 bg-blue-50 text-[#D2B48C] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
                   <Pencil size={13} /> Edit
                 </button>
                 <button onClick={() => remove(c)} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
@@ -112,31 +114,54 @@ const GymStoreCategories = () => {
             <button onClick={() => setModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
               <X size={22} />
             </button>
-            <h2 className="text-2xl font-bold text-[#202522] mb-6">{editing ? 'Edit Category' : 'Add Category'}</h2>
+            <h2 className="text-2xl font-bold text-[#202828] mb-6">{editing ? 'Edit Category' : 'Add Category'}</h2>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[#727975] uppercase mb-1 block">Category Name *</label>
-                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none" placeholder="e.g., Supplements" />
+                <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">Product Type *</label>
+                <select value={form.productType} onChange={(e) => setForm({ ...form, productType: e.target.value })} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none">
+                  {['Supplements', 'Nutrition & Healthy Snacks', 'Fitness Drinks', 'Gym Accessories', 'Yoga & Recovery', 'Gym Clothing', 'Gym Merchandise', 'Fitness Monitoring', 'Personal Care', 'Healthy Meals', 'Other'].map(pt => (
+                    <option key={pt} value={pt}>{pt}</option>
+                  ))}
+                </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-[#727975] uppercase mb-1 block">Description</label>
-                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none resize-none" rows={3} placeholder="Optional" />
+                <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">Category Name *</label>
+                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" placeholder="e.g., Supplements" />
               </div>
               <div>
-                <label className="text-xs font-bold text-[#727975] uppercase mb-1 block">Status</label>
-                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl px-3 py-2 text-sm text-[#202522] focus:border-[#34483F] outline-none">
+                <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">Description</label>
+                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none resize-none" rows={3} placeholder="Optional" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">Status</label>
+                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none">
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                 </select>
               </div>
             </div>
             <div className="mt-6 flex gap-3">
-              <button onClick={() => setModalOpen(false)} className="flex-1 py-3 bg-gray-100 text-[#4A514D] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
-              <button onClick={save} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#34483F] to-[#8FA89B] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+              <button onClick={() => setModalOpen(false)} className="flex-1 py-3 bg-gray-100 text-[#455250] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
+              <button onClick={save} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                 {saving && <Loader2 className="animate-spin" size={18} />}
                 {editing ? 'Update Category' : 'Create Category'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {errorMsg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative text-center">
+            <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <X size={24} />
+            </div>
+            <h2 className="text-xl font-bold text-[#202828] mb-2">Action Prevented</h2>
+            <p className="text-[#455250] text-sm mb-6">{errorMsg}</p>
+            <button onClick={() => setErrorMsg('')} className="w-full py-3 bg-gray-100 text-[#455250] font-bold rounded-xl hover:bg-gray-200 transition-colors">
+              Got it
+            </button>
           </div>
         </div>
       )}

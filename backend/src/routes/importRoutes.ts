@@ -6,6 +6,7 @@ import {
   executeImport,
   getImportHistory,
   getImportHistoryById,
+  deleteImportHistory,
 } from '../controllers/importController';
 
 const router = Router();
@@ -23,5 +24,6 @@ router.post('/execute', executeImport);
 // Import history
 router.get('/history', getImportHistory);
 router.get('/history/:id', getImportHistoryById);
+router.delete('/history/:id', deleteImportHistory);
 
 export default router;

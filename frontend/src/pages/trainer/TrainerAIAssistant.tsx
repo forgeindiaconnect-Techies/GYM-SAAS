@@ -32,12 +32,12 @@ const TrainerAIAssistant = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#06B6D4] to-[#0369A1] rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#D2B48C] to-[#0369A1] rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
             <Bot size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#202522] tracking-tight">AI Trainer Assistant</h1>
-            <p className="text-[#4A514D] mt-1">Review, optimize, and approve AI-generated plans for your clients.</p>
+            <h1 className="text-3xl font-bold text-[#202828] tracking-tight">AI Trainer Assistant</h1>
+            <p className="text-[#455250] mt-1">Review, optimize, and approve AI-generated plans for your clients.</p>
           </div>
         </div>
         
@@ -48,7 +48,7 @@ const TrainerAIAssistant = () => {
             placeholder="Search clients..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full md:w-64 pl-10 pr-4 py-3 bg-white border border-[#E8E5DA] rounded-xl focus:border-[#06B6D4] focus:ring-1 focus:ring-[#06B6D4] transition-all outline-none text-[#202522]"
+            className="w-full md:w-64 pl-10 pr-4 py-3 bg-white border border-[#E8E5DA] rounded-xl focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] transition-all outline-none text-[#202828]"
           />
         </div>
       </div>
@@ -58,11 +58,11 @@ const TrainerAIAssistant = () => {
           <table className="w-full">
             <thead>
               <tr className="bg-[#F2EFE8] border-b border-[#E8E5DA] text-left">
-                <th className="px-6 py-4 text-xs font-bold text-[#727975] uppercase tracking-wider">Client Name</th>
-                <th className="px-6 py-4 text-xs font-bold text-[#727975] uppercase tracking-wider">Goal</th>
-                <th className="px-6 py-4 text-xs font-bold text-[#727975] uppercase tracking-wider">AI Status</th>
-                <th className="px-6 py-4 text-xs font-bold text-[#727975] uppercase tracking-wider">Last Updated</th>
-                <th className="px-6 py-4 text-xs font-bold text-[#727975] uppercase tracking-wider text-right">Action</th>
+                <th className="px-6 py-4 text-xs font-bold text-[#687B78] uppercase tracking-wider">Client Name</th>
+                <th className="px-6 py-4 text-xs font-bold text-[#687B78] uppercase tracking-wider">Goal</th>
+                <th className="px-6 py-4 text-xs font-bold text-[#687B78] uppercase tracking-wider">AI Status</th>
+                <th className="px-6 py-4 text-xs font-bold text-[#687B78] uppercase tracking-wider">Last Updated</th>
+                <th className="px-6 py-4 text-xs font-bold text-[#687B78] uppercase tracking-wider text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E8E5DA]">
@@ -83,19 +83,19 @@ const TrainerAIAssistant = () => {
                           {customer.firstName[0]}
                         </div>
                         <div>
-                          <p className="font-bold text-[#202522]">{customer.firstName} {customer.lastName}</p>
-                          <p className="text-xs text-[#727975]">Member</p>
+                          <p className="font-bold text-[#202828]">{customer.firstName} {customer.lastName}</p>
+                          <p className="text-xs text-[#687B78]">Member</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-[#4A514D]">{customer.goal}</span>
+                      <span className="text-sm font-medium text-[#455250]">{customer.goal}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                        customer.aiStatus === 'Trainer Approved' ? 'bg-[#F5F3EE] text-[#0F766E]' 
+                        customer.aiStatus === 'Trainer Approved' ? 'bg-[#F1F5F3] text-[#0F766E]' 
                         : customer.aiStatus === 'AI Generated' ? 'bg-[#EFF6FF] text-[#1D4ED8]'
-                        : customer.aiStatus === 'No Data' ? 'bg-[#F1F5F9] text-[#727975]'
+                        : customer.aiStatus === 'No Data' ? 'bg-[#F1F5F9] text-[#687B78]'
                         : 'bg-[#FFFBEB] text-[#B45309]'
                       }`}>
                         {customer.aiStatus === 'Trainer Approved' ? <CheckCircle2 size={12} />
@@ -106,7 +106,7 @@ const TrainerAIAssistant = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-[#4A514D]">
+                      <span className="text-sm text-[#455250]">
                         {customer.lastUpdated ? new Date(customer.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}
                       </span>
                     </td>
@@ -116,7 +116,7 @@ const TrainerAIAssistant = () => {
                         className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
                           customer.aiStatus === 'No Data' 
                           ? 'bg-[#F1F5F9] text-[#A8ADA9] pointer-events-none'
-                          : 'bg-[#06B6D4] text-white hover:bg-[#0891B2]'
+                          : 'bg-[#D2B48C] text-white hover:bg-[#0891B2]'
                         }`}
                       >
                         <FileEdit size={16} /> 

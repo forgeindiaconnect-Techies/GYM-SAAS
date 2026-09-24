@@ -60,14 +60,14 @@ const AdminTrainers = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Dumbbell className="text-[#34483F]" size={32} />
+            <Dumbbell className="text-[#164A4A]" size={32} />
             Trainer Directory
           </h1>
-          <p className="text-[#4A514D] mt-2">Manage all registered and active fitness professionals.</p>
+          <p className="text-[#455250] mt-2">Manage all registered and active fitness professionals.</p>
         </div>
         <Link 
           to="/admin/trainers/new"
-          className="px-6 py-2.5 bg-[#34483F] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shrink-0"
+          className="px-6 py-2.5 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shrink-0"
         >
           <Plus size={20} />
           <span>Add New Trainers</span>
@@ -75,15 +75,15 @@ const AdminTrainers = () => {
       </div>
       
       {error && (
-        <div className="bg-[#8FA89B]/10 text-teal-400 p-4 rounded-xl text-sm border border-[#8FA89B]/30">
+        <div className="bg-[#6fa3a0]/10 text-teal-400 p-4 rounded-xl text-sm border border-[#6fa3a0]/30">
           {error}
         </div>
       )}
 
-      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-[#4A514D]">
-            <thead className="text-xs text-[#555] uppercase bg-[#FFFFFF] border-b border-[#DCD9CD]">
+          <table className="w-full text-left text-sm text-[#455250]">
+            <thead className="text-xs text-[#555] uppercase bg-[#FFFFFF] border-b border-[#D3DFDA]">
               <tr>
                 <th className="px-6 py-4 font-bold">Trainer Name</th>
                 <th className="px-6 py-4 font-bold">Specialization</th>
@@ -94,7 +94,7 @@ const AdminTrainers = () => {
                 <th className="px-6 py-4 font-bold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#DCD9CD]">
+            <tbody className="divide-y divide-[#D3DFDA]">
               {isLoading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-8 text-center">Loading trainers...</td>
@@ -112,18 +112,18 @@ const AdminTrainers = () => {
                           {trainer.profilePhoto ? (
                             <img src={trainer.profilePhoto} alt={trainer.firstName} className="w-full h-full object-cover" />
                           ) : (
-                            <span className="font-bold text-[#202522] text-xs">{trainer.firstName[0]}{trainer.lastName[0]}</span>
+                            <span className="font-bold text-[#202828] text-xs">{trainer.firstName[0]}{trainer.lastName[0]}</span>
                           )}
                         </div>
                         <div>
-                          <div className="font-bold text-[#202522] group-hover:text-[#34483F] transition transition-colors">
+                          <div className="font-bold text-[#202828] group-hover:text-[#164A4A] transition transition-colors">
                             {trainer.firstName} {trainer.lastName}
                           </div>
                           <div className="text-xs text-[#555]">{trainer.email}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-medium text-[#202522]">{trainer.specialization || '-'}</td>
+                    <td className="px-6 py-4 font-medium text-[#202828]">{trainer.specialization || '-'}</td>
                     <td className="px-6 py-4">{trainer.experienceYears} Yrs</td>
                     <td className="px-6 py-4">{trainer.employmentType || '-'}</td>
                     <td className="px-6 py-4">
@@ -132,31 +132,31 @@ const AdminTrainers = () => {
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
                         trainer.approvalStatus === 'PENDING' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
-                        trainer.isActive ? 'bg-[#34483F]/10 text-[#34483F] border-[#34483F]/20' :
-                        'bg-[#8FA89B]/10 text-[#8FA89B] border-[#8FA89B]/20'
+                        trainer.isActive ? 'bg-[#164A4A]/10 text-[#164A4A] border-[#164A4A]/20' :
+                        'bg-[#6fa3a0]/10 text-[#6fa3a0] border-[#6fa3a0]/20'
                       }`}>
                         {trainer.approvalStatus === 'PENDING' ? 'Pending' : (trainer.isActive ? 'Active' : 'Inactive')}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button title="View Profile" className="text-[#4A514D] hover:text-[#34483F] transition-colors">
+                        <button title="View Profile" className="text-[#455250] hover:text-[#164A4A] transition-colors">
                           <UserSquare size={18} />
                         </button>
-                        <button title="Edit Trainer" className="text-[#4A514D] hover:text-blue-400 transition-colors">
+                        <button title="Edit Trainer" className="text-[#455250] hover:text-blue-400 transition-colors">
                           <Edit2 size={18} />
                         </button>
                         <button 
                           onClick={() => handleStatusToggle(trainer._id, trainer.approvalStatus, trainer.isActive)}
                           title={trainer.isActive ? "Deactivate" : "Activate"} 
-                          className={`transition-colors ${trainer.isActive ? 'text-[#4A514D] hover:text-orange-400' : 'text-[#4A514D] hover:text-[#34483F]'}`}
+                          className={`transition-colors ${trainer.isActive ? 'text-[#455250] hover:text-orange-400' : 'text-[#455250] hover:text-[#164A4A]'}`}
                         >
                           {trainer.isActive ? <XCircle size={18} /> : <CheckCircle size={18} />}
                         </button>
                         <button 
                           onClick={() => handleDelete(trainer._id)}
                           title="Delete Trainer" 
-                          className="text-[#4A514D] hover:text-[#8FA89B] transition-colors"
+                          className="text-[#455250] hover:text-[#6fa3a0] transition-colors"
                         >
                           <Trash2 size={18} />
                         </button>

@@ -291,8 +291,21 @@ export const getPublicGyms = async (req: Request, res: Response): Promise<void> 
       ];
     }
 
-    const gyms = await Gym.find(filter).select('-subscription').sort({ createdAt: -1 });
-    res.status(200).json({ success: true, gyms });
+    const gyms = await Gym.find(filter).select('-subscription').sort({ createdAt: -1 }).lean();
+    
+    // Fetch branches for these gyms
+    const mongoose = require('mongoose');
+    const Branch = mongoose.model('Branch');
+    const gymIds = gyms.map(g => g._id);
+    const branches = await Branch.find({ gymId: { $in: gymIds }, status: 'ACTIVE' }).lean();
+    
+    // Attach branches to gyms
+    const gymsWithBranches = gyms.map(gym => ({
+      ...gym,
+      branches: branches.filter((b: any) => b.gymId.toString() === gym._id.toString())
+    }));
+
+    res.status(200).json({ success: true, gyms: gymsWithBranches });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -313,7 +326,7 @@ export const getPublicGymById = async (req: Request, res: Response): Promise<voi
     const trainers = await User.find({ gymId: gym._id.toString(), role: 'TRAINER', isActive: true } as any).select('firstName lastName specialization experienceYears profilePhoto bio');
 
     // Fetch branches for this gym
-    const branches = await Branch.find({ gymId: gym._id.toString(), isActive: true });
+    const branches = await Branch.find({ gymId: gym._id, status: 'ACTIVE' } as any);
 
     res.status(200).json({ success: true, gym, trainers, branches });
   } catch (error: any) {

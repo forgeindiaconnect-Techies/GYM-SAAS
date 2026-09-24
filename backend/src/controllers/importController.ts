@@ -280,10 +280,18 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
     ]);
 
     const branchMap = new Map<string, string>(); // name.toLowerCase() → _id
-    branches.forEach(b => branchMap.set(b.branchName.toLowerCase().trim(), b._id.toString()));
+    branches.forEach(b => {
+      if (b.branchName) {
+        branchMap.set(b.branchName.toLowerCase().trim(), b._id.toString());
+      }
+    });
 
     const trainerMap = new Map<string, { id: string; branchId?: string }>(); // name.toLowerCase() → { id, branchId }
-    trainers.forEach(t => trainerMap.set(t.name.toLowerCase().trim(), { id: t._id.toString(), branchId: t.branchId?.toString() }));
+    trainers.forEach(t => {
+      if (t.name) {
+        trainerMap.set(t.name.toLowerCase().trim(), { id: t._id.toString(), branchId: t.branchId?.toString() });
+      }
+    });
 
     // Track seen emails/mobiles within file for in-file duplicate detection
     const seenEmails = new Map<string, number>(); // email → first row number
@@ -303,13 +311,17 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
     }
 
     // Bulk DB lookup for existing customers in this gym
-    const existingUsers = await User.find({
-      gymId,
-      $or: [
-        { email: { $in: allEmails } },
-        { mobile: { $in: allMobiles } },
-      ],
-    }).select('_id email mobile firstName lastName gender dateOfBirth height weight');
+    const orConditions = [];
+    if (allEmails.length > 0) orConditions.push({ email: { $in: allEmails } });
+    if (allMobiles.length > 0) orConditions.push({ mobile: { $in: allMobiles } });
+
+    let existingUsers: any[] = [];
+    if (orConditions.length > 0) {
+      existingUsers = await User.find({
+        gymId,
+        $or: orConditions,
+      }).select('_id email mobile firstName lastName gender dateOfBirth height weight');
+    }
 
     const existingEmailMap = new Map<string, any>(); // email → user doc
     const existingMobileMap = new Map<string, any>(); // mobile → user doc
@@ -755,6 +767,31 @@ export const getImportHistoryById = async (req: AuthRequest, res: Response): Pro
     }
 
     res.status(200).json({ success: true, record });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// ─── DELETE /api/import/history/:id ─────────────────────────────────────────
+export const deleteImportHistory = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const gymId = req.user?.gymId;
+    const { id } = req.params;
+
+    const record = await ImportHistory.findById(id);
+    if (!record) {
+      res.status(404).json({ success: false, message: 'Import record not found' });
+      return;
+    }
+
+    if (record.gymId.toString() !== gymId) {
+      res.status(403).json({ success: false, message: 'Access denied' });
+      return;
+    }
+
+    await ImportHistory.findByIdAndDelete(id);
+
+    res.status(200).json({ success: true, message: 'Import history deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

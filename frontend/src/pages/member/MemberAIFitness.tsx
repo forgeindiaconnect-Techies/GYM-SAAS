@@ -81,21 +81,21 @@ const MemberAIFitness = () => {
   };
 
   if (hasAccess === null) {
-    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#34483F]" size={40} /></div>;
+    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>;
   }
 
   if (!hasAccess) {
     return (
       <div className="max-w-3xl mx-auto mt-10">
-        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-12 text-center relative overflow-hidden shadow-sm">
+        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-12 text-center relative overflow-hidden shadow-sm">
           <div className="w-20 h-20 bg-[#F1F5F9] border border-[#E8E5DA] rounded-full flex items-center justify-center mx-auto mb-6 relative z-10">
             <Lock size={32} className="text-[#A8ADA9]" />
           </div>
-          <h2 className="text-3xl font-bold text-[#202522] mb-4">AI Fitness Coach Locked</h2>
-          <p className="text-[#4A514D] text-lg mb-8 max-w-lg mx-auto">
+          <h2 className="text-3xl font-bold text-[#202828] mb-4">AI Fitness Coach Locked</h2>
+          <p className="text-[#455250] text-lg mb-8 max-w-lg mx-auto">
             You need an active gym membership to access personalized AI workout plans, dietary guidance, and progress tracking.
           </p>
-          <Link to="/gyms" className="inline-flex items-center px-8 py-4 bg-[#34483F] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105 shadow-[0_0_15px_rgba(22,163,74,0.3)]">
+          <Link to="/gyms" className="inline-flex items-center px-8 py-4 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105 shadow-[0_0_15px_rgba(22,163,74,0.3)]">
             <Activity className="mr-2" size={20} /> Find a Gym to Unlock
           </Link>
         </div>
@@ -107,51 +107,51 @@ const MemberAIFitness = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#34483F] to-[#8FA89B] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(22,163,74,0.3)]">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#164A4A] to-[#6fa3a0] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(22,163,74,0.3)]">
             <Bot size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#202522] tracking-tight">AI Fitness Coach</h1>
-            <p className="text-[#4A514D] mt-1">Personalized intelligence for your fitness journey.</p>
+            <h1 className="text-3xl font-bold text-[#202828] tracking-tight">AI Fitness Coach</h1>
+            <p className="text-[#455250] mt-1">Personalized intelligence for your fitness journey.</p>
           </div>
         </div>
         
         {step === 3 && recommendation && (
-          <button onClick={() => setStep(1)} className="px-4 py-2 bg-white border border-[#E8E5DA] text-[#202522] rounded-lg font-medium hover:bg-[#F2EFE8] transition-colors text-sm">
+          <button onClick={() => setStep(1)} className="px-4 py-2 bg-white border border-[#E8E5DA] text-[#202828] rounded-lg font-medium hover:bg-[#F2EFE8] transition-colors text-sm">
             Request New Plan
           </button>
         )}
       </div>
 
       {step === 1 && (
-        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6 md:p-8 space-y-8 animate-in fade-in duration-300 shadow-sm">
-          <h2 className="text-xl font-bold text-[#202522] border-b border-[#DCD9CD] pb-4 flex items-center gap-2">
-            <Activity className="text-[#34483F]" size={20} /> Complete Your Fitness Profile
+        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8 space-y-8 animate-in fade-in duration-300 shadow-sm">
+          <h2 className="text-xl font-bold text-[#202828] border-b border-[#D3DFDA] pb-4 flex items-center gap-2">
+            <Activity className="text-[#164A4A]" size={20} /> Complete Your Fitness Profile
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4A514D]">Age</label>
-              <input type="number" value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} placeholder="e.g. 28" className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] outline-none" />
+              <label className="text-sm font-semibold text-[#455250]">Age</label>
+              <input type="number" value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} placeholder="e.g. 28" className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] outline-none" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4A514D]">Gender</label>
-              <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] outline-none">
+              <label className="text-sm font-semibold text-[#455250]">Gender</label>
+              <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] outline-none">
                 <option>Male</option><option>Female</option><option>Other</option>
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4A514D]">Height (cm)</label>
-              <input type="number" value={formData.height} onChange={e => setFormData({...formData, height: e.target.value})} placeholder="e.g. 175" className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] outline-none" />
+              <label className="text-sm font-semibold text-[#455250]">Height (cm)</label>
+              <input type="number" value={formData.height} onChange={e => setFormData({...formData, height: e.target.value})} placeholder="e.g. 175" className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] outline-none" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4A514D]">Weight (kg)</label>
-              <input type="number" value={formData.weight} onChange={e => setFormData({...formData, weight: e.target.value})} placeholder="e.g. 70" className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] outline-none" />
+              <label className="text-sm font-semibold text-[#455250]">Weight (kg)</label>
+              <input type="number" value={formData.weight} onChange={e => setFormData({...formData, weight: e.target.value})} placeholder="e.g. 70" className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] outline-none" />
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4A514D]">Fitness Goal</label>
-              <select value={formData.fitnessGoal} onChange={e => setFormData({...formData, fitnessGoal: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] outline-none">
+              <label className="text-sm font-semibold text-[#455250]">Fitness Goal</label>
+              <select value={formData.fitnessGoal} onChange={e => setFormData({...formData, fitnessGoal: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] outline-none">
                 <option>Weight Loss</option>
                 <option>Muscle Building</option>
                 <option>Strength & Conditioning</option>
@@ -159,26 +159,26 @@ const MemberAIFitness = () => {
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4A514D]">Experience Level</label>
-              <select value={formData.experienceLevel} onChange={e => setFormData({...formData, experienceLevel: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] outline-none">
+              <label className="text-sm font-semibold text-[#455250]">Experience Level</label>
+              <select value={formData.experienceLevel} onChange={e => setFormData({...formData, experienceLevel: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] outline-none">
                 <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4A514D]">Available Days / Week</label>
-              <select value={formData.availableWorkoutDays} onChange={e => setFormData({...formData, availableWorkoutDays: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] outline-none">
+              <label className="text-sm font-semibold text-[#455250]">Available Days / Week</label>
+              <select value={formData.availableWorkoutDays} onChange={e => setFormData({...formData, availableWorkoutDays: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] outline-none">
                 <option>2 Days</option><option>3 Days</option><option>4 Days</option><option>5+ Days</option>
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#4A514D]">Workout Preference</label>
-              <select value={formData.workoutPreference} onChange={e => setFormData({...formData, workoutPreference: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] outline-none">
+              <label className="text-sm font-semibold text-[#455250]">Workout Preference</label>
+              <select value={formData.workoutPreference} onChange={e => setFormData({...formData, workoutPreference: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] outline-none">
                 <option>Full Gym</option><option>Dumbbells Only</option><option>Bodyweight (Home)</option>
               </select>
             </div>
           </div>
           
-          <button onClick={handleGenerate} disabled={!formData.age || !formData.weight || !formData.height} className="w-full md:w-auto px-8 py-3 bg-[#34483F] text-white rounded-xl font-bold hover:bg-[#C6A77D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 ml-auto shadow-[0_0_15px_rgba(22,163,74,0.3)]">
+          <button onClick={handleGenerate} disabled={!formData.age || !formData.weight || !formData.height} className="w-full md:w-auto px-8 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 ml-auto shadow-[0_0_15px_rgba(22,163,74,0.3)]">
             <Zap size={18} />
             <span>Analyze My Fitness</span>
           </button>
@@ -186,10 +186,10 @@ const MemberAIFitness = () => {
       )}
 
       {step === 2 && (
-        <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-6 shadow-sm min-h-[400px]">
-          <div className="w-16 h-16 border-4 border-[#34483F]/30 border-t-[#34483F] rounded-full animate-spin mb-4"></div>
-          <h2 className="text-2xl font-bold text-[#202522] animate-pulse">AI is Generating Your Plan</h2>
-          <p className="text-[#4A514D] max-w-md">Our intelligence engine is currently crunching your data and building a custom tailored routine optimizing for {formData.fitnessGoal}.</p>
+        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-6 shadow-sm min-h-[400px]">
+          <div className="w-16 h-16 border-4 border-[#164A4A]/30 border-t-[#164A4A] rounded-full animate-spin mb-4"></div>
+          <h2 className="text-2xl font-bold text-[#202828] animate-pulse">AI is Generating Your Plan</h2>
+          <p className="text-[#455250] max-w-md">Our intelligence engine is currently crunching your data and building a custom tailored routine optimizing for {formData.fitnessGoal}.</p>
         </div>
       )}
 
@@ -198,11 +198,11 @@ const MemberAIFitness = () => {
           
           {/* Status Banner */}
           <div className={`p-4 rounded-xl flex items-center gap-3 border ${
-            recommendation.status === 'Trainer Approved' ? 'bg-[#F5F3EE] border-[#DCD9CD] text-[#0F766E]' 
-            : recommendation.status === 'AI Generated' ? 'bg-[#F2EFE8] border-[#E8E5DA] text-[#4A514D]'
+            recommendation.status === 'Trainer Approved' ? 'bg-[#F1F5F3] border-[#D3DFDA] text-[#0F766E]' 
+            : recommendation.status === 'AI Generated' ? 'bg-[#F2EFE8] border-[#E8E5DA] text-[#455250]'
             : 'bg-[#FFFBEB] border-[#FEF3C7] text-[#B45309]'
           }`}>
-            {recommendation.status === 'Trainer Approved' ? <CheckCircle2 size={24} className="text-[#34483F]" /> : <AlertCircle size={24} />}
+            {recommendation.status === 'Trainer Approved' ? <CheckCircle2 size={24} className="text-[#164A4A]" /> : <AlertCircle size={24} />}
             <div>
               <p className="font-bold">{recommendation.status}</p>
               <p className="text-sm opacity-90">
@@ -214,29 +214,29 @@ const MemberAIFitness = () => {
           </div>
 
           <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-[#202522] mb-4">Fitness Analysis</h2>
+            <h2 className="text-xl font-bold text-[#202828] mb-4">Fitness Analysis</h2>
             <div className="space-y-4">
               <div>
                 <h4 className="text-sm font-bold text-[#A8ADA9] uppercase tracking-wider mb-1">Profile Summary</h4>
-                <p className="text-[#202522]">{recommendation.aiAnalysis?.profileSummary}</p>
+                <p className="text-[#202828]">{recommendation.aiAnalysis?.profileSummary}</p>
               </div>
               <div>
                 <h4 className="text-sm font-bold text-[#A8ADA9] uppercase tracking-wider mb-1">Goal Recommendations</h4>
-                <p className="text-[#202522]">{recommendation.aiAnalysis?.goalRecommendations}</p>
+                <p className="text-[#202828]">{recommendation.aiAnalysis?.goalRecommendations}</p>
               </div>
             </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
-              <h3 className="text-xl font-bold text-[#202522] mb-4 flex items-center"><Dumbbell className="mr-2 text-[#34483F]" size={20}/> Workout Plan</h3>
-              <p className="text-sm text-[#727975] mb-4">{recommendation.workoutRecommendation?.weeklySchedule}</p>
+              <h3 className="text-xl font-bold text-[#202828] mb-4 flex items-center"><Dumbbell className="mr-2 text-[#164A4A]" size={20}/> Workout Plan</h3>
+              <p className="text-sm text-[#687B78] mb-4">{recommendation.workoutRecommendation?.weeklySchedule}</p>
               
               <div className="space-y-3">
                 {recommendation.workoutRecommendation?.exercises.map((ex: any, i: number) => (
                   <div key={i} className="p-3 bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl">
-                    <h4 className="font-bold text-[#202522]">{ex.name}</h4>
-                    <p className="text-[#4A514D] text-sm mt-1">{ex.sets} Sets × {ex.reps} Reps</p>
+                    <h4 className="font-bold text-[#202828]">{ex.name}</h4>
+                    <p className="text-[#455250] text-sm mt-1">{ex.sets} Sets × {ex.reps} Reps</p>
                     <div className="flex gap-4 mt-2 text-xs text-[#A8ADA9] font-medium">
                       <span className="flex items-center gap-1"><Clock size={12}/> Rest: {ex.rest}</span>
                       <span className="flex items-center gap-1"><Zap size={12}/> Level: {ex.difficulty}</span>
@@ -248,19 +248,19 @@ const MemberAIFitness = () => {
             
             <div className="space-y-6">
               <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
-                <h3 className="text-xl font-bold text-[#202522] mb-4 flex items-center"><Utensils className="mr-2 text-[#34483F]" size={20}/> Diet Plan</h3>
+                <h3 className="text-xl font-bold text-[#202828] mb-4 flex items-center"><Utensils className="mr-2 text-[#164A4A]" size={20}/> Diet Plan</h3>
                 <div className="space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-[#A8ADA9] uppercase tracking-wider mb-1">Structure</h4>
-                    <p className="text-[#202522]">{recommendation.dietRecommendation?.generalStructure}</p>
+                    <p className="text-[#202828]">{recommendation.dietRecommendation?.generalStructure}</p>
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-[#A8ADA9] uppercase tracking-wider mb-1">Meal Timing</h4>
-                    <p className="text-[#202522]">{recommendation.dietRecommendation?.mealTiming}</p>
+                    <p className="text-[#202828]">{recommendation.dietRecommendation?.mealTiming}</p>
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-[#A8ADA9] uppercase tracking-wider mb-1">Food Options</h4>
-                    <p className="text-[#202522]">{recommendation.dietRecommendation?.foodOptions}</p>
+                    <p className="text-[#202828]">{recommendation.dietRecommendation?.foodOptions}</p>
                   </div>
                 </div>
               </div>

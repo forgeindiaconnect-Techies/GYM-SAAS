@@ -67,9 +67,9 @@ const MemberBookSession = () => {
     return (
       <div className="flex flex-col items-center justify-center h-96 space-y-4">
         <CheckCircle size={64} className="text-green-500" />
-        <h2 className="text-2xl font-bold text-[#202522]">Booking Confirmed!</h2>
-        <p className="text-[#4A514D]">Your session request has been sent to the trainer.</p>
-        <p className="text-sm text-[#4A514D]">Redirecting to your bookings...</p>
+        <h2 className="text-2xl font-bold text-[#202828]">Booking Confirmed!</h2>
+        <p className="text-[#455250]">Your session request has been sent to the trainer.</p>
+        <p className="text-sm text-[#455250]">Redirecting to your bookings...</p>
       </div>
     );
   }
@@ -77,23 +77,23 @@ const MemberBookSession = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Book a Session</h1>
-        <p className="text-[#4A514D] mt-1">Schedule your next training session with an expert.</p>
+        <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Book a Session</h1>
+        <p className="text-[#455250] mt-1">Schedule your next training session with an expert.</p>
       </div>
 
-      <form onSubmit={handleBook} className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6 md:p-8 space-y-6">
+      <form onSubmit={handleBook} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8 space-y-6">
         
         {/* Trainer Selection */}
         <div className="space-y-3">
-          <label className="text-sm font-medium text-[#4A514D]">Select Trainer</label>
+          <label className="text-sm font-medium text-[#455250]">Select Trainer</label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {trainers.map(t => (
-              <label key={t.id} className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all ${formData.trainerId === t.id ? 'border-[#34483F] bg-[#34483F]/5' : 'border-[#DCD9CD] bg-[#FFFFFF] hover:border-[#444]'}`}>
+              <label key={t.id} className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all ${formData.trainerId === t.id ? 'border-[#164A4A] bg-[#164A4A]/5' : 'border-[#D3DFDA] bg-[#FFFFFF] hover:border-[#444]'}`}>
                 <input type="radio" name="trainer" value={t.id} checked={formData.trainerId === t.id} onChange={() => setFormData({...formData, trainerId: t.id})} className="hidden" />
                 <div className="w-10 h-10 bg-[#E8E5DA] rounded-full flex items-center justify-center text-[#EF4444] font-bold mr-3">{t.name.charAt(0)}</div>
                 <div>
-                  <p className="font-semibold text-[#202522]">{t.name}</p>
-                  <p className="text-xs text-[#4A514D]">{t.spec}</p>
+                  <p className="font-semibold text-[#202828]">{t.name}</p>
+                  <p className="text-xs text-[#455250]">{t.spec}</p>
                 </div>
               </label>
             ))}
@@ -103,14 +103,14 @@ const MemberBookSession = () => {
         {/* Session Type */}
         {gym?.trainingMode === 'both' && (
           <div className="space-y-3">
-            <label className="text-sm font-medium text-[#4A514D]">Session Type</label>
+            <label className="text-sm font-medium text-[#455250]">Session Type</label>
             <div className="flex space-x-4">
-              <label className={`flex-1 flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all ${formData.type === 'Offline' ? 'border-[#34483F] bg-[#34483F]/5 text-[#34483F]' : 'border-[#DCD9CD] bg-[#FFFFFF] text-[#4A514D] hover:border-[#444]'}`}>
+              <label className={`flex-1 flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all ${formData.type === 'Offline' ? 'border-[#164A4A] bg-[#164A4A]/5 text-[#164A4A]' : 'border-[#D3DFDA] bg-[#FFFFFF] text-[#455250] hover:border-[#444]'}`}>
                 <input type="radio" name="type" value="Offline" checked={formData.type === 'Offline'} onChange={() => { setFormData({...formData, type: 'Offline', trainerId: ''}) }} className="hidden" />
                 <MapPin size={24} className="mb-2" />
                 <span className="font-medium">In-Gym</span>
               </label>
-              <label className={`flex-1 flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all ${formData.type === 'Online' ? 'border-[#34483F] bg-[#34483F]/5 text-[#34483F]' : 'border-[#DCD9CD] bg-[#FFFFFF] text-[#4A514D] hover:border-[#444]'}`}>
+              <label className={`flex-1 flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all ${formData.type === 'Online' ? 'border-[#164A4A] bg-[#164A4A]/5 text-[#164A4A]' : 'border-[#D3DFDA] bg-[#FFFFFF] text-[#455250] hover:border-[#444]'}`}>
                 <input type="radio" name="type" value="Online" checked={formData.type === 'Online'} onChange={() => { setFormData({...formData, type: 'Online', trainerId: ''}) }} className="hidden" />
                 <Video size={24} className="mb-2" />
                 <span className="font-medium">Online</span>
@@ -122,12 +122,12 @@ const MemberBookSession = () => {
         {/* Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-3">
-            <label className="text-sm font-medium text-[#4A514D] flex items-center gap-2"><Calendar size={16}/> Select Date</label>
-            <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} min={new Date().toISOString().split('T')[0]} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] focus:ring-1 focus:ring-[#EF4444] transition-all" />
+            <label className="text-sm font-medium text-[#455250] flex items-center gap-2"><Calendar size={16}/> Select Date</label>
+            <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} min={new Date().toISOString().split('T')[0]} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] focus:ring-1 focus:ring-[#EF4444] transition-all" />
           </div>
           <div className="space-y-3">
-            <label className="text-sm font-medium text-[#4A514D] flex items-center gap-2"><Clock size={16}/> Select Time</label>
-            <select required value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-[#202522] focus:border-[#34483F] focus:ring-1 focus:ring-[#EF4444] transition-all">
+            <label className="text-sm font-medium text-[#455250] flex items-center gap-2"><Clock size={16}/> Select Time</label>
+            <select required value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-[#202828] focus:border-[#164A4A] focus:ring-1 focus:ring-[#EF4444] transition-all">
               <option value="">Choose a slot</option>
               <option value="09:00 AM">09:00 AM</option>
               <option value="10:00 AM">10:00 AM</option>
@@ -139,7 +139,7 @@ const MemberBookSession = () => {
           </div>
         </div>
 
-        <button type="submit" disabled={!formData.trainerId || !formData.date || !formData.time} className="w-full py-4 bg-[#34483F] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-8">
+        <button type="submit" disabled={!formData.trainerId || !formData.date || !formData.time} className="w-full py-4 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-8">
           Confirm Booking Request
         </button>
       </form>

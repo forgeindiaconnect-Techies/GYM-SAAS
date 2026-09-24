@@ -7,7 +7,7 @@ import {
   Utensils, Bot, UserCheck, Calendar, CalendarCheck,
   TrendingUp, DollarSign, Bell, MessageSquare,
   Settings, Activity, Building2, Menu, LogOut, Clock,
-  ShoppingBag, ShoppingCart
+  ShoppingBag, ShoppingCart, Receipt
 } from 'lucide-react';
 
 const MemberLayout = () => {
@@ -96,9 +96,9 @@ const MemberLayout = () => {
     {
       title: 'Fitness',
       items: [
+        { label: 'AI Fitness', path: '/member/ai-assistant', icon: Bot },
         { label: 'Workout Plan', path: '/member/workout', icon: Dumbbell },
         { label: 'Diet Plan', path: '/member/diet', icon: Utensils },
-        { label: 'AI Fitness', path: '/member/ai-assistant', icon: Bot },
         { label: 'Progress', path: '/member/progress', icon: TrendingUp },
       ]
     },
@@ -108,6 +108,7 @@ const MemberLayout = () => {
         { label: 'Store', path: '/member/store', icon: ShoppingBag },
         { label: 'My Cart', path: '/member/store/cart', icon: ShoppingCart },
         { label: 'My Orders', path: '/member/store/orders', icon: ShoppingBag },
+        { label: 'Payment History', path: '/member/store/payments', icon: Receipt },
       ]
     }] : []),
     {
@@ -117,7 +118,6 @@ const MemberLayout = () => {
         { label: 'Membership', path: '/member/subscription', icon: CreditCard },
         { label: 'Messages', path: '/member/chat', icon: MessageSquare },
         { label: 'Notifications', path: '/member/notifications', icon: Bell },
-        { label: 'Settings', path: '/member/settings', icon: Settings },
       ]
     }
   ];
@@ -134,25 +134,25 @@ const MemberLayout = () => {
 
   const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname);
 
-  const SidebarContent = () => (
+  const renderSidebar = () => (
     <>
       {/* Logo */}
-      <div className="p-5 border-b border-[#DCD9CD]">
+      <div className="p-5 border-b border-[#D3DFDA]">
         <Link to="/" className="flex items-center space-x-2" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 bg-gradient-to-br from-[#34483F] to-[#8FA89B] rounded-xl flex items-center justify-center shadow-lg shadow-green-200 shrink-0">
-            <Activity className="text-[#202522]" size={20} />
+          <div className="w-9 h-9 bg-gradient-to-br from-[#164A4A] to-[#6fa3a0] rounded-xl flex items-center justify-center shadow-lg shadow-green-200 shrink-0">
+            <Activity className="text-[#202828]" size={20} />
           </div>
-          <span className="text-xl font-bold tracking-tight text-[#34483F] truncate max-w-[160px]" title={gym?.name || 'AI GYM'}>
+          <span className="text-xl font-bold tracking-tight text-[#164A4A] truncate max-w-[160px]" title={gym?.name || 'AI GYM'}>
             {gym?.name || 'AI GYM'}
           </span>
         </Link>
         <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-[#06B6D4] to-[#8FA89B] rounded-full flex items-center justify-center text-[#202522] font-bold text-base shadow">
+          <div className="w-10 h-10 bg-gradient-to-br from-[#D2B48C] to-[#6fa3a0] rounded-full flex items-center justify-center text-[#202828] font-bold text-base shadow">
             {user?.firstName?.[0] || 'U'}
           </div>
           <div className="flex-1 overflow-hidden">
-            <p className="font-semibold text-sm text-[#202522] truncate">{user?.firstName} {user?.lastName}</p>
-            <p className="text-xs text-[#06B6D4] font-medium truncate capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
+            <p className="font-semibold text-sm text-[#202828] truncate">{user?.firstName} {user?.lastName}</p>
+            <p className="text-xs text-[#D2B48C] font-medium truncate capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
           </div>
         </div>
       </div>
@@ -174,15 +174,15 @@ const MemberLayout = () => {
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
                       isActive
-                        ? 'bg-[#34483F]/10 text-[#34483F] font-semibold'
-                        : 'text-[#4A514D] hover:bg-[#F5F3EE] hover:text-[#34483F]'
+                        ? 'bg-[#164A4A]/10 text-[#164A4A] font-semibold'
+                        : 'text-[#455250] hover:bg-[#F1F5F3] hover:text-[#164A4A]'
                     )}
                   >
                     <Icon
                       size={17}
                       className={clsx(
                         'shrink-0 transition-colors',
-                        isActive ? 'text-[#34483F]' : 'text-[#A8ADA9] group-hover:text-[#34483F]'
+                        isActive ? 'text-[#164A4A]' : 'text-[#A8ADA9] group-hover:text-[#164A4A]'
                       )}
                     />
                     <span className="truncate">{item.label}</span>
@@ -195,7 +195,7 @@ const MemberLayout = () => {
       </nav>
 
       {/* Logout */}
-      <div className="p-3 border-t border-[#DCD9CD]">
+      <div className="p-3 border-t border-[#D3DFDA]">
         <button
           onClick={logout}
           className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-[#EF4444] hover:bg-red-50 rounded-xl transition-colors font-semibold text-sm"
@@ -208,7 +208,7 @@ const MemberLayout = () => {
   );
 
   return (
-    <div className="flex h-screen bg-[#F5F3EE] text-[#202522] overflow-hidden">
+    <div className="flex h-screen bg-[#F1F5F3] text-[#202828] overflow-hidden">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -223,11 +223,11 @@ const MemberLayout = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border-2 border-red-500 text-center">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Clock className="text-red-500" size={32} />
+              <Clock className="text-[#6fa3a0]" size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-[#202522] mb-2">Plan Expiring Soon!</h2>
-            <p className="text-[#4A514D] mb-6">
-              Your <span className="font-bold text-[#202522]">{user?.subscriptionPlan}</span> will expire in less than 1 hour. 
+            <h2 className="text-2xl font-bold text-[#202828] mb-2">Plan Expiring Soon!</h2>
+            <p className="text-[#455250] mb-6">
+              Your <span className="font-bold text-[#202828]">{user?.subscriptionPlan}</span> will expire in less than 1 hour. 
               Please renew to continue accessing the gym seamlessly.
             </p>
             <div className="flex gap-4">
@@ -252,11 +252,11 @@ const MemberLayout = () => {
       {/* Sidebar */}
       <aside
         className={clsx(
-          'fixed lg:static top-0 left-0 h-full w-64 bg-white border-r border-[#DCD9CD] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-lg lg:shadow-none',
+          'fixed lg:static top-0 left-0 h-full w-64 bg-white border-r border-[#D3DFDA] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-lg lg:shadow-none',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
-        <SidebarContent />
+        {renderSidebar()}
       </aside>
 
       {/* Main Content */}
@@ -264,32 +264,32 @@ const MemberLayout = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(6,182,212,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
         {/* Header */}
-        <header className="h-16 border-b border-[#DCD9CD] flex items-center px-4 md:px-8 justify-between bg-white/90 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm">
+        <header className="h-16 border-b border-[#D3DFDA] flex items-center px-4 md:px-8 justify-between bg-white/90 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm">
           <div className="flex items-center space-x-3">
             <button
-              className="lg:hidden text-[#4A514D] hover:text-[#34483F] transition-colors p-1 rounded-lg hover:bg-[#F5F3EE]"
+              className="lg:hidden text-[#455250] hover:text-[#164A4A] transition-colors p-1 rounded-lg hover:bg-[#F1F5F3]"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#34483F] hidden sm:block" />}
-            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#202522]">
+            {currentNav && <currentNav.icon size={20} className="text-[#164A4A] hidden sm:block" />}
+            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#202828]">
               {currentNav?.label || 'Customer Dashboard'}
             </h2>
           </div>
 
           <div className="flex items-center space-x-3 md:space-x-5">
-            <Link to="/member/notifications" className="relative text-[#4A514D] hover:text-[#34483F] transition-colors p-1">
+            <Link to="/member/notifications" className="relative text-[#455250] hover:text-[#164A4A] transition-colors p-1">
               <Bell size={20} />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#06B6D4] rounded-full shadow shadow-cyan-300" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#D2B48C] rounded-full shadow shadow-cyan-300" />
             </Link>
             <Link to="/member/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
-                <p className="text-sm font-semibold text-[#202522] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
-                <p className="text-xs text-[#4A514D] leading-none capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
+                <p className="text-sm font-semibold text-[#202828] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
+                <p className="text-xs text-[#455250] leading-none capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
               </div>
-              <div className="w-9 h-9 bg-gradient-to-br from-[#06B6D4] to-[#8FA89B] rounded-full flex items-center justify-center text-[#202522] font-bold text-sm shadow">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#D2B48C] to-[#6fa3a0] rounded-full flex items-center justify-center text-[#202828] font-bold text-sm shadow">
                 {user?.firstName?.[0] || 'U'}
               </div>
             </Link>

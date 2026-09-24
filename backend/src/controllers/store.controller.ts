@@ -288,6 +288,7 @@ export const updateCategory = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
     const { name, description, status, productType } = req.body;
+    const oldProductType = category.productType;
     if (productType && productType.trim()) {
       category.productType = productType.trim();
     }
@@ -298,8 +299,12 @@ export const updateCategory = async (req: AuthRequest, res: Response): Promise<v
         return;
       }
       const oldName = category.name;
-      await StoreProduct.updateMany({ gymId, productType: category.productType, categoryName: oldName }, { $set: { categoryName: name.trim() } });
+      // Use oldProductType to find the products that belonged to this category
+      await StoreProduct.updateMany({ gymId, productType: oldProductType, categoryName: oldName }, { $set: { categoryName: name.trim(), productType: category.productType } });
       category.name = name.trim();
+    } else if (oldProductType !== category.productType) {
+      // If only productType changed, update the products to match the new product type
+      await StoreProduct.updateMany({ gymId, productType: oldProductType, categoryName: category.name }, { $set: { productType: category.productType } });
     }
     if (description !== undefined) category.description = description;
     if (status) category.status = status;
@@ -347,8 +352,9 @@ export const getProducts = async (req: AuthRequest, res: Response): Promise<void
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
-    const { category, search, status, inventory, page = '1', limit = '50' } = req.query;
+    const { category, search, status, inventory, productType, page = '1', limit = '50' } = req.query;
     const filter: any = { gymId };
+    if (productType && productType !== 'all') filter.productType = productType;
     if (category && category !== 'all') filter.categoryName = category;
     if (status && status !== 'all') filter.status = status;
     if (inventory === 'lowStock') {
@@ -358,6 +364,11 @@ export const getProducts = async (req: AuthRequest, res: Response): Promise<void
       filter._id = { $in: ids };
     } else if (inventory === 'outOfStock') {
       filter.stock = { $lte: 0 };
+    } else if (inventory === 'inStock') {
+      const all = await StoreProduct.find({ gymId, ...(filter.categoryName ? { categoryName: filter.categoryName } : {}), ...(filter.status ? { status: filter.status } : {}) })
+        .select('stock lowStockThreshold').lean();
+      const ids = (all as any[]).filter((p: any) => p.stock > p.lowStockThreshold).map((p) => p._id);
+      filter._id = { $in: ids };
     }
     if (search && typeof search === 'string' && search.trim()) {
       filter.$or = [
@@ -407,7 +418,7 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
       return;
     }
     if (discountPrice !== undefined && discountPrice !== null && Number(discountPrice) > Number(sellingPrice)) {
-      res.status(400).json({ success: false, message: 'Discount price cannot be greater than selling price' });
+      res.status(400).json({ success: false, message: 'Discount amount cannot be greater than selling price' });
       return;
     }
     const catName = (categoryName || 'Uncategorized').trim();
@@ -517,7 +528,7 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
     if (discountPrice !== undefined) product.discountPrice = discountPrice ? Number(discountPrice) : undefined;
     
     if (product.discountPrice !== undefined && product.discountPrice > product.sellingPrice) {
-      res.status(400).json({ success: false, message: 'Discount price cannot be greater than selling price' });
+      res.status(400).json({ success: false, message: 'Discount amount cannot be greater than selling price' });
       return;
     }
     if (status !== undefined) product.status = status;
@@ -916,7 +927,7 @@ const buildOrderBlock = async (user: IUser, cart: any): Promise<{ error?: string
       return { error: `"${p.name}" is low on stock (only ${targetStock} available). Please reduce the quantity.` };
     }
     
-    const unitPrice = discountPrice !== undefined ? discountPrice : sellingPrice;
+    const unitPrice = sellingPrice - (discountPrice || 0);
 
     items.push({
       productId: p._id,
@@ -1021,7 +1032,7 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
           variantId: it.variantId,
           type: StoreInventoryTransactionType.ONLINE_SALE,
           quantityChange: -it.quantity,
-          stockAfter: varData.stock,
+          stockAfter: varData?.stock || 0,
           sourceType: 'online',
           referenceId: order._id,
         });
@@ -1149,7 +1160,7 @@ const restockOrderItems = async (order: IStoreOrder): Promise<void> => {
         variantId: it.variantId,
         type: StoreInventoryTransactionType.ADJUSTMENT,
         quantityChange: it.quantity,
-        stockAfter: varData.stock,
+        stockAfter: varData?.stock || 0,
         sourceType: 'manual',
         referenceId: order._id,
         note: `Restock on ${order.status === StoreOrderStatus.REFUNDED ? 'refund' : 'cancellation'} of ${order.orderNumber}`,
@@ -1500,7 +1511,7 @@ export const recordOfflineSale = async (req: AuthRequest, res: Response): Promis
           variantId: it.variantId,
           type: StoreInventoryTransactionType.OFFLINE_SALE,
           quantityChange: -it.quantity,
-          stockAfter: varData.stock,
+          stockAfter: varData?.stock || 0,
           sourceType: 'offline',
           referenceId: sale._id,
         });
@@ -1700,8 +1711,6 @@ export const getInventory = async (req: AuthRequest, res: Response): Promise<voi
     }
     const { status, category, search, page = '1', limit = '50' } = req.query;
     const filter: any = { gymId };
-    if (status && status === 'outOfStock') filter.stock = { $lte: 0 };
-    if (status && status === 'lowStock') filter.stock = { $gt: 0, $lte: 0 };
     if (category && category !== 'all') filter.categoryName = category;
     if (search && typeof search === 'string' && search.trim()) {
       filter.$or = [
@@ -1710,10 +1719,16 @@ export const getInventory = async (req: AuthRequest, res: Response): Promise<voi
         { sku: { $regex: search.trim(), $options: 'i' } },
       ];
     }
-    if (status === 'lowStock') {
-      delete filter.stock;
+    
+    if (status === 'outOfStock') {
+      filter.stock = { $lte: 0 };
+    } else if (status === 'lowStock') {
       const all = await StoreProduct.find(filter).select('stock lowStockThreshold').lean();
       const ids = (all as any[]).filter((p) => p.stock > 0 && p.stock <= p.lowStockThreshold).map((p) => p._id);
+      filter._id = { $in: ids };
+    } else if (status === 'inStock') {
+      const all = await StoreProduct.find(filter).select('stock lowStockThreshold').lean();
+      const ids = (all as any[]).filter((p) => p.stock > p.lowStockThreshold).map((p) => p._id);
       filter._id = { $in: ids };
     }
     const pNum = Math.max(1, parseInt(String(page), 10) || 1);

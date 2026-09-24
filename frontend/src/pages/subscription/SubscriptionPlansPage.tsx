@@ -16,7 +16,7 @@ const SAAS_PLANS = [
     icon: Zap,
     iconColor: 'text-slate-500',
     iconBg: 'bg-slate-100',
-    borderColor: 'border-[#DCD9CD]',
+    borderColor: 'border-[#D3DFDA]',
     priceMonthly: 0,
     priceAnnual: 0,
     priceAnnualPerMonth: 0,
@@ -41,7 +41,7 @@ const SAAS_PLANS = [
       { text: 'Priority Support', included: false },
     ],
     ctaText: 'Start Free Trial',
-    ctaStyle: 'bg-white border-2 border-[#DCD9CD] text-[#202522] hover:border-[#34483F] hover:bg-[#F5F3EE]',
+    ctaStyle: 'bg-white border-2 border-[#D3DFDA] text-[#202828] hover:border-[#164A4A] hover:bg-[#F1F5F3]',
     trial: true,
     popular: false,
   },
@@ -51,9 +51,9 @@ const SAAS_PLANS = [
     tagline: 'Perfect for starting gyms',
     badge: 'Popular',
     icon: Star,
-    iconColor: 'text-[#34483F]',
-    iconBg: 'bg-[#34483F]/10',
-    borderColor: 'border-[#34483F]',
+    iconColor: 'text-[#164A4A]',
+    iconBg: 'bg-[#164A4A]/10',
+    borderColor: 'border-[#164A4A]',
     priceMonthly: 399,
     priceAnnual: 3990,         
     priceAnnualPerMonth: 332,  
@@ -82,7 +82,7 @@ const SAAS_PLANS = [
       'Priority email support',
     ],
     ctaText: 'Choose Basic',
-    ctaStyle: 'bg-[#34483F] text-white hover:bg-[#C6A77D] shadow-lg shadow-green-200',
+    ctaStyle: 'bg-[#164A4A] text-white hover:bg-[#C6A77D] shadow-lg shadow-green-200',
     trial: false,
     popular: true,
   },
@@ -138,8 +138,8 @@ const SAAS_PLANS = [
 
 const LimitBadge = ({ label, value }: { label: string; value: number }) => (
   <div className="flex items-center justify-between text-xs py-1">
-    <span className="text-[#4A514D]">{label}</span>
-    <span className="font-bold text-[#202522]">{value === -1 ? '∞ Unlimited' : `Up to ${value}`}</span>
+    <span className="text-[#455250]">{label}</span>
+    <span className="font-bold text-[#202828]">{value === -1 ? '∞ Unlimited' : `Up to ${value}`}</span>
   </div>
 );
 
@@ -213,27 +213,27 @@ const SubscriptionPlansPage = () => {
   const selectedPlan = SAAS_PLANS.find(p => p.key === paymentStep);
 
   return (
-    <div className="min-h-screen bg-[#F5F3EE] text-[#202522] py-16 px-4">
+    <div className="min-h-screen bg-[#F1F5F3] text-[#202828] py-16 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-14">
           <div className="flex items-center justify-center space-x-2 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#34483F] to-[#8FA89B] rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#164A4A] to-[#6fa3a0] rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
               <Activity className="text-white" size={22} />
             </div>
-            <span className="text-2xl font-bold text-[#34483F]">AI GYM</span>
+            <span className="text-2xl font-bold text-[#164A4A]">AI GYM</span>
           </div>
-          <div className="inline-flex items-center space-x-2 bg-[#34483F]/10 border border-[#34483F]/30 rounded-full px-4 py-1.5 text-[#34483F] text-xs font-bold uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center space-x-2 bg-[#164A4A]/10 border border-[#164A4A]/30 rounded-full px-4 py-1.5 text-[#164A4A] text-xs font-bold uppercase tracking-widest mb-6">
             <Sparkles size={12} />
             <span>SaaS Platform Subscriptions</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-[#202522]">
-            Power Your Gym with <span className="text-[#34483F]">AI GYM</span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-[#202828]">
+            Power Your Gym with <span className="text-[#164A4A]">AI GYM</span>
           </h1>
-          <p className="text-[#4A514D] text-lg mb-3 max-w-2xl mx-auto">
+          <p className="text-[#455250] text-lg mb-3 max-w-2xl mx-auto">
             Choose a plan that fits your gym's size and ambitions. All plans include our core AI management platform.
           </p>
-          <p className="text-xs text-[#4A514D] mb-10">These are SaaS subscriptions for gym owners, not individual member plans.</p>
+          <p className="text-xs text-[#455250] mb-10">These are SaaS subscriptions for gym owners, not individual member plans.</p>
 
           {error && (
             <div className="inline-flex items-center space-x-2 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-2 text-sm mb-6">
@@ -243,7 +243,7 @@ const SubscriptionPlansPage = () => {
 
           {/* ─── Billing Toggle ─── */}
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#202522]' : 'text-[#A8ADA9]'}`}>
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#202828]' : 'text-[#A8ADA9]'}`}>
               Monthly
             </span>
 
@@ -251,21 +251,21 @@ const SubscriptionPlansPage = () => {
             <button
               onClick={() => setIsAnnual(!isAnnual)}
               aria-pressed={isAnnual}
-              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#34483F] focus:ring-offset-2 ${isAnnual ? 'bg-[#34483F]' : 'bg-[#CBD5E1]'}`}
+              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#164A4A] focus:ring-offset-2 ${isAnnual ? 'bg-[#164A4A]' : 'bg-[#CBD5E1]'}`}
             >
               <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-9' : 'translate-x-1'}`} />
             </button>
 
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#202522]' : 'text-[#A8ADA9]'}`}>
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#202828]' : 'text-[#A8ADA9]'}`}>
                 Annual
               </span>
               {isAnnual ? (
-                <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 border border-green-200 text-xs px-3 py-1 rounded-full font-bold">
+                <span className="inline-flex items-center gap-1 bg-[#D2B48C]/10 text-[#164A4A] border border-green-200 text-xs px-3 py-1 rounded-full font-bold">
                   <Gift size={11} /> Save up to 25% — 2 months FREE!
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 bg-[#F5F3EE] text-[#8FA89B] border border-[#DCD9CD] text-xs px-3 py-1 rounded-full font-medium">
+                <span className="inline-flex items-center gap-1 bg-[#F1F5F3] text-[#6fa3a0] border border-[#D3DFDA] text-xs px-3 py-1 rounded-full font-medium">
                   Switch to annual & save up to 25%
                 </span>
               )}
@@ -275,7 +275,7 @@ const SubscriptionPlansPage = () => {
           {/* Annual savings reminder bar */}
           {isAnnual && (
             <div className="mt-4 inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-2xl px-6 py-3 text-sm text-green-700 font-medium">
-              <CheckCircle size={16} className="text-green-600 shrink-0" />
+              <CheckCircle size={16} className="text-[#164A4A] shrink-0" />
               Annual billing: pay once, save big. Prices shown are per month, billed yearly.
             </div>
           )}
@@ -284,38 +284,38 @@ const SubscriptionPlansPage = () => {
         {/* ─── Payment Modal ─── */}
         {paymentStep && selectedPlan && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white border border-[#DCD9CD] rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="bg-white border border-[#D3DFDA] rounded-2xl p-8 max-w-md w-full shadow-2xl">
               <div className={`w-14 h-14 ${selectedPlan.iconBg} rounded-xl flex items-center justify-center mb-6`}>
                 <selectedPlan.icon size={28} className={selectedPlan.iconColor} />
               </div>
-              <h2 className="text-2xl font-bold text-[#202522] mb-1">Complete Your Purchase</h2>
-              <p className="text-[#4A514D] text-sm mb-6">
-                You're subscribing to the <span className="text-[#202522] font-bold">{selectedPlan.name} Plan</span>
-                {' '}on <span className="font-bold text-[#34483F]">{isAnnual ? 'Annual' : 'Monthly'}</span> billing
+              <h2 className="text-2xl font-bold text-[#202828] mb-1">Complete Your Purchase</h2>
+              <p className="text-[#455250] text-sm mb-6">
+                You're subscribing to the <span className="text-[#202828] font-bold">{selectedPlan.name} Plan</span>
+                {' '}on <span className="font-bold text-[#164A4A]">{isAnnual ? 'Annual' : 'Monthly'}</span> billing
               </p>
 
-              <div className="bg-[#F2EFE8] border border-[#DCD9CD] rounded-xl p-4 mb-6 space-y-3">
+              <div className="bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl p-4 mb-6 space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#4A514D]">Plan</span>
-                  <span className="text-[#202522] font-semibold">{selectedPlan.name}</span>
+                  <span className="text-[#455250]">Plan</span>
+                  <span className="text-[#202828] font-semibold">{selectedPlan.name}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#4A514D]">Billing Cycle</span>
-                  <span className={`font-bold ${isAnnual ? 'text-[#34483F]' : 'text-[#202522]'}`}>
+                  <span className="text-[#455250]">Billing Cycle</span>
+                  <span className={`font-bold ${isAnnual ? 'text-[#164A4A]' : 'text-[#202828]'}`}>
                     {isAnnual ? 'Annual (2 months free!)' : 'Monthly'}
                   </span>
                 </div>
                 {isAnnual && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#4A514D]">Per Month</span>
-                    <span className="text-[#202522] font-semibold">₹{selectedPlan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo</span>
+                    <span className="text-[#455250]">Per Month</span>
+                    <span className="text-[#202828] font-semibold">₹{selectedPlan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo</span>
                   </div>
                 )}
-                <div className="flex justify-between text-sm border-t border-[#DCD9CD] pt-3">
-                  <span className="text-[#4A514D] font-bold">Total Due Today</span>
-                  <span className="text-[#34483F] font-black text-lg">
+                <div className="flex justify-between text-sm border-t border-[#D3DFDA] pt-3">
+                  <span className="text-[#455250] font-bold">Total Due Today</span>
+                  <span className="text-[#164A4A] font-black text-lg">
                     {getPaymentTotal(selectedPlan).amount}
-                    <span className="text-sm font-medium text-[#4A514D] ml-1">{getPaymentTotal(selectedPlan).period}</span>
+                    <span className="text-sm font-medium text-[#455250] ml-1">{getPaymentTotal(selectedPlan).period}</span>
                   </span>
                 </div>
                 {isAnnual && selectedPlan.savingsAnnual && (
@@ -328,25 +328,25 @@ const SubscriptionPlansPage = () => {
               </div>
 
               <div className="space-y-3 mb-6">
-                <input type="text" placeholder="Card Number" className="w-full bg-white border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F]" maxLength={19} />
+                <input type="text" placeholder="Card Number" className="w-full bg-white border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A]" maxLength={19} />
                 <div className="grid grid-cols-2 gap-3">
-                  <input type="text" placeholder="MM / YY" className="bg-white border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F]" maxLength={7} />
-                  <input type="text" placeholder="CVV" className="bg-white border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F]" maxLength={3} />
+                  <input type="text" placeholder="MM / YY" className="bg-white border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A]" maxLength={7} />
+                  <input type="text" placeholder="CVV" className="bg-white border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A]" maxLength={3} />
                 </div>
-                <input type="text" placeholder="Cardholder Name" className="w-full bg-white border border-[#DCD9CD] text-[#202522] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#34483F]" />
+                <input type="text" placeholder="Cardholder Name" className="w-full bg-white border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A]" />
               </div>
 
               <div className="flex space-x-3">
                 <button
                   onClick={() => setPaymentStep(null)}
-                  className="flex-1 py-3 bg-white border border-[#DCD9CD] text-[#202522] rounded-xl font-bold hover:bg-[#F5F3EE] transition-colors text-sm"
+                  className="flex-1 py-3 bg-white border border-[#D3DFDA] text-[#202828] rounded-xl font-bold hover:bg-[#F1F5F3] transition-colors text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handlePayment}
                   disabled={loading !== null}
-                  className="flex-1 py-3 bg-gradient-to-r from-[#34483F] to-[#8FA89B] text-white rounded-xl font-bold hover:from-[#C6A77D] hover:to-[#0F766E] transition-all disabled:opacity-60 text-sm flex items-center justify-center space-x-2 shadow-lg shadow-green-200"
+                  className="flex-1 py-3 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white rounded-xl font-bold hover:from-[#C6A77D] hover:to-[#0F766E] transition-all disabled:opacity-60 text-sm flex items-center justify-center space-x-2 shadow-lg shadow-green-200"
                 >
                   {loading ? (
                     <><Loader2 size={16} className="animate-spin" /><span>Processing...</span></>
@@ -355,7 +355,7 @@ const SubscriptionPlansPage = () => {
                   )}
                 </button>
               </div>
-              <p className="text-center text-xs text-[#4A514D] mt-4">🔒 Secured by 256-bit SSL encryption</p>
+              <p className="text-center text-xs text-[#455250] mt-4">🔒 Secured by 256-bit SSL encryption</p>
             </div>
           </div>
         )}
@@ -377,7 +377,7 @@ const SubscriptionPlansPage = () => {
               >
                 {/* Popular ribbon */}
                 {isPopular && (
-                  <div className="bg-[#34483F] text-white text-[10px] font-extrabold text-center py-2 uppercase tracking-widest">
+                  <div className="bg-[#164A4A] text-white text-[10px] font-extrabold text-center py-2 uppercase tracking-widest">
                     ⭐ Most Popular
                   </div>
                 )}
@@ -398,12 +398,12 @@ const SubscriptionPlansPage = () => {
                           <Icon size={20} className={plan.iconColor} />
                         </div>
                         <div>
-                          <h3 className="font-bold text-[#202522] text-base">{plan.name}</h3>
-                          <p className="text-[#4A514D] text-xs">{plan.tagline}</p>
+                          <h3 className="font-bold text-[#202828] text-base">{plan.name}</h3>
+                          <p className="text-[#455250] text-xs">{plan.tagline}</p>
                         </div>
                       </div>
                       {plan.badge && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F5F3EE] border border-[#DCD9CD] text-[#8FA89B]">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F1F5F3] border border-[#D3DFDA] text-[#6fa3a0]">
                           {plan.badge}
                         </span>
                       )}
@@ -412,10 +412,10 @@ const SubscriptionPlansPage = () => {
                     {/* Price block */}
                     <div className="mt-4">
                       <div className="flex items-baseline gap-1">
-                        <span className={`text-4xl font-black tracking-tight ${isPopular ? 'text-[#34483F]' : plan.key === 'PREMIUM' ? 'text-purple-600' : 'text-[#202522]'}`}>
+                        <span className={`text-4xl font-black tracking-tight ${isPopular ? 'text-[#164A4A]' : plan.key === 'PREMIUM' ? 'text-purple-600' : 'text-[#202828]'}`}>
                           {priceDisplay.main}
                         </span>
-                        <span className="text-[#4A514D] text-sm font-medium">
+                        <span className="text-[#455250] text-sm font-medium">
                           {plan.trial ? '/ 1 day' : (isAnnual ? '/year' : '/mo')}
                         </span>
                       </div>
@@ -425,8 +425,8 @@ const SubscriptionPlansPage = () => {
                         <div className="mt-1 min-h-[1.5rem]">
                           {isAnnual ? (
                             <div className="space-y-0.5">
-                              <p className="text-[#4A514D] text-xs">{priceDisplay.sub}</p>
-                              <p className="text-green-600 text-xs font-bold">
+                              <p className="text-[#455250] text-xs">{priceDisplay.sub}</p>
+                              <p className="text-[#164A4A] text-xs font-bold">
                                 💰 Save ₹{plan.savingsAnnual?.toLocaleString('en-IN')} vs monthly
                               </p>
                             </div>
@@ -441,8 +441,8 @@ const SubscriptionPlansPage = () => {
                   </div>
 
                   {/* Limits */}
-                  <div className="bg-[#F2EFE8] rounded-xl p-3 mb-5 border border-[#DCD9CD]">
-                    <p className="text-[10px] uppercase tracking-widest text-[#4A514D] font-bold mb-2">Platform Limits</p>
+                  <div className="bg-[#F2EFE8] rounded-xl p-3 mb-5 border border-[#D3DFDA]">
+                    <p className="text-[10px] uppercase tracking-widest text-[#455250] font-bold mb-2">Platform Limits</p>
                     <LimitBadge label="👥 Members" value={plan.limits.members} />
                     <LimitBadge label="🏋️ Trainers" value={plan.limits.trainers} />
                     <LimitBadge label="🏢 Branches" value={plan.limits.branches} />
@@ -451,9 +451,9 @@ const SubscriptionPlansPage = () => {
                   {/* Features */}
                   <ul className="space-y-2 mb-4 flex-1">
                     {plan.features.map((f, i) => (
-                      <li key={i} className={`flex items-start space-x-2 text-xs ${f.included ? 'text-[#202522]' : 'text-[#CBD5E1]'}`}>
+                      <li key={i} className={`flex items-start space-x-2 text-xs ${f.included ? 'text-[#202828]' : 'text-[#CBD5E1]'}`}>
                         {f.included ? (
-                          <CheckCircle size={14} className={`shrink-0 mt-0.5 ${isPopular ? 'text-[#34483F]' : plan.key === 'PREMIUM' ? 'text-purple-500' : 'text-[#8FA89B]'}`} />
+                          <CheckCircle size={14} className={`shrink-0 mt-0.5 ${isPopular ? 'text-[#164A4A]' : plan.key === 'PREMIUM' ? 'text-purple-500' : 'text-[#6fa3a0]'}`} />
                         ) : (
                           <XCircle size={14} className="shrink-0 mt-0.5 text-[#E8E5DA]" />
                         )}
@@ -499,12 +499,12 @@ const SubscriptionPlansPage = () => {
         </div>
 
         {/* Bottom note */}
-        <div className="bg-white border border-[#DCD9CD] rounded-2xl p-6 mb-8 text-center">
+        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-6 mb-8 text-center">
           <div className="flex items-center justify-center space-x-2 mb-3">
-            <Lock size={18} className="text-[#34483F]" />
-            <h3 className="text-[#202522] font-bold">How Access Control Works</h3>
+            <Lock size={18} className="text-[#164A4A]" />
+            <h3 className="text-[#202828] font-bold">How Access Control Works</h3>
           </div>
-          <p className="text-[#4A514D] text-sm max-w-2xl mx-auto">
+          <p className="text-[#455250] text-sm max-w-2xl mx-auto">
             Your subscription plan controls what features your gym can access on the AI GYM platform.
             Adding members beyond your plan's limit, accessing Advanced Analytics on Silver, or using 1-on-1 Coaching
             on Gold will show an upgrade prompt. After payment, features unlock instantly.
@@ -512,7 +512,7 @@ const SubscriptionPlansPage = () => {
         </div>
 
         <div className="text-center">
-          <button onClick={logout} className="text-sm text-[#4A514D] hover:text-[#34483F] transition-colors flex items-center space-x-2 mx-auto">
+          <button onClick={logout} className="text-sm text-[#455250] hover:text-[#164A4A] transition-colors flex items-center space-x-2 mx-auto">
             <LogOut size={16} /><span>Sign out</span>
           </button>
         </div>

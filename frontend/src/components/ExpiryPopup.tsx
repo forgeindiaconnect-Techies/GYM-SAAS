@@ -49,7 +49,7 @@ export const ExpiryPopup: React.FC = () => {
         
         <div className="flex items-start gap-3 mt-1">
           <div className="p-2 bg-red-50 rounded-lg shrink-0">
-            <Clock className="text-red-500" size={24} />
+            <Clock className="text-[#6fa3a0]" size={24} />
           </div>
           <div>
             <h3 className="font-bold text-gray-900 text-sm">Plan Expiring Soon</h3>

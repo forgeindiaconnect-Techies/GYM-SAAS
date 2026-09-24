@@ -60,21 +60,21 @@ const SuperAdminDeletedDetails = () => {
     <div className="p-8 h-full flex flex-col overflow-hidden relative">
       <div className="flex justify-between items-center mb-6 shrink-0 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold text-[#202522] tracking-tight flex items-center space-x-3">
-            <Trash2 className="text-[#8FA89B]" size={32} />
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight flex items-center space-x-3">
+            <Trash2 className="text-[#6fa3a0]" size={32} />
             <span>Deleted Details</span>
           </h1>
-          <p className="text-[#4A514D] text-sm mt-1">View all deleted customers and gym owners.</p>
+          <p className="text-[#455250] text-sm mt-1">View all deleted customers and gym owners.</p>
         </div>
       </div>
 
-      <div className="flex space-x-2 border-b border-[#DCD9CD] pb-2 overflow-x-auto custom-scrollbar shrink-0">
+      <div className="flex space-x-2 border-b border-[#D3DFDA] pb-2 overflow-x-auto custom-scrollbar shrink-0">
         <button
           onClick={() => setActiveTab('CUSTOMERS')}
           className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
             activeTab === 'CUSTOMERS'
-              ? 'border-[#34483F] text-[#34483F] bg-[#34483F]/10'
-              : 'border-transparent text-[#4A514D] hover:text-[#202522] hover:bg-[#FFFFFF]'
+              ? 'border-[#164A4A] text-[#164A4A] bg-[#164A4A]/10'
+              : 'border-transparent text-[#455250] hover:text-[#202828] hover:bg-[#FFFFFF]'
           }`}
         >
           <User size={16} />
@@ -84,8 +84,8 @@ const SuperAdminDeletedDetails = () => {
           onClick={() => setActiveTab('GYM_OWNERS')}
           className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
             activeTab === 'GYM_OWNERS'
-              ? 'border-[#34483F] text-[#34483F] bg-[#34483F]/10'
-              : 'border-transparent text-[#4A514D] hover:text-[#202522] hover:bg-[#FFFFFF]'
+              ? 'border-[#164A4A] text-[#164A4A] bg-[#164A4A]/10'
+              : 'border-transparent text-[#455250] hover:text-[#202828] hover:bg-[#FFFFFF]'
           }`}
         >
           <Building2 size={16} />
@@ -95,8 +95,8 @@ const SuperAdminDeletedDetails = () => {
           onClick={() => setActiveTab('GYM_INVITATIONS')}
           className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
             activeTab === 'GYM_INVITATIONS'
-              ? 'border-[#34483F] text-[#34483F] bg-[#34483F]/10'
-              : 'border-transparent text-[#4A514D] hover:text-[#202522] hover:bg-[#FFFFFF]'
+              ? 'border-[#164A4A] text-[#164A4A] bg-[#164A4A]/10'
+              : 'border-transparent text-[#455250] hover:text-[#202828] hover:bg-[#FFFFFF]'
           }`}
         >
           <Mail size={16} />
@@ -104,34 +104,34 @@ const SuperAdminDeletedDetails = () => {
         </button>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl p-4 flex flex-wrap gap-4 mt-4 shrink-0">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4 flex flex-wrap gap-4 mt-4 shrink-0">
         <div className="flex-1 min-w-[250px] relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A514D]" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#455250]" />
           <input 
             type="text" 
             placeholder="Search by name or email..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#DCD9CD] text-[#202522] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#34483F] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
           />
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl overflow-hidden relative min-h-[400px] mt-4 flex-1">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl overflow-hidden relative min-h-[400px] mt-4 flex-1">
         {loading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#4A514D]">
-            <Loader2 size={32} className="animate-spin mb-4 text-[#34483F]" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#455250]">
+            <Loader2 size={32} className="animate-spin mb-4 text-[#164A4A]" />
             <p>Loading deleted records...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#8FA89B]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#6fa3a0]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
         ) : filteredRecords.length === 0 ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#4A514D]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#455250]">
             <Trash2 size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium text-[#202522] mb-1">No deleted records found</p>
+            <p className="text-lg font-medium text-[#202828] mb-1">No deleted records found</p>
             <p className="text-sm text-center max-w-md">
               There are no deleted {activeTab === 'CUSTOMERS' ? 'customers' : activeTab === 'GYM_OWNERS' ? 'gym owners' : 'gym invitations'} matching your search.
             </p>
@@ -139,7 +139,7 @@ const SuperAdminDeletedDetails = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-[#4A514D] uppercase bg-[#FFFFFF] border-b border-[#DCD9CD]">
+              <thead className="text-xs text-[#455250] uppercase bg-[#FFFFFF] border-b border-[#D3DFDA]">
                 <tr>
                   {activeTab === 'GYM_INVITATIONS' ? (
                     <>
@@ -159,37 +159,37 @@ const SuperAdminDeletedDetails = () => {
                   )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#DCD9CD]">
+              <tbody className="divide-y divide-[#D3DFDA]">
                 {filteredRecords.map((record) => (
                   <tr key={record._id || record.id} className="hover:bg-[#F2EFE8] transition-colors opacity-70">
                     {activeTab === 'GYM_INVITATIONS' ? (
                       <>
-                        <td className="px-6 py-4 font-medium text-[#202522]">{record.gymName}</td>
-                        <td className="px-6 py-4 text-[#4A514D]">{record.owner}</td>
-                        <td className="px-6 py-4 text-[#4A514D]">{record.email}</td>
+                        <td className="px-6 py-4 font-medium text-[#202828]">{record.gymName}</td>
+                        <td className="px-6 py-4 text-[#455250]">{record.owner}</td>
+                        <td className="px-6 py-4 text-[#455250]">{record.email}</td>
                         <td className="px-6 py-4">
                           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border border-slate-500/50 text-slate-500">
                             {record.status || 'Unknown'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-[#4A514D]">
+                        <td className="px-6 py-4 text-[#455250]">
                           {record.deletedAt ? new Date(record.deletedAt).toLocaleDateString() : 'N/A'}
                         </td>
                       </>
                     ) : (
                       <>
-                        <td className="px-6 py-4 font-medium text-[#202522]">
+                        <td className="px-6 py-4 font-medium text-[#202828]">
                           {record.firstName} {record.lastName}
                         </td>
-                        <td className="px-6 py-4 text-[#4A514D]">
+                        <td className="px-6 py-4 text-[#455250]">
                           {record.email}
                         </td>
                         <td className="px-6 py-4">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border border-red-500/50 text-red-500">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border border-red-500/50 text-[#6fa3a0]">
                             {record.role?.replace('_', ' ') || 'UNKNOWN'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-[#4A514D]">
+                        <td className="px-6 py-4 text-[#455250]">
                            {record.createdAt ? new Date(record.createdAt).toLocaleDateString() : 'N/A'}
                         </td>
                       </>

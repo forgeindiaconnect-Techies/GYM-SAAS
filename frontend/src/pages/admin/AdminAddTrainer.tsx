@@ -71,12 +71,12 @@ const AdminAddTrainer = () => {
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Add New Trainer</h1>
-          <p className="text-[#4A514D] text-sm">Register and hire a new fitness professional</p>
+          <p className="text-[#455250] text-sm">Register and hire a new fitness professional</p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-[#8FA89B]/10 border border-[#8FA89B]/30 text-teal-400 p-4 rounded-xl text-sm">
+        <div className="bg-[#6fa3a0]/10 border border-[#6fa3a0]/30 text-teal-400 p-4 rounded-xl text-sm">
           {error}
         </div>
       )}
@@ -84,36 +84,36 @@ const AdminAddTrainer = () => {
       <form className="space-y-8">
         
         {/* Personal Information */}
-        <section className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6 md:p-8">
-          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#DCD9CD]">
-            <User className="text-[#34483F]" size={24} />
+        <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
+          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
+            <User className="text-[#164A4A]" size={24} />
             <h2 className="text-xl font-bold">Personal Information</h2>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">First Name *</label>
-              <input type="text" name="firstName" value={form.firstName} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="John" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">First Name *</label>
+              <input type="text" name="firstName" value={form.firstName} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="John" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Last Name *</label>
-              <input type="text" name="lastName" value={form.lastName} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="Doe" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Last Name *</label>
+              <input type="text" name="lastName" value={form.lastName} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="Doe" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Email Address *</label>
-              <input type="email" name="email" value={form.email} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="john@example.com" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Email Address *</label>
+              <input type="email" name="email" value={form.email} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="john@example.com" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Phone Number *</label>
-              <input type="tel" name="mobile" value={form.mobile} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="+1 234 567 8900" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Phone Number *</label>
+              <input type="tel" name="mobile" value={form.mobile} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="+1 234 567 8900" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Date of Birth</label>
-              <input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors [color-scheme:dark]" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Date of Birth</label>
+              <input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors [color-scheme:dark]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Gender</label>
-              <select name="gender" value={form.gender} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors appearance-none">
+              <label className="block text-sm font-medium text-[#455250] mb-2">Gender</label>
+              <select name="gender" value={form.gender} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors appearance-none">
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -124,16 +124,16 @@ const AdminAddTrainer = () => {
         </section>
 
         {/* Professional Information */}
-        <section className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6 md:p-8">
-          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#DCD9CD]">
-            <Briefcase className="text-[#34483F]" size={24} />
+        <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
+          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
+            <Briefcase className="text-[#164A4A]" size={24} />
             <h2 className="text-xl font-bold">Professional Information</h2>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Specialization *</label>
-              <select name="specialization" value={form.specialization} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors appearance-none">
+              <label className="block text-sm font-medium text-[#455250] mb-2">Specialization *</label>
+              <select name="specialization" value={form.specialization} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors appearance-none">
                 <option value="">Select Specialization</option>
                 <option value="Personal Trainer">Personal Trainer</option>
                 <option value="Fitness Trainer">Fitness Trainer</option>
@@ -144,39 +144,39 @@ const AdminAddTrainer = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Experience (Years) *</label>
-              <input type="number" name="experienceYears" value={form.experienceYears} onChange={handleChange} min="0" className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="e.g. 5" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Experience (Years) *</label>
+              <input type="number" name="experienceYears" value={form.experienceYears} onChange={handleChange} min="0" className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. 5" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Qualification</label>
-              <input type="text" name="qualification" value={form.qualification} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="e.g. B.Sc Sports Science" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Qualification</label>
+              <input type="text" name="qualification" value={form.qualification} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. B.Sc Sports Science" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Certifications</label>
-              <input type="text" name="certifications" value={form.certifications} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="e.g. ACE, NASM" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Certifications</label>
+              <input type="text" name="certifications" value={form.certifications} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. ACE, NASM" />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Previous Gym / Organization</label>
-              <input type="text" name="previousGym" value={form.previousGym} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="Where did they work previously?" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Previous Gym / Organization</label>
+              <input type="text" name="previousGym" value={form.previousGym} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="Where did they work previously?" />
             </div>
           </div>
         </section>
 
         {/* Employment Information */}
-        <section className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6 md:p-8">
-          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#DCD9CD]">
-            <FileText className="text-[#34483F]" size={24} />
+        <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
+          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
+            <FileText className="text-[#164A4A]" size={24} />
             <h2 className="text-xl font-bold">Employment Details</h2>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Joining Date *</label>
-              <input type="date" name="joiningDate" value={form.joiningDate} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors [color-scheme:dark]" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Joining Date *</label>
+              <input type="date" name="joiningDate" value={form.joiningDate} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors [color-scheme:dark]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Employment Type *</label>
-              <select name="employmentType" value={form.employmentType} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors appearance-none">
+              <label className="block text-sm font-medium text-[#455250] mb-2">Employment Type *</label>
+              <select name="employmentType" value={form.employmentType} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors appearance-none">
                 <option value="">Select Type</option>
                 <option value="Full-Time">Full-Time</option>
                 <option value="Part-Time">Part-Time</option>
@@ -184,55 +184,55 @@ const AdminAddTrainer = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Working Days</label>
-              <input type="text" name="workingDays" value={form.workingDays} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="e.g. Mon-Fri" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Working Days</label>
+              <input type="text" name="workingDays" value={form.workingDays} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. Mon-Fri" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Available Shift / Hours</label>
-              <input type="text" name="workingHours" value={form.workingHours} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="e.g. 09:00 AM - 05:00 PM" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Available Shift / Hours</label>
+              <input type="text" name="workingHours" value={form.workingHours} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. 09:00 AM - 05:00 PM" />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Salary / Payment Info</label>
-              <input type="text" name="salary" value={form.salary} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors" placeholder="e.g. $4000/month or 60/40 Split" />
+              <label className="block text-sm font-medium text-[#455250] mb-2">Salary / Payment Info</label>
+              <input type="text" name="salary" value={form.salary} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. $4000/month or 60/40 Split" />
             </div>
           </div>
         </section>
 
         {/* Profile & Documents */}
-        <section className="bg-[#FFFFFF] border border-[#DCD9CD] rounded-2xl p-6 md:p-8">
-          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#DCD9CD]">
-            <UploadCloud className="text-[#34483F]" size={24} />
+        <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
+          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
+            <UploadCloud className="text-[#164A4A]" size={24} />
             <h2 className="text-xl font-bold">Profile & Documents</h2>
           </div>
           
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-[#4A514D] mb-2">Short Professional Bio</label>
-              <textarea name="bio" value={form.bio} onChange={handleChange} rows={3} className="w-full bg-[#FFFFFF] border border-[#DCD9CD] rounded-xl px-4 py-3 text-sm focus:border-[#34483F] outline-none transition-colors resize-none" placeholder="A short bio that users will see on the trainer's public profile..."></textarea>
+              <label className="block text-sm font-medium text-[#455250] mb-2">Short Professional Bio</label>
+              <textarea name="bio" value={form.bio} onChange={handleChange} rows={3} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors resize-none" placeholder="A short bio that users will see on the trainer's public profile..."></textarea>
             </div>
             
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="border border-dashed border-[#DCD9CD] bg-[#FFFFFF] rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#34483F] transition-colors">
+              <div className="border border-dashed border-[#D3DFDA] bg-[#FFFFFF] rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#164A4A] transition-colors">
                 <div className="w-10 h-10 bg-[#E8E5DA] rounded-full flex items-center justify-center mb-3">
-                  <User size={18} className="text-[#4A514D]" />
+                  <User size={18} className="text-[#455250]" />
                 </div>
-                <p className="text-sm font-medium text-[#202522] mb-1">Profile Photo</p>
+                <p className="text-sm font-medium text-[#202828] mb-1">Profile Photo</p>
                 <p className="text-xs text-[#555]">JPG, PNG under 2MB</p>
               </div>
               
-              <div className="border border-dashed border-[#DCD9CD] bg-[#FFFFFF] rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#34483F] transition-colors">
+              <div className="border border-dashed border-[#D3DFDA] bg-[#FFFFFF] rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#164A4A] transition-colors">
                 <div className="w-10 h-10 bg-[#E8E5DA] rounded-full flex items-center justify-center mb-3">
-                  <FileText size={18} className="text-[#4A514D]" />
+                  <FileText size={18} className="text-[#455250]" />
                 </div>
-                <p className="text-sm font-medium text-[#202522] mb-1">Resume / CV</p>
+                <p className="text-sm font-medium text-[#202828] mb-1">Resume / CV</p>
                 <p className="text-xs text-[#555]">PDF, DOCX under 5MB</p>
               </div>
               
-              <div className="border border-dashed border-[#DCD9CD] bg-[#FFFFFF] rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#34483F] transition-colors">
+              <div className="border border-dashed border-[#D3DFDA] bg-[#FFFFFF] rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#164A4A] transition-colors">
                 <div className="w-10 h-10 bg-[#E8E5DA] rounded-full flex items-center justify-center mb-3">
-                  <CheckCircle2 size={18} className="text-[#4A514D]" />
+                  <CheckCircle2 size={18} className="text-[#455250]" />
                 </div>
-                <p className="text-sm font-medium text-[#202522] mb-1">Certifications</p>
+                <p className="text-sm font-medium text-[#202828] mb-1">Certifications</p>
                 <p className="text-xs text-[#555]">PDF or Images</p>
               </div>
             </div>
@@ -243,7 +243,7 @@ const AdminAddTrainer = () => {
         <div className="flex flex-col-reverse sm:flex-row justify-end items-center gap-4 pt-4">
           <Link 
             to="/admin/trainers"
-            className="w-full sm:w-auto px-6 py-3 bg-[#FFFFFF] text-[#202522] rounded-xl font-semibold hover:bg-[#E8E5DA] transition-colors text-center"
+            className="w-full sm:w-auto px-6 py-3 bg-[#FFFFFF] text-[#202828] rounded-xl font-semibold hover:bg-[#E8E5DA] transition-colors text-center"
           >
             Cancel
           </Link>
@@ -260,7 +260,7 @@ const AdminAddTrainer = () => {
             type="button"
             disabled={isLoading}
             onClick={(e) => handleSubmit(e, 'APPROVED')}
-            className="w-full sm:w-auto px-6 py-3 bg-[#34483F] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-6 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors flex items-center justify-center gap-2"
           >
             <CheckCircle2 size={18} />
             <span>Hire & Activate</span>

@@ -13,8 +13,8 @@ const MemberMessages = () => {
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto h-[calc(100vh-80px)] flex flex-col animate-fade-in">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#202522] tracking-tight">Messages</h1>
-        <p className="text-[#4A514D] mt-1">Connect with your trainers and gym staff.</p>
+        <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Messages</h1>
+        <p className="text-[#455250] mt-1">Connect with your trainers and gym staff.</p>
       </div>
 
       <div className="flex-1 bg-white border border-[#E8E5DA] rounded-3xl shadow-sm overflow-hidden flex flex-col md:flex-row min-h-0">
@@ -27,7 +27,7 @@ const MemberMessages = () => {
               <input 
                 type="text" 
                 placeholder="Search messages..." 
-                className="w-full pl-10 pr-4 py-2 bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl text-sm focus:border-[#34483F] focus:ring-1 focus:ring-[#34483F] outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl text-sm focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A] outline-none transition-all"
               />
             </div>
           </div>
@@ -48,15 +48,15 @@ const MemberMessages = () => {
                 </div>
                 <div className="ml-3 flex-1 overflow-hidden">
                   <div className="flex justify-between items-baseline">
-                    <h4 className="font-bold text-[#202522] truncate">{contact.name}</h4>
+                    <h4 className="font-bold text-[#202828] truncate">{contact.name}</h4>
                     <span className="text-xs text-[#A8ADA9]">10:42 AM</span>
                   </div>
-                  <p className={`text-sm truncate ${contact.unread > 0 ? 'text-[#202522] font-semibold' : 'text-[#727975]'}`}>
+                  <p className={`text-sm truncate ${contact.unread > 0 ? 'text-[#202828] font-semibold' : 'text-[#687B78]'}`}>
                     {contact.lastMsg}
                   </p>
                 </div>
                 {contact.unread > 0 && (
-                  <div className="ml-2 w-5 h-5 bg-[#34483F] text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  <div className="ml-2 w-5 h-5 bg-[#164A4A] text-white text-xs font-bold rounded-full flex items-center justify-center">
                     {contact.unread}
                   </div>
                 )}
@@ -72,27 +72,27 @@ const MemberMessages = () => {
             <div className="flex items-center space-x-3">
               <img src={contacts[0].avatar} alt="Current chat" className="w-10 h-10 rounded-full object-cover" />
               <div>
-                <h3 className="font-bold text-[#202522]">{contacts[0].name}</h3>
-                <p className="text-xs text-[#34483F] font-medium">Online</p>
+                <h3 className="font-bold text-[#202828]">{contacts[0].name}</h3>
+                <p className="text-xs text-[#164A4A] font-medium">Online</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4 text-[#727975]">
-              <button className="hover:text-[#34483F] transition-colors"><Phone size={20} /></button>
-              <button className="hover:text-[#34483F] transition-colors"><Video size={20} /></button>
-              <button className="hover:text-[#202522] transition-colors"><MoreVertical size={20} /></button>
+            <div className="flex items-center space-x-4 text-[#687B78]">
+              <button className="hover:text-[#164A4A] transition-colors"><Phone size={20} /></button>
+              <button className="hover:text-[#164A4A] transition-colors"><Video size={20} /></button>
+              <button className="hover:text-[#202828] transition-colors"><MoreVertical size={20} /></button>
             </div>
           </div>
 
           {/* Chat Messages */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             <div className="flex justify-center">
-              <span className="bg-[#E8E5DA] text-[#4A514D] text-xs font-semibold px-3 py-1 rounded-full">Today</span>
+              <span className="bg-[#E8E5DA] text-[#455250] text-xs font-semibold px-3 py-1 rounded-full">Today</span>
             </div>
             
             {/* Received Message */}
             <div className="flex items-end space-x-2">
               <img src={contacts[0].avatar} alt="" className="w-8 h-8 rounded-full mb-1" />
-              <div className="bg-white border border-[#E8E5DA] text-[#202522] p-3 rounded-2xl rounded-bl-sm max-w-[70%] shadow-sm">
+              <div className="bg-white border border-[#E8E5DA] text-[#202828] p-3 rounded-2xl rounded-bl-sm max-w-[70%] shadow-sm">
                 <p className="text-sm">Hey! Are we still on for the 5 PM session today? We're going to focus on upper body strength.</p>
                 <span className="text-[10px] text-[#A8ADA9] block mt-1">10:40 AM</span>
               </div>
@@ -100,7 +100,7 @@ const MemberMessages = () => {
             
             {/* Sent Message */}
             <div className="flex items-end justify-end space-x-2">
-              <div className="bg-[#34483F] text-white p-3 rounded-2xl rounded-br-sm max-w-[70%] shadow-sm shadow-green-500/10">
+              <div className="bg-[#164A4A] text-white p-3 rounded-2xl rounded-br-sm max-w-[70%] shadow-sm shadow-green-500/10">
                 <p className="text-sm">Yes, absolutely! See you tomorrow at 5!</p>
                 <span className="text-[10px] text-green-200 block mt-1 text-right">10:42 AM • Read</span>
               </div>
@@ -110,20 +110,20 @@ const MemberMessages = () => {
           {/* Chat Input */}
           <div className="p-4 bg-white border-t border-[#E8E5DA]">
             <div className="flex items-center space-x-2">
-              <button className="p-2 text-[#A8ADA9] hover:text-[#34483F] transition-colors rounded-full hover:bg-gray-50">
+              <button className="p-2 text-[#A8ADA9] hover:text-[#164A4A] transition-colors rounded-full hover:bg-gray-50">
                 <Paperclip size={20} />
               </button>
-              <button className="p-2 text-[#A8ADA9] hover:text-[#34483F] transition-colors rounded-full hover:bg-gray-50 hidden sm:block">
+              <button className="p-2 text-[#A8ADA9] hover:text-[#164A4A] transition-colors rounded-full hover:bg-gray-50 hidden sm:block">
                 <ImageIcon size={20} />
               </button>
               <input
                 type="text"
                 placeholder="Type your message..."
-                className="flex-1 bg-[#F2EFE8] border border-[#E8E5DA] rounded-full px-4 py-2.5 text-sm focus:border-[#34483F] focus:ring-1 focus:ring-[#34483F] outline-none"
+                className="flex-1 bg-[#F2EFE8] border border-[#E8E5DA] rounded-full px-4 py-2.5 text-sm focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A] outline-none"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />
-              <button className="p-3 bg-[#34483F] text-white rounded-full hover:bg-[#C6A77D] transition-colors shadow-md shadow-green-500/20">
+              <button className="p-3 bg-[#164A4A] text-white rounded-full hover:bg-[#C6A77D] transition-colors shadow-md shadow-green-500/20">
                 <Send size={18} className="ml-0.5" />
               </button>
             </div>
