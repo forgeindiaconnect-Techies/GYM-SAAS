@@ -5,6 +5,7 @@ export type AIRecommendationStatus =
   | 'Under Trainer Review' 
   | 'Trainer Modified' 
   | 'Trainer Approved' 
+  | 'Revision Requested'
   | 'Archived';
 
 export interface IAIRecommendation extends Document {
@@ -18,30 +19,20 @@ export interface IAIRecommendation extends Document {
   originalRecommendationId?: mongoose.Types.ObjectId;
   
   // Snapshot of user inputs when requested
-  fitnessProfile: {
-    age?: number;
-    gender?: string;
-    height?: number;
-    weight?: number;
-    fitnessGoal?: string;
-    experienceLevel?: string;
-    activityLevel?: string;
-    workoutPreference?: string;
-    availableWorkoutDays?: string;
-    preferredWorkoutDuration?: string;
-    foodPreferences?: string;
-    dietaryPreferences?: string;
-  };
+  fitnessProfile: any;
   
   // AI Outputs
   aiAnalysis?: {
     profileSummary: string;
-    goalRecommendations: string;
-    generalActivity: string;
+    assessment: string;
   };
   
   workoutRecommendation?: {
-    weeklySchedule: string;
+    weeklySchedule: Array<{
+      day: string;
+      workout: string;
+      duration: string;
+    }>;
     exercises: Array<{
       name: string;
       sets: number | string;
@@ -49,20 +40,24 @@ export interface IAIRecommendation extends Document {
       duration: string;
       rest: string;
       difficulty: string;
+      targetMuscleGroup: string;
     }>;
   };
   
   dietRecommendation?: {
-    generalStructure: string;
-    mealTiming: string;
-    foodOptions: string;
+    morning: string;
+    breakfast: string;
+    lunch: string;
+    evening: string;
+    dinner: string;
+    note: string;
   };
   
   routine?: {
-    dailyRoutine: string;
-    workoutDays: string;
-    restDays: string;
-    lifestyleSuggestions: string;
+    morning: string;
+    workoutTime: string;
+    evening: string;
+    night: string;
   };
   
   progressSuggestions?: {
@@ -73,6 +68,11 @@ export interface IAIRecommendation extends Document {
   
   // Trainer appended data
   trainerNotes?: string;
+  revisionDetails?: {
+    reason: string;
+    trainerName: string;
+    date: Date;
+  };
   approvedAt?: Date;
 
   createdAt: Date;
@@ -87,35 +87,25 @@ const aiRecommendationSchema = new Schema<IAIRecommendation>({
   
   status: { 
     type: String, 
-    enum: ['AI Generated', 'Under Trainer Review', 'Trainer Modified', 'Trainer Approved', 'Archived'], 
+    enum: ['AI Generated', 'Under Trainer Review', 'Trainer Modified', 'Trainer Approved', 'Revision Requested', 'Archived'], 
     default: 'AI Generated' 
   },
   version: { type: Number, default: 1 },
   originalRecommendationId: { type: Schema.Types.ObjectId, ref: 'AIRecommendation' },
   
-  fitnessProfile: {
-    age: Number,
-    gender: String,
-    height: Number,
-    weight: Number,
-    fitnessGoal: String,
-    experienceLevel: String,
-    activityLevel: String,
-    workoutPreference: String,
-    availableWorkoutDays: String,
-    preferredWorkoutDuration: String,
-    foodPreferences: String,
-    dietaryPreferences: String,
-  },
+  fitnessProfile: { type: Schema.Types.Mixed },
   
   aiAnalysis: {
     profileSummary: String,
-    goalRecommendations: String,
-    generalActivity: String,
+    assessment: String,
   },
   
   workoutRecommendation: {
-    weeklySchedule: String,
+    weeklySchedule: [{
+      day: String,
+      workout: String,
+      duration: String,
+    }],
     exercises: [{
       name: String,
       sets: Schema.Types.Mixed,
@@ -123,29 +113,39 @@ const aiRecommendationSchema = new Schema<IAIRecommendation>({
       duration: String,
       rest: String,
       difficulty: String,
+      targetMuscleGroup: String,
     }],
   },
   
   dietRecommendation: {
-    generalStructure: String,
-    mealTiming: String,
-    foodOptions: String,
+    morning: String,
+    breakfast: String,
+    lunch: String,
+    evening: String,
+    dinner: String,
+    note: String,
   },
   
   routine: {
-    dailyRoutine: String,
-    workoutDays: String,
-    restDays: String,
-    lifestyleSuggestions: String,
+    morning: String,
+    workoutTime: String,
+    evening: String,
+    night: String,
   },
   
   progressSuggestions: {
     focusAreas: String,
     improvementSuggestions: String,
     progressTracking: String,
+    startingWeight: String,
   },
   
   trainerNotes: String,
+  revisionDetails: {
+    reason: String,
+    trainerName: String,
+    date: Date
+  },
   approvedAt: Date,
 
 }, { timestamps: true });

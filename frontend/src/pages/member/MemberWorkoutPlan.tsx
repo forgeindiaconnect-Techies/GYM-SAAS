@@ -2,11 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, PlayCircle, Clock, Flame, Dumbbell, ChevronRight, CheckCircle2, X, Timer, Activity } from 'lucide-react';
 
 const MemberWorkoutPlan = () => {
+  const generateWeekDays = () => {
+    const today = new Date();
+    const currentDay = today.getDay();
+    const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+    
+    const week = [];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + diffToMonday + i);
+      const isToday = date.toDateString() === today.toDateString();
+      
+      week.push({
+        id: isToday ? 'Today' : dayNames[date.getDay()],
+        label: isToday ? 'Today' : dayNames[date.getDay()],
+        date: date.getDate(),
+      });
+    }
+    return week;
+  };
+
+  const weekDays = generateWeekDays();
   const [activeDay, setActiveDay] = useState('Today');
   const [isWorkoutActive, setIsWorkoutActive] = useState(false);
   const [workoutTime, setWorkoutTime] = useState(0);
-
-  const days = ['Mon', 'Tue', 'Wed', 'Today', 'Fri', 'Sat', 'Sun'];
   
   const workoutData = {
     title: 'Upper Body Power',
@@ -54,19 +75,19 @@ const MemberWorkoutPlan = () => {
       {/* Week Calendar */}
       <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm overflow-x-auto">
         <div className="flex items-center justify-between min-w-[600px]">
-          {days.map((day) => (
+          {weekDays.map((dayObj) => (
             <button
-              key={day}
-              onClick={() => setActiveDay(day)}
+              key={dayObj.id}
+              onClick={() => setActiveDay(dayObj.id)}
               className={`flex flex-col items-center p-4 rounded-xl transition-all ${
-                activeDay === day 
+                activeDay === dayObj.id 
                   ? 'bg-[#164A4A] text-white shadow-md scale-110' 
                   : 'bg-[#F2EFE8] text-[#687B78] hover:bg-[#E8E5DA]'
               }`}
             >
-              <span className="text-xs font-semibold uppercase tracking-wider mb-1">{day}</span>
-              <span className={`text-xl font-bold ${activeDay === day ? 'text-white' : 'text-[#202828]'}`}>
-                {day === 'Today' ? '19' : Math.floor(Math.random() * 30) + 1}
+              <span className="text-xs font-semibold uppercase tracking-wider mb-1">{dayObj.label}</span>
+              <span className={`text-xl font-bold ${activeDay === dayObj.id ? 'text-white' : 'text-[#202828]'}`}>
+                {dayObj.date}
               </span>
             </button>
           ))}
@@ -148,8 +169,8 @@ const MemberWorkoutPlan = () => {
       </div>
       {/* Active Workout Modal Overlay */}
       {isWorkoutActive && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white">
-          <div className="flex-1 overflow-y-auto pb-24">
+        <div className="fixed inset-0 z-[100] flex flex-col bg-[#F9F8F6]">
+          <div className="flex-1 overflow-y-auto min-h-0 pb-12">
             <div className="bg-[#202828] text-white p-6 md:p-8 rounded-b-[3rem] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#164A4A] rounded-full blur-3xl opacity-20 -mr-20 -mt-20"></div>
               

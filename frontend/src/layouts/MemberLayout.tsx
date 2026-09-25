@@ -7,7 +7,7 @@ import {
   Utensils, Bot, UserCheck, Calendar, CalendarCheck,
   TrendingUp, DollarSign, Bell, MessageSquare,
   Settings, Activity, Building2, Menu, LogOut, Clock,
-  ShoppingBag, ShoppingCart, Receipt
+  ShoppingBag, ShoppingCart, Receipt, FileText
 } from 'lucide-react';
 
 const MemberLayout = () => {
@@ -97,6 +97,8 @@ const MemberLayout = () => {
       title: 'Fitness',
       items: [
         { label: 'AI Fitness', path: '/member/ai-assistant', icon: Bot },
+        { label: 'AI Results', path: '/member/ai-results', icon: Bot },
+        { label: 'Trainer Review', path: '/member/trainer-review', icon: FileText },
         { label: 'Workout Plan', path: '/member/workout', icon: Dumbbell },
         { label: 'Diet Plan', path: '/member/diet', icon: Utensils },
         { label: 'Progress', path: '/member/progress', icon: TrendingUp },
@@ -296,7 +298,7 @@ const MemberLayout = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-0">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           <Outlet />
         </div>
       </main>

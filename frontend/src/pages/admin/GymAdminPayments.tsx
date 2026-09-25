@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { IndianRupee, Download, Search, CheckCircle, XCircle, Loader2, Save, FileText, RotateCcw } from 'lucide-react';
+import { IndianRupee, Download, Search, CheckCircle, XCircle, Loader2, FileText, RotateCcw } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -12,24 +12,9 @@ const GymAdminPayments = () => {
   const [selectedTrx, setSelectedTrx] = useState<any>(null);
   const [rejectingPaymentId, setRejectingPaymentId] = useState<string | null>(null);
   const [rejectionReasonInput, setRejectionReasonInput] = useState('');
-  
-  // Settings State
-  const [settingsLoading, setSettingsLoading] = useState(false);
-  const [paymentSettings, setPaymentSettings] = useState({
-    upiId: '',
-    accountName: '',
-    bankName: '',
-    accountNumber: '',
-    ifscCode: '',
-    instructions: '',
-    isQrPaymentEnabled: true,
-  });
 
   useEffect(() => {
     fetchPayments();
-    if (user?.gymId) {
-      fetchGymSettings();
-    }
   }, [user]);
 
   const fetchPayments = async () => {
@@ -41,20 +26,6 @@ const GymAdminPayments = () => {
       console.error('Error fetching payments:', err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchGymSettings = async () => {
-    try {
-      const res = await api.get(`/gyms/${user?.gymId}`);
-      if (res.data.gym?.paymentSettings) {
-        setPaymentSettings({
-          ...res.data.gym.paymentSettings,
-          isQrPaymentEnabled: res.data.gym.paymentSettings.isQrPaymentEnabled !== false
-        });
-      }
-    } catch (err) {
-      console.error('Error fetching gym settings', err);
     }
   };
 
@@ -70,19 +41,6 @@ const GymAdminPayments = () => {
     } catch (err: any) {
       console.error('Verification error:', err);
       alert(err.response?.data?.message || 'Verification failed');
-    }
-  };
-
-  const handleSaveSettings = async () => {
-    try {
-      setSettingsLoading(true);
-      await api.patch(`/gyms/${user?.gymId}/payment-settings`, { paymentSettings });
-      alert('Payment settings updated successfully');
-    } catch (err: any) {
-      console.error('Settings update error:', err);
-      alert('Failed to update settings');
-    } finally {
-      setSettingsLoading(false);
     }
   };
 

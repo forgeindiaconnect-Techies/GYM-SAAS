@@ -60,6 +60,8 @@ import GymAdminImportCustomers from './pages/admin/GymAdminImportCustomers';
 import GymAdminTrainerFees from './pages/admin/GymAdminTrainerFees';
 import GymAdminTrainerPayments from './pages/admin/GymAdminTrainerPayments';
 import GymAdminTrainerPaymentHistory from './pages/admin/GymAdminTrainerPaymentHistory';
+import GymAdminAIFitnessPlans from './pages/admin/GymAdminAIFitnessPlans';
+import GymAdminAIPlanDetails from './pages/admin/GymAdminAIPlanDetails';
 
 // Gym Store (Admin)
 import GymStoreDashboard from './pages/admin/store/GymStoreDashboard';
@@ -113,6 +115,8 @@ import MemberMyBookings from './pages/member/MemberMyBookings';
 import MemberWorkoutPlan from './pages/member/MemberWorkoutPlan';
 import MemberDietPlan from './pages/member/MemberDietPlan';
 import MemberAIFitness from './pages/member/MemberAIFitness';
+import MemberAIResults from './pages/member/MemberAIResults';
+import MemberTrainerReview from './pages/member/MemberTrainerReview';
 import MemberProgress from './pages/member/MemberProgress';
 import MemberAttendance from './pages/member/MemberAttendance';
 import MemberSubscription from './pages/member/MemberSubscription';
@@ -212,6 +216,8 @@ function App() {
             <Route path="workout" element={<MemberWorkoutPlan />} />
             <Route path="diet" element={<MemberDietPlan />} />
             <Route path="ai-assistant" element={<MemberAIFitness />} />
+            <Route path="ai-results" element={<MemberAIResults />} />
+            <Route path="trainer-review" element={<MemberTrainerReview />} />
             <Route path="progress" element={<MemberProgress />} />
             <Route path="attendance" element={<MemberAttendance />} />
             <Route path="subscription" element={<MemberSubscription />} />
@@ -284,6 +290,8 @@ function App() {
             <Route path="equipment" element={<GymAdminEquipment />} />
             <Route path="membership-plans" element={<GymAdminMembershipPlans />} />
             <Route path="enquiries" element={<GymAdminEnquiries />} />
+            <Route path="ai-plans" element={<GymAdminAIFitnessPlans />} />
+            <Route path="ai-plans/:id" element={<GymAdminAIPlanDetails />} />
             <Route path="trainer-schedule" element={<GymAdminTrainerSchedule />} />
             <Route path="session-bookings" element={<GymAdminSessionBookings />} />
             <Route path="payments" element={<GymAdminPayments />} />

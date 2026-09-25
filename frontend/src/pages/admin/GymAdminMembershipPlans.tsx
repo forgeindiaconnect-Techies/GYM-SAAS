@@ -157,7 +157,7 @@ const GymAdminMembershipPlans = () => {
 
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-2xl font-bold text-[#202828]">{plan.name}</h3>
-              <button onClick={() => handleOpenModal(plan, index)} className="p-2 text-[#455250] hover:text-[#164A4A] hover:bg-[#164A4A]/10 rounded-lg transition-colors">
+              <button onClick={() => handleOpenModal(plan)} className="p-2 text-[#455250] hover:text-[#164A4A] hover:bg-[#164A4A]/10 rounded-lg transition-colors">
                 <Edit2 size={18} />
               </button>
             </div>
@@ -186,7 +186,7 @@ const GymAdminMembershipPlans = () => {
             </div>
 
             <div className="mt-8 pt-6 border-t border-[#D3DFDA]">
-              <button onClick={() => handleOpenModal(plan, index)} className="w-full py-3 rounded-xl font-bold transition-colors bg-[#164A4A] text-white hover:bg-[#C6A77D] shadow-lg shadow-[#164A4A]/20">
+              <button onClick={() => handleOpenModal(plan)} className="w-full py-3 rounded-xl font-bold transition-colors bg-[#164A4A] text-white hover:bg-[#C6A77D] shadow-lg shadow-[#164A4A]/20">
                 Edit Plan
               </button>
             </div>
@@ -201,7 +201,7 @@ const GymAdminMembershipPlans = () => {
           <div className="bg-[#FFFFFF] w-full max-w-lg rounded-2xl p-6 shadow-2xl">
             <div className="flex justify-between items-center mb-6 border-b border-[#D3DFDA] pb-4">
               <h2 className="text-2xl font-bold text-[#202828]">
-                {editingIndex !== null ? 'Edit Plan' : 'Create New Plan'}
+                {editingId !== null ? 'Edit Plan' : 'Create New Plan'}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-[#455250] hover:text-[#EF4444] transition-colors">
                 <X size={24} />

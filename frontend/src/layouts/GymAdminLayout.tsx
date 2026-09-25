@@ -7,8 +7,8 @@ import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
-  ChevronDown, Settings, Clock, History, TrendingUp,
-  Store, Package, Tag, Boxes, ShoppingCart
+  Settings, History,
+  Store, Package, Tag, Boxes, ShoppingCart, Bot
 } from 'lucide-react';
 
 const GymAdminLayout = () => {
@@ -58,16 +58,6 @@ const GymAdminLayout = () => {
     }
   };
 
-  const markAllAsRead = async () => {
-    try {
-      const api = (await import('../utils/api')).default;
-      await api.put('/notifications/mark-all-read');
-      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-    } catch (err) {
-      console.error('Failed to mark all read', err);
-    }
-  };
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -114,7 +104,8 @@ const GymAdminLayout = () => {
         title: 'Members & Enquiries',
         items: [
           { label: 'Members', path: '/admin/members', icon: Users },
-          { label: 'Customer Enquiries', path: '/admin/enquiries', icon: MessageSquare }
+          { label: 'Customer Enquiries', path: '/admin/enquiries', icon: MessageSquare },
+          { label: 'AI Fitness Plans', path: '/admin/ai-plans', icon: Bot }
         ]
       },
       {

@@ -61,11 +61,6 @@ const GymDetails = () => {
   };
 
   const handleJoin = (plan: any) => {
-    if (branches.length > 0 && !selectedBranch) {
-      alert("Please select a branch first.");
-      return;
-    }
-
     if (!user) {
       // Store checkout intent so we can return here after login
       sessionStorage.setItem('checkout_intent', JSON.stringify({ 

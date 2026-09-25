@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Star, Calendar, Eye, X, Award, FileText, CheckCircle2 } from 'lucide-react';
+import { Search, Star, Calendar, Eye, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 

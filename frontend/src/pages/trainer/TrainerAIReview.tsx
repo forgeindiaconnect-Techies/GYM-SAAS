@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Bot, ArrowLeft, CheckCircle2, FileEdit, Trash2, Save, Plus, X, AlertCircle } from 'lucide-react';
+import { Bot, ArrowLeft, CheckCircle2, FileEdit, Trash2, Save, Plus, X, AlertCircle, Clock, Calendar } from 'lucide-react';
 import api from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const TrainerAIReview = () => {
   const { customerId } = useParams();
@@ -10,9 +11,17 @@ const TrainerAIReview = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
+  const { user } = useAuth();
+  const [showRevisionModal, setShowRevisionModal] = useState(false);
+  const [revisionReason, setRevisionReason] = useState('');
+  
   // Editable state
+  const [assessment, setAssessment] = useState('');
+  const [weeklySchedule, setWeeklySchedule] = useState<any[]>([]);
   const [exercises, setExercises] = useState<any[]>([]);
-  const [dietStructure, setDietStructure] = useState('');
+  const [dietStructure, setDietStructure] = useState<any>({});
+  const [routine, setRoutine] = useState<any>({});
+  const [progressSuggestions, setProgressSuggestions] = useState<any>({});
   const [trainerNotes, setTrainerNotes] = useState('');
 
   useEffect(() => {
@@ -25,8 +34,12 @@ const TrainerAIReview = () => {
       const data = res.data.recommendation;
       setRecommendation(data);
       if (data) {
+        setAssessment(data.aiAnalysis?.assessment || '');
+        setWeeklySchedule(data.workoutRecommendation?.weeklySchedule || []);
         setExercises(data.workoutRecommendation?.exercises || []);
-        setDietStructure(data.dietRecommendation?.generalStructure || '');
+        setDietStructure(data.dietRecommendation || {});
+        setRoutine(data.routine || {});
+        setProgressSuggestions(data.progressSuggestions || {});
         setTrainerNotes(data.trainerNotes || '');
       }
     } catch (err) {
@@ -36,21 +49,60 @@ const TrainerAIReview = () => {
     }
   };
 
+  const handleSendBack = async () => {
+    setSaving(true);
+    try {
+      const updatedPayload = {
+        aiAnalysis: {
+          ...recommendation.aiAnalysis,
+          assessment
+        },
+        workoutRecommendation: {
+          ...recommendation.workoutRecommendation,
+          exercises,
+          weeklySchedule
+        },
+        dietRecommendation: dietStructure,
+        routine,
+        progressSuggestions,
+        trainerNotes,
+        revisionDetails: {
+          reason: revisionReason,
+          trainerName: `${user?.firstName} ${user?.lastName}`,
+          date: new Date()
+        },
+        status: 'Revision Requested'
+      };
+
+      await api.put(`/ai/trainer/recommendation/${recommendation._id}/review`, updatedPayload);
+      alert('Plan sent back to client for revision.');
+      navigate('/trainer/ai-assistant');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to send back plan.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleApprove = async () => {
     setSaving(true);
     try {
       const updatedPayload = {
+        aiAnalysis: {
+          ...recommendation.aiAnalysis,
+          assessment
+        },
         workoutRecommendation: {
           ...recommendation.workoutRecommendation,
-          exercises
+          exercises,
+          weeklySchedule
         },
-        dietRecommendation: {
-          ...recommendation.dietRecommendation,
-          generalStructure: dietStructure
-        },
-        routine: recommendation.routine,
-        progressSuggestions: recommendation.progressSuggestions,
-        trainerNotes
+        dietRecommendation: dietStructure,
+        routine,
+        progressSuggestions,
+        trainerNotes,
+        status: 'Trainer Approved'
       };
 
       await api.put(`/ai/trainer/recommendation/${recommendation._id}/review`, updatedPayload);
@@ -121,6 +173,17 @@ const TrainerAIReview = () => {
         </div>
       </div>
 
+      {/* Assessment Editing */}
+      <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
+        <h2 className="text-xl font-bold text-[#202828] mb-4">AI Assessment Summary</h2>
+        <textarea 
+          value={assessment}
+          onChange={e => setAssessment(e.target.value)}
+          className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4 text-[#202828] focus:border-[#D2B48C] outline-none min-h-[100px]"
+          placeholder="Edit AI Assessment..."
+        />
+      </div>
+
       {/* Workout Editing */}
       <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
         <div className="flex justify-between items-center mb-6">
@@ -130,6 +193,29 @@ const TrainerAIReview = () => {
           </button>
         </div>
         
+        {/* Weekly Schedule */}
+        <div className="mb-8">
+          <h3 className="text-sm font-bold text-[#687B78] uppercase tracking-wider mb-4">Weekly Schedule</h3>
+          <div className="space-y-3">
+            {weeklySchedule.map((day, idx) => (
+              <div key={idx} className="flex gap-4 items-center bg-[#F2EFE8] border border-[#E8E5DA] p-3 rounded-xl">
+                <div className="w-24 font-bold text-[#202828]">{day.day}</div>
+                <input type="text" value={day.workout} onChange={e => {
+                  const newSchedule = [...weeklySchedule];
+                  newSchedule[idx].workout = e.target.value;
+                  setWeeklySchedule(newSchedule);
+                }} className="flex-1 bg-white border border-[#E8E5DA] rounded-lg px-3 py-2 text-sm focus:border-[#D2B48C] outline-none" placeholder="Workout Type" />
+                <input type="text" value={day.duration} onChange={e => {
+                  const newSchedule = [...weeklySchedule];
+                  newSchedule[idx].duration = e.target.value;
+                  setWeeklySchedule(newSchedule);
+                }} className="w-24 bg-white border border-[#E8E5DA] rounded-lg px-3 py-2 text-sm focus:border-[#D2B48C] outline-none" placeholder="Duration" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <h3 className="text-sm font-bold text-[#687B78] uppercase tracking-wider mb-4">Exercises</h3>
         <div className="space-y-4">
           {exercises.map((ex, idx) => (
             <div key={idx} className="flex gap-4 items-center bg-[#F2EFE8] border border-[#E8E5DA] p-4 rounded-xl">
@@ -162,12 +248,55 @@ const TrainerAIReview = () => {
       {/* Diet Editing */}
       <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
         <h2 className="text-xl font-bold text-[#202828] mb-4">Diet Structure Editor</h2>
-        <textarea 
-          value={dietStructure}
-          onChange={e => setDietStructure(e.target.value)}
-          className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4 text-[#202828] focus:border-[#D2B48C] outline-none min-h-[100px]"
-          placeholder="Enter diet guidelines..."
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {['morning', 'breakfast', 'lunch', 'evening', 'dinner'].map((meal) => (
+             <div key={meal}>
+                <label className="text-xs text-[#687B78] font-semibold uppercase">{meal}</label>
+                <input 
+                  type="text"
+                  value={dietStructure[meal] || ''}
+                  onChange={e => setDietStructure({...dietStructure, [meal]: e.target.value})}
+                  className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-lg px-3 py-2 text-sm text-[#202828] focus:border-[#D2B48C] outline-none"
+                />
+             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Routine Editing */}
+      <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
+        <h2 className="text-xl font-bold text-[#202828] mb-4">Daily Routine Guidelines</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {['morning', 'workoutTime', 'evening', 'night'].map((period) => (
+             <div key={period}>
+                <label className="text-xs text-[#687B78] font-semibold uppercase">{period.replace('Time', ' Time')}</label>
+                <input 
+                  type="text"
+                  value={routine[period] || ''}
+                  onChange={e => setRoutine({...routine, [period]: e.target.value})}
+                  className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-lg px-3 py-2 text-sm text-[#202828] focus:border-[#D2B48C] outline-none"
+                />
+             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Progress Suggestions Editing */}
+      <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
+        <h2 className="text-xl font-bold text-[#202828] mb-4">Progress & Tracking Suggestions</h2>
+        <div className="space-y-4">
+          {['focusAreas', 'improvementSuggestions', 'progressTracking'].map((field) => (
+             <div key={field}>
+                <label className="text-xs text-[#687B78] font-semibold uppercase">{field.replace(/([A-Z])/g, ' $1').trim()}</label>
+                <input 
+                  type="text"
+                  value={progressSuggestions[field] || ''}
+                  onChange={e => setProgressSuggestions({...progressSuggestions, [field]: e.target.value})}
+                  className="w-full bg-[#F2EFE8] border border-[#E8E5DA] rounded-lg px-3 py-2 text-sm text-[#202828] focus:border-[#D2B48C] outline-none"
+                />
+             </div>
+          ))}
+        </div>
       </div>
 
       {/* Trainer Notes */}
@@ -183,16 +312,88 @@ const TrainerAIReview = () => {
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8E5DA] p-4 lg:ml-64 z-20 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
         <div className="max-w-5xl mx-auto flex justify-end items-center gap-4">
-          <span className="text-sm text-[#687B78]">Clicking approve will assign this final version to the client.</span>
+          <button 
+            onClick={() => setShowRevisionModal(true)}
+            disabled={saving}
+            className="px-6 py-3 bg-white border border-[#EF4444] text-[#EF4444] rounded-xl font-bold hover:bg-red-50 transition-colors"
+          >
+            Send Back for Revision
+          </button>
           <button 
             onClick={handleApprove}
             disabled={saving}
-            className="px-8 py-3 bg-[#D2B48C] text-white rounded-xl font-bold hover:bg-[#0891B2] transition-colors flex items-center gap-2 shadow-lg shadow-cyan-500/20 disabled:opacity-50"
+            className="px-8 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(22,163,74,0.3)] disabled:opacity-50"
           >
             <CheckCircle2 size={18} /> {saving ? 'Saving...' : 'Approve & Assign to Client'}
           </button>
         </div>
       </div>
+
+      {/* Revision Modal */}
+      {showRevisionModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#202828]/50 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl animate-in zoom-in-95">
+            <div className="bg-gradient-to-r from-[#EF4444] to-[#B91C1C] p-6 text-white relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+              <div className="relative z-10 flex justify-between items-start">
+                <div>
+                  <h3 className="text-2xl font-bold mb-1">Request Revision</h3>
+                  <p className="text-white/80 text-sm">Send this plan back to the client for adjustments.</p>
+                </div>
+                <button onClick={() => setShowRevisionModal(false)} className="text-white/60 hover:text-white p-2 bg-white/10 rounded-full">
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              <div className="bg-[#F2EFE8] rounded-2xl p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-3 text-sm text-[#455250]">
+                  <Calendar size={16} className="text-[#687B78]" />
+                  <span className="font-semibold text-[#202828]">Date:</span> {new Date().toLocaleDateString()}
+                </div>
+                <div className="flex items-center gap-3 text-sm text-[#455250]">
+                  <Clock size={16} className="text-[#687B78]" />
+                  <span className="font-semibold text-[#202828]">Time:</span> {new Date().toLocaleTimeString()}
+                </div>
+                <div className="flex items-center gap-3 text-sm text-[#455250]">
+                  <Bot size={16} className="text-[#687B78]" />
+                  <span className="font-semibold text-[#202828]">Trainer:</span> {user?.firstName} {user?.lastName}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-[#202828] mb-2">Reason for Revision <span className="text-[#EF4444]">*</span></label>
+                <textarea 
+                  value={revisionReason}
+                  onChange={e => setRevisionReason(e.target.value)}
+                  className="w-full bg-white border-2 border-[#E8E5DA] rounded-xl p-4 text-[#202828] focus:border-[#EF4444] focus:ring-4 focus:ring-red-500/10 outline-none min-h-[120px] transition-all"
+                  placeholder="Explain why the plan is being sent back and what the client needs to update..."
+                ></textarea>
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button 
+                  onClick={() => setShowRevisionModal(false)}
+                  className="flex-1 py-3 font-bold text-[#687B78] hover:bg-[#F2EFE8] rounded-xl transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => {
+                    if (!revisionReason.trim()) return alert('Please provide a reason for revision.');
+                    handleSendBack();
+                  }}
+                  disabled={saving || !revisionReason.trim()}
+                  className="flex-1 py-3 bg-[#EF4444] text-white font-bold rounded-xl hover:bg-[#B91C1C] transition-colors disabled:opacity-50"
+                >
+                  {saving ? 'Sending...' : 'Confirm & Send Back'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

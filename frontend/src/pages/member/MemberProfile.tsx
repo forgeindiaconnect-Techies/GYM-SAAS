@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import api from '../../utils/api';
 
-const MemberProfile = () => {
+const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
   const { user: authUser } = useAuth();
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -86,12 +86,14 @@ const MemberProfile = () => {
               <div className="flex items-center gap-2"><MapPin size={16} /> {displayUser?.city ? `${displayUser.city}${displayUser.pinCode ? `, ${displayUser.pinCode}` : ''}` : 'Location not provided'}</div>
             </div>
           </div>
-          <button 
-            onClick={handleEditClick}
-            className="flex items-center gap-2 px-4 py-2 bg-[#F1F5F9] text-[#202828] font-semibold hover:bg-[#E8E5DA] rounded-xl transition-colors"
-          >
-            <Edit3 size={16} /> Edit Profile
-          </button>
+          {!hideEdit && (
+            <button 
+              onClick={handleEditClick}
+              className="flex items-center gap-2 px-4 py-2 bg-[#F1F5F9] text-[#202828] font-semibold hover:bg-[#E8E5DA] rounded-xl transition-colors"
+            >
+              <Edit3 size={16} /> Edit Profile
+            </button>
+          )}
         </div>
       </div>
       
@@ -128,7 +130,7 @@ const MemberProfile = () => {
             ) : (
               <div className="p-4 bg-[#F2EFE8] rounded-xl border border-dashed border-[#CBD5E1] text-center">
                 <p className="text-[#687B78] mb-2">No specific fitness goal set.</p>
-                <button onClick={handleEditClick} className="text-sm text-[#164A4A] font-bold hover:underline">Set Your Goal</button>
+                {!hideEdit && <button onClick={handleEditClick} className="text-sm text-[#164A4A] font-bold hover:underline">Set Your Goal</button>}
               </div>
             )}
             
@@ -146,8 +148,8 @@ const MemberProfile = () => {
 
       {/* Edit Profile Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div className="fixed inset-0 bg-black/50 z-[70] flex items-start justify-center p-4 pt-10 sm:pt-16 backdrop-blur-sm animate-fade-in overflow-y-auto">
+          <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl mb-10">
             <div className="sticky top-0 bg-white p-6 border-b border-[#E8E5DA] flex justify-between items-center z-10">
               <h2 className="text-2xl font-bold text-[#202828]">Edit Profile</h2>
               <button 
