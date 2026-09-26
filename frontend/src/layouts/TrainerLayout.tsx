@@ -48,12 +48,14 @@ const TrainerLayout = () => {
       title: 'AI Tools',
       items: [
         { label: 'AI Trainer Assistant', path: '/trainer/ai-assistant', icon: Bot },
+        { label: 'AI Feedback', path: '/trainer/ai-feedback', icon: MessageSquare },
       ]
     },
     {
       title: 'Clients',
       items: [
         { label: 'My Members', path: '/trainer/members', icon: Users },
+        { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
         { label: 'Member Progress', path: '/trainer/member-progress', icon: TrendingUp },
         { label: 'Attendance', path: '/trainer/attendance', icon: CalendarCheck },
       ]
@@ -83,7 +85,6 @@ const TrainerLayout = () => {
     {
       title: 'Communication',
       items: [
-        { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
         { label: 'Notifications', path: '/trainer/notifications', icon: Bell },
       ]
     }

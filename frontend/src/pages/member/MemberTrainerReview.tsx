@@ -4,6 +4,7 @@ import api from '../../utils/api';
 
 const MemberTrainerReview = () => {
   const [recommendation, setRecommendation] = useState<any>(null);
+  const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,6 +15,7 @@ const MemberTrainerReview = () => {
     try {
       const res = await api.get(`/ai/member/latest`);
       setRecommendation(res.data.recommendation);
+      setHistory(res.data.history || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -106,6 +108,23 @@ const MemberTrainerReview = () => {
           <Bot size={48} className="mx-auto text-[#A8ADA9] mb-4" />
           <h3 className="text-lg font-bold text-[#687B78] mb-2">Awaiting Trainer Feedback</h3>
           <p className="text-[#A8ADA9] max-w-md mx-auto">Your trainer hasn't left any notes yet. Once they review your AI plan and leave feedback, it will appear here.</p>
+        </div>
+      )}
+
+      {!recommendation.trainerNotes && recommendation.status === 'Trainer Approved' && (
+        <div className="bg-[#F0FDF4] border border-[#DCFCE7] rounded-2xl p-8 text-center shadow-sm">
+          <CheckCircle2 size={48} className="mx-auto text-[#86EFAC] mb-4" />
+          <h3 className="text-lg font-bold text-[#166534] mb-2">Plan Approved</h3>
+          <p className="text-[#15803D] max-w-md mx-auto">Your trainer has reviewed and approved your plan without any additional notes. You can view your routine in the Workout and Diet sections.</p>
+        </div>
+      )}
+
+      {history.length > 0 && history[0].trainerNotes && (
+        <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-bold text-[#475569] mb-4 flex items-center"><Clock className="mr-2" size={18} /> Previous Trainer Notes (Version {history[0].version})</h2>
+          <div className="bg-white/50 border border-[#E2E8F0] rounded-xl p-4 text-[#475569] min-h-[100px] whitespace-pre-wrap font-medium">
+            {history[0].trainerNotes}
+          </div>
         </div>
       )}
     </div>

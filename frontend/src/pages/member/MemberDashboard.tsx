@@ -8,6 +8,7 @@ const MemberDashboard = () => {
   const { user, logout } = useAuth();
   const [memberships, setMemberships] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showExpiredPopup, setShowExpiredPopup] = useState(false);
 
@@ -18,12 +19,14 @@ const MemberDashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [membershipsRes, paymentsRes] = await Promise.all([
+      const [membershipsRes, paymentsRes, sessionsRes] = await Promise.all([
         api.get('/memberships/my'),
-        api.get('/payments/my-history').catch(() => ({ data: { payments: [] } }))
+        api.get('/payments/my-history').catch(() => ({ data: { payments: [] } })),
+        api.get('/trainer-sessions/member').catch(() => ({ data: { sessions: [] } }))
       ]);
       setMemberships(membershipsRes.data.memberships || []);
       setPayments(paymentsRes.data.payments || []);
+      setSessions(sessionsRes.data.sessions || []);
     } catch (err) {
       console.error('Error fetching data', err);
     } finally {
@@ -207,21 +210,29 @@ const MemberDashboard = () => {
 
             <div>
               <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 h-full">
-                <h3 className="text-lg font-bold mb-4">Upcoming Schedule</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold">Upcoming Schedule</h3>
+                  <Link to="/member/bookings" className="text-sm font-semibold text-[#164A4A] hover:underline">View All</Link>
+                </div>
                 <div className="space-y-4">
-                  <div className="flex space-x-3 items-start">
-                    <div className="w-2 h-2 mt-1.5 rounded-full bg-[#164A4A]"></div>
-                    <div>
-                      <p className="font-medium text-sm">1-on-1 Training</p>
-                      <p className="text-xs text-[#455250]">Today at 5:00 PM</p>
+                  {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).slice(0, 3).map((session, i) => (
+                    <div key={i} className="flex space-x-3 items-start">
+                      <div className="w-2 h-2 mt-1.5 rounded-full bg-[#164A4A]"></div>
+                      <div>
+                        <p className="font-medium text-sm text-[#202828] capitalize">{session.mode} Session</p>
+                        <p className="text-xs text-[#455250]">{new Date(session.date).toLocaleDateString()} at {session.startTime}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex space-x-3 items-start">
-                    <div className="w-2 h-2 mt-1.5 rounded-full bg-[#555]"></div>
-                    <div>
-                      <p className="font-medium text-sm text-[#455250]">No other bookings</p>
+                  ))}
+                  {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).length === 0 && (
+                    <div className="flex space-x-3 items-start">
+                      <div className="w-2 h-2 mt-1.5 rounded-full bg-[#A8ADA9]"></div>
+                      <div>
+                        <p className="font-medium text-sm text-[#455250]">No upcoming sessions</p>
+                        <Link to="/member/find-trainers" className="text-xs text-[#164A4A] font-semibold hover:underline mt-1 block">Book a Trainer</Link>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

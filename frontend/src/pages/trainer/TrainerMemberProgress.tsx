@@ -1,11 +1,21 @@
-import { TrendingUp, Award, Target } from 'lucide-react';
+import { TrendingUp, Award, Target, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const TrainerMemberProgress = () => {
+  const navigate = useNavigate();
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">User Progress</h1>
-        <p className="text-[#455250]">Monitor and log metrics for your clients</p>
+      <div className="flex items-center gap-4">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="p-2.5 bg-[#E8E5DA]/50 hover:bg-[#E8E5DA] text-[#202828] rounded-full transition-colors"
+        >
+          <ArrowLeft size={22} />
+        </button>
+        <div>
+          <h1 className="text-3xl font-bold">User Progress</h1>
+          <p className="text-[#455250]">Monitor and log metrics for your clients</p>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

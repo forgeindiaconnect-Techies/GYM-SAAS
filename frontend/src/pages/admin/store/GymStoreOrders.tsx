@@ -37,6 +37,8 @@ const GymStoreOrders = () => {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<any>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [refundPrompt, setRefundPrompt] = useState<any>(null);
+  const [refundReason, setRefundReason] = useState('');
 
   const load = async () => {
     try {
@@ -57,9 +59,9 @@ const GymStoreOrders = () => {
 
   useEffect(() => { load(); }, [status, paymentStatus, search]);
 
-  const changeStatus = async (id: string, next: string) => {
-    let reason = '';
-    if (next === 'Cancelled') {
+  const changeStatus = async (id: string, next: string, explicitReason?: string) => {
+    let reason = explicitReason || '';
+    if (!explicitReason && next === 'Cancelled') {
       const p = window.prompt(`Are you sure you want to cancel this order? Provide a reason (optional):`);
       if (p === null) return;
       reason = p;
@@ -148,21 +150,26 @@ const GymStoreOrders = () => {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {nextActions[o.status] && nextActions[o.status].length > 0 && (
-                          <select 
-                            className="px-2 py-1.5 bg-white border border-[#D3DFDA] text-[#202828] rounded-lg text-xs font-bold focus:outline-none focus:ring-1 focus:ring-[#164A4A] disabled:opacity-50"
-                            value=""
-                            onChange={(e) => {
-                              if (e.target.value) changeStatus(o._id, e.target.value);
-                            }}
-                            disabled={updatingId === o._id}
-                          >
-                            <option value="">Update Status...</option>
-                            {nextActions[o.status].map(st => (
-                              <option key={st} value={st}>{st}</option>
-                            ))}
-                          </select>
-                        )}
+                        <select 
+                          className="px-2 py-1.5 bg-white border border-[#D3DFDA] text-[#202828] rounded-lg text-xs font-bold focus:outline-none focus:ring-1 focus:ring-[#164A4A] disabled:opacity-50"
+                          value=""
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              if (e.target.value === 'Refunded') {
+                                setRefundPrompt(o);
+                                setRefundReason('');
+                              } else {
+                                changeStatus(o._id, e.target.value);
+                              }
+                            }
+                          }}
+                          disabled={updatingId === o._id}
+                        >
+                          <option value="">Update Status...</option>
+                          {['Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Out for Delivery', 'Completed', 'Cancelled', 'Refunded'].map(st => (
+                            <option key={st} value={st} disabled={st === o.status}>{st}</option>
+                          ))}
+                        </select>
                         <button onClick={() => setSelected(o)} className="px-3 py-1.5 bg-blue-50 text-[#D2B48C] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold inline-flex items-center gap-1 shrink-0">
                           <Eye size={13} /> View
                         </button>
@@ -177,8 +184,8 @@ const GymStoreOrders = () => {
       )}
 
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative mx-auto mt-12 mb-12">
             <button onClick={() => setSelected(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={22} /></button>
             <div className="flex items-center justify-between pr-8 mb-2">
               <h2 className="text-2xl font-bold text-[#202828]">{selected.orderNumber}</h2>
@@ -248,7 +255,14 @@ const GymStoreOrders = () => {
                   <button
                     key={next}
                     disabled={updatingId === selected._id}
-                    onClick={() => changeStatus(selected._id, next)}
+                    onClick={() => {
+                      if (next === 'Refunded') {
+                        setRefundPrompt(selected);
+                        setRefundReason('');
+                      } else {
+                        changeStatus(selected._id, next);
+                      }
+                    }}
                     className={`flex-1 min-w-36 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2 ${
                       next === 'Cancelled' || next === 'Refunded'
                         ? 'bg-red-50 text-red-600 hover:bg-red-100'
@@ -263,18 +277,70 @@ const GymStoreOrders = () => {
             )}
 
             <div className="mt-4">
-              <p className="text-xs font-bold text-[#687B78] uppercase mb-2">Status Timeline</p>
-              <div className="space-y-2">
-                {selected.statusHistory.map((h: any, i: number) => (
-                  <div key={i} className="flex items-start gap-3 text-sm">
-                    <span className="w-2 h-2 mt-1.5 rounded-full bg-[#164A4A] shrink-0" />
-                    <div>
-                      <p className="font-semibold text-[#202828]">{h.status}</p>
-                      <p className="text-xs text-[#455250]">{new Date(h.at).toLocaleString()}{h.note ? ` — ${h.note}` : ''}</p>
+              <p className="text-xs font-bold text-[#687B78] uppercase mb-4">Status Timeline</p>
+              <div className="relative border-l-2 border-[#D3DFDA] ml-2 space-y-6 pb-2">
+                {(selected.status === 'Cancelled' || selected.status === 'Refunded' 
+                  ? selected.statusHistory 
+                  : [
+                      ...selected.statusHistory,
+                      ...[
+                        'Pending',
+                        'Confirmed',
+                        'Preparing',
+                        selected.fulfilmentType === 'Delivery' ? 'Out for Delivery' : 'Ready for Pickup',
+                        'Completed'
+                      ].filter(step => !selected.statusHistory.some((h: any) => h.status === step))
+                       .map(step => ({ status: step, future: true }))
+                    ]
+                ).map((h: any, i: number, arr: any[]) => {
+                  const isReached = !h.future;
+                  const isLastReached = isReached && (i === arr.length - 1 || arr[i + 1].future);
+                  
+                  return (
+                    <div key={i} className="relative pl-6">
+                      <span className={`absolute -left-[9px] top-1 w-4 h-4 rounded-full border-2 border-white shrink-0 ${
+                        isLastReached 
+                          ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'bg-red-600 shadow-[0_0_0_3px_rgba(220,38,38,0.2)]' : 'bg-[#164A4A] shadow-[0_0_0_3px_rgba(22,74,74,0.2)]')
+                          : isReached ? 'bg-[#6fa3a0]' : 'bg-[#D3DFDA]'
+                      }`} />
+                      <div>
+                        <p className={`font-bold ${
+                          isLastReached 
+                            ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'text-red-600' : 'text-[#164A4A]') 
+                            : isReached ? 'text-[#455250]' : 'text-[#A8ADA9]'
+                        }`}>{h.status}</p>
+                        {isReached ? (
+                          <p className="text-xs text-[#687B78] mt-0.5">{new Date(h.at).toLocaleString()}{h.note && h.note !== h.status ? ` — ${h.note}` : ''}</p>
+                        ) : (
+                          <p className="text-xs text-[#A8ADA9] mt-0.5">Upcoming step</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {refundPrompt && (
+        <div className="fixed inset-0 z-[60] p-4 bg-black/50 backdrop-blur-sm overflow-y-auto min-h-screen flex items-center justify-center">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <h2 className="text-xl font-bold text-[#202828] mb-4">Refund Payment Details</h2>
+            <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
+               <p className="text-sm text-gray-500 mb-1">Customer</p>
+               <p className="font-bold">{refundPrompt.customerId?.firstName} {refundPrompt.customerId?.lastName}</p>
+               <p className="text-sm text-gray-500 mt-3 mb-1">Amount to Refund</p>
+               <p className="font-bold text-xl text-[#164A4A]">₹{refundPrompt.total}</p>
+               <p className="text-sm text-gray-500 mt-3 mb-1">Payment Method Used</p>
+               <p className="font-bold">{refundPrompt.paymentMethod || 'Online'}</p>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">Please process this refund via your payment gateway or manually, then confirm below.</p>
+            <input type="text" placeholder="Refund Reference / Reason" value={refundReason} onChange={(e) => setRefundReason(e.target.value)} className="w-full px-4 py-2 bg-white border border-[#D3DFDA] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#164A4A]" />
+            <div className="flex gap-3 mt-5">
+              <button onClick={() => { setRefundPrompt(null); setRefundReason(''); }} className="flex-1 py-2.5 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
+              <button onClick={() => { changeStatus(refundPrompt._id, 'Refunded', refundReason); setRefundPrompt(null); }} className="flex-1 py-2.5 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#0f3434] transition-colors" disabled={updatingId === refundPrompt._id}>Confirm Refund</button>
             </div>
           </div>
         </div>

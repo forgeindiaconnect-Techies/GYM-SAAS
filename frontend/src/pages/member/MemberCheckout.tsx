@@ -3,11 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Loader2, MapPin, Truck, CreditCard, CheckCircle2, ArrowLeft } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import api from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const PAYMENT_METHODS = ['UPI', 'Credit / Debit Card', 'Net Banking', 'Cash at Gym'];
 
 const MemberCheckout = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [items, setItems] = useState<any[]>([]);
   const [subtotal, setSubtotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -16,6 +18,10 @@ const MemberCheckout = () => {
   const [paymentMethod, setPaymentMethod] = useState('UPI');
   const [delivery, setDelivery] = useState({ name: '', phone: '', address: '', city: '', state: '', pinCode: '' });
   const [placedOrder, setPlacedOrder] = useState<any>(null);
+
+  const isPremium = user?.subscriptionPlan?.toLowerCase().includes('premium');
+  const discountAmount = isPremium ? Math.round(subtotal * 0.3) : 0;
+  const finalTotal = subtotal - discountAmount;
 
   const load = async () => {
     try {
@@ -52,7 +58,7 @@ const MemberCheckout = () => {
         fulfilmentType,
         deliveryDetails: fulfilmentType === 'Delivery' ? delivery : undefined,
         paymentMethod,
-        discount: 0,
+        discount: discountAmount,
       });
       setPlacedOrder(res.data.order);
     } catch (err: any) {
@@ -222,7 +228,7 @@ const MemberCheckout = () => {
                         <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#6fa3a0] rounded-tr-sm"></div>
                         <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#6fa3a0] rounded-bl-sm"></div>
                         <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#6fa3a0] rounded-br-sm"></div>
-                        <QRCode value={`upi://pay?pa=aigymstore@ybl&pn=AI%20Gym%20Store&am=${subtotal}&cu=INR`} size={80} bgColor="transparent" fgColor="#202828" level="L" />
+                        <QRCode value={`upi://pay?pa=aigymstore@ybl&pn=AI%20Gym%20Store&am=${finalTotal}&cu=INR`} size={80} bgColor="transparent" fgColor="#202828" level="L" />
                       </div>
                       <p className="text-sm font-bold text-[#202828]">Scan QR to Pay</p>
                       <p className="text-[10px] font-semibold text-[#6fa3a0] uppercase tracking-wider mt-0.5">Any UPI App</p>
@@ -308,9 +314,15 @@ const MemberCheckout = () => {
               <span>Subtotal</span>
               <span className="font-bold text-[#202828]">₹{subtotal}</span>
             </div>
+            {discountAmount > 0 && (
+              <div className="flex justify-between text-green-600">
+                <span>Premium Discount (30%)</span>
+                <span className="font-bold">-₹{discountAmount}</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span className="font-bold text-[#202828]">Total</span>
-              <span className="font-black text-[#164A4A] text-lg">₹{subtotal}</span>
+              <span className="font-black text-[#164A4A] text-lg">₹{finalTotal}</span>
             </div>
           </div>
           <button
@@ -319,7 +331,7 @@ const MemberCheckout = () => {
             className="mt-6 w-full py-3 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-40"
           >
             {placing ? <Loader2 className="animate-spin" size={18} /> : <CheckCircle2 size={18} />}
-            {placing ? 'Placing Order...' : `Pay ₹${subtotal} & Place Order`}
+            {placing ? 'Placing Order...' : `Pay ₹${finalTotal} & Place Order`}
           </button>
         </div>
       </div>

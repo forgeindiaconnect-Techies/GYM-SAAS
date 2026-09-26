@@ -26,6 +26,7 @@ const MemberStorePayments = () => {
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPayment, setSelectedPayment] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState('All');
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -43,7 +44,8 @@ const MemberStorePayments = () => {
           status: o.paymentStatus || 'Pending',
           type: o.fulfilmentType,
           subtotal: o.subtotal,
-          discount: o.discount
+          discount: o.discount,
+          refundDetails: o.refundDetails
         }));
         setPayments(paymentData);
       } catch (err) {
@@ -60,6 +62,18 @@ const MemberStorePayments = () => {
       <div>
         <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Store Payment History</h1>
         <p className="text-[#455250] mt-1">Track your payments for all Gym Store orders.</p>
+      </div>
+
+      <div className="flex border-b border-[#D3DFDA] space-x-6 overflow-x-auto">
+        {['All', 'Paid', 'Refunded', 'Failed'].map((tab) => (
+          <button 
+            key={tab} 
+            onClick={() => setActiveTab(tab)} 
+            className={`py-3 font-semibold text-sm transition-colors border-b-2 whitespace-nowrap ${activeTab === tab ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}
+          >
+            {tab === 'All' ? 'All Payments' : tab}
+          </button>
+        ))}
       </div>
 
       {loading ? (
@@ -85,7 +99,7 @@ const MemberStorePayments = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F1F5F9]">
-                {payments.map((p) => (
+                {payments.filter(p => activeTab === 'All' ? true : p.status === activeTab).map((p) => (
                   <tr key={p._id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="p-4">
                       <p className="font-bold text-[#202828] text-sm">{new Date(p.date).toLocaleDateString()}</p>
@@ -144,6 +158,24 @@ const MemberStorePayments = () => {
                 <span className="text-[#687B78] font-medium">Status</span>
                 {getStatusBadge(selectedPayment.status)}
               </div>
+
+            {selectedPayment.status === 'Refunded' && selectedPayment.refundDetails && (
+              <div className="mt-4 bg-orange-50 border border-orange-100 rounded-xl p-4">
+                <p className="text-xs font-bold text-orange-800 uppercase tracking-wider mb-2">Refund Details</p>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-orange-900/70 text-sm">Amount Refunded</span>
+                  <span className="font-bold text-orange-900">₹{selectedPayment.refundDetails.amount}</span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-orange-900/70 text-sm">Refund Date</span>
+                  <span className="font-semibold text-orange-900 text-sm">{new Date(selectedPayment.refundDetails.refundedAt).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-orange-900/70 text-sm">Reason</span>
+                  <span className="font-medium text-orange-900 text-sm text-right">{selectedPayment.refundDetails.reason}</span>
+                </div>
+              </div>
+            )}
               
               <div className="bg-[#F1F5F3] p-4 rounded-xl mt-6 space-y-2">
                 <div className="flex justify-between text-sm">

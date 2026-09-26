@@ -20,6 +20,7 @@ export interface ITrainer extends Document {
   availableStartTime?: string;
   availableEndTime?: string;
   availableSlot?: number;
+  unavailableDates?: string[];
   fee?: number;
   paymentType?: 'Per Week' | 'Per Month' | 'Per Session';
   totalEarnings: number;
@@ -51,6 +52,7 @@ const trainerSchema = new Schema<ITrainer>({
   availableStartTime: { type: String },
   availableEndTime: { type: String },
   availableSlot: { type: Number },
+  unavailableDates: [{ type: String }],
   fee: { type: Number },
   paymentType: { type: String, enum: ['Per Week', 'Per Month', 'Per Session'] },
   totalEarnings: { type: Number, default: 0 },

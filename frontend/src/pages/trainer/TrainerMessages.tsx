@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Send, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Send, Search, ArrowLeft } from 'lucide-react';
 
 const defaultContacts = [
   { id: '1', name: 'Sarah Connor', lastMsg: "I'll do the new diet plan today as well!", online: true, active: true },
@@ -9,6 +10,7 @@ const defaultContacts = [
 ];
 
 const TrainerMessages = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedContact, setSelectedContact] = useState(defaultContacts[0]);
   const [messageText, setMessageText] = useState('');
@@ -65,10 +67,26 @@ const TrainerMessages = () => {
       {/* Chat Area */}
       <div className="flex-1 flex flex-col relative">
         <div className="p-4 border-b border-[#D3DFDA] bg-[#FFFFFF] flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#E8E5DA] rounded-full flex items-center justify-center font-bold">S</div>
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-2 hover:bg-[#F1F5F3] rounded-full transition-colors mr-2 md:hidden"
+            title="Go Back"
+          >
+            <ArrowLeft size={20} className="text-[#455250]" />
+          </button>
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-2 hover:bg-[#F1F5F3] rounded-full transition-colors mr-2 hidden md:block"
+            title="Go Back"
+          >
+            <ArrowLeft size={20} className="text-[#455250]" />
+          </button>
+          <div className="w-10 h-10 bg-[#E8E5DA] rounded-full flex items-center justify-center font-bold">
+            {selectedContact.name[0]}
+          </div>
           <div>
-            <h3 className="font-bold">Sarah Connor</h3>
-            <p className="text-xs text-green-500">Online</p>
+            <h3 className="font-bold">{selectedContact.name}</h3>
+            <p className="text-xs text-green-500">{selectedContact.online ? 'Online' : 'Offline'}</p>
           </div>
         </div>
 

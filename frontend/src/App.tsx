@@ -73,10 +73,10 @@ import GymStoreOfflineSales from './pages/admin/store/GymStoreOfflineSales';
 import GymStoreSalesHistory from './pages/admin/store/GymStoreSalesHistory';
 import GymStoreSettings from './pages/admin/store/GymStoreSettings';
 
-// Gym Store (Member)
 import MemberStore from './pages/member/MemberStore';
 import MemberCart from './pages/member/MemberCart';
 import MemberCheckout from './pages/member/MemberCheckout';
+import MemberSessionCheckout from './pages/member/MemberSessionCheckout';
 import MemberOrders from './pages/member/MemberOrders';
 import MemberStorePayments from './pages/member/MemberStorePayments';
 
@@ -146,6 +146,7 @@ import TrainerPaymentsReceived from './pages/trainer/TrainerPaymentsReceived';
 import TrainerSettings from './pages/trainer/TrainerSettings';
 import TrainerAIAssistant from './pages/trainer/TrainerAIAssistant';
 import TrainerAIReview from './pages/trainer/TrainerAIReview';
+import TrainerAIFeedback from './pages/trainer/TrainerAIFeedback';
 
 // Stub dashboards
 import stubDashboard from './pages/StubDashboard';
@@ -228,6 +229,7 @@ function App() {
             <Route path="store" element={<MemberStore />} />
             <Route path="store/cart" element={<MemberCart />} />
             <Route path="store/checkout" element={<MemberCheckout />} />
+            <Route path="checkout/:id" element={<MemberSessionCheckout />} />
             <Route path="store/orders" element={<MemberOrders />} />
             <Route path="store/payments" element={<MemberStorePayments />} />
             <Route path="enquiries" element={<MemberEnquiries />} />
@@ -258,6 +260,7 @@ function App() {
             <Route path="settings" element={<TrainerSettings />} />
             <Route path="ai-assistant" element={<TrainerAIAssistant />} />
             <Route path="ai-review/:customerId" element={<TrainerAIReview />} />
+            <Route path="ai-feedback" element={<TrainerAIFeedback />} />
           </Route>
 
 {/* Manager Dashboard */}

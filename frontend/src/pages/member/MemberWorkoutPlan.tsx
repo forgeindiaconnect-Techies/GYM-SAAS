@@ -28,6 +28,7 @@ const MemberWorkoutPlan = () => {
   const [activeDay, setActiveDay] = useState('Today');
   const [isWorkoutActive, setIsWorkoutActive] = useState(false);
   const [workoutTime, setWorkoutTime] = useState(0);
+  const [startTime, setStartTime] = useState<Date | null>(null);
   
   const workoutData = {
     title: 'Upper Body Power',
@@ -41,6 +42,94 @@ const MemberWorkoutPlan = () => {
       { name: 'Overhead Tricep Extension', sets: 3, reps: '12', completed: false },
       { name: 'Lateral Raises', sets: 4, reps: '15', completed: false },
     ]
+  };
+
+  const getInitialSets = () => {
+    const saved = localStorage.getItem('workout_completed_sets');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    const initial: Record<number, boolean[]> = {};
+    workoutData.exercises.forEach((ex, idx) => {
+      initial[idx] = Array(ex.sets).fill(ex.completed);
+    });
+    return initial;
+  };
+
+  const getInitialTimes = () => {
+    const saved = localStorage.getItem('workout_exercise_times');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const times: Record<number, { start?: Date, end?: Date }> = {};
+        for (const key in parsed) {
+          times[key] = {};
+          if (parsed[key].start) times[key].start = new Date(parsed[key].start);
+          if (parsed[key].end) times[key].end = new Date(parsed[key].end);
+        }
+        return times;
+      } catch (e) {}
+    }
+    return {};
+  };
+
+  const [completedSets, setCompletedSets] = useState<Record<number, boolean[]>>(getInitialSets());
+  const [exerciseTimes, setExerciseTimes] = useState<Record<number, { start?: Date, end?: Date }>>(getInitialTimes());
+  const [expandedExercises, setExpandedExercises] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    localStorage.setItem('workout_completed_sets', JSON.stringify(completedSets));
+  }, [completedSets]);
+
+  useEffect(() => {
+    localStorage.setItem('workout_exercise_times', JSON.stringify(exerciseTimes));
+  }, [exerciseTimes]);
+
+  const toggleExpand = (index: number) => {
+    setExpandedExercises(prev => ({...prev, [index]: !prev[index]}));
+  };
+
+  const startWorkout = () => {
+    setIsWorkoutActive(true);
+    setWorkoutTime(0);
+    setStartTime(new Date());
+    // Don't reset completedSets, so they can continue from where they left off
+  };
+
+  const toggleSet = (exIdx: number, setIdx: number) => {
+    setCompletedSets(prev => {
+      const newSets = { ...prev };
+      const exSets = [...(newSets[exIdx] || [])];
+      exSets[setIdx] = !exSets[setIdx];
+      newSets[exIdx] = exSets;
+      
+      setExerciseTimes(prevTimes => {
+        const times = { ...prevTimes };
+        if (!times[exIdx]) times[exIdx] = {};
+        
+        const anyCompleted = newSets[exIdx].some(s => s === true);
+        if (anyCompleted && !times[exIdx].start) {
+          times[exIdx].start = new Date();
+        }
+        
+        const allCompleted = newSets[exIdx].length > 0 && newSets[exIdx].every(s => s === true);
+        if (allCompleted && !times[exIdx].end) {
+          times[exIdx].end = new Date();
+        } else if (!allCompleted) {
+          delete times[exIdx].end;
+        }
+        
+        return times;
+      });
+
+      return newSets;
+    });
+  };
+
+  const isExerciseCompleted = (exIdx: number) => {
+    const sets = completedSets[exIdx];
+    if (!sets) return false;
+    return sets.length > 0 && sets.every(s => s === true);
   };
 
   useEffect(() => {
@@ -66,7 +155,7 @@ const MemberWorkoutPlan = () => {
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Your Workout Plan</h1>
           <p className="text-[#455250] mt-1">Stay consistent and crush your goals this week.</p>
         </div>
-        <button onClick={() => setIsWorkoutActive(true)} className="flex items-center space-x-2 px-6 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-all shadow-lg shadow-green-500/30 hover:scale-105 active:scale-95">
+        <button onClick={startWorkout} className="flex items-center space-x-2 px-6 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-all shadow-lg shadow-green-500/30 hover:scale-105 active:scale-95">
           <PlayCircle size={20} />
           <span>Start Workout</span>
         </button>
@@ -134,35 +223,72 @@ const MemberWorkoutPlan = () => {
           <div className="bg-white rounded-3xl shadow-sm border border-[#E8E5DA] p-6 md:p-8">
             <h3 className="text-xl font-bold text-[#202828] mb-6">Exercises (5)</h3>
             <div className="space-y-4">
-              {workoutData.exercises.map((exercise, index) => (
-                <div 
-                  key={index} 
-                  className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${
-                    exercise.completed 
-                      ? 'bg-green-50/50 border-green-200' 
-                      : 'bg-white border-[#E8E5DA] hover:border-[#164A4A] hover:shadow-md cursor-pointer'
-                  }`}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      exercise.completed ? 'bg-green-100 text-[#164A4A]' : 'bg-[#F1F5F9] text-[#687B78]'
-                    }`}>
-                      {exercise.completed ? <CheckCircle2 size={20} /> : <span className="font-bold text-sm">{index + 1}</span>}
+              {workoutData.exercises.map((exercise, index) => {
+                const mainCompleted = isExerciseCompleted(index);
+                const isExpanded = expandedExercises[index] || false;
+                return (
+                <div key={index} className="flex flex-col">
+                  <div 
+                    onClick={() => toggleExpand(index)}
+                    className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${
+                      mainCompleted 
+                        ? 'bg-green-50/50 border-green-200' 
+                        : 'bg-white border-[#E8E5DA] hover:border-[#164A4A] hover:shadow-md cursor-pointer'
+                    } ${isExpanded ? 'rounded-b-none border-b-0' : ''}`}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        mainCompleted ? 'bg-green-100 text-[#164A4A]' : 'bg-[#F1F5F9] text-[#687B78]'
+                      }`}>
+                        {mainCompleted ? <CheckCircle2 size={20} /> : <span className="font-bold text-sm">{index + 1}</span>}
+                      </div>
+                      <div>
+                        <h4 className={`font-bold ${mainCompleted ? 'text-green-700 line-through opacity-70' : 'text-[#202828]'}`}>
+                          {exercise.name}
+                        </h4>
+                        <p className="text-sm text-[#687B78] mt-0.5">
+                          {exercise.sets} sets × {exercise.reps} reps
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className={`font-bold ${exercise.completed ? 'text-green-700 line-through opacity-70' : 'text-[#202828]'}`}>
-                        {exercise.name}
-                      </h4>
-                      <p className="text-sm text-[#687B78] mt-0.5">
-                        {exercise.sets} sets × {exercise.reps} reps
-                      </p>
-                    </div>
+                    <button className={`p-2 rounded-full transition-transform ${isExpanded ? 'rotate-90' : ''} ${mainCompleted ? 'text-green-500' : 'text-[#CBD5E1] hover:text-[#164A4A]'}`}>
+                      <ChevronRight size={24} />
+                    </button>
                   </div>
-                  <button className={`p-2 rounded-full ${exercise.completed ? 'text-green-500' : 'text-[#CBD5E1] hover:text-[#164A4A]'}`}>
-                    <ChevronRight size={24} />
-                  </button>
+                  
+                  {isExpanded && (
+                    <div className={`p-5 pt-2 border border-t-0 rounded-b-2xl ${mainCompleted ? 'bg-green-50/50 border-green-200' : 'bg-white border-[#E8E5DA]'}`}>
+                      {(exerciseTimes[index]?.start || exerciseTimes[index]?.end) && (
+                        <div className="flex gap-3 mb-4 text-xs font-semibold px-2">
+                          {exerciseTimes[index]?.start && (
+                            <span className="text-blue-700 bg-blue-50/80 px-2 py-1 rounded border border-blue-100 flex items-center gap-1"><Clock size={12}/> Start: {exerciseTimes[index].start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                          )}
+                          {mainCompleted && exerciseTimes[index]?.end && (
+                            <span className="text-green-700 bg-green-50/80 px-2 py-1 rounded border border-green-100 flex items-center gap-1"><CheckCircle2 size={12}/> End: {exerciseTimes[index].end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                          )}
+                        </div>
+                      )}
+                      
+                      <div className="space-y-2">
+                        {Array.from({ length: exercise.sets }).map((_, setIdx) => {
+                          const setCompleted = completedSets[index]?.[setIdx] || false;
+                          return (
+                            <div key={setIdx} className={`flex items-center justify-between p-3 rounded-xl border ${setCompleted ? 'bg-[#F0FDF4] border-[#DCFCE7]' : 'bg-[#F2EFE8] border-[#E8E5DA]'}`}>
+                              <div className="flex items-center gap-4">
+                                <span className={`font-bold w-12 ${setCompleted ? 'text-[#166534]' : 'text-[#687B78]'}`}>Set {setIdx + 1}</span>
+                                <span className="text-sm font-medium text-[#455250]">{exercise.reps.split('-')[0]} reps</span>
+                              </div>
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${setCompleted ? 'bg-[#164A4A] text-white' : 'border-2 border-[#CBD5E1] text-transparent'}`}>
+                                <CheckCircle2 size={14} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ))}
+              )})}
             </div>
           </div>
         </div>
@@ -189,12 +315,16 @@ const MemberWorkoutPlan = () => {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 relative z-10">
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                  <div className="text-[#A8ADA9] text-sm font-medium mb-1 flex items-center gap-2"><Clock size={16}/> Start Time</div>
+                  <div className="text-xl font-bold text-white">{startTime ? startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}</div>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
                   <div className="text-[#A8ADA9] text-sm font-medium mb-1 flex items-center gap-2"><Timer size={16}/> Elapsed Time</div>
-                  <div className="text-2xl font-bold font-mono tracking-wider text-[#164A4A]">{formatTime(workoutTime)}</div>
+                  <div className="text-xl font-bold font-mono tracking-wider text-[#164A4A]">{formatTime(workoutTime)}</div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
                   <div className="text-[#A8ADA9] text-sm font-medium mb-1 flex items-center gap-2"><Flame size={16}/> Est. Calories</div>
-                  <div className="text-2xl font-bold">{Math.floor((workoutTime / 60) * 8)} <span className="text-base text-[#687B78] font-normal">kcal</span></div>
+                  <div className="text-xl font-bold">{Math.floor((workoutTime / 60) * 8)} <span className="text-base text-[#687B78] font-normal">kcal</span></div>
                 </div>
               </div>
             </div>
@@ -203,25 +333,41 @@ const MemberWorkoutPlan = () => {
               <h3 className="text-xl font-bold text-[#202828] mb-6">Current Progress</h3>
               
               <div className="space-y-4">
-                {workoutData.exercises.map((exercise, index) => (
-                  <div key={index} className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
+                {workoutData.exercises.map((exercise, index) => {
+                  const completed = isExerciseCompleted(index);
+                  return (
+                  <div key={index} className={`bg-white border ${completed ? 'border-green-200 shadow-green-100' : 'border-[#E8E5DA]'} rounded-2xl p-5 shadow-sm transition-colors`}>
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#F1F5F3] text-[#6fa3a0] flex items-center justify-center font-bold text-lg border border-[#D3DFDA]">
-                          {index + 1}
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg border transition-colors ${
+                          completed ? 'bg-green-100 text-green-600 border-green-200' : 'bg-[#F1F5F3] text-[#6fa3a0] border-[#D3DFDA]'
+                        }`}>
+                          {completed ? <CheckCircle2 size={24} /> : index + 1}
                         </div>
                         <div>
-                          <h4 className="font-bold text-lg text-[#202828]">{exercise.name}</h4>
+                          <h4 className={`font-bold text-lg ${completed ? 'text-green-700' : 'text-[#202828]'}`}>{exercise.name}</h4>
                           <p className="text-sm text-[#687B78]">Target: {exercise.sets} Sets × {exercise.reps} Reps</p>
+                          {(exerciseTimes[index]?.start || exerciseTimes[index]?.end) && (
+                            <div className="flex gap-3 mt-1.5 text-xs font-semibold">
+                              {exerciseTimes[index]?.start && (
+                                <span className="text-blue-700 bg-blue-50/80 px-2 py-0.5 rounded border border-blue-100 flex items-center gap-1"><Clock size={12}/> Start: {exerciseTimes[index].start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                              )}
+                              {completed && exerciseTimes[index]?.end && (
+                                <span className="text-green-700 bg-green-50/80 px-2 py-0.5 rounded border border-green-100 flex items-center gap-1"><CheckCircle2 size={12}/> End: {exerciseTimes[index].end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-2 mt-4">
-                      {Array.from({ length: exercise.sets }).map((_, setIdx) => (
-                        <div key={setIdx} className="flex items-center justify-between p-3 rounded-xl bg-[#F2EFE8] border border-[#E8E5DA] hover:border-[#164A4A]/50 transition-colors">
+                      {Array.from({ length: exercise.sets }).map((_, setIdx) => {
+                        const setCompleted = completedSets[index]?.[setIdx] || false;
+                        return (
+                        <div key={setIdx} className={`flex items-center justify-between p-3 rounded-xl border transition-colors ${setCompleted ? 'bg-[#F0FDF4] border-[#DCFCE7]' : 'bg-[#F2EFE8] border-[#E8E5DA] hover:border-[#164A4A]/50'}`}>
                           <div className="flex items-center gap-4">
-                            <span className="font-bold text-[#687B78] w-12">Set {setIdx + 1}</span>
+                            <span className={`font-bold w-12 ${setCompleted ? 'text-[#166534]' : 'text-[#687B78]'}`}>Set {setIdx + 1}</span>
                             <div className="flex items-center gap-2 text-sm">
                               <input type="number" placeholder={exercise.reps.split('-')[0]} className="w-16 p-1.5 border border-[#CBD5E1] rounded-lg text-center focus:border-[#164A4A] focus:outline-none" />
                               <span className="text-[#A8ADA9]">reps</span>
@@ -231,14 +377,16 @@ const MemberWorkoutPlan = () => {
                               <span className="text-[#A8ADA9]">kg</span>
                             </div>
                           </div>
-                          <button className="w-8 h-8 rounded-full border-2 border-[#CBD5E1] hover:border-[#164A4A] hover:bg-[#F1F5F3] flex items-center justify-center transition-colors text-transparent hover:text-[#164A4A]">
-                            <CheckCircle2 size={18} />
+                          <button onClick={() => toggleSet(index, setIdx)} className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${setCompleted ? 'bg-[#164A4A] border-[#164A4A] text-white' : 'border-[#CBD5E1] hover:border-[#164A4A] hover:bg-[#F1F5F3] text-transparent hover:text-[#164A4A]'}`}>
+                            <CheckCircle2 size={18} className={setCompleted ? 'text-white' : ''} />
                           </button>
                         </div>
-                      ))}
+                      );
+                      })}
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

@@ -1254,10 +1254,7 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
       res.status(400).json({ success: false, message: 'Invalid status' });
       return;
     }
-    if (!allowed.includes(status)) {
-      res.status(400).json({ success: false, message: `Cannot move order from "${order.status}" to "${status}"` });
-      return;
-    }
+    // Removed strict transition rules to allow free status updates
     const prev = order.status;
     order.status = status;
     order.statusHistory.push({ status, note: note || `Status changed to ${status}`, at: new Date() });
@@ -1319,7 +1316,13 @@ export const getMyOrders = async (req: AuthRequest, res: Response): Promise<void
     const user = (await User.findById(req.user!.id)) as IUser;
     const { status, page = '1', limit = '20' } = req.query;
     const filter: any = { customerId: user._id, gymId: user.gymId };
-    if (status && status !== 'all') filter.status = status;
+    if (status && status !== 'all') {
+      if (status === 'Cancelled') {
+        filter.status = { $in: ['Cancelled', 'Refunded'] };
+      } else {
+        filter.status = status;
+      }
+    }
     const pNum = Math.max(1, parseInt(String(page), 10) || 1);
     const lNum = Math.min(100, Math.max(1, parseInt(String(limit), 10) || 20));
     const total = await StoreOrder.countDocuments(filter);
@@ -1363,9 +1366,10 @@ export const cancelMyOrder = async (req: AuthRequest, res: Response): Promise<vo
       res.status(400).json({ success: false, message: 'Only orders with "Pending" status can be cancelled by the customer.' });
       return;
     }
+    const { reason } = req.body;
     order.status = StoreOrderStatus.CANCELLED;
-    order.cancellationReason = 'Cancelled by customer';
-    order.statusHistory.push({ status: StoreOrderStatus.CANCELLED, note: 'Cancelled by customer', at: new Date() });
+    order.cancellationReason = reason || 'Cancelled by customer';
+    order.statusHistory.push({ status: StoreOrderStatus.CANCELLED, note: reason || 'Cancelled by customer', at: new Date() });
     if (order.paymentStatus === StoreOrderPaymentStatus.PAID) {
       order.paymentStatus = StoreOrderPaymentStatus.REFUNDED;
       order.refundDetails = { amount: order.total, reason: 'Customer cancelled order', refundedAt: new Date() };

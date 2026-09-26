@@ -21,6 +21,8 @@ const MemberOrders = () => {
   const [status, setStatus] = useState('all');
   const [selected, setSelected] = useState<any>(null);
   const [cancelling, setCancelling] = useState(false);
+  const [cancelPrompt, setCancelPrompt] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
 
   const load = async () => {
     try {
@@ -39,11 +41,10 @@ const MemberOrders = () => {
 
   useEffect(() => { load(); }, [status]);
 
-  const cancelOrder = async (id: string) => {
-    if (!window.confirm('Cancel this order? The amount will be refunded and stock returned.')) return;
+  const cancelOrder = async (id: string, reason: string) => {
     try {
       setCancelling(true);
-      await api.post(`/store/customer/orders/${id}/cancel`);
+      await api.post(`/store/customer/orders/${id}/cancel`, { reason });
       setSelected(null);
       load();
     } catch (err: any) {
@@ -61,9 +62,9 @@ const MemberOrders = () => {
       </div>
 
       <div className="flex border-b border-[#D3DFDA] space-x-6 overflow-x-auto">
-        {['all', 'Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Out for Delivery', 'Completed', 'Cancelled', 'Refunded'].map((s) => (
+        {['all', 'Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Out for Delivery', 'Completed', 'Cancelled'].map((s) => (
           <button key={s} onClick={() => setStatus(s)} className={`py-3 font-semibold text-sm transition-colors border-b-2 whitespace-nowrap ${status === s ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}>
-            {s === 'all' ? 'All Orders' : s}
+            {s === 'all' ? 'All Orders' : s === 'Cancelled' ? 'Cancelled / Refunded' : s}
           </button>
         ))}
       </div>
@@ -121,12 +122,12 @@ const MemberOrders = () => {
       )}
 
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl relative mx-auto mt-16 mb-16">
             <button onClick={() => setSelected(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={22} /></button>
             <div className="flex items-center justify-between pr-8 mb-2">
               <h2 className="text-2xl font-bold text-[#202828]">{selected.orderNumber}</h2>
-              <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColor[selected.status]}`}>{selected.status}</span>
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColor[selected.status]}`}>{selected.status === 'Cancelled' ? 'Cancelled / Refunded' : selected.status}</span>
             </div>
             <p className="text-sm text-[#455250] mb-4">
               Placed {new Date(selected.createdAt).toLocaleString()} ·{' '}
@@ -170,29 +171,92 @@ const MemberOrders = () => {
             )}
 
             <div className="mb-5">
-              <p className="text-xs font-bold text-[#687B78] uppercase mb-2">Status Timeline</p>
-              <div className="space-y-2">
-                {selected.statusHistory.map((h: any, i: number) => (
-                  <div key={i} className={`flex items-start gap-3 text-sm ${i === selected.statusHistory.length - 1 ? '' : ''}`}>
-                    <span className={`w-2.5 h-2.5 mt-1.5 rounded-full shrink-0 ${i === selected.statusHistory.length - 1 ? 'bg-[#164A4A]' : 'bg-[#D3DFDA]'}`} />
-                    <div>
-                      <p className="font-semibold text-[#202828]">{h.status}</p>
-                      <p className="text-xs text-[#455250]">{new Date(h.at).toLocaleString()}{h.note && (h.note !== h.status ? ` — ${h.note}` : '')}</p>
+              <p className="text-xs font-bold text-[#687B78] uppercase mb-4">Status Timeline</p>
+              <div className="relative border-l-2 border-[#D3DFDA] ml-2 space-y-6 pb-2">
+                {(selected.status === 'Cancelled' || selected.status === 'Refunded' 
+                  ? selected.statusHistory 
+                  : [
+                      ...selected.statusHistory,
+                      ...[
+                        'Pending',
+                        'Confirmed',
+                        'Preparing',
+                        selected.fulfilmentType === 'Delivery' ? 'Out for Delivery' : 'Ready for Pickup',
+                        'Completed'
+                      ].filter(step => !selected.statusHistory.some((h: any) => h.status === step))
+                       .map(step => ({ status: step, future: true }))
+                    ]
+                ).map((h: any, i: number, arr: any[]) => {
+                  const isReached = !h.future;
+                  const isLastReached = isReached && (i === arr.length - 1 || arr[i + 1].future);
+                  
+                  return (
+                    <div key={i} className="relative pl-6">
+                      <span className={`absolute -left-[9px] top-1 w-4 h-4 rounded-full border-2 border-white shrink-0 ${
+                        isLastReached 
+                          ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'bg-red-600 shadow-[0_0_0_3px_rgba(220,38,38,0.2)]' : 'bg-[#164A4A] shadow-[0_0_0_3px_rgba(22,74,74,0.2)]')
+                          : isReached ? 'bg-[#6fa3a0]' : 'bg-[#D3DFDA]'
+                      }`} />
+                      <div>
+                        <p className={`font-bold ${
+                          isLastReached 
+                            ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'text-red-600' : 'text-[#164A4A]') 
+                            : isReached ? 'text-[#455250]' : 'text-[#A8ADA9]'
+                        }`}>{h.status}</p>
+                        {isReached ? (
+                          <p className="text-xs text-[#687B78] mt-0.5">{new Date(h.at).toLocaleString()}{h.note && h.note !== h.status ? ` — ${h.note}` : ''}</p>
+                        ) : (
+                          <p className="text-xs text-[#A8ADA9] mt-0.5">Upcoming step</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {selected.status === 'Pending' && (
-              <button
-                onClick={() => cancelOrder(selected._id)}
-                disabled={cancelling}
-                className="w-full py-3 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {cancelling ? <Loader2 className="animate-spin" size={17} /> : <XCircle size={17} />}
-                Cancel Order
-              </button>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                {!cancelPrompt ? (
+                  <button
+                    onClick={() => setCancelPrompt(true)}
+                    className="w-full py-3 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <XCircle size={17} /> Cancel Order
+                  </button>
+                ) : (
+                  <div className="space-y-3 bg-red-50/50 p-4 rounded-xl border border-red-100">
+                    <p className="text-sm font-semibold text-red-800">Why are you cancelling?</p>
+                    <select
+                      value={cancelReason}
+                      onChange={(e) => setCancelReason(e.target.value)}
+                      className="w-full px-3 py-2.5 bg-white border border-red-200 text-red-900 rounded-lg text-sm font-medium focus:outline-none focus:ring-1 focus:ring-red-400"
+                    >
+                      <option value="">Select a reason...</option>
+                      <option value="Ordered by mistake">Ordered by mistake</option>
+                      <option value="Changed my mind">Changed my mind</option>
+                      <option value="Found a better price elsewhere">Found a better price elsewhere</option>
+                      <option value="Item not needed anymore">Item not needed anymore</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <div className="flex gap-2 pt-1">
+                      <button
+                        onClick={() => { setCancelPrompt(false); setCancelReason(''); }}
+                        className="flex-1 py-2 bg-white text-gray-600 border border-gray-200 font-bold rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                      >
+                        Nevermind
+                      </button>
+                      <button
+                        onClick={() => cancelOrder(selected._id, cancelReason)}
+                        disabled={cancelling || !cancelReason}
+                        className="flex-1 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 text-sm flex items-center justify-center gap-2"
+                      >
+                        {cancelling ? <Loader2 className="animate-spin" size={14} /> : 'Confirm Cancel'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>

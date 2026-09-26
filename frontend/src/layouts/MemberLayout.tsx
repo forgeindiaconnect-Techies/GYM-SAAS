@@ -104,7 +104,7 @@ const MemberLayout = () => {
         { label: 'Progress', path: '/member/progress', icon: TrendingUp },
       ]
     },
-    ...(storeEnabled ? [{
+    {
       title: 'Gym Store',
       items: [
         { label: 'Store', path: '/member/store', icon: ShoppingBag },
@@ -112,7 +112,7 @@ const MemberLayout = () => {
         { label: 'My Orders', path: '/member/store/orders', icon: ShoppingBag },
         { label: 'Payment History', path: '/member/store/payments', icon: Receipt },
       ]
-    }] : []),
+    },
     {
       title: 'Account',
       items: [

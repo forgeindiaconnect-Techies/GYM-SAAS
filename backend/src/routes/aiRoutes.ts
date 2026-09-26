@@ -6,7 +6,8 @@ import {
   getCustomerRecommendation, 
   reviewRecommendation,
   getAdminRecommendations,
-  getAdminRecommendationDetails
+  getAdminRecommendationDetails,
+  getTrainerRecommendations
 } from '../controllers/aiController';
 import { authenticate, authorize } from '../middlewares/auth';
 
@@ -19,6 +20,7 @@ router.get('/member/latest', authenticate, authorize(['MEMBER']), getLatestRecom
 // Trainer Routes
 router.get('/trainer/customers', authenticate, authorize(['TRAINER']), getAssignedCustomersWithAI);
 router.get('/trainer/customer/:customerId', authenticate, authorize(['TRAINER']), getCustomerRecommendation);
+router.get('/trainer/recommendations', authenticate, authorize(['TRAINER']), getTrainerRecommendations);
 router.put('/trainer/recommendation/:id/review', authenticate, authorize(['TRAINER']), reviewRecommendation);
 // Admin Routes
 router.get('/admin/recommendations', authenticate, authorize(['GYM_OWNER', 'GYM_ADMIN', 'ADMIN']), getAdminRecommendations);

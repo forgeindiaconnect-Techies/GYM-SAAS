@@ -6,9 +6,9 @@ import api from '../../utils/api';
 const mockPlans = [
   { _id: '1', name: 'free trial', price: '0', duration: '1 day', subscribers: 145, isPopular: false, features: 'Gym Setup, Member Management (Up to 10), Trainer Management (1 Trainer), Membership Plans (1 Plan), Exercise Plans, Basic Diet Plans, Limited AI Suggestions' },
   { _id: '2', name: 'basic', price: '399', duration: '1 month', subscribers: 312, isPopular: true, features: 'Gym Setup, Member Management (Up to 100), Trainer Management (Up to 5), Membership Plans (5 Plans), Exercise & Diet Plans, AI Suggestions, Reports & Analytics' },
-  { _id: '3', name: 'premium', price: '799', duration: '3 months', subscribers: 84, isPopular: false, features: 'Gym Setup, Unlimited Member Management, Unlimited Trainer Management, Unlimited Membership Plans, Exercise Plans, Diet Plans, Advanced AI Suggestions, Advanced Member Progress Tracking, Attendance Management, Payment Tracking, Advanced Reports & Analytics, Unlimited AI Workout Generation, Unlimited AI Diet Generation, Gym Store — Sell Supplements & Merch, Gym Store — Online Orders & Payments, Gym Store — Inventory & Offline Sales, Notifications, Multiple Branches, Priority Support' },
+  { _id: '3', name: 'premium', price: '799', duration: '3 months', subscribers: 84, isPopular: false, features: 'Gym Setup, Unlimited Member Management, Unlimited Trainer Management, Unlimited Membership Plans, Exercise Plans, Diet Plans, Advanced AI Suggestions, Advanced Member Progress Tracking, Attendance Management, Payment Tracking, Advanced Reports & Analytics, Unlimited AI Workout Generation, Unlimited AI Diet Generation, Gym Store — Sell Supplements & Merch, Gym Store — Online Orders & Payments, Gym Store — Inventory & Offline Sales, Gym Store — 30% Discount, Notifications, Multiple Branches, Priority Support' },
   { _id: '4', name: 'basic annual', price: '3990', duration: '1 year', subscribers: 45, isPopular: true, features: 'Gym Setup, Member Management (Up to 100), Trainer Management (Up to 5), Membership Plans (5 Plans), Exercise & Diet Plans, AI Suggestions, Reports & Analytics' },
-  { _id: '5', name: 'premium annual', price: '7990', duration: '1 year', subscribers: 12, isPopular: false, features: 'Gym Setup, Unlimited Member Management, Unlimited Trainer Management, Unlimited Membership Plans, Exercise Plans, Diet Plans, Advanced AI Suggestions, Advanced Member Progress Tracking, Attendance Management, Payment Tracking, Advanced Reports & Analytics, Unlimited AI Workout Generation, Unlimited AI Diet Generation, Gym Store — Sell Supplements & Merch, Gym Store — Online Orders & Payments, Gym Store — Inventory & Offline Sales, Notifications, Multiple Branches, Priority Support' },
+  { _id: '5', name: 'premium annual', price: '7990', duration: '1 year', subscribers: 12, isPopular: false, features: 'Gym Setup, Unlimited Member Management, Unlimited Trainer Management, Unlimited Membership Plans, Exercise Plans, Diet Plans, Advanced AI Suggestions, Advanced Member Progress Tracking, Attendance Management, Payment Tracking, Advanced Reports & Analytics, Unlimited AI Workout Generation, Unlimited AI Diet Generation, Gym Store — Sell Supplements & Merch, Gym Store — Online Orders & Payments, Gym Store — Inventory & Offline Sales, Gym Store — 30% Discount, Notifications, Multiple Branches, Priority Support' },
 ];
 
 const GymAdminMembershipPlans = () => {
@@ -143,6 +143,18 @@ const GymAdminMembershipPlans = () => {
           const featureList = typeof plan.features === 'string' 
             ? plan.features.split(',').map((f: string) => f.trim()).filter(Boolean)
             : (plan.features || []);
+
+          if (plan.name.toLowerCase().includes('premium')) {
+            if (!featureList.includes('Gym Store — 30% Discount')) {
+              // Find the index of the last Gym Store feature to insert it nicely, or just push
+              const lastStoreIdx = featureList.findLastIndex((f: string) => f.includes('Gym Store'));
+              if (lastStoreIdx !== -1) {
+                featureList.splice(lastStoreIdx + 1, 0, 'Gym Store — 30% Discount');
+              } else {
+                featureList.push('Gym Store — 30% Discount');
+              }
+            }
+          }
 
           return (
             <div key={plan._id || index} className={`bg-[#FFFFFF] rounded-2xl p-8 relative flex flex-col transition-all ${isPopular ? 'border-2 border-[#164A4A] shadow-[0_0_30px_rgba(255,51,102,0.1)] transform md:-translate-y-2' : 'border border-[#D3DFDA] hover:border-[#164A4A]/50'}`}>

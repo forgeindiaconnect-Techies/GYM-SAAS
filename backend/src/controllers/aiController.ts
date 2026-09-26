@@ -251,6 +251,25 @@ export const reviewRecommendation = async (req: any, res: any) => {
   }
 };
 
+export const getTrainerRecommendations = async (req: any, res: any) => {
+  try {
+    const trainerUserId = req.user.id;
+    const trainer = await Trainer.findOne({ userId: trainerUserId });
+    
+    if (!trainer) {
+      return res.status(404).json({ message: 'Trainer not found' });
+    }
+
+    const recommendations = await AIRecommendation.find({ trainerId: trainer._id })
+      .populate('customerId', 'firstName lastName profilePhoto')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ recommendations });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Admin Endpoints
 
 export const getAdminRecommendations = async (req: any, res: any) => {

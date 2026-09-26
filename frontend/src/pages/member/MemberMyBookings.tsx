@@ -1,131 +1,154 @@
-import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, User, CheckCircle2, XCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Calendar, Clock, MapPin, Plus, User, Video, RefreshCw, XCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../utils/api';
 
 const MemberMyBookings = () => {
-  const [activeTab, setActiveTab] = useState('Upcoming');
+  const navigate = useNavigate();
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'Upcoming' | 'History'>('Upcoming');
 
-  const bookings = [
-    {
-      id: 1,
-      trainer: 'Alex Johnson',
-      type: 'Personal Training',
-      date: 'Today, Oct 24',
-      time: '05:00 PM - 06:00 PM',
-      status: 'Upcoming',
-      image: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=150&q=80'
-    },
-    {
-      id: 2,
-      trainer: 'Sarah Williams',
-      type: 'Yoga Session',
-      date: 'Tomorrow, Oct 25',
-      time: '07:00 AM - 08:00 AM',
-      status: 'Upcoming',
-      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80'
-    },
-    {
-      id: 3,
-      trainer: 'Alex Johnson',
-      type: 'Personal Training',
-      date: 'Mon, Oct 21',
-      time: '05:00 PM - 06:00 PM',
-      status: 'Completed',
-      image: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=150&q=80'
-    },
-    {
-      id: 4,
-      trainer: 'Mike Davis',
-      type: 'HIIT Class',
-      date: 'Fri, Oct 18',
-      time: '06:00 PM - 07:00 PM',
-      status: 'Cancelled',
-      image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80'
+  const fetchSessions = async () => {
+    try {
+      const res = await api.get('/trainer-sessions/member');
+      if (res.data.success) {
+        setSessions(res.data.sessions);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const filteredBookings = bookings.filter(b => 
-    activeTab === 'Upcoming' ? b.status === 'Upcoming' : (b.status === 'Completed' || b.status === 'Cancelled')
-  );
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  const handleCancel = async (id: string) => {
+    if (!window.confirm('Are you sure you want to cancel this session?')) return;
+    try {
+      await api.post(`/trainer-sessions/${id}/cancel`, { reason: 'Cancelled by customer' });
+      fetchSessions();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to cancel session');
+    }
+  };
+
+  const upcomingStatuses = ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming', 'Reschedule Requested', 'Rescheduled'];
+  
+  const filteredSessions = sessions.filter(s => {
+    if (activeTab === 'Upcoming') {
+      return upcomingStatuses.includes(s.status);
+    }
+    return !upcomingStatuses.includes(s.status); // History (Completed, Cancelled, Rejected, Refunded)
+  });
+
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'Confirmed': return 'text-green-500 bg-green-500/10';
+      case 'Awaiting Payment': return 'text-orange-500 bg-orange-500/10';
+      case 'Pending': return 'text-yellow-500 bg-yellow-500/10';
+      case 'Cancelled': case 'Rejected': return 'text-red-500 bg-red-500/10';
+      case 'Completed': return 'text-blue-500 bg-blue-500/10';
+      default: return 'text-[#455250] bg-gray-100';
+    }
+  };
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">My Bookings</h1>
-          <p className="text-[#455250] mt-1">Manage your upcoming and past training sessions.</p>
+          <h1 className="text-3xl font-bold text-[#202828]">My Bookings</h1>
+          <p className="text-[#455250]">Manage your upcoming and past training sessions.</p>
         </div>
-        <button className="px-6 py-2.5 bg-[#164A4A] text-white rounded-xl font-semibold hover:bg-[#C6A77D] transition-colors shadow-md shadow-green-500/20">
-          Book New Session
+        <button 
+          onClick={() => navigate('/member/find-trainers')}
+          className="bg-[#164A4A] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#C6A77D] transition-colors"
+        >
+          <Plus size={18} /> Book New Session
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex space-x-2 border-b border-[#E8E5DA]">
-        {['Upcoming', 'History'].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 ${
-              activeTab === tab 
-                ? 'border-[#164A4A] text-[#164A4A]' 
-                : 'border-transparent text-[#687B78] hover:text-[#202828] hover:border-[#CBD5E1]'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+      <div className="flex gap-4 border-b border-[#D3DFDA] pb-px">
+        <button 
+          onClick={() => setActiveTab('Upcoming')}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Upcoming' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#164A4A]'}`}
+        >
+          Upcoming
+        </button>
+        <button 
+          onClick={() => setActiveTab('History')}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'History' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#164A4A]'}`}
+        >
+          History
+        </button>
       </div>
 
-      {/* Bookings List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredBookings.length > 0 ? (
-          filteredBookings.map((booking) => (
-            <div key={booking.id} className="bg-white rounded-2xl border border-[#E8E5DA] shadow-sm hover:shadow-md transition-all overflow-hidden group">
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center space-x-4">
-                    <img src={booking.image} alt={booking.trainer} className="w-14 h-14 rounded-full object-cover border-2 border-[#F1F5F9]" />
-                    <div>
-                      <h3 className="font-bold text-[#202828]">{booking.trainer}</h3>
-                      <p className="text-xs text-[#164A4A] font-medium bg-green-50 px-2 py-0.5 rounded-full inline-block mt-1">
-                        {booking.type}
-                      </p>
-                    </div>
-                  </div>
-                  {booking.status === 'Completed' && <CheckCircle2 className="text-green-500" size={24} />}
-                  {booking.status === 'Cancelled' && <XCircle className="text-[#6fa3a0]" size={24} />}
+      <div className="space-y-4">
+        {loading ? (
+          <div className="text-center py-10 text-[#455250]">Loading bookings...</div>
+        ) : filteredSessions.length === 0 ? (
+          <div className="text-center py-10 text-[#455250]">No {activeTab.toLowerCase()} bookings found.</div>
+        ) : (
+          filteredSessions.map((session) => (
+            <div key={session._id} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl flex flex-col items-center justify-center shrink-0">
+                  <span className="text-xs text-[#455250] uppercase">{new Date(session.date).toLocaleString('default', { month: 'short' })}</span>
+                  <span className="text-xl font-bold text-[#164A4A]">{new Date(session.date).getDate()}</span>
                 </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center text-[#455250] text-sm">
-                    <CalendarIcon size={16} className="mr-3 text-[#A8ADA9]" />
-                    <span>{booking.date}</span>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-bold text-lg text-[#202828]">{session.trainerId?.name || 'Trainer'}</h3>
+                    <span className={`text-xs px-2 py-0.5 rounded-full bg-[#164A4A]/10 text-[#164A4A]`}>
+                      {session.mode}
+                    </span>
                   </div>
-                  <div className="flex items-center text-[#455250] text-sm">
-                    <Clock size={16} className="mr-3 text-[#A8ADA9]" />
-                    <span>{booking.time}</span>
+                  <div className="flex flex-wrap gap-4 text-sm text-[#455250]">
+                    <span className="flex items-center gap-1"><Clock size={14} /> {session.startTime} - {session.endTime}</span>
+                    {session.mode === 'Online' ? (
+                      <span className="flex items-center gap-1"><Video size={14} /> Online Meeting</span>
+                    ) : (
+                      <span className="flex items-center gap-1"><MapPin size={14} /> In-Gym</span>
+                    )}
                   </div>
                 </div>
               </div>
-              
-              {activeTab === 'Upcoming' && (
-                <div className="bg-[#F2EFE8] p-4 border-t border-[#E8E5DA] flex gap-3">
-                  <button className="flex-1 py-2 text-sm font-semibold text-[#687B78] bg-white border border-[#E8E5DA] rounded-lg hover:bg-gray-50 transition-colors">
-                    Reschedule
+              <div className="flex items-center gap-4">
+                <span className={`text-sm font-semibold px-3 py-1 rounded-full ${getStatusColor(session.status)}`}>
+                  {session.status}
+                </span>
+                
+                {session.status === 'Awaiting Payment' && (
+                  <button 
+                    onClick={() => navigate(`/member/checkout/${session._id}?type=session`)}
+                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Pay Now
                   </button>
-                  <button className="flex-1 py-2 text-sm font-semibold text-red-600 bg-white border border-[#E8E5DA] rounded-lg hover:bg-red-50 transition-colors">
-                    Cancel
+                )}
+
+                {upcomingStatuses.includes(session.status) && session.status !== 'Pending' && (
+                  <button className="p-2 border border-[#D3DFDA] hover:bg-[#E8E5DA] text-[#455250] rounded-lg transition-colors" title="Reschedule">
+                    <RefreshCw size={18} />
                   </button>
-                </div>
-              )}
+                )}
+
+                {upcomingStatuses.includes(session.status) && (
+                  <button 
+                    onClick={() => handleCancel(session._id)}
+                    className="p-2 border border-red-200 hover:bg-red-50 text-red-500 rounded-lg transition-colors"
+                    title="Cancel Booking"
+                  >
+                    <XCircle size={18} />
+                  </button>
+                )}
+              </div>
             </div>
           ))
-        ) : (
-          <div className="col-span-full py-16 text-center bg-white rounded-2xl border border-dashed border-[#CBD5E1]">
-            <CalendarIcon size={48} className="mx-auto text-[#CBD5E1] mb-4" />
-            <h3 className="text-lg font-bold text-[#202828]">No {activeTab.toLowerCase()} bookings found</h3>
-            <p className="text-[#687B78] mt-2 max-w-sm mx-auto">You don't have any {activeTab.toLowerCase()} training sessions at the moment.</p>
-          </div>
         )}
       </div>
     </div>
