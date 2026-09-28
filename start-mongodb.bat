@@ -1,0 +1,3 @@
+@echo off
+echo Starting MongoDB on port 27017...
+"C:\Users\renug\mongodb_bin\MongoDB\Server\8.2\bin\mongod.exe" --dbpath "C:\Users\renug\mongodb_data" --bind_ip 127.0.0.1 --port 27017
