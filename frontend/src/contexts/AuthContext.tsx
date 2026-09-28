@@ -9,6 +9,7 @@ export interface AuthUser {
   role: string;
   gymId?: string;
   gymName?: string;
+  branchId?: string;
   approvalStatus: string;
   subscriptionStatus: string;
   subscriptionPlan?: string;

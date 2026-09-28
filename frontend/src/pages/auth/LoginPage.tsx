@@ -67,7 +67,7 @@ const LoginPage = () => {
       alert('Login successfully!');
       navigate(getDashboardRoute(user), { replace: true });
     } catch (err: any) {
-      const msg = err.response?.data?.message || 'Something went wrong. Please try again.';
+      const msg = err.response?.data?.message || (err.message === 'Network Error' || !err.response ? 'Server connection error. Please make sure the backend is running.' : 'Something went wrong. Please try again.');
       setError(msg);
     } finally {
       setIsLoading(false);

@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, Building2, Send, User, Settings, LogOut,
-  Users, CreditCard, Trash2, ShieldCheck, Menu, MessageSquare, Wallet, Bell, Store
+  Users, CreditCard, Trash2, ShieldCheck, Menu, MessageSquare, Wallet, Bell, Store, PlusCircle
 } from 'lucide-react';
 
 const SuperAdminLayout = () => {
@@ -12,22 +12,48 @@ const SuperAdminLayout = () => {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const navItems = [
-    { label: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard },
-    { label: 'Customer Details', path: '/super-admin/customers', icon: Users },
-    { label: 'Customer Enquiries', path: '/super-admin/enquiries', icon: MessageSquare },
-    { label: 'Gym Owner Details', path: '/super-admin/gym-owners', icon: Building2 },
-    { label: 'Add Gym Manually', path: '/super-admin/gyms/add', icon: Building2 },
-    { label: 'Gym Invitations', path: '/super-admin/invitations', icon: Send },
-    { label: 'Subscription Plans', path: '/super-admin/subscriptions', icon: CreditCard },
-    { label: 'Gym Store', path: '/super-admin/store', icon: Store },
-    { label: 'Payout Management', path: '/super-admin/payouts', icon: Wallet },
-    { label: 'Notifications', path: '/super-admin/notifications', icon: Bell },
-    { label: 'Deleted Details', path: '/super-admin/deleted', icon: Trash2 },
-    { label: 'Profile', path: '/super-admin/profile', icon: User },
+  const navGroups = [
+    {
+      title: 'Overview',
+      items: [
+        { label: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard },
+      ],
+    },
+    {
+      title: 'Gym Management',
+      items: [
+        { label: 'Gym Owner Details', path: '/super-admin/gym-owners', icon: Building2 },
+        { label: 'Add Gym Manually', path: '/super-admin/gyms/add', icon: PlusCircle },
+        { label: 'Gym Invitations', path: '/super-admin/invitations', icon: Send },
+      ],
+    },
+    {
+      title: 'Customer Management',
+      items: [
+        { label: 'Customer Details', path: '/super-admin/customers', icon: Users },
+        { label: 'Customer Enquiries', path: '/super-admin/enquiries', icon: MessageSquare },
+      ],
+    },
+    {
+      title: 'Finance & Store',
+      items: [
+        { label: 'Subscription Plans', path: '/super-admin/subscriptions', icon: CreditCard },
+        { label: 'Payout Management', path: '/super-admin/payouts', icon: Wallet },
+        { label: 'Gym Store', path: '/super-admin/store', icon: Store },
+      ],
+    },
+    {
+      title: 'System & Settings',
+      items: [
+        { label: 'Notifications', path: '/super-admin/notifications', icon: Bell },
+        { label: 'Deleted Details', path: '/super-admin/deleted', icon: Trash2 },
+        { label: 'Profile', path: '/super-admin/profile', icon: User },
+      ],
+    },
   ];
 
-  const currentNav = navItems.find(item => item.path === location.pathname);
+  const allNavItems = navGroups.flatMap(g => g.items);
+  const currentNav = allNavItems.find(item => item.path === location.pathname);
 
   const renderSidebar = () => (
     <>
@@ -54,33 +80,42 @@ const SuperAdminLayout = () => {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {navItems.map((item, idx) => {
-          const isActive = location.pathname === item.path;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.path || idx}
-              to={item.path}
-              onClick={() => setSidebarOpen(false)}
-              className={clsx(
-                'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
-                isActive
-                  ? 'bg-[#6fa3a0]/10 text-[#6fa3a0] font-semibold'
-                  : 'text-[#455250] hover:bg-[#F1F5F3] hover:text-[#6fa3a0]'
-              )}
-            >
-              <Icon
-                size={18}
-                className={clsx(
-                  'shrink-0 transition-colors',
-                  isActive ? 'text-[#6fa3a0]' : 'text-[#A8ADA9] group-hover:text-[#6fa3a0]'
-                )}
-              />
-              <span className="truncate">{item.label}</span>
-            </Link>
-          );
-        })}
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
+        {navGroups.map((group, gIdx) => (
+          <div key={group.title || gIdx}>
+            <h3 className="px-3 text-[10px] font-bold text-[#8D9693] uppercase tracking-wider mb-1">
+              {group.title}
+            </h3>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive = location.pathname === item.path;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={clsx(
+                      'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
+                      isActive
+                        ? 'bg-[#6fa3a0]/15 text-[#164A4A] font-semibold'
+                        : 'text-[#455250] hover:bg-[#F1F5F3] hover:text-[#164A4A]'
+                    )}
+                  >
+                    <Icon
+                      size={18}
+                      className={clsx(
+                        'shrink-0 transition-colors',
+                        isActive ? 'text-[#164A4A]' : 'text-[#A8ADA9] group-hover:text-[#164A4A]'
+                      )}
+                    />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Logout */}

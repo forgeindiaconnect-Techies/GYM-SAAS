@@ -606,7 +606,7 @@ const seedDB = async () => {
 
     const insertedProducts: any[] = [];
     for (const p of productsData) {
-      const prod = await StoreProduct.create(p);
+      const prod: any = await StoreProduct.create(p as any);
       insertedProducts.push(prod);
 
       // Create initial stock in transaction

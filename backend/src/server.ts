@@ -57,10 +57,19 @@ app.get('/api/health', (req, res) => {
 const PORT = process.env.PORT || 5600;
 
 const startServer = async () => {
-  await connectDB();
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
+
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use.`);
+    } else {
+      console.error('Server error:', err);
+    }
+  });
+
+  await connectDB();
 };
 
 startServer();

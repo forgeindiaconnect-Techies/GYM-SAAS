@@ -1,13 +1,41 @@
 
-import { Activity, Clock, Mail, LogOut } from 'lucide-react';
+import { useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Activity, Clock, Mail, LogOut, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const PendingPage = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  useEffect(() => {
+    window.history.pushState({ page: 'pending' }, '', window.location.href);
+    const handlePopState = () => {
+      navigate('/', { replace: true });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
   return (
-    <div className="min-h-screen bg-[#F1F5F3] flex flex-col items-center justify-center px-4 text-center">
+    <div className="min-h-screen bg-[#F1F5F3] flex flex-col items-center justify-center px-4 text-center relative">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
+
+      {/* Top Left Back to Home / Landing Page Arrow */}
+      <Link 
+        to="/" 
+        id="back-to-home-arrow"
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 text-[#455250] hover:text-[#164A4A] flex items-center gap-2.5 transition-all z-20 group"
+        title="Back to Landing Page"
+      >
+        <div className="w-10 h-10 rounded-full bg-white border border-[#D3DFDA] flex items-center justify-center shadow-sm group-hover:border-[#164A4A] group-hover:bg-[#164A4A]/5 transition-all">
+          <ArrowLeft size={20} className="text-[#455250] group-hover:text-[#164A4A] group-hover:-translate-x-0.5 transition-transform" />
+        </div>
+        <span className="font-semibold text-sm text-[#455250] group-hover:text-[#164A4A]">Back to Landing Page</span>
+      </Link>
 
       <div className="w-20 h-20 bg-[#F59E0B]/10 rounded-full flex items-center justify-center mb-8">
         <Clock size={40} className="text-[#F59E0B]" />
@@ -36,9 +64,18 @@ const PendingPage = () => {
         </div>
       </div>
 
-      <button onClick={logout} className="flex items-center space-x-2 text-[#455250] hover:text-[#164A4A] transition-colors text-sm">
-        <LogOut size={16} /><span>Sign out</span>
-      </button>
+      <div className="flex items-center justify-center space-x-6">
+        <Link 
+          to="/" 
+          className="flex items-center space-x-2 text-[#455250] hover:text-[#164A4A] transition-colors text-sm font-medium"
+        >
+          <ArrowLeft size={16} /><span>Back to Landing Page</span>
+        </Link>
+        <span className="text-[#D3DFDA]">|</span>
+        <button onClick={logout} className="flex items-center space-x-2 text-[#455250] hover:text-[#164A4A] transition-colors text-sm font-medium">
+          <LogOut size={16} /><span>Sign out</span>
+        </button>
+      </div>
     </div>
   );
 };

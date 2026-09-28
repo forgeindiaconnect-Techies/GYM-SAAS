@@ -10,9 +10,19 @@ import api from '../../utils/api';
 // ─── SaaS Plan Definitions ────────────────────────────────────────────────────
 const SAAS_PLANS = [
   {
-    key: 'FREE_TRIAL', name: 'Free Trial', tagline: 'Try AI GYM risk-free',
-    icon: Zap, iconColor: 'text-slate-400', iconBg: 'bg-slate-400/10',
-    priceMonthly: 0, priceAnnual: 0, savingsAnnual: 0,
+    key: 'FREE_TRIAL',
+    name: 'Free Trial',
+    tagline: 'Try AI GYM risk-free',
+    badge: '1 DAY',
+    icon: Zap,
+    iconColor: 'text-[#6fa3a0]',
+    iconBg: 'bg-[#F1F5F3]',
+    priceMonthly: 0,
+    priceAnnual: 0,
+    savingsAnnual: 0,
+    priceDisplay: '₹0',
+    pricePeriod: '/ 1 day',
+    platformLimits: '10 members • 1 trainer • 1 branch',
     limits: { members: 10, trainers: 1, staff: 1, branches: 1 },
     status: 'Active',
     subscribedGyms: 12,
@@ -24,15 +34,26 @@ const SAAS_PLANS = [
       { text: '1 AI Workout Plan', included: true },
       { text: 'Basic Diet Recommendation', included: true },
       { text: 'Limited AI Chat', included: true },
+      { text: 'Basic Progress Tracking', included: true },
       { text: 'Advanced Analytics', included: false },
       { text: 'Trainer Booking', included: false },
       { text: '1-on-1 Coaching', included: false },
     ],
   },
   {
-    key: 'BASIC', name: 'Basic', tagline: 'Perfect for starting gyms',
-    icon: Star, iconColor: 'text-teal-500', iconBg: 'bg-teal-500/10',
-    priceMonthly: 399, priceAnnual: 3990, savingsAnnual: 798,
+    key: 'SILVER',
+    name: 'Silver',
+    tagline: 'Beginner package for growing gyms',
+    badge: 'BEGINNER',
+    icon: Star,
+    iconColor: 'text-[#6fa3a0]',
+    iconBg: 'bg-slate-100',
+    priceMonthly: 799,
+    priceAnnual: 7190,
+    savingsAnnual: 1598,
+    priceDisplay: '₹799',
+    pricePeriod: '/mo',
+    platformLimits: '100 members • 5 trainers • 1 branch',
     limits: { members: 100, trainers: 5, staff: 2, branches: 1 },
     status: 'Active',
     subscribedGyms: 38,
@@ -47,26 +68,66 @@ const SAAS_PLANS = [
       { text: 'Membership Tracking', included: true },
       { text: 'Advanced Analytics', included: false },
       { text: 'Trainer Booking', included: false },
+      { text: '1-on-1 Coaching', included: false },
     ],
   },
   {
-    key: 'PREMIUM', name: 'Premium', tagline: 'Enterprise-grade power',
-    icon: Sparkles, iconColor: 'text-purple-400', iconBg: 'bg-purple-400/10',
-    priceMonthly: 799, priceAnnual: 7990, savingsAnnual: 1598,
+    key: 'GOLD',
+    name: 'Gold',
+    tagline: 'Most popular all-in-one powerhouse',
+    badge: 'MOST POPULAR',
+    popular: true,
+    icon: Crown,
+    iconColor: 'text-[#164A4A]',
+    iconBg: 'bg-[#164A4A]/10',
+    priceMonthly: 1499,
+    priceAnnual: 13490,
+    savingsAnnual: 4498,
+    priceDisplay: '₹1,499',
+    pricePeriod: '/mo',
+    platformLimits: '500 members • 15 trainers • 2 branches',
+    limits: { members: 500, trainers: 15, staff: 5, branches: 2 },
+    status: 'Active',
+    subscribedGyms: 45,
+    features: [
+      { text: 'Everything in Silver', included: true },
+      { text: 'Advanced AI Workout & Diet Plans', included: true },
+      { text: 'AI Fitness Assistant', included: true },
+      { text: 'Goal-Based Workout Recs', included: true },
+      { text: 'Trainer Discovery & Booking', included: true },
+      { text: 'Trainer Scheduling', included: true },
+      { text: 'Detailed Progress Analytics', included: true },
+      { text: 'Revenue & Membership Analytics', included: true },
+      { text: '1-on-1 Coaching', included: false },
+      { text: 'Live Trainer Sessions', included: false },
+    ],
+  },
+  {
+    key: 'PREMIUM',
+    name: 'Premium',
+    tagline: 'Enterprise-grade multi-branch scale',
+    badge: 'ADVANCED',
+    icon: Sparkles,
+    iconColor: 'text-purple-600',
+    iconBg: 'bg-purple-100',
+    priceMonthly: 2499,
+    priceAnnual: 22490,
+    savingsAnnual: 7498,
+    priceDisplay: '₹2,499',
+    pricePeriod: '/mo',
+    platformLimits: 'Unlimited members & trainers • 5 branches',
     limits: { members: -1, trainers: -1, staff: -1, branches: 5 },
     status: 'Active',
     subscribedGyms: 27,
     features: [
-      { text: 'Everything in Basic', included: true },
+      { text: 'Everything in Gold', included: true },
       { text: '1-on-1 Online Coaching', included: true },
       { text: 'Live Trainer Sessions', included: true },
       { text: 'Priority Trainer Booking', included: true },
       { text: 'AI + Trainer Hybrid Recs', included: true },
       { text: 'Branch-wise Analytics', included: true },
       { text: 'Member Retention Analytics', included: true },
-      { text: 'Advanced Revenue Analytics', included: true },
-      { text: 'Custom Workout Modifications', included: true },
-      { text: 'Priority Support', included: true },
+      { text: 'Priority Support & Monthly Review', included: true },
     ],
   },
 ];
@@ -82,9 +143,11 @@ const SUBSCRIBED_CUSTOMERS = [
 ];
 
 const PLAN_COLORS: Record<string, string> = {
-  FREE_TRIAL: 'bg-slate-500/10 text-slate-400 border-slate-500/30',
-  BASIC: 'bg-[#6fa3a0]/10 text-teal-500 border-[#6fa3a0]/30',
-  PREMIUM: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+  FREE_TRIAL: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
+  SILVER: 'bg-[#6fa3a0]/10 text-[#6fa3a0] border-[#6fa3a0]/30',
+  GOLD: 'bg-emerald-500/10 text-[#164A4A] border-[#164A4A]/30',
+  PREMIUM: 'bg-purple-500/10 text-purple-600 border-purple-500/30',
+  BASIC: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -95,8 +158,25 @@ const STATUS_COLORS: Record<string, string> = {
   Rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
+const formatDate = (dateInput?: string | Date | null): string => {
+  if (!dateInput || dateInput === 'N/A') return 'N/A';
+  if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+    const [year, monthNum, day] = dateInput.split('-');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[parseInt(monthNum, 10) - 1] || monthNum;
+    return `${day} ${month} ${year}`;
+  }
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return 'N/A';
+  const day = String(d.getDate()).padStart(2, '0');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+  return `${day} ${month} ${year}`;
+};
+
 // ─── Edit Plan Modal ───────────────────────────────────────────────────────────
-const EditPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) => {
+const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => void; onSave?: (updated: any) => void }) => {
   const [form, setForm] = useState({
     priceMonthly: plan.priceMonthly,
     priceAnnual: plan.priceAnnual,
@@ -107,9 +187,30 @@ const EditPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
   });
   const Icon = plan.icon;
 
+  const handleSave = () => {
+    if (onSave) {
+      const savingsAnnual = form.priceMonthly * 12 - form.priceAnnual;
+      onSave({
+        ...plan,
+        priceMonthly: form.priceMonthly,
+        priceAnnual: form.priceAnnual,
+        savingsAnnual: savingsAnnual > 0 ? savingsAnnual : 0,
+        priceDisplay: `₹${form.priceMonthly.toLocaleString('en-IN')}`,
+        limits: {
+          members: form.members,
+          trainers: form.trainers,
+          staff: form.staff,
+          branches: form.branches,
+        },
+        platformLimits: `${form.members === -1 ? 'Unlimited' : form.members} members • ${form.trainers === -1 ? 'Unlimited' : form.trainers} trainers • ${form.branches} branch${form.branches > 1 ? 'es' : ''}`,
+      });
+    }
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-8 max-w-xl w-full shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar overflow-hidden">
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start justify-center z-50 p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-xl w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto mt-4 sm:mt-6 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center space-x-3 mb-6">
           <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
             <Icon size={22} className={plan.iconColor} />
@@ -160,7 +261,7 @@ const EditPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
 
         <div className="flex space-x-3 mt-8">
           <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#202828] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Cancel</button>
-          <button onClick={onClose} className="flex-1 py-3 bg-[#6fa3a0] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">Save Changes</button>
+          <button onClick={handleSave} className="flex-1 py-3 bg-[#6fa3a0] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">Save Changes</button>
         </div>
       </div>
     </div>
@@ -171,8 +272,8 @@ const EditPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
 const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) => {
   const Icon = plan.icon;
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-8 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar overflow-hidden">
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start justify-center z-50 p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto mt-4 sm:mt-6 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
@@ -241,42 +342,53 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
 // ─── View Payment Modal ────────────────────────────────────────────────────────
 const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => void }) => {
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-8 max-w-md w-full shadow-2xl">
-        <div className="flex items-center justify-between mb-6">
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start justify-center z-50 p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto">
+      <div className="bg-white border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl my-auto mt-4 sm:mt-6 animate-in fade-in zoom-in-95 duration-150">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#D3DFDA]">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center shrink-0">
               <IndianRupee size={22} className="text-blue-500" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-[#202828]">Payment Details</h2>
-              <p className="text-[#455250] text-sm">{payment.gymName || payment.name}</p>
+              <p className="text-[#455250] text-xs font-medium mt-0.5">{payment.gymName || payment.name}</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#455250] hover:text-[#202828]">
-            <XCircle size={20} />
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+          >
+            <XCircle size={22} />
           </button>
         </div>
 
-        <div className="space-y-4 mb-6">
-          <div className="flex justify-between items-center py-2 border-b border-[#D3DFDA]">
-            <span className="text-[#455250] text-sm">Plan</span>
-            <span className="text-[#202828] font-bold">{payment.plan} ({payment.billing})</span>
+        {/* Separated Detail Cards — properly spaced without touching each other */}
+        <div className="space-y-3 mb-6">
+          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+            <span className="text-[#455250] text-xs font-semibold">Plan</span>
+            <span className="text-[#202828] font-bold text-sm">
+              {payment.plan} <span className="text-slate-400 font-normal">({payment.billing})</span>
+            </span>
           </div>
-          <div className="flex justify-between items-center py-2 border-b border-[#D3DFDA]">
-            <span className="text-[#455250] text-sm">Amount Paid</span>
-            <span className="text-[#202828] font-bold text-lg">{payment.amount}</span>
+
+          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+            <span className="text-[#455250] text-xs font-semibold">Amount Paid</span>
+            <span className="text-[#164A4A] font-extrabold text-base">{payment.amount}</span>
           </div>
-          <div className="flex justify-between items-center py-2 border-b border-[#D3DFDA]">
-            <span className="text-[#455250] text-sm">Payment Method</span>
-            <span className="text-[#202828] font-bold capitalize">{payment.paymentMethod}</span>
+
+          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+            <span className="text-[#455250] text-xs font-semibold">Payment Method</span>
+            <span className="text-[#202828] font-bold text-sm capitalize">{payment.paymentMethod}</span>
           </div>
-          <div className="flex justify-between items-center py-2 border-b border-[#D3DFDA]">
-            <span className="text-[#455250] text-sm">Date</span>
-            <span className="text-[#202828] font-bold">{payment.start}</span>
+
+          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+            <span className="text-[#455250] text-xs font-semibold">Date</span>
+            <span className="text-[#202828] font-bold text-sm">{formatDate(payment.start)}</span>
           </div>
-          <div className="flex justify-between items-center py-2">
-            <span className="text-[#455250] text-sm">Status</span>
+
+          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+            <span className="text-[#455250] text-xs font-semibold">Status</span>
             <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${STATUS_COLORS[payment.status] || 'bg-gray-100 text-gray-500'}`}>
               {payment.status}
             </span>
@@ -284,15 +396,21 @@ const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => v
         </div>
 
         {(payment.paymentMethod?.toLowerCase().includes('manual') || payment.paymentMethod?.toLowerCase().includes('qr') || payment.paymentMethod?.toLowerCase().includes('paytm') || payment.paymentMethod?.toLowerCase().includes('phonepe') || payment.paymentMethod?.toLowerCase().includes('google')) && (
-          <div className="bg-[#F1F5F3] border border-[#6fa3a0]/30 rounded-xl p-4 mb-6">
-            <h3 className="text-teal-600 font-bold text-sm mb-2">Manual / QR Payment Verification</h3>
+          <div className="bg-[#6fa3a0]/10 border border-[#6fa3a0]/30 rounded-xl p-4 mb-6">
+            <h3 className="text-teal-700 font-bold text-xs mb-1.5 flex items-center gap-1.5">
+              <CheckCircle size={14} className="text-teal-600" />
+              <span>Manual / QR Payment Verification</span>
+            </h3>
             <p className="text-[#455250] text-xs leading-relaxed">
               This payment was completed via {payment.paymentMethod}. The transaction ID and screenshot have been verified by the billing team.
             </p>
           </div>
         )}
 
-        <button onClick={onClose} className="w-full py-3 bg-[#6fa3a0] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">
+        <button
+          onClick={onClose}
+          className="w-full py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#164A4A]/90 transition-colors text-sm shadow-sm"
+        >
           Close
         </button>
       </div>
@@ -420,8 +538,8 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
   }
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start justify-center z-50 p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto mt-4 sm:mt-6 animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
         <div className="flex items-center justify-between p-6 border-b border-[#D3DFDA] shrink-0 bg-white">
           <div className="flex items-center space-x-3">
@@ -674,55 +792,59 @@ const SuperAdminSubscriptions = () => {
     fetchSubscriptions();
   }, []);
 
-  // Per-plan accent colors for selected state
+  // Per-plan accent colors for selected state & styling
   const PLAN_ACCENTS: Record<string, {
     border: string; glow: string; bg: string; badge: string;
     headerBg: string; pricingBg: string; limitsBg: string;
-    priceColor: string; labelColor: string;
+    priceColor: string; labelColor: string; checkColor: string;
   }> = {
     FREE_TRIAL: {
-      border: 'border-slate-400',
-      glow: 'shadow-[0_0_30px_rgba(148,163,184,0.25)]',
-      bg: 'bg-[#1a1f26]',
-      badge: 'bg-slate-400/20 text-slate-300 border-slate-400/40',
-      headerBg: 'bg-slate-400/10',
-      pricingBg: 'bg-slate-400/5 border border-slate-400/10',
-      limitsBg: 'bg-slate-400/5 border border-slate-400/10',
-      priceColor: 'text-slate-300',
-      labelColor: 'text-slate-400',
+      border: 'border-slate-300',
+      glow: 'shadow-[0_0_25px_rgba(148,163,184,0.25)]',
+      bg: 'bg-white',
+      badge: 'bg-slate-100 text-slate-700 border-slate-200',
+      headerBg: 'bg-slate-50',
+      pricingBg: 'bg-slate-50 border border-slate-100',
+      limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
+      priceColor: 'text-slate-800',
+      labelColor: 'text-slate-700',
+      checkColor: 'text-[#6fa3a0]',
     },
     SILVER: {
-      border: 'border-slate-300',
-      glow: 'shadow-[0_0_30px_rgba(203,213,225,0.25)]',
-      bg: 'bg-[#1c1e22]',
-      badge: 'bg-slate-300/20 text-slate-200 border-slate-300/40',
-      headerBg: 'bg-slate-300/10',
-      pricingBg: 'bg-slate-300/5 border border-slate-300/10',
-      limitsBg: 'bg-slate-300/5 border border-slate-300/10',
-      priceColor: 'text-slate-200',
-      labelColor: 'text-slate-300',
+      border: 'border-[#6fa3a0]',
+      glow: 'shadow-[0_0_25px_rgba(111,163,160,0.25)]',
+      bg: 'bg-white',
+      badge: 'bg-teal-50 text-teal-700 border-teal-200',
+      headerBg: 'bg-teal-50/50',
+      pricingBg: 'bg-teal-50/30 border border-teal-100',
+      limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
+      priceColor: 'text-[#6fa3a0]',
+      labelColor: 'text-[#6fa3a0]',
+      checkColor: 'text-[#6fa3a0]',
     },
     GOLD: {
-      border: 'border-amber-400',
-      glow: 'shadow-[0_0_40px_rgba(245,158,11,0.3)]',
-      bg: 'bg-[#1e1a0e]',
-      badge: 'bg-teal-400/20 text-teal-300 border-amber-400/40',
-      headerBg: 'bg-teal-400/10',
-      pricingBg: 'bg-teal-400/5 border border-amber-400/10',
-      limitsBg: 'bg-teal-400/5 border border-amber-400/10',
-      priceColor: 'text-teal-300',
-      labelColor: 'text-teal-400',
+      border: 'border-[#164A4A]',
+      glow: 'shadow-[0_0_35px_rgba(22,74,74,0.35)]',
+      bg: 'bg-white',
+      badge: 'bg-[#164A4A]/10 text-[#164A4A] border-[#164A4A]/25',
+      headerBg: 'bg-[#164A4A]/10',
+      pricingBg: 'bg-[#164A4A]/5 border border-[#164A4A]/20',
+      limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
+      priceColor: 'text-[#164A4A]',
+      labelColor: 'text-[#164A4A]',
+      checkColor: 'text-[#164A4A]',
     },
     PREMIUM: {
-      border: 'border-purple-400',
-      glow: 'shadow-[0_0_40px_rgba(168,85,247,0.3)]',
-      bg: 'bg-[#17101e]',
-      badge: 'bg-purple-400/20 text-purple-300 border-purple-400/40',
-      headerBg: 'bg-purple-400/10',
-      pricingBg: 'bg-purple-400/5 border border-purple-400/10',
-      limitsBg: 'bg-purple-400/5 border border-purple-400/10',
-      priceColor: 'text-purple-300',
-      labelColor: 'text-purple-400',
+      border: 'border-purple-300',
+      glow: 'shadow-[0_0_35px_rgba(168,85,247,0.25)]',
+      bg: 'bg-white',
+      badge: 'bg-purple-100 text-purple-700 border-purple-200',
+      headerBg: 'bg-purple-50',
+      pricingBg: 'bg-purple-50/50 border border-purple-100',
+      limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
+      priceColor: 'text-purple-600',
+      labelColor: 'text-purple-600',
+      checkColor: 'text-purple-500',
     },
   };
 
@@ -755,7 +877,13 @@ const SuperAdminSubscriptions = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Modals */}
-      {editPlan && <EditPlanModal plan={editPlan} onClose={() => setEditPlan(null)} />}
+      {editPlan && (
+        <EditPlanModal
+          plan={editPlan}
+          onClose={() => setEditPlan(null)}
+          onSave={(updated: any) => setPlans(prev => prev.map(p => p.key === updated.key ? updated : p))}
+        />
+      )}
       {viewPlan && <ViewPlanModal plan={viewPlan} onClose={() => setViewPlan(null)} />}
       {viewPayment && <ViewPaymentModal payment={viewPayment} onClose={() => setViewPayment(null)} />}
       {showCreateModal && <CreatePlanModal onClose={() => setShowCreateModal(false)} onSave={handleSavePlan} />}
@@ -887,117 +1015,138 @@ const SuperAdminSubscriptions = () => {
             );
           })()}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
           {plans.map(plan => {
             const Icon = plan.icon;
-            const isPlanActive = planStatuses[plan.key];
+            const isPlanActive = planStatuses[plan.key] ?? true;
             const isSelected = selectedPlan === plan.key;
             const acc = getAccent(plan.key);
+            const activeGymCount = subscribedGyms.filter(g => g.plan === plan.key && g.status === 'Active').length || plan.subscribedGyms;
+
             return (
               <div
                 key={plan.key}
                 onClick={() => setSelectedPlan(isSelected ? null : plan.key)}
-                className={`relative flex flex-col rounded-2xl p-6 cursor-pointer transition-all duration-300
+                className={`relative flex flex-col rounded-2xl bg-white cursor-pointer transition-all duration-300 overflow-hidden shadow-sm
                   ${
                     isSelected
-                      ? `${acc.bg} border-2 ${acc.border} ${acc.glow} -translate-y-2 scale-[1.02]`
-                      : isPlanActive
-                      ? 'bg-[#FFFFFF] border-2 border-[#D3DFDA] hover:border-[#444] hover:-translate-y-1 hover:shadow-lg'
-                      : 'bg-[#FFFFFF] border-2 border-[#2a2a2a] opacity-50 grayscale cursor-not-allowed'
-                  }`
-                }
-              >
-                {/* Selected indicator */}
-                {isSelected && (
-                  <div className={`absolute -top-0 -left-0 w-full h-1 rounded-t-2xl ${acc.border.replace('border-', 'bg-')}`} />
-                )}
-
-                {/* Status Toggle — stop propagation so click doesn't select/deselect */}
-                <button
-                  onClick={e => { e.stopPropagation(); setPlanStatuses(s => ({ ...s, [plan.key]: !s[plan.key] })); }}
-                  className="absolute top-4 right-4 z-10"
-                  title={isPlanActive ? 'Deactivate plan' : 'Activate plan'}
-                >
-                  {isPlanActive
-                    ? <ToggleRight size={24} className="text-green-400" />
-                    : <ToggleLeft size={24} className="text-[#555]" />
+                      ? `border-2 ${acc.border} ${acc.glow} -translate-y-1 scale-[1.01]`
+                      : plan.key === 'GOLD'
+                      ? 'border-2 border-[#164A4A] shadow-md hover:-translate-y-1 hover:shadow-xl'
+                      : plan.key === 'PREMIUM'
+                      ? 'border-2 border-purple-200 hover:border-purple-400 hover:-translate-y-1 hover:shadow-lg'
+                      : plan.key === 'FREE_TRIAL'
+                      ? 'border-2 border-dashed border-slate-300 hover:border-slate-400 hover:-translate-y-1 hover:shadow-lg'
+                      : 'border-2 border-slate-200 hover:border-[#6fa3a0] hover:-translate-y-1 hover:shadow-lg'
                   }
-                </button>
-
+                  ${!isPlanActive ? 'opacity-60 grayscale' : ''}
+                `}
+              >
+                {/* Gold Most Popular Ribbon */}
                 {plan.key === 'GOLD' && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#6fa3a0] text-black text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">
-                    ⭐ Most Popular
-                  </span>
+                  <div className="bg-[#164A4A] text-white text-[11px] font-extrabold py-2 px-4 flex items-center justify-center gap-1.5 uppercase tracking-widest shrink-0">
+                    <Star size={13} className="fill-amber-400 text-amber-400" />
+                    <span>MOST POPULAR</span>
+                  </div>
                 )}
 
-                <div className={`flex items-center space-x-3 mb-4 rounded-xl p-3 -mx-1 transition-colors ${isSelected ? acc.headerBg : ''}`}>
-                  <div className={`w-10 h-10 ${isSelected ? acc.headerBg : plan.iconBg} rounded-xl flex items-center justify-center transition-colors`}>
-                    <Icon size={20} className={isSelected ? acc.labelColor : plan.iconColor} />
-                  </div>
-                  <div>
-                    <h3 className={`font-bold ${isSelected ? acc.priceColor : 'text-[#202828]'}`}>{plan.name}</h3>
-                    <p className="text-[#455250] text-xs">{plan.tagline}</p>
-                  </div>
-                </div>
-
-                {/* Pricing */}
-                <div className={`rounded-xl p-3 mb-4 space-y-1.5 transition-colors ${isSelected ? acc.pricingBg : 'bg-[#FFFFFF]'}`}>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-[#455250]">Monthly</span>
-                    <span className={`font-bold ${isSelected ? acc.priceColor : 'text-[#202828]'}`}>₹{plan.priceMonthly.toLocaleString('en-IN')}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-[#455250]">Annual</span>
-                    <span className={`font-bold ${isSelected ? acc.priceColor : 'text-[#202828]'}`}>₹{plan.priceAnnual.toLocaleString('en-IN')}</span>
-                  </div>
-                  {plan.savingsAnnual > 0 && (
-                    <div className="flex justify-between text-xs border-t border-[#D3DFDA] pt-1.5">
-                      <span className="text-[#455250]">Annual Savings</span>
-                      <span className="text-green-400 font-bold">₹{plan.savingsAnnual.toLocaleString('en-IN')}</span>
+                <div className="p-6 flex flex-col flex-1">
+                  {/* Card Header: Name + Badge + Toggle */}
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xl font-bold text-[#202828]">{plan.name}</h3>
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md border ${acc.badge}`}>
+                        {plan.badge}
+                      </span>
+                      <button
+                        onClick={e => {
+                          e.stopPropagation();
+                          setPlanStatuses(s => ({ ...s, [plan.key]: !(s[plan.key] ?? true) }));
+                        }}
+                        className="p-0.5 rounded transition-transform active:scale-95"
+                        title={isPlanActive ? 'Deactivate plan' : 'Activate plan'}
+                      >
+                        {isPlanActive ? (
+                          <ToggleRight size={26} className="text-emerald-500 hover:text-emerald-600 transition-colors" />
+                        ) : (
+                          <ToggleLeft size={26} className="text-slate-300 hover:text-slate-400 transition-colors" />
+                        )}
+                      </button>
                     </div>
-                  )}
-                </div>
+                  </div>
 
-                {/* Limits */}
-                <div className={`space-y-1.5 mb-4 text-xs rounded-xl p-3 transition-colors ${isSelected ? acc.limitsBg : ''}`}>
-                  <p className={`uppercase tracking-wider font-bold text-[10px] ${isSelected ? acc.labelColor : 'text-[#555]'}`}>Limits</p>
-                  {[
-                    { label: 'Members', value: plan.limits.members },
-                    { label: 'Trainers', value: plan.limits.trainers },
-                    { label: 'Staff', value: plan.limits.staff },
-                    { label: 'Branches', value: plan.limits.branches },
-                  ].map(({ label, value }) => (
-                    <div key={label} className="flex justify-between text-[#455250]">
-                      <span>{label}</span>
-                      <span className={`font-semibold ${isSelected ? acc.priceColor : 'text-[#202828]'}`}>{value === -1 ? '∞' : value}</span>
+                  {/* Pricing Section */}
+                  <div className="mb-3">
+                    <div className="flex items-baseline space-x-1">
+                      <span className={`text-3xl font-extrabold tracking-tight ${plan.key === 'PREMIUM' ? 'text-purple-600' : plan.key === 'GOLD' ? 'text-[#164A4A]' : plan.key === 'SILVER' ? 'text-[#6fa3a0]' : 'text-slate-900'}`}>
+                        {plan.priceDisplay || `₹${plan.priceMonthly.toLocaleString('en-IN')}`}
+                      </span>
+                      <span className="text-sm font-semibold text-slate-500">
+                        {plan.pricePeriod || '/mo'}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    {plan.savingsAnnual > 0 ? (
+                      <p className="text-xs text-slate-400 font-medium mt-0.5">
+                        or save 25% with annual
+                      </p>
+                    ) : (
+                      <p className="text-xs text-transparent font-medium mt-0.5 select-none">
+                        &nbsp;
+                      </p>
+                    )}
+                  </div>
 
-                {/* Subscribers count */}
-                <div className="mt-auto pt-3 border-t border-[#D3DFDA] flex items-center justify-between mb-4">
-                  <span className="text-[#455250] text-xs">Active Gyms</span>
-                  <span className={`font-bold text-sm ${isSelected ? acc.labelColor : 'text-teal-400'}`}>{plan.subscribedGyms}</span>
-                </div>
+                  {/* Platform Limits Box */}
+                  <div className="bg-[#F4F6F4] border border-[#E5EAE7] rounded-xl p-3 mb-5 text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                      PLATFORM LIMITS
+                    </p>
+                    <p className="text-xs font-semibold text-slate-700">
+                      {plan.platformLimits}
+                    </p>
+                  </div>
 
-                {/* Actions */}
-                <div className="flex space-x-2">
-                  <button
-                    onClick={e => { e.stopPropagation(); setViewPlan(plan); }}
-                    className={`flex-1 flex items-center justify-center space-x-1.5 py-2.5 border rounded-xl text-xs font-semibold transition-colors
-                      ${isSelected ? `${acc.limitsBg} ${acc.border.replace('border-', 'border-')} ${acc.labelColor} hover:opacity-80` : 'bg-[#FFFFFF] hover:bg-[#2a2a2a] border-[#D3DFDA] text-[#455250] hover:text-[#202828]'}`}
-                  >
-                    <Eye size={13} />
-                    <span>View</span>
-                  </button>
-                  <button
-                    onClick={e => { e.stopPropagation(); setEditPlan(plan); }}
-                    className={`flex-1 flex items-center justify-center space-x-1.5 py-2.5 border rounded-xl text-xs font-semibold transition-colors
-                      ${isSelected ? `${acc.headerBg} ${acc.border} ${acc.labelColor} hover:opacity-80` : 'bg-[#6fa3a0]/10 hover:bg-[#6fa3a0]/20 border-[#6fa3a0]/30 text-teal-400'}`}
-                  >
-                    <Edit3 size={13} />
-                    <span>Edit</span>
-                  </button>
+                  {/* Features List */}
+                  <ul className="space-y-2.5 mb-6 flex-1">
+                    {plan.features.map((feat: any, idx: number) => (
+                      <li key={idx} className="flex items-start space-x-2 text-xs leading-snug">
+                        {feat.included ? (
+                          <CheckCircle size={15} className={`shrink-0 mt-0.5 ${acc.checkColor}`} />
+                        ) : (
+                          <XCircle size={15} className="shrink-0 mt-0.5 text-slate-300" />
+                        )}
+                        <span className={feat.included ? 'text-slate-700 font-medium' : 'text-slate-400 line-through opacity-70'}>
+                          {feat.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Active Gyms Count */}
+                  <div className="pt-3 border-t border-[#E5EAE7] flex items-center justify-between mb-4">
+                    <span className="text-slate-500 text-xs font-medium">Active Gyms</span>
+                    <span className="font-extrabold text-sm text-[#164A4A] bg-[#164A4A]/10 px-2.5 py-0.5 rounded-full">
+                      {activeGymCount}
+                    </span>
+                  </div>
+
+                  {/* Actions: View and Edit */}
+                  <div className="grid grid-cols-2 gap-2 mt-auto">
+                    <button
+                      onClick={e => { e.stopPropagation(); setViewPlan(plan); }}
+                      className="flex items-center justify-center space-x-1.5 py-2.5 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-colors shadow-sm"
+                    >
+                      <Eye size={13} />
+                      <span>View</span>
+                    </button>
+                    <button
+                      onClick={e => { e.stopPropagation(); setEditPlan(plan); }}
+                      className="flex items-center justify-center space-x-1.5 py-2.5 border border-[#164A4A]/20 rounded-xl text-xs font-semibold text-[#164A4A] bg-[#164A4A]/10 hover:bg-[#164A4A]/15 transition-colors shadow-sm"
+                    >
+                      <Edit3 size={13} />
+                      <span>Edit</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             );
@@ -1087,8 +1236,8 @@ const SuperAdminSubscriptions = () => {
                         {gym.paymentMethod}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#455250] text-sm">{gym.start}</td>
-                    <td className="px-5 py-4 text-[#455250] text-sm">{gym.renewal}</td>
+                    <td className="px-5 py-4 text-[#455250] text-sm whitespace-nowrap">{formatDate(gym.start)}</td>
+                    <td className="px-5 py-4 text-[#455250] text-sm whitespace-nowrap">{formatDate(gym.renewal)}</td>
                     <td className="px-5 py-4">
                       <select 
                         value={gym.status}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Check } from 'lucide-react';
+import { Eye, EyeOff, Check, AlertCircle, Lock } from 'lucide-react';
 
 interface Step1Props {
   form: any;
@@ -18,6 +18,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
   const [otpSent, setOtpSent] = useState(false);
   const [enteredOtp, setEnteredOtp] = useState('');
   const [otpError, setOtpError] = useState('');
+  const [mobileBlockedNotice, setMobileBlockedNotice] = useState(false);
   const DEMO_OTP = '123456';
 
   const handleSendOtp = () => {
@@ -35,8 +36,27 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
     if (enteredOtp === DEMO_OTP) {
       set('emailOtpVerified', true);
       setOtpError('');
+      setMobileBlockedNotice(false);
+      alert('Email verified successfully! You can now enter your mobile number.');
     } else {
       setOtpError('Invalid OTP. Please try again.');
+    }
+  };
+
+  const handleMobileClick = (e?: React.MouseEvent | React.FocusEvent) => {
+    if (!form.emailOtpVerified) {
+      if (e) {
+        e.preventDefault();
+      }
+      setMobileBlockedNotice(true);
+      alert('Please enter and verify your email ID first!');
+      if (!otpSent) {
+        const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
+        if (emailInput) emailInput.focus();
+      } else {
+        const otpInput = document.querySelector('input[placeholder="Enter 6-digit OTP"]') as HTMLInputElement;
+        if (otpInput) otpInput.focus();
+      }
     }
   };
 
@@ -97,8 +117,58 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
           {otpError && <p className="text-teal-400 text-xs mt-1">{otpError}</p>}
         </div>
         <div>
-          <label className="block text-sm text-[#455250] mb-2">Mobile Number *</label>
-          <input maxLength={10} value={form.mobile} onChange={e => set('mobile', e.target.value.replace(/\D/g, ''))} placeholder="10-digit number" className={inputCls('mobile')} />
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm text-[#455250]">Mobile Number *</label>
+            {!form.emailOtpVerified ? (
+              <span className="text-xs text-amber-600 font-medium flex items-center gap-1">
+                <Lock size={12} /> Verify email first to enter mobile
+              </span>
+            ) : (
+              <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                <Check size={12} /> Email verified
+              </span>
+            )}
+          </div>
+          <div 
+            onClick={() => {
+              if (!form.emailOtpVerified) {
+                handleMobileClick();
+              }
+            }}
+            className={!form.emailOtpVerified ? 'cursor-not-allowed' : ''}
+          >
+            <input 
+              maxLength={10} 
+              value={form.mobile} 
+              onChange={e => {
+                if (!form.emailOtpVerified) {
+                  handleMobileClick();
+                  return;
+                }
+                set('mobile', e.target.value.replace(/\D/g, ''));
+              }} 
+              onClick={(e) => {
+                if (!form.emailOtpVerified) {
+                  e.stopPropagation();
+                  handleMobileClick(e);
+                }
+              }}
+              onFocus={(e) => {
+                if (!form.emailOtpVerified) {
+                  e.target.blur();
+                  handleMobileClick(e);
+                }
+              }}
+              readOnly={!form.emailOtpVerified}
+              placeholder={form.emailOtpVerified ? "10-digit number" : "Please verify email first to enter mobile"} 
+              className={inputCls('mobile') + (!form.emailOtpVerified ? ' bg-[#F1F5F9]/70 cursor-not-allowed select-none' : '')} 
+            />
+          </div>
+          {mobileBlockedNotice && !form.emailOtpVerified && (
+            <p className="text-amber-600 text-xs mt-1.5 flex items-center gap-1 font-medium">
+              <AlertCircle size={13} /> Please enter and verify your email ID first before entering mobile number.
+            </p>
+          )}
           {errors.mobile && <p className="text-teal-400 text-xs mt-1">{errors.mobile}</p>}
         </div>
         <div className="grid grid-cols-2 gap-4">

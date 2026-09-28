@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, User, Building2, MapPin, Dumbbell, Wind, CheckSquare, CreditCard, Edit2, Image as ImageIcon } from 'lucide-react';
+import { CheckCircle2, User, Building2, MapPin, Wind, CheckSquare, CreditCard, Edit2, Image as ImageIcon } from 'lucide-react';
 
 interface StepProps {
   form: any;
@@ -55,31 +55,9 @@ const Step8Review: React.FC<StepProps> = ({ form, setStep }) => {
           </div>
         </div>
 
-        {/* Equipment */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 relative group">
-          <button onClick={() => setStep(1)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
-            <Edit2 size={14} /> Edit
-          </button>
-          <h3 className="text-sm font-bold text-[#202828] mb-4 flex items-center gap-2">
-            <Dumbbell size={16} className="text-[#164A4A]" /> Gym Equipment
-          </h3>
-          {form.equipment && form.equipment.length > 0 ? (
-            <div className="grid sm:grid-cols-2 gap-3">
-              {form.equipment.map((eq: any, i: number) => (
-                <div key={i} className="bg-[#FFFFFF] p-3 rounded-lg border border-[#D3DFDA]">
-                  <p className="text-sm font-medium text-[#202828]">{eq.name} <span className="text-xs text-[#455250] font-normal">x{eq.quantity}</span></p>
-                  <p className="text-xs text-[#455250] mt-1">{eq.category} • {eq.condition} • {eq.availability}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-[#455250]">No equipment added.</p>
-          )}
-        </div>
-
         {/* AC Details */}
         <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 relative group">
-          <button onClick={() => setStep(2)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
+          <button onClick={() => setStep(1)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
             <Edit2 size={14} /> Edit
           </button>
           <h3 className="text-sm font-bold text-[#202828] mb-4 flex items-center gap-2">
@@ -95,7 +73,7 @@ const Step8Review: React.FC<StepProps> = ({ form, setStep }) => {
 
         {/* Facilities */}
         <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 relative group">
-          <button onClick={() => setStep(3)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
+          <button onClick={() => setStep(2)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
             <Edit2 size={14} /> Edit
           </button>
           <h3 className="text-sm font-bold text-[#202828] mb-4 flex items-center gap-2">
@@ -114,7 +92,7 @@ const Step8Review: React.FC<StepProps> = ({ form, setStep }) => {
 
         {/* Gym Images */}
         <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 relative group">
-          <button onClick={() => setStep(4)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
+          <button onClick={() => setStep(3)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
             <Edit2 size={14} /> Edit
           </button>
           <h3 className="text-sm font-bold text-[#202828] mb-4 flex items-center gap-2">
@@ -133,7 +111,7 @@ const Step8Review: React.FC<StepProps> = ({ form, setStep }) => {
 
         {/* Pricing */}
         <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 relative group">
-          <button onClick={() => setStep(5)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
+          <button onClick={() => setStep(4)} className="absolute top-4 right-4 text-[#164A4A] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm bg-[#164A4A]/10 px-2 py-1 rounded-md hover:bg-[#164A4A]/20">
             <Edit2 size={14} /> Edit
           </button>
           <h3 className="text-sm font-bold text-[#202828] mb-4 flex items-center gap-2">

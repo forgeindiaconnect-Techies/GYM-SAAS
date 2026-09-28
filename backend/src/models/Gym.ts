@@ -45,6 +45,7 @@ export interface IGym extends Document {
   description?: string;
   establishedYear?: number;
   gymType?: string;
+  operatingHours?: string;
   trainingMode: 'online' | 'offline' | 'both';
   services: string[];
   logo?: string;
@@ -105,6 +106,7 @@ const gymSchema = new Schema<IGym>(
     description: { type: String },
     establishedYear: { type: Number },
     gymType: { type: String },
+    operatingHours: { type: String },
     trainingMode: { type: String, enum: ['online', 'offline', 'both'], required: true, default: 'offline' },
     services: [{ type: String }],
     logo: { type: String },

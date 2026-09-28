@@ -25,7 +25,7 @@ export const getUsersByRole = async (req: AuthRequest, res: Response): Promise<v
     }
 
     const users = await User.find(filter)
-      .populate('gymId', 'name')
+      .populate('gymId')
       .populate('branchId', 'name')
       .select('-passwordHash')
       .sort({ createdAt: -1 });
@@ -91,6 +91,15 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     if (gymData && user.gymId) {
       // Handle nested location data correctly if provided
       const updateGymObj: any = { ...gymData };
+      if (updateGymObj.memberCapacity !== undefined) {
+        updateGymObj.memberCapacity = updateGymObj.memberCapacity === '' ? undefined : Number(updateGymObj.memberCapacity);
+      }
+      if (updateGymObj.trainerCapacity !== undefined) {
+        updateGymObj.trainerCapacity = updateGymObj.trainerCapacity === '' ? undefined : Number(updateGymObj.trainerCapacity);
+      }
+      if (updateGymObj.rating !== undefined) {
+        updateGymObj.rating = updateGymObj.rating === '' ? undefined : Number(updateGymObj.rating);
+      }
       if (gymData.location) {
         delete updateGymObj.location;
         for (const [key, value] of Object.entries(gymData.location)) {

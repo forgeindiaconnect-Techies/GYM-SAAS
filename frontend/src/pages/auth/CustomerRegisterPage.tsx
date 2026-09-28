@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Activity, AlertCircle, Loader2, ChevronRight, ChevronLeft, Check, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Activity, AlertCircle, Loader2, ChevronRight, ChevronLeft, Check, Eye, EyeOff, ArrowLeft, Lock } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -76,9 +76,18 @@ const CustomerRegisterPage = () => {
     if (otp === '123456') {
       setOtpVerified(true);
       setErrors(e => { const n = { ...e }; delete n['email']; return n; });
-      alert('OTP Verified Successfully!');
+      alert('OTP Verified Successfully! You can now enter your mobile number.');
     } else {
       alert('Invalid OTP');
+    }
+  };
+
+  const handleMobileClick = (e?: React.MouseEvent | React.FocusEvent) => {
+    if (!otpVerified) {
+      if (e) e.preventDefault();
+      alert('Please enter and verify your email ID first!');
+      const el = document.getElementById('reg-email');
+      if (el) el.focus();
     }
   };
 
@@ -299,8 +308,54 @@ const CustomerRegisterPage = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-2">Mobile Number *</label>
-                <input id="reg-mobile" type="tel" maxLength={10} value={form.mobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if(v.length <= 10) set('mobile', v); }} placeholder="10-digit number" className={inputCls('mobile')} />
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm text-[#455250]">Mobile Number *</label>
+                  {!otpVerified ? (
+                    <span className="text-xs text-amber-600 font-medium flex items-center gap-1">
+                      <Lock size={12} /> Verify email first to enter mobile
+                    </span>
+                  ) : (
+                    <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                      <Check size={12} /> Email verified
+                    </span>
+                  )}
+                </div>
+                <div 
+                  onClick={() => {
+                    if (!otpVerified) handleMobileClick();
+                  }}
+                  className={!otpVerified ? 'cursor-not-allowed' : ''}
+                >
+                  <input 
+                    id="reg-mobile" 
+                    type="tel" 
+                    maxLength={10} 
+                    value={form.mobile} 
+                    onChange={e => { 
+                      if (!otpVerified) {
+                        handleMobileClick();
+                        return;
+                      }
+                      const v = e.target.value.replace(/\D/g, ''); 
+                      if (v.length <= 10) set('mobile', v); 
+                    }} 
+                    onClick={e => {
+                      if (!otpVerified) {
+                        e.stopPropagation();
+                        handleMobileClick(e);
+                      }
+                    }}
+                    onFocus={e => {
+                      if (!otpVerified) {
+                        e.target.blur();
+                        handleMobileClick(e);
+                      }
+                    }}
+                    readOnly={!otpVerified}
+                    placeholder={otpVerified ? "10-digit number" : "Please verify email first to enter mobile"} 
+                    className={inputCls('mobile') + (!otpVerified ? ' bg-[#F1F5F9]/70 cursor-not-allowed select-none' : '')} 
+                  />
+                </div>
                 {errors.mobile && <p className="text-teal-400 text-xs mt-1">{errors.mobile}</p>}
               </div>
               <div>

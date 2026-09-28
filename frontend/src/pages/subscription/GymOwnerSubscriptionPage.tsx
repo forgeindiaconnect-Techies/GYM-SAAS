@@ -137,7 +137,7 @@ export const plans = [
 ];
 
 const GymOwnerSubscriptionPage = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -161,15 +161,22 @@ const GymOwnerSubscriptionPage = () => {
     try {
       const billingCycle = selectedPlan === 'FREE_TRIAL' ? 'trial' : (isAnnual ? 'annual' : 'monthly');
       const response = await api.post('/subscriptions/select', { plan: selectedPlan, billingCycle });
-      const { subscription } = response.data;
+      const { subscription, user: updatedUser } = response.data;
       if (selectedPlan === 'FREE_TRIAL') {
+        updateUser({
+          subscriptionStatus: 'Free Trial',
+          subscriptionPlan: 'FREE_TRIAL',
+          subscriptionExpiry: subscription?.endDate,
+          ...updatedUser,
+        });
+        alert('1-Day Free Trial activated successfully! Welcome to your Gym Dashboard.');
         navigate('/admin/dashboard');
       } else {
         navigate('/gym-owner/payment', { state: { subscription } });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error selecting plan:', error);
-      alert('Failed to select plan. Please try again.');
+      alert(error.response?.data?.message || 'Failed to select plan. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -382,6 +389,11 @@ const GymOwnerSubscriptionPage = () => {
               <>
                 <Activity className="animate-spin" size={20} />
                 <span>Processing...</span>
+              </>
+            ) : selectedPlan === 'FREE_TRIAL' ? (
+              <>
+                <span>Start 1-Day Free Trial</span>
+                <ChevronRight size={20} />
               </>
             ) : (
               <>

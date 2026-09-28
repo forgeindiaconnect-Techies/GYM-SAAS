@@ -42,10 +42,15 @@ export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
       return;
     }
     
-    // Auto calculate end date based on duration (simplified)
+    // Auto calculate end date based on duration
     const start = new Date(formData.startDate);
-    const months = formData.duration === '1 Month' ? 1 : formData.duration === '3 Months' ? 3 : formData.duration === '6 Months' ? 6 : 12;
-    const end = new Date(start.setMonth(start.getMonth() + months));
+    let end: Date;
+    if (formData.duration === '1 Day') {
+      end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+    } else {
+      const months = formData.duration === '1 Month' ? 1 : formData.duration === '3 Months' ? 3 : formData.duration === '6 Months' ? 6 : 12;
+      end = new Date(start.setMonth(start.getMonth() + months));
+    }
     
     onSubmit({ 
       ...formData, 
@@ -143,6 +148,7 @@ export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
                 <div>
                   <label className="block text-sm font-bold text-[#455250] mb-1">Duration</label>
                   <select value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-4 py-2.5 outline-none focus:border-[#164A4A] focus:bg-[#FFFFFF]">
+                    <option value="1 Day">1 Day</option>
                     <option value="1 Month">1 Month</option>
                     <option value="3 Months">3 Months</option>
                     <option value="6 Months">6 Months</option>

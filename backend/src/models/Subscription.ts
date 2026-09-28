@@ -3,6 +3,8 @@ import mongoose, { Document, Schema } from 'mongoose';
 export enum SubscriptionPlan {
   FREE_TRIAL = 'FREE_TRIAL',
   BASIC = 'BASIC',
+  SILVER = 'SILVER',
+  GOLD = 'GOLD',
   PREMIUM = 'PREMIUM',
 }
 

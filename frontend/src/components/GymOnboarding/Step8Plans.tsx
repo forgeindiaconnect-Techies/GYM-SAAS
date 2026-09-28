@@ -85,6 +85,7 @@ export const Step8Plans = ({ data, updateData }: any) => {
             <div>
               <label className="block text-xs text-[#455250] mb-1">Duration *</label>
               <select value={form.duration} onChange={e => setForm({...form, duration: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none appearance-none">
+                <option value="1 Day">1 Day</option>
                 <option value="1 Month">1 Month</option>
                 <option value="3 Months">3 Months</option>
                 <option value="6 Months">6 Months</option>

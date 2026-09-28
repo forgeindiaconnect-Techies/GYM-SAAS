@@ -1,5 +1,11 @@
 import type { AuthUser } from '../contexts/AuthContext';
 
+export const isSubscriptionActive = (status?: string): boolean => {
+  if (!status) return false;
+  const s = status.toUpperCase().trim();
+  return s === 'ACTIVE' || s === 'FREE TRIAL' || s === 'FREE_TRIAL';
+};
+
 export const getDashboardRoute = (user: AuthUser): string => {
   const { role, approvalStatus, subscriptionStatus } = user;
 
@@ -11,7 +17,9 @@ export const getDashboardRoute = (user: AuthUser): string => {
     if (approvalStatus === 'SUSPENDED') return '/status?type=suspended';
     
     if (approvalStatus === 'APPROVED') {
-      if (subscriptionStatus === 'NONE' || subscriptionStatus === 'EXPIRED') return '/gym-owner/subscription';
+      if (!isSubscriptionActive(subscriptionStatus)) {
+        return '/gym-owner/subscription';
+      }
       return '/admin/dashboard';
     }
   }
@@ -25,9 +33,12 @@ export const getDashboardRoute = (user: AuthUser): string => {
   if (approvalStatus === 'PENDING') return '/status?type=pending';
   if (approvalStatus === 'REJECTED') return '/status?type=rejected';
   if (approvalStatus === 'APPROVED') {
-    if (subscriptionStatus === 'NONE') return '/subscription-plans';
+    if (!isSubscriptionActive(subscriptionStatus)) {
+      return '/subscription-plans';
+    }
     return '/member/dashboard';
   }
 
   return '/';
 };
+

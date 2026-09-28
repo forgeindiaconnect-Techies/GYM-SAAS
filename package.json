@@ -7,7 +7,8 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
-    "seed": "npm --prefix backend run seed"
+    "seed": "npm --prefix backend run seed",
+    "mongo": "start-mongodb.bat"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

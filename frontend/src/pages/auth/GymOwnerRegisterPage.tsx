@@ -5,7 +5,6 @@ import { Activity, AlertCircle, Loader2, ArrowLeft, Check, ChevronLeft, ChevronR
 import api from '../../utils/api';
 
 import Step1BasicInfo from '../../components/GymRegisterSteps/Step1BasicInfo';
-import Step2Equipment from '../../components/GymRegisterSteps/Step2Equipment';
 import Step3ACDetails from '../../components/GymRegisterSteps/Step3ACDetails';
 import Step4Facilities from '../../components/GymRegisterSteps/Step4Facilities';
 import Step5GymImages from '../../components/GymRegisterSteps/Step5GymImages';
@@ -13,7 +12,7 @@ import Step5Pricing from '../../components/GymRegisterSteps/Step5Pricing';
 import Step7Documents from '../../components/GymRegisterSteps/Step7Documents';
 import Step8Review from '../../components/GymRegisterSteps/Step8Review';
 
-const STEPS = ['Basic Info', 'Equipment', 'AC Details', 'Facilities', 'Gym Images', 'Pricing', 'Verification', 'Review'];
+const STEPS = ['Basic Info', 'AC Details', 'Facilities', 'Gym Images', 'Pricing', 'Verification', 'Review'];
 
 const initialForm = {
   firstName: '', lastName: '', email: '', mobile: '', password: '', confirmPassword: '',
@@ -74,24 +73,21 @@ const GymOwnerRegisterPage = () => {
       if (!form.rating) e.rating = 'Rating is required';
     }
     if (step === 1) {
-      // Equipment is optional, but if they leave it empty we could show a warning. We won't block them.
-    }
-    if (step === 2) {
       if (!form.acDetails.type) e['acDetails.type'] = 'AC Type is required';
       if (form.acDetails.type && form.acDetails.type !== 'Fully AC' && form.acDetails.type !== 'Non-AC' && form.acDetails.areas.length === 0) {
         e['acDetails.areas'] = 'Please select at least one AC area';
       }
     }
-    if (step === 3) {
+    if (step === 2) {
       if (form.facilities.length === 0) e.facilities = 'Please select at least one facility';
     }
-    if (step === 4) {
+    if (step === 3) {
       // Images are optional
     }
-    if (step === 5) {
+    if (step === 4) {
       if (form.subscriptionPlans.length === 0) e.subscriptionPlans = 'Please add at least one subscription plan';
     }
-    if (step === 6) {
+    if (step === 5) {
       if (!form.acceptTerms) e.acceptTerms = 'You must accept the Terms & Conditions';
       if (!form.acceptPrivacy) e.acceptPrivacy = 'You must accept the Privacy Policy';
     }
@@ -194,13 +190,12 @@ const GymOwnerRegisterPage = () => {
         <div className="overflow-y-auto p-8 custom-scrollbar">
 
           {step === 0 && <Step1BasicInfo form={form} set={set} errors={errors} inputCls={inputCls} selBtnCls={selBtnCls} />}
-          {step === 1 && <Step2Equipment form={form} set={set} errors={errors} inputCls={inputCls} selBtnCls={selBtnCls} />}
-          {step === 2 && <Step3ACDetails form={form} set={set} errors={errors} selBtnCls={selBtnCls} />}
-          {step === 3 && <Step4Facilities form={form} set={set} errors={errors} />}
-          {step === 4 && <Step5GymImages form={form} set={set} errors={errors} />}
-          {step === 5 && <Step5Pricing form={form} set={set} errors={errors} inputCls={inputCls} />}
-          {step === 6 && <Step7Documents form={form} set={set} errors={errors} />}
-          {step === 7 && <Step8Review form={form} setStep={setStep} />}
+          {step === 1 && <Step3ACDetails form={form} set={set} errors={errors} selBtnCls={selBtnCls} />}
+          {step === 2 && <Step4Facilities form={form} set={set} errors={errors} />}
+          {step === 3 && <Step5GymImages form={form} set={set} errors={errors} />}
+          {step === 4 && <Step5Pricing form={form} set={set} errors={errors} inputCls={inputCls} />}
+          {step === 5 && <Step7Documents form={form} set={set} errors={errors} />}
+          {step === 6 && <Step8Review form={form} setStep={setStep} />}
         </div>
 
         {/* Footer Actions */}

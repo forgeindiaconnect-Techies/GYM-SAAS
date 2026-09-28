@@ -367,53 +367,57 @@ const SuperAdminCustomers = () => {
 
       {/* View Details Modal */}
       {viewCustomer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F1F5F3]/90 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-3 z-20 border-b border-[#D3DFDA] mb-6">
-              <h2 className="text-xl font-bold text-[#202828]">Customer Details</h2>
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[82vh] overflow-hidden my-auto mt-4 sm:mt-6">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
+              <div>
+                <h2 className="text-xl font-bold text-[#202828]">Customer Details</h2>
+                <p className="text-xs text-[#455250] mt-0.5">Comprehensive profile and subscription information</p>
+              </div>
               <button 
                 onClick={() => setViewCustomer(null)}
-                className="p-1 text-[#455250] hover:text-[#164A4A] transition-colors"
+                className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded-lg transition-colors"
+                title="Close"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
             
-            <div className="space-y-8 text-sm">
+            <div className="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
               {/* Account Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Account Details</h3>
+                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Account Details</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div>
-                    <p className="text-[#455250] mb-1">First Name</p>
+                    <p className="text-[#455250] text-xs mb-1">First Name</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.firstName}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Last Name</p>
+                    <p className="text-[#455250] text-xs mb-1">Last Name</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.lastName}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Email</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.email}</p>
+                    <p className="text-[#455250] text-xs mb-1">Email</p>
+                    <p className="font-medium text-[#202828] break-all">{viewCustomer.email}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Mobile</p>
+                    <p className="text-[#455250] text-xs mb-1">Mobile</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.mobile}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Status</p>
+                    <p className="text-[#455250] text-xs mb-1">Status</p>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(viewCustomer.approvalStatus)}`}>
                       {viewCustomer.approvalStatus}
                     </span>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Joined Date & Time</p>
+                    <p className="text-[#455250] text-xs mb-1">Joined Date & Time</p>
                     <p className="font-medium text-[#202828]">
                       {new Date(viewCustomer.createdAt).toLocaleDateString()} at {new Date(viewCustomer.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Last Login</p>
+                    <p className="text-[#455250] text-xs mb-1">Last Login</p>
                     <p className="font-medium text-[#202828]">
                       {viewCustomer.lastLogin ? (
                         <>{new Date(viewCustomer.lastLogin).toLocaleDateString()} at {new Date(viewCustomer.lastLogin).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</>
@@ -426,31 +430,31 @@ const SuperAdminCustomers = () => {
               </div>
 
               {/* Subscription / Access Details */}
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4">
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Platform Access Details</h3>
+              <div className="bg-[#F8FAF9] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
+                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Platform Access Details</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div>
-                    <p className="text-[#455250] mb-1">Current Plan</p>
+                    <p className="text-[#455250] text-xs mb-1">Current Plan</p>
                     <p className="font-bold text-[#202828] flex items-center gap-2">
                       <span className="text-[#164A4A]">Pro Plan</span>
                       <span className="bg-[#E8E5DA] text-xs px-2 py-0.5 rounded-full">Monthly</span>
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Access Status</p>
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-green-500/10 text-green-500 border-green-500/20">
+                    <p className="text-[#455250] text-xs mb-1">Access Status</p>
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
                       ACTIVE
                     </span>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Subscription Start</p>
+                    <p className="text-[#455250] text-xs mb-1">Subscription Start</p>
                     <p className="font-medium text-[#202828]">
                       {new Date(viewCustomer.createdAt).toLocaleDateString()} at {new Date(viewCustomer.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Subscription Expiry</p>
-                    <p className="font-medium text-red-400">
+                    <p className="text-[#455250] text-xs mb-1">Subscription Expiry</p>
+                    <p className="font-medium text-red-600">
                       {viewCustomer.subscriptionExpiry ? (
                         <>{new Date(viewCustomer.subscriptionExpiry).toLocaleDateString()} at {new Date(viewCustomer.subscriptionExpiry).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</>
                       ) : (
@@ -459,11 +463,11 @@ const SuperAdminCustomers = () => {
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Amount Paid</p>
-                    <p className="font-medium text-[#202828]">₹999</p>
+                    <p className="text-[#455250] text-xs mb-1">Amount Paid</p>
+                    <p className="font-semibold text-[#202828] text-base">₹999</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Payment Method</p>
+                    <p className="text-[#455250] text-xs mb-1">Payment Method</p>
                     <p className="font-medium text-[#202828]">PhonePe</p>
                   </div>
                 </div>
@@ -471,30 +475,30 @@ const SuperAdminCustomers = () => {
 
               {/* Personal Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Personal Details</h3>
+                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Personal Details</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div>
-                    <p className="text-[#455250] mb-1">Date of Birth</p>
+                    <p className="text-[#455250] text-xs mb-1">Date of Birth</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.dateOfBirth ? new Date(viewCustomer.dateOfBirth).toLocaleDateString() : 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Gender</p>
+                    <p className="text-[#455250] text-xs mb-1">Gender</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.gender || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">City</p>
+                    <p className="text-[#455250] text-xs mb-1">City</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.city || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">PIN Code</p>
+                    <p className="text-[#455250] text-xs mb-1">PIN Code</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.pinCode || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Height (cm)</p>
+                    <p className="text-[#455250] text-xs mb-1">Height (cm)</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.height || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Weight (kg)</p>
+                    <p className="text-[#455250] text-xs mb-1">Weight (kg)</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.weight || 'Not provided'}</p>
                   </div>
                 </div>
@@ -502,33 +506,32 @@ const SuperAdminCustomers = () => {
 
               {/* Fitness Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Fitness Preferences</h3>
+                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Fitness Preferences</h3>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                   <div>
-                    <p className="text-[#455250] mb-1">Fitness Goal</p>
+                    <p className="text-[#455250] text-xs mb-1">Fitness Goal</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.fitnessGoal || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Experience Level</p>
+                    <p className="text-[#455250] text-xs mb-1">Experience Level</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.experienceLevel || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Preferred Training</p>
+                    <p className="text-[#455250] text-xs mb-1">Preferred Training</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.preferredTraining || 'Not provided'}</p>
                   </div>
                   <div>
-                    <p className="text-[#455250] mb-1">Preferred Time</p>
+                    <p className="text-[#455250] text-xs mb-1">Preferred Time</p>
                     <p className="font-medium text-[#202828]">{viewCustomer.preferredWorkoutTime || 'Not provided'}</p>
                   </div>
                 </div>
               </div>
-
             </div>
             
-            <div className="mt-8 flex justify-end sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#D3DFDA]">
+            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#D3DFDA] flex items-center justify-end shrink-0">
               <button 
                 onClick={() => setViewCustomer(null)}
-                className="px-4 py-2 bg-[#E8E5DA] text-white rounded-lg hover:bg-[#333] transition-colors text-sm font-medium"
+                className="px-5 py-2 bg-[#164A4A] text-white rounded-lg hover:bg-[#123E3E] transition-colors text-sm font-semibold shadow-sm"
               >
                 Close
               </button>
@@ -539,22 +542,26 @@ const SuperAdminCustomers = () => {
 
       {/* Edit Customer Modal */}
       {editCustomer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F1F5F3]/90 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-3 z-20 border-b border-[#D3DFDA] mb-6">
-              <h2 className="text-xl font-bold text-[#202828]">Edit Customer</h2>
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[82vh] overflow-hidden my-auto mt-4 sm:mt-6">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
+              <div>
+                <h2 className="text-xl font-bold text-[#202828]">Edit Customer</h2>
+                <p className="text-xs text-[#455250] mt-0.5">Update customer profile, personal details and preferences</p>
+              </div>
               <button 
                 onClick={() => setEditCustomer(null)}
-                className="p-1 text-[#455250] hover:text-[#164A4A] transition-colors"
+                className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded-lg transition-colors"
+                title="Close"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
             
-            <div className="space-y-6">
+            <div className="p-6 overflow-y-auto flex-1 space-y-6">
               {/* Account */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3">Account Information</h3>
+                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Account Information</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-[#455250] mb-2">First Name</label>
@@ -593,7 +600,7 @@ const SuperAdminCustomers = () => {
 
               {/* Personal Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3">Personal Details</h3>
+                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Personal Details</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-[#455250] mb-2">Date of Birth</label>
@@ -656,7 +663,7 @@ const SuperAdminCustomers = () => {
 
               {/* Fitness */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3">Fitness Preferences</h3>
+                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Fitness Preferences</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-[#455250] mb-2">Fitness Goal</label>
@@ -702,20 +709,21 @@ const SuperAdminCustomers = () => {
                   </div>
                 </div>
               </div>
-
             </div>
             
-            <div className="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#D3DFDA]">
+            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#D3DFDA] flex items-center justify-end space-x-3 shrink-0">
               <button 
+                type="button"
                 onClick={() => setEditCustomer(null)}
-                className="px-4 py-2 border border-[#D3DFDA] text-white rounded-lg hover:bg-[#202020] transition-colors text-sm font-medium"
+                className="px-4 py-2 border border-[#D3DFDA] text-[#455250] bg-white rounded-lg hover:bg-[#F1F5F3] transition-colors text-sm font-medium shadow-sm"
               >
                 Cancel
               </button>
               <button 
+                type="button"
                 onClick={handleSaveEdit}
                 disabled={isSaving}
-                className="px-4 py-2 bg-[#164A4A] text-white rounded-lg hover:bg-[#C6A77D] transition-colors text-sm font-semibold flex items-center space-x-2"
+                className="px-5 py-2 bg-[#164A4A] text-white rounded-lg hover:bg-[#123E3E] transition-colors text-sm font-semibold flex items-center space-x-2 shadow-sm disabled:opacity-50"
               >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                 <span>Save Changes</span>

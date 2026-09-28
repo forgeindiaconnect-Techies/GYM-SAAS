@@ -7,7 +7,9 @@ import Gym from '../models/Gym';
 const PLAN_PRICING: Record<string, { monthly: number; annual: number; trial: number; trialDays: number }> = {
   FREE_TRIAL: { monthly: 0, annual: 0, trial: 0, trialDays: 1 },
   BASIC:      { monthly: 399, annual: 3990, trial: 0, trialDays: 0 },
-  PREMIUM:    { monthly: 799, annual: 7990, trial: 0, trialDays: 0 },
+  SILVER:     { monthly: 799, annual: 7190, trial: 0, trialDays: 0 },
+  GOLD:       { monthly: 1499, annual: 13490, trial: 0, trialDays: 0 },
+  PREMIUM:    { monthly: 2499, annual: 22490, trial: 0, trialDays: 0 },
 };
 
 export const selectPlan = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -20,7 +22,8 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
       return;
     }
 
-    const pricing = PLAN_PRICING[plan as string];
+    const planKey = (plan as string).toUpperCase().trim();
+    const pricing = PLAN_PRICING[planKey];
     if (!pricing) {
       res.status(400).json({ success: false, message: 'Invalid plan' });
       return;
@@ -30,7 +33,7 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
     let endDate = new Date(now);
     let amount = 0;
 
-    if (plan === 'FREE_TRIAL') {
+    if (planKey === 'FREE_TRIAL') {
       endDate.setDate(endDate.getDate() + 1);
       amount = 0;
     } else if (billingCycle === 'annual') {
@@ -49,9 +52,9 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
 
     const subscription = new Subscription({
       userId,
-      plan: plan as SubscriptionPlan,
-      billingCycle: plan === 'FREE_TRIAL' ? BillingCycle.TRIAL : billingCycle as BillingCycle,
-      status: plan === 'FREE_TRIAL' ? SubscriptionPaymentStatus.ACTIVE : SubscriptionPaymentStatus.PENDING,
+      plan: planKey as SubscriptionPlan,
+      billingCycle: planKey === 'FREE_TRIAL' ? BillingCycle.TRIAL : billingCycle as BillingCycle,
+      status: planKey === 'FREE_TRIAL' ? SubscriptionPaymentStatus.ACTIVE : SubscriptionPaymentStatus.PENDING,
       startDate: now,
       endDate,
       amount,
@@ -59,10 +62,10 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
 
     await subscription.save();
 
-    if (plan === 'FREE_TRIAL') {
+    if (planKey === 'FREE_TRIAL') {
       await User.findByIdAndUpdate(userId, {
         subscriptionStatus: SubscriptionStatus.FREE_TRIAL,
-        subscriptionPlan: plan,
+        subscriptionPlan: planKey,
         subscriptionExpiry: endDate,
       });
     }
@@ -72,13 +75,18 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
       message: 'Plan selected successfully',
       subscription: {
         id: subscription._id,
-        plan,
+        plan: planKey,
         billingCycle,
         status: subscription.status,
         startDate: now,
         endDate,
         amount,
       },
+      user: planKey === 'FREE_TRIAL' ? {
+        subscriptionStatus: SubscriptionStatus.FREE_TRIAL,
+        subscriptionPlan: planKey,
+        subscriptionExpiry: endDate,
+      } : undefined,
     });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });

@@ -1,11 +1,26 @@
-import { useSearchParams } from 'react-router-dom';
-import { Activity, Clock, Mail, LogOut, XCircle, AlertTriangle } from 'lucide-react';
+import { useEffect } from 'react';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { Activity, Clock, Mail, LogOut, XCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const StatusPage = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [searchParams] = useSearchParams();
   const type = searchParams.get('type') || 'pending';
+
+  // Handle browser back arrow button so it reliably navigates to the landing page
+  useEffect(() => {
+    window.history.pushState({ page: 'status' }, '', window.location.href);
+    const handlePopState = () => {
+      navigate('/', { replace: true });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
 
   const renderContent = () => {
     switch (type) {
@@ -117,11 +132,31 @@ const StatusPage = () => {
     <div className="min-h-screen bg-[#F1F5F3] flex flex-col justify-center px-4 relative">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
+      {/* Top Left Back to Home / Landing Page Arrow */}
+      <Link 
+        to="/" 
+        id="back-to-home-arrow"
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 text-[#455250] hover:text-[#164A4A] flex items-center gap-2.5 transition-all z-20 group"
+        title="Back to Landing Page"
+      >
+        <div className="w-10 h-10 rounded-full bg-white border border-[#D3DFDA] flex items-center justify-center shadow-sm group-hover:border-[#164A4A] group-hover:bg-[#164A4A]/5 transition-all">
+          <ArrowLeft size={20} className="text-[#455250] group-hover:text-[#164A4A] group-hover:-translate-x-0.5 transition-transform" />
+        </div>
+        <span className="font-semibold text-sm text-[#455250] group-hover:text-[#164A4A]">Back to Landing Page</span>
+      </Link>
+
       <div className="relative z-10 w-full max-w-xl mx-auto">
         {renderContent()}
 
-        <div className="flex justify-center">
-          <button onClick={logout} className="flex items-center space-x-2 text-[#455250] hover:text-[#164A4A] transition-colors text-sm">
+        <div className="flex items-center justify-center space-x-6">
+          <Link 
+            to="/" 
+            className="flex items-center space-x-2 text-[#455250] hover:text-[#164A4A] transition-colors text-sm font-medium"
+          >
+            <ArrowLeft size={16} /><span>Back to Landing Page</span>
+          </Link>
+          <span className="text-[#D3DFDA]">|</span>
+          <button onClick={logout} className="flex items-center space-x-2 text-[#455250] hover:text-[#164A4A] transition-colors text-sm font-medium">
             <LogOut size={16} /><span>Sign out</span>
           </button>
         </div>

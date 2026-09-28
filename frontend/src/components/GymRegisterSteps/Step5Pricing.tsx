@@ -63,7 +63,7 @@ const Step5Pricing: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
               <label className="block text-xs text-[#455250] mb-1">Duration *</label>
               <select value={newPlan.duration} onChange={e => setNewPlan({...newPlan, duration: e.target.value})} className={inputCls('planDuration')}>
                 <option value="">Select Duration</option>
-                <option value="Free Trial">Free Trial</option>
+                <option value="1 Day">1 Day</option>
                 <option value="1 Month">1 Month</option>
                 <option value="3 Months">3 Months</option>
                 <option value="6 Months">6 Months</option>
