@@ -62,6 +62,8 @@ import GymAdminTrainerPayments from './pages/admin/GymAdminTrainerPayments';
 import GymAdminTrainerPaymentHistory from './pages/admin/GymAdminTrainerPaymentHistory';
 import GymAdminAIFitnessPlans from './pages/admin/GymAdminAIFitnessPlans';
 import GymAdminAIPlanDetails from './pages/admin/GymAdminAIPlanDetails';
+import GymAdminOnlineSessions from './pages/admin/GymAdminOnlineSessions';
+import GymAdminVideoBookings from './pages/admin/GymAdminVideoBookings';
 
 // Gym Store (Admin)
 import GymStoreDashboard from './pages/admin/store/GymStoreDashboard';
@@ -297,6 +299,8 @@ function App() {
             <Route path="ai-plans/:id" element={<GymAdminAIPlanDetails />} />
             <Route path="trainer-schedule" element={<GymAdminTrainerSchedule />} />
             <Route path="session-bookings" element={<GymAdminSessionBookings />} />
+            <Route path="online-sessions" element={<GymAdminOnlineSessions />} />
+            <Route path="video-bookings" element={<GymAdminVideoBookings />} />
             <Route path="payments" element={<GymAdminPayments />} />
             <Route path="attendance" element={<GymAdminAttendance />} />
             <Route path="reports" element={<GymAdminReports />} />
