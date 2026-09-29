@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Calendar as CalendarIcon, Clock, User, CheckCircle2, XCircle, MoreVertical, Loader2 } from 'lucide-react';
+import { Search, Calendar as CalendarIcon, Clock, User, Loader2 } from 'lucide-react';
 import api from '../../utils/api';
 
 const GymAdminSessionBookings = () => {

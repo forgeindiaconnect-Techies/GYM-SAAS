@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Search, Loader2, AlertCircle, Phone, Mail, Building2, Eye, Edit2, X, Check, Users, Clock, CheckCircle, XCircle, ShieldAlert, Trash2, Download, FileText, Table as TableIcon, Star, Plus } from 'lucide-react';
 import api from '../../utils/api';
 import { exportToPDF, exportToExcel, exportToWord } from '../../utils/export';
@@ -148,7 +148,6 @@ const SuperAdminGymOwners = () => {
   // Edit form auxiliary inputs
   const [newServiceInput, setNewServiceInput] = useState('');
   const [newFacilityInput, setNewFacilityInput] = useState('');
-  const [newAreaInput, setNewAreaInput] = useState('');
   const [newImageInput, setNewImageInput] = useState('');
 
   useEffect(() => {
@@ -348,7 +347,6 @@ const SuperAdminGymOwners = () => {
     setEditOwner(owner);
     setNewServiceInput('');
     setNewFacilityInput('');
-    setNewAreaInput('');
     setNewImageInput('');
     setEditForm({
       firstName: owner.firstName || '',
@@ -529,23 +527,23 @@ const SuperAdminGymOwners = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-[#455250] uppercase bg-[#FFFFFF] border-b border-[#D3DFDA]">
+              <thead className="text-xs text-[#455250] uppercase bg-[#F8FAF9] border-b-2 border-[#D3DFDA] sticky top-0 z-10">
                 <tr>
                   <th className="px-6 py-4 font-medium">Gym & Owner</th>
-                  <th className="px-6 py-4 font-medium">Contact</th>
+                  <th className="px-5 py-3.5 font-semibold whitespace-nowrap">Contact</th>
                   <th className="px-6 py-4 font-medium">Plan & Billing</th>
                   <th className="px-6 py-4 font-medium">Sub & Payment</th>
                   <th className="px-6 py-4 font-medium">Start & Expiry</th>
-                  <th className="px-6 py-4 font-medium">Approval</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
+                  <th className="px-5 py-3.5 font-semibold whitespace-nowrap">Approval</th>
+                  <th className="px-5 py-3.5 font-semibold text-center whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#D3DFDA]">
                 {filteredOwners.map((owner) => (
-                  <tr key={owner._id} className="hover:bg-[#F2EFE8] transition-colors">
-                    <td className="px-6 py-4">
+                  <tr key={owner._id} className="hover:bg-[#F2EFE8] transition-colors align-middle">
+                    <td className="px-5 py-3.5">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-[#E8E5DA] flex items-center justify-center text-blue-500 font-bold">
+                        <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-[#164A4A]/20 to-[#164A4A]/10 flex items-center justify-center text-[#164A4A] font-bold text-sm border border-[#164A4A]/20">
                           {owner.firstName[0]}
                         </div>
                         <div>
@@ -555,7 +553,7 @@ const SuperAdminGymOwners = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <div className="space-y-1">
                         <div className="flex items-center space-x-2 text-[#455250]">
                           <Mail size={14} />
@@ -567,7 +565,7 @@ const SuperAdminGymOwners = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <div className="space-y-1">
                         {owner.subscriptionPlan && SAAS_PLANS[owner.subscriptionPlan] ? (
                           <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#F1F5F9] text-[#455250] border border-[#E8E5DA]">
@@ -579,7 +577,7 @@ const SuperAdminGymOwners = () => {
                         <div className="text-xs text-[#455250]">{owner.billingCycle ? owner.billingCycle.charAt(0).toUpperCase() + owner.billingCycle.slice(1) : 'N/A'}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <div className="space-y-1 text-xs">
                         <div>
                           <span className="text-[#687B78]">Status:</span>{' '}
@@ -593,7 +591,7 @@ const SuperAdminGymOwners = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs whitespace-nowrap">
+                    <td className="px-5 py-3.5 whitespace-nowrap">
                       <div className="space-y-1">
                         <div className="flex items-center space-x-1.5">
                           <span className="text-[#687B78] font-medium text-[11px] w-11">Start:</span>
@@ -605,15 +603,15 @@ const SuperAdminGymOwners = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${getStatusColor(owner.approvalStatus)}`}>
                         {owner.approvalStatus}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end space-x-2">
+                    <td className="px-5 py-3.5">
+                      <div className="flex flex-col items-center gap-2">
                         {/* Quick Actions based on status - Fixed width to prevent shifting */}
-                        <div className="flex items-center justify-end space-x-1 w-[104px]">
+                        <div className="flex items-center gap-1 border-t border-[#E8E5DA] pt-1.5">
                           {owner.approvalStatus !== 'APPROVED' && (
                             <button 
                               onClick={() => handleStatusChange(owner._id, 'APPROVED')}
@@ -659,14 +657,11 @@ const SuperAdminGymOwners = () => {
                           )}
                         </div>
 
-                        <div className="w-px h-5 bg-[#E8E5DA] mx-1"></div>
-
                         {/* View, Edit, Delete buttons */}
-                        <div className="flex items-center justify-end space-x-1">
+                        <div className="flex items-center gap-1">
                           <button 
                             onClick={() => setViewOwner(owner)}
-                            className="p-1.5 text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                            title="View Owner Details"
+                            className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors" title="View Details"
                           >
                             <Eye size={16} />
                           </button>

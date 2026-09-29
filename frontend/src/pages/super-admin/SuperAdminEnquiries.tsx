@@ -9,8 +9,6 @@ import {
   Eye, 
   X, 
   Building,
-  CheckCircle,
-  Clock,
   Tag
 } from 'lucide-react';
 import api from '../../utils/api';

@@ -4,9 +4,9 @@ import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, User, CreditCard, Dumbbell,
-  Utensils, Bot, UserCheck, Calendar, CalendarCheck,
-  TrendingUp, DollarSign, Bell, MessageSquare,
-  Settings, Activity, Building2, Menu, LogOut, Clock,
+  Utensils, Bot, UserCheck, CalendarCheck,
+  TrendingUp, Bell, MessageSquare,
+  Activity, Building2, Menu, LogOut, Clock,
   ShoppingBag, ShoppingCart, Receipt, FileText
 } from 'lucide-react';
 
@@ -17,15 +17,6 @@ const MemberLayout = () => {
   const [showExpiryWarning, setShowExpiryWarning] = useState(false);
   const [gym, setGym] = useState<any>(null);
   const [isExpired, setIsExpired] = useState(false);
-  const [storeEnabled, setStoreEnabled] = useState(false);
-
-  useEffect(() => {
-    import('../utils/api').then(({ default: api }) => {
-      api.get('/store/customer/status')
-        .then(res => setStoreEnabled(!!res.data?.enabled))
-        .catch(() => setStoreEnabled(false));
-    });
-  }, [user]);
 
   useEffect(() => {
     if (user?.subscriptionExpiry) {

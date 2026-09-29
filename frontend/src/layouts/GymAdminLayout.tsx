@@ -136,12 +136,12 @@ const GymAdminLayout = () => {
       {
         title: 'Admin & Settings',
         items: [
-          { label: 'Reports', path: '/admin/reports', icon: BarChart },
-          { label: 'Branches', path: '/admin/branches', icon: MapPin },
           { label: 'Gym Profile', path: '/admin/gym-profile', icon: Building2 },
+          { label: 'Branches', path: '/admin/branches', icon: MapPin },
           { label: 'Subscription', path: '/admin/subscription', icon: CreditCard },
-          { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 },
-          { label: 'Notifications', path: '/admin/notifications', icon: Bell }
+          { label: 'Reports', path: '/admin/reports', icon: BarChart },
+          { label: 'Notifications', path: '/admin/notifications', icon: Bell },
+          { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 }
         ]
       }
     ];
@@ -183,6 +183,14 @@ const GymAdminLayout = () => {
   const navGroups = getNavGroups();
   const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname);
 
+  const getOwnerDisplayName = () => {
+    if (!user) return 'Gym Owner';
+    if (user.firstName?.toLowerCase() === 'ananth') return 'Ananth';
+    const first = user.firstName || '';
+    const last = user.lastName && user.lastName.toLowerCase() !== 'admin' ? user.lastName : '';
+    return `${first} ${last}`.trim() || first || 'Gym Owner';
+  };
+
 
   return (
     <div className="flex h-screen bg-[#F1F5F3] text-[#202828] overflow-hidden">
@@ -214,10 +222,10 @@ const GymAdminLayout = () => {
           </Link>
           <div className="mt-4 flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-[#164A4A] to-[#6fa3a0] rounded-full flex items-center justify-center text-[#202828] font-bold text-base shadow">
-              {user?.firstName?.[0] || 'G'}
+              {getOwnerDisplayName()?.[0] || 'A'}
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="font-semibold text-sm text-[#202828] truncate">{user?.firstName || 'Gym'} {user?.lastName || 'Admin'}</p>
+              <p className="font-semibold text-sm text-[#202828] truncate">{getOwnerDisplayName()}</p>
               <p className="text-xs text-[#6fa3a0] font-medium truncate">Gym Owner</p>
             </div>
           </div>
@@ -391,11 +399,11 @@ const GymAdminLayout = () => {
             </div>
             <Link to="/admin/gym-profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
-                <p className="text-sm font-semibold text-[#202828] leading-none mb-0.5">{user?.firstName || 'Gym'} {user?.lastName || 'Admin'}</p>
+                <p className="text-sm font-semibold text-[#202828] leading-none mb-0.5">{getOwnerDisplayName()}</p>
                 <p className="text-xs text-[#455250] leading-none">Gym Owner</p>
               </div>
               <div className="w-9 h-9 bg-gradient-to-br from-[#164A4A] to-[#6fa3a0] rounded-full flex items-center justify-center text-[#202828] font-bold text-sm shadow">
-                {user?.firstName?.[0] || 'G'}
+                {getOwnerDisplayName()?.[0] || 'A'}
               </div>
             </Link>
           </div>

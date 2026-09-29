@@ -413,20 +413,24 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
       res.status(400).json({ success: false, message: 'Product type is required' });
       return;
     }
-    if (sellingPrice === undefined || sellingPrice === null || Number(sellingPrice) < 0) {
-      res.status(400).json({ success: false, message: 'A valid selling price is required' });
-      return;
-    }
-    if (discountPrice !== undefined && discountPrice !== null && Number(discountPrice) > Number(sellingPrice)) {
-      res.status(400).json({ success: false, message: 'Discount amount cannot be greater than selling price' });
-      return;
+    const isVariantProduct = !!hasVariants && Array.isArray(variants) && variants.length > 0;
+    if (!isVariantProduct) {
+      if (sellingPrice === undefined || sellingPrice === null || Number(sellingPrice) < 0) {
+        res.status(400).json({ success: false, message: 'A valid selling price is required' });
+        return;
+      }
+      if (discountPrice !== undefined && discountPrice !== null && Number(discountPrice) > Number(sellingPrice)) {
+        res.status(400).json({ success: false, message: 'Discount amount cannot be greater than selling price' });
+        return;
+      }
     }
     const catName = (categoryName || 'Uncategorized').trim();
     if (!(await StoreProductCategory.exists({ gymId, productType: productType.trim(), name: catName }))) {
       await StoreProductCategory.create({ gymId, productType: productType.trim(), name: catName, status: 'Active' });
     }
-    if (sku) {
-      const clash = await StoreProduct.exists({ gymId, sku: sku.trim() });
+    const trimmedSku = sku && typeof sku === 'string' && sku.trim() ? sku.trim() : undefined;
+    if (trimmedSku) {
+      const clash = await StoreProduct.exists({ gymId, sku: trimmedSku });
       if (clash) {
         res.status(409).json({ success: false, message: 'Product SKU already exists for this gym' });
         return;
@@ -438,9 +442,9 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
       name: name.trim(),
       description,
       brand,
-      sku: sku?.trim() || undefined,
+      sku: trimmedSku,
       image,
-      sellingPrice: Number(sellingPrice),
+      sellingPrice: Number(sellingPrice) || 0,
       discountPrice: discountPrice ? Number(discountPrice) : undefined,
       stock: Number(stock ?? 0),
       status: status || 'Active',
@@ -480,7 +484,9 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
     }
     res.status(201).json({ success: true, product });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    console.error('[createProduct] Error:', error.message, error.code);
+    const msg = error.code === 11000 ? 'A product with this SKU already exists.' : (error.message || 'Server error');
+    res.status(500).json({ success: false, message: msg, error: error.message });
   }
 };
 
@@ -524,10 +530,15 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
     if (sku !== undefined) product.sku = sku?.trim() || undefined;
     if (categoryName !== undefined) product.categoryName = catName;
     if (image !== undefined) product.image = image;
-    if (sellingPrice !== undefined) product.sellingPrice = Number(sellingPrice);
-    if (discountPrice !== undefined) product.discountPrice = discountPrice ? Number(discountPrice) : undefined;
-    
-    if (product.discountPrice !== undefined && product.discountPrice > product.sellingPrice) {
+    const isVariantProduct = hasVariants !== undefined ? !!hasVariants : product.hasVariants;
+    if (sellingPrice !== undefined && !isVariantProduct) {
+      product.sellingPrice = Number(sellingPrice) || 0;
+    }
+    if (discountPrice !== undefined && !isVariantProduct) {
+      product.discountPrice = discountPrice ? Number(discountPrice) : undefined;
+    }
+
+    if (!isVariantProduct && product.discountPrice !== undefined && product.discountPrice > product.sellingPrice) {
       res.status(400).json({ success: false, message: 'Discount amount cannot be greater than selling price' });
       return;
     }
@@ -563,7 +574,9 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
     await product.save();
     res.status(200).json({ success: true, product });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    console.error('[updateProduct] Error:', error.message, error.code);
+    const msg = error.code === 11000 ? 'A product with this SKU already exists.' : (error.message || 'Server error');
+    res.status(500).json({ success: false, message: msg, error: error.message });
   }
 };
 
@@ -600,7 +613,17 @@ export const updateProductStock = async (req: AuthRequest, res: Response): Promi
       sourceType: 'manual',
       note: note || 'Manual stock adjustment',
     });
-    res.status(200).json({ success: true, product });
+    await notifyLowStockIfNeeded(product, gymId);
+
+    const isLow = product.stock <= product.lowStockThreshold;
+    res.status(200).json({
+      success: true,
+      product,
+      isLowStock: isLow,
+      lowStockWarning: isLow
+        ? `"${product.name}" stock is now ${product.stock} (below alert threshold of ${product.lowStockThreshold}).`
+        : undefined,
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

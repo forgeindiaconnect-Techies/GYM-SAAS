@@ -8,20 +8,20 @@ export const isSubscriptionActive = (status?: string): boolean => {
 
 export const getDashboardRoute = (user: AuthUser): string => {
   const { role, approvalStatus, subscriptionStatus } = user;
+  const statusUpper = (approvalStatus || '').toUpperCase().trim();
 
   if (role === 'SUPER_ADMIN') return '/super-admin/dashboard';
   
   if (role === 'ADMIN' || role === 'GYM_OWNER') {
-    if (approvalStatus === 'PENDING') return '/status?type=pending';
-    if (approvalStatus === 'REJECTED') return '/status?type=rejected';
-    if (approvalStatus === 'SUSPENDED') return '/status?type=suspended';
+    if (statusUpper === 'PENDING') return '/status?type=pending';
+    if (statusUpper === 'REJECTED') return '/status?type=rejected';
+    if (statusUpper === 'SUSPENDED') return '/status?type=suspended';
+    if (statusUpper === 'DELETED') return '/status?type=inactive';
     
-    if (approvalStatus === 'APPROVED') {
-      if (!isSubscriptionActive(subscriptionStatus)) {
-        return '/gym-owner/subscription';
-      }
-      return '/admin/dashboard';
+    if (!isSubscriptionActive(subscriptionStatus)) {
+      return '/gym-owner/subscription';
     }
+    return '/admin/dashboard';
   }
 
   if (role === 'GYM_MANAGER') return '/manager/dashboard';
@@ -30,15 +30,14 @@ export const getDashboardRoute = (user: AuthUser): string => {
   if (role === 'NUTRITIONIST') return '/nutritionist/dashboard';
 
   // MEMBER flow
-  if (approvalStatus === 'PENDING') return '/status?type=pending';
-  if (approvalStatus === 'REJECTED') return '/status?type=rejected';
-  if (approvalStatus === 'APPROVED') {
-    if (!isSubscriptionActive(subscriptionStatus)) {
-      return '/subscription-plans';
-    }
-    return '/member/dashboard';
-  }
+  if (statusUpper === 'PENDING') return '/status?type=pending';
+  if (statusUpper === 'REJECTED') return '/status?type=rejected';
+  if (statusUpper === 'SUSPENDED') return '/status?type=suspended';
+  if (statusUpper === 'DELETED') return '/status?type=inactive';
 
-  return '/';
+  if (!isSubscriptionActive(subscriptionStatus)) {
+    return '/subscription-plans';
+  }
+  return '/member/dashboard';
 };
 

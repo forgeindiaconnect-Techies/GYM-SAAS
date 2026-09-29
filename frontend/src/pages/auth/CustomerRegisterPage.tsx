@@ -103,8 +103,8 @@ const CustomerRegisterPage = () => {
   }, []);
 
   const set = (field: string, value: string | boolean) => {
-    setForm(f => ({ ...f, [field]: value }));
-    setErrors(e => { const n = { ...e }; delete n[field]; return n; });
+    setForm((f: any) => ({ ...f, [field]: value }));
+    setErrors((e: any) => { const n = { ...e }; delete n[field]; return n; });
   };
 
   const validateStep = (): boolean => {

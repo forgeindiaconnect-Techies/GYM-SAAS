@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Building2, MapPin, LayoutDashboard, Users, UserPlus, BrainCircuit, Activity,
-  Play, Pause, X, ChevronRight, SkipForward, ArrowRight
+  Building2, MapPin, LayoutDashboard, Users, UserPlus, BrainCircuit, Activity, ArrowRight, SkipForward
 } from 'lucide-react';
 
 const steps = [
@@ -50,122 +48,8 @@ const steps = [
   },
 ];
 
-const AIGymVideoPlayer = ({ steps, onClose }: { steps: any[], onClose: () => void }) => {
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [progress, setProgress] = useState(0); // 0 to 100
-  const duration = 120; // 2 minutes (120 seconds)
-
-  useEffect(() => {
-    let interval: any;
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setProgress((p) => {
-          if (p >= 100) {
-            setIsPlaying(false);
-            return 100;
-          }
-          // Update progress every 50ms for smooth 120s duration
-          return p + (100 / (duration * 20)); 
-        });
-      }, 50);
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying, duration]);
-
-  const currentStepIndex = Math.min(Math.floor((progress / 100) * steps.length), steps.length - 1);
-  const currentStep = steps[currentStepIndex];
-  const Icon = currentStep.icon;
-
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    setProgress(Math.max(0, Math.min(100, (x / rect.width) * 100)));
-  };
-
-  const currentSeconds = Math.floor((progress / 100) * duration);
-  const formatTime = (totalSeconds: number) => {
-    const m = Math.floor(totalSeconds / 60);
-    const s = Math.floor(totalSeconds % 60);
-    return `${m}:${s.toString().padStart(2, '0')}`;
-  };
-
-  return (
-    <div className="absolute inset-0 w-full h-full bg-[#0F172A] rounded-3xl overflow-hidden flex flex-col font-sans z-50">
-      {/* Video Content Area */}
-      <div className="flex-1 relative flex items-center justify-center p-8 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#164A4A]/10 to-[#6fa3a0]/10 animate-pulse duration-3000"></div>
-        <div className="absolute -right-32 -top-32 w-[500px] h-[500px] bg-[#6fa3a0]/20 blur-[100px] rounded-full"></div>
-        <div className="absolute -left-32 -bottom-32 w-[500px] h-[500px] bg-[#164A4A]/20 blur-[100px] rounded-full"></div>
-
-        {/* Slide Content */}
-        <div key={currentStepIndex} className="relative z-10 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-500">
-          <div className="w-28 h-28 bg-gradient-to-br from-[#164A4A] to-[#6fa3a0] rounded-[2rem] flex items-center justify-center mb-10 shadow-[0_0_60px_rgba(22,163,74,0.4)]">
-            <Icon className="text-white" size={56} strokeWidth={1.5} />
-          </div>
-          <div className="text-[#D3DFDA] font-black text-sm tracking-[0.2em] uppercase mb-4 bg-white/5 px-4 py-1.5 rounded-full backdrop-blur-sm border border-white/10">
-            Step {currentStepIndex + 1} of 7
-          </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight drop-shadow-lg">
-            {currentStep.title}
-          </h2>
-          <p className="text-xl text-slate-300 max-w-2xl leading-relaxed font-light mb-10">
-            {currentStep.desc}
-          </p>
-          
-          {currentStep.details && (
-            <div className="flex flex-wrap justify-center gap-4 max-w-4xl animate-in slide-in-from-bottom-8 fade-in duration-700 ease-out">
-              {currentStep.details.map((detail, idx) => (
-                <div key={`${currentStepIndex}-${idx}`} className="bg-[#202828]/80 border border-[#6fa3a0]/40 px-5 py-3 rounded-xl text-[#D3DFDA] text-sm md:text-base font-medium flex items-center shadow-lg backdrop-blur-md hover:-translate-y-1 transition-transform cursor-default">
-                  <div className="w-2 h-2 bg-[#164A4A] rounded-full mr-3 shadow-[0_0_8px_rgba(22,163,74,0.8)]"></div>
-                  {detail}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        
-        {/* Brand Watermark */}
-        <div className="absolute top-6 left-8 flex items-center space-x-2 opacity-50">
-          <Activity className="text-[#164A4A]" size={24} />
-          <span className="text-xl font-bold tracking-tight text-white">AI GYM <span className="font-light text-slate-400">Workflow</span></span>
-        </div>
-      </div>
-
-      {/* Video Player Controls */}
-      <div className="h-16 bg-[#202828]/90 backdrop-blur-md px-6 flex items-center gap-6 relative z-20 border-t border-white/5">
-        <button 
-          onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying); }} 
-          className="text-white hover:text-[#164A4A] transition-colors focus:outline-none"
-        >
-          {isPlaying ? <Pause size={22} fill="currentColor" /> : <Play size={22} fill="currentColor" />}
-        </button>
-        
-        {/* Progress Bar */}
-        <div className="flex-1 h-1.5 bg-slate-700/50 rounded-full cursor-pointer relative group py-2 -my-2" onClick={(e) => { e.stopPropagation(); handleSeek(e); }}>
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 h-1.5 bg-slate-600 w-full rounded-full"></div>
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 h-1.5 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] rounded-full transition-all duration-75" style={{ width: `${progress}%` }}></div>
-          <div className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)] opacity-0 group-hover:opacity-100 transition-opacity" style={{ left: `calc(${progress}% - 8px)` }}></div>
-        </div>
-
-        {/* Time */}
-        <div className="text-xs text-slate-400 font-medium font-mono min-w-[70px] text-right">
-          {formatTime(currentSeconds)} / {formatTime(duration)}
-        </div>
-
-        <div className="w-px h-6 bg-slate-700 mx-2"></div>
-
-        <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="text-slate-400 hover:text-white transition-colors focus:outline-none flex items-center gap-2 text-sm font-semibold">
-          <X size={20} /> Close
-        </button>
-      </div>
-    </div>
-  );
-};
-
 const GymOwnerIntroduction = () => {
   const navigate = useNavigate();
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#F2EFE8] font-sans selection:bg-[#164A4A] selection:text-white">

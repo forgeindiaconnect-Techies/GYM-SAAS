@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { History, CheckCircle, XCircle, Clock, AlertCircle, Lock } from 'lucide-react';
+import { History, XCircle, Clock, AlertCircle, Lock } from 'lucide-react';
 import api from '../../utils/api';
 
 const STATUS_COLORS: Record<string, string> = {

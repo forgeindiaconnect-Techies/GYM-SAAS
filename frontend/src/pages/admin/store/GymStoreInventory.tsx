@@ -18,6 +18,9 @@ const GymStoreInventory = () => {
   const [adjustNote, setAdjustNote] = useState('');
   const [saving, setSaving] = useState(false);
   const [viewingTx, setViewingTx] = useState<any>(null);
+  const [lowStockAlertItems, setLowStockAlertItems] = useState<any[]>([]);
+  const [showLowStockModal, setShowLowStockModal] = useState(false);
+  const [hasAutoOpenedAlert, setHasAutoOpenedAlert] = useState(false);
 
   const loadProducts = async () => {
     try {
@@ -27,8 +30,19 @@ const GymStoreInventory = () => {
       if (status !== 'all') params.set('status', status);
       params.set('limit', '200');
       const res = await api.get(`/store/admin/inventory?${params.toString()}`);
-      setProducts(res.data.products || []);
+      const prods = res.data.products || [];
+      setProducts(prods);
       setSummary(res.data.summary || {});
+
+      // Check if any product is below 5 (or <= lowStockThreshold)
+      const lowItems = prods.filter((p: any) => p.stock <= (p.lowStockThreshold ?? 5));
+      if (lowItems.length > 0) {
+        setLowStockAlertItems(lowItems);
+        if (!hasAutoOpenedAlert) {
+          setShowLowStockModal(true);
+          setHasAutoOpenedAlert(true);
+        }
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -58,11 +72,18 @@ const GymStoreInventory = () => {
     if (!qty || qty === 0) { alert('Enter a non-zero quantity change.'); return; }
     try {
       setSaving(true);
-      await api.patch(`/store/admin/products/${adjusting._id}/stock`, { quantityChange: qty, note: adjustNote });
+      const res = await api.patch(`/store/admin/products/${adjusting._id}/stock`, { quantityChange: qty, note: adjustNote });
+      const updatedProduct = res.data.product;
       setAdjusting(null);
       setAdjustQty('');
       setAdjustNote('');
-      loadProducts();
+      await loadProducts();
+
+      // Trigger instant low stock alert popup if coming below 5 (or <= threshold)
+      if (updatedProduct && updatedProduct.stock <= (updatedProduct.lowStockThreshold ?? 5)) {
+        setLowStockAlertItems([updatedProduct]);
+        setShowLowStockModal(true);
+      }
     } catch (err: any) {
       alert(err.response?.data?.message || 'Adjustment failed');
     } finally {
@@ -85,18 +106,76 @@ const GymStoreInventory = () => {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((s) => (
-          <div key={s.label} className="bg-white border border-[#D3DFDA] rounded-2xl p-4 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-[#A8ADA9] uppercase tracking-wider">{s.label}</p>
-              <h3 className="text-2xl font-black text-[#202828]">{s.value}</h3>
+        {statCards.map((s) => {
+          const isAlertCard = s.label === 'Low Stock' || s.label === 'Out of Stock';
+          return (
+            <div
+              key={s.label}
+              onClick={() => {
+                if (isAlertCard) {
+                  const matching = products.filter((p: any) =>
+                    s.label === 'Out of Stock' ? p.stock <= 0 : p.stock <= (p.lowStockThreshold ?? 5)
+                  );
+                  if (matching.length > 0) {
+                    setLowStockAlertItems(matching);
+                    setShowLowStockModal(true);
+                  } else {
+                    setStatus(s.label === 'Low Stock' ? 'lowStock' : 'outOfStock');
+                  }
+                }
+              }}
+              className={`bg-white border border-[#D3DFDA] rounded-2xl p-4 flex items-center justify-between transition-all ${
+                isAlertCard ? 'cursor-pointer hover:shadow-md hover:border-amber-400' : ''
+              }`}
+            >
+              <div>
+                <p className="text-xs font-bold text-[#A8ADA9] uppercase tracking-wider">{s.label}</p>
+                <h3 className="text-2xl font-black text-[#202828]">{s.value}</h3>
+                {isAlertCard && Number(s.value) > 0 && (
+                  <span className="text-[11px] font-bold text-amber-600 hover:underline inline-flex items-center gap-1 mt-0.5">
+                    View Alert <AlertTriangle size={10} />
+                  </span>
+                )}
+              </div>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.tint}`}>
+                {s.label === 'Out of Stock' ? <AlertTriangle size={20} /> : <Package size={20} />}
+              </div>
             </div>
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.tint}`}>
-              {s.label === 'Out of Stock' ? <AlertTriangle size={20} /> : <Package size={20} />}
+          );
+        })}
+      </div>
+
+      {/* Low Stock Alert Message Banner (when coming below 5) */}
+      {(Number(summary.lowStockCount || 0) + Number(summary.outOfStock || 0) > 0) && (
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm animate-in fade-in duration-300">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm animate-pulse">
+              <AlertTriangle size={20} />
+            </div>
+            <div>
+              <h4 className="font-black text-[#202828] text-sm flex items-center gap-2">
+                Low Stock Alert Triggered!
+                <span className="px-2 py-0.5 rounded text-[10px] font-black bg-amber-200 text-amber-900 uppercase">
+                  {(summary.lowStockCount || 0) + (summary.outOfStock || 0)} Items below 5
+                </span>
+              </h4>
+              <p className="text-xs text-[#455250] mt-0.5">
+                Items have reached or fallen below 5 in stock. Restock soon to prevent running out of stock.
+              </p>
             </div>
           </div>
-        ))}
-      </div>
+          <button
+            onClick={() => {
+              const low = products.filter((p: any) => p.stock <= (p.lowStockThreshold ?? 5));
+              setLowStockAlertItems(low.length > 0 ? low : products.filter(p => p.stock <= 5));
+              setShowLowStockModal(true);
+            }}
+            className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl transition-all shrink-0 shadow-sm flex items-center justify-center gap-1.5"
+          >
+            <Eye size={14} /> View Low Stock Alert
+          </button>
+        </div>
+      )}
 
       <div className="flex border-b border-[#D3DFDA] space-x-8">
         <button onClick={() => setTab('products')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'products' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}>
@@ -311,6 +390,98 @@ const GymStoreInventory = () => {
               <div>
                 <p className="text-xs font-bold text-[#687B78] uppercase">Note</p>
                 <p className="text-sm text-[#455250] mt-1 bg-[#F1F5F3] p-3 rounded-xl">{viewingTx.note || 'No notes attached.'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dedicated Low Stock Alert Popup Modal (for Gym Owners when coming below 5) */}
+      {showLowStockModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative border-2 border-amber-400 animate-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowLowStockModal(false)}
+              className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <X size={20} />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-start gap-4 mb-5">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200 shadow-inner">
+                <AlertTriangle size={26} className="animate-pulse" />
+              </div>
+              <div className="pr-6">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded text-[11px] font-black uppercase tracking-wider bg-amber-500 text-white">
+                    Action Required
+                  </span>
+                  <span className="text-xs text-amber-700 font-bold">Store Inventory Alert</span>
+                </div>
+                <h2 className="text-2xl font-black text-[#202828] mt-1 tracking-tight">
+                  Low Stock Alert!
+                </h2>
+                <p className="text-sm text-[#455250] mt-1 leading-relaxed">
+                  Attention Gym Owner: The following product{lowStockAlertItems.length > 1 ? 's are' : ' is'} below the alert threshold (<strong>5 or fewer items remaining</strong>). Restock soon to prevent missed customer orders.
+                </p>
+              </div>
+            </div>
+
+            {/* Product List */}
+            <div className="bg-[#F8F9FA] rounded-2xl border border-amber-200 p-4 max-h-64 overflow-y-auto custom-scrollbar space-y-3 mb-6">
+              {lowStockAlertItems.length === 0 ? (
+                <p className="text-sm text-gray-500 text-center py-4">No products are currently low on stock.</p>
+              ) : lowStockAlertItems.map((item) => {
+                const isOut = item.stock <= 0;
+                return (
+                  <div key={item._id} className="bg-white rounded-xl p-3.5 border border-gray-200/80 shadow-sm flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-[#202828] text-sm truncate">{item.name}</p>
+                      <p className="text-xs text-[#455250] mt-0.5">
+                        Category: <span className="font-medium text-[#202828]">{item.categoryName || 'General'}</span>
+                        {item.sku && <> · SKU: <span className="font-mono text-[11px]">{item.sku}</span></>}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="text-right">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-black inline-flex items-center gap-1 ${
+                          isOut ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-amber-100 text-amber-800 border border-amber-300'
+                        }`}>
+                          <AlertTriangle size={12} />
+                          {isOut ? 'Out of stock' : `${item.stock} left`}
+                        </span>
+                        <p className="text-[10px] text-gray-500 mt-0.5">Alert at: {item.lowStockThreshold ?? 5}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setShowLowStockModal(false);
+                          setAdjusting(item);
+                          setAdjustQty('10');
+                          setAdjustNote('Low stock restock');
+                        }}
+                        className="px-3 py-1.5 bg-[#164A4A] text-white rounded-lg hover:bg-[#1f5f5f] text-xs font-bold transition-all shadow-sm flex items-center gap-1"
+                      >
+                        <Plus size={14} /> Restock
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+              <p className="text-xs text-[#6fa3a0] font-medium">
+                💡 Set custom alert thresholds per product in Products settings.
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowLowStockModal(false)}
+                  className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#455250] text-sm font-bold rounded-xl transition-colors"
+                >
+                  I Understand
+                </button>
               </div>
             </div>
           </div>

@@ -9,7 +9,7 @@ export interface ITrainerFee extends Document {
   billingCycle: 'Per Session' | 'Weekly' | 'Monthly' | 'Custom';
   effectiveFrom: Date;
   effectiveUntil?: Date;
-  paymentMethod: 'Bank Transfer' | 'UPI' | 'Manual Payment' | 'Other';
+  paymentMethod: 'Bank Transfer' | 'UPI' | 'Manual Payment' | 'Cash' | 'Other';
   bankDetails?: {
     accountHolder: string;
     bankName: string;
@@ -36,7 +36,7 @@ const trainerFeeSchema = new Schema<ITrainerFee>({
   billingCycle: { type: String, enum: ['Per Session', 'Weekly', 'Monthly', 'Custom'], required: true },
   effectiveFrom: { type: Date, required: true },
   effectiveUntil: { type: Date },
-  paymentMethod: { type: String, enum: ['Bank Transfer', 'UPI', 'Manual Payment', 'Other'], required: true },
+  paymentMethod: { type: String, enum: ['Bank Transfer', 'UPI', 'Manual Payment', 'Cash', 'Other'], required: true },
   bankDetails: {
     accountHolder: { type: String },
     bankName: { type: String },

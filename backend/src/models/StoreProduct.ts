@@ -49,7 +49,7 @@ const storeProductSchema = new Schema<IStoreProduct>(
     gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true },
     branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
     categoryId: { type: Schema.Types.ObjectId, ref: 'StoreProductCategory' },
-    categoryName: { type: String, required: true, trim: true },
+    categoryName: { type: String, default: 'General', trim: true },
     name: { type: String, required: true, trim: true },
     description: { type: String, trim: true },
     brand: { type: String, trim: true },
@@ -71,7 +71,13 @@ const storeProductSchema = new Schema<IStoreProduct>(
 );
 
 storeProductSchema.index({ gymId: 1 });
-storeProductSchema.index({ gymId: 1, sku: 1 }, { unique: true, sparse: true });
+storeProductSchema.index(
+  { gymId: 1, sku: 1 },
+  { 
+    unique: true, 
+    partialFilterExpression: { sku: { $type: 'string', $gt: '' } } 
+  }
+);
 storeProductSchema.index({ gymId: 1, categoryName: 1 });
 storeProductSchema.index({ name: 'text', description: 'text', brand: 'text' });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, UserCheck, UserPlus, FileSpreadsheet } from 'lucide-react';
+import { X, UserPlus, FileSpreadsheet } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {

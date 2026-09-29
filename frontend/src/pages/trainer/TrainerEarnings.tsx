@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { TrendingUp, IndianRupee, CheckCircle, Clock, Lock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { TrendingUp, IndianRupee, CheckCircle, ArrowDownRight, ArrowDownLeft } from 'lucide-react';
 import api from '../../utils/api';
 
 const TrainerEarnings = () => {
@@ -34,139 +33,92 @@ const TrainerEarnings = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6 p-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#202828]">Earnings</h1>
+        <h1 className="text-2xl font-bold text-[#202828]">Earnings &amp; Balance</h1>
         <p className="text-[#687B78] text-sm mt-1">Your earnings overview and payment status</p>
       </div>
 
-      {/* Read-only notice */}
-      <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl px-5 py-3">
-        <Lock size={15} className="text-blue-500 mt-0.5 shrink-0" />
-        <p className="text-blue-800 text-sm">Earnings are calculated based on your configured fee and payments recorded by your Gym Owner.</p>
-      </div>
+      {fee ? (
+        /* Flowchart zigzag layout */
+        <div className="relative flex flex-col items-center gap-0">
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm col-span-2">
-          <div className="flex items-center gap-2 mb-1">
-            <IndianRupee size={16} className="text-[#164A4A]" />
-            <p className="text-xs font-semibold text-[#687B78] uppercase tracking-wide">Current Fee</p>
-          </div>
-          {fee ? (
-            <div className="flex items-end gap-2 mt-1">
-              <span className="text-3xl font-bold text-[#202828]">₹{fee.feeAmount?.toLocaleString('en-IN')}</span>
-              <span className="text-[#687B78] text-sm mb-0.5">{cycleSuffix(fee.billingCycle)}</span>
-            </div>
-          ) : (
-            <p className="text-[#A8ADA9] mt-1 text-sm">Not configured</p>
-          )}
-          {fee && <p className="text-xs text-[#A8ADA9] mt-1">{fee.trainingType}</p>}
-        </div>
-
-        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-1">
-            <CheckCircle size={16} className="text-green-500" />
-            <p className="text-xs font-semibold text-[#687B78] uppercase tracking-wide">Total Earned</p>
-          </div>
-          <p className="text-2xl font-bold text-[#202828] mt-1">₹{(data?.trainer?.totalEarnings || 0).toLocaleString('en-IN')}</p>
-          <p className="text-xs text-[#A8ADA9] mt-1">All time</p>
-        </div>
-
-        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-1">
-            <IndianRupee size={16} className="text-blue-500" />
-            <p className="text-xs font-semibold text-[#687B78] uppercase tracking-wide">Available</p>
-          </div>
-          <p className="text-2xl font-bold text-[#202828] mt-1">₹{(data?.trainer?.availableBalance || 0).toLocaleString('en-IN')}</p>
-          <p className="text-xs text-[#A8ADA9] mt-1">Ready to withdraw</p>
-        </div>
-
-        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-1">
-            <Clock size={16} className="text-amber-500" />
-            <p className="text-xs font-semibold text-[#687B78] uppercase tracking-wide">Pending</p>
-          </div>
-          <p className="text-2xl font-bold text-[#202828] mt-1">₹{(data?.trainer?.pendingWithdrawal || 0).toLocaleString('en-IN')}</p>
-          <p className="text-xs text-[#A8ADA9] mt-1">Processing</p>
-        </div>
-
-        <div className="bg-white border border-[#E8E5DA] rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-1">
-            <CheckCircle size={16} className="text-purple-500" />
-            <p className="text-xs font-semibold text-[#687B78] uppercase tracking-wide">Withdrawn</p>
-          </div>
-          <p className="text-2xl font-bold text-[#202828] mt-1">₹{(data?.trainer?.withdrawnAmount || 0).toLocaleString('en-IN')}</p>
-          <p className="text-xs text-[#A8ADA9] mt-1">Lifetime</p>
-        </div>
-      </div>
-
-      {/* Current Period Card */}
-      {fee && (
-        <div className="bg-white border border-[#E8E5DA] rounded-2xl shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E8E5DA]">
-            <h2 className="font-bold text-[#202828]">Current Period Breakdown</h2>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-12 h-12 mx-auto rounded-full bg-blue-50 flex items-center justify-center mb-2">
-                  <IndianRupee size={20} className="text-[#D2B48C]" />
+          {/* ── Step 1: LEFT ── */}
+          <div className="w-full flex justify-start">
+            <div className="w-[55%] bg-white border-2 border-[#164A4A]/30 rounded-2xl p-6 shadow-md relative">
+              {/* Step badge */}
+              <span className="absolute -top-3 -left-3 w-8 h-8 bg-[#164A4A] text-white text-xs font-bold rounded-full flex items-center justify-center shadow">1</span>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-[#164A4A]/10 flex items-center justify-center">
+                  <IndianRupee size={18} className="text-[#164A4A]" />
                 </div>
-                <p className="text-lg font-bold text-[#202828]">₹{fee.feeAmount?.toLocaleString('en-IN')}</p>
-                <p className="text-xs text-[#A8ADA9] mt-0.5">Trainer Fee</p>
+                <p className="text-xs font-bold text-[#687B78] uppercase tracking-wider">Current Fee</p>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 mx-auto rounded-full bg-green-50 flex items-center justify-center mb-2">
-                  <CheckCircle size={20} className="text-[#164A4A]" />
-                </div>
-                <p className="text-lg font-bold text-[#164A4A]">₹{(data?.paidAmount || 0).toLocaleString('en-IN')}</p>
-                <p className="text-xs text-[#A8ADA9] mt-0.5">Paid</p>
+              <div className="flex items-end gap-2">
+                <span className="text-3xl font-bold text-[#202828]">₹{fee.feeAmount?.toLocaleString('en-IN')}</span>
+                <span className="text-[#687B78] text-sm mb-0.5">{cycleSuffix(fee.billingCycle)}</span>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 mx-auto rounded-full bg-amber-50 flex items-center justify-center mb-2">
-                  <Clock size={20} className="text-amber-600" />
-                </div>
-                <p className="text-lg font-bold text-amber-600">₹{(data?.pendingAmount || 0).toLocaleString('en-IN')}</p>
-                <p className="text-xs text-[#A8ADA9] mt-0.5">Pending</p>
-              </div>
-            </div>
-
-            {/* Progress bar */}
-            <div className="mt-6">
-              <div className="flex justify-between text-xs text-[#687B78] mb-1.5">
-                <span>Payment Progress</span>
-                <span>
-                  {fee.feeAmount ? Math.min(100, Math.round(((data?.paidAmount || 0) / fee.feeAmount) * 100)) : 0}%
-                </span>
-              </div>
-              <div className="h-2 bg-[#F1F5F9] rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] rounded-full transition-all"
-                  style={{ width: `${fee.feeAmount ? Math.min(100, ((data?.paidAmount || 0) / fee.feeAmount) * 100) : 0}%` }}
-                />
-              </div>
+              <p className="text-xs text-[#A8ADA9] mt-2">{fee.trainingType}</p>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Payment History Link */}
-      {fee && (
-        <div className="flex justify-center mt-4">
-          <Link
-            to="/trainer/payment-history"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-[#E8E5DA] text-[#455250] font-semibold rounded-xl hover:bg-[#F2EFE8] hover:text-[#202828] transition-colors shadow-sm"
-          >
-            <Clock size={16} />
-            View Full Payment History
-          </Link>
-        </div>
-      )}
+          {/* Arrow 1 → 2 (right-pointing down-right) */}
+          <div className="w-full flex justify-center items-center py-2 relative h-14">
+            {/* Line */}
+            <div className="absolute left-[27%] top-0 h-full w-px bg-[#164A4A]/20 border-l-2 border-dashed border-[#164A4A]/30" />
+            <div className="absolute left-[27%] bottom-0 w-[46%] h-px border-b-2 border-dashed border-[#164A4A]/30" />
+            <div className="absolute right-[27%] bottom-0 h-1/2 w-px border-l-2 border-dashed border-[#164A4A]/30" />
+            {/* Arrow icon */}
+            <div className="absolute right-[24%] bottom-1 bg-[#164A4A]/10 rounded-full p-1">
+              <ArrowDownRight size={16} className="text-[#164A4A]" />
+            </div>
+          </div>
 
-      {/* Empty state */}
-      {!fee && (
+          {/* ── Step 2: RIGHT ── */}
+          <div className="w-full flex justify-end">
+            <div className="w-[55%] bg-white border-2 border-green-500/30 rounded-2xl p-6 shadow-md relative">
+              <span className="absolute -top-3 -right-3 w-8 h-8 bg-green-600 text-white text-xs font-bold rounded-full flex items-center justify-center shadow">2</span>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
+                  <CheckCircle size={18} className="text-green-600" />
+                </div>
+                <p className="text-xs font-bold text-[#687B78] uppercase tracking-wider">Total Earned</p>
+              </div>
+              <p className="text-3xl font-bold text-[#202828]">₹{(data?.trainer?.totalEarnings || 0).toLocaleString('en-IN')}</p>
+              <p className="text-xs text-[#A8ADA9] mt-2">All time payments received</p>
+            </div>
+          </div>
+
+          {/* Arrow 2 → 3 (left-pointing down-left) */}
+          <div className="w-full flex justify-center items-center py-2 relative h-14">
+            <div className="absolute right-[27%] top-0 h-full w-px border-l-2 border-dashed border-blue-400/40" />
+            <div className="absolute right-[27%] bottom-0 w-[46%] h-px border-b-2 border-dashed border-blue-400/40" />
+            <div className="absolute left-[27%] bottom-0 h-1/2 w-px border-l-2 border-dashed border-blue-400/40" />
+            {/* Arrow icon */}
+            <div className="absolute left-[24%] bottom-1 bg-blue-50 rounded-full p-1">
+              <ArrowDownLeft size={16} className="text-blue-500" />
+            </div>
+          </div>
+
+          {/* ── Step 3: LEFT ── */}
+          <div className="w-full flex justify-start">
+            <div className="w-[55%] bg-white border-2 border-blue-400/30 rounded-2xl p-6 shadow-md relative">
+              <span className="absolute -top-3 -left-3 w-8 h-8 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow">3</span>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <IndianRupee size={18} className="text-blue-500" />
+                </div>
+                <p className="text-xs font-bold text-[#687B78] uppercase tracking-wider">Available Balance</p>
+              </div>
+              <p className="text-3xl font-bold text-[#202828]">₹{(data?.trainer?.availableBalance || 0).toLocaleString('en-IN')}</p>
+              <p className="text-xs text-[#A8ADA9] mt-2">Ready to withdraw</p>
+            </div>
+          </div>
+
+        </div>
+      ) : (
+        /* Empty state */
         <div className="bg-white border border-[#E8E5DA] rounded-2xl p-12 text-center shadow-sm">
           <TrendingUp size={40} className="mx-auto text-[#CBD5E1] mb-4" />
           <h3 className="text-lg font-semibold text-[#455250]">No Fee Configured</h3>

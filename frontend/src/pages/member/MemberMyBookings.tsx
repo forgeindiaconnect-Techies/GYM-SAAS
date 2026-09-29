@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, Plus, User, Video, RefreshCw, XCircle } from 'lucide-react';
+import { Clock, MapPin, Plus, Video, RefreshCw, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 

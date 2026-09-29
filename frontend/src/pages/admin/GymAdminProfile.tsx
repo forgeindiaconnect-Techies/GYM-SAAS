@@ -50,9 +50,9 @@ const GymAdminProfile = () => {
             trainingMode: fetchedGym.trainingMode || 'offline',
             memberCapacity: fetchedGym.memberCapacity || '',
             trainerCapacity: fetchedGym.trainerCapacity || '',
-            website: fetchedGym.website || 'www.messyfitness.com',
+            website: fetchedGym.website || (fetchedGym.name ? `www.${fetchedGym.name.toLowerCase().replace(/\s+/g, '')}.com` : 'www.dude.com'),
             taxId: fetchedGym.taxId || 'GYM-TAX-09823',
-            ownerName: user?.firstName || 'Selva Kumar',
+            ownerName: user?.firstName ? `${user.firstName}${user.lastName ? ' ' + user.lastName : ''}` : 'Ananth',
             ownerRole: 'Gym Owner',
             operatingHours: fetchedGym.operatingHours || '05:00 AM - 11:00 PM',
           });

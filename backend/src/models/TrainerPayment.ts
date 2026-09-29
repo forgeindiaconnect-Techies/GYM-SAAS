@@ -6,7 +6,7 @@ export interface ITrainerPayment extends Document {
   trainerId: mongoose.Types.ObjectId;
   trainerFeeId: mongoose.Types.ObjectId;
   amount: number;
-  paymentMethod: 'Bank Transfer' | 'UPI' | 'Manual Payment' | 'Other';
+  paymentMethod: 'Bank Transfer' | 'UPI' | 'Manual Payment' | 'Cash' | 'Other';
   transactionId?: string;
   paymentDate: Date;
   paymentProof?: string;
@@ -23,7 +23,7 @@ const trainerPaymentSchema = new Schema<ITrainerPayment>({
   trainerId: { type: Schema.Types.ObjectId, ref: 'Trainer', required: true },
   trainerFeeId: { type: Schema.Types.ObjectId, ref: 'TrainerFee', required: true },
   amount: { type: Number, required: true },
-  paymentMethod: { type: String, enum: ['Bank Transfer', 'UPI', 'Manual Payment', 'Other'], required: true },
+  paymentMethod: { type: String, enum: ['Bank Transfer', 'UPI', 'Manual Payment', 'Cash', 'Other'], required: true },
   transactionId: { type: String },
   paymentDate: { type: Date, required: true },
   paymentProof: { type: String },

@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { CreditCard, CheckCircle2, AlertCircle, Loader2, Calendar } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const MemberSubscription = () => {
-  const { user } = useAuth();
   const [memberships, setMemberships] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

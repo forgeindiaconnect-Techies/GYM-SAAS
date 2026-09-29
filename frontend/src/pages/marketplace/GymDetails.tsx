@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, Star, Activity, CheckCircle, Clock, Users, Phone, Mail, Globe, ArrowLeft, Loader2, ShieldCheck, Dumbbell } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { MapPin, Star, Activity, CheckCircle, Phone, Mail, Globe, ArrowLeft, Loader2, ShieldCheck, Dumbbell } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';

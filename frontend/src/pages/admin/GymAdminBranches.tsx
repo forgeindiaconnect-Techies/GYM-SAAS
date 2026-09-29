@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Plus, MapPin, Building2, Phone, Mail, MoreVertical, Eye, Edit, Power, Trash2, ShieldCheck, Activity } from 'lucide-react';
+import { Plus, MapPin, Building2, Phone, Eye, Trash2, ShieldCheck, Activity } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 

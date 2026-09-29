@@ -2,17 +2,26 @@ import { Request, Response } from 'express';
 import TrainerFee from '../models/TrainerFee';
 import TrainerPayment from '../models/TrainerPayment';
 import Trainer from '../models/Trainer';
+import Gym from '../models/Gym';
 import mongoose from 'mongoose';
 import { AuthRequest } from '../middlewares/auth';
 import TrainerWithdrawal from '../models/TrainerWithdrawal';
 import Notification from '../models/Notification';
 
+const resolveGymId = async (req: AuthRequest): Promise<string | undefined> => {
+  if (req.user?.gymId) return req.user.gymId.toString();
+  if (req.query.gymId) return req.query.gymId as string;
+  const gym = await Gym.findOne().sort({ createdAt: -1 });
+  return gym?._id?.toString();
+};
+
 // --- Gym Owner: Trainer Fee Management ---
 
 export const setTrainerFee = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId, gymId } = req.user!;
-    const branchId = (req.user as any).branchId;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const userId = (req.user as any)?.id || (req.user as any)?._id;
+    const branchId = (req.user as any)?.branchId;
     const { trainerId, trainingType, feeAmount, billingCycle, effectiveFrom, paymentMethod, status, notes, accountHolder, bankName, accountNumber, ifscCode, upiId, upiName } = req.body;
 
     if (!trainerId || !trainingType || !feeAmount || !billingCycle || !effectiveFrom || !paymentMethod) {
@@ -20,7 +29,9 @@ export const setTrainerFee = async (req: AuthRequest, res: Response) => {
     }
 
     // Verify trainer belongs to the gym
-    const trainer = await Trainer.findOne({ _id: trainerId, gymId });
+    const trainerQuery: any = { _id: trainerId };
+    if (gymId) trainerQuery.gymId = gymId;
+    const trainer = await Trainer.findOne(trainerQuery);
     if (!trainer) {
       return res.status(404).json({ success: false, message: 'Trainer not found in this gym' });
     }
@@ -54,6 +65,11 @@ export const setTrainerFee = async (req: AuthRequest, res: Response) => {
 
     await newFee.save();
 
+    // Also update fee on Trainer document for complete synchronization
+    trainer.fee = Number(feeAmount);
+    trainer.paymentType = billingCycle === 'Weekly' ? 'Per Week' : billingCycle === 'Per Session' ? 'Per Session' : 'Per Month';
+    await trainer.save();
+
     // Create Notification for Trainer
     await Notification.create({
       recipientId: trainer.userId,
@@ -76,14 +92,16 @@ export const setTrainerFee = async (req: AuthRequest, res: Response) => {
 
 export const updateTrainerFeeStatus = async (req: AuthRequest, res: Response) => {
   try {
-    const { gymId } = req.user!;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
     const { feeId, status } = req.body;
 
     if (!feeId || !status) {
       return res.status(400).json({ success: false, message: 'Fee ID and status are required' });
     }
 
-    const fee = await TrainerFee.findOne({ _id: feeId, gymId });
+    const feeQuery: any = { _id: feeId };
+    if (gymId) feeQuery.gymId = gymId;
+    const fee = await TrainerFee.findOne(feeQuery);
     if (!fee) {
       return res.status(404).json({ success: false, message: 'Trainer fee not found' });
     }
@@ -100,18 +118,57 @@ export const updateTrainerFeeStatus = async (req: AuthRequest, res: Response) =>
 
 export const getTrainerFees = async (req: AuthRequest, res: Response) => {
   try {
-    const { gymId } = req.user!;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const userId = (req.user as any)?.id || (req.user as any)?._id;
     
+    // Auto-sync any existing trainers with fee who don't have an active TrainerFee document
+    const trainersWithFeeQuery: any = { fee: { $exists: true, $gt: 0 } };
+    if (gymId) trainersWithFeeQuery.gymId = gymId;
+    const trainersWithFee = await Trainer.find(trainersWithFeeQuery);
+    for (const t of trainersWithFee) {
+      const existingFee = await TrainerFee.findOne({ trainerId: t._id, status: 'Active' });
+      if (!existingFee) {
+        const cycleMap: Record<string, 'Weekly' | 'Monthly' | 'Per Session' | 'Custom'> = {
+          'Per Week': 'Weekly',
+          'Per Month': 'Monthly',
+          'Per Session': 'Per Session'
+        };
+        const modeMap: Record<string, string> = {
+          'online': 'Online Training',
+          'offline': 'Offline Training',
+          'both': 'Hybrid Training'
+        };
+        await TrainerFee.create({
+          gymId: gymId || t.gymId,
+          branchId: t.branchId,
+          trainerId: t._id,
+          trainingType: modeMap[t.trainingMode] || 'Offline Training',
+          feeAmount: Number(t.fee),
+          billingCycle: cycleMap[t.paymentType || 'Per Month'] || 'Monthly',
+          effectiveFrom: t.createdAt || new Date(),
+          paymentMethod: 'Bank Transfer',
+          status: 'Active',
+          notes: 'Auto-synced from trainer profile',
+          createdBy: userId
+        });
+      }
+    }
+
     // Fetch all active fees and populate trainer details
-    const fees = await TrainerFee.find({ gymId, status: 'Active' })
+    const feesQuery: any = { status: 'Active' };
+    if (gymId) feesQuery.gymId = gymId;
+    const fees = await TrainerFee.find(feesQuery)
       .populate({
         path: 'trainerId',
-        select: 'name email profilePhoto specialization'
+        select: 'name email phone profilePhoto specialization experience trainingMode fee paymentType status createdAt'
       })
       .sort({ createdAt: -1 });
 
-    // Also get all trainers in gym that don't have a fee set yet (so owner can see who needs one)
-    const trainers = await Trainer.find({ gymId, status: 'Active' }).select('name email profilePhoto specialization');
+    // Also get all trainers in gym with full details
+    const trainersQuery: any = {};
+    if (gymId) trainersQuery.gymId = gymId;
+    const trainers = await Trainer.find(trainersQuery)
+      .select('name email phone profilePhoto specialization experience trainingMode fee paymentType status createdAt');
 
     res.status(200).json({ success: true, fees, trainers });
   } catch (error) {
@@ -124,17 +181,16 @@ export const getTrainerFees = async (req: AuthRequest, res: Response) => {
 
 export const getPendingPayments = async (req: AuthRequest, res: Response) => {
   try {
-    const { gymId } = req.user!;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
 
     // For simplicity in this demo logic, we'll return all active fees as "pending" potentials
-    // In a real complex system, you'd calculate exact sessions/weeks passed since last payment.
-    const activeFees = await TrainerFee.find({ gymId, status: { $in: ['Active', 'Pending', 'Rejected'] } })
+    const pendingQuery: any = { status: { $in: ['Active', 'Pending', 'Rejected'] } };
+    if (gymId) pendingQuery.gymId = gymId;
+    const activeFees = await TrainerFee.find(pendingQuery)
       .populate('trainerId', 'name email profilePhoto');
 
     const pending = activeFees.map(fee => {
-      // Mocking due date and pending amount for now based on fee config
-      // A robust implementation would query sessions or check calendar weeks
-      const nextDueDate = new Date(); // Mock
+      const nextDueDate = new Date();
       nextDueDate.setDate(nextDueDate.getDate() + 7);
       
       return {
@@ -143,7 +199,7 @@ export const getPendingPayments = async (req: AuthRequest, res: Response) => {
         feeAmount: fee.feeAmount,
         billingCycle: fee.billingCycle,
         dueDate: nextDueDate,
-        amount: fee.feeAmount, // Assuming 1 cycle due
+        amount: fee.feeAmount,
         status: fee.status,
         paymentMethod: fee.paymentMethod,
         bankDetails: fee.bankDetails,
@@ -160,8 +216,9 @@ export const getPendingPayments = async (req: AuthRequest, res: Response) => {
 
 export const processPayment = async (req: AuthRequest, res: Response) => {
   try {
-    const { gymId, id: userId } = req.user!;
-    const branchId = (req.user as any).branchId;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const userId = (req.user as any)?.id || (req.user as any)?._id;
+    const branchId = (req.user as any)?.branchId;
     const { trainerId, trainerFeeId, amount, paymentMethod, transactionId, paymentDate, paymentProof, notes } = req.body;
 
     if (!trainerId || !trainerFeeId || !amount || !paymentMethod || !paymentDate) {
@@ -221,9 +278,11 @@ export const processPayment = async (req: AuthRequest, res: Response) => {
 
 export const getPaymentHistoryGymOwner = async (req: AuthRequest, res: Response) => {
   try {
-    const { gymId } = req.user!;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
     
-    const payments = await TrainerPayment.find({ gymId })
+    const query: any = {};
+    if (gymId) query.gymId = gymId;
+    const payments = await TrainerPayment.find(query)
       .populate('trainerId', 'name email profilePhoto')
       .populate('trainerFeeId', 'trainingType feeAmount billingCycle')
       .sort({ paymentDate: -1, createdAt: -1 });
@@ -237,9 +296,11 @@ export const getPaymentHistoryGymOwner = async (req: AuthRequest, res: Response)
 
 export const getTrainerEarningsGymOwner = async (req: AuthRequest, res: Response) => {
   try {
-    const { gymId } = req.user!;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
     
-    const payments = await TrainerPayment.find({ gymId, paymentStatus: 'Paid' });
+    const query: any = { paymentStatus: 'Paid' };
+    if (gymId) query.gymId = gymId;
+    const payments = await TrainerPayment.find(query);
     const totalPaidOut = payments.reduce((sum, p) => sum + p.amount, 0);
 
     res.status(200).json({ success: true, totalPaidOut, paymentsCount: payments.length });

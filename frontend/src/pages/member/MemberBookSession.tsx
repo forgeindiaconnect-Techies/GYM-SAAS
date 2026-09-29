@@ -59,7 +59,7 @@ const MemberBookSession = () => {
   }, [allTrainers, gym, formData.type]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const handleBook = async (e) => {
+  const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.trainerId || !formData.date || !formData.time) return;
     

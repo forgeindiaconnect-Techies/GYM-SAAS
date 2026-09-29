@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Loader2, AlertCircle, Phone, Mail, User, UserPlus, MoreVertical, Edit2, Eye, X, Check, Clock, CheckCircle, XCircle, ShieldAlert, Users, Trash2, Download, FileText, Table as TableIcon } from 'lucide-react';
+import { Search, Loader2, AlertCircle, Phone, Mail, User, UserPlus, Edit2, Eye, X, Check, Clock, CheckCircle, XCircle, ShieldAlert, Users, Trash2, Download, FileText, Table as TableIcon } from 'lucide-react';
 import api from '../../utils/api';
 import { exportToPDF, exportToExcel, exportToWord } from '../../utils/export';
 
@@ -44,7 +44,6 @@ const SuperAdminCustomers = () => {
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('ALL');
-  const [statusUpdating, setStatusUpdating] = useState<string | null>(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
 
   // Modals state
@@ -67,24 +66,6 @@ const SuperAdminCustomers = () => {
       setError(err.response?.data?.message || 'Failed to fetch customers');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleStatusChange = async (id: string, newStatus: string) => {
-    try {
-      setStatusUpdating(id);
-      // Optimistic UI update for immediate feedback
-      setCustomers(prev => prev.map(c => c._id === id ? { ...c, approvalStatus: newStatus } : c));
-      
-      try {
-        await api.put(`/users/${id}/status`, { status: newStatus });
-      } catch (apiErr) {
-        console.warn('API update failed, but UI state updated for demonstration', apiErr);
-      }
-    } catch (err: any) {
-      console.error(err);
-    } finally {
-      setStatusUpdating(null);
     }
   };
 

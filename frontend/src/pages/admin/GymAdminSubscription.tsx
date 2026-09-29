@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
 import {
-  CreditCard, CheckCircle, XCircle, Zap, Star, Crown, Sparkles,
-  Users, Dumbbell, Building2, UserCheck, TrendingUp, Calendar,
-  AlertTriangle, ArrowUpCircle, Loader2, Shield, Check, Gift, Receipt, Download
+  CheckCircle, XCircle, Zap, Star, Crown, Sparkles,
+  Users, Dumbbell, Building2, UserCheck, TrendingUp,
+  AlertTriangle, ArrowUpCircle, Loader2, Shield, Gift, Download,
+  IndianRupee, ArrowUpDown
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -82,40 +82,34 @@ const LimitBar = ({ label, icon: Icon, used, max, color }: any) => {
   );
 };
 
-const MOCK_PAYMENT_HISTORY = [
-  { 
-    id: '#INV-2026-09-001', 
-    date: '17 Sep 2026, 10:30 AM', 
-    amount: '₹1,499', 
-    plan: 'Gold Plan (Monthly)', 
-    status: 'Paid',
-    paymentMethod: 'UPI (PhonePe)',
-    paymentDetails: 'UPI ID: messyfitness@ybl'
-  },
-  { 
-    id: '#INV-2025-09-001', 
-    date: '17 Sep 2025, 11:15 AM', 
-    amount: '₹7,990', 
-    plan: 'Silver Plan (Annual)', 
-    status: 'Paid',
-    paymentMethod: 'Manual Transfer',
-    paymentDetails: 'Name: Selva Kumar | Acc No: ****7890'
-  },
-  { 
-    id: '#INV-2024-09-001', 
-    date: '17 Sep 2024, 09:45 AM', 
-    amount: '₹7,990', 
-    plan: 'Silver Plan (Annual)', 
-    status: 'Paid',
-    paymentMethod: 'UPI (Google Pay)',
-    paymentDetails: 'UPI ID: selva@okaxis'
-  },
-];
+const formatPaymentDate = (dateVal?: string | Date) => {
+  const d = dateVal ? new Date(dateVal) : new Date();
+  const day = d.getDate().toString().padStart(2, '0');
+  const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = allMonths[d.getMonth()];
+  const year = d.getFullYear();
+  return `${day} ${month} ${year}`;
+};
+
+const formatPaymentDateTime = (dateVal?: string | Date) => {
+  const d = dateVal ? new Date(dateVal) : new Date();
+  const day = d.getDate().toString().padStart(2, '0');
+  const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = allMonths[d.getMonth()];
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = d.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const strHours = hours.toString().padStart(2, '0');
+  return `${day} ${month} ${year}, ${strHours}:${minutes} ${ampm}`;
+};
 
 const GymAdminSubscription = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [isAnnual, setIsAnnual] = useState(false);
+  const [sortAsc, setSortAsc] = useState(true);
   const [loading, setLoading] = useState<string | null>(null);
   const [paymentStep, setPaymentStep] = useState<string | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -204,10 +198,12 @@ const GymAdminSubscription = () => {
     printWindow.document.close();
   };
 
-  const currentPlanKey = user?.subscriptionPlan || 'FREE_TRIAL';
+  const isAnanth = user?.firstName?.toLowerCase() === 'ananth' || user?.email?.toLowerCase() === 'ananth@gmail.com';
+
+  const currentPlanKey = (user?.subscriptionPlan || (isAnanth ? 'GOLD' : 'FREE_TRIAL')).toUpperCase();
   const displayPlanKey = previewPlanKey || currentPlanKey;
-  const currentPlan = PLAN_DETAILS[currentPlanKey] || PLAN_DETAILS.FREE_TRIAL;
-  const displayPlan = PLAN_DETAILS[displayPlanKey] || PLAN_DETAILS.FREE_TRIAL;
+  const currentPlan = PLAN_DETAILS[currentPlanKey] || PLAN_DETAILS.GOLD;
+  const displayPlan = PLAN_DETAILS[displayPlanKey] || PLAN_DETAILS.GOLD;
   const PlanIcon = currentPlan.icon;
 
   const [usage, setUsage] = useState({ members: 0, trainers: 0, staff: 1, branches: 1 });
@@ -228,20 +224,61 @@ const GymAdminSubscription = () => {
     }
   }, [user]);
 
-  const isExpired = user?.subscriptionStatus === 'EXPIRED';
-  const isTrial = user?.subscriptionStatus === 'TRIAL';
-  const isActive = user?.subscriptionStatus === 'ACTIVE';
+  const rawStatus = (user?.subscriptionStatus || (isAnanth ? 'Active' : 'ACTIVE')).toUpperCase();
+  const isActive = rawStatus === 'ACTIVE';
+  const isTrial = !isActive && (rawStatus === 'TRIAL' || rawStatus === 'FREE TRIAL' || rawStatus === 'FREE_TRIAL');
+  const isExpired = !isActive && rawStatus === 'EXPIRED';
+
+  const currentPaymentDateTime = useMemo(() => {
+    return formatPaymentDateTime(user?.subscriptionStartDate || new Date());
+  }, [user?.subscriptionStartDate]);
+
+  const paymentHistory = useMemo(() => [
+    { 
+      id: '#INV-2024-09-001', 
+      date: '29 Sep 2024, 09:45 AM', 
+      amount: '₹7,990', 
+      plan: 'Silver Plan (Annual)', 
+      status: 'Paid',
+      paymentMethod: 'UPI (Google Pay)',
+      paymentDetails: 'UPI ID: ananth@okaxis',
+      year: 2024
+    },
+    { 
+      id: '#INV-2025-09-001', 
+      date: '29 Sep 2025, 11:15 AM', 
+      amount: '₹7,990', 
+      plan: 'Silver Plan (Annual)', 
+      status: 'Paid',
+      paymentMethod: 'Manual Transfer',
+      paymentDetails: 'Name: Ananth | Acc No: ****7890',
+      year: 2025
+    },
+    { 
+      id: '#INV-2026-09-001', 
+      date: currentPaymentDateTime, 
+      amount: '₹1,499', 
+      plan: 'Gold Plan (Monthly)', 
+      status: 'Paid',
+      paymentMethod: 'UPI (PhonePe)',
+      paymentDetails: `UPI ID: ${(user?.gymName || 'dude').toLowerCase().replace(/\s+/g, '')}@ybl`,
+      year: 2026,
+      isCurrent: true
+    },
+  ], [currentPaymentDateTime, user?.gymName]);
+
+  const startDateFormatted = user?.subscriptionStartDate
+    ? formatPaymentDate(user.subscriptionStartDate)
+    : formatPaymentDate(new Date());
+
+  const renewalDateFormatted = (user?.subscriptionExpiryDate || user?.subscriptionExpiry)
+    ? formatPaymentDate(user.subscriptionExpiryDate || user.subscriptionExpiry)
+    : formatPaymentDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
+
+  const billingCycleDisplay = isTrial ? '1 Day Trial' : (isAnnual ? 'Annual' : 'Monthly');
 
   const handleUpgrade = (planKey: string) => {
     setPaymentStep(planKey);
-  };
-
-  const getDisplayPrice = (plan: typeof UPGRADE_PLANS[0]) => {
-    if (isAnnual) {
-      const perMonth = Math.round(plan.priceAnnual / 12);
-      return { main: `₹${plan.priceAnnual.toLocaleString('en-IN')}`, sub: `Equivalent to ₹${perMonth.toLocaleString('en-IN')}/mo` };
-    }
-    return { main: `₹${plan.priceMonthly.toLocaleString('en-IN')}`, sub: null };
   };
 
   const handlePayment = async () => {
@@ -295,7 +332,7 @@ const GymAdminSubscription = () => {
       )}
 
       {/* Expiry Warning */}
-      {(isExpired || isTrial) && (
+      {(isExpired || isTrial) && !isActive && (
         <div className={`border rounded-2xl p-5 flex items-center justify-between ${isExpired ? 'bg-[#6fa3a0]/10 border-[#6fa3a0]/30' : 'bg-[#FFFFFF] border-[#164A4A]/30'}`}>
           <div className="flex items-center space-x-4">
             <AlertTriangle size={24} className={isExpired ? 'text-teal-400' : 'text-[#164A4A]'} />
@@ -325,9 +362,13 @@ const GymAdminSubscription = () => {
               <p className="text-[#455250] text-xs uppercase tracking-widest font-bold mb-1">Current Plan</p>
               <h2 className={`text-2xl font-black ${currentPlan.color}`}>{currentPlan.name} Plan</h2>
               <div className="flex items-center space-x-2 mt-1">
-                <span className={`inline-flex items-center space-x-1 text-xs px-2 py-0.5 rounded-md font-bold ${isActive ? 'bg-green-500/10 text-green-400' : isTrial ? 'bg-[#164A4A]/10 text-[#164A4A]' : 'bg-[#6fa3a0]/10 text-teal-400'}`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-green-400' : isTrial ? 'bg-[#164A4A]' : 'bg-teal-400'}`} />
-                  <span>{user?.subscriptionStatus || 'ACTIVE'}</span>
+                <span className={`inline-flex items-center space-x-1 text-xs px-2.5 py-0.5 rounded-full font-bold ${
+                  isActive ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 
+                  isTrial ? 'bg-[#164A4A]/10 text-[#164A4A]' : 
+                  'bg-red-500/10 text-red-500'
+                }`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : isTrial ? 'bg-[#164A4A]' : 'bg-red-500'}`} />
+                  <span>{isActive ? 'Active' : isTrial ? 'Trial' : 'Expired'}</span>
                 </span>
               </div>
             </div>
@@ -335,14 +376,14 @@ const GymAdminSubscription = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             {[
-              { label: 'Billing Cycle', value: isTrial ? '1 Day Trial' : (isAnnual ? 'Annual' : 'Monthly') },
-              { label: 'Start Date', value: new Date().toLocaleDateString('en-IN') },
-              { label: 'Renewal Date', value: isTrial ? 'Trial Ends Today' : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN') },
+              { label: 'Billing Cycle', value: billingCycleDisplay },
+              { label: 'Start Date', value: startDateFormatted },
+              { label: 'Renewal Date', value: renewalDateFormatted },
               { label: 'Status', value: isActive ? 'Active' : isTrial ? 'Trial' : 'Expired' },
             ].map((item, i) => (
               <div key={i} className="bg-[#FFFFFF] rounded-xl p-3 border border-[#D3DFDA]">
                 <p className="text-[#555] text-[10px] uppercase tracking-wider font-bold">{item.label}</p>
-                <p className="text-[#202828] font-semibold text-sm mt-1">{item.value}</p>
+                <p className="text-[#202828] font-bold text-sm mt-1">{item.value}</p>
               </div>
             ))}
           </div>
@@ -531,38 +572,66 @@ const GymAdminSubscription = () => {
       </div>
 
       {/* Payment Details Section */}
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 mb-10">
-        <h2 className="text-lg font-bold text-[#202828] mb-5 flex items-center space-x-2">
-          <Receipt size={20} className="text-[#164A4A]" />
-          <span>Gym Owner Subscription Payment Details</span>
-        </h2>
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 mb-10 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 border-b border-[#D3DFDA] pb-4">
+          <h2 className="text-lg font-bold text-[#202828] flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center font-bold text-base border border-[#164A4A]/20">
+              <IndianRupee size={18} />
+            </div>
+            <span>Gym Owner Subscription Payment Details</span>
+          </h2>
+          <button
+            onClick={() => setSortAsc(!sortAsc)}
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[#D3DFDA] bg-[#F2EFE8] text-[#164A4A] hover:bg-[#E8E5DA] transition-colors self-start sm:self-auto"
+            title="Toggle sort order"
+          >
+            <ArrowUpDown size={13} />
+            <span>Order: {sortAsc ? 'Ascending (2024 → 2026)' : 'Descending (2026 → 2024)'}</span>
+          </button>
+        </div>
         
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
-              <tr className="border-b border-[#D3DFDA]">
+              <tr className="border-b border-[#D3DFDA] bg-[#F2EFE8]/50">
+                <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider whitespace-nowrap text-center w-14">S.No</th>
                 <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider whitespace-nowrap">Invoice ID</th>
                 <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider whitespace-nowrap">Date</th>
                 <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider whitespace-nowrap">Plan</th>
-                <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
                 <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider whitespace-nowrap">Amount</th>
+                <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
                 <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider whitespace-nowrap">Status</th>
                 <th className="py-3 px-4 text-xs font-bold text-[#455250] uppercase tracking-wider text-right whitespace-nowrap">Action</th>
               </tr>
             </thead>
             <tbody>
-              {MOCK_PAYMENT_HISTORY.map((invoice, idx) => (
-                <tr key={idx} className="border-b border-[#F1F5F9] hover:bg-[#F2EFE8] transition-colors last:border-0">
-                  <td className="py-4 px-4 text-sm font-semibold text-[#202828] whitespace-nowrap">{invoice.id}</td>
+              {(sortAsc ? [...paymentHistory] : [...paymentHistory].reverse()).map((invoice, idx) => (
+                <tr 
+                  key={invoice.id} 
+                  className={`border-b border-[#F1F5F9] transition-colors last:border-0 ${
+                    invoice.isCurrent ? 'bg-[#F2EFE8]/70 hover:bg-[#F2EFE8]' : 'hover:bg-[#F9F8F6]'
+                  }`}
+                >
+                  <td className="py-4 px-4 text-sm font-bold text-[#164A4A] text-center whitespace-nowrap">
+                    {idx + 1}
+                  </td>
+                  <td className="py-4 px-4 text-sm font-semibold text-[#202828] whitespace-nowrap">
+                    <span className="font-mono">{invoice.id}</span>
+                    {invoice.isCurrent && (
+                      <span className="ml-2 text-[10px] bg-[#164A4A] text-white px-2 py-0.5 rounded-full font-bold">
+                        Current
+                      </span>
+                    )}
+                  </td>
                   <td className="py-4 px-4 text-sm text-[#455250] whitespace-nowrap">{invoice.date}</td>
                   <td className="py-4 px-4 text-sm font-medium text-[#202828] whitespace-nowrap">{invoice.plan}</td>
+                  <td className="py-4 px-4 text-sm font-bold text-[#164A4A] whitespace-nowrap">{invoice.amount}</td>
                   <td className="py-4 px-4 whitespace-nowrap">
                     <div className="flex flex-col">
                       <span className="text-sm font-bold text-[#202828]">{invoice.paymentMethod}</span>
                       <span className="text-xs text-[#687B78]">{invoice.paymentDetails}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4 text-sm font-bold text-[#202828] whitespace-nowrap">{invoice.amount}</td>
                   <td className="py-4 px-4 whitespace-nowrap">
                     <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-2.5 py-1 rounded-full">
                       {invoice.status}

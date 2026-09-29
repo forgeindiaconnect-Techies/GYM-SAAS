@@ -51,6 +51,8 @@ export interface IUser extends Document {
   subscriptionStatus: SubscriptionStatus;
   subscriptionPlan?: string;
   subscriptionExpiry?: Date;
+  subscriptionStartDate?: Date;
+  subscriptionExpiryDate?: Date;
   paymentStatus?: 'Pending Verification' | 'Approved' | 'Rejected' | 'Refunded';
 
   // Personal details
@@ -99,7 +101,7 @@ export interface IUser extends Document {
 const userSchema = new Schema<IUser>(
   {
     firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    lastName: { type: String, default: '' },
     email: { type: String, required: true, unique: true, lowercase: true },
     passwordHash: { type: String, required: true },
     mobile: { type: String, required: true },
@@ -124,6 +126,8 @@ const userSchema = new Schema<IUser>(
     },
     subscriptionPlan: { type: String },
     subscriptionExpiry: { type: Date },
+    subscriptionStartDate: { type: Date },
+    subscriptionExpiryDate: { type: Date },
     paymentStatus: { type: String, enum: ['Pending Verification', 'Approved', 'Rejected', 'Refunded'] },
 
     dateOfBirth: { type: Date },

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Star, MapPin, Award, MessageCircle, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Star, MapPin, Award, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 

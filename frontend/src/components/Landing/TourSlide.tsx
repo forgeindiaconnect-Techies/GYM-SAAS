@@ -1,4 +1,4 @@
-import { Bot, User, MapPin, Activity, ArrowRight, PlayCircle, Star, CheckCircle, XCircle, TrendingUp, Dumbbell, ShieldCheck, Calendar, FileText, Settings, HeartPulse, CreditCard, Monitor } from 'lucide-react';
+import { Bot, User, MapPin, Activity, ArrowRight, CheckCircle, XCircle, TrendingUp, Dumbbell, ShieldCheck, Calendar, FileText, Settings, HeartPulse, CreditCard, Monitor } from 'lucide-react';
 
 export const TourSlide = ({ journey, step, setJourney }: { journey: 'select' | 'customer' | 'owner', step: number, setJourney: (j: 'select' | 'customer' | 'owner') => void }) => {
   

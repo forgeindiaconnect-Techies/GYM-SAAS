@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, MoreVertical, MessageSquare, Activity, X, User, Phone } from 'lucide-react';
+import { Users, Search, MoreVertical, MessageSquare, Activity, X, User } from 'lucide-react';
 import api from '../../utils/api';
 
 const TrainerMembers = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Send, Phone, Video, MoreVertical, Image as ImageIcon, Paperclip } from 'lucide-react';
 
 const MemberMessages = () => {

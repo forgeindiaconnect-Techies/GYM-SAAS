@@ -48,6 +48,14 @@ const TrainerMyAssignedFee = () => {
 
   const activeFee = fees.find(f => f.status === 'Active');
 
+  // Sort: Active first → Pending → Inactive/Rejected, then newest date within each group
+  const STATUS_ORDER: Record<string, number> = { Active: 0, Pending: 1, Inactive: 2, Rejected: 3 };
+  const sortedFees = [...fees].sort((a, b) => {
+    const statusDiff = (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99);
+    if (statusDiff !== 0) return statusDiff;
+    return new Date(b.effectiveFrom || 0).getTime() - new Date(a.effectiveFrom || 0).getTime();
+  });
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -157,23 +165,48 @@ const TrainerMyAssignedFee = () => {
             </div>
 
             <div className="divide-y divide-gray-100">
-              {fees.map(f => (
-                <div key={f._id} className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              {sortedFees.map((f, index) => (
+                <div
+                  key={f._id}
+                  className={`p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${
+                    f.status === 'Active' ? 'bg-green-50/40 hover:bg-green-50' : 'hover:bg-gray-50'
+                  }`}
+                >
                   <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
-                      <IndianRupee className="w-5 h-5 text-gray-500" />
+                    {/* Order Number */}
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                      f.status === 'Active' ? 'bg-[#164A4A] text-white' :
+                      f.status === 'Pending' ? 'bg-amber-500 text-white' :
+                      'bg-gray-200 text-gray-500'
+                    }`}>
+                      {index + 1}
                     </div>
+
+                    {/* Icon */}
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                      f.status === 'Active' ? 'bg-[#164A4A]/10 border border-[#164A4A]/20' : 'bg-gray-50 border border-gray-200'
+                    }`}>
+                      <IndianRupee className={`w-5 h-5 ${f.status === 'Active' ? 'text-[#164A4A]' : 'text-gray-400'}`} />
+                    </div>
+
+                    {/* Info */}
                     <div>
-                      <p className="text-sm font-semibold text-purple-700">{f.trainingType}</p>
-                      <p className="text-sm text-gray-500 mt-0.5">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-semibold text-purple-700">{f.trainingType}</p>
+                        {f.status === 'Active' && (
+                          <span className="text-[10px] font-bold text-green-700 bg-green-100 px-1.5 py-0.5 rounded uppercase tracking-wide">Current</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-0.5">
                         {new Date(f.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                         {f.effectiveUntil && ` – ${new Date(f.effectiveUntil).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`}
                       </p>
+                      <p className="text-xs text-gray-400 mt-0.5">{f.paymentMethod}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <p className="text-lg font-bold text-gray-900">₹{f.feeAmount?.toLocaleString('en-IN')}</p>
+                  <div className="flex items-center gap-2 ml-auto flex-wrap justify-end">
+                    <p className="text-base font-bold text-gray-900">₹{f.feeAmount?.toLocaleString('en-IN')}</p>
                     <span className={`px-2.5 py-1 text-xs font-semibold rounded-lg ${cycleBadge(f.billingCycle)}`}>
                       {f.billingCycle}
                     </span>
@@ -182,7 +215,7 @@ const TrainerMyAssignedFee = () => {
                     </span>
                     <button
                       onClick={() => setSelectedFee(f)}
-                      className="px-3 py-1.5 text-xs font-semibold text-[#3B82F6] hover:bg-blue-50 rounded-lg transition-colors whitespace-nowrap"
+                      className="px-3 py-1.5 text-xs font-semibold bg-white border border-[#D3DFDA] text-[#164A4A] hover:bg-[#164A4A] hover:text-white rounded-lg transition-colors whitespace-nowrap shadow-sm"
                     >
                       View Details
                     </button>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { IndianRupee, Activity, Tag, Calendar, Bell, ShieldAlert, Clock, Lock } from 'lucide-react';
+import { IndianRupee, Activity, Tag, Calendar, Clock, Lock } from 'lucide-react';
 import api from '../../utils/api';
 
 const TrainerFeeView = () => {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Bot, Search, ArrowRight, UserCheck, CheckCircle2, Clock, FileEdit, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bot, Search, UserCheck, CheckCircle2, Clock, FileEdit } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 

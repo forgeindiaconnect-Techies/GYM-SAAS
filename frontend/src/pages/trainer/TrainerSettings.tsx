@@ -1,4 +1,4 @@
-import { Settings, Shield, Bell, Clock, Lock } from 'lucide-react';
+import { Shield, Bell, Clock, Lock } from 'lucide-react';
 
 const TrainerSettings = () => {
   return (

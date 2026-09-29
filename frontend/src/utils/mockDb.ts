@@ -74,6 +74,69 @@ export const seedMockData = () => {
     addItem('bookings', { member: 'Naveen Kumar', trainer: 'Selvakumar', type: 'Strength Training', status: 'Confirmed', date: '2026-09-29' });
     addItem('bookings', { member: 'Ananya Iyer', trainer: 'Priya Sharma', type: 'Yoga & Mobility', status: 'Pending', date: '2026-09-30' });
   }
+  const existingInvites = getDb('gymInvitations');
+  const statuses = new Set(existingInvites.map((i: any) => i.status));
+  if (existingInvites.length === 0) {
+    addItem('gymInvitations', {
+      gymName: 'classy',
+      type: 'Standard Gym',
+      owner: 'Naveen',
+      email: 'naveen@gmail.com',
+      phone: '9876543210',
+      date: '2026-09-28',
+      status: 'Pending',
+      expiry: '1 Day'
+    });
+  }
+  if (!statuses.has('Sent')) {
+    addItem('gymInvitations', {
+      gymName: 'IronPulse Fitness Club',
+      type: 'Strength & Conditioning',
+      owner: 'Rohan Sharma',
+      email: 'rohan.sharma@ironpulse.com',
+      phone: '9840123456',
+      date: '2026-09-27',
+      status: 'Sent',
+      expiry: '3 Days'
+    });
+  }
+  if (!statuses.has('Accepted')) {
+    addItem('gymInvitations', {
+      gymName: 'FitZone Elite Arena',
+      type: 'CrossFit & Functional',
+      owner: 'Priya Patel',
+      email: 'priya.patel@fitzone.com',
+      phone: '9820556789',
+      date: '2026-09-25',
+      status: 'Accepted',
+      expiry: '7 Days'
+    });
+  }
+  if (!statuses.has('Expired')) {
+    addItem('gymInvitations', {
+      gymName: 'Metro Gym & Wellness',
+      type: 'Cardio & Strength',
+      owner: 'Vikram Singh',
+      email: 'vikram.singh@metrogym.com',
+      phone: '9811223344',
+      date: '2026-09-20',
+      status: 'Expired',
+      expiry: 'Expired'
+    });
+  }
+  if (getDb('deletedGymInvitations').length === 0) {
+    addItem('deletedGymInvitations', {
+      gymName: 'Titan Fitness Arena',
+      type: 'Strength & Conditioning',
+      owner: 'Karthik Raja',
+      email: 'karthik.raja@titanfitness.com',
+      phone: '9840129999',
+      date: '2026-09-15',
+      status: 'Expired',
+      expiry: '7 Days',
+      deletedAt: '2026-09-22T14:30:00.000Z'
+    });
+  }
 };
 
 // Auto seed on load in browser

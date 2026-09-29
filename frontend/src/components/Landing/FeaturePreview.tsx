@@ -1,6 +1,6 @@
-import { Activity, Dumbbell, MapPin, Star, Calendar, MessageSquare, Target, Zap, CheckCircle, Video, Utensils, TrendingUp, Map, Shield, Users, Search, Award } from 'lucide-react';
+import { Activity, Dumbbell, MapPin, Star, Calendar, MessageSquare, Zap, CheckCircle, Video, Utensils, TrendingUp, Map, Shield, Users, Search, Award } from 'lucide-react';
 
-export const FeaturePreview = ({ tabId, slideIndex, items }: { tabId: string, slideIndex: number, items: string[] }) => {
+export const FeaturePreview = ({ slideIndex, items }: { tabId?: string, slideIndex: number, items: string[] }) => {
   const title = items[slideIndex];
 
   // ==========================================

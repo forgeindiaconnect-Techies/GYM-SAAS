@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Loader2, ShoppingCart, Plus, X, Store, ImageIcon, Info } from 'lucide-react';
+import { Search, Loader2, ShoppingCart, Plus, X, Store, ImageIcon } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 

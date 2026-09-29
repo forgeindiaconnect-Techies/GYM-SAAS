@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Dumbbell, Plus, MoreVertical, Trash2, Edit2, UserSquare, CheckCircle, XCircle } from 'lucide-react';
+import { Dumbbell, Plus, Trash2, Edit2, UserSquare, CheckCircle, XCircle } from 'lucide-react';
 import api from '../../utils/api';
 
 const AdminTrainers = () => {

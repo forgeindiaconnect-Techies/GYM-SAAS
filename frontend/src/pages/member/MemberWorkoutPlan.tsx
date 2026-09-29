@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, PlayCircle, Clock, Flame, Dumbbell, ChevronRight, CheckCircle2, X, Timer, Activity } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { PlayCircle, Clock, Flame, Dumbbell, ChevronRight, CheckCircle2, X, Timer, Activity } from 'lucide-react';
 
 const MemberWorkoutPlan = () => {
   const generateWeekDays = () => {
@@ -63,9 +63,10 @@ const MemberWorkoutPlan = () => {
         const parsed = JSON.parse(saved);
         const times: Record<number, { start?: Date, end?: Date }> = {};
         for (const key in parsed) {
-          times[key] = {};
-          if (parsed[key].start) times[key].start = new Date(parsed[key].start);
-          if (parsed[key].end) times[key].end = new Date(parsed[key].end);
+          const numKey = Number(key);
+          times[numKey] = {};
+          if (parsed[key].start) times[numKey].start = new Date(parsed[key].start);
+          if (parsed[key].end) times[numKey].end = new Date(parsed[key].end);
         }
         return times;
       } catch (e) {}
@@ -133,7 +134,7 @@ const MemberWorkoutPlan = () => {
   };
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (isWorkoutActive) {
       interval = setInterval(() => {
         setWorkoutTime(prev => prev + 1);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Plus, Edit2, Play, Pause, Trash2, Search, ExternalLink } from 'lucide-react';
+import { Building2, Plus, Edit2, Trash2, Search, ExternalLink } from 'lucide-react';
 import api from '../../utils/api';
 
 interface SuperAdminGymsAllProps {

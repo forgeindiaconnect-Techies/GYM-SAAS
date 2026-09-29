@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Bot, CheckCircle2, AlertCircle, RefreshCw, FileText, Calendar, Clock } from 'lucide-react';
 import api from '../../utils/api';
 

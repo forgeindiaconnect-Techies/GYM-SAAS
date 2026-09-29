@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import {
   Upload, Download, FileSpreadsheet, CheckCircle, XCircle, AlertTriangle,
-  Info, Users, RefreshCw, ArrowLeft, Eye, Clock, FileText,
-  ChevronDown, ChevronUp, SkipForward, Edit3, Trash2, Filter,
-  AlertCircle, BarChart2, UserCheck, UserX, Copy, History, Search
+  Info, Users, RefreshCw, ArrowLeft, Eye, FileText,
+  SkipForward, Edit3, Trash2, Filter,
+  AlertCircle, BarChart2, UserCheck, UserX, History, Search
 } from 'lucide-react';
 import api from '../../utils/api';
-import { useAuth } from '../../contexts/AuthContext';
 import { addItem, updateItem, getDb } from '../../utils/mockDb';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -23,6 +22,7 @@ interface ImportRow {
   warnings: string[];
   existingUserId?: string;
   existingUserName?: string;
+  existingData?: Record<string, any>;
   branchId?: string;
   trainerId?: string;
   action: RowAction;
@@ -139,7 +139,6 @@ function downloadErrorReport(failedRows: any[]) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 const GymAdminImportCustomers: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const [step, setStep] = useState<Step>('upload');
   const [dragOver, setDragOver] = useState(false);
@@ -1302,7 +1301,7 @@ const ResultCard: React.FC<{ label: string; value: number; icon: React.ReactNode
   </div>
 );
 
-const ConfirmRow: React.FC<{ label: string; value: number; highlight?: boolean }> = ({ label, value, highlight }) => (
+const ConfirmRow: React.FC<{ label: string; value: string | number; highlight?: boolean }> = ({ label, value, highlight }) => (
   <div className="flex justify-between items-center py-1 border-b border-[#F1F5F9] last:border-0">
     <span className="text-[#455250]">{label}</span>
     <span className={`font-bold ${highlight ? 'text-[#164A4A]' : 'text-[#202828]'}`}>{value}</span>

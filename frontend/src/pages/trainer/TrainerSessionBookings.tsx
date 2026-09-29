@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, Clock, Calendar as CalendarIcon, Video, MapPin, Loader2 } from 'lucide-react';
+import { Clock, Calendar as CalendarIcon, Video, MapPin, Loader2 } from 'lucide-react';
 import api from '../../utils/api';
 
 const TrainerSessionBookings = () => {

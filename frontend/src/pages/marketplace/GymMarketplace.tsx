@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Star, MapPin, Search, Navigation, Filter, Check, Activity, Loader2, PlayCircle, Volume2, VolumeX, Menu, X, ChevronDown } from 'lucide-react';
+import { Star, MapPin, Search, Navigation, Activity, Loader2, Volume2, VolumeX, ChevronDown } from 'lucide-react';
 import api from '../../utils/api';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
 
@@ -33,7 +33,6 @@ const GymMarketplace = () => {
   const [locationCity, setLocationCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [slideIdx, setSlideIdx] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [enquiryGym, setEnquiryGym] = useState<{ id: string, name: string } | null>(null);
   const [muted, setMuted] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);

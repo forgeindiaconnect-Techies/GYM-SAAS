@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Dumbbell, Image as ImageIcon } from 'lucide-react';
+import { Plus, Trash2, Dumbbell } from 'lucide-react';
 
 interface StepProps {
   form: any;

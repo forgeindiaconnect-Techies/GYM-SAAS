@@ -78,7 +78,7 @@ const TrainerDashboard = () => {
                 {upcomingSessions.length === 0 ? (
                   <div className="text-center py-8 text-[#455250]">No upcoming sessions.</div>
                 ) : (
-                  upcomingSessions.map((session, i) => (
+                  upcomingSessions.map((session) => (
                     <div key={session._id} className="flex items-center justify-between p-4 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#164A4A]/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-[#E8E5DA] flex items-center justify-center text-sm font-bold overflow-hidden">

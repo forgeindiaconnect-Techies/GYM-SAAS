@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, User, Building2, MapPin, Wind, CheckSquare, CreditCard, Edit2, Image as ImageIcon } from 'lucide-react';
+import { CheckCircle2, User, MapPin, Wind, CheckSquare, CreditCard, Edit2, Image as ImageIcon } from 'lucide-react';
 
 interface StepProps {
   form: any;

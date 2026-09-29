@@ -1,4 +1,4 @@
-import { CalendarCheck, CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import { useState } from 'react';
 
 const TrainerAttendance = () => {

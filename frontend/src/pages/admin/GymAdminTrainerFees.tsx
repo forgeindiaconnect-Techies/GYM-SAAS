@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { IndianRupee, Plus, Edit, CheckCircle, XCircle, Search, ChevronDown, AlertCircle, Info, Banknote, Smartphone, CreditCard, Clock, X } from 'lucide-react';
+import { IndianRupee, Plus, Edit, CheckCircle, XCircle, Search, ChevronDown, AlertCircle, Clock, X } from 'lucide-react';
 import api from '../../utils/api';
 
 const TRAINING_TYPES = ['Online Training', 'Offline Training', 'Hybrid Training'];
 const BILLING_CYCLES = ['Weekly', 'Monthly'];
-const PAYMENT_METHODS = ['Bank Transfer', 'UPI', 'Cash', 'Other'];
 
 const defaultForm = {
   trainerId: '',
@@ -15,6 +14,12 @@ const defaultForm = {
   paymentMethod: 'Bank Transfer',
   status: 'Active',
   notes: '',
+  accountHolder: '',
+  bankName: '',
+  accountNumber: '',
+  ifscCode: '',
+  upiId: '',
+  upiName: '',
 };
 
 const cycleBadge = (cycle: string) => {
@@ -46,9 +51,44 @@ const GymAdminTrainerFees = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get('/trainer-payments/fees');
-      setFees(res.data.fees || []);
-      setTrainers(res.data.trainers || []);
+      const [feeRes, trainerRes] = await Promise.allSettled([
+        api.get('/trainer-payments/fees'),
+        api.get('/trainers')
+      ]);
+
+      let feeList: any[] = [];
+      let trainerList: any[] = [];
+
+      if (feeRes.status === 'fulfilled' && feeRes.value.data) {
+        feeList = feeRes.value.data.fees || [];
+        trainerList = feeRes.value.data.trainers || [];
+      }
+
+      if (trainerRes.status === 'fulfilled' && trainerRes.value.data) {
+        const directTrainers = trainerRes.value.data.trainers || [];
+        const existingIds = new Set(trainerList.map(t => (t._id || t).toString()));
+        for (const dt of directTrainers) {
+          if (dt && dt._id && !existingIds.has(dt._id.toString())) {
+            trainerList.push(dt);
+            existingIds.add(dt._id.toString());
+          }
+        }
+      }
+
+      // Also ensure any trainer present in feeList.trainerId is included
+      const allTrainerIds = new Set(trainerList.map(t => (t._id || t).toString()));
+      feeList.forEach(f => {
+        if (f.trainerId && typeof f.trainerId === 'object' && f.trainerId._id) {
+          const id = f.trainerId._id.toString();
+          if (!allTrainerIds.has(id)) {
+            trainerList.push(f.trainerId);
+            allTrainerIds.add(id);
+          }
+        }
+      });
+
+      setFees(feeList);
+      setTrainers(trainerList);
     } catch {
       showToast('Failed to load trainer data', 'error');
     } finally {
@@ -66,34 +106,94 @@ const GymAdminTrainerFees = () => {
     ])
   );
 
-  const allRows = trainers.map(t => ({
-    trainer: t,
-    fee: feeMap.get(t._id?.toString()) || null,
-  })).filter(row => {
+  const getEffectiveFee = (trainer: any, feeRecord: any) => {
+    if (feeRecord) return feeRecord;
+    if (trainer && trainer.fee && Number(trainer.fee) > 0) {
+      const modeMap: Record<string, string> = {
+        'online': 'Online Training',
+        'offline': 'Offline Training',
+        'both': 'Hybrid Training'
+      };
+      const cycleMap: Record<string, string> = {
+        'Per Week': 'Weekly',
+        'Per Month': 'Monthly',
+        'Per Session': 'Per Session'
+      };
+      return {
+        _id: null,
+        trainerId: trainer,
+        trainingType: modeMap[trainer.trainingMode] || 'Offline Training',
+        feeAmount: Number(trainer.fee),
+        billingCycle: cycleMap[trainer.paymentType] || 'Monthly',
+        paymentMethod: 'Bank Transfer',
+        effectiveFrom: trainer.createdAt || new Date().toISOString(),
+        status: trainer.status === 'Active' ? 'Active' : 'Pending',
+        isSyncedFromProfile: true,
+      };
+    }
+    return null;
+  };
+
+  const allRows = trainers.map(t => {
+    const feeRecord = feeMap.get(t._id?.toString()) || null;
+    const effectiveFee = getEffectiveFee(t, feeRecord);
+    return {
+      trainer: t,
+      fee: effectiveFee,
+      rawFee: feeRecord,
+    };
+  }).filter(row => {
     const q = search.toLowerCase();
     return row.trainer.name?.toLowerCase().includes(q) || row.trainer.email?.toLowerCase().includes(q);
   });
 
-  const configuredCount = fees.length;
-  const notConfiguredCount = trainers.length - configuredCount;
+  const configuredCount = allRows.filter(r => r.fee !== null).length;
+  const notConfiguredCount = allRows.length - configuredCount;
 
   const openSetFee = (trainer: any) => {
     setEditFee(null);
-    setForm({ ...defaultForm, trainerId: trainer._id });
+    const modeMap: Record<string, string> = {
+      'online': 'Online Training',
+      'offline': 'Offline Training',
+      'both': 'Hybrid Training'
+    };
+    const cycleMap: Record<string, string> = {
+      'Per Week': 'Weekly',
+      'Per Month': 'Monthly',
+      'Per Session': 'Per Session'
+    };
+    setForm({
+      ...defaultForm,
+      trainerId: trainer._id,
+      feeAmount: trainer.fee || '',
+      trainingType: modeMap[trainer.trainingMode] || 'Offline Training',
+      billingCycle: cycleMap[trainer.paymentType] || 'Monthly',
+      effectiveFrom: trainer.createdAt ? new Date(trainer.createdAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      accountHolder: trainer.name || '',
+      upiId: trainer.phone ? `${trainer.phone}@paytm` : '',
+      upiName: trainer.name || '',
+    });
     setShowModal(true);
   };
 
-  const openEditFee = (fee: any) => {
-    setEditFee(fee);
+  const openEditFee = (fee: any, trainer?: any) => {
+    setEditFee(fee?._id ? fee : null);
+    const tr = trainer || fee?.trainerId;
     setForm({
-      trainerId: fee.trainerId?._id || fee.trainerId,
-      trainingType: fee.trainingType,
-      feeAmount: fee.feeAmount,
-      billingCycle: fee.billingCycle,
-      effectiveFrom: fee.effectiveFrom ? new Date(fee.effectiveFrom).toISOString().slice(0, 10) : '',
-      paymentMethod: fee.paymentMethod,
-      status: fee.status,
-      notes: fee.notes || '',
+      trainerId: (fee?.trainerId?._id || fee?.trainerId || tr?._id || '').toString(),
+      trainingType: fee?.trainingType || 'Offline Training',
+      feeAmount: fee?.feeAmount || tr?.fee || '',
+      billingCycle: fee?.billingCycle || 'Monthly',
+      effectiveFrom: fee?.effectiveFrom ? new Date(fee.effectiveFrom).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      paymentMethod: fee?.paymentMethod || 'Bank Transfer',
+      status: fee?.status || 'Active',
+      notes: fee?.notes || '',
+      accountHolder: fee?.bankDetails?.accountHolder || tr?.name || '',
+      bankName: fee?.bankDetails?.bankName || '',
+      accountNumber: fee?.bankDetails?.accountNumber || '',
+      ifscCode: fee?.bankDetails?.ifscCode || '',
+      upiId: fee?.upiDetails?.upiId || (tr?.phone ? `${tr.phone}@paytm` : ''),
+      upiName: fee?.upiDetails?.upiName || tr?.name || '',
     });
     setShowModal(true);
   };
@@ -113,8 +213,16 @@ const GymAdminTrainerFees = () => {
     }
     setSaving(true);
     try {
-      // Ensure paymentMethod is provided since it is required by the schema
-      const payload = { ...form, paymentMethod: form.paymentMethod || 'Bank Transfer' };
+      const payload = { 
+        ...form, 
+        paymentMethod: form.paymentMethod || 'Bank Transfer',
+        accountHolder: form.accountHolder,
+        bankName: form.bankName,
+        accountNumber: form.accountNumber,
+        ifscCode: form.ifscCode,
+        upiId: form.upiId,
+        upiName: form.upiName
+      };
       await api.post('/trainer-payments/fee', payload);
       showToast(editFee ? 'Trainer fee updated successfully!' : 'Trainer fee set successfully!');
       setShowModal(false);
@@ -297,7 +405,7 @@ const GymAdminTrainerFees = () => {
                     <td className="px-5 py-4">
                       {fee ? (
                         <button
-                          onClick={() => openEditFee(fee)}
+                          onClick={() => openEditFee(fee, trainer)}
                           className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#F1F5F3] text-[#164A4A] border border-[#D3DFDA] rounded-lg text-xs font-semibold hover:bg-[#D3DFDA] transition-colors"
                         >
                           <Edit size={13} />
@@ -429,6 +537,100 @@ const GymAdminTrainerFees = () => {
                   <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A8ADA9] pointer-events-none" />
                 </div>
               </div>
+
+              {/* Payment Method */}
+              <div>
+                <label className="block text-sm font-semibold text-[#455250] mb-1.5">Payout Method</label>
+                <div className="relative">
+                  <select
+                    value={form.paymentMethod}
+                    onChange={e => setForm({ ...form, paymentMethod: e.target.value })}
+                    className="w-full appearance-none border border-[#E8E5DA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/30 bg-white pr-9"
+                  >
+                    <option value="Bank Transfer">Bank Transfer (NEFT/IMPS)</option>
+                    <option value="UPI">UPI (Google Pay, PhonePe, Paytm)</option>
+                    <option value="Cash">Cash</option>
+                  </select>
+                  <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A8ADA9] pointer-events-none" />
+                </div>
+              </div>
+
+              {form.paymentMethod === 'Bank Transfer' && (
+                <div className="p-3.5 bg-blue-50/50 border border-blue-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wider">Bank Account Details</h4>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">Account Holder</label>
+                      <input
+                        type="text"
+                        value={form.accountHolder}
+                        onChange={e => setForm({ ...form, accountHolder: e.target.value })}
+                        placeholder="Holder name"
+                        className="w-full border border-blue-200 rounded-lg px-3 py-1.5 text-xs bg-white outline-none focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">Bank Name</label>
+                      <input
+                        type="text"
+                        value={form.bankName}
+                        onChange={e => setForm({ ...form, bankName: e.target.value })}
+                        placeholder="e.g. HDFC"
+                        className="w-full border border-blue-200 rounded-lg px-3 py-1.5 text-xs bg-white outline-none focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">Account Number</label>
+                      <input
+                        type="text"
+                        value={form.accountNumber}
+                        onChange={e => setForm({ ...form, accountNumber: e.target.value.replace(/\D/g, '') })}
+                        placeholder="Account No"
+                        className="w-full border border-blue-200 rounded-lg px-3 py-1.5 text-xs bg-white font-mono outline-none focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">IFSC Code</label>
+                      <input
+                        type="text"
+                        maxLength={11}
+                        value={form.ifscCode}
+                        onChange={e => setForm({ ...form, ifscCode: e.target.value.toUpperCase() })}
+                        placeholder="IFSC"
+                        className="w-full border border-blue-200 rounded-lg px-3 py-1.5 text-xs bg-white font-mono uppercase outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {form.paymentMethod === 'UPI' && (
+                <div className="p-3.5 bg-emerald-50/50 border border-emerald-200 rounded-xl space-y-2.5">
+                  <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wider">UPI Details</h4>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">UPI ID (VPA)</label>
+                      <input
+                        type="text"
+                        value={form.upiId}
+                        onChange={e => setForm({ ...form, upiId: e.target.value.trim() })}
+                        placeholder="e.g. trainer@okaxis"
+                        className="w-full border border-emerald-200 rounded-lg px-3 py-1.5 text-xs bg-white font-mono outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">Payee Name</label>
+                      <input
+                        type="text"
+                        value={form.upiName}
+                        onChange={e => setForm({ ...form, upiName: e.target.value })}
+                        placeholder="Trainer name"
+                        className="w-full border border-emerald-200 rounded-lg px-3 py-1.5 text-xs bg-white outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Notes */}
               <div>

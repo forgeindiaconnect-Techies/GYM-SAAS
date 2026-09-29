@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { Plus, Trash2, CheckCircle, Eye, EyeOff, X, Mail, UserPlus, Check, PauseCircle, Clock, Ban, ShieldCheck, Edit } from 'lucide-react';
+import {
+  Plus, Trash2, CheckCircle, Eye, EyeOff, X, Mail, UserPlus, Check, PauseCircle,
+  Clock, Ban, ShieldCheck, Edit, Phone, Calendar, Dumbbell, Award, Briefcase,
+  GraduationCap, Sparkles, IndianRupee, Activity, Lock
+} from 'lucide-react';
 import api from '../../utils/api';
 
 const GymAdminTrainers = () => {
@@ -10,13 +14,6 @@ const GymAdminTrainers = () => {
   const [trainers, setTrainers] = useState<any[]>([]);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const mockTrainers = [
-    { _id: 'mock-1', name: 'Arnold S.', email: 'arnold@gym.com', phone: '9876543210', specialization: 'Weight Loss', trainingMode: 'offline', status: 'Active', experience: '5 Years', qualifications: 'ACE Certified', fee: '₹3000/mo', availableDays: 'Mon-Sat', profilePhoto: '' },
-    { _id: 'mock-2', name: 'Sarah C.', email: 'sarah@gym.com', phone: '9876543211', specialization: 'Yoga & Flexibility', trainingMode: 'online', status: 'Active', experience: '3 Years', qualifications: 'RYT-200', fee: '₹2500/mo', availableDays: 'Mon-Fri', profilePhoto: '' },
-    { _id: 'mock-3', name: 'Mike T.', email: 'mike@gym.com', phone: '9876543212', specialization: 'Strength & Conditioning', trainingMode: 'offline', status: 'Suspended', experience: '7 Years', qualifications: 'CSCS', fee: '₹4000/mo', availableDays: 'Tue-Sun', profilePhoto: '' },
-  ];
-  
   const [showHireModal, setShowHireModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [hireMethod, setHireMethod] = useState<'manual' | 'invite' | null>(null);
@@ -35,19 +32,37 @@ const GymAdminTrainers = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
+  const getExpertiseList = (val: any): string[] => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') {
+      if (val.includes(',')) {
+        return val.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      if (val.includes(';')) {
+        return val.split(';').map(s => s.trim()).filter(Boolean);
+      }
+      if (val.includes('\n')) {
+        return val.split('\n').map(s => s.trim()).filter(Boolean);
+      }
+      return [val.trim()];
+    }
+    return [String(val)];
+  };
 
   const fetchTrainers = async () => {
     try {
       setIsLoading(true);
-      const res = await api.get(`/trainers?branchId=${selectedBranch}`);
+      const branchQuery = selectedBranch && selectedBranch !== 'undefined' && selectedBranch !== 'null'
+        ? `?branchId=${selectedBranch}`
+        : '';
+      const res = await api.get(`/trainers${branchQuery}`);
       const apiTrainers = res.data.trainers || [];
       setTrainers(apiTrainers);
       setInvitations(res.data.invitations || []);
     } catch (err) {
-      console.error(err);
-      // API unavailable — show mock data so page isn't empty
-      setTrainers(mockTrainers);
+      console.error('Failed to fetch trainers:', err);
+      setTrainers([]);
     } finally {
       setIsLoading(false);
     }
@@ -260,15 +275,16 @@ const GymAdminTrainers = () => {
               <th className="px-6 py-4 font-bold">Trainer Info</th>
               <th className="px-6 py-4 font-bold">Specialization</th>
               <th className="px-6 py-4 font-bold">Mode</th>
+              <th className="px-6 py-4 font-bold">Fee</th>
               <th className="px-6 py-4 font-bold">Status</th>
               <th className="px-6 py-4 font-bold">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#D3DFDA]">
             {isLoading ? (
-              <tr><td colSpan={5} className="px-6 py-8 text-center">Loading trainers...</td></tr>
+              <tr><td colSpan={6} className="px-6 py-8 text-center">Loading trainers...</td></tr>
             ) : trainers.length === 0 && invitations.length === 0 ? (
-              <tr><td colSpan={5} className="px-6 py-8 text-center">No trainers found. Hire a trainer to get started.</td></tr>
+              <tr><td colSpan={6} className="px-6 py-8 text-center">No trainers found. Hire a trainer to get started.</td></tr>
             ) : (
               <>
                 {/* Active/Suspended/Pending Profiles */}
@@ -276,15 +292,34 @@ const GymAdminTrainers = () => {
                   <tr key={trainer._id} className="hover:bg-[#F1F5F3] transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-bold text-[#202828]">{trainer.name}</div>
-                      <div className="text-xs">{trainer.email}</div>
+                      <div className="text-xs text-gray-500">{trainer.email}</div>
+                      {trainer.phone && <div className="text-xs text-gray-400">{trainer.phone}</div>}
                     </td>
-                    <td className="px-6 py-4 font-medium">{trainer.specialization}</td>
-                    <td className="px-6 py-4 capitalize font-medium">{trainer.trainingMode || 'offline'}</td>
+                    <td className="px-6 py-4 font-medium">{trainer.specialization || 'General'}</td>
+                    <td className="px-6 py-4 capitalize font-medium">
+                      <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                        trainer.trainingMode === 'online' ? 'bg-blue-100 text-blue-700' :
+                        trainer.trainingMode === 'both' ? 'bg-purple-100 text-purple-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {trainer.trainingMode || 'offline'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 font-semibold text-[#202828]">
+                      {trainer.fee ? (
+                        <div>
+                          <span>₹{Number(trainer.fee).toLocaleString('en-IN')}</span>
+                          <span className="text-xs text-gray-500 font-normal"> / {trainer.paymentType === 'Per Week' ? 'wk' : trainer.paymentType === 'Per Session' ? 'ses' : 'mo'}</span>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 italic text-xs">Not configured</span>
+                      )}
+                    </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
                         trainer.status === 'Active' ? 'bg-[#164A4A]/10 text-[#164A4A] border-[#164A4A]/20' : 
                         trainer.status === 'Pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' : 
-                        'bg-red-500/10 text-[#6fa3a0] border-red-500/20'}`}>
+                        'bg-red-500/10 text-red-500 border-red-500/20'}`}>
                         {trainer.status}
                       </span>
                     </td>
@@ -311,7 +346,7 @@ const GymAdminTrainers = () => {
                         </button>
                       </div>
                       
-                      <button onClick={() => handleDelete(trainer._id)} className="text-[#455250] hover:text-[#6fa3a0] transition-colors" title="Remove">
+                      <button onClick={() => handleDelete(trainer._id)} className="text-[#455250] hover:text-red-500 transition-colors" title="Remove">
                         <Trash2 size={18} />
                       </button>
                     </td>
@@ -327,6 +362,7 @@ const GymAdminTrainers = () => {
                     </td>
                     <td className="px-6 py-4 font-medium">-</td>
                     <td className="px-6 py-4 capitalize font-medium">{invite.trainingMode || 'offline'}</td>
+                    <td className="px-6 py-4 text-xs text-gray-400">—</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
                         invite.status === 'Pending' ? 'bg-blue-500/10 text-[#D2B48C] border-[#D2B48C]/20' : 
@@ -381,157 +417,328 @@ const GymAdminTrainers = () => {
 
       {/* Manual Add Form Modal */}
       {showHireModal && hireMethod === 'manual' && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#D3DFDA] mt-10 mb-10">
-            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
-              <h2 className="text-2xl font-bold text-[#202828]">Manual Add Trainer</h2>
-              <button onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="text-[#455250] hover:text-[#202828]"><X size={24} /></button>
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden">
+            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-white z-10 shrink-0">
+              <div>
+                <h2 className="text-2xl font-bold text-[#202828]">Manual Add Trainer</h2>
+                <p className="text-xs text-[#455250] mt-0.5">
+                  {!otpVerified ? 'Step 1 of 2: Verify trainer email address with OTP' : 'Step 2 of 2: Complete trainer profile details'}
+                </p>
+              </div>
+              <button 
+                onClick={() => { setShowHireModal(false); setHireMethod(null); setOtpVerified(false); setOtpSent(false); setOtpInput(''); }} 
+                className="text-[#455250] hover:text-[#202828]"
+              >
+                <X size={24} />
+              </button>
             </div>
-            <form onSubmit={handleManualAdd} className="p-6 space-y-6">
+
+            {/* Stepper Indicator */}
+            <div className="px-6 py-3 border-b border-[#D3DFDA] bg-[#F8F9F8] flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${otpVerified ? 'bg-emerald-600 text-white' : 'bg-[#164A4A] text-white ring-4 ring-[#164A4A]/10'}`}>
+                  {otpVerified ? <Check size={14} /> : '1'}
+                </span>
+                <span className={`text-sm font-bold ${otpVerified ? 'text-emerald-700' : 'text-[#202828]'}`}>
+                  Email Verification {otpVerified && '✓'}
+                </span>
+              </div>
+              <div className="h-0.5 flex-1 mx-4 bg-gray-200">
+                <div className={`h-full transition-all duration-500 ${otpVerified ? 'bg-emerald-600 w-full' : 'w-0'}`} />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${otpVerified ? 'bg-[#164A4A] text-white ring-4 ring-[#164A4A]/10' : 'bg-gray-200 text-gray-500'}`}>
+                  {otpVerified ? '2' : <Lock size={12} />}
+                </span>
+                <span className={`text-sm font-bold ${otpVerified ? 'text-[#202828]' : 'text-gray-400'}`}>
+                  Trainer Information
+                </span>
+              </div>
+            </div>
+
+            <form onSubmit={handleManualAdd} className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
               
               <section>
-                <h3 className="text-lg font-bold text-[#202828] mb-4 border-b pb-2">Basic Information</h3>
+                <div className="flex items-center justify-between border-b pb-2 mb-4">
+                  <h3 className="text-lg font-bold text-[#202828]">Basic Information</h3>
+                  {!otpVerified ? (
+                    <span className="text-xs font-semibold px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full flex items-center gap-1">
+                      <Lock size={12} /> Email OTP Verification Required
+                    </span>
+                  ) : (
+                    <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full flex items-center gap-1">
+                      <Check size={12} /> Email Verified
+                    </span>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-bold text-[#455250] mb-1">Full Name *</label>
-                    <input required value={manualForm.name} onChange={e => setManualForm({...manualForm, name: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                    <input 
+                      required 
+                      value={manualForm.name} 
+                      onChange={e => setManualForm({...manualForm, name: e.target.value})} 
+                      placeholder="e.g. John Doe"
+                      className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" 
+                    />
                   </div>
                   <div className="flex flex-col">
                     <label className="block text-sm font-bold text-[#455250] mb-1">Email *</label>
                     <div className="flex space-x-2">
-                      <input type="email" required value={manualForm.email} onChange={e => { setManualForm({...manualForm, email: e.target.value}); setOtpVerified(false); setOtpSent(false); }} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      <input 
+                        type="email" 
+                        required 
+                        value={manualForm.email} 
+                        onChange={e => { setManualForm({...manualForm, email: e.target.value}); setOtpVerified(false); setOtpSent(false); }} 
+                        disabled={otpVerified}
+                        placeholder="trainer@example.com"
+                        className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A] disabled:bg-gray-100 disabled:text-gray-700" 
+                      />
                       {!otpVerified && (
-                        <button type="button" onClick={() => { if(validateEmail(manualForm.email)) { setOtpSent(true); alert('Demo OTP generated: 123456'); } else { alert('Enter a valid email address first'); } }} className="px-3 py-2 bg-blue-100 text-blue-700 font-bold rounded-lg hover:bg-blue-200 text-sm whitespace-nowrap">
+                        <button 
+                          type="button" 
+                          onClick={() => { 
+                            if(validateEmail(manualForm.email)) { 
+                              setOtpSent(true); 
+                              alert('Demo OTP generated: 123456'); 
+                            } else { 
+                              alert('Enter a valid email address first'); 
+                            } 
+                          }} 
+                          className="px-3.5 py-2 bg-blue-100 text-blue-700 font-bold rounded-lg hover:bg-blue-200 text-sm whitespace-nowrap transition-colors"
+                        >
                           {otpSent ? 'Resend OTP' : 'Send OTP'}
                         </button>
                       )}
                       {otpVerified && (
-                        <div className="px-3 py-2 bg-[#D2B48C]/10 text-[#164A4A] font-bold rounded-lg flex items-center text-sm whitespace-nowrap">
-                          <Check size={16} className="mr-1"/> Verified
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <div className="px-3 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold rounded-lg flex items-center text-sm whitespace-nowrap">
+                            <Check size={16} className="mr-1 text-emerald-600"/> Verified
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOtpVerified(false);
+                              setOtpSent(false);
+                              setOtpInput('');
+                            }}
+                            className="px-2.5 py-2 text-xs font-semibold text-gray-500 hover:text-red-600 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                            title="Change email and re-verify"
+                          >
+                            Change
+                          </button>
                         </div>
                       )}
                     </div>
                     {otpSent && !otpVerified && (
-                      <div className="mt-2 flex space-x-2">
-                        <input type="text" placeholder="Enter OTP (123456)" value={otpInput} onChange={e => setOtpInput(e.target.value)} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                        <button type="button" onClick={() => { if(otpInput === '123456') { setOtpVerified(true); setOtpSent(false); setOtpInput(''); alert('Email Verified!'); } else { alert('Invalid OTP'); } }} className="px-3 py-2 bg-[#164A4A] text-white font-bold rounded-lg hover:bg-[#C6A77D] text-sm whitespace-nowrap">
+                      <div className="mt-2.5 flex space-x-2">
+                        <input 
+                          type="text" 
+                          placeholder="Enter OTP (123456)" 
+                          value={otpInput} 
+                          onChange={e => setOtpInput(e.target.value)} 
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              if (otpInput.trim() === '123456') {
+                                setOtpVerified(true);
+                                setOtpSent(false);
+                                setOtpInput('');
+                                alert('Email Verified successfully! You can now complete the trainer details.');
+                              } else {
+                                alert('Invalid OTP. Please enter 123456');
+                              }
+                            }
+                          }}
+                          className="w-full border border-blue-300 rounded-lg px-4 py-2 outline-none focus:border-[#164A4A] bg-blue-50/30" 
+                        />
+                        <button 
+                          type="button" 
+                          onClick={() => { 
+                            if(otpInput.trim() === '123456') { 
+                              setOtpVerified(true); 
+                              setOtpSent(false); 
+                              setOtpInput(''); 
+                              alert('Email Verified successfully! You can now complete the trainer details.'); 
+                            } else { 
+                              alert('Invalid OTP. Please enter 123456'); 
+                            } 
+                          }} 
+                          className="px-4 py-2 bg-[#164A4A] text-white font-bold rounded-lg hover:bg-[#C6A77D] text-sm whitespace-nowrap shadow-sm transition-colors"
+                        >
                           Verify
                         </button>
                       </div>
                     )}
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Password *</label>
-                    <div className="relative">
-                      <input type={showPassword ? "text" : "password"} required value={manualForm.password} onChange={e => setManualForm({...manualForm, password: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A] pr-10" placeholder="Trainer login password" />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#455250] hover:text-[#164A4A] focus:outline-none">
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
+
+                  {!otpVerified ? (
+                    <div className="md:col-span-2 p-5 bg-amber-50/80 border border-amber-200/90 rounded-2xl flex items-start gap-3.5 text-amber-900 mt-2">
+                      <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0 text-amber-800 mt-0.5">
+                        <Lock size={20} />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-sm text-amber-900">Email OTP Verification Required</h4>
+                        <p className="text-xs text-amber-700 mt-1 leading-relaxed">
+                          {otpSent 
+                            ? 'Please enter the 6-digit OTP (Demo OTP: 123456) and click "Verify". Once the mail OTP is completed, you can proceed to fill the rest of the form (password, contact, and professional details).'
+                            : 'Please enter the email address above and click "Send OTP". Once the mail OTP is completed, the remaining fields will unlock.'}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Confirm Password *</label>
-                    <div className="relative">
-                      <input type={showConfirmPassword ? "text" : "password"} required value={manualForm.confirmPassword} onChange={e => setManualForm({...manualForm, confirmPassword: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A] pr-10" placeholder="Confirm password" />
-                      <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#455250] hover:text-[#164A4A] focus:outline-none">
-                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
+                  ) : (
+                    <>
+                      <div className="md:col-span-2 p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2.5 text-emerald-800 mb-2">
+                        <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 text-emerald-700">
+                          <Check size={14} />
+                        </div>
+                        <p className="text-xs font-semibold text-emerald-800">
+                          Email OTP completed successfully! You can now fill in the remaining trainer details below.
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Password *</label>
+                        <div className="relative">
+                          <input type={showPassword ? "text" : "password"} required value={manualForm.password} onChange={e => setManualForm({...manualForm, password: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A] pr-10" placeholder="Trainer login password" />
+                          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#455250] hover:text-[#164A4A] focus:outline-none">
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Confirm Password *</label>
+                        <div className="relative">
+                          <input type={showConfirmPassword ? "text" : "password"} required value={manualForm.confirmPassword} onChange={e => setManualForm({...manualForm, confirmPassword: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A] pr-10" placeholder="Confirm password" />
+                          <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#455250] hover:text-[#164A4A] focus:outline-none">
+                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Phone Number *</label>
+                        <input required type="text" maxLength={10} placeholder="10-digit number" value={manualForm.phone} onChange={e => setManualForm({...manualForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Trainer Mode *</label>
+                        <select required value={manualForm.trainingMode} onChange={e => setManualForm({...manualForm, trainingMode: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
+                          {renderTrainerModeOptions()}
+                        </select>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </section>
+
+              {otpVerified && (
+                <>
+                  <section>
+                    <h3 className="text-lg font-bold text-[#202828] mb-4 border-b pb-2">Professional Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Specialization *</label>
+                        <input required value={manualForm.specialization} onChange={e => setManualForm({...manualForm, specialization: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Experience (Years)</label>
+                        <input type="number" value={manualForm.experience} onChange={e => setManualForm({...manualForm, experience: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Qualifications *</label>
+                        <input required value={manualForm.qualifications} onChange={e => setManualForm({...manualForm, qualifications: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Certifications</label>
+                        <input value={manualForm.certifications} onChange={e => setManualForm({...manualForm, certifications: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Areas of Expertise *</label>
+                        <textarea required rows={2} value={manualForm.expertise} onChange={e => setManualForm({...manualForm, expertise: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Short Bio</label>
+                        <textarea rows={3} value={manualForm.bio} onChange={e => setManualForm({...manualForm, bio: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
                     </div>
-                  </div>
+                  </section>
 
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Phone Number *</label>
-                    <input required type="text" maxLength={10} placeholder="10-digit number" value={manualForm.phone} onChange={e => setManualForm({...manualForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Trainer Mode *</label>
-                    <select required value={manualForm.trainingMode} onChange={e => setManualForm({...manualForm, trainingMode: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
-                      {renderTrainerModeOptions()}
-                    </select>
-                  </div>
-                </div>
-              </section>
+                  <section>
+                    <h3 className="text-lg font-bold text-[#202828] mb-4 border-b pb-2">Availability Settings</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Available Days</label>
+                        <select value={manualForm.availableDays} onChange={e => setManualForm({...manualForm, availableDays: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
+                          <option value="Monday to Friday">Monday to Friday</option>
+                          <option value="Monday to Saturday">Monday to Saturday</option>
+                          <option value="Weekends (Sat & Sun)">Weekends (Sat & Sun)</option>
+                          <option value="Everyday">Everyday</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Available Slots per Day</label>
+                        <input type="number" min="1" placeholder="e.g. 5" value={manualForm.availableSlot} onChange={e => setManualForm({...manualForm, availableSlot: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Start Time</label>
+                        <select value={manualForm.availableStartTime} onChange={e => setManualForm({...manualForm, availableStartTime: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
+                          {renderTimeOptions()}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">End Time</label>
+                        <select value={manualForm.availableEndTime} onChange={e => setManualForm({...manualForm, availableEndTime: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
+                          {renderTimeOptions()}
+                        </select>
+                      </div>
+                    </div>
+                  </section>
 
-              <section>
-                <h3 className="text-lg font-bold text-[#202828] mb-4 border-b pb-2">Professional Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Specialization *</label>
-                    <input required value={manualForm.specialization} onChange={e => setManualForm({...manualForm, specialization: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Experience (Years)</label>
-                    <input type="number" value={manualForm.experience} onChange={e => setManualForm({...manualForm, experience: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Qualifications *</label>
-                    <input required value={manualForm.qualifications} onChange={e => setManualForm({...manualForm, qualifications: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Certifications</label>
-                    <input value={manualForm.certifications} onChange={e => setManualForm({...manualForm, certifications: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Areas of Expertise *</label>
-                    <textarea required rows={2} value={manualForm.expertise} onChange={e => setManualForm({...manualForm, expertise: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Short Bio</label>
-                    <textarea rows={3} value={manualForm.bio} onChange={e => setManualForm({...manualForm, bio: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                </div>
-              </section>
-              <section>
-                <h3 className="text-lg font-bold text-[#202828] mb-4 border-b pb-2">Availability Settings</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Available Days</label>
-                    <select value={manualForm.availableDays} onChange={e => setManualForm({...manualForm, availableDays: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
-                      <option value="Monday to Friday">Monday to Friday</option>
-                      <option value="Monday to Saturday">Monday to Saturday</option>
-                      <option value="Weekends (Sat & Sun)">Weekends (Sat & Sun)</option>
-                      <option value="Everyday">Everyday</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Available Slots per Day</label>
-                    <input type="number" min="1" placeholder="e.g. 5" value={manualForm.availableSlot} onChange={e => setManualForm({...manualForm, availableSlot: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Start Time</label>
-                    <select value={manualForm.availableStartTime} onChange={e => setManualForm({...manualForm, availableStartTime: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
-                      {renderTimeOptions()}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">End Time</label>
-                    <select value={manualForm.availableEndTime} onChange={e => setManualForm({...manualForm, availableEndTime: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
-                      {renderTimeOptions()}
-                    </select>
-                  </div>
-                </div>
-              </section>
+                  <section>
+                    <h3 className="text-lg font-bold text-[#202828] mb-4 border-b pb-2">Employment / Payment</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Trainer Fee</label>
+                        <input type="number" value={manualForm.fee} onChange={e => setManualForm({...manualForm, fee: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#455250] mb-1">Payment Type</label>
+                        <select value={manualForm.paymentType} onChange={e => setManualForm({...manualForm, paymentType: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
+                          <option value="Per Week">Per Week</option>
+                          <option value="Per Month">Per Month</option>
+                        </select>
+                      </div>
+                    </div>
+                  </section>
+                </>
+              )}
 
-              <section>
-                <h3 className="text-lg font-bold text-[#202828] mb-4 border-b pb-2">Employment / Payment</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Trainer Fee</label>
-                    <input type="number" value={manualForm.fee} onChange={e => setManualForm({...manualForm, fee: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#455250] mb-1">Payment Type</label>
-                    <select value={manualForm.paymentType} onChange={e => setManualForm({...manualForm, paymentType: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
-                      <option value="Per Week">Per Week</option>
-                      <option value="Per Month">Per Month</option>
-                    </select>
-                  </div>
-                </div>
-              </section>
-
-              <div className="flex justify-end space-x-3 pt-4 border-t border-[#D3DFDA]">
-                <button type="button" onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="px-6 py-2 text-[#455250] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
-                <button type="submit" className="px-8 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#164A4A]/20">Add Trainer</button>
+              <div className="flex justify-end space-x-3 p-4 border-t border-[#D3DFDA] bg-[#F8F9F8] shrink-0">
+                <button 
+                  type="button" 
+                  onClick={() => { setShowHireModal(false); setHireMethod(null); setOtpVerified(false); setOtpSent(false); setOtpInput(''); }} 
+                  className="px-6 py-2 text-[#455250] font-bold hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  Cancel
+                </button>
+                {otpVerified ? (
+                  <button 
+                    type="submit" 
+                    className="px-8 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#164A4A]/20"
+                  >
+                    Add Trainer
+                  </button>
+                ) : (
+                  <button 
+                    type="button" 
+                    disabled 
+                    className="px-6 py-2 bg-gray-200 text-gray-400 rounded-xl font-bold cursor-not-allowed flex items-center gap-2"
+                  >
+                    <Lock size={16} /> Complete Email OTP First
+                  </button>
+                )}
               </div>
             </form>
           </div>
@@ -540,13 +747,13 @@ const GymAdminTrainers = () => {
 
       {/* Send Invitation Form Modal */}
       {showHireModal && hireMethod === 'invite' && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#D3DFDA] mt-10 mb-10">
-            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden">
+            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-white z-10 shrink-0">
               <h2 className="text-2xl font-bold text-[#202828]">Invite New Trainer</h2>
               <button onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="text-[#455250] hover:text-[#202828]"><X size={24} /></button>
             </div>
-            <form onSubmit={handleSendInvite} className="p-6 space-y-6">
+            <form onSubmit={handleSendInvite} className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-[#455250] mb-1">Trainer Name *</label>
@@ -571,7 +778,7 @@ const GymAdminTrainers = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-4 border-t border-[#D3DFDA]">
+              <div className="flex justify-end space-x-3 p-4 border-t border-[#D3DFDA] bg-[#F8F9F8] shrink-0">
                 <button type="button" onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="px-6 py-2 text-[#455250] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
                 <button type="submit" className="px-8 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#164A4A]/20 flex items-center gap-2">
                   <Mail size={18} /> Send Invitation
@@ -584,19 +791,22 @@ const GymAdminTrainers = () => {
 
       {/* Trainer View Modal */}
       {selectedTrainer && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#D3DFDA] mt-10 mb-10">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-[#D3DFDA]">
             {/* Header */}
-            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-gradient-to-r from-[#F1F5F3] to-[#FFFFFF]">
+            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F8F9F8] shrink-0">
               <h2 className="text-xl font-bold text-[#202828]">Trainer Profile</h2>
-              <button onClick={() => setSelectedTrainer(null)} className="text-[#455250] hover:text-[#202828] transition-colors">
+              <button
+                onClick={() => setSelectedTrainer(null)}
+                className="p-1.5 rounded-lg text-[#455250] hover:text-[#202828] hover:bg-slate-200 transition-colors"
+              >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="p-6 space-y-6 overflow-y-auto max-h-[75vh]">
+            <div className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
               {/* Avatar + Name + Status */}
-              <div className="flex items-center space-x-4 pb-4 border-b border-[#F1F5F9]">
+              <div className="flex items-center space-x-4 pb-4 border-b border-[#E2E8F0]">
                 {selectedTrainer.profilePhoto ? (
                   <img src={selectedTrainer.profilePhoto} alt={selectedTrainer.name} className="w-20 h-20 rounded-full object-cover border-2 border-[#D3DFDA] shrink-0" />
                 ) : (
@@ -616,13 +826,19 @@ const GymAdminTrainers = () => {
               {/* Section: Contact Info */}
               <div>
                 <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">Contact Information</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Email</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Mail size={13} className="text-[#164A4A]" />
+                      <span>Email</span>
+                    </p>
                     <p className="font-semibold text-[#202828] break-all">{selectedTrainer.email || 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Phone</p>
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Phone size={13} className="text-[#164A4A]" />
+                      <span>Phone</span>
+                    </p>
                     <p className="font-semibold text-[#202828]">{selectedTrainer.phone || 'N/A'}</p>
                   </div>
                 </div>
@@ -631,33 +847,57 @@ const GymAdminTrainers = () => {
               {/* Section: Professional Info */}
               <div>
                 <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">Professional Details</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Specialization</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Dumbbell size={13} className="text-[#164A4A]" />
+                      <span>Specialization</span>
+                    </p>
                     <p className="font-semibold text-[#202828]">{selectedTrainer.specialization || 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Experience</p>
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Briefcase size={13} className="text-[#164A4A]" />
+                      <span>Experience</span>
+                    </p>
                     <p className="font-semibold text-[#202828]">{selectedTrainer.experience ? `${selectedTrainer.experience} Years` : 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Training Mode</p>
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Activity size={13} className="text-[#164A4A]" />
+                      <span>Training Mode</span>
+                    </p>
                     <p className="font-semibold text-[#202828] capitalize">{selectedTrainer.trainingMode || 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Qualifications</p>
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <GraduationCap size={13} className="text-[#164A4A]" />
+                      <span>Qualifications</span>
+                    </p>
                     <p className="font-semibold text-[#202828]">{selectedTrainer.qualifications || 'N/A'}</p>
                   </div>
                   {selectedTrainer.certifications && (
-                    <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                      <p className="text-[#687B78] text-xs font-medium mb-1.5">Certifications</p>
+                    <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4 sm:col-span-2">
+                      <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                        <Award size={13} className="text-[#164A4A]" />
+                        <span>Certifications</span>
+                      </p>
                       <p className="font-semibold text-[#202828]">{selectedTrainer.certifications}</p>
                     </div>
                   )}
                   {selectedTrainer.expertise && (
-                    <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                      <p className="text-[#687B78] text-xs font-medium mb-1.5">Expertise</p>
-                      <p className="font-semibold text-[#202828]">{selectedTrainer.expertise}</p>
+                    <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4 sm:col-span-2">
+                      <p className="text-[#687B78] text-xs font-semibold mb-2 flex items-center gap-1.5">
+                        <Sparkles size={13} className="text-[#164A4A]" />
+                        <span>Areas of Expertise</span>
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {getExpertiseList(selectedTrainer.expertise).map((item, idx) => (
+                          <span key={idx} className="px-3 py-1 bg-white border border-[#D3DFDA] text-[#202828] text-xs font-semibold rounded-lg shadow-2xs">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -666,13 +906,19 @@ const GymAdminTrainers = () => {
               {/* Section: Fee Info */}
               <div>
                 <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">Fee & Payment</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Fee</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <IndianRupee size={13} className="text-[#164A4A]" />
+                      <span>Fee</span>
+                    </p>
                     <p className="font-semibold text-[#202828]">{selectedTrainer.fee ? `₹${selectedTrainer.fee}` : 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Payment Type</p>
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Clock size={13} className="text-[#164A4A]" />
+                      <span>Payment Type</span>
+                    </p>
                     <p className="font-semibold text-[#202828]">{selectedTrainer.paymentType || 'N/A'}</p>
                   </div>
                 </div>
@@ -681,13 +927,19 @@ const GymAdminTrainers = () => {
               {/* Section: Availability */}
               <div>
                 <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">Availability</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Available Days</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Calendar size={13} className="text-[#164A4A]" />
+                      <span>Available Days</span>
+                    </p>
                     <p className="font-semibold text-[#202828]">{selectedTrainer.availableDays || selectedTrainer.availability?.days || 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-medium mb-1.5">Timings</p>
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Clock size={13} className="text-[#164A4A]" />
+                      <span>Timings</span>
+                    </p>
                     <p className="font-semibold text-[#202828]">
                       {selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime || '—'}
                       {(selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime) ? ' → ' : ''}
@@ -695,8 +947,8 @@ const GymAdminTrainers = () => {
                     </p>
                   </div>
                   {(selectedTrainer.availableSlot || selectedTrainer.availability?.slot) && (
-                    <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4 sm:col-span-2">
-                      <p className="text-[#687B78] text-xs font-medium mb-1.5">Slot Duration</p>
+                    <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4 sm:col-span-2">
+                      <p className="text-[#687B78] text-xs font-semibold mb-1.5">Slot Duration</p>
                       <p className="font-semibold text-[#202828]">{selectedTrainer.availableSlot || selectedTrainer.availability?.slot}</p>
                     </div>
                   )}
@@ -707,15 +959,18 @@ const GymAdminTrainers = () => {
               {selectedTrainer.bio && (
                 <div>
                   <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">About</h4>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
+                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
                     <p className="text-[#202828] text-sm leading-relaxed">{selectedTrainer.bio}</p>
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="p-4 bg-[#F2EFE8] border-t border-[#D3DFDA] flex justify-end">
-              <button onClick={() => setSelectedTrainer(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl font-bold hover:bg-[#F1F5F9] transition-colors">
+            <div className="p-4 bg-[#F8F9F8] border-t border-[#D3DFDA] flex justify-end shrink-0">
+              <button
+                onClick={() => setSelectedTrainer(null)}
+                className="px-6 py-2 bg-white border border-[#D3DFDA] text-[#202828] rounded-xl font-bold hover:bg-slate-100 transition-colors shadow-2xs"
+              >
                 Close
               </button>
             </div>
@@ -725,13 +980,13 @@ const GymAdminTrainers = () => {
 
       {/* Edit Trainer Form Modal */}
       {editTrainer && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#D3DFDA] mt-10 mb-10">
-            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden">
+            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-white z-10 shrink-0">
               <h2 className="text-2xl font-bold text-[#202828]">Edit Trainer</h2>
               <button onClick={() => setEditTrainer(null)} className="text-[#455250] hover:text-[#202828]"><X size={24} /></button>
             </div>
-            <form onSubmit={handleEditSubmit} className="p-6 space-y-6">
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
               
               <section>
                 <h3 className="text-lg font-bold text-[#202828] mb-4 border-b pb-2">Basic Information</h3>
@@ -834,7 +1089,7 @@ const GymAdminTrainers = () => {
                 </div>
               </section>
 
-              <div className="flex justify-end space-x-3 pt-4 border-t border-[#D3DFDA]">
+              <div className="flex justify-end space-x-3 p-4 border-t border-[#D3DFDA] bg-[#F8F9F8] shrink-0">
                 <button type="button" onClick={() => setEditTrainer(null)} className="px-6 py-2 text-[#455250] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
                 <button type="submit" className="px-8 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-green-600/20">Save Changes</button>
               </div>

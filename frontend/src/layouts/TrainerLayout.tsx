@@ -6,8 +6,8 @@ import {
   LayoutDashboard, User, Users, FileText,
   Utensils, Calendar, CalendarCheck, TrendingUp,
   MessageSquare, IndianRupee, Bell,
-  Activity, Menu, LogOut, Bot, Settings,
-  Clock, FileQuestion
+  Activity, Menu, LogOut, Bot,
+  Clock
 } from 'lucide-react';
 
 const TrainerLayout = () => {

@@ -1,4 +1,4 @@
-import { TrendingUp, Award, Target, ArrowLeft } from 'lucide-react';
+import { TrendingUp, Target, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const TrainerMemberProgress = () => {

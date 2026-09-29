@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDb, updateItem, deleteItem } from '../../utils/mockDb';
+import { getDb, updateItem, deleteItem, addItem } from '../../utils/mockDb';
 import {
   Search, Send, Trash2, Eye, Building2, User, Mail, Phone,
-  Calendar, Clock, CheckCircle2, Copy, Check, ExternalLink, X, PlusCircle
+  Calendar, Clock, Copy, Check, ExternalLink, X, PlusCircle,
+  ChevronDown, CheckCircle2, AlertCircle, Clock4
 } from 'lucide-react';
 
 const SuperAdminInvitations = () => {
@@ -15,7 +16,54 @@ const SuperAdminInvitations = () => {
   const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
-    setInvites(getDb('gymInvitations'));
+    let current = getDb('gymInvitations');
+    const existingStatuses = new Set(current.map((i: any) => i.status));
+    let hasAdded = false;
+
+    if (!existingStatuses.has('Sent')) {
+      addItem('gymInvitations', {
+        gymName: 'IronPulse Fitness Club',
+        type: 'Strength & Conditioning',
+        owner: 'Rohan Sharma',
+        email: 'rohan.sharma@ironpulse.com',
+        phone: '9840123456',
+        date: '2026-09-27',
+        status: 'Sent',
+        expiry: '3 Days'
+      });
+      hasAdded = true;
+    }
+    if (!existingStatuses.has('Accepted')) {
+      addItem('gymInvitations', {
+        gymName: 'FitZone Elite Arena',
+        type: 'CrossFit & Functional',
+        owner: 'Priya Patel',
+        email: 'priya.patel@fitzone.com',
+        phone: '9820556789',
+        date: '2026-09-25',
+        status: 'Accepted',
+        expiry: '7 Days'
+      });
+      hasAdded = true;
+    }
+    if (!existingStatuses.has('Expired')) {
+      addItem('gymInvitations', {
+        gymName: 'Metro Gym & Wellness',
+        type: 'Cardio & Strength',
+        owner: 'Vikram Singh',
+        email: 'vikram.singh@metrogym.com',
+        phone: '9811223344',
+        date: '2026-09-20',
+        status: 'Expired',
+        expiry: 'Expired'
+      });
+      hasAdded = true;
+    }
+
+    if (hasAdded) {
+      current = getDb('gymInvitations');
+    }
+    setInvites(current);
   }, []);
 
   const formatDate = (dateInput?: string | Date | null): string => {
@@ -35,16 +83,39 @@ const SuperAdminInvitations = () => {
     return `${day} ${month} ${year}`;
   };
 
+  const getStatusBadgeClass = (status?: string) => {
+    const s = (status || '').toLowerCase();
+    switch (s) {
+      case 'accepted':
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100';
+      case 'sent':
+        return 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100';
+      case 'expired':
+        return 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100';
+      case 'pending':
+      default:
+        return 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100';
+    }
+  };
+
+  const handleStatusChange = (inviteId: string, newStatus: string) => {
+    const updated = updateItem('gymInvitations', inviteId, { status: newStatus });
+    setInvites(prev => prev.map(i => i.id === inviteId ? updated : i));
+    if (viewInvite?.id === inviteId) {
+      setViewInvite(updated);
+    }
+  };
+
   const handleResend = (invite: any) => {
-    alert(`Invitation resent to ${invite.email}!`);
     const updated = updateItem('gymInvitations', invite.id, {
-      status: 'Pending',
+      status: 'Sent',
       date: new Date().toISOString().split('T')[0]
     });
     setInvites(invites.map(i => i.id === invite.id ? updated : i));
     if (viewInvite?.id === invite.id) {
       setViewInvite(updated);
     }
+    alert(`Invitation resent to ${invite.email}! Status updated to "Sent".`);
   };
 
   const handleCancel = (invite: any) => {
@@ -72,9 +143,16 @@ const SuperAdminInvitations = () => {
       (invite.gymName || '').toLowerCase().includes(query) ||
       (invite.owner || '').toLowerCase().includes(query) ||
       (invite.email || '').toLowerCase().includes(query);
-    const matchStatus = statusFilter === 'ALL' || invite.status === statusFilter;
+    const matchStatus =
+      statusFilter === 'ALL' ||
+      (invite.status || 'Pending').toLowerCase() === statusFilter.toLowerCase();
     return matchQuery && matchStatus;
   });
+
+  const pendingCount = invites.filter(i => (i.status || 'Pending').toLowerCase() === 'pending').length;
+  const sentCount = invites.filter(i => (i.status || '').toLowerCase() === 'sent').length;
+  const acceptedCount = invites.filter(i => (i.status || '').toLowerCase() === 'accepted').length;
+  const expiredCount = invites.filter(i => (i.status || '').toLowerCase() === 'expired').length;
 
   return (
     <div className="space-y-6">
@@ -93,30 +171,94 @@ const SuperAdminInvitations = () => {
         </button>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <div className="relative flex-1 w-full">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search by gym name, owner, or email..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="w-full bg-[#F1F5F3] border border-[#D3DFDA] text-[#202828] rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-[#6fa3a0] focus:bg-white transition-all"
-          />
-        </div>
-        <div className="flex items-center space-x-2 w-full sm:w-auto">
-          <select
-            value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value)}
-            className="w-full sm:w-auto bg-[#F1F5F3] border border-[#D3DFDA] text-[#202828] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6fa3a0]"
+      {/* Filter Tabs & Search Bar */}
+      <div className="space-y-3">
+        {/* Quick Filter Pill Buttons */}
+        <div className="flex items-center flex-wrap gap-2">
+          <button
+            onClick={() => setStatusFilter('ALL')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+              statusFilter === 'ALL'
+                ? 'bg-[#164A4A] text-white border-[#164A4A] shadow-sm'
+                : 'bg-white text-[#455250] border-[#D3DFDA] hover:bg-slate-50'
+            }`}
           >
-            <option value="ALL">All Statuses</option>
-            <option value="Pending">Pending</option>
-            <option value="Sent">Sent</option>
-            <option value="Accepted">Accepted</option>
-            <option value="Expired">Expired</option>
-          </select>
+            All Statuses ({invites.length})
+          </button>
+          <button
+            onClick={() => setStatusFilter('Pending')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
+              statusFilter === 'Pending'
+                ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+                : 'bg-amber-50/60 text-amber-700 border-amber-200/80 hover:bg-amber-100/60'
+            }`}
+          >
+            <Clock4 size={12} />
+            <span>Pending ({pendingCount})</span>
+          </button>
+          <button
+            onClick={() => setStatusFilter('Sent')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
+              statusFilter === 'Sent'
+                ? 'bg-sky-600 text-white border-sky-600 shadow-sm'
+                : 'bg-sky-50/60 text-sky-700 border-sky-200/80 hover:bg-sky-100/60'
+            }`}
+          >
+            <Send size={12} />
+            <span>Sent ({sentCount})</span>
+          </button>
+          <button
+            onClick={() => setStatusFilter('Accepted')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
+              statusFilter === 'Accepted'
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                : 'bg-emerald-50/60 text-emerald-700 border-emerald-200/80 hover:bg-emerald-100/60'
+            }`}
+          >
+            <CheckCircle2 size={12} />
+            <span>Accepted ({acceptedCount})</span>
+          </button>
+          <button
+            onClick={() => setStatusFilter('Expired')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
+              statusFilter === 'Expired'
+                ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
+                : 'bg-rose-50/60 text-rose-700 border-rose-200/80 hover:bg-rose-100/60'
+            }`}
+          >
+            <AlertCircle size={12} />
+            <span>Expired ({expiredCount})</span>
+          </button>
+        </div>
+
+        {/* Search and Dropdown Bar */}
+        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <div className="relative flex-1 w-full">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by gym name, owner, or email..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full bg-[#F1F5F3] border border-[#D3DFDA] text-[#202828] rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-[#6fa3a0] focus:bg-white transition-all"
+            />
+          </div>
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-auto">
+              <select
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+                className="w-full sm:w-auto appearance-none bg-[#F1F5F3] border border-[#D3DFDA] text-[#202828] font-semibold rounded-xl pl-3.5 pr-8 py-2 text-sm outline-none focus:border-[#6fa3a0] cursor-pointer"
+              >
+                <option value="ALL">All Statuses ({invites.length})</option>
+                <option value="Pending">Pending ({pendingCount})</option>
+                <option value="Sent">Sent ({sentCount})</option>
+                <option value="Accepted">Accepted ({acceptedCount})</option>
+                <option value="Expired">Expired ({expiredCount})</option>
+              </select>
+              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -157,15 +299,20 @@ const SuperAdminInvitations = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-                      invite.status === 'Accepted'
-                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                        : invite.status === 'Expired'
-                        ? 'bg-red-500/10 text-red-500 border-red-500/20'
-                        : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                    }`}>
-                      {invite.status || 'Pending'}
-                    </span>
+                    {/* Interactive Status Selector in Table Row */}
+                    <div className="relative inline-block" title="Click to change status">
+                      <select
+                        value={invite.status || 'Pending'}
+                        onChange={(e) => handleStatusChange(invite.id, e.target.value)}
+                        className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#164A4A] ${getStatusBadgeClass(invite.status)}`}
+                      >
+                        <option value="Pending" className="text-slate-800 bg-white">Pending</option>
+                        <option value="Sent" className="text-slate-800 bg-white">Sent</option>
+                        <option value="Accepted" className="text-slate-800 bg-white">Accepted</option>
+                        <option value="Expired" className="text-slate-800 bg-white">Expired</option>
+                      </select>
+                      <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-2">
@@ -183,7 +330,7 @@ const SuperAdminInvitations = () => {
                       <button
                         onClick={() => handleResend(invite)}
                         className="p-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Resend Invitation"
+                        title="Resend Invitation (updates status to Sent)"
                       >
                         <Send size={15} />
                       </button>
@@ -206,7 +353,11 @@ const SuperAdminInvitations = () => {
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <Send size={32} className="text-slate-300" />
                       <p className="font-semibold text-slate-600">No invitations found</p>
-                      <p className="text-xs text-slate-400">Try changing your search query or send a new invitation.</p>
+                      <p className="text-xs text-slate-400">
+                        {statusFilter !== 'ALL'
+                          ? `No invitations found with "${statusFilter}" status.`
+                          : 'Try changing your search query or send a new invitation.'}
+                      </p>
                     </div>
                   </td>
                 </tr>
@@ -232,15 +383,19 @@ const SuperAdminInvitations = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-                  viewInvite.status === 'Accepted'
-                    ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                    : viewInvite.status === 'Expired'
-                    ? 'bg-red-500/10 text-red-500 border-red-500/20'
-                    : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                }`}>
-                  {viewInvite.status || 'Pending'}
-                </span>
+                <div className="relative inline-block">
+                  <select
+                    value={viewInvite.status || 'Pending'}
+                    onChange={(e) => handleStatusChange(viewInvite.id, e.target.value)}
+                    className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#164A4A] ${getStatusBadgeClass(viewInvite.status)}`}
+                  >
+                    <option value="Pending" className="text-slate-800 bg-white">Pending</option>
+                    <option value="Sent" className="text-slate-800 bg-white">Sent</option>
+                    <option value="Accepted" className="text-slate-800 bg-white">Accepted</option>
+                    <option value="Expired" className="text-slate-800 bg-white">Expired</option>
+                  </select>
+                  <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+                </div>
                 <button
                   onClick={() => setViewInvite(null)}
                   className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"

@@ -24,7 +24,7 @@ const router = express.Router();
 router.use(authenticate);
 
 // --- Gym Owner Routes ---
-const gymOwnerAuth = authorize(['GYM_OWNER', 'GYM_MANAGER']);
+const gymOwnerAuth = authorize(['GYM_OWNER', 'GYM_MANAGER', 'ADMIN', 'SUPER_ADMIN']);
 
 router.post('/fee', gymOwnerAuth, setTrainerFee);
 router.put('/fee/status', gymOwnerAuth, updateTrainerFeeStatus);

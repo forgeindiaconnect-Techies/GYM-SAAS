@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, User, UserCheck } from 'lucide-react';
+import { X, Save, UserCheck } from 'lucide-react';
 
 interface Props {
   onClose: () => void;

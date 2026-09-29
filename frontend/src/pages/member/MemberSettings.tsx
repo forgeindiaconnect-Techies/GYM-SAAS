@@ -1,4 +1,4 @@
-import { Settings, Shield, Bell, Moon } from 'lucide-react';
+import { Shield, Bell, Moon } from 'lucide-react';
 
 const MemberSettings = () => {
   return (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Wrench, CheckCircle2, AlertTriangle, SearchCode, X } from 'lucide-react';
+import { Search, Plus, Wrench, CheckCircle2, AlertTriangle, Edit2, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useOutletContext } from 'react-router-dom';
 import api from '../../utils/api';
@@ -21,8 +21,19 @@ const GymAdminEquipment = () => {
   const [localEquipmentList, setLocalEquipmentList] = useState<any[]>(mockEquipment);
   const [isLoading, setIsLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingEq, setEditingEq] = useState<any>(null);
   const [selectedEq, setSelectedEq] = useState<any>(null);
   const [formData, setFormData] = useState({
+    name: '',
+    category: 'Cardio',
+    brand: '',
+    quantity: 1,
+    condition: 'Excellent',
+    status: 'Active',
+    nextService: ''
+  });
+  const [editFormData, setEditFormData] = useState({
     name: '',
     category: 'Cardio',
     brand: '',
@@ -104,6 +115,53 @@ const GymAdminEquipment = () => {
     setFormData({ name: '', category: 'Cardio', brand: '', quantity: 1, condition: 'Excellent', status: 'Active', nextService: '' });
   };
 
+  const handleEditClick = (eq: any) => {
+    setEditingEq(eq);
+    setEditFormData({
+      name: eq.name || '',
+      category: eq.category || 'Cardio',
+      brand: eq.brand || '',
+      quantity: eq.quantity || 1,
+      condition: eq.condition || 'Excellent',
+      status: eq.status || (eq.condition === 'Poor' ? 'Maintenance' : 'Active'),
+      nextService: eq.nextService && eq.nextService !== 'N/A' ? eq.nextService : ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingEq || !gym) return;
+
+    const targetId = editingEq.id || editingEq._id;
+    const updatedEquipment = localEquipmentList.map((eq: any) => {
+      if ((eq.id || eq._id) === targetId) {
+        return {
+          ...eq,
+          name: editFormData.name,
+          category: editFormData.category,
+          brand: editFormData.brand,
+          quantity: editFormData.quantity,
+          condition: editFormData.condition,
+          status: editFormData.status,
+          nextService: editFormData.nextService || 'N/A'
+        };
+      }
+      return eq;
+    });
+
+    setLocalEquipmentList(updatedEquipment);
+    setShowEditModal(false);
+    setEditingEq(null);
+
+    try {
+      await api.put(`/gyms/${gym._id}`, { equipment: updatedEquipment });
+    } catch (err) {
+      console.error('Error updating equipment:', err);
+      setLocalEquipmentList(localEquipmentList);
+    }
+  };
+
   const handleDeleteEquipment = async (id: string) => {
     if (!gym || !window.confirm('Are you sure you want to delete this equipment?')) return;
     
@@ -175,8 +233,12 @@ const GymAdminEquipment = () => {
                 <h3 className="text-lg font-bold text-[#202828]">{eq.name}</h3>
                 <p className="text-sm text-[#455250] mt-0.5">{eq.brand || `Quantity: ${eq.quantity || 1}`}</p>
               </div>
-              <button className="text-[#455250] hover:text-[#164A4A] transition-colors">
-                <SearchCode size={20} />
+              <button 
+                onClick={() => handleEditClick(eq)}
+                className="text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] p-1.5 rounded-lg transition-colors"
+                title="Edit Equipment"
+              >
+                <Edit2 size={18} />
               </button>
             </div>
 
@@ -196,13 +258,22 @@ const GymAdminEquipment = () => {
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[#D3DFDA] flex gap-3">
+            <div className="mt-6 pt-4 border-t border-[#D3DFDA] flex gap-2">
               <button onClick={() => setSelectedEq(eq)} className="flex-1 py-2 bg-[#FFFFFF] border border-[#D3DFDA] hover:bg-[#E8E5DA] text-[#202828] text-sm font-bold rounded-xl transition-colors">
                 View Details
               </button>
               <button 
+                onClick={() => handleEditClick(eq)} 
+                className="flex-1 py-2 bg-[#F1F5F3] border border-[#D3DFDA] hover:bg-[#164A4A] hover:text-white text-[#164A4A] text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                title="Edit Equipment"
+              >
+                <Edit2 size={14} />
+                <span>Edit</span>
+              </button>
+              <button 
                 onClick={() => handleDeleteEquipment(eq.id || eq._id)}
-                className="flex-1 py-2 bg-[#FFFFFF] border border-[#D3DFDA] hover:bg-red-50 text-[#6fa3a0] hover:border-red-200 text-sm font-bold rounded-xl transition-colors"
+                className="py-2 px-3 bg-[#FFFFFF] border border-[#D3DFDA] hover:bg-red-50 text-[#6fa3a0] hover:border-red-200 text-sm font-bold rounded-xl transition-colors"
+                title="Delete Equipment"
               >
                 Delete
               </button>
@@ -269,6 +340,77 @@ const GymAdminEquipment = () => {
               <div className="flex justify-end space-x-3 pt-4 border-t border-[#D3DFDA]">
                 <button type="button" onClick={() => setShowAddModal(false)} className="px-6 py-2 text-[#455250] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
                 <button type="submit" className="px-8 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#164A4A]/20">Add Equipment</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#D3DFDA] mt-10 mb-10">
+            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
+              <div className="flex items-center space-x-2">
+                <div className="w-9 h-9 rounded-lg bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center">
+                  <Edit2 size={18} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-[#202828]">Edit Equipment</h2>
+                  <p className="text-xs text-[#455250]">Modify equipment specifications and maintenance status</p>
+                </div>
+              </div>
+              <button onClick={() => setShowEditModal(false)} className="text-[#455250] hover:text-[#202828]"><X size={24} /></button>
+            </div>
+            <form onSubmit={handleSaveEdit} className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-[#455250] mb-1">Equipment Name *</label>
+                  <input required value={editFormData.name} onChange={e => setEditFormData({...editFormData, name: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" placeholder="e.g. Treadmill Series X" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#455250] mb-1">Category *</label>
+                  <select required value={editFormData.category} onChange={e => setEditFormData({...editFormData, category: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
+                    <option value="Cardio">Cardio</option>
+                    <option value="Strength">Strength</option>
+                    <option value="Free Weights">Free Weights</option>
+                    <option value="Accessories">Accessories</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#455250] mb-1">Brand</label>
+                  <input value={editFormData.brand} onChange={e => setEditFormData({...editFormData, brand: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" placeholder="e.g. LifeFitness" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#455250] mb-1">Quantity *</label>
+                  <input type="number" min="1" required value={editFormData.quantity} onChange={e => setEditFormData({...editFormData, quantity: parseInt(e.target.value) || 1})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#455250] mb-1">Condition</label>
+                  <select value={editFormData.condition} onChange={e => setEditFormData({...editFormData, condition: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Poor">Poor</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#455250] mb-1">Status</label>
+                  <select value={editFormData.status} onChange={e => setEditFormData({...editFormData, status: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Out of Order">Out of Order</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-[#455250] mb-1">Next Service Date</label>
+                  <input type="date" value={editFormData.nextService} onChange={e => setEditFormData({...editFormData, nextService: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4 border-t border-[#D3DFDA]">
+                <button type="button" onClick={() => setShowEditModal(false)} className="px-6 py-2 text-[#455250] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+                <button type="submit" className="px-8 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#164A4A]/20">Save Changes</button>
               </div>
             </form>
           </div>

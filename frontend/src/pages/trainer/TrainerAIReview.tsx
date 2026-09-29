@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Bot, ArrowLeft, CheckCircle2, FileEdit, Trash2, Save, Plus, X, AlertCircle, Clock, Calendar } from 'lucide-react';
+import { Bot, ArrowLeft, CheckCircle2, FileEdit, Trash2, Plus, X, AlertCircle, Clock, Calendar } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 

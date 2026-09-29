@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building2, MapPin, Clock, ArrowLeft, Loader2, Dumbbell, Activity, CheckCircle, Wifi, Users, Droplets, Plus } from 'lucide-react';
+import { Building2, MapPin, Clock, ArrowLeft, Loader2, Dumbbell, Activity, CheckCircle, Wifi, Users, Droplets, Plus, Edit, X } from 'lucide-react';
 import api from '../../utils/api';
-import { useAuth } from '../../contexts/AuthContext';
 
 const commonFacilities = [
   { id: 'changing_room', label: 'Changing Room', icon: Users },
@@ -18,10 +17,10 @@ const commonFacilities = [
 
 const GymAdminAddBranch = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPlanModal, setShowPlanModal] = useState(false);
+  const [editingPlanIndex, setEditingPlanIndex] = useState<number | null>(null);
   const [planForm, setPlanForm] = useState({ name: '', price: '', duration: 'Monthly', features: '' });
 
   const [form, setForm] = useState({
@@ -43,10 +42,38 @@ const GymAdminAddBranch = () => {
     subscriptionPlans: [] as any[],
   });
 
-  const handleAddPlan = (e: React.FormEvent) => {
+  const handleOpenAddPlan = () => {
+    setEditingPlanIndex(null);
+    setPlanForm({ name: '', price: '', duration: 'Monthly', features: '' });
+    setShowPlanModal(true);
+  };
+
+  const handleEditPlan = (index: number) => {
+    const planToEdit = form.subscriptionPlans[index];
+    if (!planToEdit) return;
+    setPlanForm({
+      name: planToEdit.name || '',
+      price: planToEdit.price !== undefined ? String(planToEdit.price) : '',
+      duration: planToEdit.duration || 'Monthly',
+      features: planToEdit.features || ''
+    });
+    setEditingPlanIndex(index);
+    setShowPlanModal(true);
+  };
+
+  const handleSavePlan = (e: React.FormEvent) => {
     e.preventDefault();
-    setForm(prev => ({ ...prev, subscriptionPlans: [...prev.subscriptionPlans, planForm] }));
+    if (editingPlanIndex !== null) {
+      setForm(prev => {
+        const plans = [...prev.subscriptionPlans];
+        plans[editingPlanIndex] = { ...plans[editingPlanIndex], ...planForm };
+        return { ...prev, subscriptionPlans: plans };
+      });
+    } else {
+      setForm(prev => ({ ...prev, subscriptionPlans: [...prev.subscriptionPlans, planForm] }));
+    }
     setShowPlanModal(false);
+    setEditingPlanIndex(null);
     setPlanForm({ name: '', price: '', duration: 'Monthly', features: '' });
   };
 
@@ -375,7 +402,7 @@ const GymAdminAddBranch = () => {
             <h2 className="text-xl font-bold text-[#202828] flex items-center gap-2">
               <CheckCircle className="text-[#164A4A]" /> Subscription Plans
             </h2>
-            <button type="button" onClick={() => setShowPlanModal(true)} className="px-4 py-2 bg-[#164A4A] text-white text-sm font-bold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center gap-2">
+            <button type="button" onClick={handleOpenAddPlan} className="px-4 py-2 bg-[#164A4A] text-white text-sm font-bold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center gap-2">
               <Plus size={16} /> Add Plan
             </button>
           </div>
@@ -385,15 +412,30 @@ const GymAdminAddBranch = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {form.subscriptionPlans.map((plan, idx) => (
-                <div key={idx} className="border border-[#D3DFDA] rounded-xl p-4 flex justify-between items-start bg-[#F9F8F6]">
-                  <div>
+                <div key={idx} className="border border-[#D3DFDA] rounded-xl p-4 flex justify-between items-start bg-[#F9F8F6] hover:border-[#164A4A]/30 transition-colors">
+                  <div className="flex-1 pr-3">
                     <h3 className="font-bold text-[#202828] text-lg">{plan.name}</h3>
                     <p className="text-sm font-bold text-[#164A4A]">₹{plan.price} / {plan.duration}</p>
-                    <p className="text-xs text-[#455250] mt-2 line-clamp-2">{plan.features}</p>
+                    <p className="text-xs text-[#455250] mt-2 whitespace-pre-line leading-relaxed">{plan.features}</p>
                   </div>
-                  <button type="button" onClick={() => handleRemovePlan(idx)} className="text-[#6fa3a0] hover:bg-red-50 p-1.5 rounded-lg transition-colors">
-                    <CheckCircle size={16} className="rotate-45" />
-                  </button>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleEditPlan(idx)}
+                      className="text-[#164A4A] hover:bg-[#164A4A]/10 p-1.5 rounded-lg transition-colors"
+                      title="Edit Plan & Features"
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePlan(idx)}
+                      className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                      title="Delete Plan"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -417,13 +459,22 @@ const GymAdminAddBranch = () => {
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-[#FFFFFF] w-full max-w-lg rounded-2xl p-6 shadow-2xl">
             <div className="flex justify-between items-center mb-6 border-b border-[#D3DFDA] pb-4">
-              <h2 className="text-2xl font-bold text-[#202828]">Create Subscription Plan</h2>
-              <button type="button" onClick={() => setShowPlanModal(false)} className="text-[#455250] hover:text-[#6fa3a0] transition-colors">
-                <CheckCircle size={24} className="rotate-45" />
+              <h2 className="text-2xl font-bold text-[#202828]">
+                {editingPlanIndex !== null ? 'Edit Subscription Plan' : 'Create Subscription Plan'}
+              </h2>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPlanModal(false);
+                  setEditingPlanIndex(null);
+                }}
+                className="text-[#455250] hover:text-[#6fa3a0] transition-colors"
+              >
+                <X size={24} />
               </button>
             </div>
 
-            <form onSubmit={handleAddPlan} className="space-y-4">
+            <form onSubmit={handleSavePlan} className="space-y-4">
               <div>
                 <label className="block text-sm font-bold text-[#455250] mb-1">Plan Name</label>
                 <input required value={planForm.name} onChange={e => setPlanForm({...planForm, name: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" placeholder="e.g. Pro Tier" />
@@ -437,20 +488,29 @@ const GymAdminAddBranch = () => {
                   <label className="block text-sm font-bold text-[#455250] mb-1">Duration</label>
                   <select value={planForm.duration} onChange={e => setPlanForm({...planForm, duration: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]">
                     <option value="Monthly">Monthly</option>
+                    <option value="Quarterly">Quarterly</option>
+                    <option value="Half-Yearly">Half-Yearly</option>
                     <option value="Yearly">Yearly</option>
                   </select>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#455250] mb-1">Features (comma separated)</label>
-                <textarea required rows={4} value={planForm.features} onChange={e => setPlanForm({...planForm, features: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" placeholder="Access to gym, 1 PT session, Locker access" />
+                <label className="block text-sm font-bold text-[#455250] mb-1">Features (Description & Inclusions)</label>
+                <textarea required rows={5} value={planForm.features} onChange={e => setPlanForm({...planForm, features: e.target.value})} className="w-full border border-[#D3DFDA] rounded-lg px-4 py-2 outline-none focus:border-[#164A4A]" placeholder="Enter features (e.g. Access to gym, 1 PT session, Locker access)" />
               </div>
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setShowPlanModal(false)} className="px-4 py-2 text-[#455250] hover:bg-[#F1F5F9] rounded-lg font-medium transition-colors">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPlanModal(false);
+                    setEditingPlanIndex(null);
+                  }}
+                  className="px-4 py-2 text-[#455250] hover:bg-[#F1F5F9] rounded-lg font-medium transition-colors"
+                >
                   Cancel
                 </button>
                 <button type="submit" className="px-6 py-2 bg-[#164A4A] text-white font-bold rounded-lg hover:bg-[#C6A77D] transition-colors">
-                  Save Plan
+                  {editingPlanIndex !== null ? 'Update Plan' : 'Save Plan'}
                 </button>
               </div>
             </form>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, Users, Plus, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Clock, Users, Plus, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 const initialEvents = [
   { time: '10:00 AM', type: '1-on-1 Online', client: 'Sarah Connor', duration: '60 min', color: 'bg-blue-500' },

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, CheckCircle, Smartphone, Upload, QrCode, Landmark, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle, Smartphone, QrCode, Landmark, AlertCircle } from 'lucide-react';
 import api from '../../utils/api';
 
 const MemberUpgrade = () => {
@@ -20,9 +20,8 @@ const MemberUpgrade = () => {
   const [customerBankName, setCustomerBankName] = useState('');
   const [customerAccountNumber, setCustomerAccountNumber] = useState('');
   const [customerIfscCode, setCustomerIfscCode] = useState('');
-  const [amountPaid, setAmountPaid] = useState('');
   const [paymentNotes, setPaymentNotes] = useState('');
-  const [paymentProofUrl, setPaymentProofUrl] = useState('');
+  const [paymentProofUrl] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
@@ -41,15 +40,6 @@ const MemberUpgrade = () => {
       console.error('Error fetching gym plans:', err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setTimeout(() => {
-        setPaymentProofUrl('https://example.com/fake-receipt.png');
-        alert('Receipt uploaded successfully!');
-      }, 1000);
     }
   };
 

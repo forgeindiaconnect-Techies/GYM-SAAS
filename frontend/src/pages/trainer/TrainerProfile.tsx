@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, MapPin, Edit3, Award, Clock, IndianRupee, Save, X, CheckCircle, Dumbbell, Calendar } from 'lucide-react';
+import { User, Mail, Phone, Edit3, Award, IndianRupee, Save, X, CheckCircle, Dumbbell, Calendar } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 

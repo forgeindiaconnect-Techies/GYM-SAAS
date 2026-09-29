@@ -1,4 +1,3 @@
-import React from 'react';
 import { Utensils, Apple, Coffee, Moon, CheckCircle2 } from 'lucide-react';
 
 const MemberDietPlan = () => {

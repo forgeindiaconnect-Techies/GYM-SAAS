@@ -25,34 +25,52 @@ const GymAdminMembers = () => {
 
   const fetchMembers = async () => {
     try {
-      const res = await api.get('/users?role=MEMBER');
-      if (res.data.success) {
-        const mapped = res.data.users.map((u: any) => ({
-          id: u._id,
-          name: `${u.firstName} ${u.lastName}`,
-          email: u.email,
-          phone: u.mobile,
-          plan: u.subscriptionPlan || 'None',
-          status: u.approvalStatus === 'PENDING' ? 'Pending' :
-                  u.approvalStatus === 'APPROVED' ? 'Active' :
-                  u.approvalStatus === 'REJECTED' ? 'Rejected' :
-                  u.approvalStatus === 'SUSPENDED' ? 'Inactive' : 'Inactive',
-          joined: new Date(u.createdAt).toISOString().split('T')[0],
-          customerType: u.customerType,
-          gender: u.gender,
-          dob: u.dateOfBirth,
-          fitnessGoal: u.fitnessGoal,
-          emergencyName: u.emergencyContact?.name,
-          emergencyPhone: u.emergencyContact?.mobile,
-          emergencyRelation: u.emergencyContact?.relationship,
-          originalUser: u, // Keep original data for reference if needed
-        }));
+      const [usersRes, membershipsRes] = await Promise.all([
+        api.get('/users?role=MEMBER'),
+        api.get('/memberships/gym').catch(() => ({ data: { memberships: [] } })),
+      ]);
+      if (usersRes.data.success) {
+        // Build a map: userId (as string) → latest membership
+        const membershipMap: Record<string, any> = {};
+        for (const m of (membershipsRes.data.memberships || [])) {
+          // Convert userId to plain string regardless of whether it's ObjectId or string
+          const uid = (m.userId?._id ?? m.userId)?.toString?.() ?? String(m.userId);
+          // Keep the most recent (already sorted by createdAt desc from backend)
+          if (uid && !membershipMap[uid]) membershipMap[uid] = m;
+        }
+
+        const mapped = usersRes.data.users.map((u: any) => {
+          const userId = u._id?.toString?.() ?? String(u._id);
+          const membership = membershipMap[userId] || null;
+          return {
+            id: u._id,
+            name: `${u.firstName} ${u.lastName}`,
+            email: u.email,
+            phone: u.mobile,
+            plan: u.subscriptionPlan || (membership?.status === 'Free Trial' ? 'Free Trial' : 'None'),
+            status: u.approvalStatus === 'PENDING' ? 'Pending' :
+                    u.approvalStatus === 'APPROVED' ? 'Active' :
+                    u.approvalStatus === 'REJECTED' ? 'Rejected' :
+                    u.approvalStatus === 'SUSPENDED' ? 'Inactive' : 'Inactive',
+            joined: new Date(u.createdAt).toISOString().split('T')[0],
+            customerType: u.customerType,
+            gender: u.gender,
+            dob: u.dateOfBirth,
+            fitnessGoal: u.fitnessGoal,
+            emergencyName: u.emergencyContact?.name,
+            emergencyPhone: u.emergencyContact?.mobile,
+            emergencyRelation: u.emergencyContact?.relationship,
+            membership, // latest CustomerMembership record (properly matched)
+            originalUser: u,
+          };
+        });
         setMembers(mapped);
       }
     } catch (err) {
       console.error('Error fetching members:', err);
     }
   };
+
 
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('All');
@@ -278,15 +296,48 @@ const GymAdminMembers = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-1">
-                      <span className="px-2 py-0.5 bg-[#202828] text-white rounded text-xs font-bold inline-flex items-center gap-1">
-                        <ShieldCheck size={12} className="text-[#D3DFDA]" /> {member.plan}
-                      </span>
+                      {(() => {
+                        const isTrial = member.membership?.status === 'Free Trial' || member.plan === 'Free Trial' || member.originalUser?.subscriptionStatus === 'Free Trial' || member.originalUser?.subscriptionStatus === 'FREE_TRIAL';
+                        return (
+                          <span className={`px-2 py-0.5 rounded text-xs font-bold inline-flex items-center gap-1 ${
+                            isTrial ? 'bg-amber-100 text-amber-700' : 'bg-[#202828] text-white'
+                          }`}>
+                            <ShieldCheck size={12} className={isTrial ? 'text-amber-500' : 'text-[#D3DFDA]'} />
+                            {isTrial ? 'Free Trial' : member.plan}
+                          </span>
+                        );
+                      })()}
                       <p className="flex items-center text-[11px] text-[#455250]">
-                        <Calendar size={10} className="mr-1"/> Joined: {member.originalUser?.createdAt ? new Date(member.originalUser.createdAt).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : member.joined}
+                        <Calendar size={10} className="mr-1"/> Joined: {member.originalUser?.createdAt ? new Date(member.originalUser.createdAt).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : member.joined}
                       </p>
-                      <p className="flex items-center text-[11px] text-[#6fa3a0] font-medium mt-0.5">
-                        <Calendar size={10} className="mr-1"/> Expiry: {member.originalUser?.subscriptionExpiry ? new Date(member.originalUser.subscriptionExpiry).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : 'N/A'}
-                      </p>
+                      {(() => {
+                        let expiryRaw = member.membership?.endDate || member.originalUser?.subscriptionExpiry;
+                        const isTrial = member.membership?.status === 'Free Trial' || member.plan === 'Free Trial' || member.originalUser?.subscriptionStatus === 'Free Trial' || member.originalUser?.subscriptionStatus === 'FREE_TRIAL';
+                        // Fallback: If free trial member has no explicit expiry, calculate 1 day (24 hours) from joined date
+                        if (!expiryRaw && isTrial && member.originalUser?.createdAt) {
+                          const joinDate = new Date(member.originalUser.createdAt);
+                          expiryRaw = new Date(joinDate.getTime() + 24 * 60 * 60 * 1000).toISOString();
+                        }
+                        if (!expiryRaw) return (
+                          <p className="flex items-center text-[11px] text-[#6fa3a0] font-medium mt-0.5">
+                            <Calendar size={10} className="mr-1"/> Expiry: N/A
+                          </p>
+                        );
+                        const expiryDate = new Date(expiryRaw);
+                        const now = new Date();
+                        const hoursLeft = (expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+                        const isExpired = expiryDate < now;
+                        const isSoon = !isExpired && hoursLeft <= 24;
+                        return (
+                          <p className={`flex items-center gap-1 text-[11px] font-medium mt-0.5 ${isExpired ? 'text-red-500' : isSoon ? 'text-orange-500' : 'text-[#6fa3a0]'}`}>
+                            <Calendar size={10}/>
+                            {isExpired ? 'Expired: ' : 'Expires: '}
+                            {expiryDate.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            {isSoon && !isExpired && <span className="text-orange-500 font-bold">(Soon!)</span>}
+                            {isExpired && <span className="text-red-500 font-bold">(Expired)</span>}
+                          </p>
+                        );
+                      })()}
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -434,7 +485,22 @@ const GymAdminMembers = () => {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Membership Plan</p>
-                  <p className="font-semibold text-[#202828]">{selectedMember.plan}</p>
+                  <div className="flex items-center gap-2">
+                    {(() => {
+                      const isTrial = selectedMember.membership?.status === 'Free Trial' || selectedMember.plan === 'Free Trial' || selectedMember.originalUser?.subscriptionStatus === 'Free Trial' || selectedMember.originalUser?.subscriptionStatus === 'FREE_TRIAL';
+                      return (
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold inline-flex items-center gap-1 ${
+                          isTrial ? 'bg-amber-100 text-amber-700' : 'bg-[#202828] text-white'
+                        }`}>
+                          <ShieldCheck size={11} className={isTrial ? 'text-amber-500' : 'text-[#D3DFDA]'} />
+                          {isTrial ? 'Free Trial' : selectedMember.plan}
+                        </span>
+                      );
+                    })()}
+                    {selectedMember.membership?.planName && selectedMember.membership?.planName !== 'Free Trial' && (
+                      <span className="text-xs text-amber-600 font-medium">({selectedMember.membership?.planName})</span>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Join Date</p>
@@ -445,8 +511,30 @@ const GymAdminMembers = () => {
                   <p className="font-semibold text-[#202828]">{selectedMember.gender || 'Not specified'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Renewal Date</p>
-                  <p className="font-semibold text-[#202828]">{selectedMember.originalUser?.subscriptionExpiry ? new Date(selectedMember.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}</p>
+                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Expiry Date & Time</p>
+                  {(() => {
+                    let expiryRaw = selectedMember.membership?.endDate || selectedMember.originalUser?.subscriptionExpiry;
+                    const isTrial = selectedMember.membership?.status === 'Free Trial' || selectedMember.plan === 'Free Trial' || selectedMember.originalUser?.subscriptionStatus === 'Free Trial' || selectedMember.originalUser?.subscriptionStatus === 'FREE_TRIAL';
+                    if (!expiryRaw && isTrial && selectedMember.originalUser?.createdAt) {
+                      const joinDate = new Date(selectedMember.originalUser.createdAt);
+                      expiryRaw = new Date(joinDate.getTime() + 24 * 60 * 60 * 1000).toISOString();
+                    }
+                    if (!expiryRaw) return <p className="font-semibold text-gray-400">Not Set</p>;
+                    const expiryDate = new Date(expiryRaw);
+                    const now = new Date();
+                    const hoursLeft = (expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+                    const isExpired = expiryDate < now;
+                    const isSoon = !isExpired && hoursLeft <= 24;
+                    return (
+                      <div>
+                        <p className={`font-semibold ${ isExpired ? 'text-red-500' : isSoon ? 'text-orange-500' : 'text-[#202828]'}`}>
+                          {expiryDate.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                        {isSoon && !isExpired && <p className="text-xs text-orange-500 font-bold mt-0.5">⚠ Expiring in {Math.round(hoursLeft)}h</p>}
+                        {isExpired && <p className="text-xs text-red-500 font-bold mt-0.5">✕ Expired</p>}
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Last Login</p>

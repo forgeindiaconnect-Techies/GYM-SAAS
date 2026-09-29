@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Search, MessageSquare, ExternalLink, RefreshCw } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Search, MessageSquare, RefreshCw } from 'lucide-react';
 import api from '../../utils/api';
 
 const TrainerAIFeedback = () => {
-  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

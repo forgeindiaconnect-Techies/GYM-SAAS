@@ -143,9 +143,7 @@ const GymStoreOfflineSales = () => {
                   <button onClick={addLine} className="text-xs font-bold text-[#164A4A] flex items-center gap-1 hover:underline"><Plus size={14} /> Add Item</button>
                 </div>
                 <div className="space-y-3">
-                  {lines.map((line, idx) => {
-                    const p = productById(line.productId);
-                    return (
+                  {lines.map((line, idx) => (
                       <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-[#F9F8F6] border border-[#D3DFDA] rounded-xl p-3">
                         <select value={line.variantId ? `${line.productId}|${line.variantId}` : line.productId} onChange={(e) => {
                              const val = e.target.value;
@@ -188,8 +186,7 @@ const GymStoreOfflineSales = () => {
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
+                    ))}
                 </div>
               </div>
 

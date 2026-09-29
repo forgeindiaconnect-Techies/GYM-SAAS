@@ -1,4 +1,4 @@
-import { TrendingUp, Award, Target } from 'lucide-react';
+import { TrendingUp, Target } from 'lucide-react';
 
 const TrainerUserProgress = () => {
   return (

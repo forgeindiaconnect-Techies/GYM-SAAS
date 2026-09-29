@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Loader2, CreditCard, CheckCircle2, ArrowLeft, Calendar, Clock, MapPin, Video } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import api from '../../utils/api';
-import { useAuth } from '../../contexts/AuthContext';
 
 const PAYMENT_METHODS = ['UPI', 'Credit / Debit Card', 'Net Banking', 'Cash at Gym'];
 

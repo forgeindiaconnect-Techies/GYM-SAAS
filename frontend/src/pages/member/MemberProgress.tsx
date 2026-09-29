@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { TrendingUp, Activity, Plus, History, ChevronRight, Scale, Dumbbell, X } from 'lucide-react';
+import { useState } from 'react';
+import { Activity, Plus, History, ChevronRight, Scale, Dumbbell, X } from 'lucide-react';
 
 const MemberProgress = () => {
   const [activeTab, setActiveTab] = useState('weight');

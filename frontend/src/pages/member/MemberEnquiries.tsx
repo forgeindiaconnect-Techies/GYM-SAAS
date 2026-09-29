@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Search, Building2, MapPin, Loader2, MessageSquare } from 'lucide-react';
 import api from '../../utils/api';
-import { useAuth } from '../../contexts/AuthContext';
 
 export const MemberEnquiries = () => {
-  const { user } = useAuth();
   const [enquiries, setEnquiries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');

@@ -4,6 +4,29 @@ import CustomerMembership, { CustomerMembershipStatus } from '../models/Customer
 import User, { SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
 
+export const getGymMemberships = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+    // Get the gym for this owner
+    const user = await User.findById(userId).select('gymId');
+    if (!user?.gymId) {
+      res.status(404).json({ success: false, message: 'Gym not found' });
+      return;
+    }
+    const memberships = await CustomerMembership.find({ gymId: user.gymId })
+      .select('userId planName duration status startDate endDate paymentMethod finalAmount')
+      .sort({ createdAt: -1 });
+    res.status(200).json({ success: true, memberships });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+
 export const joinGym = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id;
@@ -21,14 +44,14 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     }
 
     const trialEndDate = new Date();
-    trialEndDate.setDate(trialEndDate.getDate() + 7);
+    trialEndDate.setDate(trialEndDate.getDate() + 1); // 1 Day Free Trial
 
     const membership = new CustomerMembership({
       userId,
       gymId,
       branchId,
       planName: planName, // Record their intended plan
-      duration: '1 Week',
+      duration: '1 Day',
       price: 0,
       discount: 0,
       finalAmount: 0,

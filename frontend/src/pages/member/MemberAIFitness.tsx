@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Bot, Activity, Zap, CheckCircle2, AlertCircle, Dumbbell, Utensils, Loader2, Clock, Lock, ArrowRight, ArrowLeft, Save, Edit3, X, Trophy, TrendingDown, Calendar } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Bot, Activity, Zap, CheckCircle2, AlertCircle, Dumbbell, Utensils, Loader2, Clock, Lock, ArrowRight, ArrowLeft, Edit3, X, Trophy, TrendingDown, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 
 import MemberProfile from './MemberProfile';
 
 const MemberAIFitness = () => {
   const [step, setStep] = useState(1); // 1 = Form, 2 = Generating, 3 = View Plan
-  const [formStep, setFormStep] = useState(1);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [recommendation, setRecommendation] = useState<any>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [isSaving, setIsSaving] = useState(false);
-  const navigate = useNavigate();
   
   // Try to get user's name from local storage
   const userStr = localStorage.getItem('aigym_user');
@@ -225,15 +223,6 @@ const MemberAIFitness = () => {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleSaveProgress = () => {
-    setIsSaving(true);
-    // Mock save progress behavior for UI
-    setTimeout(() => {
-      setIsSaving(false);
-      alert('Profile saved successfully. You can complete it later.');
-    }, 1000);
   };
 
   if (hasAccess === null) {

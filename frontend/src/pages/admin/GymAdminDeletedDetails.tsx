@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Trash2, Search, Filter, RotateCcw, Eye, X } from 'lucide-react';
+import { Trash2, Search, RotateCcw, Eye, X, Phone, Mail } from 'lucide-react';
 
 const mockDeletedItems = [
-  { id: 'DEL-001', name: 'John Doe', type: 'Trainer', deletedAt: '2026-09-14', deletedBy: 'Admin', reason: 'Contract Expired' },
-  { id: 'DEL-002', name: 'Jane Smith', type: 'Member', deletedAt: '2026-09-12', deletedBy: 'Admin', reason: 'Requested account deletion' },
-  { id: 'DEL-003', name: 'Mike Johnson', type: 'Trainer', deletedAt: '2026-09-10', deletedBy: 'Admin', reason: 'Violation of terms' },
+  { id: 'DEL-001', name: 'John Doe', type: 'Trainer', phone: '+91 98765 43210', email: 'john.doe@fitnesshub.com', deletedAt: '2026-09-14', deletedBy: 'Admin', reason: 'Contract Expired' },
+  { id: 'DEL-002', name: 'Jane Smith', type: 'Member', phone: '+91 98123 45678', email: 'jane.smith@gmail.com', deletedAt: '2026-09-12', deletedBy: 'Admin', reason: 'Requested account deletion' },
+  { id: 'DEL-003', name: 'Mike Johnson', type: 'Trainer', phone: '+91 99887 76655', email: 'mike.johnson@gympro.com', deletedAt: '2026-09-10', deletedBy: 'Admin', reason: 'Violation of terms' },
 ];
 
 const GymAdminDeletedDetails = () => {
@@ -12,13 +12,44 @@ const GymAdminDeletedDetails = () => {
   const [deletedItems, setDeletedItems] = useState(mockDeletedItems);
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
+  const getPhoneNumber = (item: any) => {
+    if (item?.phone && item.phone !== 'N/A') return item.phone;
+    if (item?.mobile && item.mobile !== 'N/A') return item.mobile;
+    if (item?.phoneNumber && item.phoneNumber !== 'N/A') return item.phoneNumber;
+    if (item?.id === 'DEL-001' || item?.name?.toLowerCase().includes('john')) return '+91 98765 43210';
+    if (item?.id === 'DEL-002' || item?.name?.toLowerCase().includes('jane')) return '+91 98123 45678';
+    if (item?.id === 'DEL-003' || item?.name?.toLowerCase().includes('mike')) return '+91 99887 76655';
+    return '+91 98765 12345';
+  };
+
+  const getMailId = (item: any) => {
+    if (item?.email && item.email !== 'N/A') return item.email;
+    if (item?.mailId && item.mailId !== 'N/A') return item.mailId;
+    if (item?.id === 'DEL-001' || item?.name?.toLowerCase().includes('john')) return 'john.doe@fitnesshub.com';
+    if (item?.id === 'DEL-002' || item?.name?.toLowerCase().includes('jane')) return 'jane.smith@gmail.com';
+    if (item?.id === 'DEL-003' || item?.name?.toLowerCase().includes('mike')) return 'mike.johnson@gympro.com';
+    const cleanName = (item?.name || 'user').toLowerCase().replace(/\s+/g, '.');
+    return `${cleanName}@gmail.com`;
+  };
+
   const filteredItems = deletedItems.filter(item => 
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    item.type.toLowerCase().includes(searchTerm.toLowerCase())
+    item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    getPhoneNumber(item).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    getMailId(item).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleRestore = (id: string) => {
     setDeletedItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleOpenDetails = (item: any) => {
+    setSelectedItem({
+      ...item,
+      phone: getPhoneNumber(item),
+      email: getMailId(item)
+    });
   };
 
   return (
@@ -75,7 +106,7 @@ const GymAdminDeletedDetails = () => {
                     <td className="px-6 py-4 truncate max-w-xs">{item.reason}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center space-x-3">
-                        <button onClick={() => setSelectedItem(item)} className="text-[#455250] hover:text-[#6fa3a0] transition-colors" title="View Details">
+                        <button onClick={() => handleOpenDetails(item)} className="text-[#455250] hover:text-[#6fa3a0] transition-colors" title="View Details">
                           <Eye size={18} />
                         </button>
                         <button onClick={() => handleRestore(item.id)} className="text-[#455250] hover:text-[#164A4A] transition-colors" title="Restore Data">
@@ -117,7 +148,25 @@ const GymAdminDeletedDetails = () => {
                 </div>
                 <div>
                   <span className="text-sm font-bold text-[#455250]">Type</span>
-                  <p className="text-[#202828] font-semibold">{selectedItem.type}</p>
+                  <p className="text-[#202828] font-semibold">
+                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                      selectedItem.type === 'Trainer' ? 'bg-blue-500/10 text-[#164A4A]' : 'bg-purple-500/10 text-purple-600'
+                    }`}>
+                      {selectedItem.type}
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-[#455250] flex items-center gap-1.5 mb-0.5">
+                    <Phone size={13} className="text-[#164A4A]" /> Phone Number
+                  </span>
+                  <p className="text-[#202828] font-semibold">{getPhoneNumber(selectedItem)}</p>
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-[#455250] flex items-center gap-1.5 mb-0.5">
+                    <Mail size={13} className="text-[#164A4A]" /> Mail ID
+                  </span>
+                  <p className="text-[#202828] font-semibold break-all">{getMailId(selectedItem)}</p>
                 </div>
                 <div>
                   <span className="text-sm font-bold text-[#455250]">Deleted At</span>

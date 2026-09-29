@@ -3,8 +3,8 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
-  LayoutDashboard, Building2, Send, User, Settings, LogOut,
-  Users, CreditCard, Trash2, ShieldCheck, Menu, MessageSquare, Wallet, Bell, Store, PlusCircle
+  LayoutDashboard, Building2, Send, User, LogOut,
+  Users, CreditCard, Trash2, ShieldCheck, Menu, MessageSquare, Bell, Store, PlusCircle
 } from 'lucide-react';
 
 const SuperAdminLayout = () => {
@@ -38,16 +38,15 @@ const SuperAdminLayout = () => {
       title: 'Finance & Store',
       items: [
         { label: 'Subscription Plans', path: '/super-admin/subscriptions', icon: CreditCard },
-        { label: 'Payout Management', path: '/super-admin/payouts', icon: Wallet },
         { label: 'Gym Store', path: '/super-admin/store', icon: Store },
       ],
     },
     {
       title: 'System & Settings',
       items: [
+        { label: 'Profile', path: '/super-admin/profile', icon: User },
         { label: 'Notifications', path: '/super-admin/notifications', icon: Bell },
         { label: 'Deleted Details', path: '/super-admin/deleted', icon: Trash2 },
-        { label: 'Profile', path: '/super-admin/profile', icon: User },
       ],
     },
   ];

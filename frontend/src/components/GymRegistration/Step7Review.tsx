@@ -1,4 +1,4 @@
-import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 export const Step7Review = ({ data, setStep }: any) => {
   const SectionHeader = ({ title, step }: { title: string, step: number }) => (

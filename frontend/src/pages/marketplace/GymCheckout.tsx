@@ -1,20 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CreditCard, CheckCircle, Smartphone, ArrowLeft, Upload, Loader2, ShieldCheck, FileText, Landmark, QrCode } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
+import { ArrowLeft, Loader2, ShieldCheck, FileText } from 'lucide-react';
 import api from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const GymCheckout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated, refreshUser } = useAuth();
   
   const [gym, setGym] = useState<any>(null);
   const [branch, setBranch] = useState<any>(null);
   const [plan, setPlan] = useState<any>(null);
-  const [paymentMethod, setPaymentMethod] = useState('bank');
-  const [paymentReference, setPaymentReference] = useState('');
-  const [paymentProofUrl, setPaymentProofUrl] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
@@ -23,12 +20,48 @@ const GymCheckout = () => {
       navigate('/gyms');
       return;
     }
-    setGym(location.state.gym);
-    setPlan(location.state.plan);
-    setBranch(location.state.branch);
+    const gymData = location.state.gym;
+    const planData = location.state.plan;
+    const branchData = location.state.branch;
+    setGym(gymData);
+    setPlan(planData);
+    setBranch(branchData);
+    // Save intent immediately so that if token expires and global 401
+    // interceptor redirects to /login, the login page can return here
+    sessionStorage.setItem('checkout_intent', JSON.stringify({
+      gymId: gymData._id,
+      plan: planData,
+      gym: gymData,
+      branch: branchData,
+    }));
   }, [location, navigate]);
 
+  // Refresh auth when returning from bfcache (back/forward navigation)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && refreshUser) {
+        refreshUser();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [refreshUser]);
+
   const handlePayment = async () => {
+    if (!isAuthenticated || !user) {
+      // Save intent and redirect to login
+      if (gym && plan) {
+        sessionStorage.setItem('checkout_intent', JSON.stringify({
+          gymId: gym._id,
+          plan,
+          gym,
+          branch,
+        }));
+      }
+      navigate('/login', { state: { returnTo: location.pathname, ...location.state } });
+      return;
+    }
+
     setIsProcessing(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -46,28 +79,31 @@ const GymCheckout = () => {
 
     } catch (error: any) {
       console.error('Checkout error:', error);
-      alert(error.response?.data?.message || 'Failed to start free trial. Please try again.');
+      if (error.response?.status === 401) {
+        // Token expired — save intent and go to login
+        if (gym && plan) {
+          sessionStorage.setItem('checkout_intent', JSON.stringify({
+            gymId: gym._id,
+            plan,
+            gym,
+            branch,
+          }));
+        }
+        alert('Your session has expired. Please log in again to continue.');
+        navigate('/login');
+      } else {
+        alert(error.response?.data?.message || 'Failed to start free trial. Please try again.');
+      }
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Simulate file upload by setting a fake URL
-    if (e.target.files && e.target.files[0]) {
-      setTimeout(() => {
-        setPaymentProofUrl('https://example.com/fake-receipt.png');
-        alert('Receipt uploaded successfully!');
-      }, 1000);
-    }
-  };
 
   if (!plan || !gym) return null;
 
   const tax = plan.price * 0.18; // 18% GST example
   const total = Number(plan.price) + tax;
-
-  const isFreeTrial = Number(plan.price) === 0 || plan.name.toLowerCase().includes('trial');
 
   return (
     <div className="min-h-screen bg-[#F1F5F3] pt-24 pb-12 px-4 relative overflow-hidden">

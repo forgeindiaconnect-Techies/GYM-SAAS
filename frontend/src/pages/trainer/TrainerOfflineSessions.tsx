@@ -1,4 +1,4 @@
-import { MapPin, Users, Clock } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 
 const TrainerOfflineSessions = () => {
   return (

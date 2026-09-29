@@ -104,7 +104,7 @@ const emptyForm = {
   description: '',
   brand: '',
   sku: '',
-  categoryName: '',
+  categoryName: 'General',
   image: '',
   sellingPrice: '',
   discountPrice: '',
@@ -232,8 +232,8 @@ const GymStoreProducts = () => {
   };
 
   const saveProduct = async () => {
-    if (!form.name.trim() || !form.productType.trim() || !form.categoryName.trim()) {
-      alert('Product name, product type, and category are required.');
+    if (!form.name.trim() || !form.productType.trim()) {
+      alert('Product name and product type are required.');
       return;
     }
     if (!form.hasVariants) {
@@ -270,6 +270,8 @@ const GymStoreProducts = () => {
       setSaving(true);
       const payload = {
         ...form,
+        categoryName: form.categoryName || form.productType || 'General',
+        sku: form.sku || undefined,
         sellingPrice: Number(form.sellingPrice) || 0,
         discountPrice: form.discountPrice === '' ? undefined : Number(form.discountPrice),
         stock: Number(form.stock) || 0,
@@ -426,11 +428,11 @@ const GymStoreProducts = () => {
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{p.categoryName}</span>
+                    <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{p.productType || p.categoryName}</span>
                     <span className={`text-xs font-bold ${p.status === 'Active' ? 'text-[#164A4A]' : 'text-gray-400'}`}>{p.status}</span>
                   </div>
                   <h3 className="font-bold text-[#202828] truncate">{p.name}</h3>
-                  {p.brand && <p className="text-xs text-[#455250]">{p.brand}{p.sku && !p.hasVariants ? ` · ${p.sku}` : ''}</p>}
+                  {p.brand && <p className="text-xs text-[#455250]">{p.brand}</p>}
                   
                   <div className="mt-2 flex items-center gap-2">
                     {p.hasVariants ? (
@@ -498,23 +500,10 @@ const GymStoreProducts = () => {
                     <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Product Name *</label>
                     <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} placeholder="e.g., Whey Protein 1kg" />
                   </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Category *</label>
-                    <input list="store-cats" value={form.categoryName} onChange={(e) => setForm({ ...form, categoryName: e.target.value })} className={inputCls} placeholder="Type or choose a category" />
-                    <datalist id="store-cats">
-                      {categories.map((c) => <option key={c} value={c} />)}
-                    </datalist>
-                  </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Brand</label>
                     <input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className={inputCls} placeholder="e.g., MuscleBlaze" />
                   </div>
-                  {!form.hasVariants && (
-                    <div>
-                      <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">SKU</label>
-                      <input value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} className={inputCls} placeholder="Unique code (optional)" />
-                    </div>
-                  )}
                   <div className="sm:col-span-2">
                     <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Description</label>
                     <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={`${inputCls} resize-none`} rows={2} placeholder="Product description shown to members" />
@@ -567,7 +556,6 @@ const GymStoreProducts = () => {
                       <thead className="bg-[#F1F5F3] text-[#455250]">
                         <tr>
                           {typeConfig.variantFields.map(f => <th key={f.name} className="p-2 font-semibold">{f.label}</th>)}
-                          <th className="p-2 font-semibold">SKU</th>
                           <th className="p-2 font-semibold">Price (₹)</th>
                           <th className="p-2 font-semibold">Discount Amount (₹)</th>
                           <th className="p-2 font-semibold">Stock</th>
@@ -577,7 +565,7 @@ const GymStoreProducts = () => {
                       <tbody>
                         {form.variants.length === 0 ? (
                            <tr>
-                             <td colSpan={typeConfig.variantFields.length + 5} className="p-4 text-center text-gray-400">No variants added. Click "Add Variant" to create one.</td>
+                             <td colSpan={typeConfig.variantFields.length + 4} className="p-4 text-center text-gray-400">No variants added. Click "Add Variant" to create one.</td>
                            </tr>
                         ) : (
                           form.variants.map((v, idx) => (
@@ -587,7 +575,6 @@ const GymStoreProducts = () => {
                                      <input value={v.attributes[f.name] || ''} onChange={(e) => updateVariant(idx, 'attributes', { ...v.attributes, [f.name]: e.target.value })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-[#164A4A] min-w-[100px]" placeholder={f.placeholder} />
                                    </td>
                                 ))}
-                                <td className="p-2"><input value={v.sku} onChange={(e) => updateVariant(idx, 'sku', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs min-w-[80px]" placeholder="SKU" /></td>
                                 <td className="p-2"><input type="number" value={v.price} onChange={(e) => updateVariant(idx, 'price', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
                                 <td className="p-2"><input type="number" value={v.discountPrice} onChange={(e) => updateVariant(idx, 'discountPrice', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="Optional" /></td>
                                 <td className="p-2"><input type="number" value={v.stock} onChange={(e) => updateVariant(idx, 'stock', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>

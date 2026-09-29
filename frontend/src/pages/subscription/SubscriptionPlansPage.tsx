@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Activity, CheckCircle, XCircle, Loader2, LogOut, Zap, Crown, Star, Sparkles,
-  Users, Dumbbell, Building2, UserCheck, Lock, TrendingUp, Gift
+  Lock, Gift
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   CreditCard, Zap, Star, Crown, Sparkles, CheckCircle, XCircle,
   Users, Dumbbell, Building2, UserCheck, Edit3, Eye, ToggleLeft,
-  ToggleRight, Plus, Search, TrendingUp, Calendar, IndianRupee, Clock, AlertCircle
+  ToggleRight, Plus, Search, Calendar, IndianRupee, Clock, AlertCircle
 } from 'lucide-react';
 
 import api from '../../utils/api';
@@ -855,10 +855,6 @@ const SuperAdminSubscriptions = () => {
     setPlanStatuses(prev => ({ ...prev, [newPlan.key]: true }));
   };
 
-  const totalRevenue = subscribedGyms
-    .filter(g => g.status === 'Active')
-    .reduce((sum, g) => sum + parseInt(g.amount.replace(/[₹,]/g, '')), 0);
-
   const filteredGyms = subscribedGyms.filter(g => {
     const matchSearch = g.gymName.toLowerCase().includes(searchQuery.toLowerCase()) || g.owner.toLowerCase().includes(searchQuery.toLowerCase());
     const matchPlan = filterPlan === 'ALL' || g.plan === filterPlan;
@@ -1017,7 +1013,6 @@ const SuperAdminSubscriptions = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
           {plans.map(plan => {
-            const Icon = plan.icon;
             const isPlanActive = planStatuses[plan.key] ?? true;
             const isSelected = selectedPlan === plan.key;
             const acc = getAccent(plan.key);

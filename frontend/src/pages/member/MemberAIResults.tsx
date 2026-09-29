@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../utils/api';
-import { Activity, Trophy, TrendingDown, ArrowRight, Calendar, Dumbbell, Utensils, CheckCircle2, AlertCircle, Clock, Loader2, Sparkles } from 'lucide-react';
+import { Activity, Trophy, TrendingDown, ArrowRight, Calendar, Dumbbell, Utensils, AlertCircle, Clock, Loader2, Sparkles } from 'lucide-react';
 
 const MemberAIResults = () => {
   const [recommendation, setRecommendation] = useState<any>(null);

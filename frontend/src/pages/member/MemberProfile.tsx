@@ -1,4 +1,4 @@
-import { User, Mail, Phone, MapPin, Edit3, X, Save } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit3, X, Save } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import api from '../../utils/api';

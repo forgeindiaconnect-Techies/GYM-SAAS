@@ -28,7 +28,7 @@ const SuperAdminSettings = () => {
     alert('Settings saved successfully!');
   };
 
-  const ToggleBtn = ({ label, desc, active, onClick }) => (
+  const ToggleBtn = ({ label, desc, active, onClick }: { label: string; desc: string; active: boolean; onClick: () => void }) => (
     <div className="flex items-center justify-between p-4 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl">
       <div>
         <p className="text-[#202828] font-semibold">{label}</p>

@@ -1,5 +1,4 @@
 import { MessageSquare } from 'lucide-react';
-import MemberAIAssistant from './MemberAIAssistant';
 
 const MemberChat = () => {
   return (

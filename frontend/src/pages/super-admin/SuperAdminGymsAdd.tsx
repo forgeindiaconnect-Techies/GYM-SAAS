@@ -83,7 +83,7 @@ const SuperAdminGymsAdd = () => {
   }, [formData, currentStep, isDraftLoading]);
 
   const updateData = (fields: any) => {
-    setFormData(prev => ({ ...prev, ...fields }));
+    setFormData((prev: any) => ({ ...prev, ...fields }));
     // Clear errors for updated fields
     const newErrors = { ...errors };
     Object.keys(fields).forEach(key => delete newErrors[key]);

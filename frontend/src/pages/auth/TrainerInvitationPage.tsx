@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Dumbbell, ShieldCheck, User, X } from 'lucide-react';
+import { Dumbbell, User, X } from 'lucide-react';
 import api from '../../utils/api';
 
 const TrainerInvitationPage = () => {

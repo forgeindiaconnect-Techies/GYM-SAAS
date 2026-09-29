@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import User, { Role, ApprovalStatus, SubscriptionStatus } from '../models/User';
 import Gym, { GymStatus } from '../models/Gym';
 import Trainer from '../models/Trainer';
+import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
@@ -31,6 +32,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 1); // 1 Day Free Trial
+
     const user = new User({
       firstName,
       lastName,
@@ -40,7 +44,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       role: Role.MEMBER,
       approvalStatus: ApprovalStatus.PENDING,
       isActive: true,
-      subscriptionStatus: SubscriptionStatus.NONE,
+      subscriptionStatus: gymId ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.NONE,
+      subscriptionPlan: gymId ? 'Free Trial' : undefined,
+      subscriptionExpiry: gymId ? trialEndDate : undefined,
       customerType: 'PUBLIC_SIGNUP',
       gymId,
       branchId,
@@ -58,6 +64,23 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
 
     await user.save();
+
+    if (gymId) {
+      await CustomerMembership.create({
+        userId: user._id,
+        gymId,
+        branchId,
+        planName: 'Free Trial',
+        duration: '1 Day',
+        price: 0,
+        discount: 0,
+        finalAmount: 0,
+        paymentMethod: 'Trial',
+        status: CustomerMembershipStatus.FREE_TRIAL,
+        startDate: new Date(),
+        endDate: trialEndDate,
+      });
+    }
 
     const payload = {
       id: user._id,
@@ -207,6 +230,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    if (user.approvalStatus === ApprovalStatus.DELETED) {
+      res.status(403).json({ success: false, message: 'Your account has been deleted or deactivated. Please contact support.', errorCode: 'ACCOUNT_DELETED' });
+      return;
+    }
+
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
       res.status(401).json({ success: false, message: 'Invalid credentials', errorCode: 'INVALID_CREDENTIALS' });
@@ -230,7 +258,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     user.lastLogin = new Date();
-    await user.save();
+    await User.updateOne(
+      { _id: user._id },
+      { $set: { lastLogin: user.lastLogin, subscriptionStatus: user.subscriptionStatus } }
+    );
 
     const payload = {
       id: user._id,
@@ -260,10 +291,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         role: user.role,
         gymId: user.gymId,
         gymName,
+        isActive: user.isActive,
         approvalStatus: user.approvalStatus,
         subscriptionStatus: user.subscriptionStatus,
         subscriptionPlan: user.subscriptionPlan,
         subscriptionExpiry: user.subscriptionExpiry,
+        subscriptionStartDate: (user as any).subscriptionStartDate,
+        subscriptionExpiryDate: (user as any).subscriptionExpiryDate,
         rejectionReason: user.rejectionReason,
         suspensionReason: user.suspensionReason,
       },
