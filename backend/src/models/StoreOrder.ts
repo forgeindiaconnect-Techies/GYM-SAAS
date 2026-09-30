@@ -49,6 +49,7 @@ export interface IStoreOrder extends Document {
   total: number;
   paymentStatus: StoreOrderPaymentStatus;
   paymentMethod?: string;
+  bankName?: string;
   transactionId?: string;
   paymentDate?: Date;
   fulfilmentType: 'Gym Pickup' | 'Delivery';
@@ -103,6 +104,7 @@ const storeOrderSchema = new Schema<IStoreOrder>(
       default: StoreOrderPaymentStatus.PENDING,
     },
     paymentMethod: { type: String },
+    bankName: { type: String },
     transactionId: { type: String },
     paymentDate: { type: Date },
     fulfilmentType: { type: String, enum: ['Gym Pickup', 'Delivery'], required: true },

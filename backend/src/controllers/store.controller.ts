@@ -107,7 +107,7 @@ const notifyLowStockIfNeeded = async (product: any, gymId: mongoose.Types.Object
 export const createOrderNumber = (): string => `ORD-${Date.now().toString(36).toUpperCase()}${randomCode(4)}`;
 const createSaleNumber = (): string => `SL-${Date.now().toString(36).toUpperCase()}${randomCode(4)}`;
 
-const priceFor = (p: any): number => p.discountPrice ?? p.sellingPrice;
+const priceFor = (p: any): number => (p?.discountPrice != null && p.discountPrice > 0) ? (p.sellingPrice - p.discountPrice) : (p?.sellingPrice || 0);
 
 // ---------------------------------------------------------------------------
 // Store eligibility
@@ -765,8 +765,8 @@ export const getCart = async (req: AuthRequest, res: Response): Promise<void> =>
     }
     
     const priceFor = (p: any, v?: any) => {
-      if (v) return v.discountPrice ?? v.price;
-      return p.discountPrice ?? p.sellingPrice;
+      if (v) return (v.discountPrice != null && v.discountPrice > 0) ? (v.price - v.discountPrice) : v.price;
+      return (p.discountPrice != null && p.discountPrice > 0) ? (p.sellingPrice - p.discountPrice) : p.sellingPrice;
     };
     
     const subtotal = valid.reduce((s: number, v: any) => s + v.quantity * priceFor(v.product, v.variant), 0);
@@ -975,7 +975,7 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
     const gymId = user.gymId!;
-    const { fulfilmentType, deliveryDetails, paymentMethod = 'UPI', discount = 0 } = req.body;
+    const { fulfilmentType, deliveryDetails, paymentMethod = 'UPI', bankName, discount = 0 } = req.body;
 
     const cart = await StoreCart.findOne({ customerId: user._id, gymId });
     if (!cart || cart.items.length === 0) {
@@ -1027,6 +1027,7 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
       total,
       paymentStatus: StoreOrderPaymentStatus.PAID,
       paymentMethod,
+      bankName: paymentMethod === 'Net Banking' && bankName ? bankName : undefined,
       transactionId: `TXN_${randomCode(8)}${Date.now().toString().slice(-4)}`,
       paymentDate: new Date(),
       fulfilmentType,
@@ -1478,7 +1479,7 @@ export const recordOfflineSale = async (req: AuthRequest, res: Response): Promis
         res.status(400).json({ success: false, message: `"${p.name}" has only ${targetStock} unit(s) in stock` });
         return;
       }
-      const unitPrice = discountPrice !== undefined ? discountPrice : sellingPrice;
+      const unitPrice = (discountPrice !== undefined && discountPrice > 0) ? (sellingPrice - discountPrice) : sellingPrice;
       saleItems.push({
         productId: p._id,
         variantId: row.variantId,

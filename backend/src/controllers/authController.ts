@@ -250,11 +250,54 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       }
     }
 
-    // Check trial expiration
-    if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL && user.subscriptionExpiry) {
-      if (new Date(user.subscriptionExpiry) < new Date()) {
+    // Check subscription / plan expiration for ALL users (paid monthly, annual, free trial, etc.)
+    const now = new Date();
+    let isExpired = false;
+
+    // 1. Direct user subscription expiry check
+    if (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < now) {
+      if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
         user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        isExpired = true;
       }
+    }
+    if ((user as any).subscriptionExpiryDate && new Date((user as any).subscriptionExpiryDate) < now) {
+      if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
+        user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        isExpired = true;
+      }
+    }
+
+    // 2. Member CustomerMembership check
+    if (user.role === Role.MEMBER) {
+      const latestMembership = await CustomerMembership.findOne({ userId: user._id }).sort({ createdAt: -1 });
+      if (latestMembership) {
+        if (latestMembership.endDate && new Date(latestMembership.endDate) < now) {
+          if (latestMembership.status === CustomerMembershipStatus.ACTIVE || latestMembership.status === CustomerMembershipStatus.FREE_TRIAL) {
+            latestMembership.status = CustomerMembershipStatus.EXPIRED;
+            await latestMembership.save();
+          }
+          user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+          isExpired = true;
+        }
+      }
+    }
+
+    // 3. Gym Owner / Admin Subscription check
+    if (user.role === Role.GYM_OWNER || user.role === Role.ADMIN) {
+      if (user.gymId) {
+        const gym = await Gym.findById(user.gymId);
+        if (gym?.subscription?.endDate && new Date(gym.subscription.endDate) < now) {
+          gym.subscription.status = 'Expired';
+          await gym.save();
+          user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+          isExpired = true;
+        }
+      }
+    }
+
+    if (user.subscriptionStatus === SubscriptionStatus.EXPIRED) {
+      isExpired = true;
     }
 
     user.lastLogin = new Date();
@@ -283,11 +326,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({
       success: true,
       token,
+      isSubscriptionCompleted: isExpired,
+      subscriptionMessage: isExpired ? 'Your subscription plan is completed. Please upgrade your plan.' : undefined,
       user: {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        mobile: user.mobile,
+        phone: user.mobile,
         role: user.role,
         gymId: user.gymId,
         gymName,
@@ -316,14 +363,65 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     
-    // Check trial expiration
-    if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL && user.subscriptionExpiry) {
-      if (new Date(user.subscriptionExpiry) < new Date()) {
+    // Check subscription / plan expiration for ALL users (paid monthly, annual, free trial, etc.)
+    const now = new Date();
+    let isExpired = false;
+
+    if (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < now) {
+      if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
         user.subscriptionStatus = SubscriptionStatus.EXPIRED;
-        await user.save();
+        isExpired = true;
       }
     }
-    res.status(200).json({ success: true, user });
+    if ((user as any).subscriptionExpiryDate && new Date((user as any).subscriptionExpiryDate) < now) {
+      if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
+        user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        isExpired = true;
+      }
+    }
+
+    if (user.role === Role.MEMBER) {
+      const latestMembership = await CustomerMembership.findOne({ userId: user._id }).sort({ createdAt: -1 });
+      if (latestMembership) {
+        if (latestMembership.endDate && new Date(latestMembership.endDate) < now) {
+          if (latestMembership.status === CustomerMembershipStatus.ACTIVE || latestMembership.status === CustomerMembershipStatus.FREE_TRIAL) {
+            latestMembership.status = CustomerMembershipStatus.EXPIRED;
+            await latestMembership.save();
+          }
+          user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+          isExpired = true;
+        }
+      }
+    }
+
+    if (user.role === Role.GYM_OWNER || user.role === Role.ADMIN) {
+      if (user.gymId) {
+        const gym = await Gym.findById(user.gymId);
+        if (gym?.subscription?.endDate && new Date(gym.subscription.endDate) < now) {
+          gym.subscription.status = 'Expired';
+          await gym.save();
+          user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+          isExpired = true;
+        }
+      }
+    }
+
+    if (isExpired || user.subscriptionStatus === SubscriptionStatus.EXPIRED) {
+      await user.save();
+    }
+    
+    const userObj = user.toObject();
+    (userObj as any).phone = user.mobile;
+    (userObj as any).id = user._id;
+
+    res.status(200).json({ 
+      success: true, 
+      user: userObj, 
+      isSubscriptionCompleted: isExpired || user.subscriptionStatus === SubscriptionStatus.EXPIRED,
+      subscriptionMessage: (isExpired || user.subscriptionStatus === SubscriptionStatus.EXPIRED) 
+        ? 'Your subscription plan is completed. Please upgrade your plan.' 
+        : undefined
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

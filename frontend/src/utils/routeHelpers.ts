@@ -36,7 +36,7 @@ export const getDashboardRoute = (user: AuthUser): string => {
   if (statusUpper === 'DELETED') return '/status?type=inactive';
 
   if (!isSubscriptionActive(subscriptionStatus)) {
-    return '/subscription-plans';
+    return '/member/dashboard';
   }
   return '/member/dashboard';
 };

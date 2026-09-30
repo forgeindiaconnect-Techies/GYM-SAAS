@@ -73,7 +73,35 @@ export interface IAIRecommendation extends Document {
     trainerName: string;
     date: Date;
   };
+  memberReply?: {
+    message: string;
+    date: Date;
+  };
+  trainerReply?: {
+    message: string;
+    date: Date;
+  };
+  chatMessages?: Array<{
+    senderRole: 'TRAINER' | 'MEMBER';
+    senderName: string;
+    message: string;
+    date: Date;
+  }>;
   approvedAt?: Date;
+
+  // AI Re-analysis fields
+  isReanalysis?: boolean;
+  reanalysisComparison?: {
+    initialWeight?: number;
+    currentWeight?: number;
+    weightChange?: string;
+    attendancePercentage?: number;
+    videoCompletionPercentage?: number;
+    initialVSCurrentSummary?: string;
+    areasOfImprovement?: string;
+    trainerAttentionAreas?: string;
+    nextStepRecommendations?: string;
+  };
 
   createdAt: Date;
   updatedAt: Date;
@@ -146,8 +174,33 @@ const aiRecommendationSchema = new Schema<IAIRecommendation>({
     trainerName: String,
     date: Date
   },
+  memberReply: {
+    message: String,
+    date: Date
+  },
+  trainerReply: {
+    message: String,
+    date: Date
+  },
+  chatMessages: [{
+    senderRole: { type: String, enum: ['TRAINER', 'MEMBER'] },
+    senderName: String,
+    message: String,
+    date: { type: Date, default: Date.now }
+  }],
   approvedAt: Date,
-
+  isReanalysis: { type: Boolean, default: false },
+  reanalysisComparison: {
+    initialWeight: Number,
+    currentWeight: Number,
+    weightChange: String,
+    attendancePercentage: Number,
+    videoCompletionPercentage: Number,
+    initialVSCurrentSummary: String,
+    areasOfImprovement: String,
+    trainerAttentionAreas: String,
+    nextStepRecommendations: String
+  }
 }, { timestamps: true });
 
 export default mongoose.model<IAIRecommendation>('AIRecommendation', aiRecommendationSchema);

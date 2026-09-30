@@ -17,6 +17,7 @@ export interface AuthUser {
   subscriptionStartDate?: string;
   subscriptionExpiryDate?: string;
   phone?: string;
+  mobile?: string;
   isActive?: boolean;
   rejectionReason?: string;
   suspensionReason?: string;
@@ -65,6 +66,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             .then(res => {
               if (res.data?.user) {
                 const refreshed = { ...parsed, ...res.data.user };
+                if (refreshed.mobile && !refreshed.phone) refreshed.phone = refreshed.mobile;
+                if (refreshed.phone && !refreshed.mobile) refreshed.mobile = refreshed.phone;
+                if (!refreshed.id && refreshed._id) refreshed.id = refreshed._id;
+
                 if (refreshed.firstName?.toLowerCase() === 'ananth' || refreshed.email === 'ananth@gmail.com') {
                   refreshed.firstName = 'Ananth';
                   refreshed.lastName = '';
@@ -89,6 +94,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (authUser: AuthUser, authToken: string, remember = true) => {
+    if (authUser.mobile && !authUser.phone) authUser.phone = authUser.mobile;
+    if (authUser.phone && !authUser.mobile) authUser.mobile = authUser.phone;
+    if (!authUser.id && (authUser as any)._id) authUser.id = (authUser as any)._id;
+
     const storage = remember ? localStorage : sessionStorage;
     storage.setItem('aigym_token', authToken);
     storage.setItem('aigym_user', JSON.stringify(authUser));
@@ -107,6 +116,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updateUser = (updates: Partial<AuthUser>) => {
     if (user) {
+      if (updates.mobile && !updates.phone) updates.phone = updates.mobile;
+      if (updates.phone && !updates.mobile) updates.mobile = updates.phone;
       const updated = { ...user, ...updates };
       setUser(updated);
       if (localStorage.getItem('aigym_user')) {

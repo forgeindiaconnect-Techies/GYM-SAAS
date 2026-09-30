@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Loader2, ShoppingCart, Plus, X, Store, ImageIcon } from 'lucide-react';
+import { Search, Loader2, ShoppingCart, Plus, X, Store, ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -17,6 +17,12 @@ const MemberStore = () => {
   const [loading, setLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
   const [adding, setAdding] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+
+  const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const loadStatus = async () => {
     try {
@@ -65,9 +71,9 @@ const MemberStore = () => {
       setAdding(p._id);
       await api.post('/store/customer/cart', { productId: p._id, variantId: vId, quantity: qty });
       loadCartCount();
-      alert(`Added "${p.name}" to your cart.`);
+      showToast(`"${p.name}" added to your cart!`);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Could not add to cart');
+      showToast(err.response?.data?.message || 'Could not add to cart', 'error');
     } finally {
       setAdding(null);
     }
@@ -93,6 +99,15 @@ const MemberStore = () => {
 
   return (
     <div className="space-y-6">
+      {/* Toast notification */}
+      {toast && (
+        <div className={`fixed bottom-6 right-6 z-[200] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white font-semibold text-sm transition-all animate-in slide-in-from-bottom-4 ${toast.type === 'success' ? 'bg-[#164A4A]' : 'bg-red-600'}`}>
+          {toast.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+          {toast.msg}
+          <button onClick={() => setToast(null)} className="ml-2 opacity-70 hover:opacity-100"><X size={16} /></button>
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Gym Store</h1>
@@ -133,35 +148,48 @@ const MemberStore = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {products.map((p) => {
             let totalStock = p.stock;
-            let displayPrice = p.discountPrice ?? p.sellingPrice;
+            let displayPrice = p.sellingPrice - (p.discountPrice || 0);
+            let originalPrice = p.sellingPrice;
+            let hasDiscount = p.discountPrice != null && p.discountPrice > 0;
+
             if (p.hasVariants && p.variants && p.variants.length > 0) {
                totalStock = p.variants.reduce((acc: number, v: any) => acc + v.stock, 0);
-               const prices = p.variants.map((v: any) => v.discountPrice ?? v.price);
-               displayPrice = Math.min(...prices);
+               const minVariant = p.variants.reduce((prev: any, curr: any) => {
+                  const prevDisplay = prev.price - (prev.discountPrice || 0);
+                  const currDisplay = curr.price - (curr.discountPrice || 0);
+                  return currDisplay < prevDisplay ? curr : prev;
+               }, p.variants[0]);
+               
+               displayPrice = minVariant.price - (minVariant.discountPrice || 0);
+               originalPrice = minVariant.price;
+               hasDiscount = minVariant.discountPrice != null && minVariant.discountPrice > 0;
             }
 
+            const isLow = totalStock > 0 && totalStock <= (p.lowStockThreshold || 5);
             const out = totalStock <= 0;
             return (
               <div key={p._id} className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-                <button onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }} className="h-40 bg-[#F1F5F3] relative block w-full">
+                <button onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }} className="h-40 bg-[#F1F5F3] relative block w-full text-left">
                   {p.image ? (
                     <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-[#164A4A]/30"><ImageIcon size={48} /></div>
                   )}
-                  {!p.hasVariants && p.discountPrice != null && p.discountPrice < p.sellingPrice && (
-                    <span className="absolute top-2 left-2 px-2.5 py-1 rounded-full text-xs font-bold bg-[#164A4A] text-white">
-                      {Math.round(((p.sellingPrice - p.discountPrice) / p.sellingPrice) * 100)}% off
-                    </span>
-                  )}
-                  {out && (
-                    <span className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
-                      Out of stock
+                  <span className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-xs font-bold ${
+                    totalStock <= 0 ? 'bg-red-100 text-red-700' : isLow ? 'bg-amber-100 text-amber-700' : 'bg-[#D2B48C]/10 text-[#164A4A]'
+                  }`}>
+                    {totalStock <= 0 ? 'Out of stock' : isLow ? `Low (${totalStock})` : `In stock (${totalStock})`}
+                  </span>
+                  {hasDiscount && (
+                    <span className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-[#164A4A] text-white">
+                      {Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% off
                     </span>
                   )}
                 </button>
                 <div className="p-4 flex-1 flex flex-col">
-                  <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{p.categoryName}</span>
+                  <div className="flex items-center justify-between mb-0.5">
+                    <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{p.productType || p.categoryName}</span>
+                  </div>
                   <h3 className="font-bold text-[#202828] mt-0.5 truncate">{p.name}</h3>
                   <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
                     {p.attributes && Object.entries(p.attributes).slice(0, 2).map(([k, v]) => (
@@ -171,12 +199,17 @@ const MemberStore = () => {
                   {p.brand && <p className="text-xs text-[#455250] mt-1">{p.brand}</p>}
                   <div className="mt-2 flex items-center gap-2">
                     {p.hasVariants ? (
-                       <span className="text-lg font-black text-[#164A4A]">From ₹{displayPrice}</span>
+                       <>
+                         <span className="text-lg font-black text-[#164A4A]">From ₹{displayPrice}</span>
+                         {hasDiscount && (
+                           <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
+                         )}
+                       </>
                     ) : (
                        <>
                          <span className="text-lg font-black text-[#164A4A]">₹{displayPrice}</span>
-                         {p.discountPrice != null && p.discountPrice < p.sellingPrice && (
-                           <span className="text-sm text-gray-400 line-through">₹{p.sellingPrice}</span>
+                         {hasDiscount && (
+                           <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
                          )}
                        </>
                     )}
@@ -214,7 +247,7 @@ const MemberStore = () => {
                 {selected.image ? <img src={selected.image} alt={selected.name} className="w-full h-full object-cover" /> : <ImageIcon className="text-[#164A4A]/30" size={36} />}
               </div>
               <div>
-                <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{selected.categoryName}</span>
+                <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{selected.productType || selected.categoryName}</span>
                 <h2 className="text-xl font-bold text-[#202828]">{selected.name}</h2>
                 <div className="flex items-center gap-1.5 flex-wrap mt-1">
                   {selected.attributes && Object.entries(selected.attributes).map(([k, v]) => (
@@ -224,16 +257,20 @@ const MemberStore = () => {
                 {selected.brand && <p className="text-sm text-[#455250] mt-1">{selected.brand}</p>}
                 
                 {selected.hasVariants ? (
-                  <div className="mt-2">
-                    <span className="text-2xl font-black text-[#164A4A]">₹{selectedVariant?.discountPrice ?? selectedVariant?.price ?? 0}</span>
-                    {selectedVariant?.discountPrice != null && selectedVariant.discountPrice < selectedVariant.price && (
-                      <span className="text-gray-400 line-through ml-2">₹{selectedVariant.price}</span>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-2xl font-black text-[#164A4A]">
+                      ₹{selectedVariant ? selectedVariant.price - (selectedVariant.discountPrice || 0) : 0}
+                    </span>
+                    {selectedVariant?.discountPrice != null && selectedVariant.discountPrice > 0 && (
+                      <span className="text-gray-400 line-through">₹{selectedVariant.price}</span>
                     )}
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 mt-2">
-                    <span className="text-2xl font-black text-[#164A4A]">₹{selected.discountPrice ?? selected.sellingPrice}</span>
-                    {selected.discountPrice != null && selected.discountPrice < selected.sellingPrice && (
+                    <span className="text-2xl font-black text-[#164A4A]">
+                      ₹{selected.sellingPrice - (selected.discountPrice || 0)}
+                    </span>
+                    {selected.discountPrice != null && selected.discountPrice > 0 && (
                       <span className="text-gray-400 line-through">₹{selected.sellingPrice}</span>
                     )}
                   </div>
@@ -261,7 +298,7 @@ const MemberStore = () => {
                          `}
                        >
                          <span>{label}</span>
-                         <span className={isSelected ? 'text-[#164A4A] font-bold' : 'text-gray-500'}>₹{v.discountPrice ?? v.price}</span>
+                         <span className={isSelected ? 'text-[#164A4A] font-bold' : 'text-gray-500'}>₹{v.price - (v.discountPrice || 0)}</span>
                        </button>
                      )
                   })}

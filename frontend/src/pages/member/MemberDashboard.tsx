@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Bot, Dumbbell, TrendingUp, Calendar, MapPin, AlertCircle, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../../utils/api';
 
 const MemberDashboard = () => {
   const { user, logout } = useAuth();
+  const location = useLocation();
   const [memberships, setMemberships] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [sessions, setSessions] = useState<any[]>([]);
@@ -52,10 +53,15 @@ const MemberDashboard = () => {
   }
 
   useEffect(() => {
-    if (!loading && !activeMembership && (expiredMembership || user?.subscriptionStatus === 'Expired')) {
+    const isSubExp = 
+      user?.subscriptionStatus?.toUpperCase() === 'EXPIRED' || 
+      (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date()) ||
+      Boolean((location.state as any)?.showExpiredModal);
+
+    if (!loading && !activeMembership && (expiredMembership || isSubExp)) {
       setShowExpiredPopup(true);
     }
-  }, [loading, activeMembership, expiredMembership, user]);
+  }, [loading, activeMembership, expiredMembership, user, location.state]);
 
   const quickLinks = [
     { icon: Bot, label: 'AI Assistant', desc: 'Chat with your AI coach', path: '/member/ai-assistant', color: 'text-[#164A4A] bg-[#164A4A]/10 border-[#164A4A]' },
@@ -132,13 +138,13 @@ const MemberDashboard = () => {
         </div>
       )}
 
-      {!hasActive && !pendingMembership && (user?.subscriptionStatus?.toUpperCase() === 'EXPIRED') && (
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-10 text-center mb-10 shadow-xl">
-          <AlertCircle size={48} className="mx-auto text-[#6fa3a0] mb-4" />
-          <h2 className="text-2xl font-bold text-[#202828] mb-2">Your subscription has expired</h2>
-          <p className="text-[#455250] mb-6 max-w-md mx-auto">Please renew your membership to continue accessing your AI GYM dashboard and features.</p>
-          <Link to="/member/upgrade" className="inline-block px-8 py-3 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105">
-            Renew Membership
+      {!hasActive && !pendingMembership && (user?.subscriptionStatus?.toUpperCase() === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date())) && (
+        <div className="bg-[#FFFFFF] border-2 border-red-300 rounded-2xl p-10 text-center mb-10 shadow-xl">
+          <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
+          <h2 className="text-2xl font-bold text-[#202828] mb-2">Your subscription plan is completed</h2>
+          <p className="text-[#455250] mb-6 max-w-md mx-auto">Your subscription plan is completed. Please upgrade your plan to continue accessing your AI GYM dashboard and features.</p>
+          <Link to="/member/upgrade" className="inline-block px-8 py-3 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105 shadow-md">
+            Upgrade Your Plan
           </Link>
         </div>
       )}
@@ -287,20 +293,21 @@ const MemberDashboard = () => {
       {/* Membership Expired Popup */}
       {showExpiredPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#202828]/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#D3DFDA]">
+          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative animate-in fade-in zoom-in-95 border-2 border-red-300">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="text-[#6fa3a0]" size={32} />
+              <AlertCircle className="text-red-500" size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-[#202828] mb-2 text-center">Free Trial / Subscription Expired</h2>
+            <h2 className="text-2xl font-bold text-[#202828] mb-2 text-center">Plan Completed</h2>
             <p className="text-[#455250] mb-8 text-center">
-              Your free trial has ended. Choose a subscription plan to continue accessing premium gym services.
+              Your subscription plan is completed. Please upgrade your plan to continue accessing premium gym services.
             </p>
             <div className="flex flex-col gap-3">
               <Link 
                 to="/member/upgrade"
+                onClick={() => setShowExpiredPopup(false)}
                 className="w-full py-4 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-colors shadow-lg shadow-green-200 text-center"
               >
-                Upgrade Subscription
+                Upgrade Your Plan
               </Link>
               <button 
                 onClick={logout}

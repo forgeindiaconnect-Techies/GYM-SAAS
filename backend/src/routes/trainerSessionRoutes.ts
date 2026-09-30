@@ -11,7 +11,10 @@ import {
   rescheduleSession,
   completeSession,
   rateSession,
-  refundSession
+  refundSession,
+  checkInSession,
+  checkOutSession,
+  submitSessionNotes
 } from '../controllers/trainerSessionController';
 import { authenticate } from '../middlewares/auth';
 
@@ -24,12 +27,15 @@ router.post('/:id/pay', authenticate, payForSession);
 router.post('/:id/cancel', authenticate, cancelSession);
 router.post('/:id/reschedule', authenticate, rescheduleSession);
 router.post('/:id/rate', authenticate, rateSession);
+router.post('/:id/check-in', authenticate, checkInSession);
+router.post('/:id/check-out', authenticate, checkOutSession);
 
 // Trainer routes
 router.get('/trainer', authenticate, getTrainerSessions);
 router.post('/:id/accept', authenticate, acceptSession);
 router.post('/:id/reject', authenticate, rejectSession);
 router.post('/:id/complete', authenticate, completeSession);
+router.post('/:id/session-notes', authenticate, submitSessionNotes);
 
 // Admin / Gym Owner routes
 router.get('/gym', authenticate, getGymSessions);

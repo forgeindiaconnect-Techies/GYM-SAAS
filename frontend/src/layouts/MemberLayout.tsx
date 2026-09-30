@@ -54,7 +54,7 @@ const MemberLayout = () => {
         const pending = mems.find((m: any) => m.status === 'Payment Verification Pending');
         const expired = mems.find((m: any) => m.status === 'Expired' || ((m.status === 'Active' || m.status === 'Free Trial') && m.endDate && new Date(m.endDate) < new Date()));
         
-        const isSubExpired = user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED';
+        const isSubExpired = user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date());
         const isSubPending = user?.subscriptionStatus === 'Payment Verification Pending';
         const isSubRejected = user?.subscriptionStatus === 'Rejected' || user?.subscriptionStatus === 'REJECTED';
         const isSubNone = user?.subscriptionStatus === 'None';

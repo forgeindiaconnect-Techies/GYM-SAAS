@@ -61,10 +61,10 @@ export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#D3DFDA] overflow-hidden my-8 shrink-0">
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#D3DFDA] overflow-hidden flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
         
-        <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8]">
+        <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8] shrink-0">
           <div>
             <h2 className="text-xl font-bold text-[#202828]">Register New Customer</h2>
             <p className="text-sm text-[#455250] mt-1">Step {step} of 5</p>
@@ -75,11 +75,12 @@ export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 h-1.5">
+        <div className="w-full bg-gray-200 h-1.5 shrink-0">
           <div className="bg-[#164A4A] h-1.5 transition-all duration-300" style={{ width: `${(step / 5) * 100}%` }}></div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="p-6 space-y-6 overflow-y-auto flex-1">
           
           {step === 1 && (
             <div className="space-y-6 animate-in fade-in">
@@ -251,9 +252,10 @@ export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
               </div>
             </div>
           )}
+          </div>
 
           {/* Controls */}
-          <div className="flex justify-between items-center pt-6 border-t border-[#D3DFDA]">
+          <div className="flex justify-between items-center p-4 bg-[#F2EFE8] border-t border-[#D3DFDA] shrink-0">
             <button 
               type="button" 
               onClick={step === 1 ? onClose : prevStep} 

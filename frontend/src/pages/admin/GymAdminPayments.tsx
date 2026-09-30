@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { IndianRupee, Download, Search, CheckCircle, XCircle, Loader2, FileText, RotateCcw } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { exportToPDF } from '../../utils/export';
 
 const GymAdminPayments = () => {
   const { user } = useAuth();
@@ -89,6 +90,28 @@ const GymAdminPayments = () => {
     );
   });
 
+  const handleDownloadPDF = () => {
+    const columns = ['Date', 'Customer', 'Plan', 'Amount (INR)', 'Method', 'Transaction ID', 'Status'];
+    const data = filtered.map((p: any) => {
+      const customerName = `${p.customerId?.firstName || ''} ${p.customerId?.lastName || ''}`.trim() || p.customerBankDetails?.fullName || p.user?.name || 'Unknown';
+      return [
+        p.paymentDate || p.createdAt ? new Date(p.paymentDate || p.createdAt).toLocaleString('en-IN') : '-',
+        customerName,
+        p.planName || '-',
+        `Rs. ${(p.amount || 0).toLocaleString('en-IN')}`,
+        p.paymentMethod || '-',
+        p.transactionId || 'N/A',
+        p.status || '-'
+      ];
+    });
+    exportToPDF({
+      filename: `Payments_Report_${new Date().toISOString().split('T')[0]}`,
+      columns,
+      data,
+      title: 'Payments & Subscriptions Report'
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -143,10 +166,16 @@ const GymAdminPayments = () => {
                   <Search className="absolute left-2.5 top-2.5 text-[#455250]" size={16} />
                 </div>
                 <button
-                  onClick={exportToCSV}
-                  className="px-4 py-2 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] font-bold rounded-xl hover:bg-[#F1F5F3] transition-colors flex items-center gap-2 text-sm shrink-0"
+                  onClick={handleDownloadPDF}
+                  className="px-4 py-2 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center gap-2 text-sm shrink-0 cursor-pointer shadow-sm"
                 >
-                  <Download size={16} /> Export
+                  <Download size={16} /> Download PDF
+                </button>
+                <button
+                  onClick={exportToCSV}
+                  className="px-4 py-2 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] font-bold rounded-xl hover:bg-[#F1F5F3] transition-colors flex items-center gap-2 text-sm shrink-0 cursor-pointer"
+                >
+                  <Download size={16} /> Export CSV
                 </button>
               </div>
             </div>

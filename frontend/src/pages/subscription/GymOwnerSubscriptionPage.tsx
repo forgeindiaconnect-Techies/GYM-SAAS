@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   Activity, CheckCircle, XCircle, ChevronRight, Crown, Star,
-  Sparkles, Zap, LogOut, Gift
+  Sparkles, Zap, LogOut, Gift, AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -139,6 +139,7 @@ export const plans = [
 const GymOwnerSubscriptionPage = () => {
   const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -207,6 +208,21 @@ const GymOwnerSubscriptionPage = () => {
             </button>
           </div>
         </div>
+
+        {/* ── Subscription Completed Alert Banner ── */}
+        {(user?.subscriptionStatus?.toUpperCase() === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date()) || (location.state as any)?.message) && (
+          <div className="mb-8 p-5 bg-red-50 border-2 border-red-300 rounded-2xl flex items-center justify-between text-red-900 shadow-md">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
+                <AlertCircle className="text-red-600" size={26} />
+              </div>
+              <div>
+                <p className="font-bold text-lg text-red-950">Your subscription plan is completed</p>
+                <p className="text-sm text-red-700 font-medium">Please upgrade your plan below to continue accessing your Gym Dashboard and services.</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Title ── */}
         <div className="text-center mb-12">

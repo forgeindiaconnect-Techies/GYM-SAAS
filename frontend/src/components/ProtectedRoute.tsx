@@ -34,12 +34,6 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
     if (user.approvalStatus === 'REJECTED') return <Navigate to="/status?type=rejected" replace />;
     if (user.approvalStatus === 'SUSPENDED') return <Navigate to="/status?type=suspended" replace />;
     if (user.isActive === false) return <Navigate to="/status?type=inactive" replace />;
-    
-    if (user.approvalStatus === 'APPROVED') {
-      if (!isSubscriptionActive(user.subscriptionStatus)) {
-        return <Navigate to="/subscription-plans" replace />;
-      }
-    }
   }
 
   // Subscription & Approval gate for gym owner dashboard

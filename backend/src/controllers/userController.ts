@@ -81,6 +81,9 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
   try {
     const { id } = req.params;
     const { gymData, ...updateData } = req.body;
+    if (updateData.phone && !updateData.mobile) {
+      updateData.mobile = updateData.phone;
+    }
     
     let user = await User.findById(id);
     if (!user) {
@@ -115,7 +118,13 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
       { new: true, runValidators: true }
     ).populate('gymId').select('-passwordHash');
 
-    res.status(200).json({ success: true, user });
+    const userObj = user?.toObject() || user;
+    if (userObj) {
+      (userObj as any).phone = userObj.mobile;
+      (userObj as any).id = userObj._id;
+    }
+
+    res.status(200).json({ success: true, user: userObj });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Plus, Minus, Trash2, ShoppingCart, ShoppingBag, ArrowRight, ImageIcon } from 'lucide-react';
+import { Loader2, Plus, Minus, Trash2, ShoppingCart, ShoppingBag, ArrowRight, ImageIcon, PackageCheck } from 'lucide-react';
 import api from '../../utils/api';
 
 const MemberCart = () => {
@@ -58,13 +58,19 @@ const MemberCart = () => {
       <div className="max-w-lg mx-auto mt-20 text-center bg-white border border-[#D3DFDA] rounded-3xl p-10">
         <ShoppingCart className="mx-auto text-[#164A4A]/30 mb-4" size={56} />
         <h1 className="text-2xl font-bold text-[#202828] mb-2">Your cart is empty</h1>
-        <p className="text-[#455250] mb-6">Browse the gym store and add some products.</p>
-        <button onClick={() => navigate('/member/store')} className="px-6 py-3 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity inline-flex items-center gap-2">
-          <ShoppingBag size={18} /> Visit Store
-        </button>
+        <p className="text-[#455250] mb-6">Browse the gym store and add some products, or check your placed orders below.</p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button onClick={() => navigate('/member/store')} className="px-6 py-3 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2">
+            <ShoppingBag size={18} /> Visit Store
+          </button>
+          <button onClick={() => navigate('/member/store/orders')} className="px-6 py-3 bg-[#F1F5F3] text-[#164A4A] font-bold rounded-xl border border-[#D3DFDA] hover:bg-[#D3DFDA] transition-colors inline-flex items-center justify-center gap-2">
+            <PackageCheck size={18} /> My Orders
+          </button>
+        </div>
       </div>
     );
   }
+
 
   const hasWarning = items.some((i) => !i.match);
 
@@ -91,7 +97,7 @@ const MemberCart = () => {
           {items.map((row, idx) => {
             const p = row.product;
             const v = row.variant;
-            const price = v ? (v.discountPrice ?? v.price) : (p.discountPrice ?? p.sellingPrice);
+            const price = v ? (v.price - (v.discountPrice || 0)) : (p.sellingPrice - (p.discountPrice || 0));
             const uid = p._id + (row.variantId || '');
             return (
               <div key={`${p._id}-${idx}`} className="bg-white border border-[#D3DFDA] rounded-2xl p-4 flex gap-4">

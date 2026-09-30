@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, AlertCircle, Phone, Mail, User, UserPlus, Edit2, Eye, X, Check, Clock, CheckCircle, XCircle, ShieldAlert, Users, Trash2, Download, FileText, Table as TableIcon } from 'lucide-react';
+import { Search, Loader2, AlertCircle, Phone, Mail, User, UserPlus, Eye, X, Clock, CheckCircle, XCircle, ShieldAlert, Users, Trash2, Download, FileText, Table as TableIcon } from 'lucide-react';
 import api from '../../utils/api';
 import { exportToPDF, exportToExcel, exportToWord } from '../../utils/export';
 
@@ -48,9 +48,6 @@ const SuperAdminCustomers = () => {
 
   // Modals state
   const [viewCustomer, setViewCustomer] = useState<Customer | null>(null);
-  const [editCustomer, setEditCustomer] = useState<Customer | null>(null);
-  const [editForm, setEditForm] = useState<any>({});
-  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
@@ -102,40 +99,6 @@ const SuperAdminCustomers = () => {
     if (type === 'excel') exportToExcel(config);
     if (type === 'word') exportToWord(config);
     setShowExportMenu(false);
-  };
-
-  const handleEditClick = (customer: Customer) => {
-    setEditCustomer(customer);
-    setEditForm({
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      email: customer.email,
-      mobile: customer.mobile,
-      city: customer.city || '',
-      pinCode: customer.pinCode || '',
-      dateOfBirth: customer.dateOfBirth ? new Date(customer.dateOfBirth).toISOString().split('T')[0] : '',
-      gender: customer.gender || '',
-      height: customer.height || '',
-      weight: customer.weight || '',
-      fitnessGoal: customer.fitnessGoal || '',
-      experienceLevel: customer.experienceLevel || '',
-      preferredTraining: customer.preferredTraining || '',
-      preferredWorkoutTime: customer.preferredWorkoutTime || '',
-    });
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editCustomer) return;
-    try {
-      setIsSaving(true);
-      const res = await api.put(`/users/${editCustomer._id}`, editForm);
-      setCustomers(customers.map(c => c._id === editCustomer._id ? { ...c, ...res.data.user } : c));
-      setEditCustomer(null);
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to update customer');
-    } finally {
-      setIsSaving(false);
-    }
   };
 
   const filteredCustomers = customers.filter(c => {
@@ -312,21 +275,14 @@ const SuperAdminCustomers = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end space-x-2">
-                        {/* View, Edit, Delete buttons */}
-                        <div className="flex items-center justify-end space-x-1 w-[96px]">
+                        {/* View, Delete buttons */}
+                        <div className="flex items-center justify-end space-x-1">
                           <button 
                             onClick={() => setViewCustomer(customer)}
                             className="p-1.5 text-[#455250] hover:text-[#202828] hover:bg-[#E8E5DA] rounded-md transition-colors"
                             title="View Details"
                           >
                             <Eye size={16} />
-                          </button>
-                          <button 
-                            onClick={() => handleEditClick(customer)}
-                            className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#E8E5DA] rounded-md transition-colors"
-                            title="Edit Customer"
-                          >
-                            <Edit2 size={16} />
                           </button>
                           <button 
                             onClick={() => handleDelete(customer._id)}
@@ -521,199 +477,7 @@ const SuperAdminCustomers = () => {
         </div>
       )}
 
-      {/* Edit Customer Modal */}
-      {editCustomer && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[82vh] overflow-hidden my-auto mt-4 sm:mt-6">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
-              <div>
-                <h2 className="text-xl font-bold text-[#202828]">Edit Customer</h2>
-                <p className="text-xs text-[#455250] mt-0.5">Update customer profile, personal details and preferences</p>
-              </div>
-              <button 
-                onClick={() => setEditCustomer(null)}
-                className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded-lg transition-colors"
-                title="Close"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            <div className="p-6 overflow-y-auto flex-1 space-y-6">
-              {/* Account */}
-              <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Account Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">First Name</label>
-                    <input 
-                      value={editForm.firstName || ''} 
-                      onChange={e => setEditForm({...editForm, firstName: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Last Name</label>
-                    <input 
-                      value={editForm.lastName || ''} 
-                      onChange={e => setEditForm({...editForm, lastName: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Email</label>
-                    <input 
-                      value={editForm.email || ''} 
-                      onChange={e => setEditForm({...editForm, email: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Mobile</label>
-                    <input 
-                      value={editForm.mobile || ''} 
-                      onChange={e => setEditForm({...editForm, mobile: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Personal Details */}
-              <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Personal Details</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Date of Birth</label>
-                    <input 
-                      type="date"
-                      value={editForm.dateOfBirth || ''} 
-                      onChange={e => setEditForm({...editForm, dateOfBirth: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Gender</label>
-                    <select 
-                      value={editForm.gender || ''} 
-                      onChange={e => setEditForm({...editForm, gender: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors appearance-none"
-                    >
-                      <option value="">Select</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">City</label>
-                    <input 
-                      value={editForm.city || ''} 
-                      onChange={e => setEditForm({...editForm, city: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">PIN Code</label>
-                    <input 
-                      value={editForm.pinCode || ''} 
-                      onChange={e => setEditForm({...editForm, pinCode: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Height (cm)</label>
-                    <input 
-                      type="number"
-                      value={editForm.height || ''} 
-                      onChange={e => setEditForm({...editForm, height: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Weight (kg)</label>
-                    <input 
-                      type="number"
-                      value={editForm.weight || ''} 
-                      onChange={e => setEditForm({...editForm, weight: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Fitness */}
-              <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Fitness Preferences</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Fitness Goal</label>
-                    <input 
-                      value={editForm.fitnessGoal || ''} 
-                      onChange={e => setEditForm({...editForm, fitnessGoal: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Experience Level</label>
-                    <select 
-                      value={editForm.experienceLevel || ''} 
-                      onChange={e => setEditForm({...editForm, experienceLevel: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors appearance-none"
-                    >
-                      <option value="">Select</option>
-                      <option value="Beginner">Beginner</option>
-                      <option value="Intermediate">Intermediate</option>
-                      <option value="Advanced">Advanced</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Preferred Training</label>
-                    <select 
-                      value={editForm.preferredTraining || ''} 
-                      onChange={e => setEditForm({...editForm, preferredTraining: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors appearance-none"
-                    >
-                      <option value="">Select</option>
-                      <option value="Offline">Offline</option>
-                      <option value="Online">Online</option>
-                      <option value="Hybrid">Hybrid</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#455250] mb-2">Preferred Workout Time</label>
-                    <input 
-                      value={editForm.preferredWorkoutTime || ''} 
-                      onChange={e => setEditForm({...editForm, preferredWorkoutTime: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#D3DFDA] flex items-center justify-end space-x-3 shrink-0">
-              <button 
-                type="button"
-                onClick={() => setEditCustomer(null)}
-                className="px-4 py-2 border border-[#D3DFDA] text-[#455250] bg-white rounded-lg hover:bg-[#F1F5F3] transition-colors text-sm font-medium shadow-sm"
-              >
-                Cancel
-              </button>
-              <button 
-                type="button"
-                onClick={handleSaveEdit}
-                disabled={isSaving}
-                className="px-5 py-2 bg-[#164A4A] text-white rounded-lg hover:bg-[#123E3E] transition-colors text-sm font-semibold flex items-center space-x-2 shadow-sm disabled:opacity-50"
-              >
-                {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
-                <span>Save Changes</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
   );
 };
 

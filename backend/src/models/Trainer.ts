@@ -28,6 +28,9 @@ export interface ITrainer extends Document {
   withdrawnAmount: number;
   pendingWithdrawal: number;
   status: 'Pending' | 'Active' | 'Rejected' | 'Suspended';
+  availabilityStatus?: 'Online' | 'Offline' | 'Busy';
+  averageRating?: number;
+  totalReviews?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -59,7 +62,10 @@ const trainerSchema = new Schema<ITrainer>({
   availableBalance: { type: Number, default: 0 },
   withdrawnAmount: { type: Number, default: 0 },
   pendingWithdrawal: { type: Number, default: 0 },
-  status: { type: String, enum: ['Pending', 'Active', 'Rejected', 'Suspended'], default: 'Pending' }
+  status: { type: String, enum: ['Pending', 'Active', 'Rejected', 'Suspended'], default: 'Pending' },
+  availabilityStatus: { type: String, enum: ['Online', 'Offline', 'Busy'], default: 'Online' },
+  averageRating: { type: Number, default: 5.0 },
+  totalReviews: { type: Number, default: 0 }
 }, { timestamps: true });
 
 export default mongoose.model<ITrainer>('Trainer', trainerSchema);

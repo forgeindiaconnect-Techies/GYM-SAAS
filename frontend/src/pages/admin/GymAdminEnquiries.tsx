@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Search, MapPin, Phone, Mail, Calendar, Loader2, MessageSquare, ArrowRight, UserPlus, CheckCircle } from 'lucide-react';
+import { Search, MapPin, Phone, Mail, Calendar, Loader2, MessageSquare, ArrowRight, UserPlus, CheckCircle, Download } from 'lucide-react';
 import api from '../../utils/api';
 import { RegisterNewMemberModal } from '../../components/GymAdmin/RegisterNewMemberModal';
+import { exportToPDF } from '../../utils/export';
 
 export const GymAdminEnquiries = () => {
   const { user } = useAuth();
@@ -98,6 +99,24 @@ export const GymAdminEnquiries = () => {
     }
   };
 
+  const handleDownloadPDF = () => {
+    const columns = ['Customer Name', 'Mobile', 'Email', 'Training Type', 'Date', 'Status'];
+    const data = filteredEnquiries.map(e => [
+      e.customerName || '-',
+      e.mobileNumber || '-',
+      e.email || '-',
+      e.type || '-',
+      e.createdAt ? new Date(e.createdAt).toLocaleString('en-IN') : '-',
+      e.status || '-'
+    ]);
+    exportToPDF({
+      filename: `Customer_Enquiries_${new Date().toISOString().split('T')[0]}`,
+      columns,
+      data,
+      title: 'Customer Enquiries Report'
+    });
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -105,7 +124,7 @@ export const GymAdminEnquiries = () => {
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Customer Enquiries</h1>
           <p className="text-[#455250] mt-1">Manage leads and prospective members who want to join your gym.</p>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A8ADA9]" size={18} />
             <input
@@ -116,6 +135,14 @@ export const GymAdminEnquiries = () => {
               className="pl-10 pr-4 py-2 border border-[#E8E5DA] rounded-xl text-sm focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A] outline-none"
             />
           </div>
+          <button
+            onClick={handleDownloadPDF}
+            disabled={filteredEnquiries.length === 0}
+            className="inline-flex items-center gap-2 bg-[#164A4A] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#C6A77D] transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
+          >
+            <Download size={16} />
+            Download PDF
+          </button>
         </div>
       </div>
 

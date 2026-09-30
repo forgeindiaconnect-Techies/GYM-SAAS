@@ -58,12 +58,28 @@ export interface ITrainerSession extends Document {
   refundStatus?: 'Pending' | 'Processed';
   cancelledAt?: Date;
 
-  // Actual completion metrics
+  // Actual completion & attendance metrics
+  checkInTime?: Date;
+  checkOutTime?: Date;
+  attendanceStatus?: 'Present' | 'Absent' | 'Late' | 'Self-Learning';
+  isSelfLearning?: boolean;
   actualStartTime?: Date;
   actualEndTime?: Date;
   actualDuration?: number;
   completedAt?: Date;
   
+  // Trainer Session Notes
+  sessionNotes?: {
+    exercisesCompleted?: string;
+    customerPerformance?: string;
+    problemsNoticed?: string;
+    dietRecommendations?: string;
+    workoutModifications?: string;
+    nextSessionFocus?: string;
+    additionalComments?: string;
+    submittedAt?: Date;
+  };
+
   // Feedback
   customerRating?: number;
   customerReview?: string;
@@ -107,11 +123,26 @@ const trainerSessionSchema = new Schema<ITrainerSession>(
     refundStatus: { type: String, enum: ['Pending', 'Processed'] },
     cancelledAt: { type: Date },
 
+    checkInTime: { type: Date },
+    checkOutTime: { type: Date },
+    attendanceStatus: { type: String, enum: ['Present', 'Absent', 'Late', 'Self-Learning'] },
+    isSelfLearning: { type: Boolean, default: false },
     actualStartTime: { type: Date },
     actualEndTime: { type: Date },
     actualDuration: { type: Number },
     completedAt: { type: Date },
     
+    sessionNotes: {
+      exercisesCompleted: String,
+      customerPerformance: String,
+      problemsNoticed: String,
+      dietRecommendations: String,
+      workoutModifications: String,
+      nextSessionFocus: String,
+      additionalComments: String,
+      submittedAt: Date
+    },
+
     customerRating: { type: Number, min: 1, max: 5 },
     customerReview: { type: String }
   },

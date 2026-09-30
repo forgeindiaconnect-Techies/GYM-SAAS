@@ -63,6 +63,29 @@ const LoginPage = () => {
           // ignore parse error
         }
       }
+
+      const isSubCompleted = 
+        res.data?.isSubscriptionCompleted || 
+        user.subscriptionStatus?.toUpperCase() === 'EXPIRED' || 
+        (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date());
+
+      if (isSubCompleted) {
+        alert('Your subscription plan is completed. Please upgrade your plan.');
+        if (user.role === 'ADMIN' || user.role === 'GYM_OWNER') {
+          navigate('/gym-owner/subscription', { 
+            state: { message: 'Your subscription plan is completed. Please upgrade your plan.' },
+            replace: true 
+          });
+        } else if (user.role === 'MEMBER') {
+          navigate('/member/dashboard', { 
+            state: { message: 'Your subscription plan is completed. Please upgrade your plan.', showExpiredModal: true },
+            replace: true 
+          });
+        } else {
+          navigate(getDashboardRoute(user), { replace: true });
+        }
+        return;
+      }
       
       alert('Login successfully!');
       navigate(getDashboardRoute(user), { replace: true });

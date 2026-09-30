@@ -36,7 +36,7 @@ const TrainerAIAssistant = () => {
             <Bot size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#202828] tracking-tight">AI Trainer Assistant</h1>
+            <h1 className="text-3xl font-bold text-[#202828] tracking-tight">AI Recommendations</h1>
             <p className="text-[#455250] mt-1">Review, optimize, and approve AI-generated plans for your clients.</p>
           </div>
         </div>

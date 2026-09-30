@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { PlayCircle, Clock, Flame, Dumbbell, ChevronRight, CheckCircle2, X, Timer, Activity } from 'lucide-react';
+import { PlayCircle, Clock, Flame, Dumbbell, ChevronRight, CheckCircle2, X, Timer, Activity, Utensils } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const MemberWorkoutPlan = () => {
   const generateWeekDays = () => {
@@ -150,13 +151,29 @@ const MemberWorkoutPlan = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-fade-in relative">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in relative">
+      {/* Plan Switcher Tabs */}
+      <div className="flex items-center gap-3 border-b border-[#E8E5DA] pb-3">
+        <Link
+          to="/member/workout"
+          className="flex items-center gap-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl font-bold text-sm shadow-sm"
+        >
+          <Dumbbell size={16} /> Workout Plan
+        </Link>
+        <Link
+          to="/member/diet"
+          className="flex items-center gap-2 px-4 py-2 bg-white text-[#455250] hover:text-[#164A4A] hover:bg-[#F2EFE8] rounded-xl font-bold text-sm border border-[#E8E5DA] transition-colors"
+        >
+          <Utensils size={16} /> Diet Plan
+        </Link>
+      </div>
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Your Workout Plan</h1>
           <p className="text-[#455250] mt-1">Stay consistent and crush your goals this week.</p>
         </div>
-        <button onClick={startWorkout} className="flex items-center space-x-2 px-6 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-all shadow-lg shadow-green-500/30 hover:scale-105 active:scale-95">
+        <button onClick={startWorkout} className="flex items-center space-x-2 px-6 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-all shadow-lg shadow-green-500/30 hover:scale-105 active:scale-95 cursor-pointer">
           <PlayCircle size={20} />
           <span>Start Workout</span>
         </button>
@@ -294,10 +311,24 @@ const MemberWorkoutPlan = () => {
           </div>
         </div>
       </div>
+      {/* ── Trainer Assigned Self-Learning Videos ───────────────── */}
+      <div className="bg-white rounded-3xl shadow-sm border border-[#E8E5DA] p-6 md:p-8 space-y-4">
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="text-xl font-bold text-[#202828] flex items-center gap-2">
+              <PlayCircle className="text-indigo-600" size={22} /> Trainer-Assigned Self-Learning Videos
+            </h3>
+            <p className="text-sm text-[#455250]">Watch assigned exercise videos when you cannot attend live sessions or for extra guidance.</p>
+          </div>
+        </div>
+
+        <AssignedVideosSection />
+      </div>
+
       {/* Active Workout Modal Overlay */}
       {isWorkoutActive && (
         <div className="fixed inset-0 z-[100] flex flex-col bg-[#F9F8F6]">
-          <div className="flex-1 overflow-y-auto min-h-0 pb-12">
+          <div className="flex-1 overflow-y-auto min-h-0 pb-36 md:pb-44">
             <div className="bg-[#202828] text-white p-6 md:p-8 rounded-b-[3rem] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#164A4A] rounded-full blur-3xl opacity-20 -mr-20 -mt-20"></div>
               
@@ -309,7 +340,7 @@ const MemberWorkoutPlan = () => {
                   <h2 className="text-3xl md:text-4xl font-bold mb-2">{workoutData.title}</h2>
                   <p className="text-[#A8ADA9]">{workoutData.exercises.length} Exercises • {workoutData.level}</p>
                 </div>
-                <button onClick={() => { setIsWorkoutActive(false); setWorkoutTime(0); }} className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
+                <button onClick={() => { setIsWorkoutActive(false); setWorkoutTime(0); }} className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer">
                   <X size={24} />
                 </button>
               </div>
@@ -321,11 +352,11 @@ const MemberWorkoutPlan = () => {
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
                   <div className="text-[#A8ADA9] text-sm font-medium mb-1 flex items-center gap-2"><Timer size={16}/> Elapsed Time</div>
-                  <div className="text-xl font-bold font-mono tracking-wider text-[#164A4A]">{formatTime(workoutTime)}</div>
+                  <div className="text-xl font-extrabold font-mono tracking-wider text-emerald-400">{formatTime(workoutTime)}</div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
                   <div className="text-[#A8ADA9] text-sm font-medium mb-1 flex items-center gap-2"><Flame size={16}/> Est. Calories</div>
-                  <div className="text-xl font-bold">{Math.floor((workoutTime / 60) * 8)} <span className="text-base text-[#687B78] font-normal">kcal</span></div>
+                  <div className="text-xl font-bold text-white">{Math.floor((workoutTime / 60) * 8)} <span className="text-base text-[#687B78] font-normal">kcal</span></div>
                 </div>
               </div>
             </div>
@@ -408,4 +439,119 @@ const MemberWorkoutPlan = () => {
   );
 };
 
+const AssignedVideosSection = () => {
+  const [videos, setVideos] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeVideo, setActiveVideo] = useState<any | null>(null);
+
+  const fetchVideos = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/workout-videos/customer');
+      if (res.data.success) {
+        setVideos(res.data.videos || []);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVideos();
+  }, []);
+
+  const handleMarkCompleted = async (videoId: string) => {
+    try {
+      await api.patch(`/workout-videos/${videoId}/status`, { status: 'Completed' });
+      alert('Video marked as completed! Great progress!');
+      setActiveVideo(null);
+      await fetchVideos();
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to update video status');
+    }
+  };
+
+  if (loading) {
+    return <p className="text-gray-500 text-sm py-4">Loading assigned videos...</p>;
+  }
+
+  if (videos.length === 0) {
+    return (
+      <div className="p-8 text-center bg-[#F8FAFC] border border-dashed border-[#D3DFDA] rounded-2xl">
+        <PlayCircle size={36} className="mx-auto text-gray-400 mb-2" />
+        <p className="font-bold text-[#202828] text-sm">No videos assigned yet</p>
+        <p className="text-xs text-[#687B78]">Your trainer will assign self-learning videos when needed.</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {videos.map((vid) => (
+          <div key={vid._id} className="bg-[#F8FAFC] border border-[#E8E5DA] rounded-2xl p-4 flex flex-col h-full hover:border-[#164A4A] transition-colors">
+            <div className="flex justify-between items-start mb-2">
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${vid.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'}`}>
+                {vid.status}
+              </span>
+              <span className="text-xs font-semibold text-gray-500">{vid.difficulty}</span>
+            </div>
+            <h4 className="font-bold text-[#202828] text-base mb-1">{vid.title}</h4>
+            <p className="text-xs text-[#687B78] mb-3 line-clamp-2">{vid.instructions || vid.trainerNotes || 'Follow instructions in video.'}</p>
+            
+            <div className="mt-auto pt-3 border-t border-[#E8E5DA] flex justify-between items-center text-xs">
+              <span className="text-gray-600 font-semibold">{vid.durationMinutes} mins • {vid.sets} sets × {vid.reps} reps</span>
+              <button onClick={() => setActiveVideo(vid)} className="px-3 py-1.5 bg-[#164A4A] text-white font-bold rounded-lg hover:bg-[#C6A77D] transition-colors flex items-center gap-1">
+                <PlayCircle size={14} /> Watch
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {activeVideo && (
+        <div className="fixed inset-0 z-[120] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative">
+            <div className="flex justify-between items-start border-b border-gray-100 pb-3">
+              <div>
+                <h3 className="text-xl font-bold text-[#202828]">{activeVideo.title}</h3>
+                <p className="text-xs text-gray-500">{activeVideo.exerciseName} • {activeVideo.sets} Sets × {activeVideo.reps} Reps</p>
+              </div>
+              <button onClick={() => setActiveVideo(null)} className="text-gray-400 hover:text-gray-600 p-1"><X size={20} /></button>
+            </div>
+
+            <div className="aspect-video bg-black rounded-2xl overflow-hidden flex items-center justify-center">
+              <iframe 
+                src={activeVideo.videoUrl.replace('watch?v=', 'embed/')} 
+                title={activeVideo.title} 
+                className="w-full h-full"
+                allowFullScreen
+              />
+            </div>
+
+            {activeVideo.instructions && (
+              <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-xs text-blue-900">
+                <span className="font-bold block mb-1">Trainer Instructions:</span>
+                <p>{activeVideo.instructions}</p>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button onClick={() => setActiveVideo(null)} className="px-4 py-2 border border-gray-300 rounded-xl text-xs font-semibold text-gray-600">Close</button>
+              {activeVideo.status !== 'Completed' && (
+                <button onClick={() => handleMarkCompleted(activeVideo._id)} className="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors flex items-center gap-1.5">
+                  <CheckCircle2 size={16} /> Mark as Completed
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 export default MemberWorkoutPlan;
+

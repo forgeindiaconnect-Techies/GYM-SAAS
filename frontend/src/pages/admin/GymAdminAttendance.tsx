@@ -1,4 +1,5 @@
-import { UserCheck, Clock, Users, UserX } from 'lucide-react';
+import { UserCheck, Clock, Users, UserX, Download } from 'lucide-react';
+import { exportToPDF } from '../../utils/export';
 
 const mockCheckins = [
   { id: 1, name: 'John Doe', time: '10:45 AM', type: 'Member', method: 'RFID Card' },
@@ -10,6 +11,22 @@ const mockCheckins = [
 ];
 
 const GymAdminAttendance = () => {
+  const handleDownloadPDF = () => {
+    const columns = ['Name', 'Check-in Time', 'User Type', 'Verification Method'];
+    const data = mockCheckins.map(c => [
+      c.name,
+      c.time,
+      c.type,
+      c.method
+    ]);
+    exportToPDF({
+      filename: `Attendance_Report_${new Date().toISOString().split('T')[0]}`,
+      columns,
+      data,
+      title: 'Facility Attendance Report'
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -17,9 +34,18 @@ const GymAdminAttendance = () => {
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Facility Attendance</h1>
           <p className="text-[#455250] mt-1">Live check-ins, peak hours, and member activity.</p>
         </div>
-        <div className="flex items-center space-x-2 text-sm font-bold bg-[#FFFFFF] border border-[#D3DFDA] px-4 py-2 rounded-xl text-[#202828]">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          <span>Live Tracking Active</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center space-x-2 text-sm font-bold bg-[#FFFFFF] border border-[#D3DFDA] px-4 py-2 rounded-xl text-[#202828]">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+            <span>Live Tracking Active</span>
+          </div>
+          <button
+            onClick={handleDownloadPDF}
+            className="flex items-center space-x-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-sm cursor-pointer text-sm"
+          >
+            <Download size={16} />
+            <span>Download PDF</span>
+          </button>
         </div>
       </div>
 

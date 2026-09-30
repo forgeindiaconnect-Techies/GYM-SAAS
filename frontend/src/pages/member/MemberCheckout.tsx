@@ -16,6 +16,7 @@ const MemberCheckout = () => {
   const [placing, setPlacing] = useState(false);
   const [fulfilmentType, setFulfilmentType] = useState<'Gym Pickup' | 'Delivery'>('Gym Pickup');
   const [paymentMethod, setPaymentMethod] = useState('UPI');
+  const [bankName, setBankName] = useState('');
   const [delivery, setDelivery] = useState({ name: '', phone: '', address: '', city: '', state: '', pinCode: '' });
   const [placedOrder, setPlacedOrder] = useState<any>(null);
 
@@ -58,6 +59,7 @@ const MemberCheckout = () => {
         fulfilmentType,
         deliveryDetails: fulfilmentType === 'Delivery' ? delivery : undefined,
         paymentMethod,
+        bankName: paymentMethod === 'Net Banking' ? bankName : undefined,
         discount: discountAmount,
       });
       setPlacedOrder(res.data.order);
@@ -264,15 +266,25 @@ const MemberCheckout = () => {
               {paymentMethod === 'Net Banking' && (
                 <div className="space-y-4">
                   <p className="text-sm font-bold text-[#202828]">Select your Bank</p>
-                  <select className={inputCls}>
+                  <select
+                    className={inputCls}
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                  >
                     <option value="">Choose a bank...</option>
-                    <option value="sbi">State Bank of India (SBI)</option>
-                    <option value="hdfc">HDFC Bank</option>
-                    <option value="icici">ICICI Bank</option>
-                    <option value="axis">Axis Bank</option>
-                    <option value="kotak">Kotak Mahindra Bank</option>
-                    <option value="other">Other Banks...</option>
+                    <option value="State Bank of India (SBI)">State Bank of India (SBI)</option>
+                    <option value="HDFC Bank">HDFC Bank</option>
+                    <option value="ICICI Bank">ICICI Bank</option>
+                    <option value="Axis Bank">Axis Bank</option>
+                    <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+                    <option value="Punjab National Bank (PNB)">Punjab National Bank (PNB)</option>
+                    <option value="Bank of Baroda">Bank of Baroda</option>
+                    <option value="Canara Bank">Canara Bank</option>
+                    <option value="Other Banks">Other Banks...</option>
                   </select>
+                  {!bankName && (
+                    <p className="text-xs text-amber-600 font-medium">Please select a bank to continue</p>
+                  )}
                 </div>
               )}
               
@@ -298,7 +310,7 @@ const MemberCheckout = () => {
             {items.map((row, idx) => {
               const p = row.product;
               const v = row.variant;
-              const price = v ? (v.discountPrice ?? v.price) : (p.discountPrice ?? p.sellingPrice);
+              const price = v ? (v.price - (v.discountPrice || 0)) : (p.sellingPrice - (p.discountPrice || 0));
               const attrs = v && v.attributes ? Object.values(v.attributes).join(' / ') : '';
               const baseAttrs = !v && p.attributes ? Object.values(p.attributes).slice(0, 2).join(' / ') : '';
               return (

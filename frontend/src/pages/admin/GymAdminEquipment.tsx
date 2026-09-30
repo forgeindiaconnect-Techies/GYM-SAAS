@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Wrench, CheckCircle2, AlertTriangle, Edit2, X } from 'lucide-react';
+import { Search, Plus, Wrench, CheckCircle2, AlertTriangle, Edit2, X, Download } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useOutletContext } from 'react-router-dom';
 import api from '../../utils/api';
+import { exportToPDF } from '../../utils/export';
 
 const mockEquipment = [
   { id: 'EQ001', name: 'Treadmill Series X', category: 'Cardio', status: 'Active', nextService: '2026-01-15', brand: 'LifeFitness' },
@@ -177,6 +178,25 @@ const GymAdminEquipment = () => {
     }
   };
 
+  const handleDownloadPDF = () => {
+    const columns = ['Equipment Name', 'Category', 'Brand', 'Quantity', 'Condition', 'Status', 'Next Service'];
+    const data = equipmentToDisplay.map((eq: any) => [
+      eq.name || '-',
+      eq.category || '-',
+      eq.brand || '-',
+      String(eq.quantity || 1),
+      eq.condition || '-',
+      eq.status || '-',
+      eq.nextService || 'N/A'
+    ]);
+    exportToPDF({
+      filename: `Gym_Equipment_${new Date().toISOString().split('T')[0]}`,
+      columns,
+      data,
+      title: 'Gym Equipment Inventory'
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-0">
@@ -184,10 +204,19 @@ const GymAdminEquipment = () => {
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Equipment</h1>
           <p className="text-[#455250] mt-1">Manage inventory and track maintenance schedules.</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center space-x-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#164A4A]/20">
-          <Plus size={20} />
-          <span>Add Equipment</span>
-        </button>
+        <div className="flex gap-2">
+          <button 
+            onClick={handleDownloadPDF} 
+            className="flex items-center space-x-2 px-4 py-2 bg-white text-[#164A4A] border border-[#D3DFDA] rounded-xl font-bold hover:bg-[#F2EFE8] transition-colors shadow-sm cursor-pointer"
+          >
+            <Download size={18} />
+            <span>Download PDF</span>
+          </button>
+          <button onClick={() => setShowAddModal(true)} className="flex items-center space-x-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#164A4A]/20 cursor-pointer">
+            <Plus size={20} />
+            <span>Add Equipment</span>
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-8">

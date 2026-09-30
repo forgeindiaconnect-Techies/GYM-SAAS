@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, FileSpreadsheet } from 'lucide-react';
+import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, FileSpreadsheet, Download } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AddMemberSelectorModal } from '../../components/GymAdmin/AddMemberSelectorModal';
 import { AddExistingMemberModal } from '../../components/GymAdmin/AddExistingMemberModal';
 import { RegisterNewMemberModal } from '../../components/GymAdmin/RegisterNewMemberModal';
 import api from '../../utils/api';
 import { addItem, updateItem, deleteItem } from '../../utils/mockDb';
+import { exportToPDF } from '../../utils/export';
 
 
 
@@ -187,6 +188,31 @@ const GymAdminMembers = () => {
     }
   };
 
+  const handleDownloadPDF = () => {
+    const columns = ['Name', 'Email', 'Phone', 'Plan', 'Status', 'Join Date', 'Expiry Date'];
+    const data = filteredMembers.map(m => {
+      let expiry = m.membership?.endDate || m.originalUser?.subscriptionExpiry || '-';
+      if (expiry !== '-') {
+        try { expiry = new Date(expiry).toLocaleDateString('en-IN'); } catch {}
+      }
+      return [
+        m.name || '-',
+        m.email || '-',
+        m.phone || '-',
+        m.plan || '-',
+        m.status || '-',
+        m.joined || '-',
+        expiry
+      ];
+    });
+    exportToPDF({
+      filename: `Gym_Members_${new Date().toISOString().split('T')[0]}`,
+      columns,
+      data,
+      title: 'Gym Members Directory'
+    });
+  };
+
   return (
     <div className="space-y-6 pb-20">
       
@@ -196,8 +222,13 @@ const GymAdminMembers = () => {
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Members</h1>
           <p className="text-[#455250] mt-1">Manage your gym members, subscriptions, and profiles.</p>
         </div>
-        <div className="flex gap-2 self-start md:self-auto">
-
+        <div className="flex gap-2 self-start md:self-auto flex-wrap">
+          <button 
+            onClick={handleDownloadPDF}
+            className="px-4 py-2 bg-white text-[#164A4A] font-bold rounded-xl border border-[#D3DFDA] hover:bg-[#F2EFE8] transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
+          >
+            <Download size={18} /> Download PDF
+          </button>
           <button 
             onClick={() => navigate('/admin/import-customers')}
             className="px-4 py-2 bg-white text-[#455250] font-bold rounded-xl border border-[#D3DFDA] hover:bg-[#F2EFE8] hover:text-[#164A4A] transition-colors flex items-center gap-2"
@@ -447,15 +478,15 @@ const GymAdminMembers = () => {
 
       {/* Member View Modal */}
       {selectedMember && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#D3DFDA] my-8 shrink-0">
-            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#D3DFDA] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
+            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8] shrink-0">
               <h2 className="text-xl font-bold text-[#202828]">Member Profile</h2>
               <button onClick={() => setSelectedMember(null)} className="text-[#455250] hover:text-[#202828] transition-colors p-2 hover:bg-gray-100 rounded-lg">
                 <XCircle size={24} />
               </button>
             </div>
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 overflow-y-auto flex-1">
               
               <div className="flex items-center space-x-4">
                 <div className="w-20 h-20 bg-[#164A4A]/10 text-[#164A4A] rounded-2xl flex items-center justify-center text-3xl font-bold border border-[#164A4A]/20 uppercase">
@@ -593,7 +624,7 @@ const GymAdminMembers = () => {
               </div>
               
             </div>
-            <div className="p-4 bg-[#F2EFE8] border-t border-[#D3DFDA] flex justify-end gap-3">
+            <div className="p-4 bg-[#F2EFE8] border-t border-[#D3DFDA] flex justify-end gap-3 shrink-0">
               <button onClick={() => handleDeleteMember(selectedMember.id)} className="px-6 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors">
                 Delete Member
               </button>
@@ -607,9 +638,9 @@ const GymAdminMembers = () => {
 
       {/* Edit Member Modal */}
       {editMember && editForm && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#D3DFDA] my-8 shrink-0">
-            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#D3DFDA] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
+            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8] shrink-0">
               <div>
                 <h2 className="text-xl font-bold text-[#202828]">Edit Member</h2>
                 <p className="text-sm text-[#455250] mt-0.5 capitalize">Editing profile for {editMember.name}</p>
@@ -618,8 +649,8 @@ const GymAdminMembers = () => {
                 <XCircle size={24} />
               </button>
             </div>
-            <form onSubmit={handleEditSave}>
-              <div className="p-6 space-y-6">
+            <form onSubmit={handleEditSave} className="flex flex-col flex-1 overflow-hidden">
+              <div className="p-6 space-y-6 overflow-y-auto flex-1">
                 
                 {/* Personal Info */}
                 <div>
@@ -714,7 +745,7 @@ const GymAdminMembers = () => {
                 </div>
               </div>
 
-              <div className="p-4 bg-[#F2EFE8] border-t border-[#D3DFDA] flex justify-end gap-3">
+              <div className="p-4 bg-[#F2EFE8] border-t border-[#D3DFDA] flex justify-end gap-3 shrink-0">
                 <button type="button" onClick={() => setEditMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#E8E5DA] text-[#455250] rounded-xl font-bold hover:bg-[#F1F5F9] transition-colors">
                   Cancel
                 </button>

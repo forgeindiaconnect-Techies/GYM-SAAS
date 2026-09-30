@@ -254,14 +254,23 @@ export const reviewRecommendation = async (req: any, res: any) => {
 export const getTrainerRecommendations = async (req: any, res: any) => {
   try {
     const trainerUserId = req.user.id;
+    const userGymId = req.user.gymId;
     const trainer = await Trainer.findOne({ userId: trainerUserId });
-    
-    if (!trainer) {
-      return res.status(404).json({ message: 'Trainer not found' });
-    }
 
-    const recommendations = await AIRecommendation.find({ trainerId: trainer._id })
-      .populate('customerId', 'firstName lastName profilePhoto')
+    const gymId = trainer?.gymId || userGymId;
+
+    const filterConditions: any[] = [];
+    if (trainer?._id) filterConditions.push({ trainerId: trainer._id });
+    if (gymId) filterConditions.push({ gymId });
+
+    const query = filterConditions.length > 0 ? { $or: filterConditions } : {};
+
+    const recommendations = await AIRecommendation.find({
+      ...query,
+      status: { $ne: 'Archived' }
+    })
+      .populate('customerId', 'firstName lastName profilePhoto email')
+      .populate('trainerId', 'name')
       .sort({ createdAt: -1 });
 
     res.status(200).json({ recommendations });
@@ -352,3 +361,102 @@ export const getAdminRecommendationDetails = async (req: any, res: any) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+/* ── Member reply to trainer ─────────────────────────────────── */
+export const memberReplyToTrainer = async (req: ExpressRequest, res: ExpressResponse) => {
+  try {
+    const userId = (req as any).user?.id;
+    const gymId  = (req as any).user?.gymId;
+    const { message } = req.body;
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ message: 'Reply message is required.' });
+    }
+
+    // Find the latest recommendation for this member
+    const recommendation = await AIRecommendation.findOne({
+      customerId: userId,
+      gymId,
+    }).sort({ createdAt: -1 });
+
+    if (!recommendation) {
+      return res.status(404).json({ message: 'No AI plan found to reply to.' });
+    }
+
+    const userObj = await User.findById(userId).select('firstName lastName');
+    const memberName = userObj ? `${userObj.firstName || ''} ${userObj.lastName || ''}`.trim() : 'Member';
+
+    recommendation.memberReply = {
+      message: message.trim(),
+      date: new Date(),
+    };
+
+    if (!recommendation.chatMessages) recommendation.chatMessages = [];
+    recommendation.chatMessages.push({
+      senderRole: 'MEMBER',
+      senderName: memberName,
+      message: message.trim(),
+      date: new Date()
+    });
+
+    await recommendation.save();
+
+    res.status(200).json({ message: 'Reply sent to trainer successfully.', recommendation });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/* ── Trainer reply to member ─────────────────────────────────── */
+export const trainerReplyToMember = async (req: ExpressRequest, res: ExpressResponse) => {
+  try {
+    const trainerUserId = (req as any).user?.id;
+    const { recommendationId, message } = req.body;
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ message: 'Reply message is required.' });
+    }
+
+    if (!recommendationId) {
+      return res.status(400).json({ message: 'recommendationId is required.' });
+    }
+
+    const recommendation = await AIRecommendation.findById(recommendationId);
+
+    if (!recommendation) {
+      return res.status(404).json({ message: 'Recommendation not found.' });
+    }
+
+    const trainerDoc = await Trainer.findOne({ userId: trainerUserId });
+    const trainerUser = await User.findById(trainerUserId).select('firstName lastName');
+    const trainerName = trainerDoc?.name || (trainerUser ? `${trainerUser.firstName || ''} ${trainerUser.lastName || ''}`.trim() : 'Trainer');
+
+    if (trainerDoc && !recommendation.trainerId) {
+      recommendation.trainerId = trainerDoc._id as any;
+    }
+
+    recommendation.trainerReply = {
+      message: message.trim(),
+      date: new Date(),
+    };
+
+    if (!recommendation.chatMessages) recommendation.chatMessages = [];
+    recommendation.chatMessages.push({
+      senderRole: 'TRAINER',
+      senderName: trainerName,
+      message: message.trim(),
+      date: new Date()
+    });
+
+    await recommendation.save();
+
+    const populatedRec = await AIRecommendation.findById(recommendation._id)
+      .populate('customerId', 'firstName lastName profilePhoto email')
+      .populate('trainerId', 'name');
+
+    res.status(200).json({ message: 'Reply sent to member successfully.', recommendation: populatedRec || recommendation });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+

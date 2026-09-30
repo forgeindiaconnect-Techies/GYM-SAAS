@@ -19,6 +19,8 @@ import trainerPaymentRoutes from './routes/trainerPayment.routes';
 import notificationRoutes from './routes/notification.routes';
 import storeRoutes from './routes/storeRoutes';
 import trainerSessionRoutes from './routes/trainerSessionRoutes';
+import workoutVideoRoutes from './routes/workoutVideoRoutes';
+import progressRoutes from './routes/progressRoutes';
 
 dotenv.config();
 
@@ -49,6 +51,8 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/store', storeRoutes);
 app.use('/api/trainer-sessions', trainerSessionRoutes);
+app.use('/api/workout-videos', workoutVideoRoutes);
+app.use('/api/progress', progressRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running' });

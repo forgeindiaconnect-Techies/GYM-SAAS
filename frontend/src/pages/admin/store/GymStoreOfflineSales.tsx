@@ -48,14 +48,14 @@ const GymStoreOfflineSales = () => {
   }, []);
 
   const productById = (id: string) => products.find((p) => p._id === id);
-  const priceOf = (p: any) => p?.discountPrice ?? p?.sellingPrice;
+  const priceOf = (p: any) => p ? (p.sellingPrice - (p.discountPrice || 0)) : 0;
 
   const priceOfLine = (l: any) => {
     const p = productById(l.productId);
     if (!p) return 0;
     if (l.variantId && p.hasVariants) {
       const v = p.variants?.find((v: any) => v._id === l.variantId);
-      if (v) return v.discountPrice ?? v.price;
+      if (v) return v.price - (v.discountPrice || 0);
     }
     return priceOf(p);
   };
@@ -161,7 +161,7 @@ const GymStoreOfflineSales = () => {
                                return pr.variants.map((v: any) => {
                                  const out = v.stock <= 0;
                                  const attrs = Object.values(v.attributes).join(' / ');
-                                 return <option key={v._id} value={`${pr._id}|${v._id}`} disabled={out}>{pr.name} - {attrs} — ₹{v.discountPrice ?? v.price}{out ? ' (out of stock)' : ` (${v.stock} in stock)`}</option>;
+                                 return <option key={v._id} value={`${pr._id}|${v._id}`} disabled={out}>{pr.name} - {attrs} — ₹{v.price - (v.discountPrice || 0)}{out ? ' (out of stock)' : ` (${v.stock} in stock)`}</option>;
                                });
                             } else {
                               const out = pr.stock <= 0;

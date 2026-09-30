@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Save } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Save, Loader2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import api from '../../utils/api';
 
 const SuperAdminProfile = () => {
   const { user, updateUser } = useAuth();
@@ -8,18 +9,55 @@ const SuperAdminProfile = () => {
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
-    phone: user?.phone || '',
+    phone: user?.phone || (user as any)?.mobile || '',
   });
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSubmit = (e: any) => {
+  useEffect(() => {
+    if (user) {
+      setForm({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phone: user.phone || (user as any)?.mobile || '',
+      });
+    }
+  }, [user]);
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    updateUser({
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      phone: form.phone
-    });
-    alert('Profile updated successfully!');
+    const userId = user?.id || (user as any)?._id;
+    if (!userId) {
+      alert('User session not found. Please log in again.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const res = await api.put(`/users/${userId}`, {
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim(),
+        mobile: form.phone.trim(),
+        phone: form.phone.trim(),
+      });
+
+      const updated = res.data?.user || {};
+      updateUser({
+        firstName: updated.firstName || form.firstName.trim(),
+        lastName: updated.lastName || form.lastName.trim(),
+        email: updated.email || form.email.trim(),
+        phone: updated.phone || updated.mobile || form.phone.trim(),
+        mobile: updated.mobile || updated.phone || form.phone.trim(),
+      });
+
+      alert('Profile updated successfully!');
+    } catch (err: any) {
+      console.error('Failed to update profile:', err);
+      alert(err.response?.data?.message || 'Failed to update profile. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const inputCls = "w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-[#202828] outline-none focus:border-[#6fa3a0] transition-colors";
@@ -64,8 +102,13 @@ const SuperAdminProfile = () => {
         </div>
 
         <div className="pt-4 flex justify-end">
-          <button type="submit" className="px-6 py-3 bg-[#6fa3a0] text-[#202828] font-bold rounded-xl hover:bg-teal-600 flex items-center gap-2">
-            <Save size={18} /> Save Changes
+          <button 
+            type="submit" 
+            disabled={isSaving}
+            className="px-6 py-3 bg-[#6fa3a0] text-[#202828] font-bold rounded-xl hover:bg-teal-600 flex items-center gap-2 transition-colors disabled:opacity-50"
+          >
+            {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
           </button>
         </div>
       </form>

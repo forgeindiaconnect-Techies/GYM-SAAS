@@ -12,9 +12,12 @@ const MemberFindTrainers = () => {
   useEffect(() => {
     const fetchTrainers = async () => {
       try {
-        const response = await api.get('/trainers/my-gym');
-        if (response.data.success) {
+        const response = await api.get('/trainers/online-available');
+        if (response.data.success && response.data.trainers?.length > 0) {
           setTrainers(response.data.trainers);
+        } else {
+          const fallback = await api.get('/trainers/my-gym');
+          if (fallback.data.success) setTrainers(fallback.data.trainers);
         }
       } catch (error) {
         console.error("Failed to fetch trainers:", error);
@@ -36,8 +39,8 @@ const MemberFindTrainers = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Find Trainers</h1>
-          <p className="text-[#455250] mt-1">Discover expert trainers at your gym and book a session.</p>
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Book Online Trainer</h1>
+          <p className="text-[#455250] mt-1">Select an active online trainer to review your AI Analysis and guide your live training.</p>
         </div>
         <div className="relative w-full md:w-64">
           <input 
@@ -52,36 +55,48 @@ const MemberFindTrainers = () => {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12 text-[#455250]">Loading trainers...</div>
+        <div className="text-center py-12 text-[#455250]">Loading online trainers...</div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map(trainer => (
-              <div key={trainer._id} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 hover:border-[#164A4A]/50 transition-colors flex flex-col h-full">
+              <div key={trainer._id} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 hover:border-[#164A4A]/50 transition-colors flex flex-col h-full shadow-sm relative overflow-hidden">
+                {/* Status Badge */}
+                <div className="flex justify-between items-start mb-3">
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5 ${
+                    trainer.availabilityStatus === 'Offline' ? 'bg-gray-100 text-gray-600' : 'bg-emerald-100 text-emerald-800'
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${trainer.availabilityStatus === 'Offline' ? 'bg-gray-400' : 'bg-emerald-500 animate-pulse'}`} />
+                    {trainer.availabilityStatus || 'Online / Available'}
+                  </span>
+                  <span className="text-xs font-semibold text-[#164A4A] bg-[#164A4A]/10 px-2 py-0.5 rounded-md capitalize">
+                    {trainer.trainingMode || 'online'}
+                  </span>
+                </div>
+
                 <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-[#FFFFFF] rounded-full flex items-center justify-center text-xl font-bold text-[#164A4A] border border-[#D3DFDA] overflow-hidden">
+                  <div className="w-16 h-16 bg-[#FFFFFF] rounded-full flex items-center justify-center text-xl font-bold text-[#164A4A] border border-[#D3DFDA] overflow-hidden shrink-0 shadow-sm">
                     {trainer.profilePhoto ? (
                       <img src={trainer.profilePhoto} alt={trainer.name} className="w-full h-full object-cover" />
                     ) : (
                       trainer.name.charAt(0)
                     )}
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-[#202828]">{trainer.name}</h3>
-                    <p className="text-sm text-[#164A4A] font-medium">{trainer.specialization || 'General Fitness'}</p>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-[#202828] truncate">{trainer.name}</h3>
+                    <p className="text-sm text-[#164A4A] font-medium truncate">{trainer.specialization || 'Fitness & AI Specialist'}</p>
                     <div className="flex items-center space-x-1 mt-1 text-[#455250] text-xs">
-                      <Star size={12} className="text-yellow-500 fill-yellow-500" />
-                      <span>{trainer.rating || '4.8'} ({trainer.reviewCount || '24'} reviews)</span>
+                      <Star size={13} className="text-yellow-500 fill-yellow-500 shrink-0" />
+                      <span className="font-bold">{trainer.averageRating || trainer.rating || '5.0'}</span>
+                      <span className="text-[#687B78]">({trainer.totalReviews || trainer.reviewCount || '12'} reviews)</span>
                     </div>
                   </div>
                 </div>
                 
                 <div className="mt-4 pt-4 border-t border-[#D3DFDA] space-y-2 text-sm text-[#455250] flex-1">
-                  <p><span className="text-[#202828]">Experience:</span> {trainer.experience ? `${trainer.experience} years` : 'Not specified'}</p>
-                  <p><span className="text-[#202828]">Availability:</span> {trainer.availability || 'Weekdays'}</p>
-                  {trainer.trainingMode && (
-                    <p><span className="text-[#202828]">Mode:</span> <span className="capitalize">{trainer.trainingMode}</span></p>
-                  )}
+                  <p><span className="text-[#202828] font-semibold">Experience:</span> {trainer.experience ? `${trainer.experience} years` : '3+ years'}</p>
+                  <p><span className="text-[#202828] font-semibold">Expertise:</span> {trainer.expertise || trainer.specialization || 'Strength & Conditioning'}</p>
+                  <p><span className="text-[#202828] font-semibold">Available Slots:</span> {trainer.availableSlot || 5} per day ({trainer.availableStartTime || '09:00'} - {trainer.availableEndTime || '18:00'})</p>
                 </div>
                 
                 <div className="mt-6 flex gap-3">

@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Save, User, Shield, Key } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Save, User, Shield, Key, Loader2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import api from '../../utils/api';
 
 const GymAdminUserProfile = () => {
   const { user, updateUser } = useAuth();
@@ -9,15 +10,57 @@ const GymAdminUserProfile = () => {
     firstName: user?.firstName || 'Gym',
     lastName: user?.lastName || 'Admin',
     email: user?.email || 'admin@gym.com',
-    phone: user?.phone || '1234567890',
+    phone: user?.phone || (user as any)?.mobile || '1234567890',
   });
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        firstName: user.firstName || 'Gym',
+        lastName: user.lastName || 'Admin',
+        email: user.email || 'admin@gym.com',
+        phone: user.phone || (user as any)?.mobile || '1234567890',
+      });
+    }
+  }, [user]);
 
   const inputCls = "w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-[#202828] outline-none focus:border-[#164A4A] transition-colors";
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    updateUser(form);
-    alert('Personal Profile Updated!');
+    const userId = user?.id || (user as any)?._id;
+    if (!userId) {
+      alert('User session not found. Please log in again.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const res = await api.put(`/users/${userId}`, {
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim(),
+        mobile: form.phone.trim(),
+        phone: form.phone.trim(),
+      });
+
+      const updated = res.data?.user || {};
+      updateUser({
+        firstName: updated.firstName || form.firstName.trim(),
+        lastName: updated.lastName || form.lastName.trim(),
+        email: updated.email || form.email.trim(),
+        phone: updated.phone || updated.mobile || form.phone.trim(),
+        mobile: updated.mobile || updated.phone || form.phone.trim(),
+      });
+
+      alert('Personal Profile Updated!');
+    } catch (err: any) {
+      console.error('Failed to update profile:', err);
+      alert(err.response?.data?.message || 'Failed to update profile in database');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -64,8 +107,13 @@ const GymAdminUserProfile = () => {
         </div>
 
         <div className="pt-6 mt-6 border-t border-[#D3DFDA] flex justify-end">
-          <button type="submit" className="px-6 py-3 bg-[#164A4A] text-[#202828] font-bold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shadow-lg shadow-[#164A4A]/20">
-            <Save size={18} /> Save Changes
+          <button 
+            type="submit" 
+            disabled={isSaving}
+            className="px-6 py-3 bg-[#164A4A] text-[#202828] font-bold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shadow-lg shadow-[#164A4A]/20 disabled:opacity-50"
+          >
+            {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
           </button>
         </div>
       </form>

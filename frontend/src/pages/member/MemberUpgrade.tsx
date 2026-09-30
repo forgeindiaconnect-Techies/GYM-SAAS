@@ -113,6 +113,20 @@ const MemberUpgrade = () => {
   if (!selectedPlan) {
     return (
       <div className="max-w-6xl mx-auto">
+        {(user?.subscriptionStatus?.toUpperCase() === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date())) && (
+          <div className="mb-8 p-5 bg-red-50 border-2 border-red-300 rounded-2xl flex items-center justify-between text-red-900 shadow-md">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
+                <AlertCircle className="text-red-600" size={26} />
+              </div>
+              <div>
+                <p className="font-bold text-lg text-red-950">Your subscription plan is completed</p>
+                <p className="text-sm text-red-700 font-medium">Please upgrade your plan below to continue enjoying full access to your gym workouts and services.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <h1 className="text-3xl font-bold mb-2 text-[#202828]">Upgrade Subscription</h1>
         <p className="text-[#455250] mb-8">Choose a subscription plan to continue accessing premium gym services.</p>
 

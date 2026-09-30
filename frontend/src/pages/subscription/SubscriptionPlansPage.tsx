@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Activity, CheckCircle, XCircle, Loader2, LogOut, Zap, Crown, Star, Sparkles,
-  Lock, Gift
+  Lock, Gift, AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -159,7 +159,8 @@ const LimitBadge = ({ label, value }: { label: string; value: number }) => (
 
 const SubscriptionPlansPage = () => {
   const navigate = useNavigate();
-  const { logout, updateUser } = useAuth();
+  const location = useLocation();
+  const { user, logout, updateUser } = useAuth();
   const [isAnnual, setIsAnnual] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -237,6 +238,21 @@ const SubscriptionPlansPage = () => {
             </div>
             <span className="text-2xl font-bold text-[#164A4A]">AI GYM</span>
           </div>
+
+          {(user?.subscriptionStatus?.toUpperCase() === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date()) || (location.state as any)?.message) && (
+            <div className="mb-8 p-5 bg-red-50 border-2 border-red-300 rounded-2xl flex items-center justify-between text-red-900 shadow-md max-w-3xl mx-auto text-left">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
+                  <AlertCircle className="text-red-600" size={26} />
+                </div>
+                <div>
+                  <p className="font-bold text-lg text-red-950">Your subscription plan is completed</p>
+                  <p className="text-sm text-red-700 font-medium">Please upgrade your plan below to continue accessing AI GYM platform services.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="inline-flex items-center space-x-2 bg-[#164A4A]/10 border border-[#164A4A]/30 rounded-full px-4 py-1.5 text-[#164A4A] text-xs font-bold uppercase tracking-widest mb-6">
             <Sparkles size={12} />
             <span>SaaS Platform Subscriptions</span>

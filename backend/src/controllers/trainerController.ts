@@ -606,3 +606,44 @@ export const updateTrainer = async (req: AuthRequest, res: Response): Promise<vo
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+export const getOnlineTrainers = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const gymId = req.user?.gymId || (await resolveGymId(req));
+    const filter: any = {
+      status: 'Active',
+      trainingMode: { $in: ['online', 'both'] },
+      availabilityStatus: { $ne: 'Offline' }
+    };
+    if (gymId) filter.gymId = gymId;
+
+    const trainers = await Trainer.find(filter).sort({ averageRating: -1, createdAt: -1 });
+    res.status(200).json({ success: true, trainers });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const toggleTrainerAvailability = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const trainerUserId = req.user?.id;
+    const { availabilityStatus } = req.body;
+
+    const trainer = await Trainer.findOne({ userId: trainerUserId });
+    if (!trainer) {
+      res.status(404).json({ success: false, message: 'Trainer profile not found' });
+      return;
+    }
+
+    if (availabilityStatus && ['Online', 'Offline', 'Busy'].includes(availabilityStatus)) {
+      trainer.availabilityStatus = availabilityStatus;
+    } else {
+      trainer.availabilityStatus = trainer.availabilityStatus === 'Offline' ? 'Online' : 'Offline';
+    }
+
+    await trainer.save();
+    res.status(200).json({ success: true, message: 'Availability status updated', trainer });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};

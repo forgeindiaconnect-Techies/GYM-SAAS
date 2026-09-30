@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { History, Filter, Search, CheckCircle, XCircle, Clock, AlertCircle, ArrowRight, FileText } from 'lucide-react';
+import { History, Filter, Search, CheckCircle, XCircle, Clock, AlertCircle, ArrowRight, FileText, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import api from '../../utils/api';
+import { exportToPDF } from '../../utils/export';
 
 const STATUS_COLORS: Record<string, string> = {
   Paid: 'bg-[#D2B48C]/10 text-[#164A4A]',
@@ -49,6 +52,78 @@ const GymAdminTrainerPaymentHistory = () => {
 
   const totalPaid = filtered.filter(p => p.paymentStatus === 'Paid').reduce((s, p) => s + p.amount, 0);
 
+  const handleDownloadAllPDF = () => {
+    const columns = ['Date', 'Trainer', 'Training Type', 'Amount (INR)', 'Payment Method', 'Status', 'Transaction ID'];
+    const data = filtered.map(p => [
+      p.createdAt ? new Date(p.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-',
+      p.trainerId?.name || 'Unknown',
+      p.trainerFeeId?.trainingType || '-',
+      `Rs. ${p.amount?.toLocaleString('en-IN')}`,
+      p.paymentMethod || '-',
+      p.paymentStatus || '-',
+      p.transactionId || 'N/A'
+    ]);
+    exportToPDF({
+      filename: `Trainer_Payment_History_${new Date().toISOString().split('T')[0]}`,
+      columns,
+      data,
+      title: 'Trainer Payment History'
+    });
+  };
+
+  const handleDownloadSinglePDF = (p: any) => {
+    const doc = new jsPDF();
+    const trainerName = p.trainerId?.name || 'Unknown';
+    const dateFormatted = p.createdAt || p.paymentDate
+      ? new Date(p.createdAt || p.paymentDate).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
+      : new Date().toLocaleDateString('en-IN');
+
+    // Header banner
+    doc.setFillColor(22, 74, 74);
+    doc.rect(0, 0, 210, 32, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TRAINER PAYMENT RECEIPT', 14, 21);
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Receipt #: ${p.transactionId || p._id?.slice(-8).toUpperCase() || 'REC-001'}`, 140, 21);
+
+    // Metadata
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(10);
+    doc.text(`Issued Date: ${dateFormatted}`, 14, 42);
+    doc.text(`Status: ${p.paymentStatus || 'Paid'}`, 14, 48);
+
+    autoTable(doc, {
+      startY: 55,
+      head: [['Payment Information', 'Details']],
+      body: [
+        ['Trainer Name', trainerName],
+        ['Training Type', p.trainerFeeId?.trainingType || '-'],
+        ['Amount Paid', `Rs. ${p.amount?.toLocaleString('en-IN')}`],
+        ['Payment Method', p.paymentMethod || '-'],
+        ['Payment Status', p.paymentStatus || '-'],
+        ['Transaction ID', p.transactionId || 'N/A'],
+        ['Date & Time', dateFormatted],
+        ['Notes / Remarks', p.notes || 'None']
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [22, 74, 74], textColor: [255, 255, 255], fontStyle: 'bold' },
+      styles: { fontSize: 10, cellPadding: 5 }
+    });
+
+    const finalY = (doc as any).lastAutoTable?.finalY || 135;
+    doc.setFontSize(9);
+    doc.setTextColor(130, 130, 130);
+    doc.text('This receipt was generated electronically and is valid without signature.', 14, finalY + 14);
+
+    const safeName = trainerName.replace(/[^a-zA-Z0-9]/g, '_');
+    doc.save(`Trainer_Receipt_${safeName}_${p._id?.slice(-6) || 'receipt'}.pdf`);
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
@@ -63,36 +138,48 @@ const GymAdminTrainerPaymentHistory = () => {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A8ADA9]" />
-          <input
-            type="text"
-            placeholder="Search trainer..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-9 pr-4 py-2.5 border border-[#E8E5DA] rounded-xl text-sm outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/30 w-48"
-          />
+      {/* Filters and Actions */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A8ADA9]" />
+            <input
+              type="text"
+              placeholder="Search trainer..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="pl-9 pr-4 py-2.5 border border-[#E8E5DA] rounded-xl text-sm outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/30 w-48"
+            />
+          </div>
+          <div className="flex items-center gap-2 bg-white border border-[#E8E5DA] rounded-xl px-3 py-2">
+            <Filter size={14} className="text-[#A8ADA9]" />
+            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#455250]">
+              <option value="All">All Status</option>
+              <option value="Paid">Paid</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2 bg-white border border-[#E8E5DA] rounded-xl px-3 py-2">
+            <Filter size={14} className="text-[#A8ADA9]" />
+            <select value={methodFilter} onChange={e => setMethodFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#455250]">
+              <option value="All">All Methods</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="UPI">UPI</option>
+            </select>
+          </div>
         </div>
-        <div className="flex items-center gap-2 bg-white border border-[#E8E5DA] rounded-xl px-3 py-2">
-          <Filter size={14} className="text-[#A8ADA9]" />
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#455250]">
-            <option value="All">All Status</option>
-            <option value="Paid">Paid</option>
-            <option value="Pending">Pending</option>
-            <option value="Failed">Failed</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2 bg-white border border-[#E8E5DA] rounded-xl px-3 py-2">
-          <Filter size={14} className="text-[#A8ADA9]" />
-          <select value={methodFilter} onChange={e => setMethodFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#455250]">
-            <option value="All">All Methods</option>
-            <option value="Bank Transfer">Bank Transfer</option>
-            <option value="UPI">UPI</option>
-          </select>
-        </div>
+
+        {/* Global Download PDF Button */}
+        <button
+          onClick={handleDownloadAllPDF}
+          disabled={filtered.length === 0}
+          className="inline-flex items-center gap-2 bg-[#164A4A] text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#C6A77D] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        >
+          <Download size={15} />
+          Download PDF
+        </button>
       </div>
 
       {/* Table */}
@@ -161,7 +248,7 @@ const GymAdminTrainerPaymentHistory = () => {
                       <td className="px-5 py-4 text-right">
                         <button
                           onClick={() => setSelectedPayment(p)}
-                          className="px-3 py-1.5 text-xs font-semibold text-[#3B82F6] hover:bg-blue-50 rounded-lg transition-colors whitespace-nowrap"
+                          className="px-3 py-1.5 text-xs font-semibold text-[#3B82F6] hover:bg-blue-50 rounded-lg transition-colors whitespace-nowrap cursor-pointer"
                         >
                           View Details
                         </button>
@@ -177,19 +264,19 @@ const GymAdminTrainerPaymentHistory = () => {
 
       {/* Payment Details Modal */}
       {selectedPayment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-[#E8E5DA] bg-[#F2EFE8]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden border border-[#D3DFDA] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
+            <div className="flex items-center justify-between p-4 border-b border-[#E8E5DA] bg-[#F2EFE8] shrink-0">
               <h3 className="font-bold text-[#202828]">Payment Details</h3>
               <button
                 onClick={() => setSelectedPayment(null)}
-                className="text-[#687B78] hover:text-[#202828]"
+                className="text-[#687B78] hover:text-[#202828] p-1.5 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
               >
                 <XCircle size={20} />
               </button>
             </div>
 
-            <div className="p-5 space-y-4">
+            <div className="p-5 space-y-4 overflow-y-auto flex-1">
               <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <span className="text-gray-500 text-sm font-medium">Amount</span>
                 <span className="text-2xl font-bold text-[#202828]">₹{selectedPayment.amount?.toLocaleString('en-IN')}</span>
@@ -250,6 +337,22 @@ const GymAdminTrainerPaymentHistory = () => {
                   <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100">{selectedPayment.notes}</p>
                 </div>
               )}
+            </div>
+
+            <div className="p-4 bg-[#F2EFE8] border-t border-[#E8E5DA] flex justify-end gap-3 shrink-0">
+              <button
+                onClick={() => handleDownloadSinglePDF(selectedPayment)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl text-sm font-bold hover:bg-[#C6A77D] transition-colors shadow-sm cursor-pointer"
+              >
+                <Download size={15} />
+                Download PDF
+              </button>
+              <button
+                onClick={() => setSelectedPayment(null)}
+                className="px-4 py-2 bg-white border border-[#E8E5DA] text-[#455250] rounded-xl text-sm font-bold hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

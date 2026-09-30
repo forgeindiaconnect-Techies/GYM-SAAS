@@ -303,16 +303,133 @@ export const rateSession = async (req: AuthRequest, res: Response): Promise<void
     const { rating, review } = req.body;
     
     const session = await TrainerSession.findById(id);
-    if (!session || session.status !== TrainerSessionStatus.COMPLETED) {
+    if (!session || (session.status !== TrainerSessionStatus.COMPLETED && session.status !== TrainerSessionStatus.CONFIRMED)) {
       res.status(400).json({ success: false, message: 'Session not eligible for rating' });
       return;
     }
 
-    session.customerRating = rating;
+    session.customerRating = Number(rating);
     session.customerReview = review;
     await session.save();
 
+    // Update trainer rating summary
+    const trainer = await Trainer.findById(session.trainerId);
+    if (trainer) {
+      const ratedSessions = await TrainerSession.find({ trainerId: trainer._id, customerRating: { $gt: 0 } });
+      const totalReviews = ratedSessions.length;
+      const sumRatings = ratedSessions.reduce((acc, s) => acc + (s.customerRating || 0), 0);
+      const avg = totalReviews > 0 ? Number((sumRatings / totalReviews).toFixed(1)) : 5.0;
+      trainer.averageRating = avg;
+      trainer.totalReviews = totalReviews;
+      await trainer.save();
+    }
+
     res.status(200).json({ success: true, message: 'Rating submitted', session });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const checkInSession = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const session = await TrainerSession.findById(id);
+    if (!session) {
+      res.status(404).json({ success: false, message: 'Session not found' });
+      return;
+    }
+
+    session.checkInTime = new Date();
+    session.attendanceStatus = 'Present';
+    session.status = TrainerSessionStatus.IN_PROGRESS;
+    session.actualStartTime = new Date();
+    await session.save();
+
+    res.status(200).json({ success: true, message: 'Checked in successfully', session });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const checkOutSession = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const session = await TrainerSession.findById(id);
+    if (!session) {
+      res.status(404).json({ success: false, message: 'Session not found' });
+      return;
+    }
+
+    session.checkOutTime = new Date();
+    session.actualEndTime = new Date();
+    if (session.checkInTime) {
+      const diffMs = session.checkOutTime.getTime() - session.checkInTime.getTime();
+      session.actualDuration = Math.round(diffMs / 60000);
+    }
+    await session.save();
+
+    res.status(200).json({ success: true, message: 'Checked out successfully', session });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const submitSessionNotes = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const {
+      exercisesCompleted,
+      customerPerformance,
+      problemsNoticed,
+      dietRecommendations,
+      workoutModifications,
+      nextSessionFocus,
+      additionalComments
+    } = req.body;
+
+    const session = await TrainerSession.findById(id);
+    if (!session) {
+      res.status(404).json({ success: false, message: 'Session not found' });
+      return;
+    }
+
+    session.sessionNotes = {
+      exercisesCompleted,
+      customerPerformance,
+      problemsNoticed,
+      dietRecommendations,
+      workoutModifications,
+      nextSessionFocus,
+      additionalComments,
+      submittedAt: new Date()
+    };
+
+    session.status = TrainerSessionStatus.COMPLETED;
+    session.completedAt = new Date();
+    if (!session.attendanceStatus) {
+      session.attendanceStatus = 'Present';
+    }
+    await session.save();
+
+    const trainer = await Trainer.findById(session.trainerId);
+    if (trainer && session.fee > 0) {
+      trainer.totalEarnings = (trainer.totalEarnings || 0) + session.fee;
+      trainer.availableBalance = (trainer.availableBalance || 0) + session.fee;
+      await trainer.save();
+    }
+
+    await notify({
+      recipientId: session.customerId.toString(),
+      recipientRole: 'MEMBER',
+      gymId: session.gymId.toString(),
+      title: 'Session Completed',
+      message: 'Your trainer submitted session notes. You can view feedback and leave a rating.',
+      type: 'success',
+      relatedRecordId: session.id,
+      link: '/member/sessions'
+    });
+
+    res.status(200).json({ success: true, message: 'Session notes submitted and session completed', session });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
