@@ -271,7 +271,7 @@ const MemberDashboard = () => {
                       <td className="px-6 py-4 font-medium text-[#202828]">{p.planName}</td>
                       <td className="px-6 py-4 font-bold text-[#164A4A]">₹{p.amount}</td>
                       <td className="px-6 py-4 text-[#202828]">{p.paymentMethod}</td>
-                      <td className="px-6 py-4 font-mono text-xs">{p.transactionId || 'N/A'}</td>
+                      <td className="px-6 py-4 font-mono text-xs">{p.transactionId || p.paymentReference || (p._id ? `TXN-${p._id.slice(-8).toUpperCase()}` : 'N/A')}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                           p.status === 'Approved' ? 'bg-[#D2B48C]/10 text-[#164A4A]' :

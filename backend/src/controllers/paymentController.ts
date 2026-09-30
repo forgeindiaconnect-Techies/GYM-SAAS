@@ -14,6 +14,8 @@ export const submitPayment = async (req: AuthRequest, res: Response): Promise<vo
 
     const { gymId, branchId, planName, amount, paymentMethod, transactionId, paymentProofUrl, duration, customerBankDetails, notes } = req.body;
 
+    const finalTxnId = transactionId || req.body.paymentReference || `TXN-${Date.now().toString().slice(-8)}${Math.floor(100 + Math.random() * 900)}`;
+
     // Create a new Payment record
     const payment = new Payment({
       customerId: userId,
@@ -22,7 +24,7 @@ export const submitPayment = async (req: AuthRequest, res: Response): Promise<vo
       planName,
       amount,
       paymentMethod,
-      transactionId,
+      transactionId: finalTxnId,
       paymentProofUrl,
       customerBankDetails,
       notes,

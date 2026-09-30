@@ -108,7 +108,9 @@ const MemberPayments = () => {
                       <td className="px-6 py-4 text-sm text-[#202828] font-bold">{payment.planName}</td>
                       <td className="px-6 py-4 text-sm font-bold text-[#164A4A]">₹{payment.amount.toLocaleString('en-IN')}</td>
                       <td className="px-6 py-4 text-sm text-[#455250]">{payment.paymentMethod}</td>
-                      <td className="px-6 py-4 text-sm text-[#455250] font-mono">{payment.transactionId || 'N/A'}</td>
+                      <td className="px-6 py-4 text-sm text-[#455250] font-mono">
+                        {payment.transactionId || payment.paymentReference || (payment._id ? `TXN-${payment._id.slice(-8).toUpperCase()}` : 'N/A')}
+                      </td>
                       <td className="px-6 py-4">
                         {getStatusBadge(payment.status)}
                         {payment.status === 'Rejected' && payment.rejectionReason && (

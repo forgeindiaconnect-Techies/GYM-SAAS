@@ -83,7 +83,7 @@ const MemberUpgrade = () => {
         amount: totalAmount,
         duration: selectedPlan.duration,
         paymentMethod: finalMethod,
-        transactionId: paymentMethod === 'qr' ? paymentReference : undefined,
+        transactionId: paymentReference || `TXN-${Date.now().toString().slice(-8)}${Math.floor(100 + Math.random() * 900)}`,
         paymentProofUrl: paymentMethod === 'qr' && !isFreePlan ? paymentProofUrl : undefined,
         paymentDate: paymentDate,
         customerBankDetails: paymentMethod === 'bank' ? {
