@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Calendar as CalendarIcon, Clock, User, Loader2 } from 'lucide-react';
+import { Search, Calendar as CalendarIcon, Clock, User, Loader2, Eye, X, Video } from 'lucide-react';
 import api from '../../utils/api';
 
 const GymAdminSessionBookings = () => {
@@ -7,6 +7,7 @@ const GymAdminSessionBookings = () => {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
 
   const fetchBookings = async () => {
     try {
@@ -32,12 +33,27 @@ const GymAdminSessionBookings = () => {
       setActionLoading(id);
       await api.post(`/trainer-sessions/${id}/refund`);
       await fetchBookings();
+      if (selectedBooking && selectedBooking._id === id) {
+        setSelectedBooking(null);
+      }
       alert('Refund processed successfully.');
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to process refund');
     } finally {
       setActionLoading(null);
     }
+  };
+
+  const formatDateDisplay = (dateStr: string) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('T')[0].split('-');
+    if (parts.length === 3) {
+      const [y, m, d] = parts;
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const monthName = months[parseInt(m) - 1] || m;
+      return `${d} ${monthName} ${y}`;
+    }
+    return dateStr;
   };
 
   const filteredBookings = bookings.filter(b => {
@@ -131,11 +147,17 @@ const GymAdminSessionBookings = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1 text-xs">
-                        <p className="flex items-center text-[#202828]"><CalendarIcon size={12} className="mr-1.5 text-[#164A4A]"/> {new Date(booking.date).toLocaleDateString()}</p>
+                        <p className="flex items-center text-[#202828]"><CalendarIcon size={12} className="mr-1.5 text-[#164A4A]"/> {formatDateDisplay(booking.date)}</p>
                         <p className="flex items-center"><Clock size={12} className="mr-1.5 text-[#455250]"/> {booking.startTime}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-medium text-[#202828] capitalize">{booking.mode}</td>
+                    <td className="px-6 py-4 font-medium text-[#202828] capitalize">
+                      <span className={`px-2.5 py-1 rounded-md text-xs font-semibold ${
+                        booking.mode === 'Online' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      }`}>
+                        {booking.mode || 'Online'}
+                      </span>
+                    </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wider w-max block text-center ${getStatusColor(booking.status)}`}>
                         {booking.status}
@@ -148,18 +170,23 @@ const GymAdminSessionBookings = () => {
                       ₹{booking.fee}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {booking.paymentStatus === 'Paid' && !['Refunded', 'Refund Pending'].includes(booking.status) ? (
-                        <button 
-                          onClick={() => handleRefund(booking._id)}
-                          className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 font-semibold rounded-lg text-xs transition-colors"
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setSelectedBooking(booking)}
+                          className="px-3.5 py-1.5 bg-[#F1F5F9] text-[#202828] border border-[#D3DFDA] hover:bg-[#E8E5DA] font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-sm"
                         >
-                          Refund
+                          <Eye size={14} /> View Details
                         </button>
-                      ) : booking.status === 'Refunded' ? (
-                        <span className="text-xs font-bold text-gray-400">Refunded</span>
-                      ) : (
-                        <span className="text-xs text-gray-400">-</span>
-                      )}
+
+                        {booking.paymentStatus === 'Paid' && !['Refunded', 'Refund Pending'].includes(booking.status) && (
+                          <button 
+                            onClick={() => handleRefund(booking._id)}
+                            className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 font-semibold rounded-lg text-xs transition-colors shrink-0"
+                          >
+                            Refund
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -168,6 +195,111 @@ const GymAdminSessionBookings = () => {
           </table>
         </div>
       </div>
+
+      {/* Booking Details Modal */}
+      {selectedBooking && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 pt-16 sm:pt-20 pb-8 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-[#D3DFDA] space-y-6 max-h-[85vh] overflow-y-auto my-auto custom-scrollbar">
+            <div className="flex justify-between items-center border-b pb-4">
+              <div>
+                <h3 className="text-xl font-bold text-[#202828]">Session Booking Details</h3>
+                <p className="text-xs text-[#164A4A] font-mono font-bold mt-0.5">
+                  ID: {selectedBooking.bookingId || selectedBooking._id}
+                </p>
+              </div>
+              <button 
+                onClick={() => setSelectedBooking(null)} 
+                className="p-2 text-[#455250] hover:bg-[#F1F5F9] rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-sm text-[#334155]">
+              {/* Member Details */}
+              <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-2">
+                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-2">Member Information</h4>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#E8E5DA] flex items-center justify-center text-sm font-bold overflow-hidden border border-[#D3DFDA]">
+                    {selectedBooking.customerId?.profilePhoto ? (
+                      <img src={selectedBooking.customerId.profilePhoto} alt="member" className="w-full h-full object-cover" />
+                    ) : (
+                      selectedBooking.customerId?.firstName?.charAt(0) || 'U'
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#202828]">
+                      {selectedBooking.customerId ? `${selectedBooking.customerId.firstName} ${selectedBooking.customerId.lastName}` : 'Unknown Member'}
+                    </p>
+                    {selectedBooking.customerId?.email && <p className="text-xs text-[#687B78]">{selectedBooking.customerId.email}</p>}
+                    {selectedBooking.customerId?.mobile && <p className="text-xs text-[#687B78]">{selectedBooking.customerId.mobile}</p>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Trainer & Session Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
+                  <p className="text-xs font-medium text-[#687B78] mb-1">Assigned Trainer</p>
+                  <p className="font-bold text-[#202828]">{selectedBooking.trainerId?.name || 'Trainer'}</p>
+                  <p className="text-xs text-[#164A4A] mt-0.5">{selectedBooking.trainerId?.specialization || 'Fitness Coach'}</p>
+                </div>
+
+                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
+                  <p className="text-xs font-medium text-[#687B78] mb-1">Session Mode</p>
+                  <p className="font-bold text-[#202828] capitalize">{selectedBooking.mode || 'Online'}</p>
+                </div>
+
+                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
+                  <p className="text-xs font-medium text-[#687B78] mb-1">Date & Time</p>
+                  <p className="font-bold text-[#202828]">{formatDateDisplay(selectedBooking.date)}</p>
+                  <p className="text-xs text-[#455250] mt-0.5">{selectedBooking.startTime} - {selectedBooking.endTime}</p>
+                </div>
+
+                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
+                  <p className="text-xs font-medium text-[#687B78] mb-1">Status & Fee</p>
+                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedBooking.status)}`}>
+                    {selectedBooking.status}
+                  </span>
+                  <p className="font-bold text-[#164A4A] mt-1">₹{selectedBooking.fee} ({selectedBooking.paymentStatus || 'Pending'})</p>
+                </div>
+              </div>
+
+              {/* Meeting Link for Online Sessions */}
+              {selectedBooking.mode === 'Online' && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl space-y-2">
+                  <p className="text-xs font-bold text-blue-800 uppercase tracking-wider">Online Session Video Room</p>
+                  <a
+                    href={selectedBooking.meetingLink || `https://meet.jit.si/aigym-session-${selectedBooking._id.substr(-6)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-600 font-bold hover:underline text-xs flex items-center gap-1.5 break-all"
+                  >
+                    <Video size={14} /> {selectedBooking.meetingLink || `https://meet.jit.si/aigym-session-${selectedBooking._id.substr(-6)}`}
+                  </a>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-3 border-t flex justify-end gap-3">
+              {selectedBooking.paymentStatus === 'Paid' && !['Refunded', 'Refund Pending'].includes(selectedBooking.status) && (
+                <button
+                  onClick={() => handleRefund(selectedBooking._id)}
+                  className="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-xl text-sm transition-colors"
+                >
+                  Process Refund
+                </button>
+              )}
+              <button 
+                onClick={() => setSelectedBooking(null)} 
+                className="px-5 py-2 bg-[#164A4A] text-white font-bold rounded-xl text-sm hover:bg-[#C6A77D] transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

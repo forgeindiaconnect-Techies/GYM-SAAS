@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, MoreVertical, MessageSquare, Activity, X, User } from 'lucide-react';
+import { Users, Search, MoreVertical, X, User } from 'lucide-react';
 import api from '../../utils/api';
 
 const TrainerMembers = () => {
@@ -199,27 +199,13 @@ const TrainerMembers = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 mt-auto pt-4 border-t border-[#D3DFDA]">
+              <div className="mt-auto pt-4 border-t border-[#D3DFDA]">
                 <button
                   onClick={() => setOpenDetailsModal(client)}
-                  className="w-full flex items-center justify-center gap-2 py-2 bg-white text-[#164A4A] text-sm font-semibold rounded-xl border border-[#164A4A] hover:bg-[#164A4A]/5 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-white text-[#164A4A] text-sm font-semibold rounded-xl border border-[#164A4A] hover:bg-[#164A4A] hover:text-white transition-all shadow-sm"
                 >
                   <User size={16} /> View Details
                 </button>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => navigate(`/trainer/member-progress?userId=${client.id}`)}
-                    className="flex items-center justify-center gap-2 py-2 bg-[#F8FAFC] text-[#202828] text-sm font-semibold rounded-xl border border-[#D3DFDA] hover:bg-[#E8E5DA] transition-colors"
-                  >
-                    <Activity size={16} /> Progress
-                  </button>
-                  <button
-                    onClick={() => navigate(`/trainer/messages?userId=${client.id}`)}
-                    className="flex items-center justify-center gap-2 py-2 bg-[#E8E5DA] text-[#202828] text-sm font-semibold rounded-xl hover:bg-[#D3DFDA] transition-colors"
-                  >
-                    <MessageSquare size={16} /> Chat
-                  </button>
-                </div>
               </div>
             </div>
           ))}
@@ -228,121 +214,132 @@ const TrainerMembers = () => {
 
       {/* Member Details Modal */}
       {openDetailsModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6 sm:p-12 overflow-hidden">
-          <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] shadow-2xl">
-            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F8FAFC]">
-              <h2 className="text-xl font-bold text-[#202828]">Member Details</h2>
-              <button onClick={() => setOpenDetailsModal(null)} className="text-[#A8ADA9] hover:text-[#202828] transition-colors">
-                <X size={24} />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-8 pt-16 sm:pt-20 pb-8 overflow-y-auto">
+          <div className="bg-white rounded-3xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl border border-[#D3DFDA] my-auto">
+            <div className="px-6 py-5 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F8FAFC]">
+              <div>
+                <h2 className="text-xl font-bold text-[#202828]">Member Details</h2>
+                <p className="text-xs text-[#455250] mt-0.5">Comprehensive member overview and profile information</p>
+              </div>
+              <button 
+                onClick={() => setOpenDetailsModal(null)} 
+                className="w-9 h-9 flex items-center justify-center rounded-full text-[#455250] hover:text-[#202828] hover:bg-[#E8E5DA] transition-colors"
+              >
+                <X size={20} />
               </button>
             </div>
             
-            <div className="p-6 overflow-y-auto space-y-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-20 h-20 bg-[#164A4A]/10 text-[#164A4A] rounded-2xl flex items-center justify-center text-3xl font-bold border border-[#164A4A]/20 uppercase overflow-hidden shrink-0">
+            <div className="p-6 sm:p-7 overflow-y-auto space-y-6">
+              {/* Member Profile Header Card */}
+              <div className="flex items-center space-x-4 bg-[#F8FAFC] p-4 rounded-2xl border border-[#D3DFDA]">
+                <div className="w-16 h-16 bg-[#164A4A]/10 text-[#164A4A] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#164A4A]/20 uppercase overflow-hidden shrink-0 shadow-sm">
                   {openDetailsModal.profilePhoto ? (
                     <img src={openDetailsModal.profilePhoto} alt={openDetailsModal.name} className="w-full h-full object-cover" />
                   ) : (
                     openDetailsModal.name.charAt(0)
                   )}
                 </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-[#202828] mb-1 capitalize">{openDetailsModal.name}</h3>
-                  <div className="flex gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${openDetailsModal.status === 'Active' ? 'bg-[#164A4A]/10 text-[#164A4A]' : 'bg-[#6fa3a0]/10 text-[#6fa3a0]'}`}>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-2xl font-bold text-[#202828] mb-1 capitalize truncate">{openDetailsModal.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-0.5 rounded-full text-xs font-semibold ${
+                      openDetailsModal.status === 'Active' 
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+                        : 'bg-gray-100 text-gray-700 border border-gray-200'
+                    }`}>
                       {openDetailsModal.status}
                     </span>
+                    {openDetailsModal.goal && (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                        {openDetailsModal.goal}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Email</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.email || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Phone</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.phone || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Membership Plan</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.subscriptionPlan || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Join Date</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.createdAt ? new Date(openDetailsModal.originalUser.createdAt).toISOString().split('T')[0] : 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Gender</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Renewal Date</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.subscriptionExpiry ? new Date(openDetailsModal.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Last Login</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.lastLogin ? new Date(openDetailsModal.originalUser.lastLogin).toLocaleString() : 'Never'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Date of Birth</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.dateOfBirth || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">City & PIN</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.city || 'Not specified'} - {openDetailsModal.originalUser?.pinCode || ''}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Height / Weight</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.height ? `${openDetailsModal.originalUser.height} cm` : '--'} / {openDetailsModal.originalUser?.weight ? `${openDetailsModal.originalUser.weight} kg` : '--'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Fitness Goal</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.goal || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Experience Level</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.experienceLevel || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Pref. Training</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.preferredTraining || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Pref. Workout Time</p>
-                  <p className="font-semibold text-[#202828]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Not specified'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-1">Assigned Trainer</p>
-                  <p className="font-semibold text-[#202828]">{'You'}</p>
+              {/* Member Info Grid with Clean Gaps and Cards */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider">Profile Information</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#F8FAFC] p-4 rounded-2xl border border-[#D3DFDA]">
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Email</p>
+                    <p className="font-semibold text-sm text-[#202828] break-all">{openDetailsModal.email || 'Not specified'}</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Phone</p>
+                    <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.phone || 'Not specified'}</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Membership Plan</p>
+                    <p className="font-semibold text-sm text-[#164A4A]">{openDetailsModal.originalUser?.subscriptionPlan || 'Standard Plan'}</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Join Date</p>
+                    <p className="font-semibold text-sm text-[#202828]">
+                      {openDetailsModal.originalUser?.createdAt ? new Date(openDetailsModal.originalUser.createdAt).toLocaleDateString() : 'Not specified'}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Gender</p>
+                    <p className="font-semibold text-sm text-[#202828] capitalize">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Renewal Date</p>
+                    <p className="font-semibold text-sm text-[#202828]">
+                      {openDetailsModal.originalUser?.subscriptionExpiry ? new Date(openDetailsModal.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Height / Weight</p>
+                    <p className="font-semibold text-sm text-[#202828]">
+                      {openDetailsModal.originalUser?.height ? `${openDetailsModal.originalUser.height} cm` : '--'} / {openDetailsModal.originalUser?.weight ? `${openDetailsModal.originalUser.weight} kg` : '--'}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Experience Level</p>
+                    <p className="font-semibold text-sm text-[#202828] capitalize">{openDetailsModal.originalUser?.experienceLevel || 'Intermediate'}</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Pref. Training</p>
+                    <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.originalUser?.preferredTraining || 'General Fitness'}</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Pref. Workout Time</p>
+                    <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Morning'}</p>
+                  </div>
                 </div>
               </div>
               
-              <div>
-                <h4 className="font-bold text-[#202828] mb-3">Recent Bookings</h4>
+              {/* Recent Sessions */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider">Recent Bookings</h4>
                 {openDetailsModal.sessions && openDetailsModal.sessions.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {openDetailsModal.sessions.slice(0, 3).map((s: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center p-3 border border-[#D3DFDA] rounded-lg">
-                        <div>
-                          <p className="font-medium text-[#202828]">{new Date(s.date).toLocaleDateString()}</p>
-                          <p className="text-sm text-[#455250]">{s.startTime} - {s.endTime} ({s.mode})</p>
+                      <div key={idx} className="flex justify-between items-center p-3.5 bg-[#F8FAFC] border border-[#D3DFDA] rounded-xl">
+                        <div className="space-y-0.5">
+                          <p className="font-bold text-sm text-[#202828]">{new Date(s.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                          <p className="text-xs text-[#455250]">{s.startTime} - {s.endTime} <span className="font-semibold text-blue-700">({s.mode || 'Online'})</span></p>
                         </div>
-                        <span className="text-xs font-bold uppercase">{s.status}</span>
+                        <span className="text-[11px] font-bold uppercase px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          {s.status}
+                        </span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-[#455250]">No session history available.</p>
+                  <div className="p-4 bg-[#F8FAFC] border border-[#D3DFDA] rounded-xl text-center">
+                    <p className="text-xs text-[#455250]">No session history available for this member.</p>
+                  </div>
                 )}
               </div>
             </div>
             
-            <div className="p-4 border-t border-[#D3DFDA] bg-[#F8FAFC] flex justify-end">
+            <div className="p-4 px-6 border-t border-[#D3DFDA] bg-[#F8FAFC] flex justify-end">
               <button 
                 onClick={() => setOpenDetailsModal(null)}
-                className="px-6 py-2 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors"
+                className="px-6 py-2.5 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-sm text-sm"
               >
                 Close
               </button>

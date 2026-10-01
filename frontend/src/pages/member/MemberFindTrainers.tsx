@@ -67,10 +67,10 @@ const MemberFindTrainers = () => {
                     trainer.availabilityStatus === 'Offline' ? 'bg-gray-100 text-gray-600' : 'bg-emerald-100 text-emerald-800'
                   }`}>
                     <span className={`w-2 h-2 rounded-full ${trainer.availabilityStatus === 'Offline' ? 'bg-gray-400' : 'bg-emerald-500 animate-pulse'}`} />
-                    {trainer.availabilityStatus || 'Online / Available'}
+                    {trainer.availabilityStatus || 'Available'}
                   </span>
                   <span className="text-xs font-semibold text-[#164A4A] bg-[#164A4A]/10 px-2 py-0.5 rounded-md capitalize">
-                    {trainer.trainingMode || 'online'}
+                    {trainer.trainingMode === 'both' ? 'Online & Gym' : (trainer.trainingMode || 'Online')}
                   </span>
                 </div>
 
@@ -84,7 +84,7 @@ const MemberFindTrainers = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg font-bold text-[#202828] truncate">{trainer.name}</h3>
-                    <p className="text-sm text-[#164A4A] font-medium truncate">{trainer.specialization || 'Fitness & AI Specialist'}</p>
+                    <p className="text-sm text-[#164A4A] font-medium truncate">{trainer.specialization || 'Fitness Specialist'}</p>
                     <div className="flex items-center space-x-1 mt-1 text-[#455250] text-xs">
                       <Star size={13} className="text-yellow-500 fill-yellow-500 shrink-0" />
                       <span className="font-bold">{trainer.averageRating || trainer.rating || '5.0'}</span>
@@ -95,8 +95,12 @@ const MemberFindTrainers = () => {
                 
                 <div className="mt-4 pt-4 border-t border-[#D3DFDA] space-y-2 text-sm text-[#455250] flex-1">
                   <p><span className="text-[#202828] font-semibold">Experience:</span> {trainer.experience ? `${trainer.experience} years` : '3+ years'}</p>
-                  <p><span className="text-[#202828] font-semibold">Expertise:</span> {trainer.expertise || trainer.specialization || 'Strength & Conditioning'}</p>
-                  <p><span className="text-[#202828] font-semibold">Available Slots:</span> {trainer.availableSlot || 5} per day ({trainer.availableStartTime || '09:00'} - {trainer.availableEndTime || '18:00'})</p>
+                  <p><span className="text-[#202828] font-semibold">Expertise:</span> {
+                    typeof trainer.expertise === 'string'
+                      ? trainer.expertise.split('\n').filter(Boolean).join(' • ')
+                      : (Array.isArray(trainer.expertise) ? trainer.expertise.join(' • ') : (trainer.expertise || trainer.specialization || 'Strength & Conditioning'))
+                  }</p>
+                  <p><span className="text-[#202828] font-semibold">Available Slots:</span> {trainer.availableSlot || 5} per day ({trainer.availableStartTime || '09:00 AM'} - {trainer.availableEndTime || '06:00 PM'})</p>
                 </div>
                 
                 <div className="mt-6 flex gap-3">

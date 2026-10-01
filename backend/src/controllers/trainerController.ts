@@ -611,9 +611,7 @@ export const getOnlineTrainers = async (req: AuthRequest, res: Response): Promis
   try {
     const gymId = req.user?.gymId || (await resolveGymId(req));
     const filter: any = {
-      status: 'Active',
-      trainingMode: { $in: ['online', 'both'] },
-      availabilityStatus: { $ne: 'Offline' }
+      status: 'Active'
     };
     if (gymId) filter.gymId = gymId;
 

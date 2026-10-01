@@ -125,8 +125,7 @@ const GymAdminLayout = () => {
           { label: 'Inventory', path: '/admin/store/inventory', icon: Boxes },
           { label: 'Orders', path: '/admin/store/orders', icon: ShoppingCart },
           { label: 'Offline Sales', path: '/admin/store/offline-sales', icon: IndianRupee },
-          { label: 'Sales History', path: '/admin/store/sales', icon: BarChart },
-          { label: 'Store Settings', path: '/admin/store/settings', icon: Settings }
+          { label: 'Sales History', path: '/admin/store/sales', icon: BarChart }
         ]
       },
       {

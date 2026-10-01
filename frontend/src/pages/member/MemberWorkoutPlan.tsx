@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlayCircle, Clock, Flame, Dumbbell, ChevronRight, CheckCircle2, X, Timer, Activity, Utensils } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import api from '../../utils/api';
 
 const MemberWorkoutPlan = () => {
   const generateWeekDays = () => {

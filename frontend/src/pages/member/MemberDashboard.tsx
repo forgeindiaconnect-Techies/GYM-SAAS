@@ -222,12 +222,23 @@ const MemberDashboard = () => {
                 </div>
                 <div className="space-y-4">
                   {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).slice(0, 3).map((session, i) => (
-                    <div key={i} className="flex space-x-3 items-start">
-                      <div className="w-2 h-2 mt-1.5 rounded-full bg-[#164A4A]"></div>
-                      <div>
-                        <p className="font-medium text-sm text-[#202828] capitalize">{session.mode} Session</p>
-                        <p className="text-xs text-[#455250]">{new Date(session.date).toLocaleDateString()} at {session.startTime}</p>
+                    <div key={i} className="flex space-x-3 items-start justify-between">
+                      <div className="flex space-x-3 items-start">
+                        <div className={`w-2 h-2 mt-1.5 rounded-full ${session.status === 'Pending' ? 'bg-amber-500' : 'bg-[#164A4A]'}`}></div>
+                        <div>
+                          <p className="font-medium text-sm text-[#202828] capitalize">
+                            {session.trainerId?.name ? `${session.trainerId.name} (${session.mode || 'Online'})` : `${session.mode || 'Online'} Session`}
+                          </p>
+                          <p className="text-xs text-[#455250]">{new Date(session.date).toLocaleDateString()} at {session.startTime}</p>
+                        </div>
                       </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                        session.status === 'Pending' 
+                          ? 'bg-amber-50 text-amber-800 border border-amber-200' 
+                          : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                      }`}>
+                        {session.status === 'Pending' ? 'Waiting Approval' : 'Approved'}
+                      </span>
                     </div>
                   ))}
                   {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).length === 0 && (

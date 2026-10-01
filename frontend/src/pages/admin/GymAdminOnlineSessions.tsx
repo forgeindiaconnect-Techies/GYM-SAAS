@@ -71,7 +71,7 @@ const GymAdminOnlineSessions = () => {
           category: s.category || 'Personal Training',
           attendeesCount: 1,
           maxCapacity: 1,
-          meetingLink: s.meetingLink || `https://meet.google.com/${s._id.slice(-9)}`,
+          meetingLink: s.meetingLink || `https://meet.jit.si/aigym-session-${s._id.slice(-9)}`,
           status: s.status === 'Completed' ? 'Completed' : s.status === 'Cancelled' ? 'Cancelled' : 'Upcoming',
           price: s.fee || 0,
           description: s.description || 'Virtual session with gym personal trainer.',
@@ -90,7 +90,7 @@ const GymAdminOnlineSessions = () => {
           category: 'HIIT',
           attendeesCount: 18,
           maxCapacity: 30,
-          meetingLink: 'https://meet.google.com/aigym-hiit-live',
+          meetingLink: 'https://meet.jit.si/aigym-hiit-live',
           status: 'Upcoming',
           price: 0,
           description: 'High-energy full body fat burn session. No equipment needed.',
@@ -106,7 +106,7 @@ const GymAdminOnlineSessions = () => {
           category: 'Yoga & Flexibility',
           attendeesCount: 24,
           maxCapacity: 40,
-          meetingLink: 'https://meet.google.com/aigym-yoga-flow',
+          meetingLink: 'https://meet.jit.si/aigym-yoga-flow',
           status: 'Upcoming',
           price: 0,
           description: 'Invigorating morning breathing, flow and mobility sequence.',
@@ -122,7 +122,7 @@ const GymAdminOnlineSessions = () => {
           category: 'Strength',
           attendeesCount: 22,
           maxCapacity: 25,
-          meetingLink: 'https://meet.google.com/aigym-strength-past',
+          meetingLink: 'https://meet.jit.si/aigym-strength-past',
           status: 'Completed',
           price: 0,
           description: 'Dumbbell and bodyweight progressive overload workout.',
@@ -159,7 +159,7 @@ const GymAdminOnlineSessions = () => {
     }
     setCreating(true);
 
-    const generatedLink = newLink.trim() || `https://meet.google.com/gym-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`;
+    const generatedLink = newLink.trim() || `https://meet.jit.si/aigym-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`;
     const newSession: OnlineSession = {
       _id: `custom-session-${Date.now()}`,
       title: newTitle.trim(),
@@ -234,12 +234,7 @@ const GymAdminOnlineSessions = () => {
           >
             <RefreshCw size={18} />
           </button>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2.5 bg-[#164A4A] hover:bg-[#1f5f5f] text-white font-bold rounded-xl text-sm transition-all shadow-md flex items-center gap-2"
-          >
-            <Plus size={18} /> Schedule Online Session
-          </button>
+
         </div>
       </div>
 

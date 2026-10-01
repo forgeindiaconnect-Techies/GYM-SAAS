@@ -783,7 +783,7 @@ const seedDB = async () => {
       duration: 60,
       fee: 400,
       status: TrainerSessionStatus.CONFIRMED,
-      meetingLink: 'https://meet.google.com/abc-defg-hij',
+      meetingLink: 'https://meet.jit.si/aigym-session-abcdefg',
       paymentStatus: 'Paid',
     });
 

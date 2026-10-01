@@ -1,3 +1,4 @@
+import CustomerAIChatbot from '../components/CustomerAIChatbot';
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
@@ -82,6 +83,7 @@ const MemberLayout = () => {
         { label: 'Find Trainers', path: '/member/find-trainers', icon: UserCheck },
         { label: 'My Trainer', path: '/member/trainer', icon: UserCheck },
         { label: 'My Bookings', path: '/member/bookings', icon: CalendarCheck },
+        { label: 'Online Sessions', path: '/member/online-sessions', icon: Clock },
       ]
     },
     {
@@ -91,8 +93,10 @@ const MemberLayout = () => {
         { label: 'AI Results', path: '/member/ai-results', icon: Bot },
         { label: 'Trainer Review', path: '/member/trainer-review', icon: FileText },
         { label: 'Workout Plan', path: '/member/workout', icon: Dumbbell },
+        { label: 'Workout Videos', path: '/member/workout-videos', icon: Activity },
         { label: 'Diet Plan', path: '/member/diet', icon: Utensils },
         { label: 'Progress', path: '/member/progress', icon: TrendingUp },
+        { label: 'Attendance', path: '/member/attendance', icon: CalendarCheck },
       ]
     },
     {
@@ -292,6 +296,9 @@ const MemberLayout = () => {
         <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           <Outlet />
         </div>
+
+        {/* Floating Context-Aware AI Chatbot */}
+        <CustomerAIChatbot />
       </main>
     </div>
   );

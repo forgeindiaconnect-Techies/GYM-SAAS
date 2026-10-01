@@ -56,7 +56,7 @@ const TrainerLayout = () => {
       items: [
         { label: 'My Members', path: '/trainer/members', icon: Users },
         { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
-        { label: 'Member Progress', path: '/trainer/member-progress', icon: TrendingUp },
+        { label: 'Customer Progress', path: '/trainer/customer-progress', icon: TrendingUp },
         { label: 'Attendance', path: '/trainer/attendance', icon: CalendarCheck },
       ]
     },
@@ -65,12 +65,14 @@ const TrainerLayout = () => {
       items: [
         { label: 'Schedule', path: '/trainer/schedule', icon: Calendar },
         { label: 'Session Bookings', path: '/trainer/session-bookings', icon: CalendarCheck },
+        { label: 'Online Sessions', path: '/trainer/online-sessions', icon: Clock },
       ]
     },
     {
       title: 'Programs',
       items: [
         { label: 'Workout Plans', path: '/trainer/workout-plans', icon: FileText },
+        { label: 'Workout Videos', path: '/trainer/workout-videos', icon: FileText },
         { label: 'Diet Plans', path: '/trainer/diet-plans', icon: Utensils },
       ]
     },

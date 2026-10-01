@@ -115,6 +115,8 @@ import MemberMyTrainer from './pages/member/MemberMyTrainer';
 import MemberBookSession from './pages/member/MemberBookSession';
 import MemberMyBookings from './pages/member/MemberMyBookings';
 import MemberWorkoutPlan from './pages/member/MemberWorkoutPlan';
+import MemberWorkoutVideos from './pages/member/MemberWorkoutVideos';
+import MemberOnlineSessions from './pages/member/MemberOnlineSessions';
 import MemberDietPlan from './pages/member/MemberDietPlan';
 import MemberAIFitness from './pages/member/MemberAIFitness';
 import MemberAIResults from './pages/member/MemberAIResults';
@@ -135,7 +137,9 @@ import TrainerProfile from './pages/trainer/TrainerProfile';
 import TrainerMembers from './pages/trainer/TrainerMembers';
 import TrainerSchedule from './pages/trainer/TrainerSchedule';
 import TrainerSessionBookings from './pages/trainer/TrainerSessionBookings';
+import TrainerOnlineSessions from './pages/trainer/TrainerOnlineSessions';
 import TrainerWorkoutPlans from './pages/trainer/TrainerWorkoutPlans';
+import TrainerWorkoutVideos from './pages/trainer/TrainerWorkoutVideos';
 import TrainerDietPlans from './pages/trainer/TrainerDietPlans';
 import TrainerMemberProgress from './pages/trainer/TrainerMemberProgress';
 import TrainerAttendance from './pages/trainer/TrainerAttendance';
@@ -216,7 +220,9 @@ function App() {
             <Route path="trainer" element={<MemberMyTrainer />} />
             <Route path="book-session" element={<MemberBookSession />} />
             <Route path="bookings" element={<MemberMyBookings />} />
+            <Route path="online-sessions" element={<MemberOnlineSessions />} />
             <Route path="workout" element={<MemberWorkoutPlan />} />
+            <Route path="workout-videos" element={<MemberWorkoutVideos />} />
             <Route path="diet" element={<MemberDietPlan />} />
             <Route path="ai-assistant" element={<MemberAIFitness />} />
             <Route path="ai-results" element={<MemberAIResults />} />
@@ -238,7 +244,7 @@ function App() {
             <Route path="settings" element={<MemberSettings />} />
           </Route>
 
-                    {/* Trainer Routes */}
+          {/* Trainer Routes */}
           <Route path="/trainer" element={
             <ProtectedRoute allowedRoles={['TRAINER']}>
               <TrainerLayout />
@@ -249,9 +255,12 @@ function App() {
             <Route path="members" element={<TrainerMembers />} />
             <Route path="schedule" element={<TrainerSchedule />} />
             <Route path="session-bookings" element={<TrainerSessionBookings />} />
+            <Route path="online-sessions" element={<TrainerOnlineSessions />} />
             <Route path="workout-plans" element={<TrainerWorkoutPlans />} />
+            <Route path="workout-videos" element={<TrainerWorkoutVideos />} />
             <Route path="diet-plans" element={<TrainerDietPlans />} />
             <Route path="member-progress" element={<TrainerMemberProgress />} />
+            <Route path="customer-progress" element={<TrainerMemberProgress />} />
             <Route path="attendance" element={<TrainerAttendance />} />
             <Route path="messages" element={<TrainerMessages />} />
             <Route path="earnings" element={<TrainerEarnings />} />

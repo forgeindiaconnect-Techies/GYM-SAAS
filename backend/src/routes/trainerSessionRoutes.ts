@@ -14,7 +14,8 @@ import {
   refundSession,
   checkInSession,
   checkOutSession,
-  submitSessionNotes
+  submitSessionNotes,
+  updateAdminSessionStatus
 } from '../controllers/trainerSessionController';
 import { authenticate } from '../middlewares/auth';
 
@@ -40,5 +41,7 @@ router.post('/:id/session-notes', authenticate, submitSessionNotes);
 // Admin / Gym Owner routes
 router.get('/gym', authenticate, getGymSessions);
 router.post('/:id/refund', authenticate, refundSession);
+router.patch('/:id/status', authenticate, updateAdminSessionStatus);
+router.put('/:id/status', authenticate, updateAdminSessionStatus);
 
 export default router;

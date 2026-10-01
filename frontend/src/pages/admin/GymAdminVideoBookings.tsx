@@ -79,7 +79,7 @@ const GymAdminVideoBookings = () => {
           startTime: s.startTime || '11:00 AM',
           duration: s.duration || 45,
           fee: s.fee || 0,
-          meetingLink: s.meetingLink || `https://meet.google.com/vb-${s._id.slice(-8)}`,
+          meetingLink: s.meetingLink || `https://meet.jit.si/aigym-session-${s._id.slice(-8)}`,
           meetingId: s.meetingId || `ROOM-${s._id.slice(-6).toUpperCase()}`,
           status: s.status === 'Completed' ? 'Completed' : s.status === 'Cancelled' ? 'Cancelled' : 'Upcoming',
           paymentStatus: s.paymentStatus === 'Paid' ? 'Paid' : 'Free Trial',
@@ -100,7 +100,7 @@ const GymAdminVideoBookings = () => {
           startTime: '04:00 PM',
           duration: 45,
           fee: 0,
-          meetingLink: 'https://meet.google.com/aigym-renu-video',
+          meetingLink: 'https://meet.jit.si/aigym-renu-video',
           meetingId: 'ROOM-RENU99',
           status: 'Upcoming',
           paymentStatus: 'Free Trial',
@@ -118,7 +118,7 @@ const GymAdminVideoBookings = () => {
           startTime: '05:30 PM',
           duration: 30,
           fee: 499,
-          meetingLink: 'https://meet.google.com/aigym-rahul-diet',
+          meetingLink: 'https://meet.jit.si/aigym-rahul-diet',
           meetingId: 'ROOM-RAHUL499',
           status: 'Upcoming',
           paymentStatus: 'Paid',
@@ -136,7 +136,7 @@ const GymAdminVideoBookings = () => {
           startTime: '03:00 PM',
           duration: 45,
           fee: 399,
-          meetingLink: 'https://meet.google.com/aigym-sneha-form',
+          meetingLink: 'https://meet.jit.si/aigym-sneha-form',
           meetingId: 'ROOM-SNEHA399',
           status: 'Completed',
           paymentStatus: 'Paid',
@@ -177,7 +177,7 @@ const GymAdminVideoBookings = () => {
 
     const generatedLink =
       bookCustomLink.trim() ||
-      `https://meet.google.com/call-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`;
+      `https://meet.jit.si/aigym-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`;
     const randomRoom = `ROOM-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const newBooking: VideoBooking = {

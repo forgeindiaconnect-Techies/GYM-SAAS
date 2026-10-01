@@ -46,14 +46,24 @@ const MemberBookings = () => {
     return !upcomingStatuses.includes(s.status); // History (Completed, Cancelled, Rejected, Refunded)
   });
 
-  const getStatusColor = (status: string) => {
-    switch(status) {
-      case 'Confirmed': return 'text-green-500 bg-green-500/10';
-      case 'Awaiting Payment': return 'text-orange-500 bg-orange-500/10';
-      case 'Pending': return 'text-yellow-500 bg-yellow-500/10';
-      case 'Cancelled': case 'Rejected': return 'text-red-500 bg-red-500/10';
-      case 'Completed': return 'text-blue-500 bg-blue-500/10';
-      default: return 'text-[#455250] bg-gray-100';
+  const getStatusDisplay = (status: string) => {
+    switch (status) {
+      case 'Pending':
+        return { label: 'Waiting for Trainer Approval', className: 'text-amber-800 bg-amber-50 border border-amber-300' };
+      case 'Confirmed':
+      case 'Upcoming':
+      case 'In Progress':
+        return { label: 'Trainer Approved', className: 'text-emerald-800 bg-emerald-50 border border-emerald-300' };
+      case 'Rejected':
+        return { label: 'Trainer Rejected', className: 'text-rose-800 bg-rose-50 border border-rose-300' };
+      case 'Completed':
+        return { label: 'Session Completed', className: 'text-blue-800 bg-blue-50 border border-blue-300' };
+      case 'Cancelled':
+        return { label: 'Booking Cancelled', className: 'text-gray-700 bg-gray-100 border border-gray-300' };
+      case 'Awaiting Payment':
+        return { label: 'Awaiting Payment', className: 'text-orange-800 bg-orange-50 border border-orange-300' };
+      default:
+        return { label: status, className: 'text-gray-700 bg-gray-100 border border-gray-300' };
     }
   };
 
@@ -103,23 +113,27 @@ const MemberBookings = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-bold text-lg text-[#202828]">{session.trainerId?.name || 'Trainer'}</h3>
-                    <span className={`text-xs px-2 py-0.5 rounded-full bg-[#164A4A]/10 text-[#164A4A]`}>
-                      {session.mode}
+                    <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
+                      session.mode === 'Online'
+                        ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                        : 'bg-purple-100 text-purple-700 border border-purple-200'
+                    }`}>
+                      {session.mode || 'Online'}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-4 text-sm text-[#455250]">
                     <span className="flex items-center gap-1"><Clock size={14} /> {session.startTime} - {session.endTime}</span>
                     {session.mode === 'Online' ? (
-                      <span className="flex items-center gap-1"><Video size={14} /> Online Meeting</span>
+                      <span className="flex items-center gap-1 text-blue-700 font-semibold"><Video size={14} /> Online Meeting</span>
                     ) : (
-                      <span className="flex items-center gap-1"><MapPin size={14} /> In-Gym</span>
+                      <span className="flex items-center gap-1"><MapPin size={14} /> In-Gym Session</span>
                     )}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <span className={`text-sm font-semibold px-3 py-1 rounded-full ${getStatusColor(session.status)}`}>
-                  {session.status}
+                <span className={`text-xs font-bold px-3 py-1 rounded-full ${getStatusDisplay(session.status).className}`}>
+                  {getStatusDisplay(session.status).label}
                 </span>
                 
                 {session.status === 'Awaiting Payment' && (

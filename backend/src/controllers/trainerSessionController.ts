@@ -22,15 +22,24 @@ export const createSessionRequest = async (req: AuthRequest, res: Response): Pro
       return;
     }
 
+    let sessionMode = TrainerSessionMode.ONLINE;
+    if (trainer.trainingMode === 'online') {
+      sessionMode = TrainerSessionMode.ONLINE;
+    } else if (trainer.trainingMode === 'offline') {
+      sessionMode = TrainerSessionMode.OFFLINE;
+    } else if (mode && typeof mode === 'string') {
+      sessionMode = mode.toLowerCase() === 'offline' ? TrainerSessionMode.OFFLINE : TrainerSessionMode.ONLINE;
+    }
+
     const session = new TrainerSession({
       customerId,
       trainerId,
       gymId: trainer.gymId,
-      mode,
+      mode: sessionMode,
       date,
       startTime,
       endTime,
-      duration,
+      duration: duration || 60,
       fee: trainer.fee || 0,
       status: TrainerSessionStatus.PENDING,
       bookingId: 'BKG-' + Math.random().toString(36).substr(2, 9).toUpperCase()
@@ -75,11 +84,11 @@ export const acceptSession = async (req: AuthRequest, res: Response): Promise<vo
     }
 
     if (session.status !== TrainerSessionStatus.PENDING) {
-      res.status(400).json({ success: false, message: 'Only pending requests can be accepted' });
+      res.status(400).json({ success: false, message: 'Only pending requests can be approved' });
       return;
     }
 
-    session.status = TrainerSessionStatus.AWAITING_PAYMENT;
+    session.status = TrainerSessionStatus.CONFIRMED;
     await session.save();
 
     // Notify customer
@@ -87,14 +96,14 @@ export const acceptSession = async (req: AuthRequest, res: Response): Promise<vo
       recipientId: session.customerId.toString(),
       recipientRole: 'MEMBER',
       gymId: session.gymId.toString(),
-      title: 'Session Accepted',
-      message: `Your session on ${session.date} was accepted. Please complete payment.`,
+      title: 'Booking Approved',
+      message: `Your training session with ${trainer.name} on ${session.date} at ${session.startTime} has been confirmed.`,
       type: 'success',
       relatedRecordId: session.id,
-      link: '/member/sessions'
+      link: '/member/bookings'
     });
 
-    res.status(200).json({ success: true, message: 'Session accepted. Awaiting payment.', session });
+    res.status(200).json({ success: true, message: 'Session approved and confirmed successfully', session });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -128,10 +137,11 @@ export const rejectSession = async (req: AuthRequest, res: Response): Promise<vo
       recipientId: session.customerId.toString(),
       recipientRole: 'MEMBER',
       gymId: session.gymId.toString(),
-      title: 'Session Rejected',
-      message: `Your session on ${session.date} was rejected.`,
+      title: 'Booking Request Rejected',
+      message: `Your session request for ${session.date} at ${session.startTime} was declined by ${trainer.name}.`,
       type: 'error',
-      relatedRecordId: session.id
+      relatedRecordId: session.id,
+      link: '/member/bookings'
     });
 
     res.status(200).json({ success: true, message: 'Session rejected', session });
@@ -165,7 +175,7 @@ export const payForSession = async (req: AuthRequest, res: Response): Promise<vo
     
     if (session.mode === TrainerSessionMode.ONLINE) {
       session.meetingId = Math.floor(100000000 + Math.random() * 900000000).toString();
-      session.meetingLink = `https://meet.aigym.com/${session.meetingId}`;
+      session.meetingLink = `https://meet.jit.si/aigym-${session.meetingId}`;
     }
 
     await session.save();
@@ -440,9 +450,18 @@ export const getMemberSessions = async (req: AuthRequest, res: Response): Promis
   try {
     const customerId = req.user?.id;
     const sessions = await TrainerSession.find({ customerId })
-      .populate('trainerId', 'name profilePhoto specialization')
+      .populate('trainerId', 'name profilePhoto specialization trainingMode')
       .sort({ date: -1, startTime: -1 });
-    res.status(200).json({ success: true, sessions });
+
+    const normalizedSessions = sessions.map(s => {
+      const doc = s.toObject ? s.toObject() : s;
+      if (doc.trainerId && (doc.trainerId as any).trainingMode === 'online') {
+        doc.mode = TrainerSessionMode.ONLINE;
+      }
+      return doc;
+    });
+
+    res.status(200).json({ success: true, sessions: normalizedSessions });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -461,7 +480,16 @@ export const getTrainerSessions = async (req: AuthRequest, res: Response): Promi
     const sessions = await TrainerSession.find({ trainerId: trainer._id })
       .populate('customerId')
       .sort({ date: -1, startTime: -1 });
-    res.status(200).json({ success: true, sessions });
+
+    const normalizedSessions = sessions.map(s => {
+      const doc = s.toObject ? s.toObject() : s;
+      if (trainer.trainingMode === 'online') {
+        doc.mode = TrainerSessionMode.ONLINE;
+      }
+      return doc;
+    });
+
+    res.status(200).json({ success: true, sessions: normalizedSessions });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -472,10 +500,19 @@ export const getGymSessions = async (req: AuthRequest, res: Response): Promise<v
   try {
     const gymId = req.user?.gymId;
     const sessions = await TrainerSession.find({ gymId })
-      .populate('trainerId', 'name profilePhoto specialization')
-      .populate('customerId', 'firstName lastName profilePhoto')
+      .populate('trainerId', 'name profilePhoto specialization trainingMode')
+      .populate('customerId', 'firstName lastName profilePhoto email')
       .sort({ date: -1, startTime: -1 });
-    res.status(200).json({ success: true, sessions });
+
+    const normalizedSessions = sessions.map(s => {
+      const doc = s.toObject ? s.toObject() : s;
+      if (doc.trainerId && (doc.trainerId as any).trainingMode === 'online') {
+        doc.mode = TrainerSessionMode.ONLINE;
+      }
+      return doc;
+    });
+
+    res.status(200).json({ success: true, sessions: normalizedSessions });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -512,6 +549,42 @@ export const refundSession = async (req: AuthRequest, res: Response): Promise<vo
     });
 
     res.status(200).json({ success: true, message: 'Session refunded successfully', session });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// 13. Update Session Status / Mode / Date
+export const updateAdminSessionStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { status, mode, date, startTime, endTime } = req.body;
+
+    const session = await TrainerSession.findById(id);
+    if (!session) {
+      res.status(404).json({ success: false, message: 'Session not found' });
+      return;
+    }
+
+    if (status) session.status = status;
+    if (mode) session.mode = mode;
+    if (date) session.date = date;
+    if (startTime) session.startTime = startTime;
+    if (endTime) session.endTime = endTime;
+
+    await session.save();
+
+    await notify({
+      recipientId: session.customerId.toString(),
+      recipientRole: 'MEMBER',
+      gymId: session.gymId.toString(),
+      title: `Session Updated (${session.status})`,
+      message: `Your session booking ${session.bookingId || ''} has been updated to ${session.status}.`,
+      type: 'info',
+      relatedRecordId: session.id
+    });
+
+    res.status(200).json({ success: true, message: 'Session updated successfully', session });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

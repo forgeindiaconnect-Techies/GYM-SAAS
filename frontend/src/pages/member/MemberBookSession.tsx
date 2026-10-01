@@ -14,7 +14,7 @@ const MemberBookSession = () => {
   const searchParams = new URLSearchParams(location.search);
   const initialTrainerId = searchParams.get('trainerId');
 
-  const [formData, setFormData] = useState({ trainerId: initialTrainerId || '', date: '', time: '', type: 'Offline' });
+  const [formData, setFormData] = useState({ trainerId: initialTrainerId || '', date: '', time: '', type: 'Online' });
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
 
@@ -23,10 +23,10 @@ const MemberBookSession = () => {
       api.get(`/gyms/${user.gymId}`)
         .then(res => {
           setGym(res.data.gym);
-          if (res.data.gym.trainingMode === 'online') {
-            setFormData(prev => ({ ...prev, type: 'Online' }));
-          } else {
+          if (res.data.gym.trainingMode === 'offline') {
             setFormData(prev => ({ ...prev, type: 'Offline' }));
+          } else {
+            setFormData(prev => ({ ...prev, type: 'Online' }));
           }
         })
         .catch(err => console.error(err));
@@ -44,6 +44,23 @@ const MemberBookSession = () => {
         .catch(err => console.error(err));
     }
   }, [user]);
+
+  // Synchronize session type with selected trainer's capability
+  useEffect(() => {
+    if (formData.trainerId && allTrainers.length > 0) {
+      const selected = allTrainers.find(t => t._id === formData.trainerId);
+      if (selected) {
+        const mode = (selected.trainingMode || 'online').toLowerCase();
+        if (mode === 'online') {
+          setFormData(prev => ({ ...prev, type: 'Online' }));
+        } else if (mode === 'offline') {
+          setFormData(prev => ({ ...prev, type: 'Offline' }));
+        } else {
+          setFormData(prev => ({ ...prev, type: prev.type || 'Online' }));
+        }
+      }
+    }
+  }, [formData.trainerId, allTrainers]);
 
   useEffect(() => {
     if (gym) {
