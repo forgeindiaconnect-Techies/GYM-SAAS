@@ -795,8 +795,8 @@ const GymAdminTrainerCommission = () => {
 
       {/* WITHDRAW COMMISSION MODAL */}
       {withdrawModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex justify-center items-start pt-20 pb-16 px-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-5 relative">
             <div className="flex items-center justify-between border-b border-[#D3DFDA] pb-3">
               <div>
                 <h3 className="text-lg font-bold text-[#202828]">Withdraw Gym Commission</h3>
@@ -999,8 +999,8 @@ const GymAdminTrainerCommission = () => {
 
       {/* WITHDRAWAL RECEIPT MODAL */}
       {receiptModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex justify-center items-start pt-20 pb-16 px-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4 relative">
             <div className="flex items-center justify-between border-b border-[#D3DFDA] pb-3">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600" />
