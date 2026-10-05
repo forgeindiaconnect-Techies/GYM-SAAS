@@ -315,10 +315,10 @@ const SuperAdminDeletedDetails = () => {
 
       {/* ─── View Details Modal ─── */}
       {selectedRecord && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-[#D3DFDA] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white border border-[#D3DFDA] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto max-h-[85vh] flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#D3DFDA] bg-[#F8F9F8]">
+            <div className="flex items-center justify-between p-6 border-b border-[#D3DFDA] bg-[#F8F9F8] shrink-0">
               <div className="flex items-center space-x-3">
                 <div className="w-11 h-11 bg-[#164A4A]/10 text-[#164A4A] rounded-xl flex items-center justify-center">
                   {activeTab === 'GYM_INVITATIONS' ? (
@@ -359,132 +359,138 @@ const SuperAdminDeletedDetails = () => {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-4">
-                {/* Person / Owner Name */}
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <User size={11} /> {activeTab === 'GYM_INVITATIONS' ? 'Recipient Name' : 'Full Name'}
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm">
-                    {activeTab === 'GYM_INVITATIONS'
-                      ? selectedRecord.owner || 'N/A'
-                      : `${selectedRecord.firstName || ''} ${selectedRecord.lastName || ''}`.trim() || 'N/A'}
-                  </p>
+            <div className="p-6 space-y-5 overflow-y-auto flex-1">
+              <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  {/* Person / Owner Name */}
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <User size={12} /> {activeTab === 'GYM_INVITATIONS' ? 'Recipient Name' : 'Full Name'}
+                    </span>
+                    <span className="font-bold text-[#202828] text-sm">
+                      {activeTab === 'GYM_INVITATIONS'
+                        ? selectedRecord.owner || 'N/A'
+                        : `${selectedRecord.firstName || ''} ${selectedRecord.lastName || ''}`.trim() || 'N/A'}
+                    </span>
+                  </div>
+
+                  {/* Email Address */}
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Mail size={12} /> Email Address
+                    </span>
+                    <span className="font-semibold text-[#202828] text-sm break-all" title={selectedRecord.email}>
+                      {selectedRecord.email || 'N/A'}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Email Address */}
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Mail size={11} /> Email Address
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm truncate" title={selectedRecord.email}>
-                    {selectedRecord.email || 'N/A'}
-                  </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  {/* Phone / Mobile */}
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Phone size={12} /> Phone / Mobile
+                    </span>
+                    <span className="font-semibold text-[#202828] text-sm">
+                      {selectedRecord.mobile || selectedRecord.phone || 'N/A'}
+                    </span>
+                  </div>
+
+                  {/* Role or Gym Name */}
+                  {activeTab === 'GYM_INVITATIONS' ? (
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Building2 size={12} /> Gym Type
+                      </span>
+                      <span className="font-bold text-[#202828] text-sm">{selectedRecord.type || 'Standard Gym'}</span>
+                    </div>
+                  ) : activeTab === 'GYM_OWNERS' ? (
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Building2 size={12} /> Associated Gym
+                      </span>
+                      <span className="font-bold text-[#202828] text-sm">
+                        {selectedRecord.gymId?.name || selectedRecord.gymName || 'Commercial Fitness Hub'}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <User size={12} /> Account Role
+                      </span>
+                      <span className="font-bold text-[#202828] text-sm">{selectedRecord.role?.replace('_', ' ') || 'Customer'}</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Phone / Mobile */}
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Phone size={11} /> Phone / Mobile
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm">
-                    {selectedRecord.mobile || selectedRecord.phone || 'N/A'}
-                  </p>
-                </div>
-
-                {/* Role or Gym Name */}
-                {activeTab === 'GYM_INVITATIONS' ? (
-                  <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                      <Building2 size={11} /> Gym Type
-                    </p>
-                    <p className="font-bold text-[#202828] text-sm">{selectedRecord.type || 'Standard Gym'}</p>
-                  </div>
-                ) : activeTab === 'GYM_OWNERS' ? (
-                  <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                      <Building2 size={11} /> Associated Gym
-                    </p>
-                    <p className="font-bold text-[#202828] text-sm">
-                      {selectedRecord.gymId?.name || selectedRecord.gymName || 'Commercial Fitness Hub'}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                      <User size={11} /> Account Role
-                    </p>
-                    <p className="font-bold text-[#202828] text-sm">{selectedRecord.role?.replace('_', ' ') || 'Customer'}</p>
-                  </div>
-                )}
-
-                {/* Location / City */}
                 {activeTab === 'GYM_OWNERS' && (
-                  <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                      <MapPin size={11} /> Location
-                    </p>
-                    <p className="font-bold text-[#202828] text-sm">
-                      {selectedRecord.city || selectedRecord.gymId?.location?.city || selectedRecord.gymId?.location?.address || 'Chennai, TN'}
-                    </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    {/* Location / City */}
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <MapPin size={12} /> Location
+                      </span>
+                      <span className="font-semibold text-[#202828] text-sm">
+                        {selectedRecord.city || selectedRecord.gymId?.location?.city || selectedRecord.gymId?.location?.address || 'Chennai, TN'}
+                      </span>
+                    </div>
+
+                    {/* Plan for Gym Owners */}
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Clock size={12} /> Subscription Plan
+                      </span>
+                      <span className="font-bold text-[#164A4A] text-sm">
+                        {selectedRecord.subscriptionPlan || 'Free Trial'}
+                      </span>
+                    </div>
                   </div>
                 )}
 
-                {/* Plan for Gym Owners */}
-                {activeTab === 'GYM_OWNERS' && (
-                  <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                      <Clock size={11} /> Subscription Plan
-                    </p>
-                    <p className="font-bold text-[#202828] text-sm">
-                      {selectedRecord.subscriptionPlan || 'Free Trial'}
-                    </p>
-                  </div>
-                )}
-
-                {/* Original Status for Gym Invitations */}
                 {activeTab === 'GYM_INVITATIONS' && (
-                  <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                      <Clock size={11} /> Prior Status
-                    </p>
-                    <p className="font-bold text-[#202828] text-sm">
-                      {selectedRecord.status || 'Pending'}
-                    </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    {/* Original Status for Gym Invitations */}
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Clock size={12} /> Prior Status
+                      </span>
+                      <span className="font-bold text-[#202828] text-sm">
+                        {selectedRecord.status || 'Pending'}
+                      </span>
+                    </div>
+
+                    {/* Expiry for Gym Invitations */}
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Clock size={12} /> Link Validity
+                      </span>
+                      <span className="font-semibold text-[#202828] text-sm">
+                        {selectedRecord.expiry || '7 Days'}
+                      </span>
+                    </div>
                   </div>
                 )}
 
-                {/* Expiry for Gym Invitations */}
-                {activeTab === 'GYM_INVITATIONS' && (
-                  <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                      <Clock size={11} /> Link Validity
-                    </p>
-                    <p className="font-bold text-[#202828] text-sm">
-                      {selectedRecord.expiry || '7 Days'}
-                    </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  {/* Created / Invite Date */}
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Calendar size={12} /> {activeTab === 'GYM_INVITATIONS' ? 'Invite Sent Date' : 'Registration Date'}
+                    </span>
+                    <span className="font-semibold text-[#202828] text-sm">
+                      {formatDate(selectedRecord.date || selectedRecord.createdAt)}
+                    </span>
                   </div>
-                )}
 
-                {/* Created / Invite Date */}
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Calendar size={11} /> {activeTab === 'GYM_INVITATIONS' ? 'Invite Sent Date' : 'Registration Date'}
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm">
-                    {formatDate(selectedRecord.date || selectedRecord.createdAt)}
-                  </p>
-                </div>
-
-                {/* Deleted Date */}
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Trash2 size={11} /> Deleted Date
-                  </p>
-                  <p className="font-bold text-rose-600 text-sm">
-                    {formatDate(selectedRecord.deletedAt || selectedRecord.updatedAt || selectedRecord.createdAt)}
-                  </p>
+                  {/* Deleted Date */}
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Trash2 size={12} /> Deleted Date
+                    </span>
+                    <span className="font-bold text-rose-600 text-sm">
+                      {formatDate(selectedRecord.deletedAt || selectedRecord.updatedAt || selectedRecord.createdAt)}
+                    </span>
+                  </div>
                 </div>
               </div>
 

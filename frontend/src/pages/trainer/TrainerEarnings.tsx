@@ -53,13 +53,18 @@ const TrainerEarnings = () => {
                 <div className="w-9 h-9 rounded-xl bg-[#164A4A]/10 flex items-center justify-center">
                   <IndianRupee size={18} className="text-[#164A4A]" />
                 </div>
-                <p className="text-xs font-bold text-[#687B78] uppercase tracking-wider">Current Fee</p>
+                <p className="text-xs font-bold text-[#687B78] uppercase tracking-wider">Current Fee (Net Payable)</p>
               </div>
               <div className="flex items-end gap-2">
-                <span className="text-3xl font-bold text-[#202828]">₹{fee.feeAmount?.toLocaleString('en-IN')}</span>
+                <span className="text-3xl font-bold text-[#202828]">₹{(fee.netAmount || fee.feeAmount)?.toLocaleString('en-IN')}</span>
                 <span className="text-[#687B78] text-sm mb-0.5">{cycleSuffix(fee.billingCycle)}</span>
               </div>
-              <p className="text-xs text-[#A8ADA9] mt-2">{fee.trainingType}</p>
+              {fee.commissionValue !== undefined && Number(fee.commissionValue) > 0 && (
+                <p className="text-xs text-emerald-700 font-medium mt-1">
+                  Base: ₹{fee.feeAmount?.toLocaleString('en-IN')} (−{fee.commissionType === 'Fixed Amount' ? `₹${fee.commissionValue}` : `${fee.commissionValue}%`} comm.)
+                </p>
+              )}
+              <p className="text-xs text-[#A8ADA9] mt-1.5">{fee.trainingType}</p>
             </div>
           </div>
 

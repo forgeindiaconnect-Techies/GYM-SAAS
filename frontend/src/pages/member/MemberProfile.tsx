@@ -148,9 +148,9 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
 
       {/* Edit Profile Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/50 z-[70] flex items-start justify-center p-4 pt-10 sm:pt-16 backdrop-blur-sm animate-fade-in overflow-y-auto">
-          <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl mb-10">
-            <div className="sticky top-0 bg-white p-6 border-b border-[#E8E5DA] flex justify-between items-center z-10">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-fade-in">
+          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl border border-[#D3DFDA] overflow-hidden flex flex-col max-h-[85vh] my-auto">
+            <div className="bg-white p-6 border-b border-[#D3DFDA] flex justify-between items-center shrink-0">
               <h2 className="text-2xl font-bold text-[#202828]">Edit Profile</h2>
               <button 
                 onClick={() => setIsEditing(false)}
@@ -160,7 +160,7 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
               </button>
             </div>
             
-            <form onSubmit={handleSave} className="p-6 space-y-6">
+            <form onSubmit={handleSave} className="p-6 space-y-6 overflow-y-auto flex-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-[#202828] mb-2">First Name</label>

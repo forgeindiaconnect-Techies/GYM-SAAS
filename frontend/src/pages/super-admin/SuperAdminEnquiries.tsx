@@ -9,7 +9,8 @@ import {
   Eye, 
   X, 
   Building,
-  Tag
+  Tag,
+  Clock
 } from 'lucide-react';
 import api from '../../utils/api';
 
@@ -141,7 +142,11 @@ export const SuperAdminEnquiries = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-xs text-[#687B78] mb-1.5">{new Date(enq.createdAt).toLocaleDateString()}</div>
+                      <div className="text-xs font-semibold text-[#202828]">{new Date(enq.createdAt).toLocaleDateString()}</div>
+                      <div className="text-[11px] text-[#687B78] mb-1.5 flex items-center gap-1 font-medium">
+                        <Clock size={11} className="text-[#164A4A]" />
+                        <span>{new Date(enq.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                      </div>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStatusColor(enq.status)}`}>
                         {enq.status?.replace('_', ' ')}
                       </span>
@@ -174,8 +179,8 @@ export const SuperAdminEnquiries = () => {
 
       {/* Enquiry Details Modal */}
       {selectedEnquiry && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[82vh] overflow-hidden my-auto mt-4 sm:mt-6">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
               <div>
@@ -222,39 +227,43 @@ export const SuperAdminEnquiries = () => {
                 <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">
                   Customer Information
                 </h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Customer Name</p>
-                    <p className="font-medium text-[#202828] text-base">{selectedEnquiry.customerName}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Mobile Number</p>
-                    <a href={`tel:${selectedEnquiry.mobileNumber}`} className="font-medium text-[#164A4A] hover:underline flex items-center gap-1.5">
-                      <Phone size={14} /> {selectedEnquiry.mobileNumber}
-                    </a>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Email Address</p>
-                    <a href={`mailto:${selectedEnquiry.email}`} className="font-medium text-[#164A4A] hover:underline flex items-center gap-1.5 break-all">
-                      <Mail size={14} /> {selectedEnquiry.email}
-                    </a>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Preferred Contact Method</p>
-                    <span className="font-medium text-[#202828] px-2.5 py-0.5 bg-[#F1F5F3] rounded-md border border-[#D3DFDA] inline-block text-xs">
-                      {selectedEnquiry.preferredContactMethod || 'Phone Call'}
-                    </span>
-                  </div>
-                  {selectedEnquiry.city && (
-                    <div>
-                      <p className="text-[#455250] text-xs mb-1">City</p>
-                      <p className="font-medium text-[#202828]">{selectedEnquiry.city}</p>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Customer Name</p>
+                      <p className="font-bold text-[#202828] text-sm">{selectedEnquiry.customerName}</p>
                     </div>
-                  )}
-                  {selectedEnquiry.address && (
-                    <div>
-                      <p className="text-[#455250] text-xs mb-1">Address</p>
-                      <p className="font-medium text-[#202828]">{selectedEnquiry.address}</p>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Mobile Number</p>
+                      <a href={`tel:${selectedEnquiry.mobileNumber}`} className="font-semibold text-[#164A4A] hover:underline flex items-center gap-1.5 text-sm">
+                        <Phone size={13} /> {selectedEnquiry.mobileNumber}
+                      </a>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Email Address</p>
+                      <a href={`mailto:${selectedEnquiry.email}`} className="font-semibold text-[#164A4A] hover:underline flex items-center gap-1.5 break-all text-sm">
+                        <Mail size={13} /> {selectedEnquiry.email}
+                      </a>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Preferred Contact</p>
+                      <span className="font-semibold text-[#202828] text-sm">
+                        {selectedEnquiry.preferredContactMethod || 'Phone Call'}
+                      </span>
+                    </div>
+                  </div>
+                  {(selectedEnquiry.city || selectedEnquiry.address) && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                      <div className="p-3.5 bg-white">
+                        <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">City</p>
+                        <p className="font-medium text-[#202828] text-sm">{selectedEnquiry.city || 'N/A'}</p>
+                      </div>
+                      <div className="p-3.5 bg-white">
+                        <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Address</p>
+                        <p className="font-medium text-[#202828] text-sm">{selectedEnquiry.address || 'N/A'}</p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -265,20 +274,22 @@ export const SuperAdminEnquiries = () => {
                 <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">
                   Target Gym Details
                 </h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8 bg-[#F8FAF9] border border-[#D3DFDA] rounded-xl p-4 shadow-sm">
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Gym Name</p>
-                    <p className="font-bold text-[#202828] flex items-center gap-1.5">
-                      <Building size={15} className="text-[#164A4A]" />
-                      {selectedEnquiry.gymId?.name || 'Unknown Gym'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Branch / Location</p>
-                    <p className="font-medium text-[#202828] flex items-center gap-1.5">
-                      <MapPin size={15} className="text-[#164A4A]" />
-                      {selectedEnquiry.branchId?.name || selectedEnquiry.gymId?.location?.address || selectedEnquiry.city || 'Main Branch'}
-                    </p>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Gym Name</p>
+                      <p className="font-bold text-[#202828] text-sm flex items-center gap-1.5">
+                        <Building size={14} className="text-[#164A4A]" />
+                        {selectedEnquiry.gymId?.name || 'Unknown Gym'}
+                      </p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Branch / Location</p>
+                      <p className="font-medium text-[#202828] text-sm flex items-center gap-1.5">
+                        <MapPin size={14} className="text-[#164A4A]" />
+                        {selectedEnquiry.branchId?.name || selectedEnquiry.gymId?.location?.address || selectedEnquiry.city || 'Main Branch'}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -191,32 +191,41 @@ const GymStoreSalesHistory = () => {
             </div>
 
             <div className="p-6 overflow-y-auto space-y-4 text-xs">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F8FAFC] border border-[#E8EAED] rounded-xl p-3.5">
-                <div>
-                  <span className="text-[#455250] block font-medium">Date & Time</span>
-                  <span className="font-bold text-[#202828]">{new Date(selectedSale.date).toLocaleString()}</span>
+              <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="p-3 bg-white flex flex-col justify-center">
+                    <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Date & Time</span>
+                    <span className="font-semibold text-xs text-[#202828]">{new Date(selectedSale.date).toLocaleString()}</span>
+                  </div>
+                  <div className="p-3 bg-white flex flex-col justify-center">
+                    <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Payment Method</span>
+                    <span className="font-semibold text-xs text-[#202828]">{selectedSale.paymentMethod || 'Cash'}</span>
+                  </div>
+                  <div className="p-3 bg-white flex flex-col justify-center">
+                    <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Status</span>
+                    <span className="font-bold text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full w-fit">{selectedSale.status || 'Completed'}</span>
+                  </div>
+                  <div className="p-3 bg-white flex flex-col justify-center">
+                    <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Total Amount</span>
+                    <span className="font-black text-sm text-[#164A4A]">₹{selectedSale.total}</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[#455250] block font-medium">Payment Method</span>
-                  <span className="font-bold text-[#202828]">{selectedSale.paymentMethod || 'Cash'}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="p-3 bg-white flex flex-col justify-center">
+                    <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Customer</span>
+                    <span className="font-bold text-xs text-[#202828]">
+                      {selectedSale.customer ? `${selectedSale.customer.firstName} ${selectedSale.customer.lastName || ''}`.trim() : 'Walk-in Customer'}
+                    </span>
+                  </div>
+                  <div className="p-3 bg-white flex flex-col justify-center">
+                    <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Customer Email</span>
+                    <span className="font-semibold text-xs text-[#202828]">{selectedSale.customer?.email || '—'}</span>
+                  </div>
+                  <div className="p-3 bg-white flex flex-col justify-center">
+                    <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Customer Phone</span>
+                    <span className="font-semibold text-xs text-[#202828]">{selectedSale.customer?.mobile || '—'}</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[#455250] block font-medium">Status</span>
-                  <span className="font-bold text-[#164A4A]">{selectedSale.status || 'Completed'}</span>
-                </div>
-                <div>
-                  <span className="text-[#455250] block font-medium">Total Amount</span>
-                  <span className="font-black text-[#164A4A] text-sm">₹{selectedSale.total}</span>
-                </div>
-              </div>
-
-              <div className="bg-[#F8FAFC] border border-[#E8EAED] rounded-xl p-3.5 space-y-1">
-                <span className="font-bold text-[#164A4A] uppercase tracking-wider block text-[11px]">Customer Information</span>
-                <p className="font-bold text-[#202828] text-sm">
-                  {selectedSale.customer ? `${selectedSale.customer.firstName} ${selectedSale.customer.lastName || ''}`.trim() : 'Walk-in / In-Gym Customer'}
-                </p>
-                {selectedSale.customer?.email && <p className="text-[#455250]">Email: {selectedSale.customer.email}</p>}
-                {selectedSale.customer?.mobile && <p className="text-[#455250]">Phone: {selectedSale.customer.mobile}</p>}
               </div>
 
               <div>

@@ -77,6 +77,46 @@ const GymAdminTrainerPayments = () => {
     return trainerName.includes(q);
   });
 
+  // Helper to calculate exact net payable amount factoring in commission
+  const getFeeCalculation = (fee: any) => {
+    if (!fee) {
+      return { baseFee: 0, commType: 'Percentage', commValue: 0, commDeduction: 0, netAmount: 0, hasCommission: false };
+    }
+    const baseFee = Number(fee.feeAmount) || 0;
+    const trainer = (fee.trainerId && typeof fee.trainerId === 'object') ? fee.trainerId : {};
+    const commType = fee.commissionType || trainer.commissionType || 'Percentage';
+    const commValue = Number(
+      fee.commissionValue !== undefined && fee.commissionValue !== null && fee.commissionValue !== ''
+        ? fee.commissionValue
+        : (trainer.commissionValue !== undefined && trainer.commissionValue !== null && trainer.commissionValue !== ''
+          ? trainer.commissionValue
+          : 0)
+    ) || 0;
+
+    let commDeduction = 0;
+    if (commValue > 0) {
+      commDeduction = commType === 'Fixed Amount' ? commValue : (baseFee * commValue) / 100;
+    }
+
+    let netAmount = fee.netAmount;
+    if (netAmount === undefined || netAmount === null || isNaN(Number(netAmount))) {
+      netAmount = Math.max(0, Math.round(baseFee - commDeduction));
+    } else {
+      netAmount = Math.round(Number(netAmount));
+    }
+
+    const hasCommission = commValue > 0 || commDeduction > 0 || (baseFee > 0 && netAmount < baseFee);
+
+    return {
+      baseFee,
+      commType,
+      commValue,
+      commDeduction: Math.round(commDeduction),
+      netAmount,
+      hasCommission
+    };
+  };
+
   const handleMakePayment = (fee: any) => {
     setSelectedFee(fee);
     setShowQr(false);
@@ -95,11 +135,15 @@ const GymAdminTrainerPayments = () => {
     const defaultUpi = fee.upiDetails?.upiId || (trainerPhone ? `${trainerPhone}@paytm` : `${emailPrefix}@okaxis`);
     const upiName = fee.upiDetails?.upiName || trainerName;
 
+    // Calculate exact payable amount after commission deduction
+    const calc = getFeeCalculation(fee);
+    const payableAmount = calc.netAmount > 0 ? calc.netAmount.toString() : (fee.feeAmount ? fee.feeAmount.toString() : '0');
+
     setForm({
       ...defaultForm,
       trainerId: trainer._id,
       trainerFeeId: fee._id,
-      amount: fee.feeAmount ? fee.feeAmount.toString() : '0',
+      amount: payableAmount,
       paymentMethod: fee.paymentMethod || 'Bank Transfer',
       accountHolder,
       bankName,
@@ -111,7 +155,9 @@ const GymAdminTrainerPayments = () => {
       handedOverTo: trainerName,
       receiptNo: '',
       transactionId: '',
-      notes: `${fee.billingCycle || 'Monthly'} Trainer fee payment for ${trainerName}`,
+      notes: calc.hasCommission 
+        ? `${fee.billingCycle || 'Monthly'} Trainer fee payment for ${trainerName} (Base: ₹${calc.baseFee.toLocaleString('en-IN')} - Commission: ₹${calc.commDeduction.toLocaleString('en-IN')} = Net Due: ₹${calc.netAmount.toLocaleString('en-IN')})`
+        : `${fee.billingCycle || 'Monthly'} Trainer fee payment for ${trainerName}`,
     });
     setShowModal(true);
   };
@@ -133,6 +179,18 @@ const GymAdminTrainerPayments = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate Bank Transfer details if selected
+    if (form.paymentMethod === 'Bank Transfer') {
+      if (form.accountNumber && form.accountNumber.length < 9) {
+        alert('Bank account number must be at least 9 digits (9–18 digits).');
+        return;
+      }
+      if (form.ifscCode && form.ifscCode.length < 11) {
+        alert('IFSC code must be exactly 11 characters.');
+        return;
+      }
+    }
 
     // Enforce Transaction ID for digital payment methods
     if (['Bank Transfer', 'UPI'].includes(form.paymentMethod) && !form.transactionId?.trim()) {
@@ -208,7 +266,7 @@ const GymAdminTrainerPayments = () => {
               <tr className="bg-[#F2EFE8] border-b border-[#D3DFDA]">
                 <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider">Trainer</th>
                 <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider">Training Type</th>
-                <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider">Fee Amount</th>
+                <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider">Exact Payable Amount</th>
                 <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
@@ -222,43 +280,53 @@ const GymAdminTrainerPayments = () => {
                   <td colSpan={4} className="p-8 text-center text-gray-500">No active fees found. Configure fees first.</td>
                 </tr>
               ) : (
-                filteredFees.map(fee => (
-                  <tr key={fee._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        {fee.trainerId?.profilePhoto ? (
-                          <img src={fee.trainerId.profilePhoto} alt="Trainer" className="w-10 h-10 rounded-full object-cover border" />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center font-bold text-sm">
-                            {fee.trainerId?.name?.charAt(0) || 'T'}
+                filteredFees.map(fee => {
+                  const calc = getFeeCalculation(fee);
+                  return (
+                    <tr key={fee._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          {fee.trainerId?.profilePhoto ? (
+                            <img src={fee.trainerId.profilePhoto} alt="Trainer" className="w-10 h-10 rounded-full object-cover border" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center font-bold text-sm">
+                              {fee.trainerId?.name?.charAt(0) || 'T'}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-bold text-gray-900">{fee.trainerId?.name}</p>
+                            <p className="text-xs text-gray-500">{fee.trainerId?.email}</p>
                           </div>
-                        )}
-                        <div>
-                          <p className="font-bold text-gray-900">{fee.trainerId?.name}</p>
-                          <p className="text-xs text-gray-500">{fee.trainerId?.email}</p>
                         </div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-sm text-gray-700 font-medium">
-                      {fee.trainingType}
-                    </td>
-                    <td className="p-4">
-                      <span className="font-bold text-gray-900 flex items-center">
-                        <IndianRupee className="w-4 h-4 mr-0.5 text-gray-500" />
-                        {Number(fee.feeAmount).toLocaleString('en-IN')}
-                        <span className="text-gray-500 font-normal text-xs ml-1.5">/ {fee.billingCycle}</span>
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleMakePayment(fee)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl hover:bg-[#C6A77D] font-bold text-xs shadow-md shadow-[#164A4A]/15 transition-all"
-                      >
-                        <CreditCard className="w-4 h-4" /> Process Payment
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="p-4 text-sm text-gray-700 font-medium">
+                        {fee.trainingType}
+                      </td>
+                      <td className="p-4">
+                        <div>
+                          <span className="font-bold text-gray-900 flex items-center">
+                            <IndianRupee className="w-4 h-4 mr-0.5 text-gray-500" />
+                            {calc.netAmount.toLocaleString('en-IN')}
+                            <span className="text-gray-500 font-normal text-xs ml-1.5">/ {fee.billingCycle}</span>
+                          </span>
+                          {calc.hasCommission && (
+                            <span className="text-[11px] text-emerald-700 font-semibold block mt-0.5">
+                              Base: ₹{calc.baseFee.toLocaleString('en-IN')} (−{calc.commType === 'Fixed Amount' ? `₹${calc.commValue.toLocaleString('en-IN')}` : `${calc.commValue}%`})
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-4 text-right">
+                        <button
+                          onClick={() => handleMakePayment(fee)}
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl hover:bg-[#C6A77D] font-bold text-xs shadow-md shadow-[#164A4A]/15 transition-all"
+                        >
+                          <CreditCard className="w-4 h-4" /> Process Payment
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -304,21 +372,44 @@ const GymAdminTrainerPayments = () => {
                     </span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs text-[#687B78] font-medium block">Due Amount</span>
-                  <span className="text-xl font-extrabold text-[#164A4A]">
-                    ₹{Number(selectedFee?.feeAmount || form.amount).toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-xs text-gray-400 block font-medium">/ {selectedFee?.billingCycle || 'Monthly'}</span>
-                </div>
+                {(() => {
+                  const calc = getFeeCalculation(selectedFee);
+                  return (
+                    <div className="text-right">
+                      <span className="text-xs text-[#687B78] font-semibold block">Exact Due Amount</span>
+                      <span className="text-2xl font-black text-[#164A4A] tracking-tight">
+                        ₹{calc.netAmount.toLocaleString('en-IN')}
+                      </span>
+                      <span className="text-xs text-gray-500 block font-medium">/ {selectedFee?.billingCycle || 'Monthly'}</span>
+                      {calc.hasCommission && (
+                        <span className="inline-block mt-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md shadow-xs">
+                          Base: ₹{calc.baseFee.toLocaleString('en-IN')} (−{calc.commType === 'Fixed Amount' ? `₹${calc.commValue.toLocaleString('en-IN')}` : `${calc.commValue}%`})
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Amount and Payment Date */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#455250] uppercase tracking-wider mb-1.5">
-                    Amount to Pay *
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-[#455250] uppercase tracking-wider">
+                      Amount to Pay *
+                    </label>
+                    {selectedFee && (() => {
+                      const calc = getFeeCalculation(selectedFee);
+                      if (calc.hasCommission) {
+                        return (
+                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                            Exact Net Payable
+                          </span>
+                        );
+                      }
+                      return null;
+                    })()}
+                  </div>
                   <div className="relative">
                     <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
@@ -330,6 +421,26 @@ const GymAdminTrainerPayments = () => {
                       className="w-full pl-9 pr-3 py-2.5 border border-[#D3DFDA] rounded-xl text-base font-bold text-[#202828] outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/20"
                     />
                   </div>
+                  {selectedFee && (() => {
+                    const calc = getFeeCalculation(selectedFee);
+                    if (calc.hasCommission) {
+                      return (
+                        <div className="mt-1.5 px-2.5 py-1.5 bg-emerald-50/80 border border-emerald-200 rounded-lg text-xs text-emerald-900 flex items-center justify-between">
+                          <span>
+                            Base: <strong>₹{calc.baseFee.toLocaleString('en-IN')}</strong> − Comm: <strong>{calc.commType === 'Fixed Amount' ? `₹${calc.commValue.toLocaleString('en-IN')}` : `${calc.commValue}% (₹${calc.commDeduction.toLocaleString('en-IN')})`}</strong> = <strong>₹{calc.netAmount.toLocaleString('en-IN')}</strong>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setForm({ ...form, amount: calc.netAmount.toString() })}
+                            className="text-[11px] font-bold text-[#164A4A] hover:underline ml-2 whitespace-nowrap"
+                          >
+                            Reset
+                          </button>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
 
                 <div>
@@ -441,50 +552,76 @@ const GymAdminTrainerPayments = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Account Number *</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold text-gray-700">Account Number *</label>
+                        {form.accountNumber && (
+                          <span className={`text-[11px] font-semibold ${form.accountNumber.length >= 9 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                            {form.accountNumber.length}/18 digits {form.accountNumber.length >= 9 ? '✓' : '(min 9)'}
+                          </span>
+                        )}
+                      </div>
                       <div className="relative">
                         <input
                           type="text"
+                          maxLength={18}
+                          inputMode="numeric"
                           value={form.accountNumber}
-                          onChange={e => setForm({ ...form, accountNumber: e.target.value.replace(/\D/g, '') })}
-                          placeholder="e.g. 50100428765432"
-                          className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm font-mono outline-none focus:border-blue-500 pr-9"
+                          onChange={e => setForm({ ...form, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 18) })}
+                          placeholder="e.g. 50100428765432 (9–18 digits)"
+                          className={`w-full px-3 py-2 bg-white border rounded-lg text-sm font-mono outline-none pr-11 transition-all ${
+                            form.accountNumber && form.accountNumber.length < 9
+                              ? 'border-amber-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-200'
+                              : 'border-blue-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-200'
+                          }`}
                         />
                         {form.accountNumber && (
                           <button
                             type="button"
                             onClick={() => copyToClipboard(form.accountNumber, 'acc')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-600 rounded transition-colors"
                             title="Copy Account Number"
                           >
                             {copiedKey === 'acc' ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
                           </button>
                         )}
                       </div>
+                      {form.accountNumber && form.accountNumber.length < 9 && (
+                        <p className="text-[11px] text-amber-600 mt-1">Bank account number must be between 9 and 18 digits.</p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">IFSC Code *</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold text-gray-700">IFSC Code *</label>
+                        {form.ifscCode && (
+                          <span className={`text-[11px] font-semibold ${form.ifscCode.length === 11 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                            {form.ifscCode.length}/11 {form.ifscCode.length === 11 ? '✓' : ''}
+                          </span>
+                        )}
+                      </div>
                       <div className="relative">
                         <input
                           type="text"
                           maxLength={11}
                           value={form.ifscCode}
-                          onChange={e => setForm({ ...form, ifscCode: e.target.value.toUpperCase() })}
+                          onChange={e => setForm({ ...form, ifscCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) })}
                           placeholder="e.g. HDFC0001234"
-                          className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm font-mono uppercase outline-none focus:border-blue-500 pr-9"
+                          className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm font-mono uppercase outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200 pr-11 transition-all"
                         />
                         {form.ifscCode && (
                           <button
                             type="button"
                             onClick={() => copyToClipboard(form.ifscCode, 'ifsc')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-600 rounded transition-colors"
                             title="Copy IFSC Code"
                           >
                             {copiedKey === 'ifsc' ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
                           </button>
                         )}
                       </div>
+                      {form.ifscCode && form.ifscCode.length > 0 && form.ifscCode.length < 11 && (
+                        <p className="text-[11px] text-amber-600 mt-1">IFSC code must be exactly 11 characters.</p>
+                      )}
                     </div>
                   </div>
 

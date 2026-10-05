@@ -75,9 +75,10 @@ const GymAdminPendingTrainerPayments = () => {
 
   const openProcess = (item: any) => {
     setSelectedTrainer(item);
+    const payableAmount = item.netAmount ?? item.amount ?? item.feeAmount;
     setPayForm({ 
       ...defaultPayForm, 
-      amount: item.feeAmount,
+      amount: payableAmount ? payableAmount.toString() : '0',
       paymentMethod: item.paymentMethod || 'Bank Transfer',
       accountHolder: item.bankDetails?.accountHolder || '',
       bankName: item.bankDetails?.bankName || '',
@@ -256,8 +257,13 @@ const GymAdminPendingTrainerPayments = () => {
               {/* Summary */}
               <div className="bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl p-4 flex justify-between items-center">
                 <div>
-                  <p className="text-xs text-[#687B78]">Amount Due</p>
-                  <p className="text-2xl font-bold text-[#164A4A]">₹{Number(selectedTrainer.amount).toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-[#687B78] font-semibold">Exact Amount Due</p>
+                  <p className="text-2xl font-bold text-[#164A4A]">₹{Number(selectedTrainer.netAmount ?? selectedTrainer.amount).toLocaleString('en-IN')}</p>
+                  {selectedTrainer.feeAmount && (selectedTrainer.netAmount ?? selectedTrainer.amount) !== selectedTrainer.feeAmount && (
+                    <span className="text-[11px] text-emerald-700 font-semibold block mt-0.5">
+                      Base: ₹{Number(selectedTrainer.feeAmount).toLocaleString('en-IN')} (–Commission Deducted)
+                    </span>
+                  )}
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-[#687B78]">Billing Cycle</p>
@@ -298,11 +304,11 @@ const GymAdminPendingTrainerPayments = () => {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-[#455250] mb-1">Account Number</label>
-                    <input type="text" value={payForm.accountNumber} onChange={e => setPayForm({ ...payForm, accountNumber: e.target.value.replace(/\D/g, '') })} inputMode="numeric" maxLength={18} className="w-full border border-[#E8E5DA] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#164A4A]" />
+                    <input type="text" value={payForm.accountNumber} onChange={e => setPayForm({ ...payForm, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 18) })} inputMode="numeric" maxLength={18} placeholder="9-18 digits" className="w-full border border-[#E8E5DA] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#164A4A] font-mono" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-[#455250] mb-1">IFSC Code</label>
-                    <input type="text" value={payForm.ifscCode} onChange={e => setPayForm({ ...payForm, ifscCode: e.target.value.toUpperCase() })} maxLength={11} className="w-full border border-[#E8E5DA] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#164A4A] uppercase" />
+                    <input type="text" value={payForm.ifscCode} onChange={e => setPayForm({ ...payForm, ifscCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) })} maxLength={11} placeholder="11 chars (e.g. HDFC0001234)" className="w-full border border-[#E8E5DA] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#164A4A] uppercase font-mono" />
                   </div>
                 </div>
               )}

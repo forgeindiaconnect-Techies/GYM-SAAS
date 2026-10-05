@@ -16,7 +16,8 @@ import {
   requestWithdrawal,
   getWithdrawalRequests,
   getAllWithdrawalRequests,
-  updateWithdrawalStatus
+  updateWithdrawalStatus,
+  createManualTrainerWithdrawal
 } from '../controllers/trainerPayment.controller';
 
 const router = express.Router();
@@ -31,6 +32,7 @@ router.put('/fee/status', gymOwnerAuth, updateTrainerFeeStatus);
 router.get('/fees', gymOwnerAuth, getTrainerFees);
 router.get('/pending', gymOwnerAuth, getPendingPayments);
 router.get('/withdrawals', gymOwnerAuth, getWithdrawalRequests);
+router.post('/withdrawals/payout', gymOwnerAuth, createManualTrainerWithdrawal);
 router.put('/withdrawals/:id/status', gymOwnerAuth, updateWithdrawalStatus);
 router.post('/process', gymOwnerAuth, processPayment);
 router.get('/history', gymOwnerAuth, getPaymentHistoryGymOwner);

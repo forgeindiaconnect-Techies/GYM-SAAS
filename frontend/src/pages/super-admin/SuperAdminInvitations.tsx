@@ -369,10 +369,10 @@ const SuperAdminInvitations = () => {
 
       {/* ─── View Details Modal ─── */}
       {viewInvite && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-[#D3DFDA] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white border border-[#D3DFDA] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto max-h-[85vh] flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#D3DFDA] bg-[#F8F9F8]">
+            <div className="flex items-center justify-between p-6 border-b border-[#D3DFDA] bg-[#F8F9F8] shrink-0">
               <div className="flex items-center space-x-3">
                 <div className="w-11 h-11 bg-[#164A4A]/10 text-[#164A4A] rounded-xl flex items-center justify-center">
                   <Building2 size={22} />
@@ -406,51 +406,57 @@ const SuperAdminInvitations = () => {
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-5">
+            <div className="p-6 space-y-5 overflow-y-auto flex-1">
               {/* Gym & Recipient Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <User size={11} /> Recipient Name
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm">{viewInvite.owner || 'N/A'}</p>
+              <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <User size={12} /> Recipient Name
+                    </span>
+                    <span className="font-bold text-[#202828] text-sm">{viewInvite.owner || 'N/A'}</span>
+                  </div>
+
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Building2 size={12} /> Gym Type
+                    </span>
+                    <span className="font-bold text-[#202828] text-sm">{viewInvite.type || 'Standard Gym'}</span>
+                  </div>
                 </div>
 
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Building2 size={11} /> Gym Type
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm">{viewInvite.type || 'Standard Gym'}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Mail size={12} /> Email Address
+                    </span>
+                    <span className="font-semibold text-[#202828] text-sm break-all" title={viewInvite.email}>
+                      {viewInvite.email}
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Phone size={12} /> Phone Number
+                    </span>
+                    <span className="font-semibold text-[#202828] text-sm">{viewInvite.phone || 'N/A'}</span>
+                  </div>
                 </div>
 
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Mail size={11} /> Email Address
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm truncate" title={viewInvite.email}>
-                    {viewInvite.email}
-                  </p>
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Calendar size={12} /> Sent Date
+                    </span>
+                    <span className="font-semibold text-[#202828] text-sm">{formatDate(viewInvite.date)}</span>
+                  </div>
 
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Phone size={11} /> Phone Number
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm">{viewInvite.phone || 'N/A'}</p>
-                </div>
-
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Calendar size={11} /> Sent Date
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm">{formatDate(viewInvite.date)}</p>
-                </div>
-
-                <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
-                    <Clock size={11} /> Link Expiry
-                  </p>
-                  <p className="font-bold text-[#202828] text-sm">{viewInvite.expiry || '7 Days'}</p>
+                  <div className="p-3.5 bg-white flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <Clock size={12} /> Link Expiry
+                    </span>
+                    <span className="font-semibold text-[#202828] text-sm">{viewInvite.expiry || '7 Days'}</span>
+                  </div>
                 </div>
               </div>
 

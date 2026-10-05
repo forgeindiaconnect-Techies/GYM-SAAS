@@ -32,9 +32,9 @@ export const AddExistingMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#D3DFDA] overflow-hidden my-8 shrink-0">
-        <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#D3DFDA] overflow-hidden my-auto max-h-[85vh] flex flex-col">
+        <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8] shrink-0">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-[#164A4A]/10 text-[#164A4A] rounded-lg">
               <UserCheck size={24} />
@@ -49,7 +49,8 @@ export const AddExistingMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-8">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden min-h-0">
+          <div className="p-6 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
           
           {/* Personal Info */}
           <div>
@@ -161,9 +162,11 @@ export const AddExistingMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
             </div>
           </div>
 
-          <div className="flex justify-end space-x-3 pt-6 border-t border-[#D3DFDA]">
+          </div>
+
+          <div className="flex justify-end space-x-3 p-5 border-t border-[#D3DFDA] bg-[#F8F9F8] shrink-0">
             <button type="button" onClick={onClose} className="px-6 py-2.5 text-[#455250] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
-            <button type="submit" className="px-8 py-2.5 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors shadow-lg shadow-[#164A4A]/20 flex items-center gap-2">
+            <button type="submit" className="px-8 py-2.5 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#164A4A]/90 transition-colors shadow-lg shadow-[#164A4A]/20 flex items-center gap-2">
               <Save size={18} /> Import Existing Member
             </button>
           </div>

@@ -19,6 +19,7 @@ import StoreProduct from '../models/StoreProduct';
 import StoreOrder, { StoreOrderStatus, StoreOrderPaymentStatus } from '../models/StoreOrder';
 import StoreOfflineSale from '../models/StoreOfflineSale';
 import StoreInventoryTransaction, { StoreInventoryTransactionType } from '../models/StoreInventoryTransaction';
+import Subscription, { SubscriptionPlan, BillingCycle, SubscriptionPaymentStatus } from '../models/Subscription';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ const seedDB = async () => {
     await User.deleteMany({});
     await Gym.deleteMany({});
     await Branch.deleteMany({});
+    await Subscription.deleteMany({});
     await Trainer.deleteMany({});
     await TrainerFee.deleteMany({});
     await TrainerPayment.deleteMany({});
@@ -50,10 +52,24 @@ const seedDB = async () => {
     const pwdPassword123 = await bcrypt.hash('password123', salt);
     const pwdSelva143 = await bcrypt.hash('Selva@143', salt);
     const pwdNaveen143 = await bcrypt.hash('Naveen@143', salt);
+    const pwdAnanth143 = await bcrypt.hash('Ananth@143', salt);
+    const pwdRenu143 = await bcrypt.hash('Renu@143', salt);
 
     // ==========================================
     // 1. SYSTEM & SUPER ADMIN
     // ==========================================
+    await User.create({
+      firstName: 'Super',
+      lastName: 'Admin',
+      email: 'superadminaigym@gmail.com',
+      mobile: '9876543210',
+      passwordHash: pwdPassword123,
+      role: Role.SUPER_ADMIN,
+      approvalStatus: ApprovalStatus.APPROVED,
+      subscriptionStatus: SubscriptionStatus.ACTIVE,
+      isActive: true,
+    });
+
     await User.create({
       firstName: 'Super',
       lastName: 'Admin',
@@ -79,18 +95,39 @@ const seedDB = async () => {
     });
 
     // ==========================================
-    // 2. GYM OWNER (Selva Kumar)
+    // 2. GYM OWNER (Ananth Kumar & Selva Kumar)
     // ==========================================
     const gymOwner = await User.create({
+      firstName: 'Ananth',
+      lastName: 'Kumar',
+      email: 'ananth@gmail.com',
+      mobile: '9876543212',
+      passwordHash: pwdAnanth143,
+      role: Role.GYM_OWNER,
+      approvalStatus: ApprovalStatus.APPROVED,
+      subscriptionStatus: SubscriptionStatus.ACTIVE,
+      subscriptionPlan: 'PLATINUM',
+      subscriptionStartDate: new Date(),
+      subscriptionExpiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      subscriptionExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      paymentStatus: 'Approved',
+      isActive: true,
+    });
+
+    const gymOwnerSelva = await User.create({
       firstName: 'Selva',
       lastName: 'Kumar',
       email: 'selva@gmail.com',
-      mobile: '9876543212',
+      mobile: '9876543219',
       passwordHash: pwdSelva143,
       role: Role.GYM_OWNER,
       approvalStatus: ApprovalStatus.APPROVED,
       subscriptionStatus: SubscriptionStatus.ACTIVE,
       subscriptionPlan: 'PLATINUM',
+      subscriptionStartDate: new Date(),
+      subscriptionExpiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      subscriptionExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      paymentStatus: 'Approved',
       isActive: true,
     });
 
@@ -165,6 +202,32 @@ const seedDB = async () => {
 
     gymOwner.gymId = gym._id as any;
     await gymOwner.save();
+    gymOwnerSelva.gymId = gym._id as any;
+    await gymOwnerSelva.save();
+
+    await Subscription.create({
+      userId: gymOwner._id,
+      plan: SubscriptionPlan.PREMIUM,
+      billingCycle: BillingCycle.ANNUAL,
+      status: SubscriptionPaymentStatus.ACTIVE,
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      amount: 49999,
+      paymentMethod: 'UPI',
+      transactionId: 'TXN-SUB-ANANTH-001',
+    });
+
+    await Subscription.create({
+      userId: gymOwnerSelva._id,
+      plan: SubscriptionPlan.PREMIUM,
+      billingCycle: BillingCycle.ANNUAL,
+      status: SubscriptionPaymentStatus.ACTIVE,
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      amount: 49999,
+      paymentMethod: 'UPI',
+      transactionId: 'TXN-SUB-SELVA-001',
+    });
 
     // ==========================================
     // 4. BRANCHES
@@ -224,8 +287,100 @@ const seedDB = async () => {
     });
 
     // ==========================================
-    // 5. TRAINERS (Selvakumar + 2 more)
+    // 5. TRAINERS (Ananth Kumar, Selvakumar, Priya)
     // ==========================================
+    const trainerAnanth = await User.create({
+      firstName: 'Ananth',
+      lastName: 'Kumar',
+      email: 'ananthumar@gmail.com',
+      mobile: '9876543213',
+      passwordHash: pwdAnanth143,
+      role: Role.TRAINER,
+      approvalStatus: ApprovalStatus.APPROVED,
+      subscriptionStatus: SubscriptionStatus.ACTIVE,
+      gymId: gym._id,
+      branchId: branch1._id,
+      isActive: true,
+      trainerMode: 'both',
+      specialization: 'Elite Personal Trainer & Strength Coach',
+      experienceYears: 8,
+      qualification: 'ACE Certified Personal Trainer, CSCS',
+      bio: 'Dedicated fitness professional with over 8 years of experience in personal training, strength conditioning, and body recomposition.',
+    });
+
+    const trainerAnanthDoc = await Trainer.create({
+      gymId: gym._id,
+      branchId: branch1._id,
+      userId: trainerAnanth._id,
+      name: 'Ananth Kumar',
+      email: 'ananthumar@gmail.com',
+      phone: '9876543213',
+      specialization: 'Elite Personal Trainer & Strength Coach',
+      experience: 8,
+      trainingMode: 'both',
+      qualifications: 'ACE Certified Personal Trainer, CSCS',
+      certifications: 'CPR/AED, Precision Nutrition L1',
+      expertise: 'Hypertrophy, Fat Loss, Powerlifting, HIIT',
+      bio: 'Dedicated fitness professional with over 8 years of experience in personal training, strength conditioning, and body recomposition.',
+      availability: 'Mon - Sat (06:00 AM - 09:00 PM)',
+      availableDays: 'Monday, Tuesday, Wednesday, Thursday, Friday, Saturday',
+      availableStartTime: '06:00',
+      availableEndTime: '21:00',
+      availableSlot: 10,
+      fee: 3000,
+      paymentType: 'Per Month',
+      totalEarnings: 85000,
+      availableBalance: 35000,
+      withdrawnAmount: 50000,
+      status: 'Active',
+    });
+
+    const trainerAnanthK = await User.create({
+      firstName: 'Ananth',
+      lastName: 'Kumar',
+      email: 'ananthkumar@gmail.com',
+      mobile: '9876543217',
+      passwordHash: pwdAnanth143,
+      role: Role.TRAINER,
+      approvalStatus: ApprovalStatus.APPROVED,
+      subscriptionStatus: SubscriptionStatus.ACTIVE,
+      gymId: gym._id,
+      branchId: branch1._id,
+      isActive: true,
+      trainerMode: 'both',
+      specialization: 'Elite Personal Trainer & Strength Coach',
+      experienceYears: 8,
+      qualification: 'ACE Certified Personal Trainer, CSCS',
+      bio: 'Dedicated fitness professional with over 8 years of experience in personal training, strength conditioning, and body recomposition.',
+    });
+
+    await Trainer.create({
+      gymId: gym._id,
+      branchId: branch1._id,
+      userId: trainerAnanthK._id,
+      name: 'Ananth Kumar',
+      email: 'ananthkumar@gmail.com',
+      phone: '9876543217',
+      specialization: 'Elite Personal Trainer & Strength Coach',
+      experience: 8,
+      trainingMode: 'both',
+      qualifications: 'ACE Certified Personal Trainer, CSCS',
+      certifications: 'CPR/AED, Precision Nutrition L1',
+      expertise: 'Hypertrophy, Fat Loss, Powerlifting, HIIT',
+      bio: 'Dedicated fitness professional with over 8 years of experience in personal training, strength conditioning, and body recomposition.',
+      availability: 'Mon - Sat (06:00 AM - 09:00 PM)',
+      availableDays: 'Monday, Tuesday, Wednesday, Thursday, Friday, Saturday',
+      availableStartTime: '06:00',
+      availableEndTime: '21:00',
+      availableSlot: 10,
+      fee: 3000,
+      paymentType: 'Per Month',
+      totalEarnings: 85000,
+      availableBalance: 35000,
+      withdrawnAmount: 50000,
+      status: 'Active',
+    });
+
     const trainerSelva = await User.create({
       firstName: 'Selva',
       lastName: 'Kumar',
@@ -384,10 +539,12 @@ const seedDB = async () => {
     });
 
     // ==========================================
-    // 6. MEMBERS (Naveenkumar + 4 active members)
+    // 6. MEMBERS (Renu Gopal, Naveenkumar + active members)
     // ==========================================
     const membersData = [
-      { firstName: 'Naveen', lastName: 'Kumar', email: 'naveenkumar@gmail.com', pass: pwdNaveen143, plan: 'basic annual', price: 12000, mobile: '9876543214' },
+      { firstName: 'Renu', lastName: 'Gopal', email: 'renugopal@gmail.com', pass: pwdRenu143, plan: 'premium annual', price: 18000, mobile: '9876543214' },
+      { firstName: 'Renu', lastName: 'Gopal', email: 'renu@gmail.com', pass: pwdRenu143, plan: 'premium annual', price: 18000, mobile: '9876543215' },
+      { firstName: 'Naveen', lastName: 'Kumar', email: 'naveenkumar@gmail.com', pass: pwdNaveen143, plan: 'basic annual', price: 12000, mobile: '9876543216' },
       { firstName: 'Ananya', lastName: 'Iyer', email: 'ananya@gmail.com', pass: pwdPassword123, plan: 'premium', price: 4000, mobile: '9876543221' },
       { firstName: 'Karthik', lastName: 'Raja', email: 'karthik@gmail.com', pass: pwdPassword123, plan: 'premium annual', price: 18000, mobile: '9876543222' },
       { firstName: 'Sneha', lastName: 'Patel', email: 'sneha@gmail.com', pass: pwdPassword123, plan: 'basic', price: 1500, mobile: '9876543223' },

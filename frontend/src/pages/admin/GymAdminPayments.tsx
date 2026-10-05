@@ -254,88 +254,92 @@ const GymAdminPayments = () => {
           </div>
           
           {selectedTrx && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-              <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm">
+              <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto">
                 <button onClick={() => setSelectedTrx(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                   <XCircle size={24} />
                 </button>
                 <h2 className="text-2xl font-bold text-[#202828] mb-6 border-b pb-4">Transaction Details</h2>
                 
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase">Customer</p>
-                      <p className="font-bold text-[#202828]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase">Date</p>
-                      <p className="font-bold text-[#202828]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleDateString()}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase">Plan</p>
-                      <p className="font-bold text-[#202828]">{selectedTrx.planName}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase">Amount</p>
-                      <p className="font-bold text-[#164A4A]">₹{selectedTrx.amount}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase">Payment Method</p>
-                      <p className="font-bold text-[#202828]">{selectedTrx.paymentMethod}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase">Status</p>
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        selectedTrx.status === 'Approved' ? 'bg-[#D2B48C]/10 text-[#164A4A]' :
-                        selectedTrx.status === 'Rejected' ? 'bg-red-100 text-red-700' :
-                        'bg-yellow-100 text-yellow-700'
-                      }`}>
-                        {selectedTrx.status}
-                      </span>
-                    </div>
-                  </div>
-
-                  {selectedTrx.paymentMethod === 'Bank Transfer' ? (
-                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                      <p className="text-xs text-gray-500 font-semibold uppercase mb-3 border-b border-gray-200 pb-2">Customer Bank Details</p>
-                      <div className="grid grid-cols-2 gap-y-2">
-                        <p className="text-sm"><span className="text-gray-500">Bank Name:</span> <span className="font-semibold">{selectedTrx.customerBankDetails?.bankName || 'N/A'}</span></p>
-                        <p className="text-sm"><span className="text-gray-500">Account:</span> <span className="font-semibold">{selectedTrx.customerBankDetails?.accountNumber || 'N/A'}</span></p>
-                        <p className="text-sm"><span className="text-gray-500">IFSC:</span> <span className="font-semibold">{selectedTrx.customerBankDetails?.ifscCode || 'N/A'}</span></p>
+                  <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Customer</span>
+                        <span className="font-bold text-sm text-[#202828]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</span>
+                      </div>
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Payment Date</span>
+                        <span className="font-semibold text-sm text-[#202828]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleDateString()}</span>
                       </div>
                     </div>
-                  ) : (
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Transaction ID / Reference Number</p>
-                      <p className="font-mono bg-gray-50 p-2 rounded border border-gray-200 break-all">{selectedTrx.transactionId || 'Not Provided'}</p>
-                    </div>
-                  )}
 
-                  {selectedTrx.notes && (
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Additional Notes</p>
-                      <p className="bg-gray-50 p-3 rounded border border-gray-200 text-sm text-[#202828] italic">{selectedTrx.notes}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Membership Plan</span>
+                        <span className="font-bold text-sm text-[#202828]">{selectedTrx.planName}</span>
+                      </div>
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Amount</span>
+                        <span className="font-bold text-base text-[#164A4A]">₹{selectedTrx.amount}</span>
+                      </div>
                     </div>
-                  )}
 
-                  {selectedTrx.paymentMethod !== 'Bank Transfer' && (
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Payment Proof</p>
-                      {selectedTrx.paymentProofUrl ? (
-                        <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-blue-50 text-[#D2B48C] font-bold rounded-lg hover:bg-blue-100 transition-colors">
-                          <FileText size={18} className="mr-2"/> View Attached Proof Document
-                        </a>
-                      ) : (
-                        <p className="text-gray-400 italic bg-gray-50 p-3 rounded border border-gray-200">No proof document uploaded for this transaction.</p>
-                      )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Payment Method</span>
+                        <span className="font-semibold text-sm text-[#202828]">{selectedTrx.paymentMethod}</span>
+                      </div>
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Verification Status</span>
+                        <span className="inline-flex items-center">
+                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                            selectedTrx.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            selectedTrx.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                            'bg-yellow-50 text-yellow-700 border-yellow-200'
+                          }`}>
+                            {selectedTrx.status}
+                          </span>
+                        </span>
+                      </div>
                     </div>
-                  )}
+
+                    {selectedTrx.paymentMethod === 'Bank Transfer' ? (
+                      <div className="p-3.5 bg-white flex flex-col">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-2">Customer Bank Details</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                          <div><span className="text-gray-500">Bank:</span> <span className="font-bold text-[#202828]">{selectedTrx.customerBankDetails?.bankName || 'N/A'}</span></div>
+                          <div><span className="text-gray-500">Account:</span> <span className="font-bold text-[#202828]">{selectedTrx.customerBankDetails?.accountNumber || 'N/A'}</span></div>
+                          <div><span className="text-gray-500">IFSC:</span> <span className="font-bold text-[#202828]">{selectedTrx.customerBankDetails?.ifscCode || 'N/A'}</span></div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Transaction ID / Reference</span>
+                        <span className="font-mono text-sm font-semibold text-[#202828] break-all">{selectedTrx.transactionId || 'Not Provided'}</span>
+                      </div>
+                    )}
+
+                    {selectedTrx.notes && (
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Additional Notes</span>
+                        <span className="text-sm text-[#202828] italic">{selectedTrx.notes}</span>
+                      </div>
+                    )}
+
+                    {selectedTrx.paymentMethod !== 'Bank Transfer' && (
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-2">Payment Proof</span>
+                        {selectedTrx.paymentProofUrl ? (
+                          <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-blue-50 text-[#164A4A] font-bold rounded-lg hover:bg-blue-100 transition-colors w-fit text-xs border border-blue-200">
+                            <FileText size={16} className="mr-1.5"/> View Attached Proof Document
+                          </a>
+                        ) : (
+                          <span className="text-xs text-gray-400 italic">No proof document uploaded for this transaction.</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="mt-8 pt-6 border-t border-gray-100">

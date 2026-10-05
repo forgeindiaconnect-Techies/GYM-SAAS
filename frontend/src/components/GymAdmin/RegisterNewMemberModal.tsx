@@ -61,8 +61,8 @@ export const RegisterNewMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#D3DFDA] overflow-hidden flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#D3DFDA] overflow-hidden flex flex-col max-h-[85vh] my-auto">
         
         <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8] shrink-0">
           <div>

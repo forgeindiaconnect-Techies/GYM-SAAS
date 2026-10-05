@@ -8,13 +8,6 @@ import api from '../../utils/api';
 
 const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-const fmtDate = (d: string) => {
-  if (!d) return '';
-  const dt = new Date(d.split('T')[0]);
-  if (isNaN(dt.getTime())) return d;
-  return dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-};
-
 const fmtDateFull = (d: string) => {
   if (!d) return '';
   const dt = new Date(d.split('T')[0]);

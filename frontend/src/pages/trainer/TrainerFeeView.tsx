@@ -25,6 +25,18 @@ const TrainerFeeView = () => {
     return m[cycle] || '';
   };
 
+  const getNetFee = (f: any) => {
+    if (!f) return 0;
+    if (f.netAmount !== undefined && f.netAmount !== null) return Number(f.netAmount);
+    const base = Number(f.feeAmount) || 0;
+    const commVal = Number(f.commissionValue) || 0;
+    if (commVal > 0) {
+      const deduction = f.commissionType === 'Fixed Amount' ? commVal : (base * commVal) / 100;
+      return Math.max(0, Math.round(base - deduction));
+    }
+    return base;
+  };
+
   if (loading) return (
     <div className="flex items-center justify-center py-32">
       <div className="w-10 h-10 border-4 border-[#164A4A] border-t-transparent rounded-full animate-spin" />
@@ -65,11 +77,16 @@ const TrainerFeeView = () => {
           <div className="bg-white border border-[#E8E5DA] rounded-2xl shadow-sm overflow-hidden">
             {/* Top Banner */}
             <div className="bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] px-6 py-5">
-              <p className="text-green-100 text-sm font-medium mb-1">Current Fee</p>
+              <p className="text-green-100 text-sm font-medium mb-1">Net Payable Fee</p>
               <div className="flex items-end gap-2">
-                <span className="text-4xl font-bold text-white">₹{fee.feeAmount?.toLocaleString('en-IN')}</span>
+                <span className="text-4xl font-black text-white">₹{getNetFee(fee).toLocaleString('en-IN')}</span>
                 <span className="text-green-200 text-lg font-medium mb-1">{cycleSuffix(fee.billingCycle)}</span>
               </div>
+              {fee.commissionValue !== undefined && Number(fee.commissionValue) > 0 && (
+                <p className="text-xs text-green-100 mt-1.5 font-medium">
+                  Base Fee: ₹{Number(fee.feeAmount).toLocaleString('en-IN')} (−{fee.commissionType === 'Fixed Amount' ? `₹${fee.commissionValue}` : `${fee.commissionValue}%`} commission)
+                </p>
+              )}
               <span className={`inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold ${fee.status === 'Active' ? 'bg-white/20 text-white' : 'bg-red-500/30 text-red-100'}`}>
                 ● {fee.status}
               </span>
@@ -109,16 +126,7 @@ const TrainerFeeView = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                  <IndianRupee size={16} className="text-amber-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-[#A8ADA9] font-medium uppercase tracking-wide mb-0.5">Payment Method</p>
-                  <p className="font-semibold text-[#202828]">{fee.paymentMethod}</p>
-                </div>
               </div>
-            </div>
 
             {fee.notes && (
               <div className="px-6 pb-6">

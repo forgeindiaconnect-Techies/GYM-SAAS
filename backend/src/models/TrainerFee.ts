@@ -20,6 +20,9 @@ export interface ITrainerFee extends Document {
     upiId: string;
     upiName: string;
   };
+  commissionType?: 'Percentage' | 'Fixed Amount';
+  commissionValue?: number;
+  netAmount?: number;
   status: 'Active' | 'Inactive' | 'Pending' | 'Rejected';
   notes?: string;
   createdBy: mongoose.Types.ObjectId;
@@ -37,6 +40,9 @@ const trainerFeeSchema = new Schema<ITrainerFee>({
   effectiveFrom: { type: Date, required: true },
   effectiveUntil: { type: Date },
   paymentMethod: { type: String, enum: ['Bank Transfer', 'UPI', 'Manual Payment', 'Cash', 'Other'], required: true },
+  commissionType: { type: String, enum: ['Percentage', 'Fixed Amount'], default: 'Percentage' },
+  commissionValue: { type: Number, default: 0, min: 0 },
+  netAmount: { type: Number },
   bankDetails: {
     accountHolder: { type: String },
     bankName: { type: String },

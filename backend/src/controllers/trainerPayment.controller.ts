@@ -22,10 +22,39 @@ export const setTrainerFee = async (req: AuthRequest, res: Response) => {
     const gymId = (await resolveGymId(req)) || req.user?.gymId;
     const userId = (req.user as any)?.id || (req.user as any)?._id;
     const branchId = (req.user as any)?.branchId;
-    const { trainerId, trainingType, feeAmount, billingCycle, effectiveFrom, paymentMethod, status, notes, accountHolder, bankName, accountNumber, ifscCode, upiId, upiName } = req.body;
+    const { 
+      trainerId, 
+      trainingType, 
+      feeAmount, 
+      billingCycle, 
+      effectiveFrom, 
+      paymentMethod, 
+      status, 
+      notes, 
+      accountHolder, 
+      bankName, 
+      accountNumber, 
+      ifscCode, 
+      upiId, 
+      upiName,
+      commissionType,
+      commissionValue
+    } = req.body;
 
     if (!trainerId || !trainingType || !feeAmount || !billingCycle || !effectiveFrom || !paymentMethod) {
       return res.status(400).json({ success: false, message: 'All required fields must be provided' });
+    }
+
+    const parsedCommissionValue = commissionValue !== undefined && commissionValue !== null && commissionValue !== '' 
+      ? Number(commissionValue) 
+      : 0;
+
+    if (isNaN(parsedCommissionValue) || parsedCommissionValue < 0) {
+      return res.status(400).json({ success: false, message: 'Commission value cannot be negative' });
+    }
+
+    if (commissionType === 'Percentage' && parsedCommissionValue > 100) {
+      return res.status(400).json({ success: false, message: 'Commission percentage cannot exceed 100%' });
     }
 
     // Verify trainer belongs to the gym
@@ -47,6 +76,12 @@ export const setTrainerFee = async (req: AuthRequest, res: Response) => {
       );
     }
 
+    const feeAmountNum = Number(feeAmount) || 0;
+    const commDeduction = commissionType === 'Fixed Amount' 
+      ? parsedCommissionValue 
+      : (feeAmountNum * parsedCommissionValue) / 100;
+    const netAmount = Math.max(0, feeAmountNum - commDeduction);
+
     const newFee = new TrainerFee({
       gymId,
       branchId: branchId || undefined,
@@ -56,6 +91,9 @@ export const setTrainerFee = async (req: AuthRequest, res: Response) => {
       billingCycle,
       effectiveFrom,
       paymentMethod,
+      commissionType: commissionType || 'Percentage',
+      commissionValue: parsedCommissionValue,
+      netAmount,
       bankDetails: paymentMethod === 'Bank Transfer' ? { accountHolder, bankName, accountNumber, ifscCode } : undefined,
       upiDetails: paymentMethod === 'UPI' ? { upiId, upiName } : undefined,
       status: status || 'Active',
@@ -68,6 +106,8 @@ export const setTrainerFee = async (req: AuthRequest, res: Response) => {
     // Also update fee on Trainer document for complete synchronization
     trainer.fee = Number(feeAmount);
     trainer.paymentType = billingCycle === 'Weekly' ? 'Per Week' : billingCycle === 'Per Session' ? 'Per Session' : 'Per Month';
+    trainer.commissionType = commissionType || 'Percentage';
+    trainer.commissionValue = parsedCommissionValue;
     await trainer.save();
 
     // Create Notification for Trainer
@@ -160,17 +200,42 @@ export const getTrainerFees = async (req: AuthRequest, res: Response) => {
     const fees = await TrainerFee.find(feesQuery)
       .populate({
         path: 'trainerId',
-        select: 'name email phone profilePhoto specialization experience trainingMode fee paymentType status createdAt'
+        select: 'name email phone profilePhoto specialization experience trainingMode fee paymentType status commissionType commissionValue createdAt'
       })
       .sort({ createdAt: -1 });
+
+    const sanitizedFees = fees.map(f => {
+      const feeObj: any = f.toObject ? f.toObject() : { ...f };
+      const trainer = feeObj.trainerId || {};
+      const commType = feeObj.commissionType || trainer.commissionType || 'Percentage';
+      const commVal = Number(
+        feeObj.commissionValue !== undefined && feeObj.commissionValue !== null
+          ? feeObj.commissionValue
+          : (trainer.commissionValue !== undefined && trainer.commissionValue !== null ? trainer.commissionValue : 0)
+      ) || 0;
+      const baseFee = Number(feeObj.feeAmount) || 0;
+
+      let netAmount = feeObj.netAmount;
+      if (netAmount === undefined || netAmount === null || isNaN(netAmount)) {
+        const deduction = commType === 'Fixed Amount' ? commVal : (baseFee * commVal) / 100;
+        netAmount = Math.max(0, Math.round(baseFee - deduction));
+      }
+
+      return {
+        ...feeObj,
+        commissionType: commType,
+        commissionValue: commVal,
+        netAmount
+      };
+    });
 
     // Also get all trainers in gym with full details
     const trainersQuery: any = {};
     if (gymId) trainersQuery.gymId = gymId;
     const trainers = await Trainer.find(trainersQuery)
-      .select('name email phone profilePhoto specialization experience trainingMode fee paymentType status createdAt');
+      .select('name email phone profilePhoto specialization experience trainingMode fee paymentType status commissionType commissionValue createdAt');
 
-    res.status(200).json({ success: true, fees, trainers });
+    res.status(200).json({ success: true, fees: sanitizedFees, trainers });
   } catch (error) {
     console.error('Error in getTrainerFees:', error);
     res.status(500).json({ success: false, message: 'Server error' });
@@ -187,19 +252,37 @@ export const getPendingPayments = async (req: AuthRequest, res: Response) => {
     const pendingQuery: any = { status: { $in: ['Active', 'Pending', 'Rejected'] } };
     if (gymId) pendingQuery.gymId = gymId;
     const activeFees = await TrainerFee.find(pendingQuery)
-      .populate('trainerId', 'name email profilePhoto');
+      .populate('trainerId', 'name email profilePhoto commissionType commissionValue');
 
     const pending = activeFees.map(fee => {
       const nextDueDate = new Date();
       nextDueDate.setDate(nextDueDate.getDate() + 7);
+
+      const feeAmountNum = Number(fee.feeAmount) || 0;
+      const trainer = (fee.trainerId as any) || {};
+      const commType = fee.commissionType || trainer.commissionType || 'Percentage';
+      const commVal = Number(
+        fee.commissionValue !== undefined && fee.commissionValue !== null
+          ? fee.commissionValue
+          : (trainer.commissionValue !== undefined && trainer.commissionValue !== null ? trainer.commissionValue : 0)
+      ) || 0;
+
+      let netAmount = fee.netAmount;
+      if (netAmount === undefined || netAmount === null || isNaN(netAmount)) {
+        const commDeduction = commType === 'Fixed Amount' ? commVal : (feeAmountNum * commVal) / 100;
+        netAmount = Math.max(0, Math.round(feeAmountNum - commDeduction));
+      }
       
       return {
         _id: fee._id,
         trainer: fee.trainerId,
         feeAmount: fee.feeAmount,
+        commissionType: commType,
+        commissionValue: commVal,
+        netAmount: netAmount,
         billingCycle: fee.billingCycle,
         dueDate: nextDueDate,
-        amount: fee.feeAmount,
+        amount: netAmount, // exact net payable amount after commission
         status: fee.status,
         paymentMethod: fee.paymentMethod,
         bankDetails: fee.bankDetails,
@@ -284,7 +367,7 @@ export const getPaymentHistoryGymOwner = async (req: AuthRequest, res: Response)
     if (gymId) query.gymId = gymId;
     const payments = await TrainerPayment.find(query)
       .populate('trainerId', 'name email profilePhoto')
-      .populate('trainerFeeId', 'trainingType feeAmount billingCycle')
+      .populate('trainerFeeId', 'trainingType feeAmount billingCycle commissionType commissionValue netAmount')
       .sort({ paymentDate: -1, createdAt: -1 });
 
     res.status(200).json({ success: true, payments });
@@ -321,8 +404,32 @@ export const getMyTrainerFee = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ success: false, message: 'Trainer profile not found' });
     }
 
-    const fees = await TrainerFee.find({ trainerId: trainer._id })
+    const rawFees = await TrainerFee.find({ trainerId: trainer._id })
       .sort({ effectiveFrom: -1, createdAt: -1 });
+
+    const fees = rawFees.map(f => {
+      const feeObj: any = f.toObject ? f.toObject() : { ...f };
+      const commType = feeObj.commissionType || trainer.commissionType || 'Percentage';
+      const commVal = Number(
+        feeObj.commissionValue !== undefined && feeObj.commissionValue !== null
+          ? feeObj.commissionValue
+          : (trainer.commissionValue !== undefined && trainer.commissionValue !== null ? trainer.commissionValue : 0)
+      ) || 0;
+      const baseFee = Number(feeObj.feeAmount) || 0;
+
+      let netAmount = feeObj.netAmount;
+      if (netAmount === undefined || netAmount === null || isNaN(netAmount)) {
+        const deduction = commType === 'Fixed Amount' ? commVal : (baseFee * commVal) / 100;
+        netAmount = Math.max(0, Math.round(baseFee - deduction));
+      }
+
+      return {
+        ...feeObj,
+        commissionType: commType,
+        commissionValue: commVal,
+        netAmount
+      };
+    });
 
     const fee = fees.find(f => f.status === 'Active') || fees[0] || null;
 
@@ -349,11 +456,29 @@ export const getMyPendingPayments = async (req: AuthRequest, res: Response) => {
       const nextDueDate = new Date();
       nextDueDate.setDate(nextDueDate.getDate() + 7);
       
+      const feeAmountNum = Number(fee.feeAmount) || 0;
+      const commType = fee.commissionType || trainer.commissionType || 'Percentage';
+      const commVal = Number(
+        fee.commissionValue !== undefined && fee.commissionValue !== null
+          ? fee.commissionValue
+          : (trainer.commissionValue !== undefined && trainer.commissionValue !== null ? trainer.commissionValue : 0)
+      ) || 0;
+
+      let netAmount = fee.netAmount;
+      if (netAmount === undefined || netAmount === null || isNaN(netAmount)) {
+        const deduction = commType === 'Fixed Amount' ? commVal : (feeAmountNum * commVal) / 100;
+        netAmount = Math.max(0, Math.round(feeAmountNum - deduction));
+      }
+
       return {
         _id: fee._id,
         gymId: fee.gymId,
         branchId: fee.branchId,
-        amount: fee.feeAmount,
+        amount: netAmount,
+        feeAmount: fee.feeAmount,
+        commissionType: commType,
+        commissionValue: commVal,
+        netAmount: netAmount,
         billingCycle: fee.billingCycle,
         paymentDate: nextDueDate, // Use next due date as payment date for display
         paymentMethod: fee.paymentMethod,
@@ -394,10 +519,34 @@ export const getMyEarnings = async (req: AuthRequest, res: Response) => {
     const availableBalance = totalEarnings - totalWithdrawn - pendingWithdrawalAmount;
 
     const currentFee = await TrainerFee.findOne({ trainerId: trainer._id, status: 'Active' });
+    let sanitizedCurrentFee: any = null;
+    if (currentFee) {
+      const feeObj: any = currentFee.toObject ? currentFee.toObject() : { ...currentFee };
+      const commType = feeObj.commissionType || trainer.commissionType || 'Percentage';
+      const commVal = Number(
+        feeObj.commissionValue !== undefined && feeObj.commissionValue !== null
+          ? feeObj.commissionValue
+          : (trainer.commissionValue !== undefined && trainer.commissionValue !== null ? trainer.commissionValue : 0)
+      ) || 0;
+      const baseFee = Number(feeObj.feeAmount) || 0;
+
+      let netAmount = feeObj.netAmount;
+      if (netAmount === undefined || netAmount === null || isNaN(netAmount)) {
+        const deduction = commType === 'Fixed Amount' ? commVal : (baseFee * commVal) / 100;
+        netAmount = Math.max(0, Math.round(baseFee - deduction));
+      }
+
+      sanitizedCurrentFee = {
+        ...feeObj,
+        commissionType: commType,
+        commissionValue: commVal,
+        netAmount
+      };
+    }
 
     res.status(200).json({ 
       success: true, 
-      currentFee,
+      currentFee: sanitizedCurrentFee,
       trainer: {
         totalEarnings, 
         availableBalance,
@@ -422,7 +571,7 @@ export const getMyPaymentHistory = async (req: AuthRequest, res: Response) => {
     }
 
     const payments = await TrainerPayment.find({ trainerId: trainer._id })
-      .populate('trainerFeeId', 'trainingType feeAmount billingCycle')
+      .populate('trainerFeeId', 'trainingType feeAmount billingCycle commissionType commissionValue netAmount')
       .populate('gymId', 'name')
       .sort({ paymentDate: -1, createdAt: -1 });
     
@@ -514,11 +663,14 @@ export const requestWithdrawal = async (req: AuthRequest, res: Response) => {
 
 export const getWithdrawalRequests = async (req: AuthRequest, res: Response) => {
   try {
-    const { gymId } = req.user!;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
     
-    const requests = await TrainerWithdrawal.find({ gymId })
-      .populate('trainerId', 'name email profilePhoto')
-      .sort({ requestedAt: -1 });
+    const query: any = {};
+    if (gymId) query.gymId = gymId;
+
+    const requests = await TrainerWithdrawal.find(query)
+      .populate('trainerId', 'name email profilePhoto phone specialization availableBalance totalEarnings')
+      .sort({ requestedAt: -1, createdAt: -1 });
 
     res.status(200).json({ success: true, requests });
   } catch (error) {
@@ -527,10 +679,66 @@ export const getWithdrawalRequests = async (req: AuthRequest, res: Response) => 
   }
 };
 
+export const createManualTrainerWithdrawal = async (req: AuthRequest, res: Response) => {
+  try {
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const { trainerId, amount, withdrawalMethod, transactionId } = req.body;
+
+    if (!trainerId || !amount || Number(amount) <= 0) {
+      return res.status(400).json({ success: false, message: 'Valid trainer and amount are required' });
+    }
+
+    const trainer = await Trainer.findById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ success: false, message: 'Trainer not found' });
+    }
+
+    const numAmount = Number(amount);
+    if (trainer.availableBalance < numAmount) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Amount exceeds trainer's available balance of ₹${trainer.availableBalance.toLocaleString('en-IN')}` 
+      });
+    }
+
+    const withdrawal = new TrainerWithdrawal({
+      gymId: gymId || trainer.gymId,
+      trainerId: trainer._id,
+      amount: numAmount,
+      withdrawalMethod: withdrawalMethod || 'Bank Transfer',
+      status: 'Completed',
+      transactionId: transactionId || undefined,
+      requestedAt: new Date(),
+      processedAt: new Date()
+    });
+
+    await withdrawal.save();
+
+    trainer.availableBalance -= numAmount;
+    trainer.withdrawnAmount += numAmount;
+    await trainer.save();
+
+    await Notification.create({
+      recipientId: trainer.userId,
+      recipientRole: 'TRAINER',
+      gymId: trainer.gymId,
+      title: 'Payout Disbursed',
+      message: `A payout of ₹${numAmount.toLocaleString('en-IN')} has been disbursed by your Gym Owner.`,
+      type: 'success',
+      relatedRecordId: withdrawal._id
+    });
+
+    res.status(201).json({ success: true, message: 'Trainer payout recorded successfully', withdrawal });
+  } catch (error: any) {
+    console.error('Error in createManualTrainerWithdrawal:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
+  }
+};
+
 export const getAllWithdrawalRequests = async (req: AuthRequest, res: Response) => {
   try {
     const requests = await TrainerWithdrawal.find()
-      .populate('trainerId', 'name email profilePhoto')
+      .populate('trainerId', 'name email profilePhoto phone specialization availableBalance totalEarnings')
       .populate('gymId', 'name')
       .sort({ requestedAt: -1 });
 
@@ -543,12 +751,13 @@ export const getAllWithdrawalRequests = async (req: AuthRequest, res: Response) 
 
 export const updateWithdrawalStatus = async (req: AuthRequest, res: Response) => {
   try {
-    const { gymId, role } = req.user!;
+    const { role } = req.user!;
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
     const { id } = req.params;
     const { status, transactionId, rejectionReason, notes } = req.body;
 
     let query: any = { _id: id };
-    if (role !== 'SUPER_ADMIN') {
+    if (role !== 'SUPER_ADMIN' && gymId) {
       query.gymId = gymId;
     }
 

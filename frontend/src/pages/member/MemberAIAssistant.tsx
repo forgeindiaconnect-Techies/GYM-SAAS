@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, User, Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { Bot, Send, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 

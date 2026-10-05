@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Loader2, AlertCircle, Phone, Mail, Building2, Eye, Edit2, X, Check, Users, Clock, CheckCircle, XCircle, ShieldAlert, Trash2, Download, FileText, Table as TableIcon, Star, Plus } from 'lucide-react';
 import api from '../../utils/api';
 import { exportToPDF, exportToExcel, exportToWord } from '../../utils/export';
@@ -692,8 +692,8 @@ const SuperAdminGymOwners = () => {
 
       {/* View Details Modal */}
       {viewOwner && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[82vh] overflow-hidden my-auto mt-4 sm:mt-6">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-bold text-[#202828]">Gym Owner Details</h2>
@@ -725,97 +725,109 @@ const SuperAdminGymOwners = () => {
               </div>
             </div>
             
-            <div className="p-6 overflow-y-auto flex-1 space-y-8 text-sm">
+            <div className="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
               {/* Owner Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Owner Information</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-4 gap-x-6">
-                  <div>
-                    <p className="text-[#455250] mb-1">First Name</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.firstName}</p>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Owner Information</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">First Name</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.firstName || '—'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Last Name</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.lastName || '—'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Email</span>
+                      <span className="font-semibold text-sm text-[#202828] break-all">{viewOwner.email || '—'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Mobile</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.mobile || '—'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Last Name</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.lastName}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Email</p>
-                    <p className="font-medium text-[#202828] break-all">{viewOwner.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Mobile</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.mobile}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Status</p>
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(viewOwner.approvalStatus)}`}>
-                      {viewOwner.approvalStatus}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Joined Date</p>
-                    <p className="font-medium text-[#202828]">{formatDate(viewOwner.createdAt)}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Platform Subscription Plan</p>
-                    <p className="font-medium text-[#202828]">
-                      {viewOwner.subscriptionPlan && SAAS_PLANS[viewOwner.subscriptionPlan] 
-                        ? SAAS_PLANS[viewOwner.subscriptionPlan].name 
-                        : 'N/A'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Plan Expiry Date</p>
-                    <p className="font-medium text-[#202828]">{formatDate(viewOwner.subscriptionExpiry)}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Account Status</span>
+                      <span className="inline-flex items-center">
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStatusColor(viewOwner.approvalStatus)}`}>
+                          {viewOwner.approvalStatus}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Joined Date</span>
+                      <span className="font-semibold text-sm text-[#202828]">{formatDate(viewOwner.createdAt)}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">SaaS Plan</span>
+                      <span className="font-bold text-sm text-[#164A4A]">
+                        {viewOwner.subscriptionPlan && SAAS_PLANS[viewOwner.subscriptionPlan] 
+                          ? SAAS_PLANS[viewOwner.subscriptionPlan].name 
+                          : 'Standard Plan'}
+                      </span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Plan Expiry Date</span>
+                      <span className="font-semibold text-sm text-[#202828]">{formatDate(viewOwner.subscriptionExpiry)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Gym Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Gym Information</h3>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Gym Information</h3>
                 {viewOwner.gymId?.logo && (
                   <div className="mb-4">
                     <img src={viewOwner.gymId.logo} alt={viewOwner.gymId.name} className="w-full max-h-48 object-cover rounded-xl border border-[#D3DFDA]" />
                   </div>
                 )}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-4 gap-x-6">
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Name</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.name || 'Not provided'}</p>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Name</span>
+                      <span className="font-bold text-sm text-[#202828]">{viewOwner.gymId?.name || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Type</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.gymType || 'Standard'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Status</span>
+                      <span className="inline-flex items-center">
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                          viewOwner.gymId?.status === 'ACTIVE' ? 'bg-green-500/10 text-green-700 border-green-500/30' :
+                          viewOwner.gymId?.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-700 border-yellow-500/30' :
+                          viewOwner.gymId?.status === 'SUSPENDED' ? 'bg-orange-500/10 text-orange-700 border-orange-500/30' :
+                          'bg-red-500/10 text-red-700 border-red-500/30'
+                        }`}>{viewOwner.gymId?.status || 'PENDING'}</span>
+                      </span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Rating</span>
+                      <span className="font-semibold text-sm text-[#202828]">⭐ {viewOwner.gymId?.rating || 'N/A'} {viewOwner.gymId?.reviewCount ? `(${viewOwner.gymId.reviewCount})` : ''}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Type</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.gymType || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Status</p>
-                    <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold border ${
-                      viewOwner.gymId?.status === 'ACTIVE' ? 'bg-green-500/10 text-green-700 border-green-500/30' :
-                      viewOwner.gymId?.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-700 border-yellow-500/30' :
-                      viewOwner.gymId?.status === 'SUSPENDED' ? 'bg-orange-500/10 text-orange-700 border-orange-500/30' :
-                      'bg-red-500/10 text-red-700 border-red-500/30'
-                    }`}>{viewOwner.gymId?.status || 'PENDING'}</span>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Rating</p>
-                    <p className="font-medium text-[#202828]">⭐ {viewOwner.gymId?.rating || 'N/A'} {viewOwner.gymId?.reviewCount ? `(${viewOwner.gymId.reviewCount} reviews)` : ''}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Email</p>
-                    <p className="font-medium text-[#202828] break-all">{viewOwner.gymId?.email || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Phone</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.phone || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Operating Hours</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.operatingHours || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Training Mode</p>
-                    <p className="font-medium text-[#202828] capitalize">{viewOwner.gymId?.trainingMode || 'Not provided'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Email</span>
+                      <span className="font-semibold text-sm text-[#202828] break-all">{viewOwner.gymId?.email || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Phone</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.phone || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Operating Hours</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.operatingHours || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Training Mode</span>
+                      <span className="font-semibold text-sm text-[#202828] capitalize">{viewOwner.gymId?.trainingMode || 'All Modes'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -823,10 +835,10 @@ const SuperAdminGymOwners = () => {
               {/* Services Offered */}
               {viewOwner.gymId?.services && viewOwner.gymId.services.length > 0 && (
                 <div>
-                  <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2">Services Offered</h3>
-                  <div className="flex flex-wrap gap-2">
+                  <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Services Offered</h3>
+                  <div className="flex flex-wrap gap-2 p-3.5 bg-white border border-[#D3DFDA] rounded-xl shadow-sm">
                     {viewOwner.gymId.services.map((service: string, i: number) => (
-                      <span key={i} className="bg-[#164A4A]/10 text-[#164A4A] border border-[#164A4A]/20 text-xs px-3 py-1.5 rounded-lg font-medium">
+                      <span key={i} className="bg-[#164A4A]/10 text-[#164A4A] border border-[#164A4A]/20 text-xs px-3 py-1 rounded-lg font-bold">
                         {service}
                       </span>
                     ))}
@@ -836,31 +848,39 @@ const SuperAdminGymOwners = () => {
 
               {/* Location & Operations */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Location & Operations</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-4 gap-x-6">
-                  <div className="col-span-2">
-                    <p className="text-[#455250] mb-1">Address</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.location?.address || 'Not provided'}</p>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Location & Operations</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center sm:col-span-2">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Address</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.address || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">City</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.city || viewOwner.city || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">State</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.state || 'Not provided'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">City</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.location?.city || viewOwner.city || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">State</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.location?.state || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">PIN Code</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Approx. Members Capacity</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.memberCapacity ?? 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Number of Trainers</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.trainerCapacity ?? 'Not provided'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">PIN Code</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Member Capacity</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.memberCapacity ?? 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Trainer Capacity</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.trainerCapacity ?? 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Verification</span>
+                      <span className="font-bold text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block w-fit">Verified</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -972,8 +992,8 @@ const SuperAdminGymOwners = () => {
 
       {/* Edit Owner Modal */}
       {editOwner && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[82vh] overflow-hidden my-auto mt-4 sm:mt-6">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
               <div>
                 <h2 className="text-xl font-bold text-[#202828]">Edit Gym Owner & Gym Details</h2>
@@ -1501,8 +1521,8 @@ const SuperAdminGymOwners = () => {
 
       {/* View Platform Subscription Modal */}
       {viewSubscription && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pt-16 sm:pt-20 pb-8 overflow-y-auto animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] my-auto mt-4 sm:mt-6">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] my-auto">
             <div className="px-6 py-4 border-b border-[#D3DFDA] flex justify-between items-center bg-gradient-to-r from-[#F1F5F3] to-[#FFFFFF]">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">

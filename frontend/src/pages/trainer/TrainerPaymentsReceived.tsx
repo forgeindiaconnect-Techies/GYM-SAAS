@@ -235,10 +235,10 @@ const TrainerPaymentsReceived = () => {
         const { date, time } = formatDateTime(selectedPayment.paymentDate || selectedPayment.createdAt, selectedPayment.createdAt);
         const methodColor = METHOD_COLORS[selectedPayment.paymentMethod] || 'bg-gray-50 text-gray-600 border-gray-200';
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-[#D3DFDA] overflow-hidden">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-[#D3DFDA] overflow-hidden my-auto max-h-[90vh] flex flex-col">
               {/* Modal Header */}
-              <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#164A4A] to-[#1a5c5c]">
+              <div className="flex items-center justify-between px-6 py-3.5 bg-gradient-to-r from-[#164A4A] to-[#1a5c5c] shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
                     <CreditCard size={18} className="text-white" />
@@ -257,7 +257,7 @@ const TrainerPaymentsReceived = () => {
               </div>
 
               {/* Status Banner */}
-              <div className={`px-6 py-3 flex items-center gap-2 text-sm font-semibold border-b ${
+              <div className={`px-6 py-2.5 flex items-center gap-2 text-sm font-semibold border-b shrink-0 ${
                 selectedPayment.paymentStatus === 'Paid'   ? 'bg-green-50 text-green-700 border-green-200' :
                 selectedPayment.paymentStatus === 'Failed' ? 'bg-red-50 text-red-700 border-red-200' :
                 'bg-amber-50 text-amber-700 border-amber-200'
@@ -269,71 +269,82 @@ const TrainerPaymentsReceived = () => {
               </div>
 
               {/* Details Body */}
-              <div className="p-6 space-y-4">
+              <div className="p-5 sm:p-6 space-y-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
                 {/* Amount */}
-                <div className="bg-[#F8FAF9] border border-[#D3DFDA] rounded-xl p-4 text-center">
-                  <p className="text-xs text-[#687B78] uppercase font-semibold tracking-wider mb-1">Amount Received</p>
+                <div className="bg-[#F8FAF9] border border-[#D3DFDA] rounded-xl p-3.5 text-center">
+                  <p className="text-xs text-[#687B78] uppercase font-semibold tracking-wider mb-1">Exact Amount Received</p>
                   <p className="text-3xl font-bold text-[#164A4A]">₹{Number(selectedPayment.amount).toLocaleString('en-IN')}</p>
+                  {selectedPayment.trainerFeeId?.feeAmount && selectedPayment.trainerFeeId.feeAmount !== selectedPayment.amount && (
+                    <div className="mt-2 pt-2 border-t border-[#D3DFDA]/60 flex justify-between text-xs text-[#687B78] font-medium px-2">
+                      <span>Base Fee: ₹{Number(selectedPayment.trainerFeeId.feeAmount).toLocaleString('en-IN')}</span>
+                      <span>Commission: –₹{(selectedPayment.trainerFeeId.feeAmount - selectedPayment.amount).toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Grid Info */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-[#F8FAF9] rounded-xl p-3 border border-[#E8E5DA]">
-                    <div className="flex items-center gap-1.5 text-[#A8ADA9] mb-1.5">
-                      <Calendar size={12} />
-                      <span className="text-[10px] uppercase font-bold tracking-wider">Date</span>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-2 divide-x divide-[#D3DFDA]">
+                    <div className="p-3 bg-white flex flex-col justify-center">
+                      <div className="flex items-center gap-1.5 text-[#A8ADA9] mb-1">
+                        <Calendar size={12} />
+                        <span className="text-[10px] uppercase font-bold tracking-wider">Date</span>
+                      </div>
+                      <p className="text-sm font-semibold text-[#202828]">{date}</p>
                     </div>
-                    <p className="text-sm font-semibold text-[#202828]">{date}</p>
-                  </div>
-                  <div className="bg-[#F8FAF9] rounded-xl p-3 border border-[#E8E5DA]">
-                    <div className="flex items-center gap-1.5 text-[#A8ADA9] mb-1.5">
-                      <Clock size={12} />
-                      <span className="text-[10px] uppercase font-bold tracking-wider">Time</span>
+                    <div className="p-3 bg-white flex flex-col justify-center">
+                      <div className="flex items-center gap-1.5 text-[#A8ADA9] mb-1">
+                        <Clock size={12} />
+                        <span className="text-[10px] uppercase font-bold tracking-wider">Time</span>
+                      </div>
+                      <p className="text-sm font-semibold text-[#202828]">{time}</p>
                     </div>
-                    <p className="text-sm font-semibold text-[#202828]">{time}</p>
                   </div>
-                  <div className="bg-[#F8FAF9] rounded-xl p-3 border border-[#E8E5DA]">
-                    <div className="flex items-center gap-1.5 text-[#A8ADA9] mb-1.5">
-                      <Smartphone size={12} />
-                      <span className="text-[10px] uppercase font-bold tracking-wider">Method</span>
+
+                  <div className="grid grid-cols-2 divide-x divide-[#D3DFDA]">
+                    <div className="p-3 bg-white flex flex-col justify-center">
+                      <div className="flex items-center gap-1.5 text-[#A8ADA9] mb-1">
+                        <Smartphone size={12} />
+                        <span className="text-[10px] uppercase font-bold tracking-wider">Method</span>
+                      </div>
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold border w-fit ${methodColor}`}>
+                        {selectedPayment.paymentMethod}
+                      </span>
                     </div>
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold border ${methodColor}`}>
-                      {selectedPayment.paymentMethod}
-                    </span>
-                  </div>
-                  <div className="bg-[#F8FAF9] rounded-xl p-3 border border-[#E8E5DA]">
-                    <div className="flex items-center gap-1.5 text-[#A8ADA9] mb-1.5">
-                      <Hash size={12} />
-                      <span className="text-[10px] uppercase font-bold tracking-wider">Reference / UTR</span>
+                    <div className="p-3 bg-white flex flex-col justify-center">
+                      <div className="flex items-center gap-1.5 text-[#A8ADA9] mb-1">
+                        <Hash size={12} />
+                        <span className="text-[10px] uppercase font-bold tracking-wider">Reference / UTR</span>
+                      </div>
+                      <p className="text-sm font-mono font-semibold text-[#202828] break-all">
+                        {selectedPayment.transactionId || <span className="text-[#A8ADA9] italic font-normal text-xs">Not provided</span>}
+                      </p>
                     </div>
-                    <p className="text-sm font-mono font-semibold text-[#202828] break-all">
-                      {selectedPayment.transactionId || <span className="text-[#A8ADA9] italic font-normal text-xs">Not provided</span>}
-                    </p>
                   </div>
+
+                  {/* Notes */}
+                  {selectedPayment.notes && (
+                    <div className="p-3 bg-white flex flex-col justify-center">
+                      <p className="text-[10px] uppercase font-bold tracking-wider text-[#A8ADA9] mb-1">Notes / Remarks</p>
+                      <p className="text-sm text-[#455250]">{selectedPayment.notes}</p>
+                    </div>
+                  )}
+
+                  {/* UPI App if present */}
+                  {selectedPayment.upiApp && (
+                    <div className="p-3 bg-emerald-50/50 flex flex-col justify-center">
+                      <p className="text-[10px] uppercase font-bold tracking-wider text-emerald-600 mb-1">UPI App Used</p>
+                      <p className="text-sm font-semibold text-emerald-800">{selectedPayment.upiApp}</p>
+                    </div>
+                  )}
                 </div>
-
-                {/* Notes */}
-                {selectedPayment.notes && (
-                  <div className="bg-[#F8FAF9] rounded-xl p-3 border border-[#E8E5DA]">
-                    <p className="text-[10px] uppercase font-bold tracking-wider text-[#A8ADA9] mb-1">Notes / Remarks</p>
-                    <p className="text-sm text-[#455250]">{selectedPayment.notes}</p>
-                  </div>
-                )}
-
-                {/* UPI App if present */}
-                {selectedPayment.upiApp && (
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
-                    <p className="text-[10px] uppercase font-bold tracking-wider text-emerald-600 mb-1">UPI App Used</p>
-                    <p className="text-sm font-semibold text-emerald-800">{selectedPayment.upiApp}</p>
-                  </div>
-                )}
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-4 bg-[#F8FAF9] border-t border-[#D3DFDA] flex justify-end">
+              <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#D3DFDA] flex justify-end shrink-0">
                 <button
                   onClick={() => setSelectedPayment(null)}
-                  className="px-5 py-2 bg-[#164A4A] hover:bg-[#123E3E] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+                  className="px-6 py-2 bg-[#164A4A] hover:bg-[#123E3E] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
                 >
                   Close
                 </button>

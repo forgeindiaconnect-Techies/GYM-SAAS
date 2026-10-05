@@ -198,8 +198,8 @@ const GymAdminSessionBookings = () => {
 
       {/* Booking Details Modal */}
       {selectedBooking && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 pt-16 sm:pt-20 pb-8 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-[#D3DFDA] space-y-6 max-h-[85vh] overflow-y-auto my-auto custom-scrollbar">
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-[#D3DFDA] space-y-6 max-h-[85vh] overflow-y-auto my-auto custom-scrollbar">
             <div className="flex justify-between items-center border-b pb-4">
               <div>
                 <h3 className="text-xl font-bold text-[#202828]">Session Booking Details</h3>
@@ -216,11 +216,10 @@ const GymAdminSessionBookings = () => {
             </div>
 
             <div className="space-y-4 text-sm text-[#334155]">
-              {/* Member Details */}
-              <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-2">
-                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-2">Member Information</h4>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#E8E5DA] flex items-center justify-center text-sm font-bold overflow-hidden border border-[#D3DFDA]">
+              {/* Member & Trainer & Session Details - Touching one by one */}
+              <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                <div className="p-3.5 bg-white flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#E8E5DA] flex items-center justify-center text-sm font-bold overflow-hidden border border-[#D3DFDA] shrink-0">
                     {selectedBooking.customerId?.profilePhoto ? (
                       <img src={selectedBooking.customerId.profilePhoto} alt="member" className="w-full h-full object-cover" />
                     ) : (
@@ -228,40 +227,41 @@ const GymAdminSessionBookings = () => {
                     )}
                   </div>
                   <div>
-                    <p className="font-bold text-[#202828]">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Member Name</p>
+                    <p className="font-bold text-[#202828] text-sm">
                       {selectedBooking.customerId ? `${selectedBooking.customerId.firstName} ${selectedBooking.customerId.lastName}` : 'Unknown Member'}
                     </p>
                     {selectedBooking.customerId?.email && <p className="text-xs text-[#687B78]">{selectedBooking.customerId.email}</p>}
-                    {selectedBooking.customerId?.mobile && <p className="text-xs text-[#687B78]">{selectedBooking.customerId.mobile}</p>}
                   </div>
                 </div>
-              </div>
 
-              {/* Trainer & Session Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
-                  <p className="text-xs font-medium text-[#687B78] mb-1">Assigned Trainer</p>
-                  <p className="font-bold text-[#202828]">{selectedBooking.trainerId?.name || 'Trainer'}</p>
-                  <p className="text-xs text-[#164A4A] mt-0.5">{selectedBooking.trainerId?.specialization || 'Fitness Coach'}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="p-3.5 bg-white">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Assigned Trainer</p>
+                    <p className="font-bold text-[#202828] text-sm">{selectedBooking.trainerId?.name || 'Trainer'}</p>
+                    <p className="text-xs text-[#164A4A] mt-0.5">{selectedBooking.trainerId?.specialization || 'Fitness Coach'}</p>
+                  </div>
+                  <div className="p-3.5 bg-white">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Session Mode</p>
+                    <p className="font-bold text-[#202828] text-sm capitalize">{selectedBooking.mode || 'Online'}</p>
+                  </div>
                 </div>
 
-                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
-                  <p className="text-xs font-medium text-[#687B78] mb-1">Session Mode</p>
-                  <p className="font-bold text-[#202828] capitalize">{selectedBooking.mode || 'Online'}</p>
-                </div>
-
-                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
-                  <p className="text-xs font-medium text-[#687B78] mb-1">Date & Time</p>
-                  <p className="font-bold text-[#202828]">{formatDateDisplay(selectedBooking.date)}</p>
-                  <p className="text-xs text-[#455250] mt-0.5">{selectedBooking.startTime} - {selectedBooking.endTime}</p>
-                </div>
-
-                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
-                  <p className="text-xs font-medium text-[#687B78] mb-1">Status & Fee</p>
-                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedBooking.status)}`}>
-                    {selectedBooking.status}
-                  </span>
-                  <p className="font-bold text-[#164A4A] mt-1">₹{selectedBooking.fee} ({selectedBooking.paymentStatus || 'Pending'})</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="p-3.5 bg-white">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Date & Time</p>
+                    <p className="font-bold text-[#202828] text-sm">{formatDateDisplay(selectedBooking.date)}</p>
+                    <p className="text-xs text-[#455250] mt-0.5">{selectedBooking.startTime} - {selectedBooking.endTime}</p>
+                  </div>
+                  <div className="p-3.5 bg-white">
+                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Status & Fee</p>
+                    <div className="flex items-center gap-2">
+                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedBooking.status)}`}>
+                        {selectedBooking.status}
+                      </span>
+                      <p className="font-bold text-[#164A4A] text-sm">₹{selectedBooking.fee} ({selectedBooking.paymentStatus || 'Pending'})</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 

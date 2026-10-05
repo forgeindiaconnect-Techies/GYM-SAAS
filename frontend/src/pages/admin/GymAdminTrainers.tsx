@@ -417,8 +417,8 @@ const GymAdminTrainers = () => {
 
       {/* Manual Add Form Modal */}
       {showHireModal && hireMethod === 'manual' && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden my-auto">
             <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-white z-10 shrink-0">
               <div>
                 <h2 className="text-2xl font-bold text-[#202828]">Manual Add Trainer</h2>
@@ -747,8 +747,8 @@ const GymAdminTrainers = () => {
 
       {/* Send Invitation Form Modal */}
       {showHireModal && hireMethod === 'invite' && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden my-auto">
             <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-white z-10 shrink-0">
               <h2 className="text-2xl font-bold text-[#202828]">Invite New Trainer</h2>
               <button onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="text-[#455250] hover:text-[#202828]"><X size={24} /></button>
@@ -791,8 +791,8 @@ const GymAdminTrainers = () => {
 
       {/* Trainer View Modal */}
       {selectedTrainer && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-[#D3DFDA]">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-[#D3DFDA] my-auto">
             {/* Header */}
             <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F8F9F8] shrink-0">
               <h2 className="text-xl font-bold text-[#202828]">Trainer Profile</h2>
@@ -823,77 +823,83 @@ const GymAdminTrainers = () => {
                 </div>
               </div>
 
-              {/* Section: Contact Info */}
+              {/* Section: Contact Info - Contiguous touching one by one */}
               <div>
-                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">Contact Information</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Mail size={13} className="text-[#164A4A]" />
-                      <span>Email</span>
-                    </p>
-                    <p className="font-semibold text-[#202828] break-all">{selectedTrainer.email || 'N/A'}</p>
-                  </div>
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Phone size={13} className="text-[#164A4A]" />
-                      <span>Phone</span>
-                    </p>
-                    <p className="font-semibold text-[#202828]">{selectedTrainer.phone || 'N/A'}</p>
+                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-2">Contact Information</h4>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Mail size={12} className="text-[#164A4A]" />
+                        <span>Email</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm break-all">{selectedTrainer.email || 'N/A'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Phone size={12} className="text-[#164A4A]" />
+                        <span>Phone</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm">{selectedTrainer.phone || 'N/A'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Section: Professional Info */}
+              {/* Section: Professional Info - Contiguous touching one by one */}
               <div>
-                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">Professional Details</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Dumbbell size={13} className="text-[#164A4A]" />
-                      <span>Specialization</span>
-                    </p>
-                    <p className="font-semibold text-[#202828]">{selectedTrainer.specialization || 'N/A'}</p>
+                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-2">Professional Details</h4>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Dumbbell size={12} className="text-[#164A4A]" />
+                        <span>Specialization</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm">{selectedTrainer.specialization || 'N/A'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Briefcase size={12} className="text-[#164A4A]" />
+                        <span>Experience</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm">{selectedTrainer.experience ? `${selectedTrainer.experience} Years` : 'N/A'}</p>
+                    </div>
                   </div>
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Briefcase size={13} className="text-[#164A4A]" />
-                      <span>Experience</span>
-                    </p>
-                    <p className="font-semibold text-[#202828]">{selectedTrainer.experience ? `${selectedTrainer.experience} Years` : 'N/A'}</p>
-                  </div>
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Activity size={13} className="text-[#164A4A]" />
-                      <span>Training Mode</span>
-                    </p>
-                    <p className="font-semibold text-[#202828] capitalize">{selectedTrainer.trainingMode || 'N/A'}</p>
-                  </div>
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <GraduationCap size={13} className="text-[#164A4A]" />
-                      <span>Qualifications</span>
-                    </p>
-                    <p className="font-semibold text-[#202828]">{selectedTrainer.qualifications || 'N/A'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Activity size={12} className="text-[#164A4A]" />
+                        <span>Training Mode</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm capitalize">{selectedTrainer.trainingMode || 'N/A'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <GraduationCap size={12} className="text-[#164A4A]" />
+                        <span>Qualifications</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm">{selectedTrainer.qualifications || 'N/A'}</p>
+                    </div>
                   </div>
                   {selectedTrainer.certifications && (
-                    <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4 sm:col-span-2">
-                      <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                        <Award size={13} className="text-[#164A4A]" />
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Award size={12} className="text-[#164A4A]" />
                         <span>Certifications</span>
                       </p>
-                      <p className="font-semibold text-[#202828]">{selectedTrainer.certifications}</p>
+                      <p className="font-semibold text-[#202828] text-sm">{selectedTrainer.certifications}</p>
                     </div>
                   )}
                   {selectedTrainer.expertise && (
-                    <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4 sm:col-span-2">
-                      <p className="text-[#687B78] text-xs font-semibold mb-2 flex items-center gap-1.5">
-                        <Sparkles size={13} className="text-[#164A4A]" />
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                        <Sparkles size={12} className="text-[#164A4A]" />
                         <span>Areas of Expertise</span>
                       </p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5">
                         {getExpertiseList(selectedTrainer.expertise).map((item, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-white border border-[#D3DFDA] text-[#202828] text-xs font-semibold rounded-lg shadow-2xs">
+                          <span key={idx} className="px-2.5 py-0.5 bg-[#F1F5F3] border border-[#D3DFDA] text-[#202828] text-xs font-semibold rounded-md">
                             {item}
                           </span>
                         ))}
@@ -903,53 +909,57 @@ const GymAdminTrainers = () => {
                 </div>
               </div>
 
-              {/* Section: Fee Info */}
+              {/* Section: Fee Info - Contiguous touching one by one */}
               <div>
-                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">Fee & Payment</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <IndianRupee size={13} className="text-[#164A4A]" />
-                      <span>Fee</span>
-                    </p>
-                    <p className="font-semibold text-[#202828]">{selectedTrainer.fee ? `₹${selectedTrainer.fee}` : 'N/A'}</p>
-                  </div>
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Clock size={13} className="text-[#164A4A]" />
-                      <span>Payment Type</span>
-                    </p>
-                    <p className="font-semibold text-[#202828]">{selectedTrainer.paymentType || 'N/A'}</p>
+                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-2">Fee & Payment</h4>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <IndianRupee size={12} className="text-[#164A4A]" />
+                        <span>Fee</span>
+                      </p>
+                      <p className="font-bold text-[#164A4A] text-sm">{selectedTrainer.fee ? `₹${selectedTrainer.fee}` : 'N/A'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Clock size={12} className="text-[#164A4A]" />
+                        <span>Payment Type</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm">{selectedTrainer.paymentType || 'N/A'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Section: Availability */}
+              {/* Section: Availability - Contiguous touching one by one */}
               <div>
-                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">Availability</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Calendar size={13} className="text-[#164A4A]" />
-                      <span>Available Days</span>
-                    </p>
-                    <p className="font-semibold text-[#202828]">{selectedTrainer.availableDays || selectedTrainer.availability?.days || 'N/A'}</p>
-                  </div>
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
-                    <p className="text-[#687B78] text-xs font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Clock size={13} className="text-[#164A4A]" />
-                      <span>Timings</span>
-                    </p>
-                    <p className="font-semibold text-[#202828]">
-                      {selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime || '—'}
-                      {(selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime) ? ' → ' : ''}
-                      {selectedTrainer.availableEndTime || selectedTrainer.availability?.endTime || 'N/A'}
-                    </p>
+                <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-2">Availability</h4>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Calendar size={12} className="text-[#164A4A]" />
+                        <span>Available Days</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm">{selectedTrainer.availableDays || selectedTrainer.availability?.days || 'N/A'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Clock size={12} className="text-[#164A4A]" />
+                        <span>Timings</span>
+                      </p>
+                      <p className="font-semibold text-[#202828] text-sm">
+                        {selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime || '—'}
+                        {(selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime) ? ' → ' : ''}
+                        {selectedTrainer.availableEndTime || selectedTrainer.availability?.endTime || 'N/A'}
+                      </p>
+                    </div>
                   </div>
                   {(selectedTrainer.availableSlot || selectedTrainer.availability?.slot) && (
-                    <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4 sm:col-span-2">
-                      <p className="text-[#687B78] text-xs font-semibold mb-1.5">Slot Duration</p>
-                      <p className="font-semibold text-[#202828]">{selectedTrainer.availableSlot || selectedTrainer.availability?.slot}</p>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Slot Duration</p>
+                      <p className="font-semibold text-[#202828] text-sm">{selectedTrainer.availableSlot || selectedTrainer.availability?.slot}</p>
                     </div>
                   )}
                 </div>
@@ -958,8 +968,8 @@ const GymAdminTrainers = () => {
               {/* Section: Bio */}
               {selectedTrainer.bio && (
                 <div>
-                  <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-3">About</h4>
-                  <div className="bg-[#F8F9F8] border border-[#D3DFDA] rounded-xl p-4">
+                  <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider mb-2">About</h4>
+                  <div className="border border-[#D3DFDA] rounded-xl p-4 bg-white shadow-sm">
                     <p className="text-[#202828] text-sm leading-relaxed">{selectedTrainer.bio}</p>
                   </div>
                 </div>
@@ -980,8 +990,8 @@ const GymAdminTrainers = () => {
 
       {/* Edit Trainer Form Modal */}
       {editTrainer && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#D3DFDA] overflow-hidden my-auto">
             <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-white z-10 shrink-0">
               <h2 className="text-2xl font-bold text-[#202828]">Edit Trainer</h2>
               <button onClick={() => setEditTrainer(null)} className="text-[#455250] hover:text-[#202828]"><X size={24} /></button>

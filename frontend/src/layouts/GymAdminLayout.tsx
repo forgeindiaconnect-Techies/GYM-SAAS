@@ -7,8 +7,8 @@ import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
-  Settings, History,
-  Store, Package, Tag, Boxes, ShoppingCart, Bot
+  History,
+  Store, Package, Tag, Boxes, ShoppingCart, Bot, Percent
 } from 'lucide-react';
 
 const GymAdminLayout = () => {
@@ -97,7 +97,8 @@ const GymAdminLayout = () => {
           { label: 'Trainers List', path: '/admin/trainers', icon: Dumbbell },
           { label: 'Trainer Fees', path: '/admin/trainer-fees', icon: IndianRupee },
           { label: 'Trainer Payments', path: '/admin/trainer-payments', icon: CreditCard },
-          { label: 'Payment History', path: '/admin/trainer-payments-history', icon: History }
+          { label: 'Payment History', path: '/admin/trainer-payments-history', icon: History },
+          { label: 'Commission', path: '/admin/trainer-commission', icon: Percent }
         ]
       },
       {
@@ -408,7 +409,7 @@ const GymAdminLayout = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-0">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           <Outlet context={{ selectedBranch }} />
         </div>
       </main>

@@ -23,6 +23,8 @@ export interface ITrainer extends Document {
   unavailableDates?: string[];
   fee?: number;
   paymentType?: 'Per Week' | 'Per Month' | 'Per Session';
+  commissionType?: 'Percentage' | 'Fixed Amount';
+  commissionValue?: number;
   totalEarnings: number;
   availableBalance: number;
   withdrawnAmount: number;
@@ -58,6 +60,8 @@ const trainerSchema = new Schema<ITrainer>({
   unavailableDates: [{ type: String }],
   fee: { type: Number },
   paymentType: { type: String, enum: ['Per Week', 'Per Month', 'Per Session'] },
+  commissionType: { type: String, enum: ['Percentage', 'Fixed Amount'], default: 'Percentage' },
+  commissionValue: { type: Number, default: 0, min: 0 },
   totalEarnings: { type: Number, default: 0 },
   availableBalance: { type: Number, default: 0 },
   withdrawnAmount: { type: Number, default: 0 },

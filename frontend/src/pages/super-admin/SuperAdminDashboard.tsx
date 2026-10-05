@@ -58,89 +58,99 @@ const SuperAdminDashboard = () => {
         <p className="text-[#455250] mt-1">Platform overview and gym onboarding metrics.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
         {cards.map((c, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 flex items-center space-x-4">
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center ${c.bg} ${c.color}`}>
-              <c.icon size={28} />
+          <div key={i} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-5 flex items-center space-x-3.5 shadow-sm hover:shadow-md transition-shadow">
+            <div className={`w-12 h-12 rounded-xl shrink-0 flex items-center justify-center ${c.bg} ${c.color}`}>
+              <c.icon size={24} />
             </div>
-            <div>
-              <p className="text-[#455250] text-sm font-medium">{c.title}</p>
-              <h3 className="text-2xl font-bold text-[#202828]">{c.value}</h3>
+            <div className="min-w-0">
+              <p className="text-[#455250] text-xs font-semibold uppercase tracking-wider truncate">{c.title}</p>
+              <h3 className="text-2xl font-bold text-[#202828] mt-0.5">{c.value}</h3>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         {/* Quick Actions */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-[#202828] mb-6 border-b border-[#D3DFDA] pb-4">Onboarding Actions</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <Link to="/super-admin/gyms/add" className="flex flex-col items-center justify-center p-6 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#6fa3a0] hover:bg-[#6fa3a0]/5 transition-all text-center">
-              <Building2 size={32} className="text-[#6fa3a0] mb-3" />
-              <span className="font-semibold text-[#202828]">Add Gym Manually</span>
+        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+          <div className="flex items-center justify-between mb-5 border-b border-[#D3DFDA] pb-4">
+            <h2 className="text-xl font-bold text-[#202828]">Onboarding Actions</h2>
+            <span className="text-xs text-[#687B78] font-medium">Quick Access</span>
+          </div>
+          <div className="grid grid-cols-2 gap-4 flex-1">
+            <Link to="/super-admin/gyms/add" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#164A4A] hover:bg-[#164A4A]/5 transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <Building2 size={24} />
+              </div>
+              <span className="font-semibold text-sm text-[#202828]">Add Gym Manually</span>
             </Link>
-            <Link to="/super-admin/customers" className="flex flex-col items-center justify-center p-6 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#6fa3a0] hover:bg-[#6fa3a0]/5 transition-all text-center">
-              <Users size={32} className="text-[#6fa3a0] mb-3" />
-              <span className="font-semibold text-[#202828]">View Customers</span>
+            <Link to="/super-admin/customers" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#164A4A] hover:bg-[#164A4A]/5 transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <Users size={24} />
+              </div>
+              <span className="font-semibold text-sm text-[#202828]">View Customers</span>
             </Link>
-            <Link to="/super-admin/gym-owners" className="flex flex-col items-center justify-center p-6 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#6fa3a0] hover:bg-[#6fa3a0]/5 transition-all text-center">
-              <FileText size={32} className="text-[#6fa3a0] mb-3" />
-              <span className="font-semibold text-[#202828]">Review Approvals</span>
+            <Link to="/super-admin/gym-owners" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#164A4A] hover:bg-[#164A4A]/5 transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <FileText size={24} />
+              </div>
+              <span className="font-semibold text-sm text-[#202828]">Review Approvals</span>
             </Link>
-            <Link to="/super-admin/invitations" className="flex flex-col items-center justify-center p-6 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#6fa3a0] hover:bg-[#6fa3a0]/5 transition-all text-center">
-              <Send size={32} className="text-[#6fa3a0] mb-3" />
-              <span className="font-semibold text-[#202828]">View Invitations</span>
+            <Link to="/super-admin/invitations" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl hover:border-[#164A4A] hover:bg-[#164A4A]/5 transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <Send size={24} />
+              </div>
+              <span className="font-semibold text-sm text-[#202828]">View Invitations</span>
             </Link>
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 flex flex-col">
-          <div className="flex justify-between items-center mb-6 border-b border-[#D3DFDA] pb-4">
+        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+          <div className="flex justify-between items-center mb-5 border-b border-[#D3DFDA] pb-4">
             <h2 className="text-xl font-bold text-[#202828]">Recent Registrations</h2>
-            <div className="flex space-x-2 bg-[#FFFFFF] p-1 rounded-lg border border-[#D3DFDA]">
+            <div className="flex space-x-1 bg-[#F1F5F3] p-1 rounded-xl border border-[#D3DFDA]">
               <button 
                 onClick={() => setRegistrationTab('owners')}
-                className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors ${registrationTab === 'owners' ? 'bg-[#164A4A] text-white' : 'text-[#455250] hover:text-[#202828]'}`}
+                className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors ${registrationTab === 'owners' ? 'bg-[#164A4A] text-white shadow-sm' : 'text-[#455250] hover:text-[#202828]'}`}
               >
                 Gym Owners
               </button>
               <button 
                 onClick={() => setRegistrationTab('customers')}
-                className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors ${registrationTab === 'customers' ? 'bg-blue-500 text-white' : 'text-[#455250] hover:text-[#202828]'}`}
+                className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors ${registrationTab === 'customers' ? 'bg-[#164A4A] text-white shadow-sm' : 'text-[#455250] hover:text-[#202828]'}`}
               >
                 Customers
               </button>
             </div>
           </div>
           {activities[registrationTab].length > 0 ? (
-            <div className="flex-1 space-y-4 custom-scrollbar overflow-y-auto pr-2">
+            <div className="flex-1 space-y-3 max-h-[320px] overflow-y-auto pr-1 divide-y divide-[#D3DFDA]/40">
               {activities[registrationTab].map((user: any, idx: number) => (
-                <div key={idx} className="flex items-center space-x-4 p-4 bg-[#FFFFFF] rounded-xl border border-[#D3DFDA] hover:border-[#164A4A]/30 transition-colors">
-                  <div className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${user.role === 'GYM_OWNER' ? 'bg-[#164A4A] shadow-[#164A4A]/50' : 'bg-blue-500 shadow-blue-500/50'}`} />
-                  <div className="flex-1">
-                    <p className="text-sm text-[#202828] font-semibold">
+                <div key={idx} className="flex items-center space-x-3.5 p-3 rounded-xl hover:bg-[#F9FBFA] transition-colors pt-3">
+                  <div className={`w-3 h-3 rounded-full shrink-0 ${user.role === 'GYM_OWNER' ? 'bg-[#164A4A]' : 'bg-blue-500'}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-[#202828] font-bold truncate">
                       {user.role === 'GYM_OWNER' 
-                        ? (user.gymId?.name ? `Gym Application: ${user.gymId.name}` : `New Gym Owner: ${user.firstName} ${user.lastName}`) 
-                        : `New Customer: ${user.firstName} ${user.lastName}`}
+                        ? (user.gymId?.name ? user.gymId.name : `${user.firstName} ${user.lastName}`) 
+                        : `${user.firstName} ${user.lastName}`}
                     </p>
-                    <p className="text-xs text-[#455250] mt-1">
-                      {user.role === 'GYM_OWNER' ? `Owner: ${user.firstName} ${user.lastName} • ` : ''}
-                      Email: {user.email} • Registered: {new Date(user.createdAt).toLocaleDateString()}
+                    <p className="text-xs text-[#455250] mt-0.5 truncate">
+                      {user.email} • {new Date(user.createdAt).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className={`text-xs font-bold px-2.5 py-1 rounded-md ${user.approvalStatus === 'APPROVED' ? 'bg-green-500/10 text-green-500' : user.approvalStatus === 'PENDING' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-[#E8E5DA] text-[#455250]'}`}>
+                  <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 border ${user.approvalStatus === 'APPROVED' ? 'bg-green-500/10 text-green-700 border-green-500/20' : user.approvalStatus === 'PENDING' ? 'bg-amber-500/10 text-amber-700 border-amber-500/20' : 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                     {user.approvalStatus}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="flex-1 space-y-4 text-center flex flex-col items-center justify-center text-[#455250]">
-              <BarChart size={48} className="mb-4 opacity-50" />
-              <p>No recent {registrationTab === 'owners' ? 'gym owner' : 'customer'} registrations.</p>
+            <div className="flex-1 text-center flex flex-col items-center justify-center text-[#455250] py-12">
+              <BarChart size={40} className="mb-2 opacity-40 text-[#164A4A]" />
+              <p className="text-sm font-medium">No recent {registrationTab === 'owners' ? 'gym owner' : 'customer'} registrations.</p>
             </div>
           )}
         </div>

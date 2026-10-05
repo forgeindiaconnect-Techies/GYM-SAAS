@@ -209,8 +209,8 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
   };
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start justify-center z-50 p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-xl w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto mt-4 sm:mt-6 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-xl w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center space-x-3 mb-6">
           <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
             <Icon size={22} className={plan.iconColor} />
@@ -272,8 +272,8 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
 const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) => {
   const Icon = plan.icon;
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start justify-center z-50 p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto mt-4 sm:mt-6 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
@@ -342,8 +342,8 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
 // ─── View Payment Modal ────────────────────────────────────────────────────────
 const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => void }) => {
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start justify-center z-50 p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto">
-      <div className="bg-white border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl my-auto mt-4 sm:mt-6 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
+      <div className="bg-white border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl my-auto animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#D3DFDA]">
           <div className="flex items-center space-x-3">
@@ -363,31 +363,31 @@ const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => v
           </button>
         </div>
 
-        {/* Separated Detail Cards — properly spaced without touching each other */}
-        <div className="space-y-3 mb-6">
-          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+        {/* Contiguous Detail Table touching one by one */}
+        <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm mb-6">
+          <div className="flex justify-between items-center p-3.5 bg-white">
             <span className="text-[#455250] text-xs font-semibold">Plan</span>
             <span className="text-[#202828] font-bold text-sm">
               {payment.plan} <span className="text-slate-400 font-normal">({payment.billing})</span>
             </span>
           </div>
 
-          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+          <div className="flex justify-between items-center p-3.5 bg-white">
             <span className="text-[#455250] text-xs font-semibold">Amount Paid</span>
             <span className="text-[#164A4A] font-extrabold text-base">{payment.amount}</span>
           </div>
 
-          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+          <div className="flex justify-between items-center p-3.5 bg-white">
             <span className="text-[#455250] text-xs font-semibold">Payment Method</span>
             <span className="text-[#202828] font-bold text-sm capitalize">{payment.paymentMethod}</span>
           </div>
 
-          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+          <div className="flex justify-between items-center p-3.5 bg-white">
             <span className="text-[#455250] text-xs font-semibold">Date</span>
             <span className="text-[#202828] font-bold text-sm">{formatDate(payment.start)}</span>
           </div>
 
-          <div className="flex justify-between items-center p-3.5 bg-[#F8F9F8] rounded-xl border border-[#E5EAE7]">
+          <div className="flex justify-between items-center p-3.5 bg-white">
             <span className="text-[#455250] text-xs font-semibold">Status</span>
             <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${STATUS_COLORS[payment.status] || 'bg-gray-100 text-gray-500'}`}>
               {payment.status}
@@ -525,7 +525,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
   if (saved) {
     return (
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
         <div className="bg-[#FFFFFF] border border-green-500/40 rounded-2xl p-10 max-w-sm w-full text-center shadow-2xl">
           <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={36} className="text-green-400" />
@@ -538,8 +538,8 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
   }
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start justify-center z-50 p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto mt-4 sm:mt-6 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
         <div className="flex items-center justify-between p-6 border-b border-[#D3DFDA] shrink-0 bg-white">
           <div className="flex items-center space-x-3">

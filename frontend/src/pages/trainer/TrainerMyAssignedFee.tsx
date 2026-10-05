@@ -48,6 +48,22 @@ const TrainerMyAssignedFee = () => {
 
   const activeFee = fees.find(f => f.status === 'Active');
 
+  // Helper to calculate exact net payable amount factoring in commission
+  const getNetPayable = (f: any) => {
+    if (!f) return 0;
+    const base = Number(f.feeAmount) || 0;
+    const commVal = Number(f.commissionValue) || 0;
+    const commType = f.commissionType || 'Percentage';
+    if (f.netAmount !== undefined && f.netAmount !== null && !isNaN(Number(f.netAmount))) {
+      return Number(f.netAmount);
+    }
+    if (commVal > 0) {
+      const deduction = commType === 'Fixed Amount' ? commVal : (base * commVal) / 100;
+      return Math.max(0, Math.round(base - deduction));
+    }
+    return base;
+  };
+
   // Sort: Active first → Pending → Inactive/Rejected, then newest date within each group
   const STATUS_ORDER: Record<string, number> = { Active: 0, Pending: 1, Inactive: 2, Rejected: 3 };
   const sortedFees = [...fees].sort((a, b) => {
@@ -96,56 +112,49 @@ const TrainerMyAssignedFee = () => {
                 </span>
               </div>
 
-              <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Fee Amount</p>
-                    <p className="text-2xl font-bold text-gray-900 flex items-center mt-1">
-                      <IndianRupee className="w-5 h-5 mr-1 text-gray-400" />
-                      {activeFee.feeAmount}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Training Type</p>
-                    <p className="text-gray-900 font-medium mt-1">{activeFee.trainingType}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Effective From</p>
-                    <p className="text-gray-900 mt-1">{new Date(activeFee.effectiveFrom).toLocaleDateString()}</p>
-                  </div>
+              <div className="p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Net Payable Amount</p>
+                  <p className="text-2xl font-black text-[#164A4A] flex items-center mt-1">
+                    <IndianRupee className="w-5 h-5 mr-0.5 text-[#164A4A]" />
+                    {getNetPayable(activeFee).toLocaleString('en-IN')}
+                  </p>
+                  <span className="text-[11px] text-gray-400">Exact disbursement</span>
                 </div>
-
-                <div className="space-y-4 md:border-l md:pl-6 border-gray-100">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Default Payment Method</p>
-                    <p className="text-gray-900 font-medium mt-1">{activeFee.paymentMethod}</p>
-                  </div>
-
-                  {activeFee.paymentMethod === 'Bank Transfer' && activeFee.bankDetails && (
-                    <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-1">
-                      <p><span className="text-gray-500">Bank:</span> {activeFee.bankDetails.bankName}</p>
-                      <p><span className="text-gray-500">A/C:</span> {activeFee.bankDetails.accountNumber}</p>
-                      <p><span className="text-gray-500">IFSC:</span> {activeFee.bankDetails.ifscCode}</p>
-                    </div>
-                  )}
-
-                  {activeFee.paymentMethod === 'UPI' && activeFee.upiDetails && (
-                    <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-1">
-                      <p><span className="text-gray-500">UPI ID:</span> {activeFee.upiDetails.upiId}</p>
-                      <p><span className="text-gray-500">Name:</span> {activeFee.upiDetails.upiName}</p>
-                    </div>
-                  )}
-
-                  {activeFee.notes && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Notes from Owner</p>
-                      <p className="text-sm text-gray-700 bg-amber-50 p-3 rounded-lg mt-1 italic border border-amber-100">
-                        "{activeFee.notes}"
-                      </p>
-                    </div>
-                  )}
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Base Fee</p>
+                  <p className="text-xl font-bold text-gray-800 mt-1">
+                    ₹{Number(activeFee.feeAmount).toLocaleString('en-IN')}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Commission</p>
+                  <p className="text-xl font-bold text-emerald-700 mt-1">
+                    {activeFee.commissionValue !== undefined && Number(activeFee.commissionValue) > 0
+                      ? activeFee.commissionType === 'Percentage'
+                        ? `${activeFee.commissionValue}%`
+                        : `₹${Number(activeFee.commissionValue).toLocaleString('en-IN')}`
+                      : 'None'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Training Type</p>
+                  <p className="text-gray-900 font-medium mt-1">{activeFee.trainingType}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Effective From</p>
+                  <p className="text-gray-900 mt-1">{new Date(activeFee.effectiveFrom).toLocaleDateString()}</p>
                 </div>
               </div>
+
+              {activeFee.notes && (
+                <div className="px-6 pb-6 border-t border-gray-100 pt-4">
+                  <p className="text-sm font-medium text-gray-500">Notes from Owner</p>
+                  <p className="text-sm text-gray-700 bg-amber-50 p-3 rounded-lg mt-1 italic border border-amber-100">
+                    "{activeFee.notes}"
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center space-y-3">
@@ -201,12 +210,29 @@ const TrainerMyAssignedFee = () => {
                         {new Date(f.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                         {f.effectiveUntil && ` – ${new Date(f.effectiveUntil).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`}
                       </p>
-                      <p className="text-xs text-gray-400 mt-0.5">{f.paymentMethod}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 ml-auto flex-wrap justify-end">
-                    <p className="text-base font-bold text-gray-900">₹{f.feeAmount?.toLocaleString('en-IN')}</p>
+                    <div className="text-right">
+                      <span className="text-base font-black text-[#164A4A] block">
+                        ₹{getNetPayable(f).toLocaleString('en-IN')}
+                      </span>
+                      {f.commissionValue !== undefined && Number(f.commissionValue) > 0 ? (
+                        <span className="text-[11px] text-[#687B78] font-medium block">
+                          Base: ₹{Number(f.feeAmount).toLocaleString('en-IN')}
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-gray-400 font-medium block">
+                          Net Payable
+                        </span>
+                      )}
+                    </div>
+                    {f.commissionValue !== undefined && Number(f.commissionValue) > 0 && (
+                      <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        {f.commissionType === 'Percentage' ? `${f.commissionValue}% Comm.` : `₹${Number(f.commissionValue).toLocaleString('en-IN')} Comm.`}
+                      </span>
+                    )}
                     <span className={`px-2.5 py-1 text-xs font-semibold rounded-lg ${cycleBadge(f.billingCycle)}`}>
                       {f.billingCycle}
                     </span>
@@ -229,84 +255,104 @@ const TrainerMyAssignedFee = () => {
 
       {/* Fee Details Modal */}
       {selectedFee && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-[#E8E5DA] bg-[#F2EFE8]">
-              <h3 className="font-bold text-[#202828]">Assigned Fee Details</h3>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden my-auto max-h-[85vh] flex flex-col border border-[#D3DFDA]">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#D3DFDA] bg-[#F8F9F8] shrink-0">
+              <h3 className="font-bold text-[#202828] text-base">Assigned Fee Details</h3>
               <button
                 onClick={() => setSelectedFee(null)}
-                className="text-[#687B78] hover:text-[#202828]"
+                className="text-[#687B78] hover:text-[#202828] p-1.5 rounded-lg hover:bg-slate-200 transition-colors"
               >
                 <XCircle size={20} />
               </button>
             </div>
 
-            <div className="p-5 space-y-4">
-              <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
-                <span className="text-gray-500 text-sm font-medium">Fee Amount</span>
-                <span className="text-2xl font-bold text-[#202828]">₹{selectedFee.feeAmount?.toLocaleString('en-IN')}</span>
+            <div className="p-5 sm:p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
+                <div className="flex justify-between items-center">
+                  <span className="text-emerald-900 text-sm font-semibold">Exact Net Payable</span>
+                  <span className="text-2xl font-black text-[#164A4A]">₹{getNetPayable(selectedFee).toLocaleString('en-IN')}</span>
+                </div>
+                {selectedFee.commissionValue !== undefined && Number(selectedFee.commissionValue) > 0 && (
+                  <div className="mt-2 pt-2 border-t border-emerald-200/60 flex justify-between text-xs text-emerald-800 font-medium">
+                    <span>Base Fee: ₹{Number(selectedFee.feeAmount).toLocaleString('en-IN')}</span>
+                    <span>
+                      Commission: {selectedFee.commissionType === 'Percentage' ? `${selectedFee.commissionValue}%` : `₹${selectedFee.commissionValue}`} (−₹{(Number(selectedFee.feeAmount) - getNetPayable(selectedFee)).toLocaleString('en-IN')})
+                    </span>
+                  </div>
+                )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-gray-500 mb-1">Training Type</p>
-                  <p className="font-semibold text-gray-900">{selectedFee.trainingType || '-'}</p>
+              {/* Contiguous details grid touching one by one */}
+              <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                <div className="grid grid-cols-2 divide-x divide-[#D3DFDA]">
+                  <div className="p-3 bg-white">
+                    <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Training Type</p>
+                    <p className="font-semibold text-sm text-gray-900">{selectedFee.trainingType || '-'}</p>
+                  </div>
+                  <div className="p-3 bg-white">
+                    <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Billing Cycle</p>
+                    <p className="font-semibold text-sm text-gray-900">{selectedFee.billingCycle || '-'}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-gray-500 mb-1">Billing Cycle</p>
-                  <p className="font-semibold text-gray-900">{selectedFee.billingCycle || '-'}</p>
+
+                <div className="grid grid-cols-2 divide-x divide-[#D3DFDA]">
+                  <div className="p-3 bg-white">
+                    <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission</p>
+                    <p className="font-semibold text-sm text-gray-900">
+                      {selectedFee.commissionValue !== undefined && Number(selectedFee.commissionValue) > 0
+                        ? selectedFee.commissionType === 'Percentage'
+                          ? `${selectedFee.commissionValue}%`
+                          : `₹${Number(selectedFee.commissionValue).toLocaleString('en-IN')}`
+                        : 'No Commission'}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-white">
+                    <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission Type</p>
+                    <p className="font-semibold text-sm text-gray-900">{selectedFee.commissionType || 'Percentage'}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-gray-500 mb-1">Status</p>
-                  <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold ${statusBadge(selectedFee.status)}`}>
-                    {selectedFee.status}
-                  </span>
+
+                <div className="grid grid-cols-2 divide-x divide-[#D3DFDA]">
+                  <div className="p-3 bg-white">
+                    <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Status</p>
+                    <span className={`inline-flex px-2 py-0.5 rounded-lg text-xs font-semibold ${statusBadge(selectedFee.status)}`}>
+                      {selectedFee.status}
+                    </span>
+                  </div>
+                  <div className="p-3 bg-white">
+                    <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective From</p>
+                    <p className="font-semibold text-sm text-gray-900">
+                      {selectedFee.effectiveFrom ? new Date(selectedFee.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-gray-500 mb-1">Payment Method</p>
-                  <p className="font-semibold text-gray-900">{selectedFee.paymentMethod || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 mb-1">Effective From</p>
-                  <p className="font-semibold text-gray-900">
-                    {selectedFee.effectiveFrom ? new Date(selectedFee.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500 mb-1">Effective Until</p>
-                  <p className="font-semibold text-gray-900">
-                    {selectedFee.effectiveUntil ? new Date(selectedFee.effectiveUntil).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Not set'}
-                  </p>
-                </div>
+
+                {selectedFee.effectiveUntil && (
+                  <div className="p-3 bg-white">
+                    <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective Until</p>
+                    <p className="font-semibold text-sm text-gray-900">
+                      {new Date(selectedFee.effectiveUntil).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </p>
+                  </div>
+                )}
               </div>
-
-              {selectedFee.paymentMethod === 'Bank Transfer' && selectedFee.bankDetails && (
-                <div className="pt-3 border-t border-gray-100">
-                  <p className="text-gray-500 mb-2 text-sm">Bank Details</p>
-                  <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-1">
-                    <p><span className="text-gray-500">Bank:</span> <span className="font-semibold text-gray-900">{selectedFee.bankDetails.bankName || '-'}</span></p>
-                    <p><span className="text-gray-500">Account:</span> <span className="font-semibold text-gray-900">{selectedFee.bankDetails.accountNumber || '-'}</span></p>
-                    <p><span className="text-gray-500">IFSC:</span> <span className="font-semibold text-gray-900">{selectedFee.bankDetails.ifscCode || '-'}</span></p>
-                  </div>
-                </div>
-              )}
-
-              {selectedFee.paymentMethod === 'UPI' && selectedFee.upiDetails && (
-                <div className="pt-3 border-t border-gray-100">
-                  <p className="text-gray-500 mb-2 text-sm">UPI Details</p>
-                  <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-1">
-                    <p><span className="text-gray-500">UPI ID:</span> <span className="font-semibold text-gray-900">{selectedFee.upiDetails.upiId || '-'}</span></p>
-                    <p><span className="text-gray-500">Name:</span> <span className="font-semibold text-gray-900">{selectedFee.upiDetails.upiName || '-'}</span></p>
-                  </div>
-                </div>
-              )}
 
               {selectedFee.notes && (
-                <div className="pt-3 border-t border-gray-100">
-                  <p className="text-gray-500 mb-1 text-sm">Notes from Owner</p>
-                  <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100 italic">{selectedFee.notes}</p>
+                <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl">
+                  <p className="text-[#687B78] text-xs font-semibold mb-1">Notes from Gym Owner</p>
+                  <p className="text-xs text-gray-700 italic">{selectedFee.notes}</p>
                 </div>
               )}
+            </div>
+
+            <div className="p-4 border-t border-[#D3DFDA] bg-[#F8F9F8] flex justify-end shrink-0">
+              <button
+                onClick={() => setSelectedFee(null)}
+                className="px-5 py-2 bg-[#164A4A] text-white rounded-xl text-xs font-bold hover:bg-[#164A4A]/90 transition-colors shadow-sm"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

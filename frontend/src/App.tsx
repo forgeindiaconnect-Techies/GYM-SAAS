@@ -60,6 +60,7 @@ import GymAdminImportCustomers from './pages/admin/GymAdminImportCustomers';
 import GymAdminTrainerFees from './pages/admin/GymAdminTrainerFees';
 import GymAdminTrainerPayments from './pages/admin/GymAdminTrainerPayments';
 import GymAdminTrainerPaymentHistory from './pages/admin/GymAdminTrainerPaymentHistory';
+import GymAdminTrainerCommission from './pages/admin/GymAdminTrainerCommission';
 import GymAdminAIFitnessPlans from './pages/admin/GymAdminAIFitnessPlans';
 import GymAdminAIPlanDetails from './pages/admin/GymAdminAIPlanDetails';
 import GymAdminOnlineSessions from './pages/admin/GymAdminOnlineSessions';
@@ -322,6 +323,7 @@ function App() {
             <Route path="trainer-fees" element={<GymAdminTrainerFees />} />
             <Route path="trainer-payments" element={<GymAdminTrainerPayments />} />
             <Route path="trainer-payments-history" element={<GymAdminTrainerPaymentHistory />} />
+            <Route path="trainer-commission" element={<GymAdminTrainerCommission />} />
             <Route path="store" element={<GymStoreDashboard />} />
             <Route path="store/products" element={<GymStoreProducts />} />
             <Route path="store/categories" element={<GymStoreCategories />} />

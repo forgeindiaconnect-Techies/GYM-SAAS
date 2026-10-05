@@ -140,7 +140,7 @@ const TrainerSessionBookings = () => {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Session Bookings</h1>
-          <p className="text-[#455250] mt-1 text-sm">Manage customer booking requests — approve or reject incoming sessions.</p>
+          <p className="text-[#455250] mt-1 text-sm">Manage customer booking requests  -  approve or reject incoming sessions.</p>
         </div>
         <button onClick={() => fetchBookings(true)} disabled={refreshing}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#164A4A] border border-[#D3DFDA] rounded-xl hover:bg-[#F1F5F3] transition-colors disabled:opacity-50 self-start sm:self-auto">
@@ -250,7 +250,7 @@ const TrainerSessionBookings = () => {
                     </div>
                     <div className="flex items-center gap-2 text-[#455250]">
                       <Clock size={14} className="text-[#164A4A] shrink-0" />
-                      <span className="font-medium">{booking.startTime} – {booking.endTime}</span>
+                      <span className="font-medium">{booking.startTime}   {booking.endTime}</span>
                     </div>
                     {booking.duration && (
                       <div className="flex items-center gap-2 text-[#455250]">
@@ -371,7 +371,7 @@ const TrainerSessionBookings = () => {
             <div className="sticky top-0 bg-white border-b border-[#D3DFDA] px-6 py-4 flex items-center justify-between z-10">
               <div>
                 <h3 className="text-base font-bold text-[#202828]">Session Notes</h3>
-                <p className="text-xs text-[#455250]">{notesModal.customerId?.firstName} {notesModal.customerId?.lastName} · {formatDate(notesModal.date)}</p>
+                <p className="text-xs text-[#455250]">{notesModal.customerId?.firstName} {notesModal.customerId?.lastName}   {formatDate(notesModal.date)}</p>
               </div>
               <button onClick={() => setNotesModal(null)} className="text-gray-400 hover:text-gray-600 p-1"><X size={18} /></button>
             </div>

@@ -214,8 +214,8 @@ const TrainerMembers = () => {
 
       {/* Member Details Modal */}
       {openDetailsModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-8 pt-16 sm:pt-20 pb-8 overflow-y-auto">
-          <div className="bg-white rounded-3xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl border border-[#D3DFDA] my-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl border border-[#D3DFDA] my-auto">
             <div className="px-6 py-5 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F8FAFC]">
               <div>
                 <h2 className="text-xl font-bold text-[#202828]">Member Details</h2>
@@ -258,55 +258,65 @@ const TrainerMembers = () => {
                 </div>
               </div>
               
-              {/* Member Info Grid with Clean Gaps and Cards */}
+              {/* Member Info Contiguous Grid Touching One by One */}
               <div className="space-y-3">
                 <h4 className="text-xs font-bold text-[#455250] uppercase tracking-wider">Profile Information</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#F8FAFC] p-4 rounded-2xl border border-[#D3DFDA]">
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Email</p>
-                    <p className="font-semibold text-sm text-[#202828] break-all">{openDetailsModal.email || 'Not specified'}</p>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Email</p>
+                      <p className="font-semibold text-sm text-[#202828] break-all">{openDetailsModal.email || 'Not specified'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Phone</p>
+                      <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.phone || 'Not specified'}</p>
+                    </div>
                   </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Phone</p>
-                    <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.phone || 'Not specified'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Membership Plan</p>
+                      <p className="font-semibold text-sm text-[#164A4A]">{openDetailsModal.originalUser?.subscriptionPlan || 'Standard Plan'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Join Date</p>
+                      <p className="font-semibold text-sm text-[#202828]">
+                        {openDetailsModal.originalUser?.createdAt ? new Date(openDetailsModal.originalUser.createdAt).toLocaleDateString() : 'Not specified'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Membership Plan</p>
-                    <p className="font-semibold text-sm text-[#164A4A]">{openDetailsModal.originalUser?.subscriptionPlan || 'Standard Plan'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gender</p>
+                      <p className="font-semibold text-sm text-[#202828] capitalize">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Renewal Date</p>
+                      <p className="font-semibold text-sm text-[#202828]">
+                        {openDetailsModal.originalUser?.subscriptionExpiry ? new Date(openDetailsModal.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Join Date</p>
-                    <p className="font-semibold text-sm text-[#202828]">
-                      {openDetailsModal.originalUser?.createdAt ? new Date(openDetailsModal.originalUser.createdAt).toLocaleDateString() : 'Not specified'}
-                    </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Height / Weight</p>
+                      <p className="font-semibold text-sm text-[#202828]">
+                        {openDetailsModal.originalUser?.height ? `${openDetailsModal.originalUser.height} cm` : '--'} / {openDetailsModal.originalUser?.weight ? `${openDetailsModal.originalUser.weight} kg` : '--'}
+                      </p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Experience Level</p>
+                      <p className="font-semibold text-sm text-[#202828] capitalize">{openDetailsModal.originalUser?.experienceLevel || 'Intermediate'}</p>
+                    </div>
                   </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Gender</p>
-                    <p className="font-semibold text-sm text-[#202828] capitalize">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Renewal Date</p>
-                    <p className="font-semibold text-sm text-[#202828]">
-                      {openDetailsModal.originalUser?.subscriptionExpiry ? new Date(openDetailsModal.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Height / Weight</p>
-                    <p className="font-semibold text-sm text-[#202828]">
-                      {openDetailsModal.originalUser?.height ? `${openDetailsModal.originalUser.height} cm` : '--'} / {openDetailsModal.originalUser?.weight ? `${openDetailsModal.originalUser.weight} kg` : '--'}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Experience Level</p>
-                    <p className="font-semibold text-sm text-[#202828] capitalize">{openDetailsModal.originalUser?.experienceLevel || 'Intermediate'}</p>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Pref. Training</p>
-                    <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.originalUser?.preferredTraining || 'General Fitness'}</p>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-1">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Pref. Workout Time</p>
-                    <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Morning'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Pref. Training</p>
+                      <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.originalUser?.preferredTraining || 'General Fitness'}</p>
+                    </div>
+                    <div className="p-3.5 bg-white">
+                      <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Pref. Workout Time</p>
+                      <p className="font-semibold text-sm text-[#202828]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Morning'}</p>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -75,43 +75,41 @@ const MemberDashboard = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Welcome back, <span className="text-[#164A4A]">{user?.firstName}!</span></h1>
-          <p className="text-[#455250]">Here's your fitness overview for today.</p>
+          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Welcome back, <span className="text-[#164A4A]">{user?.firstName || 'Member'}!</span></h1>
+          <p className="text-[#455250] mt-1">Here's your fitness overview, today's workout, and active membership.</p>
         </div>
         
         {hasActive ? (
-          <div className="flex items-center space-x-4 bg-[#FFFFFF] px-6 py-3.5 rounded-2xl border border-[#D3DFDA] shadow-sm shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-[#F1F5F3] flex items-center justify-center">
-              <MapPin className="text-[#164A4A]" size={20} />
+          <div className="flex items-center space-x-3.5 bg-[#FFFFFF] px-5 py-3 rounded-2xl border border-[#D3DFDA] shadow-sm shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center">
+              <MapPin size={20} />
             </div>
             <div>
-              <p className="text-[10px] text-[#A8ADA9] font-bold uppercase tracking-widest mb-0.5">Current Gym</p>
-              <p className="font-bold text-[#202828] leading-tight">{activeMembership?.gymId?.name || 'N/A'}</p>
+              <p className="text-[10px] text-[#A8ADA9] font-bold uppercase tracking-wider mb-0.5">Current Gym</p>
+              <p className="font-bold text-sm text-[#202828] leading-tight">{activeMembership?.gymId?.name || 'Active Membership'}</p>
             </div>
           </div>
         ) : pendingMembership ? (
-           <div className="flex items-center space-x-4 bg-yellow-50 border border-yellow-200 px-6 py-3.5 rounded-2xl shadow-sm shrink-0">
-             <div className="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center">
-               <AlertCircle className="text-yellow-600" size={20} />
+           <div className="flex items-center space-x-3.5 bg-yellow-50 border border-yellow-200 px-5 py-3 rounded-2xl shadow-sm shrink-0">
+             <div className="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-700 flex items-center justify-center">
+               <AlertCircle size={20} />
              </div>
              <div>
-               <p className="text-[10px] text-yellow-600 font-bold uppercase tracking-widest mb-0.5">Subscription Status</p>
-               <p className="font-bold text-yellow-800 leading-tight">Payment Verification Pending</p>
-               <p className="text-xs text-yellow-700 mt-0.5">Your payment is being verified.</p>
+               <p className="text-[10px] text-yellow-600 font-bold uppercase tracking-wider mb-0.5">Subscription Status</p>
+               <p className="font-bold text-sm text-yellow-800 leading-tight">Payment Verification Pending</p>
              </div>
            </div>
         ) : (rejectedMembership || user?.subscriptionStatus?.toUpperCase() === 'REJECTED') ? (
-           <div className="flex items-center space-x-4 bg-red-50 border border-red-200 px-6 py-3.5 rounded-2xl shadow-sm shrink-0">
-             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
-               <AlertCircle className="text-red-600" size={20} />
+           <div className="flex items-center space-x-3.5 bg-red-50 border border-red-200 px-5 py-3 rounded-2xl shadow-sm shrink-0">
+             <div className="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+               <AlertCircle size={20} />
              </div>
              <div>
-               <p className="text-[10px] text-red-600 font-bold uppercase tracking-widest mb-0.5">Subscription Status</p>
-               <p className="font-bold text-red-800 leading-tight">Payment Rejected</p>
-               <p className="text-xs text-red-700 mt-0.5">Please retry your payment.</p>
+               <p className="text-[10px] text-red-600 font-bold uppercase tracking-wider mb-0.5">Subscription Status</p>
+               <p className="font-bold text-sm text-red-800 leading-tight">Payment Rejected</p>
              </div>
            </div>
         ) : null}
@@ -119,18 +117,18 @@ const MemberDashboard = () => {
 
       {/* Free Trial Banner */}
       {isTrial && (
-        <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 shadow-sm">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
               <h3 className="text-xl font-bold text-green-800 mb-1">Subscription Status: Free Trial</h3>
-              <p className="text-green-700">
+              <p className="text-green-700 text-sm">
                 Trial Ends: {new Date(activeMembership.endDate).toLocaleDateString()}
               </p>
-              <p className="text-[#164A4A] font-semibold mt-1">{trialDaysRemaining} Days Remaining</p>
+              <p className="text-[#164A4A] font-bold text-sm mt-1">{trialDaysRemaining} Days Remaining</p>
             </div>
-            <div className="mt-4 md:mt-0 text-right">
-              <p className="text-sm text-green-700 mb-2">Current Plan: <strong>{activeMembership.planName}</strong></p>
-              <Link to="/member/upgrade" className="px-6 py-2 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors shadow-lg">
+            <div className="text-right">
+              <p className="text-xs text-green-700 mb-2">Current Plan: <strong>{activeMembership.planName}</strong></p>
+              <Link to="/member/upgrade" className="px-5 py-2.5 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors shadow-md text-sm inline-block">
                 Upgrade Subscription
               </Link>
             </div>
@@ -139,7 +137,7 @@ const MemberDashboard = () => {
       )}
 
       {!hasActive && !pendingMembership && (user?.subscriptionStatus?.toUpperCase() === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date())) && (
-        <div className="bg-[#FFFFFF] border-2 border-red-300 rounded-2xl p-10 text-center mb-10 shadow-xl">
+        <div className="bg-[#FFFFFF] border-2 border-red-300 rounded-2xl p-10 text-center shadow-xl">
           <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
           <h2 className="text-2xl font-bold text-[#202828] mb-2">Your subscription plan is completed</h2>
           <p className="text-[#455250] mb-6 max-w-md mx-auto">Your subscription plan is completed. Please upgrade your plan to continue accessing your AI GYM dashboard and features.</p>
@@ -150,7 +148,7 @@ const MemberDashboard = () => {
       )}
 
       {!hasActive && !pendingMembership && (rejectedMembership || user?.subscriptionStatus?.toUpperCase() === 'REJECTED') && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-10 text-center mb-10 shadow-xl">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-10 text-center shadow-xl">
           <AlertCircle size={48} className="mx-auto text-[#6fa3a0] mb-4" />
           <h2 className="text-2xl font-bold text-red-800 mb-2">Payment Rejected</h2>
           <p className="text-red-700 mb-4 max-w-md mx-auto">
@@ -169,8 +167,8 @@ const MemberDashboard = () => {
       )}
 
       {!hasActive && !pendingMembership && user?.subscriptionStatus?.toUpperCase() !== 'EXPIRED' && !rejectedMembership && user?.subscriptionStatus?.toUpperCase() !== 'REJECTED' && (
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-10 text-center mb-10 shadow-xl">
-          <MapPin size={48} className="mx-auto text-[#555] mb-4" />
+        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-10 text-center shadow-xl">
+          <MapPin size={48} className="mx-auto text-[#164A4A] mb-4" />
           <h2 className="text-2xl font-bold text-[#202828] mb-2">You haven't joined a gym yet</h2>
           <p className="text-[#455250] mb-6 max-w-md mx-auto">Discover premium gyms near you, select a membership plan, and unlock all features of the AI GYM platform.</p>
           <Link to="/gyms" className="inline-block px-8 py-3 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105">
@@ -180,7 +178,7 @@ const MemberDashboard = () => {
       )}
 
       {pendingMembership && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-10 text-center mb-10 shadow-xl">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-10 text-center shadow-xl">
           <AlertCircle size={48} className="mx-auto text-yellow-500 mb-4" />
           <h2 className="text-2xl font-bold text-yellow-800 mb-2">Verification in Progress</h2>
           <p className="text-yellow-700 max-w-lg mx-auto">
@@ -192,70 +190,76 @@ const MemberDashboard = () => {
 
       {hasActive && (
         <>
-          <div className="grid md:grid-cols-4 gap-4 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {quickLinks.map((item, i) => (
-              <Link key={i} to={item.path} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-5 hover:-translate-y-1 transition-transform group cursor-pointer block">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${item.color}`}><item.icon size={20} /></div>
-                <h3 className="font-semibold text-[#202828] group-hover:text-[#164A4A] transition transition-colors">{item.label}</h3>
-                <p className="text-xs text-[#455250]">{item.desc}</p>
+              <Link key={i} to={item.path} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-5 flex items-center space-x-4 shadow-sm hover:shadow-md transition-shadow group">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${item.color}`}>
+                  <item.icon size={22} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold text-sm text-[#202828] group-hover:text-[#164A4A] transition-colors">{item.label}</h3>
+                  <p className="text-xs text-[#455250] mt-0.5 truncate">{item.desc}</p>
+                </div>
               </Link>
             ))}
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 h-full flex flex-col">
-                <h3 className="text-lg font-bold mb-4">Today's AI Workout</h3>
-                <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-6 flex flex-col items-center justify-center text-center flex-1 border-dashed min-h-[160px]">
-                  <Dumbbell size={32} className="text-[#555] mb-3" />
-                  <p className="text-[#455250]">Generate your personalized workout plan for today.</p>
-                  <Link to="/member/ai-assistant" className="mt-4 text-[#164A4A] text-sm font-semibold hover:underline">Start Generator</Link>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+              <div className="flex justify-between items-center mb-5 border-b border-[#D3DFDA] pb-4">
+                <h3 className="text-xl font-bold text-[#202828]">Today's AI Workout</h3>
+                <Link to="/member/ai-assistant" className="text-xs text-[#164A4A] font-semibold hover:underline">Launch AI Coach →</Link>
+              </div>
+              <div className="bg-[#F8FAF9] border border-[#D3DFDA] border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center flex-1 min-h-[180px]">
+                <div className="w-12 h-12 rounded-xl bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center mb-3">
+                  <Dumbbell size={24} />
                 </div>
+                <h4 className="font-bold text-sm text-[#202828]">Personalized Workout Generator</h4>
+                <p className="text-xs text-[#455250] mt-1 max-w-sm">Generate tailored exercise routines based on your fitness goals, experience level, and body metrics.</p>
+                <Link to="/member/ai-assistant" className="mt-4 px-4 py-2 bg-[#164A4A] text-white text-xs font-semibold rounded-lg hover:bg-[#123E3E] transition-colors shadow-sm">
+                  Generate Workout
+                </Link>
               </div>
             </div>
 
-            <div>
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 h-full">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-bold">Upcoming Schedule</h3>
-                  <Link to="/member/bookings" className="text-sm font-semibold text-[#164A4A] hover:underline">View All</Link>
-                </div>
-                <div className="space-y-4">
-                  {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).slice(0, 3).map((session, i) => (
-                    <div key={i} className="flex space-x-3 items-start justify-between">
-                      <div className="flex space-x-3 items-start">
-                        <div className={`w-2 h-2 mt-1.5 rounded-full ${session.status === 'Pending' ? 'bg-amber-500' : 'bg-[#164A4A]'}`}></div>
-                        <div>
-                          <p className="font-medium text-sm text-[#202828] capitalize">
-                            {session.trainerId?.name ? `${session.trainerId.name} (${session.mode || 'Online'})` : `${session.mode || 'Online'} Session`}
-                          </p>
-                          <p className="text-xs text-[#455250]">{new Date(session.date).toLocaleDateString()} at {session.startTime}</p>
-                        </div>
-                      </div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                        session.status === 'Pending' 
-                          ? 'bg-amber-50 text-amber-800 border border-amber-200' 
-                          : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                      }`}>
-                        {session.status === 'Pending' ? 'Waiting Approval' : 'Approved'}
-                      </span>
-                    </div>
-                  ))}
-                  {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).length === 0 && (
-                    <div className="flex space-x-3 items-start">
-                      <div className="w-2 h-2 mt-1.5 rounded-full bg-[#A8ADA9]"></div>
-                      <div>
-                        <p className="font-medium text-sm text-[#455250]">No upcoming sessions</p>
-                        <Link to="/member/find-trainers" className="text-xs text-[#164A4A] font-semibold hover:underline mt-1 block">Book a Trainer</Link>
+            <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+              <div className="flex justify-between items-center mb-5 border-b border-[#D3DFDA] pb-4">
+                <h3 className="text-xl font-bold text-[#202828]">Upcoming Schedule</h3>
+                <Link to="/member/bookings" className="text-xs font-semibold text-[#164A4A] hover:underline">View All</Link>
+              </div>
+              <div className="space-y-3 flex-1 flex flex-col justify-start">
+                {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).slice(0, 3).map((session, i) => (
+                  <div key={i} className="flex space-x-3 items-center justify-between p-3 bg-[#F8FAF9] rounded-xl border border-[#D3DFDA]/60">
+                    <div className="flex space-x-3 items-center min-w-0">
+                      <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${session.status === 'Pending' ? 'bg-amber-500' : 'bg-[#164A4A]'}`}></div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-xs text-[#202828] capitalize truncate">
+                          {session.trainerId?.name ? `${session.trainerId.name} (${session.mode || 'Online'})` : `${session.mode || 'Online'} Session`}
+                        </p>
+                        <p className="text-[11px] text-[#455250] mt-0.5">{new Date(session.date).toLocaleDateString()} at {session.startTime}</p>
                       </div>
                     </div>
-                  )}
-                </div>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                      session.status === 'Pending' 
+                        ? 'bg-amber-50 text-amber-800 border border-amber-200' 
+                        : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                    }`}>
+                      {session.status === 'Pending' ? 'Waiting' : 'Approved'}
+                    </span>
+                  </div>
+                ))}
+                {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-8 text-center flex-1">
+                    <Calendar className="text-[#D3DFDA] mb-2" size={32} />
+                    <p className="font-semibold text-xs text-[#455250]">No upcoming sessions</p>
+                    <Link to="/member/find-trainers" className="text-xs text-[#164A4A] font-bold hover:underline mt-1.5 block">Book a Trainer</Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          <div className="mt-10 bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden shadow-sm">
             <div className="p-6 border-b border-[#D3DFDA]">
               <h3 className="text-lg font-bold text-[#202828]">Payment History</h3>
             </div>

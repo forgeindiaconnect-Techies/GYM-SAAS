@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Search, MapPin, Phone, Mail, Calendar, Loader2, MessageSquare, ArrowRight, UserPlus, CheckCircle, Download } from 'lucide-react';
+import { Search, Phone, Mail, Calendar, Loader2, MessageSquare, ArrowRight, UserPlus, CheckCircle, Download, Clock } from 'lucide-react';
 import api from '../../utils/api';
 import { RegisterNewMemberModal } from '../../components/GymAdmin/RegisterNewMemberModal';
 import { exportToPDF } from '../../utils/export';
@@ -179,8 +179,11 @@ export const GymAdminEnquiries = () => {
                       <span className="text-sm text-[#202828]">{enq.enquiryType}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-[#202828]">{new Date(enq.createdAt).toLocaleDateString()}</div>
-                      <div className="text-xs text-[#687B78]">{new Date(enq.createdAt).toLocaleTimeString()}</div>
+                      <div className="text-sm font-semibold text-[#202828]">{new Date(enq.createdAt).toLocaleDateString()}</div>
+                      <div className="text-xs text-[#687B78] flex items-center gap-1 font-medium mt-0.5">
+                        <Clock size={11} className="text-[#164A4A]" />
+                        <span>{new Date(enq.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${getStatusColor(enq.status)}`}>
@@ -213,8 +216,8 @@ export const GymAdminEnquiries = () => {
 
       {/* Enquiry Detail Modal */}
       {selectedEnquiry && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] my-auto">
             <div className="p-6 border-b border-[#E8E5DA] flex justify-between items-center bg-[#F2EFE8]">
               <div>
                 <h2 className="text-xl font-bold text-[#202828] flex items-center gap-2">
@@ -233,23 +236,50 @@ export const GymAdminEnquiries = () => {
             <div className="p-6 overflow-y-auto flex-1 grid md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-sm font-semibold text-[#687B78] uppercase tracking-wider mb-3">Customer Information</h3>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4 space-y-3">
-                    <p className="font-bold text-[#202828] text-lg">{selectedEnquiry.customerName}</p>
-                    <div className="flex items-center gap-2 text-[#455250] text-sm"><Phone size={16} className="text-[#164A4A]"/> {selectedEnquiry.mobileNumber}</div>
-                    <div className="flex items-center gap-2 text-[#455250] text-sm"><Mail size={16} className="text-[#164A4A]"/> {selectedEnquiry.email}</div>
-                    {selectedEnquiry.city && <div className="flex items-center gap-2 text-[#455250] text-sm"><MapPin size={16} className="text-[#164A4A]"/> {selectedEnquiry.city}</div>}
-                    <div className="flex items-center gap-2 text-[#455250] text-sm mt-2 pt-2 border-t border-[#E8E5DA]">
-                      <span className="font-semibold text-[#202828]">Prefers:</span> {selectedEnquiry.preferredContactMethod}
+                  <h3 className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-3">Customer Information</h3>
+                  <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Customer Name</span>
+                        <span className="font-bold text-sm text-[#202828]">{selectedEnquiry.customerName}</span>
+                      </div>
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Mobile</span>
+                        <span className="font-semibold text-sm text-[#202828]">{selectedEnquiry.mobileNumber}</span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Email</span>
+                        <span className="font-semibold text-sm text-[#202828] break-all">{selectedEnquiry.email}</span>
+                      </div>
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">City</span>
+                        <span className="font-semibold text-sm text-[#202828]">{selectedEnquiry.city || '—'}</span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Preferred Contact</span>
+                        <span className="font-semibold text-sm text-[#164A4A]">{selectedEnquiry.preferredContactMethod || 'Any'}</span>
+                      </div>
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Enquiry Type</span>
+                        <span className="font-semibold text-sm text-[#202828]">{selectedEnquiry.enquiryType || 'General'}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-semibold text-[#687B78] uppercase tracking-wider mb-3">Message</h3>
-                  <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4">
-                    <p className="font-semibold text-[#202828] mb-2">{selectedEnquiry.enquiryType}</p>
-                    <p className="text-[#455250] whitespace-pre-wrap text-sm leading-relaxed">{selectedEnquiry.message}</p>
+                  <h3 className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-3">Message</h3>
+                  <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                    <div className="p-3 bg-[#F8FAF9] text-[11px] font-bold uppercase tracking-wider text-[#687B78]">
+                      Subject / Type: <span className="text-[#202828]">{selectedEnquiry.enquiryType}</span>
+                    </div>
+                    <div className="p-4 bg-white text-sm text-[#202828] leading-relaxed whitespace-pre-wrap">
+                      {selectedEnquiry.message}
+                    </div>
                   </div>
                 </div>
               </div>

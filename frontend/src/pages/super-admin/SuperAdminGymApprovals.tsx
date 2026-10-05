@@ -263,8 +263,8 @@ const SuperAdminGymApprovals = () => {
 
       {/* View Details Modal */}
       {viewOwner && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto my-auto">
             <div className="flex items-center justify-between sticky top-0 bg-[#FFFFFF] py-2 z-10 border-b border-[#D3DFDA] mb-6">
               <h2 className="text-xl font-bold text-[#202828]">Gym Details</h2>
               <button 
@@ -275,90 +275,103 @@ const SuperAdminGymApprovals = () => {
               </button>
             </div>
             
-            <div className="space-y-8 text-sm">
+            <div className="space-y-6 text-sm">
               {/* Gym Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Gym Information</h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Name</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.name || 'Not provided'}</p>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Gym Information</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Name</span>
+                      <span className="font-bold text-sm text-[#202828]">{viewOwner.gymId?.name || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Type</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.gymType || 'Standard'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Type</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.gymType || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Email</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.email || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Gym Phone</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.phone || 'Not provided'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Email</span>
+                      <span className="font-semibold text-sm text-[#202828] break-all">{viewOwner.gymId?.email || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Phone</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.phone || 'Not provided'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Location & Operations */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Location & Operations</h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                  <div className="col-span-2">
-                    <p className="text-[#455250] mb-1">Address</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.location?.address || 'Not provided'}</p>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Location & Operations</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center sm:col-span-2">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Address</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.address || 'Not provided'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">City</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.location?.city || 'Not provided'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">City</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.city || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">State</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.state || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">PIN Code</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">State</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.location?.state || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">PIN Code</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Approx. Members</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.memberCapacity || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Num Trainers</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.gymId?.trainerCapacity || 'Not provided'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Approx. Members Capacity</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.memberCapacity || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Trainer Capacity</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.trainerCapacity || 'Not provided'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
               
               {/* Owner Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Owner Information</h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                  <div>
-                    <p className="text-[#455250] mb-1">First Name</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.firstName}</p>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Owner Information</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">First Name</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.firstName || '—'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Last Name</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.lastName || '—'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Last Name</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.lastName}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Email</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] mb-1">Mobile</p>
-                    <p className="font-medium text-[#202828]">{viewOwner.mobile}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Email</span>
+                      <span className="font-semibold text-sm text-[#202828] break-all">{viewOwner.email || '—'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Mobile</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.mobile || '—'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
             
-            <div className="mt-8 flex justify-end sticky bottom-0 bg-[#FFFFFF] py-2 border-t border-[#D3DFDA]">
+            <div className="mt-8 flex justify-end sticky bottom-0 bg-[#FFFFFF] py-3 border-t border-[#D3DFDA]">
               <button 
                 onClick={() => setViewOwner(null)}
-                className="px-4 py-2 bg-[#E8E5DA] text-white rounded-lg hover:bg-[#333] transition-colors text-sm font-medium"
+                className="px-5 py-2 bg-[#164A4A] text-white rounded-lg hover:bg-[#123E3E] transition-colors text-sm font-semibold shadow-sm"
               >
                 Close
               </button>
@@ -369,7 +382,7 @@ const SuperAdminGymApprovals = () => {
 
       {/* Action Reason Modal */}
       {actionModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-[#FFFFFF] rounded-xl max-w-md w-full border border-[#D3DFDA] overflow-hidden">
             <div className="p-6">
               <h3 className="text-xl font-bold text-[#202828] mb-2">

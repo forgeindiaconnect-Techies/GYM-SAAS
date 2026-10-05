@@ -304,8 +304,8 @@ const SuperAdminCustomers = () => {
 
       {/* View Details Modal */}
       {viewCustomer && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-20 pb-10 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[82vh] overflow-hidden my-auto mt-4 sm:mt-6">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
               <div>
                 <h2 className="text-xl font-bold text-[#202828]">Customer Details</h2>
@@ -323,143 +323,172 @@ const SuperAdminCustomers = () => {
             <div className="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
               {/* Account Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Account Details</h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">First Name</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.firstName}</p>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Account Details</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">First Name</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.firstName || '—'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Last Name</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.lastName || '—'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Email</span>
+                      <span className="font-semibold text-sm text-[#202828] break-all">{viewCustomer.email || '—'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Mobile</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.mobile || '—'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Last Name</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.lastName}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Email</p>
-                    <p className="font-medium text-[#202828] break-all">{viewCustomer.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Mobile</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.mobile}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Status</p>
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(viewCustomer.approvalStatus)}`}>
-                      {viewCustomer.approvalStatus}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Joined Date & Time</p>
-                    <p className="font-medium text-[#202828]">
-                      {new Date(viewCustomer.createdAt).toLocaleDateString()} at {new Date(viewCustomer.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Last Login</p>
-                    <p className="font-medium text-[#202828]">
-                      {viewCustomer.lastLogin ? (
-                        <>{new Date(viewCustomer.lastLogin).toLocaleDateString()} at {new Date(viewCustomer.lastLogin).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</>
-                      ) : (
-                        'Never'
-                      )}
-                    </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Account Status</span>
+                      <span className="inline-flex items-center">
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStatusColor(viewCustomer.approvalStatus)}`}>
+                          {viewCustomer.approvalStatus}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Joined Date & Time</span>
+                      <span className="font-semibold text-sm text-[#202828]">
+                        {new Date(viewCustomer.createdAt).toLocaleDateString()} at {new Date(viewCustomer.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Last Login</span>
+                      <span className="font-semibold text-sm text-[#202828]">
+                        {viewCustomer.lastLogin ? (
+                          <>{new Date(viewCustomer.lastLogin).toLocaleDateString()} at {new Date(viewCustomer.lastLogin).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</>
+                        ) : (
+                          'Never'
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Subscription / Access Details */}
-              <div className="bg-[#F8FAF9] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Platform Access Details</h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Current Plan</p>
-                    <p className="font-bold text-[#202828] flex items-center gap-2">
-                      <span className="text-[#164A4A]">Pro Plan</span>
-                      <span className="bg-[#E8E5DA] text-xs px-2 py-0.5 rounded-full">Monthly</span>
-                    </p>
+              <div>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Platform Access Details</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Current Plan</span>
+                      <span className="font-bold text-sm text-[#164A4A] flex items-center gap-1.5">
+                        Pro Plan <span className="bg-[#164A4A]/10 text-[#164A4A] text-[10px] px-1.5 py-0.5 rounded font-bold">Monthly</span>
+                      </span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Access Status</span>
+                      <span className="inline-flex items-center">
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">
+                          ACTIVE
+                        </span>
+                      </span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Subscription Start</span>
+                      <span className="font-semibold text-sm text-[#202828]">
+                        {new Date(viewCustomer.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Subscription Expiry</span>
+                      <span className="font-semibold text-sm text-red-600">
+                        {viewCustomer.subscriptionExpiry ? (
+                          new Date(viewCustomer.subscriptionExpiry).toLocaleDateString()
+                        ) : (
+                          'Active / Never Expires'
+                        )}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Access Status</p>
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
-                      ACTIVE
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Subscription Start</p>
-                    <p className="font-medium text-[#202828]">
-                      {new Date(viewCustomer.createdAt).toLocaleDateString()} at {new Date(viewCustomer.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Subscription Expiry</p>
-                    <p className="font-medium text-red-600">
-                      {viewCustomer.subscriptionExpiry ? (
-                        <>{new Date(viewCustomer.subscriptionExpiry).toLocaleDateString()} at {new Date(viewCustomer.subscriptionExpiry).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</>
-                      ) : (
-                        'Not set'
-                      )}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Amount Paid</p>
-                    <p className="font-semibold text-[#202828] text-base">₹999</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Payment Method</p>
-                    <p className="font-medium text-[#202828]">PhonePe</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Amount Paid</span>
+                      <span className="font-bold text-sm text-[#164A4A]">₹999</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Payment Method</span>
+                      <span className="font-semibold text-sm text-[#202828]">PhonePe / UPI</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Billing Cycle</span>
+                      <span className="font-semibold text-sm text-[#202828]">1 Month</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Invoice Status</span>
+                      <span className="font-bold text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block w-fit">Paid</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Personal Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Personal Details</h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Date of Birth</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.dateOfBirth ? new Date(viewCustomer.dateOfBirth).toLocaleDateString() : 'Not provided'}</p>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Personal Details</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Date of Birth</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.dateOfBirth ? new Date(viewCustomer.dateOfBirth).toLocaleDateString() : 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gender</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.gender || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Height (cm)</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.height ? `${viewCustomer.height} cm` : 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Weight (kg)</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.weight ? `${viewCustomer.weight} kg` : 'Not provided'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Gender</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.gender || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">City</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.city || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">PIN Code</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.pinCode || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Height (cm)</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.height || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Weight (kg)</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.weight || 'Not provided'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center sm:col-span-2">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">City</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.city || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">PIN Code</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.pinCode || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Profile Completeness</span>
+                      <span className="font-bold text-xs text-[#164A4A] bg-[#164A4A]/10 px-2 py-0.5 rounded-full inline-block w-fit">95% Complete</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Fitness Details */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">Fitness Preferences</h3>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Fitness Goal</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.fitnessGoal || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Experience Level</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.experienceLevel || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Preferred Training</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.preferredTraining || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[#455250] text-xs mb-1">Preferred Time</p>
-                    <p className="font-medium text-[#202828]">{viewCustomer.preferredWorkoutTime || 'Not provided'}</p>
+                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Fitness Preferences</h3>
+                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Fitness Goal</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.fitnessGoal || 'Not provided'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Experience Level</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.experienceLevel || 'Intermediate'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Preferred Training</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.preferredTraining || 'General Fitness'}</span>
+                    </div>
+                    <div className="p-3.5 bg-white flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Preferred Time</span>
+                      <span className="font-semibold text-sm text-[#202828]">{viewCustomer.preferredWorkoutTime || 'Morning'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
