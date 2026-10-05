@@ -5,7 +5,6 @@ import {
   AlertCircle, Wallet, RefreshCw, Send, CheckCircle2,
   Eye, Filter
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 
 const GymAdminTrainerCommission = () => {
@@ -246,12 +245,6 @@ const GymAdminTrainerCommission = () => {
           >
             <Wallet className="w-4 h-4" /> Withdraw Commission
           </button>
-          <Link
-            to="/admin/trainer-fees"
-            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#D3DFDA] text-[#164A4A] rounded-xl font-bold text-xs hover:bg-gray-50 transition-all shadow-sm"
-          >
-            <Percent className="w-4 h-4" /> Configure Rates
-          </Link>
         </div>
       </div>
 
