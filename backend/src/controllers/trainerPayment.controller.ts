@@ -889,7 +889,12 @@ export const getGymCommissionData = async (req: AuthRequest, res: Response) => {
 
 export const requestGymCommissionWithdrawal = async (req: AuthRequest, res: Response) => {
   try {
-    const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    let gymId = (await resolveGymId(req)) || req.user?.gymId;
+    if (!gymId) {
+      const gym = await Gym.findOne();
+      if (gym) gymId = gym._id.toString();
+    }
+
     const userId = (req.user as any)?.id || (req.user as any)?._id;
     const { amount, withdrawalMethod, bankDetails, upiDetails, notes } = req.body;
 
@@ -902,8 +907,15 @@ export const requestGymCommissionWithdrawal = async (req: AuthRequest, res: Resp
       return res.status(400).json({ success: false, message: 'Valid withdrawal method is required (Bank Transfer or UPI)' });
     }
 
-    // Calculate current available balance
-    const payments = await TrainerPayment.find(gymId ? { gymId } : {});
+    const query: any = {};
+    if (gymId) query.gymId = gymId;
+
+    // Calculate current available balance with populated feeAmount
+    const [payments, pastWithdrawals] = await Promise.all([
+      TrainerPayment.find(query).populate('trainerFeeId', 'feeAmount commissionType commissionValue netAmount'),
+      GymCommissionWithdrawal.find(query)
+    ]);
+
     let totalCommissionEarned = 0;
     payments.forEach((p: any) => {
       const baseFee = Number(p.trainerFeeId?.feeAmount) || Number(p.amount) || 0;
@@ -913,7 +925,6 @@ export const requestGymCommissionWithdrawal = async (req: AuthRequest, res: Resp
       }
     });
 
-    const pastWithdrawals = await GymCommissionWithdrawal.find(gymId ? { gymId } : {});
     const totalDeducted = pastWithdrawals
       .filter((w: any) => ['Completed', 'Pending', 'Processing'].includes(w.status))
       .reduce((sum: number, w: any) => sum + (Number(w.amount) || 0), 0);
@@ -946,15 +957,19 @@ export const requestGymCommissionWithdrawal = async (req: AuthRequest, res: Resp
     await newWithdrawal.save();
 
     if (userId) {
-      await Notification.create({
-        recipientId: userId,
-        recipientRole: 'GYM_OWNER',
-        gymId,
-        title: 'Commission Withdrawn',
-        message: `You successfully withdrew ₹${numAmount.toLocaleString('en-IN')} from your commission balance via ${withdrawalMethod}. Ref: ${transactionId}`,
-        type: 'success',
-        relatedRecordId: newWithdrawal._id
-      });
+      try {
+        await Notification.create({
+          recipientId: userId,
+          recipientRole: 'GYM_OWNER',
+          gymId,
+          title: 'Commission Withdrawn',
+          message: `You successfully withdrew ₹${numAmount.toLocaleString('en-IN')} from your commission balance via ${withdrawalMethod}. Ref: ${transactionId}`,
+          type: 'success',
+          relatedRecordId: newWithdrawal._id
+        });
+      } catch (notifErr) {
+        console.error('Notification error on withdrawal:', notifErr);
+      }
     }
 
     res.status(201).json({
