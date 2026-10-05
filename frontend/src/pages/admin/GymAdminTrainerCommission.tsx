@@ -505,67 +505,6 @@ const GymAdminTrainerCommission = () => {
               </div>
             )}
           </div>
-
-          {/* Active Trainer Commission Configurations Card */}
-          <div className="bg-white border border-[#D3DFDA] rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-bold text-sm text-[#202828]">Active Commission Rates per Trainer</h3>
-                <p className="text-xs text-[#687B78] mt-0.5">
-                  Pre-configured commission models that will be deducted from upcoming trainer fees
-                </p>
-              </div>
-              <Link
-                to="/admin/trainer-fees"
-                className="text-xs font-bold text-[#164A4A] hover:underline flex items-center gap-1"
-              >
-                Manage Rates &rarr;
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {activeFees.map((fee: any) => {
-                const baseFee = Number(fee.feeAmount) || 0;
-                const commType = fee.commissionType || 'Percentage';
-                const commValue = Number(fee.commissionValue) || 0;
-                let commDeduction = 0;
-                if (commValue > 0) {
-                  commDeduction = commType === 'Fixed Amount' ? commValue : (baseFee * commValue) / 100;
-                }
-                const netAmount = Math.max(0, Math.round(baseFee - commDeduction));
-
-                return (
-                  <div key={fee._id} className="p-4 rounded-xl border border-[#D3DFDA] bg-gray-50/50 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <p className="font-bold text-xs text-[#202828]">{fee.trainerId?.name || 'Trainer'}</p>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
-                          {fee.billingCycle || 'Monthly'}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-[#687B78] mt-0.5">{fee.trainingType || 'General Training'}</p>
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-[#D3DFDA] grid grid-cols-3 gap-2 text-center">
-                      <div>
-                        <span className="text-[10px] text-[#687B78] block">Base Fee</span>
-                        <span className="text-xs font-bold text-[#202828]">₹{baseFee.toLocaleString('en-IN')}</span>
-                      </div>
-                      <div className="bg-emerald-100/50 rounded-lg py-0.5">
-                        <span className="text-[10px] text-emerald-800 block font-semibold">Gym Takes</span>
-                        <span className="text-xs font-black text-emerald-700">+₹{Math.round(commDeduction).toLocaleString('en-IN')}</span>
-                      </div>
-                      <div>
-                        <span className="text-[10px] text-[#687B78] block">Net Trainer</span>
-                        <span className="text-xs font-bold text-[#202828]">₹{netAmount.toLocaleString('en-IN')}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
         </div>
       )}
 
