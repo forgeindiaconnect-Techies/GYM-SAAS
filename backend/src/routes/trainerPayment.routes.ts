@@ -17,7 +17,9 @@ import {
   getWithdrawalRequests,
   getAllWithdrawalRequests,
   updateWithdrawalStatus,
-  createManualTrainerWithdrawal
+  createManualTrainerWithdrawal,
+  getGymCommissionData,
+  requestGymCommissionWithdrawal
 } from '../controllers/trainerPayment.controller';
 
 const router = express.Router();
@@ -37,6 +39,8 @@ router.put('/withdrawals/:id/status', gymOwnerAuth, updateWithdrawalStatus);
 router.post('/process', gymOwnerAuth, processPayment);
 router.get('/history', gymOwnerAuth, getPaymentHistoryGymOwner);
 router.get('/gym-earnings', gymOwnerAuth, getTrainerEarningsGymOwner);
+router.get('/gym-commission', gymOwnerAuth, getGymCommissionData);
+router.post('/gym-commission/withdraw', gymOwnerAuth, requestGymCommissionWithdrawal);
 
 // --- Super Admin Routes ---
 const superAdminAuth = authorize(['SUPER_ADMIN']);

@@ -6,6 +6,7 @@ import Gym from '../models/Gym';
 import mongoose from 'mongoose';
 import { AuthRequest } from '../middlewares/auth';
 import TrainerWithdrawal from '../models/TrainerWithdrawal';
+import GymCommissionWithdrawal from '../models/GymCommissionWithdrawal';
 import Notification from '../models/Notification';
 
 const resolveGymId = async (req: AuthRequest): Promise<string | undefined> => {
@@ -819,3 +820,151 @@ export const updateWithdrawalStatus = async (req: AuthRequest, res: Response) =>
     res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 };
+
+export const getGymCommissionData = async (req: AuthRequest, res: Response) => {
+  try {
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const query: any = {};
+    if (gymId) query.gymId = gymId;
+
+    const [payments, withdrawals, fees] = await Promise.all([
+      TrainerPayment.find(query)
+        .populate('trainerId', 'name email profilePhoto phone')
+        .populate('trainerFeeId', 'trainingType feeAmount billingCycle commissionType commissionValue netAmount')
+        .sort({ paymentDate: -1, createdAt: -1 }),
+      GymCommissionWithdrawal.find(query).sort({ requestedAt: -1, createdAt: -1 }),
+      TrainerFee.find({ ...query, status: 'Active' })
+        .populate('trainerId', 'name email profilePhoto phone commissionType commissionValue')
+    ]);
+
+    let totalCommissionEarned = 0;
+    const commissionLedger = payments.map((p: any) => {
+      const baseFee = Number(p.trainerFeeId?.feeAmount) || Number(p.amount) || 0;
+      const netPaid = Number(p.amount) || 0;
+      const commissionTaken = Math.max(0, baseFee - netPaid);
+      totalCommissionEarned += commissionTaken;
+
+      return {
+        _id: p._id,
+        paymentDate: p.paymentDate,
+        transactionId: p.transactionId,
+        paymentMethod: p.paymentMethod,
+        trainer: p.trainerId,
+        baseFee,
+        commissionType: p.trainerFeeId?.commissionType || 'Percentage',
+        commissionValue: p.trainerFeeId?.commissionValue || 0,
+        commissionEarned: commissionTaken,
+        netDisbursed: netPaid,
+        notes: p.notes
+      };
+    });
+
+    const totalCommissionWithdrawn = withdrawals
+      .filter((w: any) => w.status === 'Completed')
+      .reduce((sum: number, w: any) => sum + (Number(w.amount) || 0), 0);
+
+    const pendingWithdrawal = withdrawals
+      .filter((w: any) => w.status === 'Pending' || w.status === 'Processing')
+      .reduce((sum: number, w: any) => sum + (Number(w.amount) || 0), 0);
+
+    const availableBalance = Math.max(0, totalCommissionEarned - totalCommissionWithdrawn - pendingWithdrawal);
+
+    res.status(200).json({
+      success: true,
+      stats: {
+        totalCommissionEarned,
+        availableBalance,
+        totalCommissionWithdrawn,
+        pendingWithdrawal
+      },
+      commissionLedger,
+      withdrawals,
+      activeFees: fees
+    });
+  } catch (error) {
+    console.error('Error in getGymCommissionData:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const requestGymCommissionWithdrawal = async (req: AuthRequest, res: Response) => {
+  try {
+    const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const userId = (req.user as any)?.id || (req.user as any)?._id;
+    const { amount, withdrawalMethod, bankDetails, upiDetails, notes } = req.body;
+
+    const numAmount = Number(amount);
+    if (!numAmount || numAmount <= 0) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid withdrawal amount' });
+    }
+
+    if (!withdrawalMethod || !['Bank Transfer', 'UPI'].includes(withdrawalMethod)) {
+      return res.status(400).json({ success: false, message: 'Valid withdrawal method is required (Bank Transfer or UPI)' });
+    }
+
+    // Calculate current available balance
+    const payments = await TrainerPayment.find(gymId ? { gymId } : {});
+    let totalCommissionEarned = 0;
+    payments.forEach((p: any) => {
+      const baseFee = Number(p.trainerFeeId?.feeAmount) || Number(p.amount) || 0;
+      const netPaid = Number(p.amount) || 0;
+      if (baseFee > netPaid) {
+        totalCommissionEarned += (baseFee - netPaid);
+      }
+    });
+
+    const pastWithdrawals = await GymCommissionWithdrawal.find(gymId ? { gymId } : {});
+    const totalDeducted = pastWithdrawals
+      .filter((w: any) => ['Completed', 'Pending', 'Processing'].includes(w.status))
+      .reduce((sum: number, w: any) => sum + (Number(w.amount) || 0), 0);
+
+    const availableBalance = Math.max(0, totalCommissionEarned - totalDeducted);
+
+    if (numAmount > availableBalance) {
+      return res.status(400).json({
+        success: false,
+        message: `Withdrawal amount (₹${numAmount.toLocaleString('en-IN')}) cannot exceed your available commission balance of ₹${availableBalance.toLocaleString('en-IN')}`
+      });
+    }
+
+    const transactionId = `COMM-WD-${Date.now().toString().slice(-6)}`;
+
+    const newWithdrawal = new GymCommissionWithdrawal({
+      gymId,
+      ownerId: userId,
+      amount: numAmount,
+      withdrawalMethod,
+      bankDetails: withdrawalMethod === 'Bank Transfer' ? bankDetails : undefined,
+      upiDetails: withdrawalMethod === 'UPI' ? upiDetails : undefined,
+      transactionId,
+      notes: notes || 'Gym owner commission withdrawal',
+      status: 'Completed',
+      requestedAt: new Date(),
+      processedAt: new Date()
+    });
+
+    await newWithdrawal.save();
+
+    if (userId) {
+      await Notification.create({
+        recipientId: userId,
+        recipientRole: 'GYM_OWNER',
+        gymId,
+        title: 'Commission Withdrawn',
+        message: `You successfully withdrew ₹${numAmount.toLocaleString('en-IN')} from your commission balance via ${withdrawalMethod}. Ref: ${transactionId}`,
+        type: 'success',
+        relatedRecordId: newWithdrawal._id
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      message: `Commission withdrawal of ₹${numAmount.toLocaleString('en-IN')} processed successfully!`,
+      withdrawal: newWithdrawal
+    });
+  } catch (error: any) {
+    console.error('Error in requestGymCommissionWithdrawal:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
+  }
+};
+
