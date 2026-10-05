@@ -3,8 +3,10 @@ import {
   IndianRupee, Percent, ArrowUpRight, CheckCircle, Clock,
   Search, Building2, Smartphone, Copy, Check, X,
   AlertCircle, Wallet, RefreshCw, Send, CheckCircle2,
-  Eye, Filter
+  Eye, Filter, Download
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import api from '../../utils/api';
 
 const GymAdminTrainerCommission = () => {
@@ -61,6 +63,81 @@ const GymAdminTrainerCommission = () => {
     navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  // Download Single Commission Withdrawal PDF Receipt
+  const handleDownloadWithdrawalPDF = (w: any) => {
+    if (!w) return;
+    const doc = new jsPDF();
+    const dateFormatted = w.requestedAt || w.createdAt
+      ? new Date(w.requestedAt || w.createdAt).toLocaleString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        })
+      : new Date().toLocaleDateString('en-IN');
+
+    // Header banner
+    doc.setFillColor(22, 74, 74);
+    doc.rect(0, 0, 210, 32, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('COMMISSION WITHDRAWAL RECEIPT', 14, 20);
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Ref #: ${w.transactionId || w._id?.slice(-8).toUpperCase() || 'COMM-WD'}`, 140, 20);
+
+    // Sub-header Info
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(10);
+    doc.text(`Issued Date: ${dateFormatted}`, 14, 42);
+    doc.text(`Status: ${w.status || 'Completed'}`, 14, 48);
+
+    const infoRows: any[] = [
+      ['Receipt Type', 'Gym Owner Commission Payout'],
+      ['Withdrawn Amount', `Rs. ${Number(w.amount || 0).toLocaleString('en-IN')}`],
+      ['Payout Method', w.withdrawalMethod || 'Bank Transfer'],
+    ];
+
+    if (w.withdrawalMethod === 'Bank Transfer') {
+      infoRows.push(['Account Holder', w.bankDetails?.accountHolder || 'N/A']);
+      infoRows.push(['Bank Name', w.bankDetails?.bankName || 'N/A']);
+      infoRows.push(['Account Number', w.bankDetails?.accountNumber || 'N/A']);
+      infoRows.push(['IFSC Code', w.bankDetails?.ifscCode || 'N/A']);
+    } else {
+      infoRows.push(['UPI ID (VPA)', w.upiDetails?.upiId || 'N/A']);
+      infoRows.push(['Beneficiary Name', w.upiDetails?.upiName || 'N/A']);
+    }
+
+    infoRows.push(
+      ['Transaction Reference', w.transactionId || w._id || 'N/A'],
+      ['Payout Status', w.status || 'Completed'],
+      ['Date & Time', dateFormatted],
+      ['Notes / Remarks', w.notes || 'Gym owner commission withdrawal']
+    );
+
+    autoTable(doc, {
+      startY: 54,
+      head: [['Commission Payout Details', 'Information']],
+      body: infoRows,
+      theme: 'grid',
+      headStyles: { fillColor: [22, 74, 74], textColor: [255, 255, 255], fontStyle: 'bold' },
+      styles: { fontSize: 10, cellPadding: 5 }
+    });
+
+    const finalY = (doc as any).lastAutoTable?.finalY || 140;
+    doc.setFontSize(9);
+    doc.setTextColor(130, 130, 130);
+    doc.text('This commission payout receipt was generated electronically and is valid without signature.', 14, finalY + 14);
+
+    const safeRef = (w.transactionId || w._id || 'receipt').replace(/[^a-zA-Z0-9]/g, '_');
+    doc.save(`Commission_Receipt_${safeRef}.pdf`);
   };
 
   const fetchCommissionData = useCallback(async () => {
@@ -644,7 +721,7 @@ const GymAdminTrainerCommission = () => {
                       <th className="py-3 px-4">Payout Method</th>
                       <th className="py-3 px-4">Destination Account</th>
                       <th className="py-3 px-4">Status</th>
-                      <th className="py-3 px-4 text-center">Receipt</th>
+                      <th className="py-3 px-4 text-center">Receipt &amp; Download</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#D3DFDA] text-xs">
@@ -706,13 +783,22 @@ const GymAdminTrainerCommission = () => {
                           </span>
                         </td>
                         <td className="py-3.5 px-4 text-center">
-                          <button
-                            onClick={() => setReceiptModal(w)}
-                            className="p-1.5 text-[#164A4A] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
-                            title="View Receipt"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => setReceiptModal(w)}
+                              className="p-1.5 text-[#164A4A] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                              title="View Receipt Details"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDownloadWithdrawalPDF(w)}
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#164A4A] text-white hover:bg-[#123E3E] rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
+                              title="Download PDF Receipt"
+                            >
+                              <Download className="w-3.5 h-3.5" /> Download Receipt
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -1008,10 +1094,18 @@ const GymAdminTrainerCommission = () => {
               )}
             </div>
 
-            <div className="pt-2 flex justify-end">
+            <div className="pt-3 flex items-center justify-between border-t border-[#D3DFDA]">
               <button
+                type="button"
+                onClick={() => handleDownloadWithdrawalPDF(receiptModal)}
+                className="flex items-center gap-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl text-xs font-bold hover:bg-[#123E3E] transition-all shadow-sm cursor-pointer"
+              >
+                <Download className="w-4 h-4" /> Download PDF Receipt
+              </button>
+              <button
+                type="button"
                 onClick={() => setReceiptModal(null)}
-                className="px-4 py-2 bg-[#164A4A] text-white rounded-xl text-xs font-bold hover:bg-[#123E3E] cursor-pointer"
+                className="px-4 py-2 border border-[#D3DFDA] text-[#687B78] hover:bg-gray-50 rounded-xl text-xs font-bold cursor-pointer"
               >
                 Close Receipt
               </button>
