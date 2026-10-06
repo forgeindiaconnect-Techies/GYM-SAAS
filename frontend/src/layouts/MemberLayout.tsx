@@ -113,7 +113,6 @@ const MemberLayout = () => {
       items: [
         { label: 'Profile', path: '/member/profile', icon: User },
         { label: 'Membership', path: '/member/subscription', icon: CreditCard },
-        { label: 'Messages', path: '/member/chat', icon: MessageSquare },
         { label: 'Notifications', path: '/member/notifications', icon: Bell },
       ]
     }

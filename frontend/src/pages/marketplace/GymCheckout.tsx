@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, ShieldCheck, FileText } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { isSubscriptionActive } from '../../utils/routeHelpers';
 
 const GymCheckout = () => {
   const location = useLocation();
@@ -15,6 +16,18 @@ const GymCheckout = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
+    // If an authenticated member already has an active subscription / free trial or approval,
+    // or if the plan is Free Trial and they are already a member, they should NOT see checkout.
+    if (isAuthenticated && user?.role === 'MEMBER') {
+      const planName = location.state?.plan?.name?.toLowerCase() || '';
+      const isTrial = planName.includes('trial') || Number(location.state?.plan?.price || 0) === 0;
+      if (isSubscriptionActive(user.subscriptionStatus) || isTrial || user.gymId) {
+        sessionStorage.removeItem('checkout_intent');
+        navigate('/member/dashboard', { replace: true });
+        return;
+      }
+    }
+
     // Expect state to be passed from GymDetails
     if (!location.state?.plan || !location.state?.gym) {
       navigate('/gyms');
@@ -26,15 +39,19 @@ const GymCheckout = () => {
     setGym(gymData);
     setPlan(planData);
     setBranch(branchData);
-    // Save intent immediately so that if token expires and global 401
-    // interceptor redirects to /login, the login page can return here
-    sessionStorage.setItem('checkout_intent', JSON.stringify({
-      gymId: gymData._id,
-      plan: planData,
-      gym: gymData,
-      branch: branchData,
-    }));
-  }, [location, navigate]);
+
+    const isPaid = Number(planData.price || 0) > 0 && !planData.name?.toLowerCase().includes('trial');
+    if (isPaid) {
+      sessionStorage.setItem('checkout_intent', JSON.stringify({
+        gymId: gymData._id,
+        plan: planData,
+        gym: gymData,
+        branch: branchData,
+      }));
+    } else {
+      sessionStorage.removeItem('checkout_intent');
+    }
+  }, [location, navigate, isAuthenticated, user]);
 
   // Refresh auth when returning from bfcache (back/forward navigation)
   useEffect(() => {
@@ -74,6 +91,7 @@ const GymCheckout = () => {
 
       await api.post('/memberships/join', payload);
 
+      sessionStorage.removeItem('checkout_intent');
       alert('Free Trial activated! Welcome to the gym.');
       navigate('/member/dashboard');
 

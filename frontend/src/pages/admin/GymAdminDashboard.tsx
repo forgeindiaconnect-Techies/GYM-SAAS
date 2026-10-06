@@ -1,44 +1,79 @@
 import { useState, useEffect } from 'react';
-import { getDb } from '../../utils/mockDb';
-import { Users, Dumbbell, Activity, CalendarCheck, TrendingUp, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Users, Dumbbell, Activity, CalendarCheck, TrendingUp, AlertCircle, ArrowRight, Loader2, CheckCircle2, MessageSquare, Bell } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 
+const getNotificationLink = (notif: any) => {
+  if (notif.link) return notif.link;
+  const title = (notif.title || '').toLowerCase();
+  const msg = (notif.message || '').toLowerCase();
+  if (title.includes('enquiry') || msg.includes('enquiry') || title.includes('lead')) return '/admin/enquiries';
+  if (title.includes('member') || msg.includes('member') || title.includes('registration') || title.includes('trial')) return '/admin/members';
+  if (title.includes('payment') || msg.includes('payment') || title.includes('due') || title.includes('fee')) return '/admin/payments';
+  if (title.includes('order') || msg.includes('order') || title.includes('store') || title.includes('sale')) return '/admin/store/sales';
+  if (title.includes('booking') || msg.includes('booking') || title.includes('session')) return '/admin/session-bookings';
+  if (title.includes('equipment') || msg.includes('equipment') || title.includes('maintenance')) return '/admin/equipment';
+  if (title.includes('trainer') || msg.includes('trainer')) return '/admin/trainers';
+  return '/admin/notifications';
+};
+
 const GymAdminDashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({ trainers: 0, members: 0, bookings: 0, revenue: 0 });
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchGymStats = async () => {
+    try {
+      setLoading(true);
+      const [membersRes, usersRes, trainersRes, bookingsRes, salesRes, notifsRes] = await Promise.all([
+        api.get('/memberships/gym').catch(() => ({ data: { memberships: [] } })),
+        api.get('/users?role=MEMBER').catch(() => ({ data: { users: [] } })),
+        api.get('/trainers').catch(() => ({ data: { trainers: [] } })),
+        api.get('/trainer-sessions/gym').catch(() => ({ data: { sessions: [] } })),
+        api.get('/store/sales').catch(() => ({ data: { sales: [] } })),
+        api.get('/notifications').catch(() => ({ data: { notifications: [] } }))
+      ]);
+
+      const directMembers = usersRes.data?.users?.length || 0;
+      const membershipMembers = membersRes.data?.memberships?.length || 0;
+      const membersCount = Math.max(directMembers, membershipMembers);
+
+      const trainersCount = trainersRes.data?.trainers?.filter((t: any) => t.status === 'Active' || !t.status)?.length ?? (trainersRes.data?.trainers?.length || 0);
+      const bookingsCount = bookingsRes.data?.sessions?.filter((s: any) => s.status === 'Pending').length || 0;
+      const salesTotal = salesRes.data?.sales?.reduce((acc: number, curr: any) => acc + (curr.totalAmount || curr.total || 0), 0) || 0;
+
+      setStats({
+        members: membersCount,
+        trainers: trainersCount,
+        bookings: bookingsCount,
+        revenue: salesTotal
+      });
+
+      setNotifications(notifsRes.data?.notifications || []);
+    } catch (err) {
+      console.error('Failed to load gym dashboard stats', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchGymStats = async () => {
-      try {
-        setLoading(true);
-        const [membersRes, trainersRes, bookingsRes, salesRes] = await Promise.all([
-          api.get('/memberships').catch(() => ({ data: { memberships: [] } })),
-          api.get('/trainers').catch(() => ({ data: { trainers: [] } })),
-          api.get('/trainer-sessions/gym').catch(() => ({ data: { sessions: [] } })),
-          api.get('/store/sales').catch(() => ({ data: { sales: [] } }))
-        ]);
-
-        const membersCount = membersRes.data?.memberships?.length || getDb('members').length || 142;
-        const trainersCount = trainersRes.data?.trainers?.length || getDb('trainers').filter(t => t.status === 'Active').length || 4;
-        const bookingsCount = bookingsRes.data?.sessions?.filter((s: any) => s.status === 'Pending').length || getDb('bookings').filter(b => b.status === 'Pending').length || 2;
-        const salesTotal = salesRes.data?.sales?.reduce((acc: number, curr: any) => acc + (curr.total || 0), 0) || 12450;
-
-        setStats({
-          members: membersCount,
-          trainers: trainersCount,
-          bookings: bookingsCount,
-          revenue: salesTotal
-        });
-      } catch (err) {
-        console.error('Failed to load gym dashboard stats', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchGymStats();
   }, []);
+
+  const handleNotificationClick = async (notif: any) => {
+    try {
+      if (!notif.isRead) {
+        await api.put(`/notifications/${notif._id}/read`);
+        setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    const targetLink = getNotificationLink(notif);
+    navigate(targetLink);
+  };
 
   const cards = [
     { title: 'Total Members', value: stats.members, icon: Users, color: 'text-blue-600', bg: 'bg-blue-500/10' },
@@ -50,6 +85,8 @@ const GymAdminDashboard = () => {
   if (loading) {
     return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>;
   }
+
+  const unreadNotifsCount = notifications.filter(n => !n.isRead).length;
 
   return (
     <div className="space-y-8">
@@ -109,37 +146,103 @@ const GymAdminDashboard = () => {
           </div>
         </div>
 
-        {/* Alerts & Notifications */}
+        {/* Alerts & Notifications with proper workflow */}
         <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 flex flex-col h-full shadow-sm">
           <div className="flex justify-between items-center mb-5 border-b border-[#D3DFDA] pb-4">
-            <h2 className="text-xl font-bold text-[#202828]">Alerts & Notices</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold text-[#202828]">Alerts & Notices</h2>
+              {unreadNotifsCount > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#164A4A] text-white">
+                  {unreadNotifsCount} new
+                </span>
+              )}
+            </div>
             <Link to="/admin/notifications" className="text-xs text-[#164A4A] font-semibold hover:underline flex items-center gap-1">
               View All <ArrowRight size={13} />
             </Link>
           </div>
           
-          <div className="flex-1 flex flex-col justify-between space-y-3">
-            <div className="flex items-start space-x-3.5 p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl">
-              <AlertCircle size={20} className="text-amber-600 shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-[#202828] font-bold text-sm">Equipment Maintenance</h4>
-                <p className="text-[#455250] text-xs mt-0.5">Treadmill #4 requires scheduled safety inspection tomorrow.</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3.5 p-3.5 bg-emerald-50/70 border border-emerald-200/80 rounded-xl">
-              <AlertCircle size={20} className="text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-[#202828] font-bold text-sm">Membership Renewals</h4>
-                <p className="text-[#455250] text-xs mt-0.5">Active subscriptions are currently healthy and auto-renewing.</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3.5 p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl">
-              <AlertCircle size={20} className="text-blue-600 shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-[#202828] font-bold text-sm">Booking Requests</h4>
-                <p className="text-[#455250] text-xs mt-0.5">You have {stats.bookings} session booking(s) pending trainer confirmation.</p>
-              </div>
-            </div>
+          <div className="flex-1 flex flex-col justify-start space-y-3">
+            {notifications.length > 0 ? (
+              notifications.slice(0, 3).map((notif) => {
+                const isAlert = notif.type === 'alert';
+                const isSuccess = notif.type === 'success';
+                const isMessage = notif.type === 'message';
+                const bgClass = isAlert ? 'bg-amber-50/80 border-amber-200/90 hover:bg-amber-100/70' :
+                                isSuccess ? 'bg-emerald-50/80 border-emerald-200/90 hover:bg-emerald-100/70' :
+                                isMessage ? 'bg-blue-50/80 border-blue-200/90 hover:bg-blue-100/70' :
+                                'bg-purple-50/80 border-purple-200/90 hover:bg-purple-100/70';
+                const iconColor = isAlert ? 'text-amber-600' :
+                                  isSuccess ? 'text-emerald-600' :
+                                  isMessage ? 'text-blue-600' : 'text-purple-600';
+
+                return (
+                  <div
+                    key={notif._id}
+                    onClick={() => handleNotificationClick(notif)}
+                    className={`flex items-start space-x-3.5 p-3.5 border rounded-xl cursor-pointer transition-all ${bgClass} ${!notif.isRead ? 'ring-1 ring-[#164A4A]/20 shadow-xs' : 'opacity-90'}`}
+                  >
+                    <div className="shrink-0 mt-0.5">
+                      {isAlert ? <AlertCircle size={20} className={iconColor} /> :
+                       isSuccess ? <CheckCircle2 size={20} className={iconColor} /> :
+                       isMessage ? <MessageSquare size={20} className={iconColor} /> :
+                       <Bell size={20} className={iconColor} />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-[#202828] font-bold text-sm truncate">{notif.title}</h4>
+                        {!notif.isRead && (
+                          <span className="w-2 h-2 rounded-full bg-[#164A4A] shrink-0" />
+                        )}
+                      </div>
+                      <p className="text-[#455250] text-xs mt-0.5 line-clamp-2 leading-relaxed">{notif.message}</p>
+                      <div className="flex items-center justify-between mt-1 text-[11px] text-[#687B78]">
+                        <span>{new Date(notif.createdAt).toLocaleDateString()}</span>
+                        <span className="text-[#164A4A] font-semibold flex items-center gap-0.5 hover:underline">
+                          Open <ArrowRight size={10} />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <>
+                {/* Fallback to live system alerts when no custom notifications exist */}
+                <div 
+                  onClick={() => navigate('/admin/session-bookings')}
+                  className="flex items-start space-x-3.5 p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl cursor-pointer hover:bg-blue-100/50 transition-colors"
+                >
+                  <CalendarCheck size={20} className="text-blue-600 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <h4 className="text-[#202828] font-bold text-sm">Session Bookings</h4>
+                    <p className="text-[#455250] text-xs mt-0.5">You have {stats.bookings} session booking(s) pending trainer confirmation.</p>
+                  </div>
+                </div>
+
+                <div 
+                  onClick={() => navigate('/admin/members')}
+                  className="flex items-start space-x-3.5 p-3.5 bg-emerald-50/70 border border-emerald-200/80 rounded-xl cursor-pointer hover:bg-emerald-100/50 transition-colors"
+                >
+                  <Users size={20} className="text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <h4 className="text-[#202828] font-bold text-sm">Active Memberships</h4>
+                    <p className="text-[#455250] text-xs mt-0.5">{stats.members} registered member(s) enrolled in your gym.</p>
+                  </div>
+                </div>
+
+                <div 
+                  onClick={() => navigate('/admin/store/sales')}
+                  className="flex items-start space-x-3.5 p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl cursor-pointer hover:bg-amber-100/50 transition-colors"
+                >
+                  <TrendingUp size={20} className="text-amber-600 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <h4 className="text-[#202828] font-bold text-sm">Store & Revenue</h4>
+                    <p className="text-[#455250] text-xs mt-0.5">₹{stats.revenue.toLocaleString('en-IN')} total revenue recorded from gym store sales.</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

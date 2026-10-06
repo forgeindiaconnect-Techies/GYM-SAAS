@@ -139,7 +139,12 @@ const GymStoreSalesHistory = () => {
                     <td className="px-6 py-4">
                       <span className="font-bold text-[#202828]">{s.items.reduce((sum: number, i: any) => sum + i.quantity, 0)}</span> item(s)
                     </td>
-                    <td className="px-6 py-4">{s.paymentMethod}</td>
+                    <td className="px-6 py-4">
+                      <div>{s.paymentMethod}</div>
+                      {s.transactionId && (
+                        <div className="text-[10px] font-mono text-[#164A4A]">UTR: {s.transactionId}</div>
+                      )}
+                    </td>
                     <td className="px-6 py-4">
                       {s.sourceType === 'Online Order' ? (
                         <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
@@ -200,6 +205,9 @@ const GymStoreSalesHistory = () => {
                   <div className="p-3 bg-white flex flex-col justify-center">
                     <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Payment Method</span>
                     <span className="font-semibold text-xs text-[#202828]">{selectedSale.paymentMethod || 'Cash'}</span>
+                    {selectedSale.transactionId && (
+                      <span className="text-[10px] font-mono text-[#164A4A] mt-0.5 font-bold">UTR: {selectedSale.transactionId}</span>
+                    )}
                   </div>
                   <div className="p-3 bg-white flex flex-col justify-center">
                     <span className="text-[#687B78] block font-bold text-[10px] uppercase tracking-wider mb-1">Status</span>

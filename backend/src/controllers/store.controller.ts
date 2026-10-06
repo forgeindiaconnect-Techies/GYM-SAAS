@@ -1433,7 +1433,7 @@ export const recordOfflineSale = async (req: AuthRequest, res: Response): Promis
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
-    const { items, customerId, paymentMethod = 'Cash', discount = 0, note, paymentDate } = req.body;
+    const { items, customerId, paymentMethod = 'Cash', discount = 0, note, paymentDate, transactionId, upiId } = req.body;
     if (!Array.isArray(items) || items.length === 0) {
       res.status(400).json({ success: false, message: 'At least one item is required' });
       return;
@@ -1510,6 +1510,8 @@ export const recordOfflineSale = async (req: AuthRequest, res: Response): Promis
       paymentDate: paymentDate ? new Date(paymentDate) : new Date(),
       createdBy: req.user!.id,
       note,
+      transactionId: transactionId || undefined,
+      upiId: upiId || undefined,
     });
 
     for (const it of saleItems) {
@@ -1695,6 +1697,9 @@ export const getSalesHistory = async (req: AuthRequest, res: Response): Promise<
         status: 'Completed',
         paymentStatus: 'Paid',
         paymentMethod: s.paymentMethod,
+        transactionId: s.transactionId,
+        upiId: s.upiId,
+        note: s.note,
         customer: s.customerId,
         items: s.items,
         subtotal: s.subtotal,

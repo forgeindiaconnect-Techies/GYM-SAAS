@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  IndianRupee, Percent, ArrowUpRight, CheckCircle, Clock,
+  Percent, ArrowUpRight, CheckCircle, Clock,
   Search, Building2, Smartphone, Copy, Check, X,
   AlertCircle, Wallet, RefreshCw, Send, CheckCircle2,
   Eye, Filter, Download
@@ -23,7 +23,6 @@ const GymAdminTrainerCommission = () => {
   // Lists
   const [commissionLedger, setCommissionLedger] = useState<any[]>([]);
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
-  const [activeFees, setActiveFees] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Filters & Search
@@ -153,12 +152,11 @@ const GymAdminTrainerCommission = () => {
         });
         setCommissionLedger(res.data.commissionLedger || []);
         setWithdrawals(res.data.withdrawals || []);
-        setActiveFees(res.data.activeFees || []);
       }
     } catch {
       // Fallback: fetch from payments and history if new endpoint is spinning up
       try {
-        const [feesRes, paymentsRes] = await Promise.allSettled([
+        const [, paymentsRes] = await Promise.allSettled([
           api.get('/trainer-payments/fees'),
           api.get('/trainer-payments/history')
         ]);
@@ -193,9 +191,6 @@ const GymAdminTrainerCommission = () => {
           pendingWithdrawal: 0
         });
         setCommissionLedger(ledger);
-        if (feesRes.status === 'fulfilled' && feesRes.value.data?.fees) {
-          setActiveFees(feesRes.value.data.fees.filter((f: any) => f.status === 'Active'));
-        }
       } catch {
         showToast('Failed to load commission data', 'error');
       }

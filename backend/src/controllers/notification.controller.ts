@@ -2,11 +2,26 @@ import { Response } from 'express';
 import Notification from '../models/Notification';
 import { AuthRequest } from '../middlewares/auth';
 
+const getNotificationQuery = (user: any) => {
+  const userId = user.id;
+  const gymId = user.gymId;
+  const role = user.role;
+
+  const conditions: any[] = [{ recipientId: userId }];
+  if (gymId && (role === 'GYM_OWNER' || role === 'ADMIN')) {
+    conditions.push({ gymId, recipientRole: 'GYM_OWNER' });
+  } else if (gymId && role === 'TRAINER') {
+    conditions.push({ gymId, recipientRole: 'TRAINER' });
+  }
+
+  return { $or: conditions };
+};
+
 export const getNotifications = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.user!;
-    const notifications = await Notification.find({ recipientId: id }).sort({ createdAt: -1 }).limit(50);
-    const unreadCount = await Notification.countDocuments({ recipientId: id, isRead: false });
+    const query = getNotificationQuery(req.user!);
+    const notifications = await Notification.find(query).sort({ createdAt: -1 }).limit(50);
+    const unreadCount = await Notification.countDocuments({ ...query, isRead: false });
 
     res.status(200).json({ success: true, notifications, unreadCount });
   } catch (error) {
@@ -17,11 +32,11 @@ export const getNotifications = async (req: AuthRequest, res: Response) => {
 
 export const markAsRead = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId } = req.user!;
     const { id: notificationId } = req.params;
+    const query = getNotificationQuery(req.user!);
 
     const notification = await Notification.findOneAndUpdate(
-      { _id: notificationId, recipientId: userId },
+      { _id: notificationId, ...query },
       { isRead: true },
       { new: true }
     );
@@ -39,10 +54,10 @@ export const markAsRead = async (req: AuthRequest, res: Response) => {
 
 export const markAllAsRead = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId } = req.user!;
+    const query = getNotificationQuery(req.user!);
 
     await Notification.updateMany(
-      { recipientId: userId, isRead: false },
+      { ...query, isRead: false },
       { isRead: true }
     );
 

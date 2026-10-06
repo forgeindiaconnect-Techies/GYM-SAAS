@@ -124,7 +124,6 @@ const CustomerRegisterPage = () => {
     if (step === 1) {
       if (!form.gender) e.gender = 'Gender is required';
       if (!form.city.trim()) e.city = 'City is required';
-      if (!form.dateOfBirth) e.dateOfBirth = 'Date of birth is required';
       if (!form.height) e.height = 'Height is required';
       if (!form.weight) e.weight = 'Weight is required';
       if (!form.emergencyContactName.trim()) e.emergencyContactName = 'Emergency contact name is required';
@@ -192,14 +191,17 @@ const CustomerRegisterPage = () => {
           try {
             const intent = JSON.parse(intentStr);
             sessionStorage.removeItem('checkout_intent');
-            navigate(`/gyms/${intent.gymId}/checkout`, { state: { plan: intent.plan, gym: intent.gym || { _id: intent.gymId } }, replace: true });
-            return;
+            const isTrial = intent.plan?.name?.toLowerCase().includes('trial') || Number(intent.plan?.price || 0) === 0;
+            if (!isTrial) {
+              navigate(`/gyms/${intent.gymId}/checkout`, { state: { plan: intent.plan, gym: intent.gym || { _id: intent.gymId } }, replace: true });
+              return;
+            }
           } catch (e) {
-            // ignore
+            sessionStorage.removeItem('checkout_intent');
           }
         }
         
-        navigate('/member/ai-assistant');
+        navigate('/status?type=pending');
       } else {
         // Fallback if backend doesn't auto-approve
         sessionStorage.removeItem('customer_reg_step');
@@ -385,16 +387,15 @@ const CustomerRegisterPage = () => {
           {step === 1 && (
             <div className="space-y-5">
               <h2 className="text-lg font-semibold text-[#202828] mb-1">Personal Details</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm text-[#455250] mb-2">Date of Birth *</label>
-                  <input id="reg-dob" type="date" value={form.dateOfBirth} onChange={e => set('dateOfBirth', e.target.value)} className={inputCls('dateOfBirth') + ' [color-scheme:dark]'} />
-                  {errors.dateOfBirth && <p className="text-teal-400 text-xs mt-1">{errors.dateOfBirth}</p>}
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#455250] mb-2">City *</label>
                   <input id="reg-city" value={form.city} onChange={e => set('city', e.target.value)} placeholder="Your city" className={inputCls('city')} />
                   {errors.city && <p className="text-teal-400 text-xs mt-1">{errors.city}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm text-[#455250] mb-2">PIN Code</label>
+                  <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
                 </div>
               </div>
               <div>
@@ -417,10 +418,6 @@ const CustomerRegisterPage = () => {
                   <input id="reg-weight" type="number" value={form.weight} onChange={e => set('weight', e.target.value)} placeholder="e.g. 70" className={inputCls('weight')} />
                   {errors.weight && <p className="text-teal-400 text-xs mt-1">{errors.weight}</p>}
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm text-[#455250] mb-2">PIN Code</label>
-                <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
               </div>
               {/* Emergency Contact */}
               <div className="pt-4 border-t border-[#D3DFDA]">

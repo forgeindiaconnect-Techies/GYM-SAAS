@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AuthRequest } from '../middlewares/auth';
 import Enquiry, { EnquiryStatus } from '../models/Enquiry';
 import Gym from '../models/Gym';
+import Notification from '../models/Notification';
 import { Role } from '../models/User';
 
 // Public endpoint to create an enquiry
@@ -40,6 +41,19 @@ export const createEnquiry = async (req: Request, res: Response): Promise<void> 
     });
 
     await enquiry.save();
+
+    if (gym.ownerId) {
+      await Notification.create({
+        recipientId: gym.ownerId,
+        recipientRole: 'GYM_OWNER',
+        gymId: gym._id,
+        title: `New Enquiry from ${customerName}`,
+        message: `${customerName} enquired about ${enquiryType}: "${message.slice(0, 80)}"`,
+        type: 'alert',
+        relatedRecordId: enquiry._id,
+        link: '/admin/enquiries'
+      }).catch(err => console.error('Notif error:', err));
+    }
 
     res.status(201).json({ success: true, message: 'Enquiry submitted successfully', enquiry });
   } catch (error: any) {

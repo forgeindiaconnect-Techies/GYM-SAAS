@@ -1,158 +1,87 @@
-import { useState, useEffect } from 'react';
-import { PlayCircle, Clock, Flame, Dumbbell, ChevronRight, CheckCircle2, X, Timer, Activity, Utensils } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import {
+  PlayCircle, Clock, Flame, Dumbbell, CheckCircle2,
+  X, Activity, Utensils, Video, Play, Sparkles, User
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
+import MemberExercisePlayer, { type PlayerExercise } from '../../components/workout/MemberExercisePlayer';
 
-const MemberWorkoutPlan = () => {
-  const generateWeekDays = () => {
-    const today = new Date();
-    const currentDay = today.getDay();
-    const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
-    
-    const week = [];
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + diffToMonday + i);
-      const isToday = date.toDateString() === today.toDateString();
-      
-      week.push({
-        id: isToday ? 'Today' : dayNames[date.getDay()],
-        label: isToday ? 'Today' : dayNames[date.getDay()],
-        date: date.getDate(),
-      });
-    }
-    return week;
-  };
+const MemberWorkoutPlan: React.FC = () => {
+  const [activePlan, setActivePlan] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeDayIndex, setActiveDayIndex] = useState(0);
 
-  const weekDays = generateWeekDays();
-  const [activeDay, setActiveDay] = useState('Today');
-  const [isWorkoutActive, setIsWorkoutActive] = useState(false);
-  const [workoutTime, setWorkoutTime] = useState(0);
-  const [startTime, setStartTime] = useState<Date | null>(null);
-  
-  const workoutData = {
-    title: 'Upper Body Power',
-    duration: '45 mins',
-    calories: '320 kcal',
-    level: 'Intermediate',
-    exercises: [
-      { name: 'Barbell Bench Press', sets: 4, reps: '8-10', completed: true },
-      { name: 'Incline Dumbbell Press', sets: 3, reps: '10-12', completed: true },
-      { name: 'Cable Crossovers', sets: 3, reps: '15', completed: false },
-      { name: 'Overhead Tricep Extension', sets: 3, reps: '12', completed: false },
-      { name: 'Lateral Raises', sets: 4, reps: '15', completed: false },
-    ]
-  };
+  // Completed exercise IDs in recent/current session
+  const [completedExerciseIds, setCompletedExerciseIds] = useState<string[]>([]);
+  const [stats, setStats] = useState<any>(null);
 
-  const getInitialSets = () => {
-    const saved = localStorage.getItem('workout_completed_sets');
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
-    }
-    const initial: Record<number, boolean[]> = {};
-    workoutData.exercises.forEach((ex, idx) => {
-      initial[idx] = Array(ex.sets).fill(ex.completed);
-    });
-    return initial;
-  };
-
-  const getInitialTimes = () => {
-    const saved = localStorage.getItem('workout_exercise_times');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        const times: Record<number, { start?: Date, end?: Date }> = {};
-        for (const key in parsed) {
-          const numKey = Number(key);
-          times[numKey] = {};
-          if (parsed[key].start) times[numKey].start = new Date(parsed[key].start);
-          if (parsed[key].end) times[numKey].end = new Date(parsed[key].end);
-        }
-        return times;
-      } catch (e) {}
-    }
-    return {};
-  };
-
-  const [completedSets, setCompletedSets] = useState<Record<number, boolean[]>>(getInitialSets());
-  const [exerciseTimes, setExerciseTimes] = useState<Record<number, { start?: Date, end?: Date }>>(getInitialTimes());
-  const [expandedExercises, setExpandedExercises] = useState<Record<number, boolean>>({});
+  // Active Exercise Player state
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+  const [playerInitialIndex, setPlayerInitialIndex] = useState(0);
 
   useEffect(() => {
-    localStorage.setItem('workout_completed_sets', JSON.stringify(completedSets));
-  }, [completedSets]);
+    fetchMyPlan();
+    fetchProgressLogs();
+  }, []);
 
-  useEffect(() => {
-    localStorage.setItem('workout_exercise_times', JSON.stringify(exerciseTimes));
-  }, [exerciseTimes]);
-
-  const toggleExpand = (index: number) => {
-    setExpandedExercises(prev => ({...prev, [index]: !prev[index]}));
-  };
-
-  const startWorkout = () => {
-    setIsWorkoutActive(true);
-    setWorkoutTime(0);
-    setStartTime(new Date());
-    // Don't reset completedSets, so they can continue from where they left off
-  };
-
-  const toggleSet = (exIdx: number, setIdx: number) => {
-    setCompletedSets(prev => {
-      const newSets = { ...prev };
-      const exSets = [...(newSets[exIdx] || [])];
-      exSets[setIdx] = !exSets[setIdx];
-      newSets[exIdx] = exSets;
-      
-      setExerciseTimes(prevTimes => {
-        const times = { ...prevTimes };
-        if (!times[exIdx]) times[exIdx] = {};
-        
-        const anyCompleted = newSets[exIdx].some(s => s === true);
-        if (anyCompleted && !times[exIdx].start) {
-          times[exIdx].start = new Date();
-        }
-        
-        const allCompleted = newSets[exIdx].length > 0 && newSets[exIdx].every(s => s === true);
-        if (allCompleted && !times[exIdx].end) {
-          times[exIdx].end = new Date();
-        } else if (!allCompleted) {
-          delete times[exIdx].end;
-        }
-        
-        return times;
-      });
-
-      return newSets;
-    });
-  };
-
-  const isExerciseCompleted = (exIdx: number) => {
-    const sets = completedSets[exIdx];
-    if (!sets) return false;
-    return sets.length > 0 && sets.every(s => s === true);
-  };
-
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-    if (isWorkoutActive) {
-      interval = setInterval(() => {
-        setWorkoutTime(prev => prev + 1);
-      }, 1000);
+  const fetchMyPlan = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/workout-plans/my-plan');
+      if (res.data.success && res.data.plan) {
+        setActivePlan(res.data.plan);
+      }
+    } catch (err) {
+      console.error('Failed to fetch published workout plan:', err);
+    } finally {
+      setLoading(false);
     }
-    return () => clearInterval(interval);
-  }, [isWorkoutActive]);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
+
+  const fetchProgressLogs = async () => {
+    try {
+      const res = await api.get('/workout-progress/my-progress');
+      if (res.data.success) {
+        setStats(res.data.stats);
+        if (res.data.history) {
+          const completedIds = res.data.history
+            .filter((h: any) => h.status === 'Completed')
+            .map((h: any) => (h.exerciseId?._id || h.exerciseId)?.toString());
+          setCompletedExerciseIds(completedIds);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load progress logs:', err);
+    }
+  };
+
+  const handleLaunchPlayer = (index: number = 0) => {
+    setPlayerInitialIndex(index);
+    setIsPlayerOpen(true);
+  };
+
+  const handleExerciseCompletedInPlayer = (exerciseId: string) => {
+    setCompletedExerciseIds(prev => [...prev, exerciseId]);
+    fetchProgressLogs();
+  };
+
+  const currentWorkoutDays = activePlan?.workoutDays || [];
+  const currentDay = currentWorkoutDays[activeDayIndex];
+  const dayExercises: any[] = currentDay?.exercises || [];
+
+  // Convert day exercises to Player format
+  const playerExercises: PlayerExercise[] = dayExercises.map((item: any) => ({
+    exerciseId: item.exerciseId || {},
+    sets: item.sets || 3,
+    repetitions: String(item.repetitions || '12'),
+    duration: item.duration || 60,
+    restTime: item.restTime || 30,
+    trainerNotes: item.trainerNotes || ''
+  }));
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in relative">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in relative pb-16">
       {/* Plan Switcher Tabs */}
       <div className="flex items-center gap-3 border-b border-[#E8E5DA] pb-3">
         <Link
@@ -167,279 +96,296 @@ const MemberWorkoutPlan = () => {
         >
           <Utensils size={16} /> Diet Plan
         </Link>
+        <Link
+          to="/member/progress"
+          className="flex items-center gap-2 px-4 py-2 bg-white text-[#455250] hover:text-[#164A4A] hover:bg-[#F2EFE8] rounded-xl font-bold text-sm border border-[#E8E5DA] transition-colors"
+        >
+          <Activity size={16} /> My Progress
+        </Link>
       </div>
 
+      {/* Main Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Your Workout Plan</h1>
-          <p className="text-[#455250] mt-1">Stay consistent and crush your goals this week.</p>
-        </div>
-        <button onClick={startWorkout} className="flex items-center space-x-2 px-6 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-all shadow-lg shadow-green-500/30 hover:scale-105 active:scale-95 cursor-pointer">
-          <PlayCircle size={20} />
-          <span>Start Workout</span>
-        </button>
-      </div>
-
-      {/* Week Calendar */}
-      <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm overflow-x-auto">
-        <div className="flex items-center justify-between min-w-[600px]">
-          {weekDays.map((dayObj) => (
-            <button
-              key={dayObj.id}
-              onClick={() => setActiveDay(dayObj.id)}
-              className={`flex flex-col items-center p-4 rounded-xl transition-all ${
-                activeDay === dayObj.id 
-                  ? 'bg-[#164A4A] text-white shadow-md scale-110' 
-                  : 'bg-[#F2EFE8] text-[#687B78] hover:bg-[#E8E5DA]'
-              }`}
-            >
-              <span className="text-xs font-semibold uppercase tracking-wider mb-1">{dayObj.label}</span>
-              <span className={`text-xl font-bold ${activeDay === dayObj.id ? 'text-white' : 'text-[#202828]'}`}>
-                {dayObj.date}
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+              <Sparkles size={12} /> Active Workout Plan
+            </span>
+            {activePlan?.trainerId && (
+              <span className="text-xs text-[#687B78] flex items-center gap-1">
+                <User size={12} /> Assigned by Trainer {activePlan.trainerId.firstName} {activePlan.trainerId.lastName}
               </span>
-            </button>
-          ))}
+            )}
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-[#202828] tracking-tight">
+            {activePlan?.planName || 'My Workout Plan'}
+          </h1>
+          <p className="text-sm text-[#455250] mt-1 max-w-2xl">
+            {activePlan?.description || 'Follow your personalized exercise routine with animated video guides and automated set/rest tracking.'}
+          </p>
         </div>
+
+        {dayExercises.length > 0 && (
+          <button
+            onClick={() => handleLaunchPlayer(0)}
+            className="flex items-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-[#164A4A] to-teal-700 text-white rounded-xl font-extrabold hover:opacity-95 transition-all shadow-lg shadow-teal-900/20 hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <PlayCircle size={22} />
+            <span>Start Today&apos;s Workout</span>
+          </button>
+        )}
       </div>
 
-      {/* Workout Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Overview Card */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="bg-gradient-to-br from-[#202828] to-[#0F172A] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl group-hover:opacity-10 transition-opacity"></div>
-            
-            <h2 className="text-2xl font-bold mb-6">{workoutData.title}</h2>
-            
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4 bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                <Clock className="text-blue-400" size={24} />
-                <div>
-                  <p className="text-sm text-gray-300">Duration</p>
-                  <p className="font-bold">{workoutData.duration}</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4 bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                <Flame className="text-orange-400" size={24} />
-                <div>
-                  <p className="text-sm text-gray-300">Est. Calories</p>
-                  <p className="font-bold">{workoutData.calories}</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4 bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                <Dumbbell className="text-purple-400" size={24} />
-                <div>
-                  <p className="text-sm text-gray-300">Level</p>
-                  <p className="font-bold">{workoutData.level}</p>
-                </div>
-              </div>
-            </div>
+      {/* Loading state */}
+      {loading ? (
+        <div className="text-center py-20 text-[#687B78]">
+          <div className="w-10 h-10 border-4 border-[#164A4A] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <p className="font-semibold text-sm">Loading your personalized workout plan...</p>
+        </div>
+      ) : !activePlan ? (
+        <div className="bg-white border border-[#D3DFDA] rounded-3xl p-12 text-center shadow-sm">
+          <Dumbbell size={52} className="mx-auto text-[#A8ADA9] mb-4" />
+          <h2 className="text-xl font-bold text-[#202828]">No Workout Plan Published Yet</h2>
+          <p className="text-sm text-[#687B78] mt-2 max-w-md mx-auto">
+            Your trainer is currently reviewing your profile and designing your personalized workout plan with exercise animations.
+          </p>
+          <div className="mt-6 flex justify-center gap-3">
+            <Link
+              to="/member/ai-assistant"
+              className="px-5 py-2.5 bg-[#164A4A] text-white text-xs font-bold rounded-xl hover:bg-[#C6A77D] transition-colors"
+            >
+              Check AI Fitness Assessment
+            </Link>
           </div>
         </div>
-
-        {/* Exercises List */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-3xl shadow-sm border border-[#E8E5DA] p-6 md:p-8">
-            <h3 className="text-xl font-bold text-[#202828] mb-6">Exercises (5)</h3>
-            <div className="space-y-4">
-              {workoutData.exercises.map((exercise, index) => {
-                const mainCompleted = isExerciseCompleted(index);
-                const isExpanded = expandedExercises[index] || false;
-                return (
-                <div key={index} className="flex flex-col">
-                  <div 
-                    onClick={() => toggleExpand(index)}
-                    className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${
-                      mainCompleted 
-                        ? 'bg-green-50/50 border-green-200' 
-                        : 'bg-white border-[#E8E5DA] hover:border-[#164A4A] hover:shadow-md cursor-pointer'
-                    } ${isExpanded ? 'rounded-b-none border-b-0' : ''}`}
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        mainCompleted ? 'bg-green-100 text-[#164A4A]' : 'bg-[#F1F5F9] text-[#687B78]'
+      ) : (
+        <>
+          {/* Day Tabs */}
+          <div className="bg-white border border-[#E8E5DA] rounded-2xl p-4 shadow-sm">
+            <div className="flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
+              <div className="flex items-center gap-2">
+                {currentWorkoutDays.map((day: any, idx: number) => {
+                  const isActive = activeDayIndex === idx;
+                  const exCount = day.exercises?.length || 0;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveDayIndex(idx)}
+                      className={`flex flex-col sm:flex-row items-center gap-1.5 px-5 py-3 rounded-xl transition-all ${
+                        isActive
+                          ? 'bg-[#164A4A] text-white shadow-md scale-102 font-bold'
+                          : 'bg-[#F2EFE8] text-[#455250] hover:bg-[#E8E5DA] font-semibold'
+                      }`}
+                    >
+                      <span className="text-xs sm:text-sm">{day.dayName}</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                        isActive ? 'bg-white/20 text-white' : 'bg-black/10 text-[#455250]'
                       }`}>
-                        {mainCompleted ? <CheckCircle2 size={20} /> : <span className="font-bold text-sm">{index + 1}</span>}
-                      </div>
-                      <div>
-                        <h4 className={`font-bold ${mainCompleted ? 'text-green-700 line-through opacity-70' : 'text-[#202828]'}`}>
-                          {exercise.name}
-                        </h4>
-                        <p className="text-sm text-[#687B78] mt-0.5">
-                          {exercise.sets} sets × {exercise.reps} reps
-                        </p>
-                      </div>
-                    </div>
-                    <button className={`p-2 rounded-full transition-transform ${isExpanded ? 'rotate-90' : ''} ${mainCompleted ? 'text-green-500' : 'text-[#CBD5E1] hover:text-[#164A4A]'}`}>
-                      <ChevronRight size={24} />
+                        {exCount} {exCount === 1 ? 'exercise' : 'exercises'}
+                      </span>
                     </button>
-                  </div>
-                  
-                  {isExpanded && (
-                    <div className={`p-5 pt-2 border border-t-0 rounded-b-2xl ${mainCompleted ? 'bg-green-50/50 border-green-200' : 'bg-white border-[#E8E5DA]'}`}>
-                      {(exerciseTimes[index]?.start || exerciseTimes[index]?.end) && (
-                        <div className="flex gap-3 mb-4 text-xs font-semibold px-2">
-                          {exerciseTimes[index]?.start && (
-                            <span className="text-blue-700 bg-blue-50/80 px-2 py-1 rounded border border-blue-100 flex items-center gap-1"><Clock size={12}/> Start: {exerciseTimes[index].start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                          )}
-                          {mainCompleted && exerciseTimes[index]?.end && (
-                            <span className="text-green-700 bg-green-50/80 px-2 py-1 rounded border border-green-100 flex items-center gap-1"><CheckCircle2 size={12}/> End: {exerciseTimes[index].end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                          )}
-                        </div>
-                      )}
-                      
-                      <div className="space-y-2">
-                        {Array.from({ length: exercise.sets }).map((_, setIdx) => {
-                          const setCompleted = completedSets[index]?.[setIdx] || false;
-                          return (
-                            <div key={setIdx} className={`flex items-center justify-between p-3 rounded-xl border ${setCompleted ? 'bg-[#F0FDF4] border-[#DCFCE7]' : 'bg-[#F2EFE8] border-[#E8E5DA]'}`}>
-                              <div className="flex items-center gap-4">
-                                <span className={`font-bold w-12 ${setCompleted ? 'text-[#166534]' : 'text-[#687B78]'}`}>Set {setIdx + 1}</span>
-                                <span className="text-sm font-medium text-[#455250]">{exercise.reps.split('-')[0]} reps</span>
-                              </div>
-                              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${setCompleted ? 'bg-[#164A4A] text-white' : 'border-2 border-[#CBD5E1] text-transparent'}`}>
-                                <CheckCircle2 size={14} />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                  );
+                })}
+              </div>
+
+              {stats && (
+                <div className="hidden lg:flex items-center gap-4 text-xs font-bold text-[#455250] pr-2">
+                  <span>Streak: <strong className="text-emerald-700">🔥 {stats.workoutStreak || 0} Days</strong></span>
+                  <span>Completed: <strong className="text-[#164A4A]">{stats.completionPercentage || 0}%</strong></span>
                 </div>
-              )})}
+              )}
             </div>
           </div>
-        </div>
-      </div>
-      {/* ── Trainer Assigned Self-Learning Videos ───────────────── */}
-      <div className="bg-white rounded-3xl shadow-sm border border-[#E8E5DA] p-6 md:p-8 space-y-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <h3 className="text-xl font-bold text-[#202828] flex items-center gap-2">
-              <PlayCircle className="text-indigo-600" size={22} /> Trainer-Assigned Self-Learning Videos
-            </h3>
-            <p className="text-sm text-[#455250]">Watch assigned exercise videos when you cannot attend live sessions or for extra guidance.</p>
+
+          {/* Today's Workout Routine Overview Card & Exercise Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Overview / Target Focus Card */}
+            <div className="lg:col-span-1 space-y-4">
+              <div className="bg-gradient-to-br from-[#202828] to-[#121A1A] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full text-xs font-bold mb-4 text-emerald-300">
+                  <Activity size={14} /> TODAY&apos;S TARGET
+                </div>
+
+                <h3 className="text-2xl font-black mb-1">{currentDay?.dayName}</h3>
+                <p className="text-xs text-white/70 mb-6">
+                  {dayExercises.length} Exercises designed to optimize strength and muscle development.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 bg-white/5 rounded-2xl p-3.5 border border-white/10">
+                    <Clock className="text-teal-400" size={20} />
+                    <div>
+                      <p className="text-[11px] text-white/50 font-bold uppercase">Estimated Duration</p>
+                      <p className="font-extrabold text-sm text-white">
+                        {dayExercises.reduce((acc, curr) => acc + (curr.duration || 60), 0) / 60 > 1
+                          ? `${Math.round(dayExercises.reduce((acc, curr) => acc + (curr.duration || 60), 0) / 60)} Minutes`
+                          : '45 Minutes'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3 bg-white/5 rounded-2xl p-3.5 border border-white/10">
+                    <Flame className="text-amber-400" size={20} />
+                    <div>
+                      <p className="text-[11px] text-white/50 font-bold uppercase">Estimated Caloric Burn</p>
+                      <p className="font-extrabold text-sm text-white">
+                        ~{dayExercises.length * 55} kcal
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3 bg-white/5 rounded-2xl p-3.5 border border-white/10">
+                    <Dumbbell className="text-purple-400" size={20} />
+                    <div>
+                      <p className="text-[11px] text-white/50 font-bold uppercase">Workout Type</p>
+                      <p className="font-extrabold text-sm text-white">
+                        Animated Video Demonstration
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleLaunchPlayer(0)}
+                  className="w-full mt-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <Play size={15} className="fill-current" />
+                  <span>Start Full Workout Screen</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Exercises List for the Day */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className="flex justify-between items-center mb-1">
+                <h3 className="text-lg font-extrabold text-[#202828]">
+                  Exercises in {currentDay?.dayName} ({dayExercises.length})
+                </h3>
+                <span className="text-xs text-[#687B78]">
+                  Click <strong>Watch Exercise</strong> to play video guide
+                </span>
+              </div>
+
+              {dayExercises.length === 0 ? (
+                <div className="p-8 text-center bg-white border border-dashed border-[#D3DFDA] rounded-3xl">
+                  <p className="text-sm font-semibold text-[#455250]">No exercises assigned for this day.</p>
+                </div>
+              ) : (
+                dayExercises.map((item: any, idx: number) => {
+                  const ex = item.exerciseId || {};
+                  const isCompleted = completedExerciseIds.includes(ex._id?.toString());
+                  const hasVideo = !!ex.videoUrl;
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`bg-white border rounded-3xl p-5 shadow-sm transition-all hover:shadow-md ${
+                        isCompleted ? 'border-emerald-300 bg-emerald-50/20' : 'border-[#E8E5DA]'
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        {/* Left Details */}
+                        <div className="flex items-start gap-4">
+                          {/* Number / Status Circle */}
+                          <div
+                            className={`w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 transition-colors shadow-sm ${
+                              isCompleted
+                                ? 'bg-emerald-500 text-white'
+                                : 'bg-[#164A4A] text-white'
+                            }`}
+                          >
+                            {isCompleted ? <CheckCircle2 size={24} /> : idx + 1}
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h4 className="font-extrabold text-base md:text-lg text-[#202828]">
+                                {ex.name || 'Exercise'}
+                              </h4>
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F2EFE8] text-[#455250]">
+                                {ex.category || 'Fitness'}
+                              </span>
+                              {hasVideo && (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200 flex items-center gap-1">
+                                  <Video size={10} /> Video Available
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Sets x Reps + Rest Time */}
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-[#455250] font-semibold pt-0.5">
+                              <span className="text-[#164A4A] font-bold">
+                                {item.sets || 3} Sets × {item.repetitions || 12} Reps
+                              </span>
+                              <span>•</span>
+                              <span>{item.restTime || ex.defaultRest || 30}s Rest</span>
+                              {ex.targetMuscle && (
+                                <>
+                                  <span>•</span>
+                                  <span className="text-[#687B78]">{ex.targetMuscle}</span>
+                                </>
+                              )}
+                            </div>
+
+                            {/* Trainer Custom Notes */}
+                            {item.trainerNotes && (
+                              <p className="text-xs text-emerald-800 bg-emerald-50/80 border border-emerald-100 px-3 py-1 rounded-xl mt-1.5 font-medium">
+                                <strong>Trainer Note:</strong> {item.trainerNotes}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Right CTA Button */}
+                        <div className="flex items-center gap-2 sm:self-center shrink-0">
+                          <button
+                            onClick={() => handleLaunchPlayer(idx)}
+                            className="px-5 py-2.5 bg-[#164A4A] hover:bg-[#C6A77D] text-white rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                          >
+                            <Play size={14} className="fill-current" />
+                            <span>Watch Exercise</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
+        </>
+      )}
+
+      {/* Trainer Assigned Self-Learning Videos Section (Retained) */}
+      <div className="bg-white rounded-3xl shadow-sm border border-[#E8E5DA] p-6 md:p-8 space-y-4">
+        <div>
+          <h3 className="text-xl font-bold text-[#202828] flex items-center gap-2">
+            <PlayCircle className="text-[#164A4A]" size={22} /> Trainer-Assigned Self-Learning Videos
+          </h3>
+          <p className="text-sm text-[#455250]">Watch assigned exercise videos when you cannot attend live sessions or for extra guidance.</p>
         </div>
 
         <AssignedVideosSection />
       </div>
 
-      {/* Active Workout Modal Overlay */}
-      {isWorkoutActive && (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-[#F9F8F6]">
-          <div className="flex-1 overflow-y-auto min-h-0 pb-36 md:pb-44">
-            <div className="bg-[#202828] text-white p-6 md:p-8 rounded-b-[3rem] shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#164A4A] rounded-full blur-3xl opacity-20 -mr-20 -mt-20"></div>
-              
-              <div className="flex justify-between items-start relative z-10">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-sm font-semibold mb-4 text-[#D3DFDA]">
-                    <Activity size={16} /> ACTIVE WORKOUT
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-2">{workoutData.title}</h2>
-                  <p className="text-[#A8ADA9]">{workoutData.exercises.length} Exercises • {workoutData.level}</p>
-                </div>
-                <button onClick={() => { setIsWorkoutActive(false); setWorkoutTime(0); }} className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer">
-                  <X size={24} />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 relative z-10">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
-                  <div className="text-[#A8ADA9] text-sm font-medium mb-1 flex items-center gap-2"><Clock size={16}/> Start Time</div>
-                  <div className="text-xl font-bold text-white">{startTime ? startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}</div>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
-                  <div className="text-[#A8ADA9] text-sm font-medium mb-1 flex items-center gap-2"><Timer size={16}/> Elapsed Time</div>
-                  <div className="text-xl font-extrabold font-mono tracking-wider text-emerald-400">{formatTime(workoutTime)}</div>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
-                  <div className="text-[#A8ADA9] text-sm font-medium mb-1 flex items-center gap-2"><Flame size={16}/> Est. Calories</div>
-                  <div className="text-xl font-bold text-white">{Math.floor((workoutTime / 60) * 8)} <span className="text-base text-[#687B78] font-normal">kcal</span></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6 mt-4">
-              <h3 className="text-xl font-bold text-[#202828] mb-6">Current Progress</h3>
-              
-              <div className="space-y-4">
-                {workoutData.exercises.map((exercise, index) => {
-                  const completed = isExerciseCompleted(index);
-                  return (
-                  <div key={index} className={`bg-white border ${completed ? 'border-green-200 shadow-green-100' : 'border-[#E8E5DA]'} rounded-2xl p-5 shadow-sm transition-colors`}>
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg border transition-colors ${
-                          completed ? 'bg-green-100 text-green-600 border-green-200' : 'bg-[#F1F5F3] text-[#6fa3a0] border-[#D3DFDA]'
-                        }`}>
-                          {completed ? <CheckCircle2 size={24} /> : index + 1}
-                        </div>
-                        <div>
-                          <h4 className={`font-bold text-lg ${completed ? 'text-green-700' : 'text-[#202828]'}`}>{exercise.name}</h4>
-                          <p className="text-sm text-[#687B78]">Target: {exercise.sets} Sets × {exercise.reps} Reps</p>
-                          {(exerciseTimes[index]?.start || exerciseTimes[index]?.end) && (
-                            <div className="flex gap-3 mt-1.5 text-xs font-semibold">
-                              {exerciseTimes[index]?.start && (
-                                <span className="text-blue-700 bg-blue-50/80 px-2 py-0.5 rounded border border-blue-100 flex items-center gap-1"><Clock size={12}/> Start: {exerciseTimes[index].start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                              )}
-                              {completed && exerciseTimes[index]?.end && (
-                                <span className="text-green-700 bg-green-50/80 px-2 py-0.5 rounded border border-green-100 flex items-center gap-1"><CheckCircle2 size={12}/> End: {exerciseTimes[index].end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 mt-4">
-                      {Array.from({ length: exercise.sets }).map((_, setIdx) => {
-                        const setCompleted = completedSets[index]?.[setIdx] || false;
-                        return (
-                        <div key={setIdx} className={`flex items-center justify-between p-3 rounded-xl border transition-colors ${setCompleted ? 'bg-[#F0FDF4] border-[#DCFCE7]' : 'bg-[#F2EFE8] border-[#E8E5DA] hover:border-[#164A4A]/50'}`}>
-                          <div className="flex items-center gap-4">
-                            <span className={`font-bold w-12 ${setCompleted ? 'text-[#166534]' : 'text-[#687B78]'}`}>Set {setIdx + 1}</span>
-                            <div className="flex items-center gap-2 text-sm">
-                              <input type="number" placeholder={exercise.reps.split('-')[0]} className="w-16 p-1.5 border border-[#CBD5E1] rounded-lg text-center focus:border-[#164A4A] focus:outline-none" />
-                              <span className="text-[#A8ADA9]">reps</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm hidden sm:flex">
-                              <input type="number" placeholder="--" className="w-16 p-1.5 border border-[#CBD5E1] rounded-lg text-center focus:border-[#164A4A] focus:outline-none" />
-                              <span className="text-[#A8ADA9]">kg</span>
-                            </div>
-                          </div>
-                          <button onClick={() => toggleSet(index, setIdx)} className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${setCompleted ? 'bg-[#164A4A] border-[#164A4A] text-white' : 'border-[#CBD5E1] hover:border-[#164A4A] hover:bg-[#F1F5F3] text-transparent hover:text-[#164A4A]'}`}>
-                            <CheckCircle2 size={18} className={setCompleted ? 'text-white' : ''} />
-                          </button>
-                        </div>
-                      );
-                      })}
-                    </div>
-                  </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className="fixed bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-[#E8E5DA] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
-            <div className="max-w-4xl mx-auto flex gap-4">
-              <button onClick={() => { setIsWorkoutActive(false); setWorkoutTime(0); }} className="px-6 py-4 rounded-xl font-bold text-[#455250] bg-[#F1F5F9] hover:bg-[#E8E5DA] transition-colors">
-                Cancel
-              </button>
-              <button onClick={() => { setIsWorkoutActive(false); setWorkoutTime(0); alert("Workout Completed! Great job!"); }} className="flex-1 bg-[#164A4A] text-white rounded-xl font-bold text-lg hover:bg-[#C6A77D] transition-colors shadow-lg shadow-green-500/20 flex items-center justify-center gap-2">
-                <CheckCircle2 size={24} /> Finish Workout
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* DEDICATED EXERCISE PLAYER SCREEN */}
+      {isPlayerOpen && (
+        <MemberExercisePlayer
+          planId={activePlan?._id || ''}
+          dayName={currentDay?.dayName || 'Workout Routine'}
+          exercises={playerExercises}
+          initialIndex={playerInitialIndex}
+          onClose={() => setIsPlayerOpen(false)}
+          onCompleteExercise={handleExerciseCompletedInPlayer}
+        />
       )}
     </div>
   );
 };
 
+// Sub-component for Trainer assigned videos
 const AssignedVideosSection = () => {
   const [videos, setVideos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -482,8 +428,8 @@ const AssignedVideosSection = () => {
     return (
       <div className="p-8 text-center bg-[#F8FAFC] border border-dashed border-[#D3DFDA] rounded-2xl">
         <PlayCircle size={36} className="mx-auto text-gray-400 mb-2" />
-        <p className="font-bold text-[#202828] text-sm">No videos assigned yet</p>
-        <p className="text-xs text-[#687B78]">Your trainer will assign self-learning videos when needed.</p>
+        <p className="font-bold text-[#202828] text-sm">No extra self-learning videos assigned</p>
+        <p className="text-xs text-[#687B78]">Follow your active workout plan above with animated exercise player.</p>
       </div>
     );
   }
@@ -501,7 +447,7 @@ const AssignedVideosSection = () => {
             </div>
             <h4 className="font-bold text-[#202828] text-base mb-1">{vid.title}</h4>
             <p className="text-xs text-[#687B78] mb-3 line-clamp-2">{vid.instructions || vid.trainerNotes || 'Follow instructions in video.'}</p>
-            
+
             <div className="mt-auto pt-3 border-t border-[#E8E5DA] flex justify-between items-center text-xs">
               <span className="text-gray-600 font-semibold">{vid.durationMinutes} mins • {vid.sets} sets × {vid.reps} reps</span>
               <button onClick={() => setActiveVideo(vid)} className="px-3 py-1.5 bg-[#164A4A] text-white font-bold rounded-lg hover:bg-[#C6A77D] transition-colors flex items-center gap-1">
@@ -524,9 +470,9 @@ const AssignedVideosSection = () => {
             </div>
 
             <div className="aspect-video bg-black rounded-2xl overflow-hidden flex items-center justify-center">
-              <iframe 
-                src={activeVideo.videoUrl.replace('watch?v=', 'embed/')} 
-                title={activeVideo.title} 
+              <iframe
+                src={activeVideo.videoUrl.replace('watch?v=', 'embed/')}
+                title={activeVideo.title}
                 className="w-full h-full"
                 allowFullScreen
               />
@@ -555,4 +501,3 @@ const AssignedVideosSection = () => {
 };
 
 export default MemberWorkoutPlan;
-

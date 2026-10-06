@@ -97,19 +97,11 @@ const GymAdminTrainerPaymentHistory = () => {
     doc.text(`Issued Date: ${dateFormatted}`, 14, 42);
     doc.text(`Status: ${p.paymentStatus || 'Paid'}`, 14, 48);
 
-    const hasComm = p.trainerFeeId?.feeAmount && p.trainerFeeId.feeAmount !== p.amount;
     const infoRows: any[] = [
       ['Trainer Name', trainerName],
       ['Training Type', p.trainerFeeId?.trainingType || '-'],
+      ['Amount Paid', `Rs. ${p.amount?.toLocaleString('en-IN')}`],
     ];
-
-    if (hasComm) {
-      infoRows.push(['Base Fee', `Rs. ${p.trainerFeeId.feeAmount.toLocaleString('en-IN')}`]);
-      infoRows.push(['Commission Deducted', `Rs. ${(p.trainerFeeId.feeAmount - p.amount).toLocaleString('en-IN')}`]);
-      infoRows.push(['Net Exact Amount Paid', `Rs. ${p.amount?.toLocaleString('en-IN')}`]);
-    } else {
-      infoRows.push(['Amount Paid', `Rs. ${p.amount?.toLocaleString('en-IN')}`]);
-    }
 
     infoRows.push(
       ['Payment Method', p.paymentMethod || '-'],
@@ -251,11 +243,6 @@ const GymAdminTrainerPaymentHistory = () => {
                       <td className="px-5 py-4 text-[#455250]">{p.trainerFeeId?.trainingType || '-'}</td>
                       <td className="px-5 py-4 text-right">
                         <span className="font-bold text-[#202828] block">₹{p.amount?.toLocaleString('en-IN')}</span>
-                        {p.trainerFeeId?.feeAmount && p.trainerFeeId.feeAmount !== p.amount && (
-                          <span className="text-[11px] text-emerald-700 font-semibold block">
-                            Base: ₹{p.trainerFeeId.feeAmount.toLocaleString('en-IN')}
-                          </span>
-                        )}
                       </td>
                       <td className="px-5 py-4 text-[#455250]">{p.paymentMethod}</td>
 
@@ -299,15 +286,9 @@ const GymAdminTrainerPaymentHistory = () => {
             <div className="p-5 space-y-4 overflow-y-auto flex-1">
               <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
                 <div className="flex justify-between items-center">
-                  <span className="text-emerald-900 text-sm font-semibold">Exact Amount Paid</span>
+                  <span className="text-emerald-900 text-sm font-semibold">Amount Paid</span>
                   <span className="text-2xl font-black text-[#164A4A]">₹{selectedPayment.amount?.toLocaleString('en-IN')}</span>
                 </div>
-                {selectedPayment.trainerFeeId?.feeAmount && selectedPayment.trainerFeeId.feeAmount !== selectedPayment.amount && (
-                  <div className="mt-2 pt-2 border-t border-emerald-200/60 flex justify-between text-xs text-emerald-800 font-medium">
-                    <span>Base Fee: ₹{selectedPayment.trainerFeeId.feeAmount.toLocaleString('en-IN')}</span>
-                    <span>Commission Deducted: ₹{(selectedPayment.trainerFeeId.feeAmount - selectedPayment.amount).toLocaleString('en-IN')}</span>
-                  </div>
-                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-sm">

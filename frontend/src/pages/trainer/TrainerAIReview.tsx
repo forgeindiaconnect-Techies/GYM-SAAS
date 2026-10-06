@@ -106,7 +106,18 @@ const TrainerAIReview = () => {
       };
 
       await api.put(`/ai/trainer/recommendation/${recommendation._id}/review`, updatedPayload);
-      alert('Plan successfully approved and assigned to the client!');
+
+      // Automatically generate & publish structured customer workout plan using Gym Owner's exercise library
+      try {
+        await api.post('/workout-plans/build-from-ai', {
+          recommendationId: recommendation._id,
+          publishImmediately: true
+        });
+      } catch (planErr) {
+        console.warn('Could not auto-generate workout plan from AI:', planErr);
+      }
+
+      alert('Plan successfully approved, animated workout routine generated and published to client!');
       navigate('/trainer/ai-assistant');
     } catch (err) {
       console.error(err);

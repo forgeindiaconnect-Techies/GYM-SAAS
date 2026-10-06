@@ -318,15 +318,15 @@ const RegisterPage = () => {
           {step === 1 && (
             <div className="space-y-5">
               <h2 className="text-lg font-semibold text-[#202828] mb-1">Personal Details</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm text-[#455250] mb-2">Date of Birth</label>
-                  <input id="reg-dob" type="date" value={form.dateOfBirth} onChange={e => set('dateOfBirth', e.target.value)} className={inputCls('dateOfBirth') + ' [color-scheme:dark]'} />
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#455250] mb-2">City *</label>
                   <input id="reg-city" value={form.city} onChange={e => set('city', e.target.value)} placeholder="Your city" className={inputCls('city')} />
                   {errors.city && <p className="text-teal-400 text-xs mt-1">{errors.city}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm text-[#455250] mb-2">PIN Code</label>
+                  <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
                 </div>
               </div>
               <div>
@@ -337,10 +337,6 @@ const RegisterPage = () => {
                   ))}
                 </div>
                 {errors.gender && <p className="text-teal-400 text-xs mt-2">{errors.gender}</p>}
-              </div>
-              <div>
-                <label className="block text-sm text-[#455250] mb-2">PIN Code</label>
-                <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
               </div>
             </div>
           )}

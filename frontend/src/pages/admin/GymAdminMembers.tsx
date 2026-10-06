@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, FileSpreadsheet, Download } from 'lucide-react';
+import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, FileSpreadsheet, Download, Check } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AddMemberSelectorModal } from '../../components/GymAdmin/AddMemberSelectorModal';
 import { AddExistingMemberModal } from '../../components/GymAdmin/AddExistingMemberModal';
@@ -81,9 +82,65 @@ const GymAdminMembers = () => {
   const [showExistingModal, setShowExistingModal] = useState(false);
   const [showNewModal, setShowNewModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [statusDropdown, setStatusDropdown] = useState<{
+    memberId: string;
+    memberStatus: string;
+    top?: number;
+    bottom?: number;
+    right: number;
+    maxHeight?: number;
+  } | null>(null);
   const [editMember, setEditMember] = useState<any>(null);
   const [editForm, setEditForm] = useState<any>(null);
+
+  // Close dropdown on window scroll or resize
+  useEffect(() => {
+    if (!statusDropdown) return;
+    const close = () => setStatusDropdown(null);
+    window.addEventListener('scroll', close, true);
+    window.addEventListener('resize', close);
+    return () => {
+      window.removeEventListener('scroll', close, true);
+      window.removeEventListener('resize', close);
+    };
+  }, [statusDropdown]);
+
+  const handleToggleStatusDropdown = (e: React.MouseEvent<HTMLButtonElement>, member: any) => {
+    e.stopPropagation();
+    if (statusDropdown?.memberId === member.id) {
+      setStatusDropdown(null);
+      return;
+    }
+    const rect = e.currentTarget.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    // Total dropdown height is around 250px (header + 6 items + padding)
+    // If not enough room below and more room above, flip upward
+    const openUpward = spaceBelow < 260 && spaceAbove > spaceBelow;
+    const right = Math.max(12, window.innerWidth - rect.right);
+    const maxHeight = openUpward 
+      ? Math.max(180, spaceAbove - 16) 
+      : Math.max(180, spaceBelow - 16);
+
+    if (openUpward) {
+      setStatusDropdown({
+        memberId: member.id,
+        memberStatus: member.status,
+        bottom: Math.max(8, window.innerHeight - rect.top + 6),
+        right,
+        maxHeight,
+      });
+    } else {
+      setStatusDropdown({
+        memberId: member.id,
+        memberStatus: member.status,
+        top: rect.bottom + 6,
+        right,
+        maxHeight,
+      });
+    }
+  };
   
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -121,7 +178,7 @@ const GymAdminMembers = () => {
     if (window.confirm('Are you sure you want to delete this member?')) {
       deleteItem('members', id);
       setMembers(members.filter(m => m.id !== id));
-      setActiveDropdown(null);
+      setStatusDropdown(null);
       if (selectedMember?.id === id) {
         setSelectedMember(null);
       }
@@ -143,7 +200,7 @@ const GymAdminMembers = () => {
       console.error('Error updating status:', err);
       alert('Failed to update member status.');
     } finally {
-      setActiveDropdown(null);
+      setStatusDropdown(null);
     }
   };
 
@@ -294,24 +351,24 @@ const GymAdminMembers = () => {
       </div>
 
       {/* Data Table */}
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-visible">
-        <div className="overflow-x-visible custom-scrollbar">
-          <table className="w-full text-left text-sm text-[#455250] whitespace-nowrap">
+      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left text-sm text-[#455250] whitespace-nowrap min-w-[800px]">
             <thead className="bg-[#F2EFE8] border-b border-[#D3DFDA] text-[#202828]">
               <tr>
-                <th className="px-6 py-4 font-semibold">Member</th>
-                <th className="px-6 py-4 font-semibold">Contact Details</th>
-                <th className="px-6 py-4 font-semibold">Membership</th>
-                <th className="px-6 py-4 font-semibold">Status</th>
-                <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                <th className="px-6 py-4 font-semibold text-left">Member</th>
+                <th className="px-6 py-4 font-semibold text-left">Contact Details</th>
+                <th className="px-6 py-4 font-semibold text-left">Membership</th>
+                <th className="px-6 py-4 font-semibold text-center">Status</th>
+                <th className="px-6 py-4 font-semibold text-right pr-6">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#D3DFDA]">
               {filteredMembers.map((member, index) => (
                 <tr key={`${member.id}-${index}`} className="hover:bg-[#F1F5F3] transition-colors relative">
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 align-middle">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center font-bold text-lg uppercase">
+                      <div className="w-10 h-10 rounded-full bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center font-bold text-lg uppercase shrink-0">
                         {member.name.charAt(0)}
                       </div>
                       <div>
@@ -319,13 +376,13 @@ const GymAdminMembers = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 align-middle">
                     <div className="space-y-1">
-                      <p className="flex items-center text-xs text-[#202828] font-medium"><Mail size={12} className="mr-1.5 text-[#455250]"/> {member.email}</p>
-                      <p className="flex items-center text-xs text-[#202828] font-medium"><Phone size={12} className="mr-1.5 text-[#455250]"/> {member.phone}</p>
+                      <p className="flex items-center text-xs text-[#202828] font-medium"><Mail size={12} className="mr-1.5 text-[#455250] shrink-0"/> {member.email}</p>
+                      <p className="flex items-center text-xs text-[#202828] font-medium"><Phone size={12} className="mr-1.5 text-[#455250] shrink-0"/> {member.phone}</p>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 align-middle">
                     <div className="space-y-1">
                       {(() => {
                         const isTrial = member.membership?.status === 'Free Trial' || member.plan === 'Free Trial' || member.originalUser?.subscriptionStatus === 'Free Trial' || member.originalUser?.subscriptionStatus === 'FREE_TRIAL';
@@ -339,7 +396,7 @@ const GymAdminMembers = () => {
                         );
                       })()}
                       <p className="flex items-center text-[11px] text-[#455250]">
-                        <Calendar size={10} className="mr-1"/> Joined: {member.originalUser?.createdAt ? new Date(member.originalUser.createdAt).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : member.joined}
+                        <Calendar size={10} className="mr-1 shrink-0"/> Joined: {member.originalUser?.createdAt ? new Date(member.originalUser.createdAt).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : member.joined}
                       </p>
                       {(() => {
                         let expiryRaw = member.membership?.endDate || member.originalUser?.subscriptionExpiry;
@@ -351,7 +408,7 @@ const GymAdminMembers = () => {
                         }
                         if (!expiryRaw) return (
                           <p className="flex items-center text-[11px] text-[#6fa3a0] font-medium mt-0.5">
-                            <Calendar size={10} className="mr-1"/> Expiry: N/A
+                            <Calendar size={10} className="mr-1 shrink-0"/> Expiry: N/A
                           </p>
                         );
                         const expiryDate = new Date(expiryRaw);
@@ -361,7 +418,7 @@ const GymAdminMembers = () => {
                         const isSoon = !isExpired && hoursLeft <= 24;
                         return (
                           <p className={`flex items-center gap-1 text-[11px] font-medium mt-0.5 ${isExpired ? 'text-red-500' : isSoon ? 'text-orange-500' : 'text-[#6fa3a0]'}`}>
-                            <Calendar size={10}/>
+                            <Calendar size={10} className="shrink-0"/>
                             {isExpired ? 'Expired: ' : 'Expires: '}
                             {expiryDate.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                             {isSoon && !isExpired && <span className="text-orange-500 font-bold">(Soon!)</span>}
@@ -371,60 +428,43 @@ const GymAdminMembers = () => {
                       })()}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 align-middle text-center">
                     <span className={`px-2.5 py-1 border rounded-lg text-xs font-bold transition-colors inline-block ${getStatusColor(member.status)}`}>
                       {member.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2 items-center relative">
-                      <button onClick={() => setSelectedMember(member)} className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded transition-colors" title="View Profile">
+                  <td className="px-6 py-4 align-middle text-right pr-6">
+                    <div className="flex justify-end gap-1.5 items-center relative">
+                      <button onClick={() => setSelectedMember(member)} className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded-lg transition-colors" title="View Profile">
                         <Eye size={18} />
                       </button>
-                      <button onClick={() => handleEditClick(member)} className="p-1.5 text-[#455250] hover:text-[#D2B48C] hover:bg-blue-50 rounded transition-colors" title="Edit Profile">
+                      <button onClick={() => handleEditClick(member)} className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded-lg transition-colors" title="Edit Profile">
                         <Edit2 size={18} />
                       </button>
 
-                      <button onClick={() => handleDeleteMember(member.id)} className="p-1.5 text-[#455250] hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Delete Member">
+                      <button onClick={() => handleDeleteMember(member.id)} className="p-1.5 text-[#455250] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Member">
                         <Trash2 size={18} />
                       </button>
                       
-                      {/* Dropdown Menu for Status */}
-                      <div className="relative inline-block text-left ml-2">
-                        <button onClick={() => setActiveDropdown(activeDropdown === `${member.id}-${index}` ? null : `${member.id}-${index}`)} className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 border ${activeDropdown === `${member.id}-${index}` ? 'bg-[#202828] text-white border-[#202828]' : 'bg-white text-[#455250] border-[#E8E5DA] hover:bg-[#F2EFE8]'}`} title="Set Status">
-                          <Activity size={14} className={activeDropdown === `${member.id}-${index}` ? 'text-white' : 'text-[#A8ADA9]'} /> Status
-                        </button>
-                        
-                        {activeDropdown === `${member.id}-${index}` && (
-                          <>
-                            <div className="fixed inset-0 z-40" onClick={() => setActiveDropdown(null)}></div>
-                            <div className="absolute right-0 mt-2 w-40 rounded-xl shadow-2xl bg-white border border-[#D3DFDA] z-50 overflow-hidden">
-                              <div className="px-4 py-2 bg-gray-50 border-b border-[#D3DFDA] text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                                Set Status
-                              </div>
-                              <div className="py-1 flex flex-col">
-                                {['Active', 'Inactive', 'Pending', 'Rejected', 'New', 'Existing'].map((status) => (
-                                  <button
-                                    key={status}
-                                    type="button"
-                                    onClick={() => handleStatusChange(member.id, status)}
-                                    className={`block w-full text-left px-4 py-2 text-sm font-semibold hover:bg-[#F1F5F3] transition-colors ${member.status === status ? 'text-[#164A4A] bg-[#F1F5F3]' : 'text-[#202828]'}`}
-                                  >
-                                    {status}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                      {/* Status Button */}
+                      <button 
+                        onClick={(e) => handleToggleStatusDropdown(e, member)} 
+                        className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 border ml-1 ${
+                          statusDropdown?.memberId === member.id 
+                            ? 'bg-[#202828] text-white border-[#202828]' 
+                            : 'bg-white text-[#455250] border-[#E8E5DA] hover:bg-[#F2EFE8]'
+                        }`} 
+                        title="Set Status"
+                      >
+                        <Activity size={14} className={statusDropdown?.memberId === member.id ? 'text-white' : 'text-[#A8ADA9]'} /> Status
+                      </button>
                     </div>
                   </td>
                 </tr>
               ))}
               {filteredMembers.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-[#455250]">
+                  <td colSpan={5} className="px-6 py-8 text-center text-[#455250]">
                     No members found matching your filters.
                   </td>
                 </tr>
@@ -756,6 +796,54 @@ const GymAdminMembers = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Floating Status Dropdown Menu via Portal */}
+      {statusDropdown && createPortal(
+        <>
+          <div 
+            className="fixed inset-0 z-[9998] bg-transparent" 
+            onClick={() => setStatusDropdown(null)} 
+          />
+          <div 
+            className="fixed w-48 rounded-xl shadow-2xl bg-white border border-[#D3DFDA] z-[9999] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-100"
+            style={{
+              ...(statusDropdown.top !== undefined ? { top: `${statusDropdown.top}px` } : {}),
+              ...(statusDropdown.bottom !== undefined ? { bottom: `${statusDropdown.bottom}px` } : {}),
+              right: `${statusDropdown.right}px`,
+              maxHeight: statusDropdown.maxHeight ? `${statusDropdown.maxHeight}px` : undefined,
+            }}
+          >
+            <div className="px-3.5 py-2 bg-[#F2EFE8] border-b border-[#D3DFDA] flex items-center justify-between shrink-0">
+              <span className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider">Set Status</span>
+              <span className="text-[10px] font-semibold text-[#164A4A] bg-[#164A4A]/10 px-1.5 py-0.5 rounded">
+                {statusDropdown.memberStatus}
+              </span>
+            </div>
+            <div className="p-1.5 flex flex-col gap-0.5 overflow-y-auto">
+              {['Active', 'Inactive', 'Pending', 'Rejected', 'New', 'Existing'].map((status) => {
+                const isCurrent = statusDropdown.memberStatus === status;
+                return (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => {
+                      handleStatusChange(statusDropdown.memberId, status);
+                      setStatusDropdown(null);
+                    }}
+                    className={`block w-full text-left px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center justify-between ${
+                      isCurrent ? 'text-[#164A4A] bg-[#F1F5F3] font-bold' : 'text-[#202828] hover:bg-[#F1F5F3]'
+                    }`}
+                  >
+                    <span>{status}</span>
+                    {isCurrent && <Check size={13} className="text-[#164A4A]" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </>,
+        document.body
       )}
     </div>
   );

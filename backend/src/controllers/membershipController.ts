@@ -3,6 +3,7 @@ import { AuthRequest } from '../middlewares/auth';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
 import User, { SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
+import Notification from '../models/Notification';
 
 export const getGymMemberships = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -63,7 +64,7 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
 
     await membership.save();
 
-    await User.findByIdAndUpdate(userId, {
+    const userDoc = await User.findByIdAndUpdate(userId, {
       $set: {
         paymentStatus: 'Approved',
         subscriptionStatus: SubscriptionStatus.FREE_TRIAL,
@@ -72,7 +73,21 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
         branchId: branchId || undefined,
         gymId: gymId,
       }
-    });
+    }, { new: true });
+
+    if (gym.ownerId) {
+      const custName = userDoc ? `${userDoc.firstName} ${userDoc.lastName}`.trim() : 'New Member';
+      await Notification.create({
+        recipientId: gym.ownerId,
+        recipientRole: 'GYM_OWNER',
+        gymId: gym._id,
+        title: 'New Member Trial Signup',
+        message: `${custName} joined on Free Trial (${planName || 'General'}).`,
+        type: 'success',
+        relatedRecordId: membership._id,
+        link: '/admin/members'
+      }).catch(err => console.error('Notif error:', err));
+    }
 
     res.status(201).json({ success: true, message: 'Free trial activated successfully', membership });
   } catch (error: any) {
@@ -124,6 +139,17 @@ export const verifyMembership = async (req: AuthRequest, res: Response): Promise
     membership.endDate = endDate;
 
     await membership.save();
+
+    await Notification.create({
+      recipientId: membership.userId,
+      recipientRole: 'MEMBER',
+      gymId: membership.gymId,
+      title: 'Membership Verified & Active',
+      message: `Your ${membership.planName} membership is active until ${endDate.toLocaleDateString()}.`,
+      type: 'success',
+      relatedRecordId: membership._id,
+      link: '/member/dashboard'
+    }).catch(err => console.error('Notif error:', err));
 
     res.status(200).json({ success: true, message: 'Membership verified and activated', membership });
   } catch (error: any) {

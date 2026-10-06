@@ -27,6 +27,8 @@ export interface IStoreOfflineSale extends Document {
   paymentDate: Date;
   createdBy: mongoose.Types.ObjectId;
   note?: string;
+  transactionId?: string;
+  upiId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -60,6 +62,8 @@ const storeOfflineSaleSchema = new Schema<IStoreOfflineSale>(
     paymentDate: { type: Date, default: Date.now },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     note: { type: String },
+    transactionId: { type: String },
+    upiId: { type: String },
   },
   { timestamps: true }
 );

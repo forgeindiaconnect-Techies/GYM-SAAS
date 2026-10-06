@@ -77,46 +77,6 @@ const GymAdminTrainerPayments = () => {
     return trainerName.includes(q);
   });
 
-  // Helper to calculate exact net payable amount factoring in commission
-  const getFeeCalculation = (fee: any) => {
-    if (!fee) {
-      return { baseFee: 0, commType: 'Percentage', commValue: 0, commDeduction: 0, netAmount: 0, hasCommission: false };
-    }
-    const baseFee = Number(fee.feeAmount) || 0;
-    const trainer = (fee.trainerId && typeof fee.trainerId === 'object') ? fee.trainerId : {};
-    const commType = fee.commissionType || trainer.commissionType || 'Percentage';
-    const commValue = Number(
-      fee.commissionValue !== undefined && fee.commissionValue !== null && fee.commissionValue !== ''
-        ? fee.commissionValue
-        : (trainer.commissionValue !== undefined && trainer.commissionValue !== null && trainer.commissionValue !== ''
-          ? trainer.commissionValue
-          : 0)
-    ) || 0;
-
-    let commDeduction = 0;
-    if (commValue > 0) {
-      commDeduction = commType === 'Fixed Amount' ? commValue : (baseFee * commValue) / 100;
-    }
-
-    let netAmount = fee.netAmount;
-    if (netAmount === undefined || netAmount === null || isNaN(Number(netAmount))) {
-      netAmount = Math.max(0, Math.round(baseFee - commDeduction));
-    } else {
-      netAmount = Math.round(Number(netAmount));
-    }
-
-    const hasCommission = commValue > 0 || commDeduction > 0 || (baseFee > 0 && netAmount < baseFee);
-
-    return {
-      baseFee,
-      commType,
-      commValue,
-      commDeduction: Math.round(commDeduction),
-      netAmount,
-      hasCommission
-    };
-  };
-
   const handleMakePayment = (fee: any) => {
     setSelectedFee(fee);
     setShowQr(false);
@@ -135,9 +95,7 @@ const GymAdminTrainerPayments = () => {
     const defaultUpi = fee.upiDetails?.upiId || (trainerPhone ? `${trainerPhone}@paytm` : `${emailPrefix}@okaxis`);
     const upiName = fee.upiDetails?.upiName || trainerName;
 
-    // Calculate exact payable amount after commission deduction
-    const calc = getFeeCalculation(fee);
-    const payableAmount = calc.netAmount > 0 ? calc.netAmount.toString() : (fee.feeAmount ? fee.feeAmount.toString() : '0');
+    const payableAmount = fee.feeAmount ? fee.feeAmount.toString() : '0';
 
     setForm({
       ...defaultForm,
@@ -155,9 +113,7 @@ const GymAdminTrainerPayments = () => {
       handedOverTo: trainerName,
       receiptNo: '',
       transactionId: '',
-      notes: calc.hasCommission 
-        ? `${fee.billingCycle || 'Monthly'} Trainer fee payment for ${trainerName} (Base: ₹${calc.baseFee.toLocaleString('en-IN')} - Commission: ₹${calc.commDeduction.toLocaleString('en-IN')} = Net Due: ₹${calc.netAmount.toLocaleString('en-IN')})`
-        : `${fee.billingCycle || 'Monthly'} Trainer fee payment for ${trainerName}`,
+      notes: `${fee.billingCycle || 'Monthly'} Trainer fee payment for ${trainerName}`,
     });
     setShowModal(true);
   };
@@ -266,7 +222,7 @@ const GymAdminTrainerPayments = () => {
               <tr className="bg-[#F2EFE8] border-b border-[#D3DFDA]">
                 <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider">Trainer</th>
                 <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider">Training Type</th>
-                <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider">Exact Payable Amount</th>
+                <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider">Fee Amount</th>
                 <th className="p-4 text-xs font-bold text-[#455250] uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
@@ -281,7 +237,6 @@ const GymAdminTrainerPayments = () => {
                 </tr>
               ) : (
                 filteredFees.map(fee => {
-                  const calc = getFeeCalculation(fee);
                   return (
                     <tr key={fee._id} className="hover:bg-gray-50 transition-colors">
                       <td className="p-4">
@@ -303,18 +258,11 @@ const GymAdminTrainerPayments = () => {
                         {fee.trainingType}
                       </td>
                       <td className="p-4">
-                        <div>
-                          <span className="font-bold text-gray-900 flex items-center">
-                            <IndianRupee className="w-4 h-4 mr-0.5 text-gray-500" />
-                            {calc.netAmount.toLocaleString('en-IN')}
-                            <span className="text-gray-500 font-normal text-xs ml-1.5">/ {fee.billingCycle}</span>
-                          </span>
-                          {calc.hasCommission && (
-                            <span className="text-[11px] text-emerald-700 font-semibold block mt-0.5">
-                              Base: ₹{calc.baseFee.toLocaleString('en-IN')} (−{calc.commType === 'Fixed Amount' ? `₹${calc.commValue.toLocaleString('en-IN')}` : `${calc.commValue}%`})
-                            </span>
-                          )}
-                        </div>
+                        <span className="font-bold text-gray-900 flex items-center">
+                          <IndianRupee className="w-4 h-4 mr-0.5 text-gray-500" />
+                          {Number(fee.feeAmount || 0).toLocaleString('en-IN')}
+                          <span className="text-gray-500 font-normal text-xs ml-1.5">/ {fee.billingCycle}</span>
+                        </span>
                       </td>
                       <td className="p-4 text-right">
                         <button
@@ -372,23 +320,13 @@ const GymAdminTrainerPayments = () => {
                     </span>
                   </div>
                 </div>
-                {(() => {
-                  const calc = getFeeCalculation(selectedFee);
-                  return (
-                    <div className="text-right">
-                      <span className="text-xs text-[#687B78] font-semibold block">Exact Due Amount</span>
-                      <span className="text-2xl font-black text-[#164A4A] tracking-tight">
-                        ₹{calc.netAmount.toLocaleString('en-IN')}
-                      </span>
-                      <span className="text-xs text-gray-500 block font-medium">/ {selectedFee?.billingCycle || 'Monthly'}</span>
-                      {calc.hasCommission && (
-                        <span className="inline-block mt-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md shadow-xs">
-                          Base: ₹{calc.baseFee.toLocaleString('en-IN')} (−{calc.commType === 'Fixed Amount' ? `₹${calc.commValue.toLocaleString('en-IN')}` : `${calc.commValue}%`})
-                        </span>
-                      )}
-                    </div>
-                  );
-                })()}
+                <div className="text-right">
+                  <span className="text-xs text-[#687B78] font-semibold block">Due Amount</span>
+                  <span className="text-2xl font-black text-[#164A4A] tracking-tight">
+                    ₹{Number(selectedFee?.feeAmount || 0).toLocaleString('en-IN')}
+                  </span>
+                  <span className="text-xs text-gray-500 block font-medium">/ {selectedFee?.billingCycle || 'Monthly'}</span>
+                </div>
               </div>
 
               {/* Amount and Payment Date */}
@@ -398,17 +336,6 @@ const GymAdminTrainerPayments = () => {
                     <label className="block text-xs font-bold text-[#455250] uppercase tracking-wider">
                       Amount to Pay *
                     </label>
-                    {selectedFee && (() => {
-                      const calc = getFeeCalculation(selectedFee);
-                      if (calc.hasCommission) {
-                        return (
-                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
-                            Exact Net Payable
-                          </span>
-                        );
-                      }
-                      return null;
-                    })()}
                   </div>
                   <div className="relative">
                     <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -421,26 +348,6 @@ const GymAdminTrainerPayments = () => {
                       className="w-full pl-9 pr-3 py-2.5 border border-[#D3DFDA] rounded-xl text-base font-bold text-[#202828] outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/20"
                     />
                   </div>
-                  {selectedFee && (() => {
-                    const calc = getFeeCalculation(selectedFee);
-                    if (calc.hasCommission) {
-                      return (
-                        <div className="mt-1.5 px-2.5 py-1.5 bg-emerald-50/80 border border-emerald-200 rounded-lg text-xs text-emerald-900 flex items-center justify-between">
-                          <span>
-                            Base: <strong>₹{calc.baseFee.toLocaleString('en-IN')}</strong> − Comm: <strong>{calc.commType === 'Fixed Amount' ? `₹${calc.commValue.toLocaleString('en-IN')}` : `${calc.commValue}% (₹${calc.commDeduction.toLocaleString('en-IN')})`}</strong> = <strong>₹{calc.netAmount.toLocaleString('en-IN')}</strong>
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setForm({ ...form, amount: calc.netAmount.toString() })}
-                            className="text-[11px] font-bold text-[#164A4A] hover:underline ml-2 whitespace-nowrap"
-                          >
-                            Reset
-                          </button>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })()}
                 </div>
 
                 <div>

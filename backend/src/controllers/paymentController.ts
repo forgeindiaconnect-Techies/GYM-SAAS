@@ -3,6 +3,8 @@ import { AuthRequest } from '../middlewares/auth';
 import Payment, { PaymentStatus } from '../models/Payment';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
 import User, { SubscriptionStatus } from '../models/User';
+import Gym from '../models/Gym';
+import Notification from '../models/Notification';
 
 export const submitPayment = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -51,13 +53,29 @@ export const submitPayment = async (req: AuthRequest, res: Response): Promise<vo
     await membership.save();
 
     // Update user status
-    await User.findByIdAndUpdate(userId, {
+    const customerDoc = await User.findByIdAndUpdate(userId, {
       $set: {
         paymentStatus: 'Pending Verification',
         subscriptionStatus: SubscriptionStatus.PAYMENT_VERIFICATION_PENDING,
         subscriptionPlan: planName,
       }
-    });
+    }, { new: true });
+
+    // Notify Gym Owner
+    const gym = await Gym.findById(gymId);
+    if (gym?.ownerId) {
+      const custName = customerDoc ? `${customerDoc.firstName} ${customerDoc.lastName}`.trim() : 'A customer';
+      await Notification.create({
+        recipientId: gym.ownerId,
+        recipientRole: 'GYM_OWNER',
+        gymId: gym._id,
+        title: 'New Payment Pending Verification',
+        message: `${custName} submitted ₹${Number(amount).toLocaleString('en-IN')} for ${planName} via ${paymentMethod}.`,
+        type: 'alert',
+        relatedRecordId: payment._id,
+        link: '/admin/payments'
+      }).catch(err => console.error('Notif error:', err));
+    }
 
     res.status(201).json({ success: true, message: 'Payment submitted for verification', payment });
   } catch (error: any) {
@@ -117,6 +135,18 @@ export const verifyPayment = async (req: AuthRequest, res: Response): Promise<vo
         }
       });
 
+      // Notify customer
+      await Notification.create({
+        recipientId: payment.customerId,
+        recipientRole: 'MEMBER',
+        gymId: payment.gymId,
+        title: 'Payment Approved!',
+        message: `Your payment of ₹${Number(payment.amount).toLocaleString('en-IN')} for ${payment.planName} has been approved. Your membership is now active!`,
+        type: 'success',
+        relatedRecordId: payment._id,
+        link: '/member/dashboard'
+      }).catch(err => console.error('Notif error:', err));
+
       res.status(200).json({ success: true, message: 'Payment approved successfully', payment });
       return;
     }
@@ -138,6 +168,18 @@ export const verifyPayment = async (req: AuthRequest, res: Response): Promise<vo
           subscriptionStatus: SubscriptionStatus.REJECTED,
         }
       });
+
+      // Notify customer
+      await Notification.create({
+        recipientId: payment.customerId,
+        recipientRole: 'MEMBER',
+        gymId: payment.gymId,
+        title: 'Payment Rejected',
+        message: `Your payment of ₹${Number(payment.amount).toLocaleString('en-IN')} was rejected. ${rejectionReason ? `Reason: ${rejectionReason}` : ''}`,
+        type: 'alert',
+        relatedRecordId: payment._id,
+        link: '/member/payments'
+      }).catch(err => console.error('Notif error:', err));
 
       res.status(200).json({ success: true, message: 'Payment rejected', payment });
       return;

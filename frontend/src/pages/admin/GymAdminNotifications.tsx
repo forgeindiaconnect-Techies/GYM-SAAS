@@ -23,6 +23,20 @@ const getBg = (type: string) => {
   }
 };
 
+const getNotificationLink = (notif: any) => {
+  if (notif.link) return notif.link;
+  const title = (notif.title || '').toLowerCase();
+  const msg = (notif.message || '').toLowerCase();
+  if (title.includes('enquiry') || msg.includes('enquiry') || title.includes('lead')) return '/admin/enquiries';
+  if (title.includes('member') || msg.includes('member') || title.includes('registration') || title.includes('trial')) return '/admin/members';
+  if (title.includes('payment') || msg.includes('payment') || title.includes('due') || title.includes('fee')) return '/admin/payments';
+  if (title.includes('order') || msg.includes('order') || title.includes('store') || title.includes('sale')) return '/admin/store/sales';
+  if (title.includes('booking') || msg.includes('booking') || title.includes('session')) return '/admin/session-bookings';
+  if (title.includes('equipment') || msg.includes('equipment') || title.includes('maintenance')) return '/admin/equipment';
+  if (title.includes('trainer') || msg.includes('trainer')) return '/admin/trainers';
+  return null;
+};
+
 const GymAdminNotifications = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -62,8 +76,9 @@ const GymAdminNotifications = () => {
   const openNotification = (notif: any) => {
     if (!notif.isRead) markAsRead(notif._id);
     setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
-    if (notif.link) {
-      navigate(notif.link);
+    const targetLink = getNotificationLink(notif);
+    if (targetLink) {
+      navigate(targetLink);
       return;
     }
     setSelected(notif);

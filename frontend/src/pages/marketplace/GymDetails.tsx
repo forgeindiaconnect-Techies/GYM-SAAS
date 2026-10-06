@@ -4,6 +4,7 @@ import { MapPin, Star, Activity, CheckCircle, Phone, Mail, Globe, ArrowLeft, Loa
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
+import { isSubscriptionActive } from '../../utils/routeHelpers';
 
 const GymDetails = () => {
   const { id } = useParams();
@@ -82,6 +83,13 @@ const GymDetails = () => {
         navigate('/register/customer');
       }
     } else {
+      const planName = plan?.name?.toLowerCase() || '';
+      const isTrial = planName.includes('trial') || Number(plan?.price || 0) === 0;
+      if (isTrial && (isSubscriptionActive(user.subscriptionStatus) || user.gymId)) {
+        sessionStorage.removeItem('checkout_intent');
+        navigate('/member/dashboard');
+        return;
+      }
       navigate(`/gyms/${id}/checkout`, { state: { plan, gym, branch: selectedBranch } });
     }
   };

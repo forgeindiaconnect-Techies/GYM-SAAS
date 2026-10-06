@@ -60,11 +60,11 @@ import GymAdminImportCustomers from './pages/admin/GymAdminImportCustomers';
 import GymAdminTrainerFees from './pages/admin/GymAdminTrainerFees';
 import GymAdminTrainerPayments from './pages/admin/GymAdminTrainerPayments';
 import GymAdminTrainerPaymentHistory from './pages/admin/GymAdminTrainerPaymentHistory';
-import GymAdminTrainerCommission from './pages/admin/GymAdminTrainerCommission';
 import GymAdminAIFitnessPlans from './pages/admin/GymAdminAIFitnessPlans';
 import GymAdminAIPlanDetails from './pages/admin/GymAdminAIPlanDetails';
 import GymAdminOnlineSessions from './pages/admin/GymAdminOnlineSessions';
 import GymAdminVideoBookings from './pages/admin/GymAdminVideoBookings';
+import GymAdminExerciseLibrary from './pages/admin/GymAdminExerciseLibrary';
 
 // Gym Store (Admin)
 import GymStoreDashboard from './pages/admin/store/GymStoreDashboard';
@@ -139,6 +139,7 @@ import TrainerMembers from './pages/trainer/TrainerMembers';
 import TrainerSchedule from './pages/trainer/TrainerSchedule';
 import TrainerSessionBookings from './pages/trainer/TrainerSessionBookings';
 import TrainerOnlineSessions from './pages/trainer/TrainerOnlineSessions';
+import TrainerExerciseLibrary from './pages/trainer/TrainerExerciseLibrary';
 import TrainerWorkoutPlans from './pages/trainer/TrainerWorkoutPlans';
 import TrainerWorkoutVideos from './pages/trainer/TrainerWorkoutVideos';
 import TrainerDietPlans from './pages/trainer/TrainerDietPlans';
@@ -257,6 +258,7 @@ function App() {
             <Route path="schedule" element={<TrainerSchedule />} />
             <Route path="session-bookings" element={<TrainerSessionBookings />} />
             <Route path="online-sessions" element={<TrainerOnlineSessions />} />
+            <Route path="exercises" element={<TrainerExerciseLibrary />} />
             <Route path="workout-plans" element={<TrainerWorkoutPlans />} />
             <Route path="workout-videos" element={<TrainerWorkoutVideos />} />
             <Route path="diet-plans" element={<TrainerDietPlans />} />
@@ -302,6 +304,7 @@ function App() {
             <Route path="branches/:id" element={<GymAdminBranchProfile />} />
             <Route path="trainers" element={<GymAdminTrainers />} />
             <Route path="members" element={<GymAdminMembers />} />
+            <Route path="exercises" element={<GymAdminExerciseLibrary />} />
             <Route path="equipment" element={<GymAdminEquipment />} />
             <Route path="membership-plans" element={<GymAdminMembershipPlans />} />
             <Route path="enquiries" element={<GymAdminEnquiries />} />
@@ -323,7 +326,6 @@ function App() {
             <Route path="trainer-fees" element={<GymAdminTrainerFees />} />
             <Route path="trainer-payments" element={<GymAdminTrainerPayments />} />
             <Route path="trainer-payments-history" element={<GymAdminTrainerPaymentHistory />} />
-            <Route path="trainer-commission" element={<GymAdminTrainerCommission />} />
             <Route path="store" element={<GymStoreDashboard />} />
             <Route path="store/products" element={<GymStoreProducts />} />
             <Route path="store/categories" element={<GymStoreCategories />} />

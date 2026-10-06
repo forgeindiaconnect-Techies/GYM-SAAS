@@ -3,7 +3,7 @@ import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { getDashboardRoute } from '../../utils/routeHelpers';
+import { getDashboardRoute, isSubscriptionActive } from '../../utils/routeHelpers';
 import api from '../../utils/api';
 
 const LoginPage = () => {
@@ -56,12 +56,21 @@ const LoginPage = () => {
       if (intentStr && user.role === 'MEMBER') {
         try {
           const intent = JSON.parse(intentStr);
+          const isTrial = intent.plan?.name?.toLowerCase().includes('trial') || Number(intent.plan?.price || 0) === 0;
+          const isAlreadyEnrolled = isSubscriptionActive(user.subscriptionStatus) || Boolean(user.gymId);
+
           sessionStorage.removeItem('checkout_intent');
-          navigate(`/gyms/${intent.gymId}/checkout`, { state: { plan: intent.plan, gym: intent.gym || { _id: intent.gymId } }, replace: true });
-          return;
+
+          // If the user is already enrolled/approved with active plan/trial, or intent was just trial, go to dashboard
+          if (!isTrial && !isAlreadyEnrolled) {
+            navigate(`/gyms/${intent.gymId}/checkout`, { state: { plan: intent.plan, gym: intent.gym || { _id: intent.gymId } }, replace: true });
+            return;
+          }
         } catch (e) {
-          // ignore parse error
+          sessionStorage.removeItem('checkout_intent');
         }
+      } else {
+        sessionStorage.removeItem('checkout_intent');
       }
 
       const isSubCompleted = 

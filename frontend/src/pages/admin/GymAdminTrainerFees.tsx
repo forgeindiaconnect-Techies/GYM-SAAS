@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { IndianRupee, Plus, Edit, CheckCircle, XCircle, Search, ChevronDown, AlertCircle, Clock, X, Percent, Info } from 'lucide-react';
+import { IndianRupee, Plus, Edit, CheckCircle, XCircle, Search, ChevronDown, AlertCircle, Clock, X, Info } from 'lucide-react';
 import api from '../../utils/api';
 
 const TRAINING_TYPES = ['Online Training', 'Offline Training', 'Hybrid Training'];
@@ -15,7 +15,7 @@ const defaultForm = {
   status: 'Active',
   notes: '',
   commissionType: 'Percentage',
-  commissionValue: '',
+  commissionValue: 0,
   accountHolder: '',
   bankName: '',
   accountNumber: '',
@@ -171,8 +171,8 @@ const GymAdminTrainerFees = () => {
       trainingType: modeMap[trainer.trainingMode] || 'Offline Training',
       billingCycle: cycleMap[trainer.paymentType] || 'Monthly',
       effectiveFrom: trainer.createdAt ? new Date(trainer.createdAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
-      commissionType: trainer.commissionType || 'Percentage',
-      commissionValue: trainer.commissionValue !== undefined && trainer.commissionValue !== null ? trainer.commissionValue.toString() : '',
+      commissionType: 'Percentage',
+      commissionValue: 0,
       accountHolder: trainer.name || '',
       upiId: trainer.phone ? `${trainer.phone}@paytm` : '',
       upiName: trainer.name || '',
@@ -192,8 +192,8 @@ const GymAdminTrainerFees = () => {
       paymentMethod: fee?.paymentMethod || 'Bank Transfer',
       status: fee?.status || 'Active',
       notes: fee?.notes || '',
-      commissionType: fee?.commissionType || tr?.commissionType || 'Percentage',
-      commissionValue: fee?.commissionValue !== undefined && fee?.commissionValue !== null ? fee.commissionValue.toString() : (tr?.commissionValue !== undefined && tr?.commissionValue !== null ? tr.commissionValue.toString() : ''),
+      commissionType: 'Percentage',
+      commissionValue: 0,
       accountHolder: fee?.bankDetails?.accountHolder || tr?.name || '',
       bankName: fee?.bankDetails?.bankName || '',
       accountNumber: fee?.bankDetails?.accountNumber || '',
@@ -219,40 +219,15 @@ const GymAdminTrainerFees = () => {
     }
 
     const feeNum = Number(form.feeAmount) || 0;
-    const commNum = form.commissionValue !== '' && form.commissionValue !== undefined && form.commissionValue !== null 
-      ? Number(form.commissionValue) 
-      : 0;
-
-    if (isNaN(commNum) || commNum < 0) {
-      const msg = 'Commission value cannot be negative.';
-      showToast(msg, 'error');
-      alert(msg);
-      return;
-    }
-    if (form.commissionType === 'Percentage' && commNum > 100) {
-      const msg = 'Commission percentage cannot exceed 100%.';
-      showToast(msg, 'error');
-      alert(msg);
-      return;
-    }
-    if (form.commissionType === 'Fixed Amount' && commNum > feeNum) {
-      const msg = 'Commission fixed amount cannot exceed the total fee amount.';
-      showToast(msg, 'error');
-      alert(msg);
-      return;
-    }
-
-    const commDeduction = form.commissionType === 'Fixed Amount' ? commNum : (feeNum * commNum) / 100;
-    const netAmount = Math.max(0, feeNum - commDeduction);
 
     setSaving(true);
     try {
       const payload = { 
         ...form, 
         paymentMethod: form.paymentMethod || 'Bank Transfer',
-        commissionType: form.commissionType || 'Percentage',
-        commissionValue: commNum,
-        netAmount,
+        commissionType: 'Percentage',
+        commissionValue: 0,
+        netAmount: feeNum,
         accountHolder: form.accountHolder,
         bankName: form.bankName,
         accountNumber: form.accountNumber,
@@ -356,8 +331,6 @@ const GymAdminTrainerFees = () => {
                   <th className="px-5 py-3.5 font-semibold text-[#687B78]">Trainer</th>
                   <th className="px-5 py-3.5 font-semibold text-[#687B78]">Training Type</th>
                   <th className="px-5 py-3.5 font-semibold text-[#687B78] text-right">Fee (Salary)</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#687B78]">Commission</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#687B78] text-right">Remaining Amount</th>
                   <th className="px-5 py-3.5 font-semibold text-[#687B78]">Billing Cycle</th>
                   <th className="px-5 py-3.5 font-semibold text-[#687B78]">Effective From</th>
                   <th className="px-5 py-3.5 font-semibold text-[#687B78]">Status</th>
@@ -390,36 +363,6 @@ const GymAdminTrainerFees = () => {
                       {fee ? (
                         <span className="font-bold text-[#202828]">₹{Number(fee.feeAmount).toLocaleString('en-IN')}</span>
                       ) : (
-                        <span className="text-[#CBD5E1] italic text-xs">—</span>
-                      )}
-                    </td>
-
-                    {/* Commission */}
-                    <td className="px-5 py-4">
-                      {fee && fee.commissionValue !== undefined && Number(fee.commissionValue) > 0 ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-red-50 text-red-700 border border-red-200">
-                          -{fee.commissionType === 'Percentage'
-                            ? `${fee.commissionValue}%`
-                            : `₹${Number(fee.commissionValue).toLocaleString('en-IN')}`}
-                        </span>
-                      ) : (
-                        <span className="text-[#CBD5E1] italic text-xs">0%</span>
-                      )}
-                    </td>
-
-                    {/* Remaining Amount */}
-                    <td className="px-5 py-4 text-right">
-                      {fee ? (() => {
-                        const base = Number(fee.feeAmount) || 0;
-                        const commVal = Number(fee.commissionValue) || 0;
-                        const deduction = fee.commissionType === 'Fixed Amount' ? commVal : (base * commVal) / 100;
-                        const remaining = fee.netAmount !== undefined ? fee.netAmount : Math.max(0, base - deduction);
-                        return (
-                          <span className="font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 text-xs">
-                            ₹{Math.round(remaining).toLocaleString('en-IN')}
-                          </span>
-                        );
-                      })() : (
                         <span className="text-[#CBD5E1] italic text-xs">—</span>
                       )}
                     </td>
@@ -569,146 +512,6 @@ const GymAdminTrainerFees = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Commission Section */}
-              <div className="p-4 bg-[#F8FAF9] border border-[#E8E5DA] rounded-2xl space-y-3">
-                <div className="flex items-center gap-2 border-b border-[#E8E5DA] pb-2">
-                  <div className="w-6 h-6 rounded-lg bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center">
-                    <Percent size={13} className="font-bold" />
-                  </div>
-                  <h4 className="text-sm font-bold text-[#202828]">Commission</h4>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Commission Type</label>
-                    <div className="relative">
-                      <select
-                        value={form.commissionType}
-                        onChange={e => {
-                          const newType = e.target.value;
-                          let val = form.commissionValue;
-                          if (newType === 'Percentage' && Number(val) > 100) {
-                            val = '100';
-                          }
-                          setForm({ ...form, commissionType: newType, commissionValue: val });
-                        }}
-                        className="w-full appearance-none border border-[#E8E5DA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/30 bg-white pr-9 text-[#202828]"
-                      >
-                        <option value="Percentage">Percentage (%)</option>
-                        <option value="Fixed Amount">Fixed Amount (₹)</option>
-                      </select>
-                      <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A8ADA9] pointer-events-none" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">
-                      Commission Value {form.commissionType === 'Percentage' ? '(%)' : '(₹)'}
-                    </label>
-                    <div className="relative">
-                      {form.commissionType === 'Fixed Amount' ? (
-                        <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A8ADA9]" />
-                      ) : (
-                        <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A8ADA9]" />
-                      )}
-                      <input
-                        type="number"
-                        min="0"
-                        max={form.commissionType === 'Percentage' ? 100 : undefined}
-                        step={form.commissionType === 'Percentage' ? '0.1' : '1'}
-                        value={form.commissionValue}
-                        onChange={e => {
-                          const val = e.target.value;
-                          if (val === '') {
-                            setForm({ ...form, commissionValue: '' });
-                            return;
-                          }
-                          const num = parseFloat(val);
-                          if (num < 0) return; // Prevent negative values
-                          if (form.commissionType === 'Percentage' && num > 100) {
-                            setForm({ ...form, commissionValue: '100' });
-                            return;
-                          }
-                          setForm({ ...form, commissionValue: val });
-                        }}
-                        placeholder={form.commissionType === 'Percentage' ? 'e.g. 10 (up to 100%)' : 'e.g. 1000'}
-                        className="w-full border border-[#E8E5DA] rounded-xl pl-9 pr-10 py-2.5 text-sm outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/30 bg-white text-[#202828]"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#687B78] pointer-events-none">
-                        {form.commissionType === 'Percentage' ? '%' : '₹'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Automatic Live Salary Reduction & Remaining Amount Calculation */}
-                {(() => {
-                  const feeNum = Number(form.feeAmount) || 0;
-                  const commNum = Number(form.commissionValue) || 0;
-                  const commDeduction = form.commissionType === 'Fixed Amount' ? commNum : (feeNum * commNum) / 100;
-                  const remaining = Math.max(0, feeNum - commDeduction);
-                  const isOver = commDeduction > feeNum && feeNum > 0;
-
-                  return (
-                    <div className="pt-3 border-t border-[#E8E5DA] space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#455250] uppercase tracking-wider">Salary & Commission Calculation</span>
-                        {commNum > 0 && (
-                          <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-md border ${
-                            isOver ? 'text-red-700 bg-red-100/60 border-red-200' : 'text-emerald-800 bg-emerald-100/60 border-emerald-200'
-                          }`}>
-                            {form.commissionType === 'Percentage' ? `${commNum}% Deduction` : `₹${commNum.toLocaleString('en-IN')} Deduction`}
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-2 text-center">
-                        <div className="bg-white p-2.5 rounded-xl border border-[#E8E5DA] shadow-2xs">
-                          <p className="text-[10px] uppercase font-bold tracking-wider text-[#687B78]">Total Salary / Fee</p>
-                          <p className="text-sm sm:text-base font-bold text-[#202828] mt-0.5">
-                            ₹{feeNum.toLocaleString('en-IN')}
-                          </p>
-                        </div>
-
-                        <div className="bg-red-50/70 p-2.5 rounded-xl border border-red-200 shadow-2xs">
-                          <p className="text-[10px] uppercase font-bold tracking-wider text-red-700">Commission Deducted</p>
-                          <p className="text-sm sm:text-base font-bold text-red-600 mt-0.5">
-                            -₹{Math.round(commDeduction).toLocaleString('en-IN')}
-                          </p>
-                        </div>
-
-                        <div className="bg-emerald-50/80 p-2.5 rounded-xl border border-emerald-300 shadow-2xs">
-                          <p className="text-[10px] uppercase font-bold tracking-wider text-emerald-800">Remaining Amount</p>
-                          <p className="text-sm sm:text-base font-bold text-emerald-700 mt-0.5">
-                            ₹{Math.round(remaining).toLocaleString('en-IN')}
-                          </p>
-                        </div>
-                      </div>
-
-                      {commNum > 0 && feeNum > 0 && (
-                        <div className="text-xs text-[#164A4A] bg-[#164A4A]/5 px-3 py-2 rounded-xl font-medium flex items-center gap-1.5 border border-[#164A4A]/10">
-                          <Info size={14} className="shrink-0 text-[#164A4A]" />
-                          <span>
-                            {form.commissionType === 'Percentage'
-                              ? `Commission of ${commNum}% (-₹${Math.round(commDeduction).toLocaleString('en-IN')}) automatically reduces total salary ₹${feeNum.toLocaleString('en-IN')}. Remaining payable: `
-                              : `Fixed commission of -₹${Number(commNum).toLocaleString('en-IN')} automatically reduces total salary ₹${feeNum.toLocaleString('en-IN')}. Remaining payable: `}
-                            <strong className="font-extrabold text-emerald-800 underline">₹{Math.round(remaining).toLocaleString('en-IN')}</strong>
-                          </span>
-                        </div>
-                      )}
-
-                      {isOver && (
-                        <p className="text-xs text-red-600 font-semibold flex items-center gap-1">
-                          <AlertCircle size={13} className="shrink-0" />
-                          Commission deduction exceeds total salary. Please check the values.
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-              </div>
-
 
               {/* Effective From — full width */}
               <div>

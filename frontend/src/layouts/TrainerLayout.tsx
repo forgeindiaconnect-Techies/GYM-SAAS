@@ -7,7 +7,7 @@ import {
   Utensils, Calendar, CalendarCheck, TrendingUp,
   MessageSquare, IndianRupee, Bell,
   Activity, Menu, LogOut, Bot,
-  Clock
+  Clock, Dumbbell
 } from 'lucide-react';
 
 const TrainerLayout = () => {
@@ -71,6 +71,7 @@ const TrainerLayout = () => {
     {
       title: 'Programs',
       items: [
+        { label: 'Exercise Library', path: '/trainer/exercises', icon: Dumbbell },
         { label: 'Workout Plans', path: '/trainer/workout-plans', icon: FileText },
         { label: 'Workout Videos', path: '/trainer/workout-videos', icon: FileText },
         { label: 'Diet Plans', path: '/trainer/diet-plans', icon: Utensils },

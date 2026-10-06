@@ -8,8 +8,22 @@ import {
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
   History,
-  Store, Package, Tag, Boxes, ShoppingCart, Bot, Percent
+  Store, Package, Boxes, ShoppingCart, Bot
 } from 'lucide-react';
+
+const getNotificationLink = (notif: any) => {
+  if (notif.link) return notif.link;
+  const title = (notif.title || '').toLowerCase();
+  const msg = (notif.message || '').toLowerCase();
+  if (title.includes('enquiry') || msg.includes('enquiry') || title.includes('lead')) return '/admin/enquiries';
+  if (title.includes('member') || msg.includes('member') || title.includes('registration') || title.includes('trial')) return '/admin/members';
+  if (title.includes('payment') || msg.includes('payment') || title.includes('due') || title.includes('fee')) return '/admin/payments';
+  if (title.includes('order') || msg.includes('order') || title.includes('store') || title.includes('sale')) return '/admin/store/orders';
+  if (title.includes('booking') || msg.includes('booking') || title.includes('session')) return '/admin/session-bookings';
+  if (title.includes('equipment') || msg.includes('equipment') || title.includes('maintenance')) return '/admin/equipment';
+  if (title.includes('trainer') || msg.includes('trainer')) return '/admin/trainers';
+  return '/admin/notifications';
+};
 
 const GymAdminLayout = () => {
   const location = useLocation();
@@ -97,8 +111,7 @@ const GymAdminLayout = () => {
           { label: 'Trainers List', path: '/admin/trainers', icon: Dumbbell },
           { label: 'Trainer Fees', path: '/admin/trainer-fees', icon: IndianRupee },
           { label: 'Trainer Payments', path: '/admin/trainer-payments', icon: CreditCard },
-          { label: 'Payment History', path: '/admin/trainer-payments-history', icon: History },
-          { label: 'Commission', path: '/admin/trainer-commission', icon: Percent }
+          { label: 'Payment History', path: '/admin/trainer-payments-history', icon: History }
         ]
       },
       {
@@ -112,8 +125,9 @@ const GymAdminLayout = () => {
       {
         title: 'Gym & Operations',
         items: [
+          { label: 'Exercise Library', path: '/admin/exercises', icon: Dumbbell },
           { label: 'Equipment', path: '/admin/equipment', icon: Activity },
-          { label: 'Membership Plans', path: '/admin/membership-plans', icon: CreditCard },
+          { label: 'Package Plans', path: '/admin/membership-plans', icon: CreditCard },
           { label: 'Membership Payments', path: '/admin/payments', icon: IndianRupee }
         ]
       },
@@ -122,7 +136,6 @@ const GymAdminLayout = () => {
         items: [
           { label: 'Store Overview', path: '/admin/store', icon: Store },
           { label: 'Products', path: '/admin/store/products', icon: Package },
-          { label: 'Categories', path: '/admin/store/categories', icon: Tag },
           { label: 'Inventory', path: '/admin/store/inventory', icon: Boxes },
           { label: 'Orders', path: '/admin/store/orders', icon: ShoppingCart },
           { label: 'Offline Sales', path: '/admin/store/offline-sales', icon: IndianRupee },
@@ -345,9 +358,28 @@ const GymAdminLayout = () => {
                 <div className="absolute right-0 top-10 w-80 bg-white border border-[#D3DFDA] rounded-2xl shadow-2xl z-50 overflow-hidden">
                   {/* Header */}
                   <div className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9]">
-                    <h3 className="font-bold text-[#202828] text-sm">Notifications</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-[#202828] text-sm">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <span className="bg-[#164A4A]/10 text-[#164A4A] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                      )}
+                    </div>
                     {unreadCount > 0 && (
-                      <span className="bg-[#164A4A]/10 text-[#164A4A] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const api = (await import('../utils/api')).default;
+                            await api.put('/notifications/mark-all-read');
+                            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }}
+                        className="text-[11px] font-semibold text-[#164A4A] hover:underline"
+                      >
+                        Mark all read
+                      </button>
                     )}
                   </div>
 
@@ -356,11 +388,14 @@ const GymAdminLayout = () => {
                     {notifications.length === 0 ? (
                       <div className="p-4 text-center text-sm text-[#687B78]">No notifications</div>
                     ) : (
-                      notifications.slice(0, 4).map(notif => (
+                      notifications.slice(0, 5).map(notif => (
                         <div
                           key={notif._id}
                           onClick={() => {
                             if (!notif.isRead) markAsRead(notif._id);
+                            setNotifOpen(false);
+                            const targetLink = getNotificationLink(notif);
+                            if (targetLink) navigate(targetLink);
                           }}
                           className={`flex items-start gap-3 px-4 py-3 hover:bg-[#F2EFE8] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[#F1F5F3]' : ''}`}
                         >

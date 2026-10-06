@@ -259,11 +259,6 @@ const GymAdminPendingTrainerPayments = () => {
                 <div>
                   <p className="text-xs text-[#687B78] font-semibold">Exact Amount Due</p>
                   <p className="text-2xl font-bold text-[#164A4A]">₹{Number(selectedTrainer.netAmount ?? selectedTrainer.amount).toLocaleString('en-IN')}</p>
-                  {selectedTrainer.feeAmount && (selectedTrainer.netAmount ?? selectedTrainer.amount) !== selectedTrainer.feeAmount && (
-                    <span className="text-[11px] text-emerald-700 font-semibold block mt-0.5">
-                      Base: ₹{Number(selectedTrainer.feeAmount).toLocaleString('en-IN')} (–Commission Deducted)
-                    </span>
-                  )}
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-[#687B78]">Billing Cycle</p>
