@@ -437,7 +437,7 @@ const SuperAdminGymOwners = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'APPROVED': return 'bg-green-500/10 text-green-500 border-green-500/20';
-      case 'REJECTED': return 'bg-[#6fa3a0]/10 text-[#6fa3a0] border-[#6fa3a0]/20';
+      case 'REJECTED': return 'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/20';
       case 'SUSPENDED': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       default: return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
     }
@@ -447,59 +447,59 @@ const SuperAdminGymOwners = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#202828]">Gym Owner Details</h1>
-          <p className="text-[#455250] text-sm mt-1">Manage all registered gym owners and their approval statuses.</p>
+          <h1 className="text-2xl font-bold text-[#292524]">Gym Owner Details</h1>
+          <p className="text-[#78716C] text-sm mt-1">Manage all registered gym owners and their approval statuses.</p>
         </div>
       </div>
 
-      <div className="flex space-x-2 border-b border-[#D3DFDA] pb-2 overflow-x-auto custom-scrollbar">
+      <div className="flex space-x-2 border-b border-[#E7E5E4] pb-2 overflow-x-auto custom-scrollbar">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
               activeTab === tab.id
-                ? 'border-[#164A4A] text-[#164A4A] bg-[#164A4A]/10'
-                : 'border-transparent text-[#455250] hover:text-[#202828] hover:bg-[#FFFFFF]'
+                ? 'border-[#F97316] text-[#F97316] bg-[#F97316]/10'
+                : 'border-transparent text-[#78716C] hover:text-[#292524] hover:bg-[#FFFFFF]'
             }`}
           >
             <tab.icon size={16} />
             <span>{tab.label}</span>
-            <span className="bg-[#E8E5DA] text-xs px-2 py-0.5 rounded-full ml-2 text-[#202828]">
+            <span className="bg-[#FED7AA] text-xs px-2 py-0.5 rounded-full ml-2 text-[#292524]">
               {tab.id === 'ALL' ? owners.length : owners.filter(o => o.approvalStatus === tab.id).length}
             </span>
           </button>
         ))}
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4 flex flex-wrap gap-4 items-center justify-between">
+      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 flex flex-wrap gap-4 items-center justify-between">
         <div className="flex-1 min-w-[250px] relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#455250]" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
           <input 
             type="text" 
             placeholder="Search by name, gym or email..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
           />
         </div>
         <div className="relative">
           <button 
             onClick={() => setShowExportMenu(!showExportMenu)}
-            className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg hover:bg-[#E8E5DA] transition-colors text-sm font-medium"
+            className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg hover:bg-[#FED7AA] transition-colors text-sm font-medium"
           >
-            <Download size={16} className="text-[#164A4A]" />
+            <Download size={16} className="text-[#F97316]" />
             <span>Download Report</span>
           </button>
           {showExportMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#D3DFDA] rounded-lg shadow-xl z-10 py-1 overflow-hidden">
-              <button onClick={() => handleExport('pdf')} className="w-full text-left px-4 py-2 text-sm text-[#202828] hover:bg-[#E8E5DA] flex items-center space-x-2">
+            <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#E7E5E4] rounded-lg shadow-xl z-10 py-1 overflow-hidden">
+              <button onClick={() => handleExport('pdf')} className="w-full text-left px-4 py-2 text-sm text-[#292524] hover:bg-[#FED7AA] flex items-center space-x-2">
                 <FileText size={14} className="text-red-400" /><span>PDF Document</span>
               </button>
-              <button onClick={() => handleExport('excel')} className="w-full text-left px-4 py-2 text-sm text-[#202828] hover:bg-[#E8E5DA] flex items-center space-x-2">
+              <button onClick={() => handleExport('excel')} className="w-full text-left px-4 py-2 text-sm text-[#292524] hover:bg-[#FED7AA] flex items-center space-x-2">
                 <TableIcon size={14} className="text-green-400" /><span>Excel Spreadsheet</span>
               </button>
-              <button onClick={() => handleExport('word')} className="w-full text-left px-4 py-2 text-sm text-[#202828] hover:bg-[#E8E5DA] flex items-center space-x-2">
+              <button onClick={() => handleExport('word')} className="w-full text-left px-4 py-2 text-sm text-[#292524] hover:bg-[#FED7AA] flex items-center space-x-2">
                 <FileText size={14} className="text-blue-400" /><span>Word Document</span>
               </button>
             </div>
@@ -507,27 +507,27 @@ const SuperAdminGymOwners = () => {
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl overflow-hidden relative min-h-[400px]">
+      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl overflow-hidden relative min-h-[400px]">
         {loading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#455250]">
-            <Loader2 size={32} className="animate-spin mb-4 text-[#164A4A]" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#78716C]">
+            <Loader2 size={32} className="animate-spin mb-4 text-[#F97316]" />
             <p>Loading gym owners...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#6fa3a0]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#FED7AA]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
         ) : filteredOwners.length === 0 ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#455250]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#78716C]">
             <Building2 size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium text-[#202828] mb-1">No gym owners found</p>
+            <p className="text-lg font-medium text-[#292524] mb-1">No gym owners found</p>
             <p className="text-sm text-center max-w-md">There are no gym owners matching your search criteria.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-[#455250] uppercase bg-[#F8FAF9] border-b-2 border-[#D3DFDA] sticky top-0 z-10">
+              <thead className="text-xs text-[#78716C] uppercase bg-[#F8FAF9] border-b-2 border-[#E7E5E4] sticky top-0 z-10">
                 <tr>
                   <th className="px-6 py-4 font-medium">Gym & Owner</th>
                   <th className="px-5 py-3.5 font-semibold whitespace-nowrap">Contact</th>
@@ -538,28 +538,28 @@ const SuperAdminGymOwners = () => {
                   <th className="px-5 py-3.5 font-semibold text-center whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#D3DFDA]">
+              <tbody className="divide-y divide-[#E7E5E4]">
                 {filteredOwners.map((owner) => (
-                  <tr key={owner._id} className="hover:bg-[#F2EFE8] transition-colors align-middle">
+                  <tr key={owner._id} className="hover:bg-[#FFFDF8] transition-colors align-middle">
                     <td className="px-5 py-3.5">
                       <div className="flex items-center space-x-3">
-                        <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-[#164A4A]/20 to-[#164A4A]/10 flex items-center justify-center text-[#164A4A] font-bold text-sm border border-[#164A4A]/20">
+                        <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-[#F97316]/20 to-[#F97316]/10 flex items-center justify-center text-[#F97316] font-bold text-sm border border-[#F97316]/20">
                           {owner.firstName[0]}
                         </div>
                         <div>
-                          <div className="font-medium text-[#202828]">{owner.firstName} {owner.lastName}</div>
-                          <div className="text-xs text-[#455250]">{owner.gymId?.name || 'No Gym'}</div>
-                          {owner.gymId?.location?.city && <div className="text-[10px] text-[#A8ADA9]">{owner.gymId.location.city}</div>}
+                          <div className="font-medium text-[#292524]">{owner.firstName} {owner.lastName}</div>
+                          <div className="text-xs text-[#78716C]">{owner.gymId?.name || 'No Gym'}</div>
+                          {owner.gymId?.location?.city && <div className="text-[10px] text-[#78716C]">{owner.gymId.location.city}</div>}
                         </div>
                       </div>
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="space-y-1">
-                        <div className="flex items-center space-x-2 text-[#455250]">
+                        <div className="flex items-center space-x-2 text-[#78716C]">
                           <Mail size={14} />
                           <span className="truncate max-w-[150px]">{owner.email}</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-[#455250]">
+                        <div className="flex items-center space-x-2 text-[#78716C]">
                           <Phone size={14} />
                           <span>{owner.mobile}</span>
                         </div>
@@ -568,38 +568,38 @@ const SuperAdminGymOwners = () => {
                     <td className="px-5 py-3.5">
                       <div className="space-y-1">
                         {owner.subscriptionPlan && SAAS_PLANS[owner.subscriptionPlan] ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#F1F5F9] text-[#455250] border border-[#E8E5DA]">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#F1F5F9] text-[#78716C] border border-[#FED7AA]">
                             {SAAS_PLANS[owner.subscriptionPlan].name}
                           </span>
                         ) : (
-                          <span className="text-[#A8ADA9] text-xs">No Plan</span>
+                          <span className="text-[#78716C] text-xs">No Plan</span>
                         )}
-                        <div className="text-xs text-[#455250]">{owner.billingCycle ? owner.billingCycle.charAt(0).toUpperCase() + owner.billingCycle.slice(1) : 'N/A'}</div>
+                        <div className="text-xs text-[#78716C]">{owner.billingCycle ? owner.billingCycle.charAt(0).toUpperCase() + owner.billingCycle.slice(1) : 'N/A'}</div>
                       </div>
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="space-y-1 text-xs">
                         <div>
-                          <span className="text-[#687B78]">Status:</span>{' '}
-                          <span className={`font-medium ${owner.subscriptionStatus === 'Active' ? 'text-[#164A4A]' : 'text-[#EF4444]'}`}>
+                          <span className="text-[#78716C]">Status:</span>{' '}
+                          <span className={`font-medium ${owner.subscriptionStatus === 'Active' ? 'text-[#F97316]' : 'text-[#EF4444]'}`}>
                             {owner.subscriptionStatus || 'N/A'}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[#687B78]">Payment:</span>{' '}
-                          <span className="font-medium text-[#202828]">{owner.paymentStatus || 'N/A'}</span>
+                          <span className="text-[#78716C]">Payment:</span>{' '}
+                          <span className="font-medium text-[#292524]">{owner.paymentStatus || 'N/A'}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-5 py-3.5 whitespace-nowrap">
                       <div className="space-y-1">
                         <div className="flex items-center space-x-1.5">
-                          <span className="text-[#687B78] font-medium text-[11px] w-11">Start:</span>
-                          <span className="font-semibold text-[#202828]">{formatDate(owner.subscriptionStart)}</span>
+                          <span className="text-[#78716C] font-medium text-[11px] w-11">Start:</span>
+                          <span className="font-semibold text-[#292524]">{formatDate(owner.subscriptionStart)}</span>
                         </div>
                         <div className="flex items-center space-x-1.5">
-                          <span className="text-[#687B78] font-medium text-[11px] w-11">Expiry:</span>
-                          <span className="font-semibold text-[#164A4A]">{formatDate(owner.subscriptionExpiry)}</span>
+                          <span className="text-[#78716C] font-medium text-[11px] w-11">Expiry:</span>
+                          <span className="font-semibold text-[#F97316]">{formatDate(owner.subscriptionExpiry)}</span>
                         </div>
                       </div>
                     </td>
@@ -611,7 +611,7 @@ const SuperAdminGymOwners = () => {
                     <td className="px-5 py-3.5">
                       <div className="flex flex-col items-center gap-2">
                         {/* Quick Actions based on status - Fixed width to prevent shifting */}
-                        <div className="flex items-center gap-1 border-t border-[#E8E5DA] pt-1.5">
+                        <div className="flex items-center gap-1 border-t border-[#FED7AA] pt-1.5">
                           {owner.approvalStatus !== 'APPROVED' && (
                             <button 
                               onClick={() => handleStatusChange(owner._id, 'APPROVED')}
@@ -638,7 +638,7 @@ const SuperAdminGymOwners = () => {
                             <button 
                               onClick={() => handleStatusChange(owner._id, 'REJECTED')}
                               disabled={statusUpdating === owner._id}
-                              className="p-1 text-[#6fa3a0] hover:bg-red-500/10 rounded-md transition-colors disabled:opacity-50"
+                              className="p-1 text-[#FED7AA] hover:bg-red-500/10 rounded-md transition-colors disabled:opacity-50"
                               title="Reject"
                             >
                               <XCircle size={18} />
@@ -674,7 +674,7 @@ const SuperAdminGymOwners = () => {
                           </button>
                           <button 
                             onClick={() => handleDelete(owner._id)}
-                            className="p-1.5 text-[#455250] hover:text-[#6fa3a0] hover:bg-red-500/10 rounded-md transition-colors"
+                            className="p-1.5 text-[#78716C] hover:text-[#FED7AA] hover:bg-red-500/10 rounded-md transition-colors"
                             title="Delete"
                           >
                             <Trash2 size={16} />
@@ -693,10 +693,10 @@ const SuperAdminGymOwners = () => {
       {/* View Details Modal */}
       {viewOwner && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
+          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7E5E4] bg-[#FFFFFF] shrink-0">
               <div className="flex items-center gap-3">
-                <h2 className="text-xl font-bold text-[#202828]">Gym Owner Details</h2>
+                <h2 className="text-xl font-bold text-[#292524]">Gym Owner Details</h2>
                 {viewOwner.subscriptionPlan && SAAS_PLANS[viewOwner.subscriptionPlan] && (
                   <span className="px-3 py-1 bg-gradient-to-r from-amber-100 to-amber-50 text-amber-700 text-xs font-bold rounded-full border border-amber-200 shadow-sm flex items-center gap-1">
                     <Star size={12} className="fill-amber-500 text-amber-500" />
@@ -710,14 +710,14 @@ const SuperAdminGymOwners = () => {
                     href={`/gyms/${viewOwner.gymId._id}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-sm font-semibold text-[#164A4A] hover:underline flex items-center"
+                    className="text-sm font-semibold text-[#F97316] hover:underline flex items-center"
                   >
                     <Eye size={16} className="mr-1" /> View Public Page
                   </a>
                 )}
                 <button 
                   onClick={() => setViewOwner(null)}
-                  className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded-lg transition-colors"
+                  className="p-1.5 text-[#78716C] hover:text-[#F97316] hover:bg-[#FFFDF8] rounded-lg transition-colors"
                   title="Close"
                 >
                   <X size={20} />
@@ -728,29 +728,29 @@ const SuperAdminGymOwners = () => {
             <div className="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
               {/* Owner Details */}
               <div>
-                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Owner Information</h3>
-                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                <h3 className="text-[#F97316] font-bold text-xs uppercase tracking-wider mb-3">Owner Information</h3>
+                <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">First Name</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.firstName || '—'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">First Name</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.firstName || '—'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Last Name</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.lastName || '—'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Last Name</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.lastName || '—'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Email</span>
-                      <span className="font-semibold text-sm text-[#202828] break-all">{viewOwner.email || '—'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Email</span>
+                      <span className="font-semibold text-sm text-[#292524] break-all">{viewOwner.email || '—'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Mobile</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.mobile || '—'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Mobile</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.mobile || '—'}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Account Status</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Account Status</span>
                       <span className="inline-flex items-center">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStatusColor(viewOwner.approvalStatus)}`}>
                           {viewOwner.approvalStatus}
@@ -758,20 +758,20 @@ const SuperAdminGymOwners = () => {
                       </span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Joined Date</span>
-                      <span className="font-semibold text-sm text-[#202828]">{formatDate(viewOwner.createdAt)}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Joined Date</span>
+                      <span className="font-semibold text-sm text-[#292524]">{formatDate(viewOwner.createdAt)}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">SaaS Plan</span>
-                      <span className="font-bold text-sm text-[#164A4A]">
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">SaaS Plan</span>
+                      <span className="font-bold text-sm text-[#F97316]">
                         {viewOwner.subscriptionPlan && SAAS_PLANS[viewOwner.subscriptionPlan] 
                           ? SAAS_PLANS[viewOwner.subscriptionPlan].name 
                           : 'Standard Plan'}
                       </span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Plan Expiry Date</span>
-                      <span className="font-semibold text-sm text-[#202828]">{formatDate(viewOwner.subscriptionExpiry)}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Plan Expiry Date</span>
+                      <span className="font-semibold text-sm text-[#292524]">{formatDate(viewOwner.subscriptionExpiry)}</span>
                     </div>
                   </div>
                 </div>
@@ -779,24 +779,24 @@ const SuperAdminGymOwners = () => {
 
               {/* Gym Details */}
               <div>
-                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Gym Information</h3>
+                <h3 className="text-[#F97316] font-bold text-xs uppercase tracking-wider mb-3">Gym Information</h3>
                 {viewOwner.gymId?.logo && (
                   <div className="mb-4">
-                    <img src={viewOwner.gymId.logo} alt={viewOwner.gymId.name} className="w-full max-h-48 object-cover rounded-xl border border-[#D3DFDA]" />
+                    <img src={viewOwner.gymId.logo} alt={viewOwner.gymId.name} className="w-full max-h-48 object-cover rounded-xl border border-[#E7E5E4]" />
                   </div>
                 )}
-                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Name</span>
-                      <span className="font-bold text-sm text-[#202828]">{viewOwner.gymId?.name || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Gym Name</span>
+                      <span className="font-bold text-sm text-[#292524]">{viewOwner.gymId?.name || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Type</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.gymType || 'Standard'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Gym Type</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.gymType || 'Standard'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Status</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Gym Status</span>
                       <span className="inline-flex items-center">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                           viewOwner.gymId?.status === 'ACTIVE' ? 'bg-green-500/10 text-green-700 border-green-500/30' :
@@ -807,26 +807,26 @@ const SuperAdminGymOwners = () => {
                       </span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Rating</span>
-                      <span className="font-semibold text-sm text-[#202828]">⭐ {viewOwner.gymId?.rating || 'N/A'} {viewOwner.gymId?.reviewCount ? `(${viewOwner.gymId.reviewCount})` : ''}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Rating</span>
+                      <span className="font-semibold text-sm text-[#292524]">⭐ {viewOwner.gymId?.rating || 'N/A'} {viewOwner.gymId?.reviewCount ? `(${viewOwner.gymId.reviewCount})` : ''}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Email</span>
-                      <span className="font-semibold text-sm text-[#202828] break-all">{viewOwner.gymId?.email || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Gym Email</span>
+                      <span className="font-semibold text-sm text-[#292524] break-all">{viewOwner.gymId?.email || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Gym Phone</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.phone || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Gym Phone</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.phone || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Operating Hours</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.operatingHours || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Operating Hours</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.operatingHours || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Training Mode</span>
-                      <span className="font-semibold text-sm text-[#202828] capitalize">{viewOwner.gymId?.trainingMode || 'All Modes'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Training Mode</span>
+                      <span className="font-semibold text-sm text-[#292524] capitalize">{viewOwner.gymId?.trainingMode || 'All Modes'}</span>
                     </div>
                   </div>
                 </div>
@@ -835,10 +835,10 @@ const SuperAdminGymOwners = () => {
               {/* Services Offered */}
               {viewOwner.gymId?.services && viewOwner.gymId.services.length > 0 && (
                 <div>
-                  <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Services Offered</h3>
-                  <div className="flex flex-wrap gap-2 p-3.5 bg-white border border-[#D3DFDA] rounded-xl shadow-sm">
+                  <h3 className="text-[#F97316] font-bold text-xs uppercase tracking-wider mb-3">Services Offered</h3>
+                  <div className="flex flex-wrap gap-2 p-3.5 bg-white border border-[#E7E5E4] rounded-xl shadow-sm">
                     {viewOwner.gymId.services.map((service: string, i: number) => (
-                      <span key={i} className="bg-[#164A4A]/10 text-[#164A4A] border border-[#164A4A]/20 text-xs px-3 py-1 rounded-lg font-bold">
+                      <span key={i} className="bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 text-xs px-3 py-1 rounded-lg font-bold">
                         {service}
                       </span>
                     ))}
@@ -848,37 +848,37 @@ const SuperAdminGymOwners = () => {
 
               {/* Location & Operations */}
               <div>
-                <h3 className="text-[#164A4A] font-bold text-xs uppercase tracking-wider mb-3">Location & Operations</h3>
-                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                <h3 className="text-[#F97316] font-bold text-xs uppercase tracking-wider mb-3">Location & Operations</h3>
+                <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white flex flex-col justify-center sm:col-span-2">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Address</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.address || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Address</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.location?.address || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">City</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.city || viewOwner.city || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">City</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.location?.city || viewOwner.city || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">State</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.state || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">State</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.location?.state || 'Not provided'}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">PIN Code</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">PIN Code</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.location?.pinCode || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Member Capacity</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.memberCapacity ?? 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Member Capacity</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.memberCapacity ?? 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Trainer Capacity</span>
-                      <span className="font-semibold text-sm text-[#202828]">{viewOwner.gymId?.trainerCapacity ?? 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Trainer Capacity</span>
+                      <span className="font-semibold text-sm text-[#292524]">{viewOwner.gymId?.trainerCapacity ?? 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Verification</span>
+                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Verification</span>
                       <span className="font-bold text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block w-fit">Verified</span>
                     </div>
                   </div>
@@ -886,11 +886,11 @@ const SuperAdminGymOwners = () => {
               </div>
 
               {/* Member Subscription Plans */}
-              <div className="bg-[#F8FAF9] border border-[#D3DFDA] rounded-xl p-5">
-                <div className="flex items-center justify-between mb-4 border-b border-[#D3DFDA] pb-2">
-                  <h3 className="text-[#164A4A] font-semibold">Member Subscription Plans</h3>
+              <div className="bg-[#F8FAF9] border border-[#E7E5E4] rounded-xl p-5">
+                <div className="flex items-center justify-between mb-4 border-b border-[#E7E5E4] pb-2">
+                  <h3 className="text-[#F97316] font-semibold">Member Subscription Plans</h3>
                   {viewOwner.gymId?.subscriptionPlans && viewOwner.gymId.subscriptionPlans.length > 0 && (
-                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#164A4A]/10 text-[#164A4A]">
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#F97316]/10 text-[#F97316]">
                       {viewOwner.gymId.subscriptionPlans.length} {viewOwner.gymId.subscriptionPlans.length === 1 ? 'Plan' : 'Plans'}
                     </span>
                   )}
@@ -898,52 +898,52 @@ const SuperAdminGymOwners = () => {
                 {viewOwner.gymId?.subscriptionPlans && viewOwner.gymId.subscriptionPlans.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {viewOwner.gymId.subscriptionPlans.map((plan: any, idx: number) => (
-                      <div key={idx} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4 flex flex-col justify-between shadow-sm hover:border-[#164A4A]/40 transition-colors">
+                      <div key={idx} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 flex flex-col justify-between shadow-sm hover:border-[#F97316]/40 transition-colors">
                         <div>
                           <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-bold text-[#202828] text-base">{plan.name}</h4>
+                            <h4 className="font-bold text-[#292524] text-base">{plan.name}</h4>
                             <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-md font-bold text-sm">
                               {Number(plan.price) === 0 ? 'FREE' : `₹${plan.price}`}
                             </span>
                           </div>
-                          <p className="text-xs font-semibold text-[#164A4A] bg-[#164A4A]/5 px-2 py-1 rounded inline-block mb-3">
+                          <p className="text-xs font-semibold text-[#F97316] bg-[#F97316]/5 px-2 py-1 rounded inline-block mb-3">
                             ⏱ {plan.duration}
                           </p>
                         </div>
                         {plan.features && (
-                          <div className="mt-2 pt-2 border-t border-[#E8E5DA]">
-                            <p className="text-xs text-[#455250] leading-relaxed whitespace-pre-wrap">{plan.features}</p>
+                          <div className="mt-2 pt-2 border-t border-[#FED7AA]">
+                            <p className="text-xs text-[#78716C] leading-relaxed whitespace-pre-wrap">{plan.features}</p>
                           </div>
                         )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-[#455250]">No subscription plans defined for this gym.</p>
+                  <p className="text-sm text-[#78716C]">No subscription plans defined for this gym.</p>
                 )}
               </div>
 
               {/* AC Details & Facilities */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">AC Details</h3>
+                  <h3 className="text-[#F97316] font-semibold mb-4 border-b border-[#E7E5E4] pb-2">AC Details</h3>
                   <div className="text-sm space-y-2">
-                    <p><span className="text-[#455250]">Type:</span> <span className="text-[#202828] font-medium">{viewOwner.gymId?.acDetails?.type || 'Not Specified'}</span></p>
+                    <p><span className="text-[#78716C]">Type:</span> <span className="text-[#292524] font-medium">{viewOwner.gymId?.acDetails?.type || 'Not Specified'}</span></p>
                     {viewOwner.gymId?.acDetails?.areas && viewOwner.gymId.acDetails.areas.length > 0 && (
-                      <p><span className="text-[#455250]">Areas:</span> <span className="text-[#202828] font-medium">{viewOwner.gymId.acDetails.areas.join(', ')}</span></p>
+                      <p><span className="text-[#78716C]">Areas:</span> <span className="text-[#292524] font-medium">{viewOwner.gymId.acDetails.areas.join(', ')}</span></p>
                     )}
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Facilities</h3>
+                  <h3 className="text-[#F97316] font-semibold mb-4 border-b border-[#E7E5E4] pb-2">Facilities</h3>
                   {viewOwner.gymId?.facilities && viewOwner.gymId.facilities.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {viewOwner.gymId.facilities.map((f: string, i: number) => (
-                        <span key={i} className="bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] text-xs px-2.5 py-1 rounded-md font-medium">{f}</span>
+                        <span key={i} className="bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] text-xs px-2.5 py-1 rounded-md font-medium">{f}</span>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-[#455250]">No facilities selected.</p>
+                    <p className="text-sm text-[#78716C]">No facilities selected.</p>
                   )}
                 </div>
               </div>
@@ -951,12 +951,12 @@ const SuperAdminGymOwners = () => {
               {/* Equipment (if present) */}
               {viewOwner.gymId?.equipment && viewOwner.gymId.equipment.length > 0 && (
                 <div>
-                  <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Equipment</h3>
+                  <h3 className="text-[#F97316] font-semibold mb-4 border-b border-[#E7E5E4] pb-2">Equipment</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {viewOwner.gymId.equipment.map((eq: any, i: number) => (
-                      <div key={i} className="bg-[#FFFFFF] p-3 rounded-lg border border-[#D3DFDA]">
-                        <p className="text-sm font-medium text-[#202828]">{eq.name} <span className="text-[#455250] text-xs">x{eq.quantity}</span></p>
-                        <p className="text-xs text-[#455250] mt-1">{eq.category} • {eq.condition} • {eq.availability}</p>
+                      <div key={i} className="bg-[#FFFFFF] p-3 rounded-lg border border-[#E7E5E4]">
+                        <p className="text-sm font-medium text-[#292524]">{eq.name} <span className="text-[#78716C] text-xs">x{eq.quantity}</span></p>
+                        <p className="text-xs text-[#78716C] mt-1">{eq.category} • {eq.condition} • {eq.availability}</p>
                       </div>
                     ))}
                   </div>
@@ -966,11 +966,11 @@ const SuperAdminGymOwners = () => {
               {/* Gym Images */}
               {viewOwner.gymId?.images && viewOwner.gymId.images.length > 0 && (
                 <div>
-                  <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2">Gym Images</h3>
-                  <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4">
+                  <h3 className="text-[#F97316] font-semibold mb-4 border-b border-[#E7E5E4] pb-2">Gym Images</h3>
+                  <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       {viewOwner.gymId.images.map((url: string, i: number) => (
-                        <img key={i} src={url} alt={`Gym Image ${i+1}`} className="w-full h-24 object-cover rounded-lg border border-[#D3DFDA]" />
+                        <img key={i} src={url} alt={`Gym Image ${i+1}`} className="w-full h-24 object-cover rounded-lg border border-[#E7E5E4]" />
                       ))}
                     </div>
                   </div>
@@ -978,10 +978,10 @@ const SuperAdminGymOwners = () => {
               )}
             </div>
             
-            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#D3DFDA] flex items-center justify-end shrink-0">
+            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#E7E5E4] flex items-center justify-end shrink-0">
               <button 
                 onClick={() => setViewOwner(null)}
-                className="px-5 py-2 bg-[#164A4A] text-white rounded-lg hover:bg-[#123E3E] transition-colors text-sm font-semibold shadow-sm"
+                className="px-5 py-2 bg-[#F97316] text-white rounded-lg hover:bg-[#EA580C] transition-colors text-sm font-semibold shadow-sm"
               >
                 Close
               </button>
@@ -993,15 +993,15 @@ const SuperAdminGymOwners = () => {
       {/* Edit Owner Modal */}
       {editOwner && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
+          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7E5E4] bg-[#FFFFFF] shrink-0">
               <div>
-                <h2 className="text-xl font-bold text-[#202828]">Edit Gym Owner & Gym Details</h2>
-                <p className="text-xs text-[#455250] mt-0.5">Modify owner personal information and full gym registration profile.</p>
+                <h2 className="text-xl font-bold text-[#292524]">Edit Gym Owner & Gym Details</h2>
+                <p className="text-xs text-[#78716C] mt-0.5">Modify owner personal information and full gym registration profile.</p>
               </div>
               <button 
                 onClick={() => setEditOwner(null)}
-                className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded-lg transition-colors"
+                className="p-1.5 text-[#78716C] hover:text-[#F97316] hover:bg-[#FFFDF8] rounded-lg transition-colors"
                 title="Close"
               >
                 <X size={20} />
@@ -1010,91 +1010,91 @@ const SuperAdminGymOwners = () => {
             
             <div className="p-6 overflow-y-auto flex-1 space-y-8 text-sm">
               {/* Account / Owner Information */}
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2 text-base">Owner Information</h3>
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
+                <h3 className="text-[#F97316] font-semibold mb-4 border-b border-[#E7E5E4] pb-2 text-base">Owner Information</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">First Name</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">First Name</label>
                     <input 
                       value={editForm.firstName || ''} 
                       onChange={e => setEditForm({...editForm, firstName: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Last Name</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Last Name</label>
                     <input 
                       value={editForm.lastName || ''} 
                       onChange={e => setEditForm({...editForm, lastName: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Email</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Email</label>
                     <input 
                       value={editForm.email || ''} 
                       onChange={e => setEditForm({...editForm, email: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Mobile</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Mobile</label>
                     <input 
                       value={editForm.mobile || ''} 
                       onChange={e => setEditForm({...editForm, mobile: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">City</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">City</label>
                     <input 
                       value={editForm.city || ''} 
                       onChange={e => setEditForm({...editForm, city: e.target.value})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Platform Subscription Plan</label>
-                    <div className="w-full bg-[#F2EFE8] border border-[#E8E5DA] text-[#455250] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Platform Subscription Plan</label>
+                    <div className="w-full bg-[#FFFDF8] border border-[#FED7AA] text-[#78716C] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
                       {editForm.subscriptionPlan ? (SAAS_PLANS[editForm.subscriptionPlan]?.name || editForm.subscriptionPlan) : 'N/A'}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Plan Expiry Date</label>
-                    <div className="w-full bg-[#F2EFE8] border border-[#E8E5DA] text-[#455250] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Plan Expiry Date</label>
+                    <div className="w-full bg-[#FFFDF8] border border-[#FED7AA] text-[#78716C] rounded-lg px-3 py-2 text-sm cursor-not-allowed">
                       {editForm.subscriptionExpiry || 'N/A'}
                     </div>
                   </div>
                 </div>
-                <p className="text-xs text-[#687B78] mt-3 italic flex items-center gap-1">
+                <p className="text-xs text-[#78716C] mt-3 italic flex items-center gap-1">
                   <AlertCircle size={13}/> Note: Platform subscription and payment details are managed via the Subscriptions section.
                 </p>
               </div>
 
               {/* Gym Details */}
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2 text-base">Gym Information</h3>
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
+                <h3 className="text-[#F97316] font-semibold mb-4 border-b border-[#E7E5E4] pb-2 text-base">Gym Information</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="col-span-1 sm:col-span-2">
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Gym Name</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Gym Name</label>
                     <input 
                       value={editForm.gymData?.name || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, name: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Gym Type</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Gym Type</label>
                     <select 
                       value={editForm.gymData?.gymType || 'Commercial'} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, gymType: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     >
                       {GYM_TYPES.map(gt => <option key={gt} value={gt}>{gt}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Rating (1 - 5)</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Rating (1 - 5)</label>
                     <input 
                       type="number"
                       step="0.1"
@@ -1102,36 +1102,36 @@ const SuperAdminGymOwners = () => {
                       max="5"
                       value={editForm.gymData?.rating ?? 5} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, rating: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Gym Email</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Gym Email</label>
                     <input 
                       value={editForm.gymData?.email || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, email: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Gym Contact Phone</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Gym Contact Phone</label>
                     <input 
                       value={editForm.gymData?.phone || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, phone: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Operating Hours</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Operating Hours</label>
                     <input 
                       value={editForm.gymData?.operatingHours || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, operatingHours: e.target.value}})} 
                       placeholder="e.g. 6 AM - 10 PM or 24/7"
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Training Mode</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Training Mode</label>
                     <div className="flex gap-2">
                       {['offline', 'online', 'both'].map((mode) => (
                         <button
@@ -1140,8 +1140,8 @@ const SuperAdminGymOwners = () => {
                           onClick={() => setEditForm({...editForm, gymData: {...editForm.gymData, trainingMode: mode}})}
                           className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-colors capitalize ${
                             editForm.gymData?.trainingMode === mode 
-                              ? 'bg-[#164A4A] text-white border-[#164A4A]' 
-                              : 'bg-white text-[#455250] border-[#D3DFDA] hover:border-[#164A4A]/50'
+                              ? 'bg-[#F97316] text-white border-[#F97316]' 
+                              : 'bg-white text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50'
                           }`}
                         >
                           {mode}
@@ -1150,19 +1150,19 @@ const SuperAdminGymOwners = () => {
                     </div>
                   </div>
                   <div className="col-span-1 sm:col-span-2 md:col-span-4">
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Gym Logo URL</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Gym Logo URL</label>
                     <div className="flex items-center gap-3">
                       <input 
                         value={editForm.gymData?.logo || ''} 
                         onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, logo: e.target.value}})} 
                         placeholder="https://example.com/logo.png"
-                        className="flex-1 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                        className="flex-1 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                       />
                       {editForm.gymData?.logo && (
                         <img 
                           src={editForm.gymData.logo} 
                           alt="Logo Preview" 
-                          className="w-10 h-10 object-cover rounded-lg border border-[#D3DFDA]"
+                          className="w-10 h-10 object-cover rounded-lg border border-[#E7E5E4]"
                           onError={(e) => { (e.target as any).style.display = 'none'; }}
                         />
                       )}
@@ -1172,9 +1172,9 @@ const SuperAdminGymOwners = () => {
               </div>
 
               {/* Services Offered */}
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                <h3 className="text-[#164A4A] font-semibold mb-2 border-b border-[#D3DFDA] pb-2 text-base">Services Offered</h3>
-                <p className="text-xs text-[#455250] mb-3">Click to toggle services offered at this gym:</p>
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
+                <h3 className="text-[#F97316] font-semibold mb-2 border-b border-[#E7E5E4] pb-2 text-base">Services Offered</h3>
+                <p className="text-xs text-[#78716C] mb-3">Click to toggle services offered at this gym:</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {Array.from(new Set([...ALL_SERVICES, ...(editForm.gymData?.services || [])])).map((service: string) => {
                     const isSelected = (editForm.gymData?.services || []).includes(service);
@@ -1185,8 +1185,8 @@ const SuperAdminGymOwners = () => {
                         onClick={() => toggleService(service)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5 ${
                           isSelected
-                            ? 'bg-[#164A4A] text-white border-[#164A4A]'
-                            : 'bg-white text-[#455250] border-[#D3DFDA] hover:border-[#164A4A]/50'
+                            ? 'bg-[#F97316] text-white border-[#F97316]'
+                            : 'bg-white text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50'
                         }`}
                       >
                         {isSelected && <Check size={12} />}
@@ -1201,12 +1201,12 @@ const SuperAdminGymOwners = () => {
                     onChange={e => setNewServiceInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomService(); } }}
                     placeholder="Add custom service..."
-                    className="flex-1 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#164A4A]"
+                    className="flex-1 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#F97316]"
                   />
                   <button
                     type="button"
                     onClick={addCustomService}
-                    className="px-3 py-1.5 bg-[#164A4A]/10 text-[#164A4A] rounded-lg hover:bg-[#164A4A]/20 text-xs font-semibold border border-[#164A4A]/30 flex items-center gap-1"
+                    className="px-3 py-1.5 bg-[#F97316]/10 text-[#F97316] rounded-lg hover:bg-[#F97316]/20 text-xs font-semibold border border-[#F97316]/30 flex items-center gap-1"
                   >
                     <Plus size={13} /> Add
                   </button>
@@ -1214,19 +1214,19 @@ const SuperAdminGymOwners = () => {
               </div>
 
               {/* Location & Operations */}
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                <h3 className="text-[#164A4A] font-semibold mb-4 border-b border-[#D3DFDA] pb-2 text-base">Location & Operations</h3>
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
+                <h3 className="text-[#F97316] font-semibold mb-4 border-b border-[#E7E5E4] pb-2 text-base">Location & Operations</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="col-span-1 sm:col-span-2">
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Street Address</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Street Address</label>
                     <input 
                       value={editForm.gymData?.location?.address || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, address: e.target.value}}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">City</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">City</label>
                     <input 
                       value={editForm.gymData?.location?.city || ''} 
                       onChange={e => {
@@ -1237,41 +1237,41 @@ const SuperAdminGymOwners = () => {
                           gymData: {...editForm.gymData, location: {...editForm.gymData?.location, city: val}}
                         });
                       }} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">State</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">State</label>
                     <input 
                       value={editForm.gymData?.location?.state || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, state: e.target.value}}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">PIN Code</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">PIN Code</label>
                     <input 
                       value={editForm.gymData?.location?.pinCode || ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, pinCode: e.target.value}}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Approx. Members Capacity</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Approx. Members Capacity</label>
                     <input 
                       type="number"
                       value={editForm.gymData?.memberCapacity ?? ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, memberCapacity: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#455250] mb-1.5">Number of Trainers</label>
+                    <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Number of Trainers</label>
                     <input 
                       type="number"
                       value={editForm.gymData?.trainerCapacity ?? ''} 
                       onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, trainerCapacity: e.target.value}})} 
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
                 </div>
@@ -1279,11 +1279,11 @@ const SuperAdminGymOwners = () => {
 
               {/* AC Details & Facilities */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                  <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-base">AC Details</h3>
+                <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
+                  <h3 className="text-[#F97316] font-semibold mb-3 border-b border-[#E7E5E4] pb-2 text-base">AC Details</h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-semibold text-[#455250] mb-1.5">AC Type</label>
+                      <label className="block text-xs font-semibold text-[#78716C] mb-1.5">AC Type</label>
                       <select
                         value={editForm.gymData?.acDetails?.type || 'Non-AC'}
                         onChange={e => setEditForm({
@@ -1293,7 +1293,7 @@ const SuperAdminGymOwners = () => {
                             acDetails: { ...editForm.gymData?.acDetails, type: e.target.value }
                           }
                         })}
-                        className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A]"
+                        className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316]"
                       >
                         {AC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
@@ -1301,7 +1301,7 @@ const SuperAdminGymOwners = () => {
 
                     {editForm.gymData?.acDetails?.type !== 'Non-AC' && (
                       <div>
-                        <label className="block text-xs font-semibold text-[#455250] mb-1.5">AC Areas</label>
+                        <label className="block text-xs font-semibold text-[#78716C] mb-1.5">AC Areas</label>
                         <div className="flex flex-wrap gap-1.5 mb-2">
                           {Array.from(new Set([...COMMON_AC_AREAS, ...(editForm.gymData?.acDetails?.areas || [])])).map((area: string) => {
                             const isSelected = (editForm.gymData?.acDetails?.areas || []).includes(area);
@@ -1312,8 +1312,8 @@ const SuperAdminGymOwners = () => {
                                 onClick={() => toggleAcArea(area)}
                                 className={`px-2.5 py-1 rounded text-xs border transition-colors ${
                                   isSelected
-                                    ? 'bg-[#164A4A] text-white border-[#164A4A]'
-                                    : 'bg-white text-[#455250] border-[#D3DFDA] hover:border-[#164A4A]/50'
+                                    ? 'bg-[#F97316] text-white border-[#F97316]'
+                                    : 'bg-white text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50'
                                 }`}
                               >
                                 {area}
@@ -1326,8 +1326,8 @@ const SuperAdminGymOwners = () => {
                   </div>
                 </div>
 
-                <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                  <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-base">Facilities</h3>
+                <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
+                  <h3 className="text-[#F97316] font-semibold mb-3 border-b border-[#E7E5E4] pb-2 text-base">Facilities</h3>
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {Array.from(new Set([...COMMON_FACILITIES, ...(editForm.gymData?.facilities || [])])).map((f: string) => {
                       const isSelected = (editForm.gymData?.facilities || []).includes(f);
@@ -1338,8 +1338,8 @@ const SuperAdminGymOwners = () => {
                           onClick={() => toggleFacility(f)}
                           className={`px-2.5 py-1 rounded text-xs border transition-colors ${
                             isSelected
-                              ? 'bg-[#164A4A] text-white border-[#164A4A]'
-                              : 'bg-white text-[#455250] border-[#D3DFDA] hover:border-[#164A4A]/50'
+                              ? 'bg-[#F97316] text-white border-[#F97316]'
+                              : 'bg-white text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50'
                           }`}
                         >
                           {f}
@@ -1353,12 +1353,12 @@ const SuperAdminGymOwners = () => {
                       onChange={e => setNewFacilityInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomFacility(); } }}
                       placeholder="Add custom facility..."
-                      className="flex-1 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#164A4A]"
+                      className="flex-1 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#F97316]"
                     />
                     <button
                       type="button"
                       onClick={addCustomFacility}
-                      className="px-3 py-1.5 bg-[#164A4A]/10 text-[#164A4A] rounded-lg hover:bg-[#164A4A]/20 text-xs font-semibold border border-[#164A4A]/30 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-[#F97316]/10 text-[#F97316] rounded-lg hover:bg-[#F97316]/20 text-xs font-semibold border border-[#F97316]/30 flex items-center gap-1"
                     >
                       <Plus size={13} /> Add
                     </button>
@@ -1367,16 +1367,16 @@ const SuperAdminGymOwners = () => {
               </div>
 
               {/* Member Subscription Plans */}
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-4 border-b border-[#D3DFDA] pb-2">
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-4 border-b border-[#E7E5E4] pb-2">
                   <div>
-                    <h3 className="text-[#164A4A] font-semibold text-base">Member Subscription Plans</h3>
-                    <p className="text-xs text-[#455250]">Configure plans offered to gym members.</p>
+                    <h3 className="text-[#F97316] font-semibold text-base">Member Subscription Plans</h3>
+                    <p className="text-xs text-[#78716C]">Configure plans offered to gym members.</p>
                   </div>
                   <button
                     type="button"
                     onClick={handleAddPlan}
-                    className="px-3 py-1.5 bg-[#164A4A] text-white rounded-lg hover:bg-[#164A4A]/90 text-xs font-semibold flex items-center gap-1.5 shadow-sm"
+                    className="px-3 py-1.5 bg-[#F97316] text-white rounded-lg hover:bg-[#F97316]/90 text-xs font-semibold flex items-center gap-1.5 shadow-sm"
                   >
                     <Plus size={14} /> Add Plan
                   </button>
@@ -1385,7 +1385,7 @@ const SuperAdminGymOwners = () => {
                 {editForm.gymData?.subscriptionPlans && editForm.gymData.subscriptionPlans.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {editForm.gymData.subscriptionPlans.map((plan: any, idx: number) => (
-                      <div key={idx} className="bg-[#F8FAF9] border border-[#D3DFDA] rounded-xl p-4 relative flex flex-col justify-between">
+                      <div key={idx} className="bg-[#F8FAF9] border border-[#E7E5E4] rounded-xl p-4 relative flex flex-col justify-between">
                         <button
                           type="button"
                           onClick={() => handleDeletePlan(idx)}
@@ -1395,46 +1395,46 @@ const SuperAdminGymOwners = () => {
                           <Trash2 size={15} />
                         </button>
                         <div className="space-y-3">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#164A4A] bg-[#164A4A]/10 px-2 py-0.5 rounded">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#F97316] bg-[#F97316]/10 px-2 py-0.5 rounded">
                             Plan #{idx + 1}
                           </span>
                           <div>
-                            <label className="block text-[11px] font-semibold text-[#455250] mb-1">Plan Name</label>
+                            <label className="block text-[11px] font-semibold text-[#78716C] mb-1">Plan Name</label>
                             <input
                               value={plan.name || ''}
                               onChange={e => handlePlanChange(idx, 'name', e.target.value)}
                               placeholder="e.g. Gold"
-                              className="w-full bg-white border border-[#D3DFDA] text-[#202828] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#164A4A]"
+                              className="w-full bg-white border border-[#E7E5E4] text-[#292524] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#F97316]"
                             />
                           </div>
                           <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <label className="block text-[11px] font-semibold text-[#455250] mb-1">Price (₹)</label>
+                              <label className="block text-[11px] font-semibold text-[#78716C] mb-1">Price (₹)</label>
                               <input
                                 value={plan.price ?? ''}
                                 onChange={e => handlePlanChange(idx, 'price', e.target.value)}
                                 placeholder="e.g. 999"
-                                className="w-full bg-white border border-[#D3DFDA] text-[#202828] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#164A4A]"
+                                className="w-full bg-white border border-[#E7E5E4] text-[#292524] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#F97316]"
                               />
                             </div>
                             <div>
-                              <label className="block text-[11px] font-semibold text-[#455250] mb-1">Duration</label>
+                              <label className="block text-[11px] font-semibold text-[#78716C] mb-1">Duration</label>
                               <input
                                 value={plan.duration || ''}
                                 onChange={e => handlePlanChange(idx, 'duration', e.target.value)}
                                 placeholder="e.g. 1 Month"
-                                className="w-full bg-white border border-[#D3DFDA] text-[#202828] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#164A4A]"
+                                className="w-full bg-white border border-[#E7E5E4] text-[#292524] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#F97316]"
                               />
                             </div>
                           </div>
                           <div>
-                            <label className="block text-[11px] font-semibold text-[#455250] mb-1">Features Description</label>
+                            <label className="block text-[11px] font-semibold text-[#78716C] mb-1">Features Description</label>
                             <textarea
                               rows={3}
                               value={plan.features || ''}
                               onChange={e => handlePlanChange(idx, 'features', e.target.value)}
                               placeholder="Enter plan features..."
-                              className="w-full bg-white border border-[#D3DFDA] text-[#202828] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#164A4A] resize-none"
+                              className="w-full bg-white border border-[#E7E5E4] text-[#292524] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#F97316] resize-none"
                             />
                           </div>
                         </div>
@@ -1442,12 +1442,12 @@ const SuperAdminGymOwners = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-6 border border-dashed border-[#D3DFDA] rounded-lg bg-[#F8FAF9]">
-                    <p className="text-xs text-[#455250] mb-2">No subscription plans configured yet.</p>
+                  <div className="text-center py-6 border border-dashed border-[#E7E5E4] rounded-lg bg-[#F8FAF9]">
+                    <p className="text-xs text-[#78716C] mb-2">No subscription plans configured yet.</p>
                     <button
                       type="button"
                       onClick={handleAddPlan}
-                      className="px-3 py-1.5 bg-[#164A4A]/10 text-[#164A4A] hover:bg-[#164A4A]/20 text-xs font-semibold rounded-md border border-[#164A4A]/30 inline-flex items-center gap-1"
+                      className="px-3 py-1.5 bg-[#F97316]/10 text-[#F97316] hover:bg-[#F97316]/20 text-xs font-semibold rounded-md border border-[#F97316]/30 inline-flex items-center gap-1"
                     >
                       <Plus size={13} /> Add First Plan
                     </button>
@@ -1456,13 +1456,13 @@ const SuperAdminGymOwners = () => {
               </div>
 
               {/* Gym Images */}
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 shadow-sm">
-                <h3 className="text-[#164A4A] font-semibold mb-2 border-b border-[#D3DFDA] pb-2 text-base">Gym Images</h3>
-                <p className="text-xs text-[#455250] mb-4">Add or remove photo gallery URLs for this gym.</p>
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
+                <h3 className="text-[#F97316] font-semibold mb-2 border-b border-[#E7E5E4] pb-2 text-base">Gym Images</h3>
+                <p className="text-xs text-[#78716C] mb-4">Add or remove photo gallery URLs for this gym.</p>
                 {editForm.gymData?.images && editForm.gymData.images.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                     {editForm.gymData.images.map((url: string, i: number) => (
-                      <div key={i} className="relative group rounded-lg overflow-hidden border border-[#D3DFDA] bg-slate-50">
+                      <div key={i} className="relative group rounded-lg overflow-hidden border border-[#E7E5E4] bg-slate-50">
                         <img src={url} alt={`Gym ${i + 1}`} className="w-full h-24 object-cover" />
                         <button
                           type="button"
@@ -1476,7 +1476,7 @@ const SuperAdminGymOwners = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-[#687B78] mb-3 italic">No images currently added.</p>
+                  <p className="text-xs text-[#78716C] mb-3 italic">No images currently added.</p>
                 )}
                 <div className="flex items-center gap-2 max-w-lg">
                   <input
@@ -1484,12 +1484,12 @@ const SuperAdminGymOwners = () => {
                     onChange={e => setNewImageInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddImage(); } }}
                     placeholder="Enter image URL..."
-                    className="flex-1 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#164A4A]"
+                    className="flex-1 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#F97316]"
                   />
                   <button
                     type="button"
                     onClick={handleAddImage}
-                    className="px-3 py-1.5 bg-[#164A4A]/10 text-[#164A4A] rounded-lg hover:bg-[#164A4A]/20 text-xs font-semibold border border-[#164A4A]/30 flex items-center gap-1"
+                    className="px-3 py-1.5 bg-[#F97316]/10 text-[#F97316] rounded-lg hover:bg-[#F97316]/20 text-xs font-semibold border border-[#F97316]/30 flex items-center gap-1"
                   >
                     <Plus size={13} /> Add Photo
                   </button>
@@ -1497,11 +1497,11 @@ const SuperAdminGymOwners = () => {
               </div>
             </div>
             
-            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#D3DFDA] flex items-center justify-end space-x-3 shrink-0">
+            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#E7E5E4] flex items-center justify-end space-x-3 shrink-0">
               <button 
                 type="button"
                 onClick={() => setEditOwner(null)}
-                className="px-4 py-2 border border-[#D3DFDA] text-[#455250] bg-white rounded-lg hover:bg-[#F1F5F3] transition-colors text-sm font-medium shadow-sm"
+                className="px-4 py-2 border border-[#E7E5E4] text-[#78716C] bg-white rounded-lg hover:bg-[#FFFDF8] transition-colors text-sm font-medium shadow-sm"
               >
                 Cancel
               </button>
@@ -1509,7 +1509,7 @@ const SuperAdminGymOwners = () => {
                 type="button"
                 onClick={handleSaveEdit}
                 disabled={isSaving}
-                className="px-5 py-2 bg-[#164A4A] text-white rounded-lg hover:bg-[#123E3E] transition-colors text-sm font-semibold flex items-center space-x-2 shadow-sm disabled:opacity-50"
+                className="px-5 py-2 bg-[#F97316] text-white rounded-lg hover:bg-[#EA580C] transition-colors text-sm font-semibold flex items-center space-x-2 shadow-sm disabled:opacity-50"
               >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                 <span>Save Changes</span>
@@ -1523,17 +1523,17 @@ const SuperAdminGymOwners = () => {
       {viewSubscription && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
           <div className="bg-[#FFFFFF] w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] my-auto">
-            <div className="px-6 py-4 border-b border-[#D3DFDA] flex justify-between items-center bg-gradient-to-r from-[#F1F5F3] to-[#FFFFFF]">
+            <div className="px-6 py-4 border-b border-[#E7E5E4] flex justify-between items-center bg-gradient-to-r from-[#FFFDF8] to-[#FFFFFF]">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
                   <FileText size={20} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#202828]">Platform Subscription</h2>
-                  <p className="text-[#455250] text-xs">Payment & Plan details for {viewSubscription.firstName} {viewSubscription.lastName}</p>
+                  <h2 className="text-xl font-bold text-[#292524]">Platform Subscription</h2>
+                  <p className="text-[#78716C] text-xs">Payment & Plan details for {viewSubscription.firstName} {viewSubscription.lastName}</p>
                 </div>
               </div>
-              <button onClick={() => setViewSubscription(null)} className="p-2 text-[#455250] hover:text-[#202828] bg-white rounded-full border border-[#E8E5DA] shadow-sm">
+              <button onClick={() => setViewSubscription(null)} className="p-2 text-[#78716C] hover:text-[#292524] bg-white rounded-full border border-[#FED7AA] shadow-sm">
                 <X size={20} />
               </button>
             </div>
@@ -1541,16 +1541,16 @@ const SuperAdminGymOwners = () => {
             <div className="p-6 overflow-y-auto flex-1 custom-scrollbar space-y-6">
               
               {/* Active Plan Card */}
-              <div className="bg-gradient-to-br from-[#F2EFE8] to-[#F1F5F9] rounded-xl p-5 border border-[#E8E5DA] shadow-sm">
+              <div className="bg-gradient-to-br from-[#FFFDF8] to-[#F1F5F9] rounded-xl p-5 border border-[#FED7AA] shadow-sm">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#687B78] mb-1 block">Current Plan</span>
-                    <h3 className="text-xl font-bold text-[#202828] flex items-center gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#78716C] mb-1 block">Current Plan</span>
+                    <h3 className="text-xl font-bold text-[#292524] flex items-center gap-2">
                       {viewSubscription.subscriptionPlan && SAAS_PLANS[viewSubscription.subscriptionPlan] 
                         ? SAAS_PLANS[viewSubscription.subscriptionPlan].name 
                         : 'No Active Plan'}
                       {viewSubscription.subscriptionStatus === 'Active' && (
-                        <span className="bg-[#D2B48C]/10 text-[#164A4A] text-[10px] px-2 py-0.5 rounded-full border border-green-200 uppercase tracking-wide">Active</span>
+                        <span className="bg-[#FED7AA]/10 text-[#F97316] text-[10px] px-2 py-0.5 rounded-full border border-green-200 uppercase tracking-wide">Active</span>
                       )}
                     </h3>
                   </div>
@@ -1560,37 +1560,37 @@ const SuperAdminGymOwners = () => {
                         ? SAAS_PLANS[viewSubscription.subscriptionPlan].price.split('/')[0] 
                         : '₹0'}
                     </div>
-                    <div className="text-xs text-[#687B78]">{viewSubscription.billingCycle || 'N/A'} billing</div>
+                    <div className="text-xs text-[#78716C]">{viewSubscription.billingCycle || 'N/A'} billing</div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 border-t border-[#E8E5DA] pt-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 border-t border-[#FED7AA] pt-4">
                   <div>
-                    <p className="text-[10px] text-[#687B78] uppercase font-semibold">Start Date</p>
-                    <p className="text-sm font-medium text-[#202828] mt-1">{formatDate(viewSubscription.subscriptionStart)}</p>
+                    <p className="text-[10px] text-[#78716C] uppercase font-semibold">Start Date</p>
+                    <p className="text-sm font-medium text-[#292524] mt-1">{formatDate(viewSubscription.subscriptionStart)}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#687B78] uppercase font-semibold">Renewal Date</p>
-                    <p className="text-sm font-medium text-[#202828] mt-1">{formatDate(viewSubscription.subscriptionExpiry)}</p>
+                    <p className="text-[10px] text-[#78716C] uppercase font-semibold">Renewal Date</p>
+                    <p className="text-sm font-medium text-[#292524] mt-1">{formatDate(viewSubscription.subscriptionExpiry)}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#687B78] uppercase font-semibold">Payment Status</p>
-                    <p className="text-sm font-medium text-[#202828] mt-1">{viewSubscription.paymentStatus || 'N/A'}</p>
+                    <p className="text-[10px] text-[#78716C] uppercase font-semibold">Payment Status</p>
+                    <p className="text-sm font-medium text-[#292524] mt-1">{viewSubscription.paymentStatus || 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#687B78] uppercase font-semibold">Transaction ID</p>
-                    <p className="text-sm font-medium text-[#202828] mt-1 truncate" title={viewSubscription.transactionId || ''}>{viewSubscription.transactionId || 'N/A'}</p>
+                    <p className="text-[10px] text-[#78716C] uppercase font-semibold">Transaction ID</p>
+                    <p className="text-sm font-medium text-[#292524] mt-1 truncate" title={viewSubscription.transactionId || ''}>{viewSubscription.transactionId || 'N/A'}</p>
                   </div>
                 </div>
               </div>
 
               {/* History Section (Simulated) */}
               <div>
-                <h3 className="text-sm font-bold text-[#202828] mb-3">Subscription History</h3>
+                <h3 className="text-sm font-bold text-[#292524] mb-3">Subscription History</h3>
                 {viewSubscription.transactionId ? (
-                  <div className="border border-[#E8E5DA] rounded-lg overflow-hidden">
+                  <div className="border border-[#FED7AA] rounded-lg overflow-hidden">
                     <table className="w-full text-sm text-left">
-                      <thead className="text-xs text-[#687B78] uppercase bg-[#F2EFE8] border-b border-[#E8E5DA]">
+                      <thead className="text-xs text-[#78716C] uppercase bg-[#FFFDF8] border-b border-[#FED7AA]">
                         <tr>
                           <th className="px-4 py-3 font-semibold">Date</th>
                           <th className="px-4 py-3 font-semibold">Plan</th>
@@ -1598,18 +1598,18 @@ const SuperAdminGymOwners = () => {
                           <th className="px-4 py-3 font-semibold">Status</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#E8E5DA]">
+                      <tbody className="divide-y divide-[#FED7AA]">
                         <tr className="bg-white">
-                          <td className="px-4 py-3 text-[#202828]">{formatDate(viewSubscription.subscriptionStart)}</td>
-                          <td className="px-4 py-3 text-[#202828]">{viewSubscription.subscriptionPlan || 'N/A'}</td>
-                          <td className="px-4 py-3 text-[#202828]">{viewSubscription.subscriptionPlan ? SAAS_PLANS[viewSubscription.subscriptionPlan]?.price.split('/')[0] : '₹0'}</td>
-                          <td className="px-4 py-3"><span className="text-[#164A4A] bg-green-50 px-2 py-0.5 rounded text-xs border border-green-200">Paid</span></td>
+                          <td className="px-4 py-3 text-[#292524]">{formatDate(viewSubscription.subscriptionStart)}</td>
+                          <td className="px-4 py-3 text-[#292524]">{viewSubscription.subscriptionPlan || 'N/A'}</td>
+                          <td className="px-4 py-3 text-[#292524]">{viewSubscription.subscriptionPlan ? SAAS_PLANS[viewSubscription.subscriptionPlan]?.price.split('/')[0] : '₹0'}</td>
+                          <td className="px-4 py-3"><span className="text-[#F97316] bg-green-50 px-2 py-0.5 rounded text-xs border border-green-200">Paid</span></td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-[#687B78] border border-dashed border-[#CBD5E1] rounded-lg bg-[#F2EFE8]">
+                  <div className="text-center py-8 text-[#78716C] border border-dashed border-[#CBD5E1] rounded-lg bg-[#FFFDF8]">
                     No previous subscription history found.
                   </div>
                 )}

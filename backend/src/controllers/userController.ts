@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import User, { Role } from '../models/User';
+import User, { Role, SubscriptionStatus } from '../models/User';
 import { AuthRequest } from '../middlewares/auth';
 import Gym from '../models/Gym';
+import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
 
 export const getUsersByRole = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -57,6 +58,42 @@ export const updateUserStatus = async (req: Request, res: Response): Promise<voi
       user.isActive = true;
       user.rejectionReason = undefined;
       (user as any).suspensionReason = undefined;
+      user.paymentStatus = 'Approved';
+      user.subscriptionStatus = SubscriptionStatus.ACTIVE;
+
+      if (user.role === Role.MEMBER) {
+        const now = new Date();
+        const futureDate = new Date();
+        futureDate.setFullYear(futureDate.getFullYear() + 1); // 1 year active upon approval
+
+        user.subscriptionExpiry = futureDate;
+        (user as any).subscriptionExpiryDate = futureDate;
+
+        const memberships = await CustomerMembership.find({ userId: user._id });
+        if (memberships.length > 0) {
+          for (const m of memberships) {
+            m.status = CustomerMembershipStatus.ACTIVE;
+            m.startDate = now;
+            m.endDate = futureDate;
+            await m.save();
+          }
+        } else {
+          await CustomerMembership.create({
+            userId: user._id,
+            gymId: user.gymId,
+            branchId: user.branchId,
+            planName: user.subscriptionPlan || 'Active Membership',
+            duration: '1 Year',
+            price: 0,
+            discount: 0,
+            finalAmount: 0,
+            paymentMethod: 'Approved by Gym Owner',
+            status: CustomerMembershipStatus.ACTIVE,
+            startDate: now,
+            endDate: futureDate,
+          });
+        }
+      }
     }
     await user.save();
     

@@ -8,13 +8,13 @@ const statusColor: Record<string, string> = {
   'Preparing': 'bg-purple-100 text-purple-700',
   'Ready for Pickup': 'bg-teal-100 text-teal-700',
   'Out for Delivery': 'bg-indigo-100 text-indigo-700',
-  'Completed': 'bg-[#D2B48C]/10 text-[#164A4A]',
+  'Completed': 'bg-[#FED7AA]/10 text-[#F97316]',
   'Cancelled': 'bg-red-100 text-red-700',
   'Refunded': 'bg-orange-100 text-orange-700',
 };
 
 const paymentColor: Record<string, string> = {
-  'Paid': 'bg-[#D2B48C]/10 text-[#164A4A]',
+  'Paid': 'bg-[#FED7AA]/10 text-[#F97316]',
   'Pending': 'bg-yellow-100 text-yellow-700',
   'Failed': 'bg-red-100 text-red-700',
   'Refunded': 'bg-orange-100 text-orange-700',
@@ -84,23 +84,23 @@ const GymStoreOrders = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Orders</h1>
-        <p className="text-[#455250] mt-1">Manage online orders from your members.</p>
+        <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Orders</h1>
+        <p className="text-[#78716C] mt-1">Manage online orders from your members.</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-3">
         <div className="relative flex-1">
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search order number or transaction id..." className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" />
-          <Search className="absolute left-3 top-2.5 text-[#455250]" size={16} />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search order number or transaction id..." className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-9 pr-4 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none" />
+          <Search className="absolute left-3 top-2.5 text-[#78716C]" size={16} />
         </div>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none lg:w-48">
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none lg:w-48">
           <option value="all">All Status</option>
           {Object.keys(nextActions).map((s) => <option key={s} value={s}>{s}</option>)}
           <option value="Completed">Completed</option>
           <option value="Cancelled">Cancelled</option>
           <option value="Refunded">Refunded</option>
         </select>
-        <select value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)} className="bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none lg:w-44">
+        <select value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)} className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none lg:w-44">
           <option value="all">All Payments</option>
           <option value="Paid">Paid</option>
           <option value="Pending">Pending</option>
@@ -110,12 +110,12 @@ const GymStoreOrders = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#F97316]" size={40} /></div>
       ) : (
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left text-sm text-[#455250] whitespace-nowrap">
-              <thead className="bg-[#FFFFFF] border-b border-[#D3DFDA] text-[#202828]">
+            <table className="w-full text-left text-sm text-[#78716C] whitespace-nowrap">
+              <thead className="bg-[#FFFFFF] border-b border-[#E7E5E4] text-[#292524]">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Order</th>
                   <th className="px-6 py-4 font-semibold">Customer</th>
@@ -127,22 +127,22 @@ const GymStoreOrders = () => {
                   <th className="px-6 py-4 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#D3DFDA]">
+              <tbody className="divide-y divide-[#E7E5E4]">
                 {orders.length === 0 ? (
                   <tr><td colSpan={8} className="px-6 py-10 text-center">No orders found.</td></tr>
                 ) : orders.map((o) => (
-                  <tr key={o._id} className="hover:bg-[#F1F5F3] transition-colors">
+                  <tr key={o._id} className="hover:bg-[#FFFDF8] transition-colors">
                     <td className="px-6 py-4">
-                      <p className="font-bold text-[#202828]">{o.orderNumber}</p>
-                      <p className="text-xs text-[#455250]">{new Date(o.createdAt).toLocaleString()}</p>
+                      <p className="font-bold text-[#292524]">{o.orderNumber}</p>
+                      <p className="text-xs text-[#78716C]">{new Date(o.createdAt).toLocaleString()}</p>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-[#202828]">
+                    <td className="px-6 py-4 font-semibold text-[#292524]">
                       {o.customerId && (o.customerId.firstName || o.customerId.lastName) 
                         ? `${o.customerId.firstName || ''} ${o.customerId.lastName || ''}`.trim()
                         : 'Unknown Customer'}
                     </td>
                     <td className="px-6 py-4">{o.items.reduce((s: number, i: any) => s + i.quantity, 0)} item(s)</td>
-                    <td className="px-6 py-4 font-black text-[#164A4A]">₹{o.total}</td>
+                    <td className="px-6 py-4 font-black text-[#F97316]">₹{o.total}</td>
                     <td className="px-6 py-4"><span className={`px-2.5 py-1 rounded-full text-xs font-bold ${statusColor[o.status] || 'bg-gray-100'}`}>{o.status}</span></td>
                     <td className="px-6 py-4"><span className={`px-2.5 py-1 rounded-full text-xs font-bold ${paymentColor[o.paymentStatus] || 'bg-gray-100'}`}>{o.paymentStatus}</span></td>
                     <td className="px-6 py-4">
@@ -151,7 +151,7 @@ const GymStoreOrders = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <select 
-                          className="px-2 py-1.5 bg-white border border-[#D3DFDA] text-[#202828] rounded-lg text-xs font-bold focus:outline-none focus:ring-1 focus:ring-[#164A4A] disabled:opacity-50"
+                          className="px-2 py-1.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-lg text-xs font-bold focus:outline-none focus:ring-1 focus:ring-[#F97316] disabled:opacity-50"
                           value=""
                           onChange={(e) => {
                             if (e.target.value) {
@@ -170,7 +170,7 @@ const GymStoreOrders = () => {
                             <option key={st} value={st} disabled={st === o.status}>{st}</option>
                           ))}
                         </select>
-                        <button onClick={() => setSelected(o)} className="px-3 py-1.5 bg-blue-50 text-[#D2B48C] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold inline-flex items-center gap-1 shrink-0">
+                        <button onClick={() => setSelected(o)} className="px-3 py-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold inline-flex items-center gap-1 shrink-0">
                           <Eye size={13} /> View
                         </button>
                       </div>
@@ -185,37 +185,37 @@ const GymStoreOrders = () => {
 
       {selected && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#D3DFDA] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
-            <div className="p-6 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F2EFE8] shrink-0">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#E7E5E4] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
+            <div className="p-6 border-b border-[#E7E5E4] flex justify-between items-center bg-[#FFFDF8] shrink-0">
               <div>
                 <div className="flex items-center gap-3">
-                  <h2 className="text-xl sm:text-2xl font-bold text-[#202828]">{selected.orderNumber}</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#292524]">{selected.orderNumber}</h2>
                   <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColor[selected.status]}`}>{selected.status}</span>
                 </div>
-                <p className="text-xs sm:text-sm text-[#455250] mt-1">Placed on {new Date(selected.createdAt).toLocaleString()}</p>
+                <p className="text-xs sm:text-sm text-[#78716C] mt-1">Placed on {new Date(selected.createdAt).toLocaleString()}</p>
               </div>
-              <button onClick={() => setSelected(null)} className="text-[#455250] hover:text-[#202828] transition-colors p-2 hover:bg-gray-100 rounded-lg">
+              <button onClick={() => setSelected(null)} className="text-[#78716C] hover:text-[#292524] transition-colors p-2 hover:bg-gray-100 rounded-lg">
                 <X size={22} />
               </button>
             </div>
 
             <div className="p-6 space-y-5 overflow-y-auto flex-1">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl p-4">
+                <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl p-4">
                   <p className="text-xs text-gray-500 font-semibold uppercase mb-2">Customer</p>
-                  <p className="font-bold text-[#202828]">
+                  <p className="font-bold text-[#292524]">
                     {selected.customerId && (selected.customerId.firstName || selected.customerId.lastName)
                       ? `${selected.customerId.firstName || ''} ${selected.customerId.lastName || ''}`.trim()
                       : 'Unknown Customer'}
                   </p>
-                  <p className="text-sm text-[#455250]">{selected.customerId?.email || 'No email'}</p>
-                  <p className="text-sm text-[#455250]">{selected.customerId?.mobile || 'No mobile'}</p>
+                  <p className="text-sm text-[#78716C]">{selected.customerId?.email || 'No email'}</p>
+                  <p className="text-sm text-[#78716C]">{selected.customerId?.mobile || 'No mobile'}</p>
                 </div>
-                <div className="bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl p-4">
+                <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl p-4">
                   <p className="text-xs text-gray-500 font-semibold uppercase mb-2">Payment</p>
-                  <p className="font-bold text-[#202828]">{selected.paymentMethod} · ₹{selected.total}</p>
+                  <p className="font-bold text-[#292524]">{selected.paymentMethod} · ₹{selected.total}</p>
                   {selected.paymentMethod === 'Net Banking' && selected.bankName && (
-                    <p className="text-sm text-[#455250] mt-0.5">Bank: <span className="font-semibold text-[#202828]">{selected.bankName}</span></p>
+                    <p className="text-sm text-[#78716C] mt-0.5">Bank: <span className="font-semibold text-[#292524]">{selected.bankName}</span></p>
                   )}
                   <span className={`px-2.5 py-1 rounded-full text-xs font-bold inline-block mt-1 ${paymentColor[selected.paymentStatus]}`}>{selected.paymentStatus}</span>
                   {selected.transactionId && <p className="font-mono text-xs mt-1 text-gray-500">{selected.transactionId}</p>}
@@ -225,38 +225,38 @@ const GymStoreOrders = () => {
               {selected.fulfilmentType === 'Delivery' && selected.deliveryDetails && (
                 <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
                   <p className="text-xs text-gray-500 font-semibold uppercase mb-2 flex items-center gap-1"><Truck size={14} /> Delivery Details</p>
-                  <p className="font-bold text-[#202828]">{selected.deliveryDetails.name} · {selected.deliveryDetails.phone}</p>
-                  <p className="text-sm text-[#455250]">{selected.deliveryDetails.address}, {selected.deliveryDetails.city}, {selected.deliveryDetails.state} — {selected.deliveryDetails.pinCode}</p>
+                  <p className="font-bold text-[#292524]">{selected.deliveryDetails.name} · {selected.deliveryDetails.phone}</p>
+                  <p className="text-sm text-[#78716C]">{selected.deliveryDetails.address}, {selected.deliveryDetails.city}, {selected.deliveryDetails.state} — {selected.deliveryDetails.pinCode}</p>
                 </div>
               )}
 
-              <div className="border border-[#D3DFDA] rounded-xl overflow-hidden">
-                <div className="px-4 py-3 bg-[#F1F5F3] font-bold text-[#202828] text-sm border-b border-[#D3DFDA]">Items</div>
+              <div className="border border-[#E7E5E4] rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-[#FFFDF8] font-bold text-[#292524] text-sm border-b border-[#E7E5E4]">Items</div>
                 {selected.items.map((it: any, idx: number) => (
                   <div key={idx} className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9] last:border-0">
                     <div className="flex items-center gap-3">
-                      {it.image ? <img src={it.image} alt={it.name} className="w-10 h-10 rounded-lg object-cover" /> : <PackageCheck className="text-[#164A4A]" size={18} />}
+                      {it.image ? <img src={it.image} alt={it.name} className="w-10 h-10 rounded-lg object-cover" /> : <PackageCheck className="text-[#F97316]" size={18} />}
                       <div>
                         <div className="flex items-center gap-1.5 flex-wrap my-0.5">
-                          <p className="font-semibold text-[#202828] text-sm mr-2">{it.name}</p>
+                          <p className="font-semibold text-[#292524] text-sm mr-2">{it.name}</p>
                           {it.attributes && Object.entries(it.attributes).map(([k, v]) => (
                              <span key={k} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">{String(v)}</span>
                           ))}
                         </div>
-                        <p className="text-xs text-[#455250]">Qty {it.quantity} × ₹{it.unitPrice}</p>
+                        <p className="text-xs text-[#78716C]">Qty {it.quantity} × ₹{it.unitPrice}</p>
                       </div>
                     </div>
-                    <p className="font-bold text-[#202828]">₹{it.total}</p>
+                    <p className="font-bold text-[#292524]">₹{it.total}</p>
                   </div>
                 ))}
-                <div className="px-4 py-3 bg-[#F2EFE8] flex justify-between text-sm">
-                  <span className="text-[#455250]">Subtotal <span className="text-xs">(discount ₹{selected.discount})</span></span>
-                  <span className="font-bold text-[#202828]">₹{selected.total}</span>
+                <div className="px-4 py-3 bg-[#FFFDF8] flex justify-between text-sm">
+                  <span className="text-[#78716C]">Subtotal <span className="text-xs">(discount ₹{selected.discount})</span></span>
+                  <span className="font-bold text-[#292524]">₹{selected.total}</span>
                 </div>
               </div>
 
               {selected.cancellationReason && (
-                <p className="text-sm text-[#6fa3a0] bg-red-50 rounded-xl px-4 py-3">Cancellation reason: {selected.cancellationReason}</p>
+                <p className="text-sm text-[#FED7AA] bg-red-50 rounded-xl px-4 py-3">Cancellation reason: {selected.cancellationReason}</p>
               )}
 
               {/* ── Status Timeline (zigzag) ── */}
@@ -276,10 +276,10 @@ const GymStoreOrders = () => {
                     ];
                 return (
                   <div>
-                    <p className="text-xs font-bold text-[#687B78] uppercase mb-6">Status Timeline</p>
+                    <p className="text-xs font-bold text-[#78716C] uppercase mb-6">Status Timeline</p>
                     <div className="relative">
                       {/* Center vertical line */}
-                      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#D3DFDA] -translate-x-1/2" />
+                      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#E7E5E4] -translate-x-1/2" />
                       <div className="space-y-5">
                         {steps.map((h: any, i: number, arr: any[]) => {
                           const isReached = !h.future;
@@ -290,26 +290,26 @@ const GymStoreOrders = () => {
                           const dotColor = isCancelStatus
                             ? 'bg-red-500 shadow-[0_0_0_4px_rgba(220,38,38,0.15)]'
                             : isLastReached
-                            ? 'bg-[#164A4A] shadow-[0_0_0_4px_rgba(22,74,74,0.15)]'
+                            ? 'bg-[#F97316] shadow-[0_0_0_4px_rgba(22,74,74,0.15)]'
                             : isReached
-                            ? 'bg-[#6fa3a0]'
-                            : 'bg-[#D3DFDA]';
+                            ? 'bg-[#FED7AA]'
+                            : 'bg-[#E7E5E4]';
 
                           const cardBg = isReached
                             ? isCancelStatus
                               ? 'bg-red-50 border-red-200'
                               : isLastReached
-                              ? 'bg-[#F0F7F6] border-[#6fa3a0]'
-                              : 'bg-[#F8FAFA] border-[#D3DFDA]'
+                              ? 'bg-[#F0F7F6] border-[#FED7AA]'
+                              : 'bg-[#F8FAFA] border-[#E7E5E4]'
                             : 'bg-gray-50 border-gray-100 opacity-50';
 
                           const labelColor = isCancelStatus
                             ? 'text-red-600'
                             : isLastReached
-                            ? 'text-[#164A4A]'
+                            ? 'text-[#F97316]'
                             : isReached
-                            ? 'text-[#455250]'
-                            : 'text-[#A8ADA9]';
+                            ? 'text-[#78716C]'
+                            : 'text-[#78716C]';
 
                           return (
                             <div key={i} className="relative flex items-center justify-between gap-2">
@@ -319,12 +319,12 @@ const GymStoreOrders = () => {
                                   <div className={`rounded-xl border p-3 text-right ${cardBg}`}>
                                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                                     {isReached ? (
-                                      <p className="text-[11px] text-[#687B78] mt-0.5 leading-snug">
+                                      <p className="text-[11px] text-[#78716C] mt-0.5 leading-snug">
                                         {new Date(h.at).toLocaleString()}
                                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                                       </p>
                                     ) : (
-                                      <p className="text-[11px] text-[#A8ADA9] mt-0.5">Upcoming step</p>
+                                      <p className="text-[11px] text-[#78716C] mt-0.5">Upcoming step</p>
                                     )}
                                   </div>
                                 ) : <div />}
@@ -349,12 +349,12 @@ const GymStoreOrders = () => {
                                   <div className={`rounded-xl border p-3 ${cardBg}`}>
                                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                                     {isReached ? (
-                                      <p className="text-[11px] text-[#687B78] mt-0.5 leading-snug">
+                                      <p className="text-[11px] text-[#78716C] mt-0.5 leading-snug">
                                         {new Date(h.at).toLocaleString()}
                                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                                       </p>
                                     ) : (
-                                      <p className="text-[11px] text-[#A8ADA9] mt-0.5">Upcoming step</p>
+                                      <p className="text-[11px] text-[#78716C] mt-0.5">Upcoming step</p>
                                     )}
                                   </div>
                                 ) : <div />}
@@ -385,7 +385,7 @@ const GymStoreOrders = () => {
                       className={`flex-1 min-w-36 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2 ${
                         next === 'Cancelled' || next === 'Refunded'
                           ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                          : 'bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white shadow-lg shadow-green-200 hover:opacity-90'
+                          : 'bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white shadow-lg shadow-orange-200 hover:opacity-90'
                       }`}
                     >
                       {updatingId === selected._id ? <Loader2 className="animate-spin" size={16} /> : next === 'Cancelled' ? <XCircle size={16} /> : <CheckCircle2 size={16} />}
@@ -396,8 +396,8 @@ const GymStoreOrders = () => {
               )}
 
               <div>
-                <p className="text-xs font-bold text-[#687B78] uppercase mb-4">Status Timeline</p>
-                <div className="relative border-l-2 border-[#D3DFDA] ml-2 space-y-6 pb-2">
+                <p className="text-xs font-bold text-[#78716C] uppercase mb-4">Status Timeline</p>
+                <div className="relative border-l-2 border-[#E7E5E4] ml-2 space-y-6 pb-2">
                   {(selected.status === 'Cancelled' || selected.status === 'Refunded' 
                     ? selected.statusHistory 
                     : [
@@ -419,19 +419,19 @@ const GymStoreOrders = () => {
                       <div key={i} className="relative pl-6">
                         <span className={`absolute -left-[9px] top-1 w-4 h-4 rounded-full border-2 border-white shrink-0 ${
                           isLastReached 
-                            ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'bg-red-600 shadow-[0_0_0_3px_rgba(220,38,38,0.2)]' : 'bg-[#164A4A] shadow-[0_0_0_3px_rgba(22,74,74,0.2)]')
-                            : isReached ? 'bg-[#6fa3a0]' : 'bg-[#D3DFDA]'
+                            ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'bg-red-600 shadow-[0_0_0_3px_rgba(220,38,38,0.2)]' : 'bg-[#F97316] shadow-[0_0_0_3px_rgba(22,74,74,0.2)]')
+                            : isReached ? 'bg-[#FED7AA]' : 'bg-[#E7E5E4]'
                         }`} />
                         <div>
                           <p className={`font-bold ${
                             isLastReached 
-                              ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'text-red-600' : 'text-[#164A4A]') 
-                              : isReached ? 'text-[#455250]' : 'text-[#A8ADA9]'
+                              ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'text-red-600' : 'text-[#F97316]') 
+                              : isReached ? 'text-[#78716C]' : 'text-[#78716C]'
                           }`}>{h.status}</p>
                           {isReached ? (
-                            <p className="text-xs text-[#687B78] mt-0.5">{new Date(h.at).toLocaleString()}{h.note && h.note !== h.status ? ` — ${h.note}` : ''}</p>
+                            <p className="text-xs text-[#78716C] mt-0.5">{new Date(h.at).toLocaleString()}{h.note && h.note !== h.status ? ` — ${h.note}` : ''}</p>
                           ) : (
-                            <p className="text-xs text-[#A8ADA9] mt-0.5">Upcoming step</p>
+                            <p className="text-xs text-[#78716C] mt-0.5">Upcoming step</p>
                           )}
                         </div>
                       </div>
@@ -446,21 +446,21 @@ const GymStoreOrders = () => {
 
       {refundPrompt && (
         <div className="fixed inset-0 z-[60] flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-[#D3DFDA] mt-16 sm:mt-20 mb-12 shrink-0">
-            <h2 className="text-xl font-bold text-[#202828] mb-4">Refund Payment Details</h2>
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-[#E7E5E4] mt-16 sm:mt-20 mb-12 shrink-0">
+            <h2 className="text-xl font-bold text-[#292524] mb-4">Refund Payment Details</h2>
             <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
                <p className="text-sm text-gray-500 mb-1">Customer</p>
                <p className="font-bold">{refundPrompt.customerId?.firstName} {refundPrompt.customerId?.lastName}</p>
                <p className="text-sm text-gray-500 mt-3 mb-1">Amount to Refund</p>
-               <p className="font-bold text-xl text-[#164A4A]">₹{refundPrompt.total}</p>
+               <p className="font-bold text-xl text-[#F97316]">₹{refundPrompt.total}</p>
                <p className="text-sm text-gray-500 mt-3 mb-1">Payment Method Used</p>
                <p className="font-bold">{refundPrompt.paymentMethod || 'Online'}</p>
             </div>
             <p className="text-sm text-gray-600 mb-3">Please process this refund via your payment gateway or manually, then confirm below.</p>
-            <input type="text" placeholder="Refund Reference / Reason" value={refundReason} onChange={(e) => setRefundReason(e.target.value)} className="w-full px-4 py-2 bg-white border border-[#D3DFDA] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#164A4A]" />
+            <input type="text" placeholder="Refund Reference / Reason" value={refundReason} onChange={(e) => setRefundReason(e.target.value)} className="w-full px-4 py-2 bg-white border border-[#E7E5E4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F97316]" />
             <div className="flex gap-3 mt-5">
               <button onClick={() => { setRefundPrompt(null); setRefundReason(''); }} className="flex-1 py-2.5 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
-              <button onClick={() => { changeStatus(refundPrompt._id, 'Refunded', refundReason); setRefundPrompt(null); }} className="flex-1 py-2.5 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#0f3434] transition-colors" disabled={updatingId === refundPrompt._id}>Confirm Refund</button>
+              <button onClick={() => { changeStatus(refundPrompt._id, 'Refunded', refundReason); setRefundPrompt(null); }} className="flex-1 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#0f3434] transition-colors" disabled={updatingId === refundPrompt._id}>Confirm Refund</button>
             </div>
           </div>
         </div>

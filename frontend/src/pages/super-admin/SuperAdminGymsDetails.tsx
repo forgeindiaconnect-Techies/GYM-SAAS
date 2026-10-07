@@ -28,17 +28,17 @@ const SuperAdminGymsDetails = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="w-8 h-8 border-2 border-[#164A4A] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (error || !gym) {
     return (
-      <div className="bg-[#6fa3a0]/10 text-[#6fa3a0] p-4 rounded-xl text-center">
+      <div className="bg-[#FED7AA]/10 text-[#FED7AA] p-4 rounded-xl text-center">
         {error || 'Gym not found'}
         <div className="mt-4">
-          <Link to="/super-admin/gyms/all" className="text-[#164A4A] hover:underline">Return to All Gyms</Link>
+          <Link to="/super-admin/gyms/all" className="text-[#F97316] hover:underline">Return to All Gyms</Link>
         </div>
       </div>
     );
@@ -46,8 +46,8 @@ const SuperAdminGymsDetails = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-12">
-      <div className="flex items-center gap-4 mb-8 border-b border-[#D3DFDA] pb-6">
-        <Link to="/super-admin/gyms/all" className="p-2 bg-[#FFFFFF] hover:bg-[#E8E5DA] rounded-xl transition-colors">
+      <div className="flex items-center gap-4 mb-8 border-b border-[#E7E5E4] pb-6">
+        <Link to="/super-admin/gyms/all" className="p-2 bg-[#FFFFFF] hover:bg-[#FED7AA] rounded-xl transition-colors">
           <ArrowLeft size={20} />
         </Link>
         <div>
@@ -55,14 +55,14 @@ const SuperAdminGymsDetails = () => {
             {gym.logo ? (
               <img src={gym.logo} alt={gym.name} className="w-10 h-10 rounded-xl object-cover" />
             ) : (
-              <Building2 className="text-[#6fa3a0]" size={32} />
+              <Building2 className="text-[#FED7AA]" size={32} />
             )}
             {gym.name}
           </h1>
-          <p className="text-[#455250] mt-2 font-mono text-sm">{gym.gymType} • ID: {gym._id}</p>
+          <p className="text-[#78716C] mt-2 font-mono text-sm">{gym.gymType} • ID: {gym._id}</p>
         </div>
         <div className="ml-auto">
-          <Link to={`/super-admin/gyms/edit/${gym._id}`} className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#E8E5DA] border border-[#D3DFDA] rounded-xl transition-colors flex items-center gap-2">
+          <Link to={`/super-admin/gyms/edit/${gym._id}`} className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FED7AA] border border-[#E7E5E4] rounded-xl transition-colors flex items-center gap-2">
             <Settings size={16} /> Edit Gym
           </Link>
         </div>
@@ -70,21 +70,21 @@ const SuperAdminGymsDetails = () => {
       
       {/* Overview Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#D3DFDA]">
-          <p className="text-xs text-[#455250] mb-1 flex items-center gap-1"><Users size={14} /> Member Capacity</p>
-          <p className="text-xl font-bold text-[#202828]">{gym.memberCapacity || 'Unlimited'}</p>
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7E5E4]">
+          <p className="text-xs text-[#78716C] mb-1 flex items-center gap-1"><Users size={14} /> Member Capacity</p>
+          <p className="text-xl font-bold text-[#292524]">{gym.memberCapacity || 'Unlimited'}</p>
         </div>
-        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#D3DFDA]">
-          <p className="text-xs text-[#455250] mb-1 flex items-center gap-1"><Users size={14} /> Trainer Capacity</p>
-          <p className="text-xl font-bold text-[#202828]">{gym.trainerCapacity || 'Unlimited'}</p>
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7E5E4]">
+          <p className="text-xs text-[#78716C] mb-1 flex items-center gap-1"><Users size={14} /> Trainer Capacity</p>
+          <p className="text-xl font-bold text-[#292524]">{gym.trainerCapacity || 'Unlimited'}</p>
         </div>
-        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#D3DFDA]">
-          <p className="text-xs text-[#455250] mb-1 flex items-center gap-1"><Calendar size={14} /> Joined</p>
-          <p className="text-xl font-bold text-[#202828]">{new Date(gym.createdAt).toLocaleDateString()}</p>
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7E5E4]">
+          <p className="text-xs text-[#78716C] mb-1 flex items-center gap-1"><Calendar size={14} /> Joined</p>
+          <p className="text-xl font-bold text-[#292524]">{new Date(gym.createdAt).toLocaleDateString()}</p>
         </div>
-        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#D3DFDA]">
-          <p className="text-xs text-[#455250] mb-1 flex items-center gap-1">Status</p>
-          <p className={`text-xl font-bold ${gym.status === 'ACTIVE' ? 'text-green-500' : gym.status === 'PENDING' ? 'text-orange-500' : 'text-[#6fa3a0]'}`}>
+        <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7E5E4]">
+          <p className="text-xs text-[#78716C] mb-1 flex items-center gap-1">Status</p>
+          <p className={`text-xl font-bold ${gym.status === 'ACTIVE' ? 'text-green-500' : gym.status === 'PENDING' ? 'text-orange-500' : 'text-[#FED7AA]'}`}>
             {gym.status}
           </p>
         </div>
@@ -93,58 +93,58 @@ const SuperAdminGymsDetails = () => {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Left Column */}
         <div className="space-y-6">
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#D3DFDA]">
-            <h3 className="text-lg font-bold mb-4 border-b border-[#D3DFDA] pb-3 text-[#164A4A] flex items-center gap-2">
+          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E7E5E4]">
+            <h3 className="text-lg font-bold mb-4 border-b border-[#E7E5E4] pb-3 text-[#F97316] flex items-center gap-2">
               <Dumbbell size={18} /> Training & Services
             </h3>
             <div className="space-y-4 text-sm">
               <div>
-                <p className="text-[#455250] mb-1 font-medium">Training Mode:</p>
-                <span className="px-3 py-1 bg-[#164A4A]/10 text-[#164A4A] rounded-lg font-bold capitalize">
+                <p className="text-[#78716C] mb-1 font-medium">Training Mode:</p>
+                <span className="px-3 py-1 bg-[#F97316]/10 text-[#F97316] rounded-lg font-bold capitalize">
                   {gym.trainingMode || 'Offline'}
                 </span>
               </div>
               <div>
-                <p className="text-[#455250] mb-2 font-medium">Services Offered:</p>
+                <p className="text-[#78716C] mb-2 font-medium">Services Offered:</p>
                 {gym.services && gym.services.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {gym.services.map((service: string, idx: number) => (
-                      <span key={idx} className="px-3 py-1 bg-[#F2EFE8] border border-[#CBD5E1] rounded-lg text-xs text-[#202828]">
+                      <span key={idx} className="px-3 py-1 bg-[#FFFDF8] border border-[#CBD5E1] rounded-lg text-xs text-[#292524]">
                         {service}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-[#455250] text-xs">No services specified.</p>
+                  <p className="text-[#78716C] text-xs">No services specified.</p>
                 )}
               </div>
             </div>
           </div>
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#D3DFDA]">
-            <h3 className="text-lg font-bold mb-4 border-b border-[#D3DFDA] pb-3 text-[#164A4A] flex items-center gap-2">
+          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E7E5E4]">
+            <h3 className="text-lg font-bold mb-4 border-b border-[#E7E5E4] pb-3 text-[#F97316] flex items-center gap-2">
               <MapPin size={18} /> Location & Contact
             </h3>
             <div className="space-y-3 text-sm">
-              <p><span className="text-[#455250] inline-block w-24">Address:</span> {gym.location?.address}, {gym.location?.city}, {gym.location?.state} {gym.location?.pinCode}</p>
-              <p><span className="text-[#455250] inline-block w-24">Email:</span> {gym.email}</p>
-              <p><span className="text-[#455250] inline-block w-24">Phone:</span> {gym.phone}</p>
-              {gym.website && <p><span className="text-[#455250] inline-block w-24">Website:</span> <a href={gym.website} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{gym.website}</a></p>}
+              <p><span className="text-[#78716C] inline-block w-24">Address:</span> {gym.location?.address}, {gym.location?.city}, {gym.location?.state} {gym.location?.pinCode}</p>
+              <p><span className="text-[#78716C] inline-block w-24">Email:</span> {gym.email}</p>
+              <p><span className="text-[#78716C] inline-block w-24">Phone:</span> {gym.phone}</p>
+              {gym.website && <p><span className="text-[#78716C] inline-block w-24">Website:</span> <a href={gym.website} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{gym.website}</a></p>}
             </div>
           </div>
 
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#D3DFDA]">
-            <h3 className="text-lg font-bold mb-4 border-b border-[#D3DFDA] pb-3 text-[#164A4A] flex items-center gap-2">
+          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E7E5E4]">
+            <h3 className="text-lg font-bold mb-4 border-b border-[#E7E5E4] pb-3 text-[#F97316] flex items-center gap-2">
               <Phone size={18} /> Owner Information
             </h3>
             <div className="space-y-3 text-sm">
               {gym.ownerId ? (
                 <>
-                  <p><span className="text-[#455250] inline-block w-24">Name:</span> {gym.ownerId.firstName} {gym.ownerId.lastName}</p>
-                  <p><span className="text-[#455250] inline-block w-24">Email:</span> {gym.ownerId.email}</p>
-                  <p><span className="text-[#455250] inline-block w-24">Phone:</span> {gym.ownerId.mobile}</p>
+                  <p><span className="text-[#78716C] inline-block w-24">Name:</span> {gym.ownerId.firstName} {gym.ownerId.lastName}</p>
+                  <p><span className="text-[#78716C] inline-block w-24">Email:</span> {gym.ownerId.email}</p>
+                  <p><span className="text-[#78716C] inline-block w-24">Phone:</span> {gym.ownerId.mobile}</p>
                 </>
               ) : (
-                <p className="text-[#455250]">No owner linked.</p>
+                <p className="text-[#78716C]">No owner linked.</p>
               )}
             </div>
           </div>
@@ -152,39 +152,39 @@ const SuperAdminGymsDetails = () => {
 
         {/* Right Column */}
         <div className="space-y-6">
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#D3DFDA]">
-            <h3 className="text-lg font-bold mb-4 border-b border-[#D3DFDA] pb-3 text-[#164A4A] flex items-center gap-2">
+          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E7E5E4]">
+            <h3 className="text-lg font-bold mb-4 border-b border-[#E7E5E4] pb-3 text-[#F97316] flex items-center gap-2">
               <CreditCard size={18} /> Subscription
             </h3>
             <div className="space-y-3 text-sm">
-              <p><span className="text-[#455250] inline-block w-24">Plan:</span> <span className="font-bold text-[#202828]">{gym.subscription?.plan || 'N/A'}</span></p>
-              <p><span className="text-[#455250] inline-block w-24">Status:</span> {gym.subscription?.status}</p>
-              <p><span className="text-[#455250] inline-block w-24">Start Date:</span> {gym.subscription?.startDate ? new Date(gym.subscription.startDate).toLocaleDateString() : 'N/A'}</p>
-              <p><span className="text-[#455250] inline-block w-24">End Date:</span> {gym.subscription?.endDate ? new Date(gym.subscription.endDate).toLocaleDateString() : 'Ongoing'}</p>
-              <p><span className="text-[#455250] inline-block w-24">Payment:</span> <span className="text-[#164A4A] font-medium">{gym.subscription?.paymentMethod || 'Manual'}</span></p>
+              <p><span className="text-[#78716C] inline-block w-24">Plan:</span> <span className="font-bold text-[#292524]">{gym.subscription?.plan || 'N/A'}</span></p>
+              <p><span className="text-[#78716C] inline-block w-24">Status:</span> {gym.subscription?.status}</p>
+              <p><span className="text-[#78716C] inline-block w-24">Start Date:</span> {gym.subscription?.startDate ? new Date(gym.subscription.startDate).toLocaleDateString() : 'N/A'}</p>
+              <p><span className="text-[#78716C] inline-block w-24">End Date:</span> {gym.subscription?.endDate ? new Date(gym.subscription.endDate).toLocaleDateString() : 'Ongoing'}</p>
+              <p><span className="text-[#78716C] inline-block w-24">Payment:</span> <span className="text-[#F97316] font-medium">{gym.subscription?.paymentMethod || 'Manual'}</span></p>
             </div>
           </div>
 
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#D3DFDA]">
-            <h3 className="text-lg font-bold mb-4 border-b border-[#D3DFDA] pb-3 text-[#164A4A] flex items-center gap-2">
+          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E7E5E4]">
+            <h3 className="text-lg font-bold mb-4 border-b border-[#E7E5E4] pb-3 text-[#F97316] flex items-center gap-2">
               <Dumbbell size={18} /> Equipment & Facilities
             </h3>
             {gym.equipment && gym.equipment.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {gym.equipment.map((eq: string, idx: number) => (
-                  <span key={idx} className="px-3 py-1 bg-[#FFFFFF] border border-[#D3DFDA] rounded-lg text-sm text-[#455250]">
+                  <span key={idx} className="px-3 py-1 bg-[#FFFFFF] border border-[#E7E5E4] rounded-lg text-sm text-[#78716C]">
                     {eq}
                   </span>
                 ))}
               </div>
             ) : (
-              <p className="text-[#455250] text-sm">No equipment listed.</p>
+              <p className="text-[#78716C] text-sm">No equipment listed.</p>
             )}
             
             {gym.description && (
-              <div className="mt-6 pt-4 border-t border-[#D3DFDA]">
+              <div className="mt-6 pt-4 border-t border-[#E7E5E4]">
                 <h4 className="text-sm font-semibold mb-2">Description</h4>
-                <p className="text-[#455250] text-sm leading-relaxed">{gym.description}</p>
+                <p className="text-[#78716C] text-sm leading-relaxed">{gym.description}</p>
               </div>
             )}
           </div>

@@ -38,6 +38,7 @@ export interface IUser extends Document {
   role: Role;
   gymId?: mongoose.Types.ObjectId;
   branchId?: mongoose.Types.ObjectId;
+  assignedTrainer?: mongoose.Types.ObjectId;
   isActive: boolean;
 
   // Approval workflow
@@ -108,6 +109,7 @@ const userSchema = new Schema<IUser>(
     role: { type: String, enum: Object.values(Role), default: Role.MEMBER },
     gymId: { type: Schema.Types.ObjectId, ref: 'Gym' },
     branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
+    assignedTrainer: { type: Schema.Types.ObjectId, ref: 'Trainer' },
     isActive: { type: Boolean, default: true },
     customerType: { type: String, enum: ['EXISTING_CUSTOMER', 'NEW_CUSTOMER', 'PUBLIC_SIGNUP'] },
 

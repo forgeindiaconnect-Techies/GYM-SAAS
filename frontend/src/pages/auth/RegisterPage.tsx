@@ -149,41 +149,41 @@ const RegisterPage = () => {
   };
 
   const inputCls = (field: string) =>
-    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#6fa3a0]' : 'border-[#D3DFDA]'} text-[#202828] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#164A4A] transition-colors placeholder-[#555]`;
+    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#FED7AA]' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors placeholder-[#555]`;
 
   const selBtnCls = (active: boolean) =>
-    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#164A4A] text-white border-[#164A4A] font-semibold' : 'bg-[#FFFFFF] border-[#D3DFDA] text-[#455250] hover:border-[#164A4A]/50'}`;
+    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#F97316] text-white border-[#F97316] font-semibold' : 'bg-[#FFFFFF] border-[#E7E5E4] text-[#78716C] hover:border-[#F97316]/50'}`;
 
   return (
-    <div className="min-h-screen bg-[#F1F5F3] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#FFFDF8] flex flex-col items-center justify-center px-4 py-12">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
       {/* Back to Home Arrow */}
-      <Link to="/" className="absolute top-8 left-8 text-[#455250] hover:text-[#164A4A] flex items-center gap-2 transition-colors">
+      <Link to="/" className="absolute top-8 left-8 text-[#78716C] hover:text-[#F97316] flex items-center gap-2 transition-colors">
         <ArrowLeft size={20} />
         <span className="font-medium text-sm">Back to Home</span>
       </Link>
 
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2 mb-8 group">
-        <div className="w-9 h-9 bg-[#164A4A] rounded-md flex items-center justify-center">
+        <div className="w-9 h-9 bg-[#F97316] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#164A4A]">AI GYM</span>
+        <span className="text-2xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
       </Link>
 
-      <div className="w-full max-w-2xl bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl shadow-2xl overflow-hidden">
+      <div className="w-full max-w-2xl bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl shadow-2xl overflow-hidden">
         {/* Progress Header */}
-        <div className="bg-[#FFFFFF] border-b border-[#D3DFDA] px-8 py-5">
-          <h1 className="text-xl font-bold text-[#202828] mb-4">Create Your Account</h1>
+        <div className="bg-[#FFFFFF] border-b border-[#E7E5E4] px-8 py-5">
+          <h1 className="text-xl font-bold text-[#292524] mb-4">Create Your Account</h1>
           <div className="flex items-center space-x-2">
             {STEPS.map((s, i) => (
               <div key={i} className="flex items-center space-x-2">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#164A4A] text-white' : i === step ? 'bg-[#164A4A] text-white ring-2 ring-[#EF4444]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#E8E5DA] text-[#555]'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#F97316] text-white' : i === step ? 'bg-[#F97316] text-white ring-2 ring-[#EF4444]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#FED7AA] text-[#555]'}`}>
                   {i < step ? <Check size={14} /> : i + 1}
                 </div>
-                <span className={`text-xs hidden sm:block ${i === step ? 'text-[#202828] font-medium' : 'text-[#555]'}`}>{s}</span>
-                {i < STEPS.length - 1 && <div className={`h-px w-6 sm:w-8 ${i < step ? 'bg-[#164A4A]' : 'bg-[#E8E5DA]'}`} />}
+                <span className={`text-xs hidden sm:block ${i === step ? 'text-[#292524] font-medium' : 'text-[#555]'}`}>{s}</span>
+                {i < STEPS.length - 1 && <div className={`h-px w-6 sm:w-8 ${i < step ? 'bg-[#F97316]' : 'bg-[#FED7AA]'}`} />}
               </div>
             ))}
           </div>
@@ -191,7 +191,7 @@ const RegisterPage = () => {
 
         <form onSubmit={handleSubmit} className="p-8">
           {apiError && (
-            <div className="flex items-center space-x-3 bg-[#6fa3a0]/10 border border-[#6fa3a0]/30 text-teal-400 rounded-xl px-4 py-3 mb-6 text-sm">
+            <div className="flex items-center space-x-3 bg-[#FED7AA]/10 border border-[#FED7AA]/30 text-teal-400 rounded-xl px-4 py-3 mb-6 text-sm">
               <AlertCircle size={18} className="shrink-0" /><span>{apiError}</span>
             </div>
           )}
@@ -199,25 +199,25 @@ const RegisterPage = () => {
           {/* STEP 0 — Account */}
           {step === 0 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-semibold text-[#202828] mb-1">Account Details</h2>
+              <h2 className="text-lg font-semibold text-[#292524] mb-1">Account Details</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#455250] mb-2">First Name *</label>
+                  <label className="block text-sm text-[#78716C] mb-2">First Name *</label>
                   <input id="reg-firstName" value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="John" className={inputCls('firstName')} />
                   {errors.firstName && <p className="text-teal-400 text-xs mt-1">{errors.firstName}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#455250] mb-2">Last Name *</label>
+                  <label className="block text-sm text-[#78716C] mb-2">Last Name *</label>
                   <input id="reg-lastName" value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="Doe" className={inputCls('lastName')} />
                   {errors.lastName && <p className="text-teal-400 text-xs mt-1">{errors.lastName}</p>}
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-2">Email Address *</label>
+                <label className="block text-sm text-[#78716C] mb-2">Email Address *</label>
                 <div className="flex gap-2">
                   <input id="reg-email" type="email" value={form.email} onChange={e => { set('email', e.target.value); setOtpVerified(false); setOtpSent(false); }} disabled={otpVerified} placeholder="you@example.com" className={inputCls('email') + ' flex-1'} />
                   {!otpVerified && (
-                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#164A4A] text-white rounded-xl text-sm font-bold hover:bg-[#C6A77D] transition-colors whitespace-nowrap">
+                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#EA580C] transition-colors whitespace-nowrap">
                       {otpSent ? 'Resend' : 'Send OTP'}
                     </button>
                   )}
@@ -227,13 +227,13 @@ const RegisterPage = () => {
                     </button>
                   )}
                 </div>
-                {errors.email && <p className="text-[#6fa3a0] text-xs mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-[#FED7AA] text-xs mt-1">{errors.email}</p>}
                 {otpSent && !otpVerified && (
                   <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl">
-                    <label className="block text-xs font-semibold text-[#164A4A] mb-2">Enter OTP sent to your email</label>
+                    <label className="block text-xs font-semibold text-[#F97316] mb-2">Enter OTP sent to your email</label>
                     <div className="flex gap-2">
-                      <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#202828] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#164A4A] transition-colors flex-1" maxLength={6} />
-                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#202828] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">
+                      <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors flex-1" maxLength={6} />
+                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#292524] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">
                         Verify
                       </button>
                     </div>
@@ -242,7 +242,7 @@ const RegisterPage = () => {
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm text-[#455250]">Mobile Number *</label>
+                  <label className="block text-sm text-[#78716C]">Mobile Number *</label>
                   {!otpVerified ? (
                     <span className="text-xs text-amber-600 font-medium flex items-center gap-1">
                       <Lock size={12} /> Verify email first to enter mobile
@@ -292,20 +292,20 @@ const RegisterPage = () => {
                 {errors.mobile && <p className="text-teal-400 text-xs mt-1">{errors.mobile}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-2">Password *</label>
+                <label className="block text-sm text-[#78716C] mb-2">Password *</label>
                 <div className="relative">
                   <input id="reg-password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => set('password', e.target.value)} placeholder="Minimum 8 characters" className={inputCls('password') + ' pr-12'} />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#455250] hover:text-[#202828]">
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#78716C] hover:text-[#292524]">
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 {errors.password && <p className="text-teal-400 text-xs mt-1">{errors.password}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-2">Confirm Password *</label>
+                <label className="block text-sm text-[#78716C] mb-2">Confirm Password *</label>
                 <div className="relative">
                   <input id="reg-confirmPassword" type={showConfirm ? 'text' : 'password'} value={form.confirmPassword} onChange={e => set('confirmPassword', e.target.value)} placeholder="Repeat your password" className={inputCls('confirmPassword') + ' pr-12'} />
-                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#455250] hover:text-[#202828]">
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#78716C] hover:text-[#292524]">
                     {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
@@ -317,20 +317,20 @@ const RegisterPage = () => {
           {/* STEP 1 — Personal */}
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-semibold text-[#202828] mb-1">Personal Details</h2>
+              <h2 className="text-lg font-semibold text-[#292524] mb-1">Personal Details</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#455250] mb-2">City *</label>
+                  <label className="block text-sm text-[#78716C] mb-2">City *</label>
                   <input id="reg-city" value={form.city} onChange={e => set('city', e.target.value)} placeholder="Your city" className={inputCls('city')} />
                   {errors.city && <p className="text-teal-400 text-xs mt-1">{errors.city}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#455250] mb-2">PIN Code</label>
+                  <label className="block text-sm text-[#78716C] mb-2">PIN Code</label>
                   <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-3">Gender *</label>
+                <label className="block text-sm text-[#78716C] mb-3">Gender *</label>
                 <div className="flex flex-wrap gap-2">
                   {GENDERS.map(g => (
                     <button key={g} type="button" onClick={() => set('gender', g)} className={selBtnCls(form.gender === g)}>{g}</button>
@@ -344,9 +344,9 @@ const RegisterPage = () => {
           {/* STEP 2 — Fitness */}
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold text-[#202828] mb-1">Fitness Details</h2>
+              <h2 className="text-lg font-semibold text-[#292524] mb-1">Fitness Details</h2>
               <div>
-                <label className="block text-sm text-[#455250] mb-3">Fitness Goal *</label>
+                <label className="block text-sm text-[#78716C] mb-3">Fitness Goal *</label>
                 <div className="flex flex-wrap gap-2">
                   {FITNESS_GOALS.map(g => (
                     <button key={g} type="button" onClick={() => set('fitnessGoal', g)} className={selBtnCls(form.fitnessGoal === g)}>{g}</button>
@@ -355,7 +355,7 @@ const RegisterPage = () => {
                 {errors.fitnessGoal && <p className="text-teal-400 text-xs mt-2">{errors.fitnessGoal}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-3">Experience Level *</label>
+                <label className="block text-sm text-[#78716C] mb-3">Experience Level *</label>
                 <div className="flex gap-2">
                   {EXPERIENCE_LEVELS.map(l => (
                     <button key={l} type="button" onClick={() => set('experienceLevel', l)} className={selBtnCls(form.experienceLevel === l)}>{l}</button>
@@ -364,7 +364,7 @@ const RegisterPage = () => {
                 {errors.experienceLevel && <p className="text-teal-400 text-xs mt-2">{errors.experienceLevel}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-3">Preferred Training</label>
+                <label className="block text-sm text-[#78716C] mb-3">Preferred Training</label>
                 <div className="flex gap-2">
                   {TRAINING_TYPES.map(t => (
                     <button key={t} type="button" onClick={() => set('preferredTraining', t)} className={selBtnCls(form.preferredTraining === t)}>{t}</button>
@@ -372,7 +372,7 @@ const RegisterPage = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-3">Preferred Workout Time</label>
+                <label className="block text-sm text-[#78716C] mb-3">Preferred Workout Time</label>
                 <div className="flex flex-wrap gap-2">
                   {WORKOUT_TIMES.map(t => (
                     <button key={t} type="button" onClick={() => set('preferredWorkoutTime', t)} className={selBtnCls(form.preferredWorkoutTime === t)}>{t}</button>
@@ -381,11 +381,11 @@ const RegisterPage = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#455250] mb-2">Height (cm)</label>
+                  <label className="block text-sm text-[#78716C] mb-2">Height (cm)</label>
                   <input id="reg-height" type="number" value={form.height} onChange={e => set('height', e.target.value)} placeholder="e.g. 175" className={inputCls('height')} />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#455250] mb-2">Weight (kg)</label>
+                  <label className="block text-sm text-[#78716C] mb-2">Weight (kg)</label>
                   <input id="reg-weight" type="number" value={form.weight} onChange={e => set('weight', e.target.value)} placeholder="e.g. 70" className={inputCls('weight')} />
                 </div>
               </div>
@@ -395,15 +395,15 @@ const RegisterPage = () => {
           {/* STEP 3 — Emergency Contact */}
           {step === 3 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-semibold text-[#202828] mb-1">Emergency Contact</h2>
-              <p className="text-[#455250] text-sm">In case of an emergency, we'll reach out to this person.</p>
+              <h2 className="text-lg font-semibold text-[#292524] mb-1">Emergency Contact</h2>
+              <p className="text-[#78716C] text-sm">In case of an emergency, we'll reach out to this person.</p>
               <div>
-                <label className="block text-sm text-[#455250] mb-2">Full Name *</label>
+                <label className="block text-sm text-[#78716C] mb-2">Full Name *</label>
                 <input id="reg-emergencyName" value={form.emergencyName} onChange={e => set('emergencyName', e.target.value)} placeholder="Emergency contact's name" className={inputCls('emergencyName')} />
                 {errors.emergencyName && <p className="text-teal-400 text-xs mt-1">{errors.emergencyName}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-3">Relationship *</label>
+                <label className="block text-sm text-[#78716C] mb-3">Relationship *</label>
                 <div className="flex flex-wrap gap-2">
                   {RELATIONSHIPS.map(r => (
                     <button key={r} type="button" onClick={() => set('emergencyRelationship', r)} className={selBtnCls(form.emergencyRelationship === r)}>{r}</button>
@@ -412,7 +412,7 @@ const RegisterPage = () => {
                 {errors.emergencyRelationship && <p className="text-teal-400 text-xs mt-2">{errors.emergencyRelationship}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#455250] mb-2">Mobile Number *</label>
+                <label className="block text-sm text-[#78716C] mb-2">Mobile Number *</label>
                 <input id="reg-emergencyMobile" type="tel" maxLength={10} value={form.emergencyMobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if(v.length <= 10) set('emergencyMobile', v); }} placeholder="10-digit number" className={inputCls('emergencyMobile')} />
                 {errors.emergencyMobile && <p className="text-teal-400 text-xs mt-1">{errors.emergencyMobile}</p>}
               </div>
@@ -422,25 +422,25 @@ const RegisterPage = () => {
           {/* STEP 4 — Terms */}
           {step === 4 && (
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold text-[#202828] mb-1">Terms & Conditions</h2>
-              <p className="text-[#455250] text-sm">Please read and accept the following before creating your account.</p>
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4 text-sm text-[#455250] max-h-40 overflow-y-auto leading-relaxed">
-                <strong className="text-[#202828] block mb-2">Terms & Conditions</strong>
+              <h2 className="text-lg font-semibold text-[#292524] mb-1">Terms & Conditions</h2>
+              <p className="text-[#78716C] text-sm">Please read and accept the following before creating your account.</p>
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 text-sm text-[#78716C] max-h-40 overflow-y-auto leading-relaxed">
+                <strong className="text-[#292524] block mb-2">Terms & Conditions</strong>
                 By creating an account on AI GYM, you agree to use the platform in compliance with all applicable laws. Your personal data will be used to provide fitness coaching and gym management services. AI-generated plans are for guidance only and not a substitute for professional medical advice. Subscriptions are billed according to your chosen plan. You may cancel at any time.
               </div>
               <div className="space-y-4">
                 <label className="flex items-start space-x-3 cursor-pointer">
-                  <button type="button" onClick={() => set('acceptTerms', !form.acceptTerms)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptTerms ? 'bg-[#164A4A] border-[#164A4A]' : 'border-[#555]'}`}>
+                  <button type="button" onClick={() => set('acceptTerms', !form.acceptTerms)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptTerms ? 'bg-[#F97316] border-[#F97316]' : 'border-[#555]'}`}>
                     {form.acceptTerms && <Check size={12} className="text-black" />}
                   </button>
-                  <span className="text-sm text-[#455250]">I accept the <span className="text-[#164A4A]">Terms & Conditions</span></span>
+                  <span className="text-sm text-[#78716C]">I accept the <span className="text-[#F97316]">Terms & Conditions</span></span>
                 </label>
                 {errors.acceptTerms && <p className="text-teal-400 text-xs ml-8">{errors.acceptTerms}</p>}
                 <label className="flex items-start space-x-3 cursor-pointer">
-                  <button type="button" onClick={() => set('acceptPrivacy', !form.acceptPrivacy)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptPrivacy ? 'bg-[#164A4A] border-[#164A4A]' : 'border-[#555]'}`}>
+                  <button type="button" onClick={() => set('acceptPrivacy', !form.acceptPrivacy)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptPrivacy ? 'bg-[#F97316] border-[#F97316]' : 'border-[#555]'}`}>
                     {form.acceptPrivacy && <Check size={12} className="text-black" />}
                   </button>
-                  <span className="text-sm text-[#455250]">I accept the <span className="text-[#164A4A]">Privacy Policy</span></span>
+                  <span className="text-sm text-[#78716C]">I accept the <span className="text-[#F97316]">Privacy Policy</span></span>
                 </label>
                 {errors.acceptPrivacy && <p className="text-teal-400 text-xs ml-8">{errors.acceptPrivacy}</p>}
               </div>
@@ -448,23 +448,23 @@ const RegisterPage = () => {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#D3DFDA]">
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#E7E5E4]">
             {step > 0 ? (
-              <button type="button" onClick={prev} className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl hover:bg-[#202020] transition-colors text-sm">
+              <button type="button" onClick={prev} className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl hover:bg-[#202020] transition-colors text-sm">
                 <ChevronLeft size={18} /><span>Back</span>
               </button>
             ) : (
-              <Link to="/login" className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl hover:bg-[#202020] transition-colors text-sm">
+              <Link to="/login" className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl hover:bg-[#202020] transition-colors text-sm">
                 <span>Back to Login</span>
               </Link>
             )}
 
             {step < STEPS.length - 1 ? (
-              <button type="button" onClick={next} className="flex items-center space-x-2 px-6 py-2.5 bg-[#164A4A] text-[#202828] font-bold rounded-xl hover:bg-[#C6A77D] transition-colors text-sm">
+              <button type="button" onClick={next} className="flex items-center space-x-2 px-6 py-2.5 bg-[#F97316] text-[#292524] font-bold rounded-xl hover:bg-[#EA580C] transition-colors text-sm">
                 <span>Next</span><ChevronRight size={18} />
               </button>
             ) : (
-              <button id="reg-submit" type="submit" disabled={isLoading} className="flex items-center space-x-2 px-6 py-2.5 bg-[#164A4A] text-[#202828] font-bold rounded-xl hover:bg-[#C6A77D] disabled:opacity-60 transition-colors text-sm">
+              <button id="reg-submit" type="submit" disabled={isLoading} className="flex items-center space-x-2 px-6 py-2.5 bg-[#F97316] text-[#292524] font-bold rounded-xl hover:bg-[#EA580C] disabled:opacity-60 transition-colors text-sm">
                 {isLoading ? <><Loader2 size={18} className="animate-spin" /><span>Creating Account...</span></> : <><span>Create Account</span><Check size={18} /></>}
               </button>
             )}

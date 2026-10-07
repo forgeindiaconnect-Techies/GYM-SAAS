@@ -43,12 +43,12 @@ const TrainerPendingPayments = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#202828]">Pending Payments</h1>
-          <p className="text-[#687B78] text-sm mt-1">Payments that are pending, processing, or have failed</p>
+          <h1 className="text-2xl font-bold text-[#292524]">Pending Payments</h1>
+          <p className="text-[#78716C] text-sm mt-1">Payments that are pending, processing, or have failed</p>
         </div>
         {totalPending > 0 && (
           <div className="bg-[#FFFBEB] border border-[#FEF3C7] rounded-xl px-5 py-3 text-right">
-            <p className="text-xs text-[#687B78]">Total Pending</p>
+            <p className="text-xs text-[#78716C]">Total Pending</p>
             <p className="text-xl font-bold text-[#D97706]">₹{totalPending.toLocaleString('en-IN')}</p>
           </div>
         )}
@@ -61,46 +61,46 @@ const TrainerPendingPayments = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-[#E8E5DA] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#FED7AA] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#164A4A] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : payments.length === 0 ? (
           <div className="text-center py-20">
             <History size={40} className="mx-auto text-[#CBD5E1] mb-3" />
-            <p className="text-[#687B78] font-semibold">No pending payments</p>
-            <p className="text-[#A8ADA9] text-sm mt-1">All your payments from Gym Owners are currently up to date</p>
+            <p className="text-[#78716C] font-semibold">No pending payments</p>
+            <p className="text-[#78716C] text-sm mt-1">All your payments from Gym Owners are currently up to date</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#F2EFE8] border-b border-[#E8E5DA]">
-                  <th className="px-5 py-3.5 font-semibold text-[#687B78]">Gym Details</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#687B78]">Training Type</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#687B78]">Date</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#687B78] text-right">Amount</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#687B78]">Status</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#687B78] text-right">Actions</th>
+                <tr className="bg-[#FFFDF8] border-b border-[#FED7AA]">
+                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Gym Details</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Training Type</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Date</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#78716C] text-right">Amount</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Status</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#78716C] text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F1F5F9]">
                 {payments.map(p => {
                   const Icon = STATUS_ICONS[p.paymentStatus] || Clock;
                   return (
-                    <tr key={p._id} className="hover:bg-[#F2EFE8] transition-colors">
+                    <tr key={p._id} className="hover:bg-[#FFFDF8] transition-colors">
                       <td className="px-5 py-4">
-                          <p className="font-bold text-[#202828]">{p.gymId?.name || 'Unknown Gym'}</p>
-                          <p className="text-xs text-[#687B78]">{p.branchId ? 'Branch ID: ' + p.branchId : 'Main Branch'}</p>
+                          <p className="font-bold text-[#292524]">{p.gymId?.name || 'Unknown Gym'}</p>
+                          <p className="text-xs text-[#78716C]">{p.branchId ? 'Branch ID: ' + p.branchId : 'Main Branch'}</p>
                       </td>
-                      <td className="px-5 py-4 text-[#455250]">{p.trainerFeeId?.trainingType || '-'}</td>
-                      <td className="px-5 py-4 text-[#455250] whitespace-nowrap">
+                      <td className="px-5 py-4 text-[#78716C]">{p.trainerFeeId?.trainingType || '-'}</td>
+                      <td className="px-5 py-4 text-[#78716C] whitespace-nowrap">
                         {p.paymentDate
                           ? new Date(p.paymentDate).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
                           : '-'}
                       </td>
-                      <td className="px-5 py-4 text-right font-bold text-[#202828]">₹{p.amount?.toLocaleString('en-IN')}</td>
+                      <td className="px-5 py-4 text-right font-bold text-[#292524]">₹{p.amount?.toLocaleString('en-IN')}</td>
                       
                       <td className="px-5 py-4">
                         <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${STATUS_COLORS[p.paymentStatus] || 'bg-gray-100 text-gray-500'}`}>
@@ -129,11 +129,11 @@ const TrainerPendingPayments = () => {
       {selectedPayment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-[#E8E5DA] bg-[#F2EFE8]">
-              <h3 className="font-bold text-[#202828]">Payment Details</h3>
+            <div className="flex items-center justify-between p-4 border-b border-[#FED7AA] bg-[#FFFDF8]">
+              <h3 className="font-bold text-[#292524]">Payment Details</h3>
               <button
                 onClick={() => setSelectedPayment(null)}
-                className="text-[#687B78] hover:text-[#202828]"
+                className="text-[#78716C] hover:text-[#292524]"
               >
                 <XCircle size={20} />
               </button>
@@ -142,7 +142,7 @@ const TrainerPendingPayments = () => {
             <div className="p-5 space-y-4">
               <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <span className="text-gray-500 text-sm font-medium">Amount</span>
-                <span className="text-2xl font-bold text-[#202828]">₹{selectedPayment.amount?.toLocaleString('en-IN')}</span>
+                <span className="text-2xl font-bold text-[#292524]">₹{selectedPayment.amount?.toLocaleString('en-IN')}</span>
               </div>
               
               <div className="grid grid-cols-2 gap-4 text-sm">

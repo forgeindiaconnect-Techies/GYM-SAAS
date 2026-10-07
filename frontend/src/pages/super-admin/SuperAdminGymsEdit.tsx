@@ -113,17 +113,17 @@ const SuperAdminGymsEdit = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       <div className="flex items-center space-x-4">
-        <Link to="/super-admin/gyms/all" className="p-2 bg-[#FFFFFF] hover:bg-[#E8E5DA] rounded-xl transition-colors">
+        <Link to="/super-admin/gyms/all" className="p-2 bg-[#FFFFFF] hover:bg-[#FED7AA] rounded-xl transition-colors">
           <ArrowLeft size={20} />
         </Link>
         <div>
           <h1 className="text-2xl font-bold">{step === 1 ? 'Edit Gym' : 'Review Changes'}</h1>
-          <p className="text-[#455250] text-sm">Update the details for {form.name || 'this gym'}.</p>
+          <p className="text-[#78716C] text-sm">Update the details for {form.name || 'this gym'}.</p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-[#6fa3a0]/10 border border-[#6fa3a0]/30 text-teal-400 p-4 rounded-xl text-sm">
+        <div className="bg-[#FED7AA]/10 border border-[#FED7AA]/30 text-teal-400 p-4 rounded-xl text-sm">
           {error}
         </div>
       )}
@@ -132,20 +132,20 @@ const SuperAdminGymsEdit = () => {
         <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); handleReview(); }}>
           
           {/* Gym Information */}
-          <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
-            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
-              <Building2 className="text-[#164A4A]" size={24} />
+          <section className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8">
+            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
+              <Building2 className="text-[#F97316]" size={24} />
               <h2 className="text-xl font-bold">Gym Information</h2>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Gym Name *</label>
-                <input type="text" name="name" value={form.name} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. FitZone Elite" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Gym Name *</label>
+                <input type="text" name="name" value={form.name} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="e.g. FitZone Elite" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Gym Type *</label>
-                <select name="gymType" value={form.gymType} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors appearance-none">
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Gym Type *</label>
+                <select name="gymType" value={form.gymType} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors appearance-none">
                   <option value="">Select Type</option>
                   <option value="Fitness Center">Fitness Center</option>
                   <option value="Premium Gym">Premium Gym</option>
@@ -156,37 +156,37 @@ const SuperAdminGymsEdit = () => {
                 </select>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-[#455250] mb-2">Gym Logo URL (Optional)</label>
-                <input type="text" name="logo" value={form.logo} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="https://..." />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Gym Logo URL (Optional)</label>
+                <input type="text" name="logo" value={form.logo} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="https://..." />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-[#455250] mb-2">Gym Description (Optional)</label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={3} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors resize-none" placeholder="Brief description of the gym..."></textarea>
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Gym Description (Optional)</label>
+                <textarea name="description" value={form.description} onChange={handleChange} rows={3} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors resize-none" placeholder="Brief description of the gym..."></textarea>
               </div>
             </div>
           </section>
 
           {/* Capacity & Equipment */}
-          <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
-            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
-              <Building2 className="text-[#164A4A]" size={24} />
+          <section className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8">
+            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
+              <Building2 className="text-[#F97316]" size={24} />
               <h2 className="text-xl font-bold">Capacity & Equipment</h2>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Maximum Member Capacity (Optional)</label>
-                <input type="number" name="memberCapacity" value={form.memberCapacity} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. 500" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Maximum Member Capacity (Optional)</label>
+                <input type="number" name="memberCapacity" value={form.memberCapacity} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="e.g. 500" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Maximum Trainer Capacity (Optional)</label>
-                <input type="number" name="trainerCapacity" value={form.trainerCapacity} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="e.g. 20" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Maximum Trainer Capacity (Optional)</label>
+                <input type="number" name="trainerCapacity" value={form.trainerCapacity} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="e.g. 20" />
               </div>
               <div className="md:col-span-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
-                  <label className="block text-sm font-medium text-[#455250]">Equipment Available (Comma-separated)</label>
+                  <label className="block text-sm font-medium text-[#78716C]">Equipment Available (Comma-separated)</label>
                   <select 
-                    className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-3 py-1.5 text-sm text-[#202828] focus:border-[#164A4A] outline-none"
+                    className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-3 py-1.5 text-sm text-[#292524] focus:border-[#F97316] outline-none"
                     onChange={(e) => {
                       if (!e.target.value) return;
                       const selected = e.target.value;
@@ -207,72 +207,72 @@ const SuperAdminGymsEdit = () => {
                     ))}
                   </select>
                 </div>
-                <textarea name="equipment" value={form.equipment} onChange={handleChange} rows={3} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors resize-none" placeholder="Treadmills, Dumbbells, Squat Racks..."></textarea>
+                <textarea name="equipment" value={form.equipment} onChange={handleChange} rows={3} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors resize-none" placeholder="Treadmills, Dumbbells, Squat Racks..."></textarea>
               </div>
             </div>
           </section>
 
           {/* Contact Information */}
-          <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
-            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
-              <Phone className="text-[#164A4A]" size={24} />
+          <section className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8">
+            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
+              <Phone className="text-[#F97316]" size={24} />
               <h2 className="text-xl font-bold">Contact Information</h2>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Official Email *</label>
-                <input type="email" name="email" value={form.email} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="info@gym.com" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Official Email *</label>
+                <input type="email" name="email" value={form.email} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="info@gym.com" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Phone Number *</label>
-                <input type="tel" name="phone" value={form.phone} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="+1 234 567 8900" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Phone Number *</label>
+                <input type="tel" name="phone" value={form.phone} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="+1 234 567 8900" />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-[#455250] mb-2">Website (Optional)</label>
-                <input type="text" name="website" value={form.website} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="https://www.gym.com" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Website (Optional)</label>
+                <input type="text" name="website" value={form.website} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="https://www.gym.com" />
               </div>
             </div>
           </section>
 
           {/* Location Information */}
-          <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
-            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
-              <MapPin className="text-[#164A4A]" size={24} />
+          <section className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8">
+            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
+              <MapPin className="text-[#F97316]" size={24} />
               <h2 className="text-xl font-bold">Location Information</h2>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-[#455250] mb-2">Address *</label>
-                <input type="text" name="address" value={form.address} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="123 Fitness St" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Address *</label>
+                <input type="text" name="address" value={form.address} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="123 Fitness St" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">City *</label>
-                <input type="text" name="city" value={form.city} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="New York" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">City *</label>
+                <input type="text" name="city" value={form.city} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="New York" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">State *</label>
-                <input type="text" name="state" value={form.state} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="NY" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">State *</label>
+                <input type="text" name="state" value={form.state} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="NY" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Pincode *</label>
-                <input type="text" name="pinCode" value={form.pinCode} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors" placeholder="10001" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Pincode *</label>
+                <input type="text" name="pinCode" value={form.pinCode} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors" placeholder="10001" />
               </div>
             </div>
           </section>
 
           {/* Subscription */}
-          <section className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8">
-            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D3DFDA]">
-              <CreditCard className="text-[#164A4A]" size={24} />
+          <section className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8">
+            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
+              <CreditCard className="text-[#F97316]" size={24} />
               <h2 className="text-xl font-bold">Subscription Setup</h2>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Subscription Plan *</label>
-                <select name="subscriptionPlan" value={form.subscriptionPlan} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors appearance-none">
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Subscription Plan *</label>
+                <select name="subscriptionPlan" value={form.subscriptionPlan} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors appearance-none">
                   <option value="">Select Plan</option>
                   <option value="Basic (Free Tier)">Basic (Free Tier)</option>
                   <option value="Pro ($49/mo)">Pro ($49/mo)</option>
@@ -281,19 +281,19 @@ const SuperAdminGymsEdit = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Status</label>
-                <select name="subscriptionStatus" value={form.subscriptionStatus} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors appearance-none">
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Status</label>
+                <select name="subscriptionStatus" value={form.subscriptionStatus} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors appearance-none">
                   <option value="Active">Active</option>
                   <option value="Trial">Trial</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">Start Date *</label>
-                <input type="date" name="subscriptionStartDate" value={form.subscriptionStartDate} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors [color-scheme:dark]" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">Start Date *</label>
+                <input type="date" name="subscriptionStartDate" value={form.subscriptionStartDate} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors [color-scheme:dark]" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#455250] mb-2">End Date (Optional)</label>
-                <input type="date" name="subscriptionEndDate" value={form.subscriptionEndDate} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl px-4 py-3 text-sm focus:border-[#164A4A] outline-none transition-colors [color-scheme:dark]" />
+                <label className="block text-sm font-medium text-[#78716C] mb-2">End Date (Optional)</label>
+                <input type="date" name="subscriptionEndDate" value={form.subscriptionEndDate} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:border-[#F97316] outline-none transition-colors [color-scheme:dark]" />
               </div>
             </div>
           </section>
@@ -302,13 +302,13 @@ const SuperAdminGymsEdit = () => {
           <div className="flex justify-end gap-4 pt-4">
             <Link 
               to="/super-admin/gyms/all"
-              className="px-6 py-3 bg-[#FFFFFF] text-[#202828] rounded-xl font-semibold hover:bg-[#E8E5DA] transition-colors"
+              className="px-6 py-3 bg-[#FFFFFF] text-[#292524] rounded-xl font-semibold hover:bg-[#FED7AA] transition-colors"
             >
               Cancel
             </Link>
             <button 
               type="submit"
-              className="px-6 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors"
+              className="px-6 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors"
             >
               Review Changes
             </button>
@@ -318,38 +318,38 @@ const SuperAdminGymsEdit = () => {
 
       {step === 2 && (
         <div className="space-y-8">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 md:p-8 space-y-8">
+          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8 space-y-8">
             
             <div>
-              <h3 className="text-lg font-bold text-[#164A4A] mb-4">1. Gym Details</h3>
+              <h3 className="text-lg font-bold text-[#F97316] mb-4">1. Gym Details</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-[#455250]">Name:</span> <span className="text-[#202828] ml-2">{form.name}</span></div>
-                <div><span className="text-[#455250]">Type:</span> <span className="text-[#202828] ml-2">{form.gymType}</span></div>
-                <div><span className="text-[#455250]">Capacity (Members):</span> <span className="text-[#202828] ml-2">{form.memberCapacity || 'N/A'}</span></div>
-                <div><span className="text-[#455250]">Capacity (Trainers):</span> <span className="text-[#202828] ml-2">{form.trainerCapacity || 'N/A'}</span></div>
-                <div className="col-span-2"><span className="text-[#455250]">Logo URL:</span> <span className="text-[#202828] ml-2">{form.logo || 'N/A'}</span></div>
-                <div className="col-span-2"><span className="text-[#455250]">Equipment:</span> <span className="text-[#202828] ml-2">{form.equipment || 'N/A'}</span></div>
-                <div className="col-span-2"><span className="text-[#455250]">Description:</span> <span className="text-[#202828] ml-2">{form.description || 'N/A'}</span></div>
+                <div><span className="text-[#78716C]">Name:</span> <span className="text-[#292524] ml-2">{form.name}</span></div>
+                <div><span className="text-[#78716C]">Type:</span> <span className="text-[#292524] ml-2">{form.gymType}</span></div>
+                <div><span className="text-[#78716C]">Capacity (Members):</span> <span className="text-[#292524] ml-2">{form.memberCapacity || 'N/A'}</span></div>
+                <div><span className="text-[#78716C]">Capacity (Trainers):</span> <span className="text-[#292524] ml-2">{form.trainerCapacity || 'N/A'}</span></div>
+                <div className="col-span-2"><span className="text-[#78716C]">Logo URL:</span> <span className="text-[#292524] ml-2">{form.logo || 'N/A'}</span></div>
+                <div className="col-span-2"><span className="text-[#78716C]">Equipment:</span> <span className="text-[#292524] ml-2">{form.equipment || 'N/A'}</span></div>
+                <div className="col-span-2"><span className="text-[#78716C]">Description:</span> <span className="text-[#292524] ml-2">{form.description || 'N/A'}</span></div>
               </div>
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-[#164A4A] mb-4">2. Contact & Location</h3>
+              <h3 className="text-lg font-bold text-[#F97316] mb-4">2. Contact & Location</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-[#455250]">Email:</span> <span className="text-[#202828] ml-2">{form.email}</span></div>
-                <div><span className="text-[#455250]">Phone:</span> <span className="text-[#202828] ml-2">{form.phone}</span></div>
-                <div className="col-span-2"><span className="text-[#455250]">Website:</span> <span className="text-[#202828] ml-2">{form.website || 'N/A'}</span></div>
-                <div className="col-span-2"><span className="text-[#455250]">Address:</span> <span className="text-[#202828] ml-2">{form.address}, {form.city}, {form.state} {form.pinCode}</span></div>
+                <div><span className="text-[#78716C]">Email:</span> <span className="text-[#292524] ml-2">{form.email}</span></div>
+                <div><span className="text-[#78716C]">Phone:</span> <span className="text-[#292524] ml-2">{form.phone}</span></div>
+                <div className="col-span-2"><span className="text-[#78716C]">Website:</span> <span className="text-[#292524] ml-2">{form.website || 'N/A'}</span></div>
+                <div className="col-span-2"><span className="text-[#78716C]">Address:</span> <span className="text-[#292524] ml-2">{form.address}, {form.city}, {form.state} {form.pinCode}</span></div>
               </div>
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-[#164A4A] mb-4">3. Subscription</h3>
+              <h3 className="text-lg font-bold text-[#F97316] mb-4">3. Subscription</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-[#455250]">Plan:</span> <span className="text-[#202828] ml-2">{form.subscriptionPlan}</span></div>
-                <div><span className="text-[#455250]">Status:</span> <span className="text-[#202828] ml-2">{form.subscriptionStatus}</span></div>
-                <div><span className="text-[#455250]">Start:</span> <span className="text-[#202828] ml-2">{form.subscriptionStartDate}</span></div>
-                <div><span className="text-[#455250]">End:</span> <span className="text-[#202828] ml-2">{form.subscriptionEndDate || 'N/A'}</span></div>
+                <div><span className="text-[#78716C]">Plan:</span> <span className="text-[#292524] ml-2">{form.subscriptionPlan}</span></div>
+                <div><span className="text-[#78716C]">Status:</span> <span className="text-[#292524] ml-2">{form.subscriptionStatus}</span></div>
+                <div><span className="text-[#78716C]">Start:</span> <span className="text-[#292524] ml-2">{form.subscriptionStartDate}</span></div>
+                <div><span className="text-[#78716C]">End:</span> <span className="text-[#292524] ml-2">{form.subscriptionEndDate || 'N/A'}</span></div>
               </div>
             </div>
 
@@ -358,14 +358,14 @@ const SuperAdminGymsEdit = () => {
           <div className="flex flex-col sm:flex-row justify-end items-center gap-4 pt-4">
             <button 
               onClick={() => setStep(1)}
-              className="w-full sm:w-auto px-6 py-3 bg-[#FFFFFF] text-[#202828] rounded-xl font-semibold hover:bg-[#E8E5DA] transition-colors text-center"
+              className="w-full sm:w-auto px-6 py-3 bg-[#FFFFFF] text-[#292524] rounded-xl font-semibold hover:bg-[#FED7AA] transition-colors text-center"
             >
               Back to Edit
             </button>
             <button 
               disabled={isLoading}
               onClick={handleSubmit}
-              className="w-full sm:w-auto px-6 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors flex items-center justify-center gap-2"
             >
               <Save size={18} />
               <span>{isLoading ? 'Saving...' : 'Save Changes'}</span>

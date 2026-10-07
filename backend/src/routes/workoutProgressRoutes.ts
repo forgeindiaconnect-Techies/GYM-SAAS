@@ -3,7 +3,8 @@ import {
   logWorkoutProgress,
   getMyProgress,
   getCustomerProgress,
-  getTrainerClientsOverview
+  getTrainerClientsOverview,
+  getTrainerRecentActivity
 } from '../controllers/workoutProgressController';
 import { authenticate } from '../middlewares/auth';
 
@@ -15,6 +16,7 @@ router.get('/my-progress', authenticate, getMyProgress);
 
 // Trainer
 router.get('/trainer/clients-overview', authenticate, getTrainerClientsOverview);
+router.get('/trainer/recent-activity', authenticate, getTrainerRecentActivity);
 router.get('/customer/:customerId', authenticate, getCustomerProgress);
 
 export default router;

@@ -62,7 +62,7 @@ const MemberAttendance = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#164A4A] via-[#1b5353] to-[#256a6a] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#F97316] via-[#1b5353] to-[#256a6a] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-semibold text-emerald-200">
@@ -87,29 +87,29 @@ const MemberAttendance = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 shadow-sm text-center">
-          <p className="text-xs text-[#455250] font-medium uppercase tracking-wider">Total Booked</p>
-          <p className="text-2xl font-bold text-[#202828] mt-1">{totalSessions}</p>
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm text-center">
+          <p className="text-xs text-[#78716C] font-medium uppercase tracking-wider">Total Booked</p>
+          <p className="text-2xl font-bold text-[#292524] mt-1">{totalSessions}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 shadow-sm text-center">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-green-700 font-medium uppercase tracking-wider">Attended Live</p>
           <p className="text-2xl font-bold text-green-700 mt-1">{attendedCount}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 shadow-sm text-center">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-blue-700 font-medium uppercase tracking-wider">Self-Learning</p>
           <p className="text-2xl font-bold text-blue-700 mt-1">{selfLearningCount}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 shadow-sm text-center">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-rose-700 font-medium uppercase tracking-wider">Missed / Absent</p>
           <p className="text-2xl font-bold text-rose-700 mt-1">{missedCount}</p>
         </div>
       </div>
 
       {/* Attendance Log Table */}
-      <div className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F8FAFB]">
-          <h2 className="text-sm font-bold text-[#202828]">Session Attendance History</h2>
-          <Link to="/member/online-sessions" className="text-xs text-[#164A4A] font-bold hover:underline flex items-center gap-1">
+      <div className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-[#E7E5E4] flex justify-between items-center bg-[#F8FAFB]">
+          <h2 className="text-sm font-bold text-[#292524]">Session Attendance History</h2>
+          <Link to="/member/online-sessions" className="text-xs text-[#F97316] font-bold hover:underline flex items-center gap-1">
             <span>Online Sessions</span>
             <ArrowRight size={13} />
           </Link>
@@ -117,22 +117,22 @@ const MemberAttendance = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[#164A4A]" size={32} />
+            <Loader2 className="animate-spin text-[#F97316]" size={32} />
           </div>
         ) : sessions.length === 0 ? (
-          <div className="p-12 text-center text-[#455250] space-y-3">
+          <div className="p-12 text-center text-[#78716C] space-y-3">
             <CalendarCheck size={36} className="mx-auto text-gray-300" />
             <p className="font-semibold text-sm">No session attendance records found yet.</p>
             <p className="text-xs text-gray-400">Book and attend your first online trainer session to view check-in history.</p>
             <Link
               to="/member/find-trainers"
-              className="inline-block mt-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl text-xs font-bold hover:bg-[#0d3535] transition"
+              className="inline-block mt-2 px-4 py-2 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#0d3535] transition"
             >
               Book Trainer Session
             </Link>
           </div>
         ) : (
-          <div className="divide-y divide-[#D3DFDA]">
+          <div className="divide-y divide-[#E7E5E4]">
             {sessions.map((session) => {
               const status = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : session.status);
               return (
@@ -141,14 +141,14 @@ const MemberAttendance = () => {
                   className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 transition"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#164A4A]/10 text-[#164A4A] flex items-center justify-center font-bold text-sm shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold text-sm shrink-0">
                       {session.mode === 'Online' ? <Video size={18} /> : <Dumbbell size={18} />}
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-[#202828]">
+                      <p className="font-bold text-sm text-[#292524]">
                         {session.trainerId?.name || 'Assigned Trainer'}
                       </p>
-                      <p className="text-xs text-[#455250] mt-0.5">
+                      <p className="text-xs text-[#78716C] mt-0.5">
                         {session.date} • {session.startTime} - {session.endTime} ({session.mode})
                       </p>
                     </div>

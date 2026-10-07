@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth';
 import Payment, { PaymentStatus } from '../models/Payment';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
-import User, { SubscriptionStatus } from '../models/User';
+import User, { ApprovalStatus, SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
 import Notification from '../models/Notification';
 
@@ -130,8 +130,11 @@ export const verifyPayment = async (req: AuthRequest, res: Response): Promise<vo
       await User.findByIdAndUpdate(payment.customerId, {
         $set: {
           paymentStatus: 'Approved',
+          approvalStatus: ApprovalStatus.APPROVED,
           subscriptionStatus: SubscriptionStatus.ACTIVE,
           subscriptionExpiry: endDate,
+          subscriptionExpiryDate: endDate,
+          isActive: true
         }
       });
 

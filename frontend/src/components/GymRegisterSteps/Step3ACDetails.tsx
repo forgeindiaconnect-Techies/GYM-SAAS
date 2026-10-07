@@ -31,20 +31,20 @@ const Step3ACDetails: React.FC<StepProps> = ({ form, set, errors, selBtnCls }) =
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-[#202828] border-b border-[#D3DFDA] pb-2 flex items-center gap-2">
-          <Wind className="text-[#164A4A]" size={20} />
+        <h2 className="text-lg font-semibold text-[#292524] border-b border-[#E7E5E4] pb-2 flex items-center gap-2">
+          <Wind className="text-[#F97316]" size={20} />
           <span>Air Conditioning Details</span>
         </h2>
         
         <div>
-          <label className="block text-sm text-[#455250] mb-3">Gym AC Type *</label>
+          <label className="block text-sm text-[#78716C] mb-3">Gym AC Type *</label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {AC_TYPES.map(t => (
               <button 
                 key={t} 
                 type="button" 
                 onClick={() => handleTypeChange(t)} 
-                className={`py-3 px-2 rounded-xl text-xs font-medium border transition-colors ${currentType === t ? 'bg-[#164A4A] text-white border-[#164A4A]' : 'bg-[#FFFFFF] border-[#D3DFDA] text-[#455250] hover:border-[#164A4A]/50'}`}
+                className={`py-3 px-2 rounded-xl text-xs font-medium border transition-colors ${currentType === t ? 'bg-[#F97316] text-white border-[#F97316]' : 'bg-[#FFFFFF] border-[#E7E5E4] text-[#78716C] hover:border-[#F97316]/50'}`}
               >
                 {t}
               </button>
@@ -55,9 +55,9 @@ const Step3ACDetails: React.FC<StepProps> = ({ form, set, errors, selBtnCls }) =
       </div>
 
       {currentType && currentType !== 'Non-AC' && currentType !== 'Fully AC' && (
-        <div className="space-y-4 bg-[#FFFFFF] p-6 rounded-xl border border-[#D3DFDA]">
+        <div className="space-y-4 bg-[#FFFFFF] p-6 rounded-xl border border-[#E7E5E4]">
           <div>
-            <label className="block text-sm text-[#455250] mb-3">Specify Areas with AC *</label>
+            <label className="block text-sm text-[#78716C] mb-3">Specify Areas with AC *</label>
             <div className="flex flex-wrap gap-2">
               {AC_AREAS.map(area => (
                 <button 

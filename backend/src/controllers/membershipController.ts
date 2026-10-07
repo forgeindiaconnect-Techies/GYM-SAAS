@@ -1,9 +1,10 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
-import User, { SubscriptionStatus } from '../models/User';
+import User, { Role, ApprovalStatus, SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
 import Notification from '../models/Notification';
+import Payment, { PaymentStatus } from '../models/Payment';
 
 export const getGymMemberships = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -19,14 +20,13 @@ export const getGymMemberships = async (req: AuthRequest, res: Response): Promis
       return;
     }
     const memberships = await CustomerMembership.find({ gymId: user.gymId })
-      .select('userId planName duration status startDate endDate paymentMethod finalAmount')
+      .select('userId planName duration status startDate endDate paymentMethod finalAmount createdAt')
       .sort({ createdAt: -1 });
     res.status(200).json({ success: true, memberships });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
-
 
 export const joinGym = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -44,22 +44,43 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       return;
     }
 
-    const trialEndDate = new Date();
-    trialEndDate.setDate(trialEndDate.getDate() + 1); // 1 Day Free Trial
+    const numPrice = Number(price) || 0;
+    const isFreeTrial = numPrice === 0 || (planName && planName.toLowerCase().includes('trial'));
+    const finalAmount = Math.max(0, numPrice - (Number(discount) || 0));
+
+    let endDate = new Date();
+    let memDuration = duration || (isFreeTrial ? '1 Week' : '1 Month');
+
+    if (isFreeTrial) {
+      endDate.setDate(endDate.getDate() + 7); // 7-Day Free Trial
+    } else {
+      const durLower = (memDuration || '').toLowerCase();
+      if (durLower.includes('year')) {
+        endDate.setFullYear(endDate.getFullYear() + (parseInt(durLower) || 1));
+      } else if (durLower.includes('month')) {
+        endDate.setMonth(endDate.getMonth() + (parseInt(durLower) || 1));
+      } else if (durLower.includes('week')) {
+        endDate.setDate(endDate.getDate() + ((parseInt(durLower) || 1) * 7));
+      } else if (durLower.includes('day')) {
+        endDate.setDate(endDate.getDate() + (parseInt(durLower) || 1));
+      } else {
+        endDate.setMonth(endDate.getMonth() + 1);
+      }
+    }
 
     const membership = new CustomerMembership({
       userId,
       gymId,
       branchId,
-      planName: planName, // Record their intended plan
-      duration: '1 Day',
-      price: 0,
-      discount: 0,
-      finalAmount: 0,
-      paymentMethod: 'Trial',
-      status: CustomerMembershipStatus.FREE_TRIAL,
+      planName: planName || (isFreeTrial ? 'Free Trial' : 'Standard'),
+      duration: memDuration,
+      price: numPrice,
+      discount: Number(discount) || 0,
+      finalAmount: isFreeTrial ? 0 : finalAmount,
+      paymentMethod: isFreeTrial ? 'Free Trial' : (paymentMethod || 'UPI'),
+      status: isFreeTrial ? CustomerMembershipStatus.FREE_TRIAL : CustomerMembershipStatus.ACTIVE,
       startDate: new Date(),
-      endDate: trialEndDate,
+      endDate: endDate,
     });
 
     await membership.save();
@@ -67,13 +88,37 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     const userDoc = await User.findByIdAndUpdate(userId, {
       $set: {
         paymentStatus: 'Approved',
-        subscriptionStatus: SubscriptionStatus.FREE_TRIAL,
-        subscriptionPlan: planName,
-        subscriptionExpiry: trialEndDate,
+        approvalStatus: ApprovalStatus.APPROVED,
+        subscriptionStatus: isFreeTrial ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.ACTIVE,
+        subscriptionPlan: planName || (isFreeTrial ? 'Free Trial' : 'Standard'),
+        subscriptionExpiry: endDate,
+        subscriptionExpiryDate: endDate,
         branchId: branchId || undefined,
         gymId: gymId,
+        isActive: true,
       }
     }, { new: true });
+
+    // Record payment if paid plan
+    if (!isFreeTrial && finalAmount > 0) {
+      try {
+        await Payment.create({
+          customerId: userId,
+          gymId,
+          branchId,
+          planName: planName || 'Standard',
+          amount: finalAmount,
+          paymentMethod: paymentMethod || 'UPI',
+          transactionId: paymentReference || `TXN-${Date.now().toString().slice(-8)}${Math.floor(100 + Math.random() * 900)}`,
+          status: PaymentStatus.APPROVED,
+          paymentDate: new Date(),
+          approvedAt: new Date(),
+          notes: `Purchased via Checkout (${memDuration})`
+        });
+      } catch (payErr) {
+        console.error('Failed to create payment record in joinGym:', payErr);
+      }
+    }
 
     if (gym.ownerId) {
       const custName = userDoc ? `${userDoc.firstName} ${userDoc.lastName}`.trim() : 'New Member';
@@ -81,15 +126,21 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
         recipientId: gym.ownerId,
         recipientRole: 'GYM_OWNER',
         gymId: gym._id,
-        title: 'New Member Trial Signup',
-        message: `${custName} joined on Free Trial (${planName || 'General'}).`,
+        title: isFreeTrial ? 'New Member Trial Signup' : 'New Membership Purchase',
+        message: isFreeTrial
+          ? `${custName} joined on Free Trial (${planName || 'General'}).`
+          : `${custName} purchased ${planName} for ₹${finalAmount.toLocaleString('en-IN')} via ${paymentMethod || 'UPI'}.`,
         type: 'success',
         relatedRecordId: membership._id,
         link: '/admin/members'
       }).catch(err => console.error('Notif error:', err));
     }
 
-    res.status(201).json({ success: true, message: 'Free trial activated successfully', membership });
+    res.status(201).json({
+      success: true,
+      message: isFreeTrial ? 'Free trial activated successfully' : `${planName} activated successfully!`,
+      membership
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -100,6 +151,48 @@ export const getMyMemberships = async (req: AuthRequest, res: Response): Promise
     const userId = req.user?.id;
     if (!userId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if (user && user.role === Role.MEMBER && user.approvalStatus === ApprovalStatus.APPROVED) {
+      let memberships = await CustomerMembership.find({ userId }).populate('gymId', 'name location logo phone email').sort({ createdAt: -1 });
+      const now = new Date();
+      let hasValidActive = false;
+      for (const m of memberships) {
+        if (m.status === CustomerMembershipStatus.ACTIVE && (!m.endDate || new Date(m.endDate) > now)) {
+          hasValidActive = true;
+          break;
+        }
+      }
+
+      if (!hasValidActive) {
+        const futureDate = new Date();
+        futureDate.setFullYear(futureDate.getFullYear() + 1);
+        if (memberships.length > 0) {
+          const first = memberships[0];
+          first.status = CustomerMembershipStatus.ACTIVE;
+          first.endDate = futureDate;
+          await first.save();
+        } else {
+          await CustomerMembership.create({
+            userId: user._id,
+            gymId: user.gymId,
+            branchId: user.branchId,
+            planName: user.subscriptionPlan || 'Active Membership',
+            duration: '1 Year',
+            price: 0,
+            discount: 0,
+            finalAmount: 0,
+            paymentMethod: 'Gym Approval',
+            status: CustomerMembershipStatus.ACTIVE,
+            startDate: now,
+            endDate: futureDate,
+          });
+        }
+        memberships = await CustomerMembership.find({ userId }).populate('gymId', 'name location logo phone email').sort({ createdAt: -1 });
+      }
+      res.status(200).json({ success: true, memberships });
       return;
     }
 
@@ -139,6 +232,17 @@ export const verifyMembership = async (req: AuthRequest, res: Response): Promise
     membership.endDate = endDate;
 
     await membership.save();
+
+    await User.findByIdAndUpdate(membership.userId, {
+      $set: {
+        approvalStatus: ApprovalStatus.APPROVED,
+        subscriptionStatus: SubscriptionStatus.ACTIVE,
+        subscriptionExpiry: endDate,
+        subscriptionExpiryDate: endDate,
+        paymentStatus: 'Approved',
+        isActive: true
+      }
+    });
 
     await Notification.create({
       recipientId: membership.userId,

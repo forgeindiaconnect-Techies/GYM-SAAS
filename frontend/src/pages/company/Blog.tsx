@@ -9,38 +9,38 @@ const Blog = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F1F5F3] text-[#202828] selection:bg-[#164A4A] selection:text-black">
-      <nav className="border-b border-[#D3DFDA] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#292524] selection:bg-[#F97316] selection:text-black">
+      <nav className="border-b border-[#E7E5E4] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 bg-[#164A4A] rounded-sm flex items-center justify-center">
+            <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#164A4A]">AI GYM</span>
+            <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
           </Link>
-          <Link to="/" className="text-sm font-medium text-[#455250] hover:text-[#164A4A] flex items-center space-x-2">
+          <Link to="/" className="text-sm font-medium text-[#78716C] hover:text-[#F97316] flex items-center space-x-2">
             <ArrowLeft size={16} /> <span>Back to Home</span>
           </Link>
         </div>
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <span className="text-[#164A4A] text-sm font-bold uppercase tracking-wider mb-4 block">Knowledge Base</span>
+        <span className="text-[#F97316] text-sm font-bold uppercase tracking-wider mb-4 block">Knowledge Base</span>
         <h1 className="text-4xl md:text-5xl font-bold mb-12">The AI GYM Blog</h1>
 
         <div className="grid md:grid-cols-3 gap-8">
           {posts.map((post, i) => (
-            <div key={i} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden group hover:border-[#164A4A]/50 transition-colors cursor-pointer flex flex-col">
+            <div key={i} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl overflow-hidden group hover:border-[#F97316]/50 transition-colors cursor-pointer flex flex-col">
               <div className="h-48 overflow-hidden">
                 <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               </div>
               <div className="p-6 flex-1 flex flex-col">
-                <div className="flex items-center justify-between text-xs text-[#455250] mb-3">
-                  <span className="bg-[#E8E5DA] px-2 py-1 rounded text-[#202828]">{post.category}</span>
+                <div className="flex items-center justify-between text-xs text-[#78716C] mb-3">
+                  <span className="bg-[#FED7AA] px-2 py-1 rounded text-[#292524]">{post.category}</span>
                   <span>{post.date}</span>
                 </div>
                 <h3 className="text-xl font-bold mb-4">{post.title}</h3>
-                <div className="mt-auto flex items-center space-x-2 text-[#164A4A] text-sm font-semibold group-hover:underline">
+                <div className="mt-auto flex items-center space-x-2 text-[#F97316] text-sm font-semibold group-hover:underline">
                   <span>Read Article</span> <ArrowRight size={16} />
                 </div>
               </div>

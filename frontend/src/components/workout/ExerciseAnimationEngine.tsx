@@ -9,6 +9,8 @@ interface ExerciseAnimationEngineProps {
   autoPlay?: boolean;
   compact?: boolean;
   className?: string;
+  isPlayingExternal?: boolean;
+  resetTrigger?: number;
 }
 
 export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = ({
@@ -18,7 +20,9 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
   duration = 60, // Fixed 1-minute video demonstration by default
   autoPlay = true,
   compact = false,
-  className = ''
+  className = '',
+  isPlayingExternal,
+  resetTrigger
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -40,7 +44,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
   // Default natural perspective: Side profile for Squat/Deadlift/Plank/Pushup/Bench/Lunge, Front for Curls/Press/Pullup/Twist
   const initialAngle: 'front' | 'side' = (isSquat || isDeadlift || isPushUp || isBenchPress || isPlank || isLunge) ? 'side' : 'front';
 
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
+  const [isPlaying, setIsPlaying] = useState(isPlayingExternal !== undefined ? isPlayingExternal : autoPlay);
   const [speed, setSpeed] = useState<number>(1.0);
   const [currentPhase, setCurrentPhase] = useState<string>('Setup');
   const [repsSimulated, setRepsSimulated] = useState<number>(1);
@@ -54,9 +58,42 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
   const animFrameRef = useRef<number>(0);
   const startTimeRef = useRef<number>(Date.now());
+  const pausedAtRef = useRef<number | null>(null);
+  const totalPausedTimeRef = useRef<number>(0);
   const repCountRef = useRef<number>(1);
   const lastPhaseRef = useRef<string>('Setup');
   const lastSecRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (isPlayingExternal !== undefined) {
+      setIsPlaying(isPlayingExternal);
+    }
+  }, [isPlayingExternal]);
+
+  useEffect(() => {
+    if (resetTrigger !== undefined && resetTrigger > 0) {
+      startTimeRef.current = Date.now();
+      totalPausedTimeRef.current = 0;
+      pausedAtRef.current = null;
+      repCountRef.current = 1;
+      setRepsSimulated(1);
+      setCurrentTimeSec(0);
+      setIsPlaying(isPlayingExternal ?? true);
+    }
+  }, [resetTrigger, isPlayingExternal]);
+
+  useEffect(() => {
+    if (!isPlaying) {
+      if (pausedAtRef.current === null) {
+        pausedAtRef.current = Date.now();
+      }
+    } else {
+      if (pausedAtRef.current !== null) {
+        totalPausedTimeRef.current += (Date.now() - pausedAtRef.current);
+        pausedAtRef.current = null;
+      }
+    }
+  }, [isPlaying]);
 
   const formatTime = (totalSeconds: number) => {
     const mins = Math.floor(totalSeconds / 60);
@@ -78,7 +115,8 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       const width = canvas.width;
       const height = canvas.height;
       const now = Date.now();
-      const elapsedTotal = ((now - startTimeRef.current) / 1000) * speed;
+      const currentPauseGap = (!running && pausedAtRef.current !== null) ? (now - pausedAtRef.current) : 0;
+      const elapsedTotal = Math.max(0, ((now - startTimeRef.current - totalPausedTimeRef.current - currentPauseGap) / 1000) * speed);
 
       // 1-Minute Video Timeline (loops smoothly across 60 seconds)
       const currentVideoTime = elapsedTotal % totalDuration;
@@ -93,7 +131,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       // Studio Radial lighting gradient
       const bgGrad = ctx.createRadialGradient(width / 2, height / 2 - 20, 30, width / 2, height / 2, width / 1.3);
-      bgGrad.addColorStop(0, '#1E293B');
+      bgGrad.addColorStop(0, '#292524');
       bgGrad.addColorStop(0.5, '#0F172A');
       bgGrad.addColorStop(1, '#090D16');
       ctx.fillStyle = bgGrad;
@@ -846,7 +884,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       {/* 1-Minute Video Scrubber & Playback HUD (Full Mode Only) */}
       {!compact && (
-        <div className="bg-[#1E293B]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
+        <div className="bg-[#292524]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
           {/* Row 1: Interactive 1-Minute Scrubber Bar */}
           <div className="flex items-center gap-3">
             <div

@@ -83,18 +83,18 @@ export const SuperAdminEnquiries = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Platform Enquiries</h1>
-          <p className="text-[#455250] mt-1">Overview of all customer leads across all gyms.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Platform Enquiries</h1>
+          <p className="text-[#78716C] mt-1">Overview of all customer leads across all gyms.</p>
         </div>
         <div className="flex items-center">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A8ADA9]" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" size={18} />
             <input
               type="text"
               placeholder="Search enquiries, gyms..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-[#E8E5DA] rounded-xl text-sm focus:border-[#6fa3a0] focus:ring-1 focus:ring-[#6fa3a0] outline-none"
+              className="pl-10 pr-4 py-2 border border-[#FED7AA] rounded-xl text-sm focus:border-[#FED7AA] focus:ring-1 focus:ring-[#FED7AA] outline-none"
             />
           </div>
         </div>
@@ -102,49 +102,49 @@ export const SuperAdminEnquiries = () => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin text-[#6fa3a0]" size={40} />
+          <Loader2 className="animate-spin text-[#FED7AA]" size={40} />
         </div>
       ) : (
-        <div className="bg-white border border-[#E8E5DA] rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-white border border-[#FED7AA] rounded-2xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#F2EFE8] border-b border-[#E8E5DA]">
-                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider">Customer</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider">Contact</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider">Gym Target</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider">Date & Status</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#687B78] uppercase tracking-wider text-right">Action</th>
+                <tr className="bg-[#FFFDF8] border-b border-[#FED7AA]">
+                  <th className="px-6 py-4 text-xs font-semibold text-[#78716C] uppercase tracking-wider">Customer</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#78716C] uppercase tracking-wider">Contact</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#78716C] uppercase tracking-wider">Gym Target</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#78716C] uppercase tracking-wider">Date & Status</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#78716C] uppercase tracking-wider text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E8E5DA]">
+              <tbody className="divide-y divide-[#FED7AA]">
                 {filteredEnquiries.map((enq) => (
-                  <tr key={enq._id} className="hover:bg-[#F2EFE8] transition-colors">
+                  <tr key={enq._id} className="hover:bg-[#FFFDF8] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-[#202828]">{enq.customerName}</div>
-                      <div className="text-xs font-mono text-[#687B78] mt-0.5">{enq.enquiryId}</div>
+                      <div className="font-semibold text-[#292524]">{enq.customerName}</div>
+                      <div className="text-xs font-mono text-[#78716C] mt-0.5">{enq.enquiryId}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-[#202828] flex items-center gap-1.5">
-                        <Phone size={13} className="text-[#164A4A] shrink-0"/> 
+                      <div className="text-sm text-[#292524] flex items-center gap-1.5">
+                        <Phone size={13} className="text-[#F97316] shrink-0"/> 
                         <span>{enq.mobileNumber}</span>
                       </div>
-                      <div className="text-sm text-[#687B78] flex items-center gap-1.5 mt-1">
-                        <Mail size={13} className="text-[#164A4A] shrink-0"/> 
+                      <div className="text-sm text-[#78716C] flex items-center gap-1.5 mt-1">
+                        <Mail size={13} className="text-[#F97316] shrink-0"/> 
                         <span className="truncate max-w-[180px]">{enq.email}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-[#164A4A]">{enq.gymId?.name || 'Unknown Gym'}</div>
-                      <div className="text-xs text-[#687B78] flex items-center gap-1 mt-0.5">
+                      <div className="text-sm font-semibold text-[#F97316]">{enq.gymId?.name || 'Unknown Gym'}</div>
+                      <div className="text-xs text-[#78716C] flex items-center gap-1 mt-0.5">
                         <MapPin size={11} className="shrink-0"/> 
                         <span>{enq.branchId?.name || enq.city || 'Main Branch'}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-xs font-semibold text-[#202828]">{new Date(enq.createdAt).toLocaleDateString()}</div>
-                      <div className="text-[11px] text-[#687B78] mb-1.5 flex items-center gap-1 font-medium">
-                        <Clock size={11} className="text-[#164A4A]" />
+                      <div className="text-xs font-semibold text-[#292524]">{new Date(enq.createdAt).toLocaleDateString()}</div>
+                      <div className="text-[11px] text-[#78716C] mb-1.5 flex items-center gap-1 font-medium">
+                        <Clock size={11} className="text-[#F97316]" />
                         <span>{new Date(enq.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
                       </div>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStatusColor(enq.status)}`}>
@@ -154,7 +154,7 @@ export const SuperAdminEnquiries = () => {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => setSelectedEnquiry(enq)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#164A4A] text-white hover:bg-[#123E3E] text-xs font-semibold rounded-lg shadow-sm transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#F97316] text-white hover:bg-[#EA580C] text-xs font-semibold rounded-lg shadow-sm transition-colors"
                         title="View Enquiry Details"
                       >
                         <Eye size={13} />
@@ -165,8 +165,8 @@ export const SuperAdminEnquiries = () => {
                 ))}
                 {filteredEnquiries.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-[#455250]">
-                      <MessageSquare size={40} className="mx-auto text-[#E8E5DA] mb-3" />
+                    <td colSpan={5} className="px-6 py-12 text-center text-[#78716C]">
+                      <MessageSquare size={40} className="mx-auto text-[#FED7AA] mb-3" />
                       No enquiries found.
                     </td>
                   </tr>
@@ -180,23 +180,23 @@ export const SuperAdminEnquiries = () => {
       {/* Enquiry Details Modal */}
       {selectedEnquiry && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
+          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#D3DFDA] bg-[#FFFFFF] shrink-0">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7E5E4] bg-[#FFFFFF] shrink-0">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold text-[#202828]">Customer Enquiry Details</h2>
-                  <span className="font-mono text-xs px-2 py-0.5 bg-[#F1F5F3] text-[#164A4A] rounded-md border border-[#D3DFDA] font-semibold">
+                  <h2 className="text-xl font-bold text-[#292524]">Customer Enquiry Details</h2>
+                  <span className="font-mono text-xs px-2 py-0.5 bg-[#FFFDF8] text-[#F97316] rounded-md border border-[#E7E5E4] font-semibold">
                     {selectedEnquiry.enquiryId}
                   </span>
                 </div>
-                <p className="text-xs text-[#455250] mt-0.5">
+                <p className="text-xs text-[#78716C] mt-0.5">
                   Submitted on {formatDateTime(selectedEnquiry.createdAt)}
                 </p>
               </div>
               <button 
                 onClick={() => setSelectedEnquiry(null)}
-                className="p-1.5 text-[#455250] hover:text-[#164A4A] hover:bg-[#F1F5F3] rounded-lg transition-colors"
+                className="p-1.5 text-[#78716C] hover:text-[#F97316] hover:bg-[#FFFDF8] rounded-lg transition-colors"
                 title="Close"
               >
                 <X size={20} />
@@ -206,16 +206,16 @@ export const SuperAdminEnquiries = () => {
             {/* Body */}
             <div className="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
               {/* Category & Status Banner */}
-              <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#F8FAF9] border border-[#D3DFDA] rounded-xl shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#F8FAF9] border border-[#E7E5E4] rounded-xl shadow-sm">
                 <div>
-                  <p className="text-xs text-[#455250] mb-0.5">Enquiry Category</p>
-                  <p className="font-bold text-[#164A4A] text-base flex items-center gap-1.5">
+                  <p className="text-xs text-[#78716C] mb-0.5">Enquiry Category</p>
+                  <p className="font-bold text-[#F97316] text-base flex items-center gap-1.5">
                     <Tag size={15} />
                     {selectedEnquiry.enquiryType || 'General Enquiry'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-[#455250] mb-0.5">Current Status</p>
+                  <p className="text-xs text-[#78716C] mb-0.5">Current Status</p>
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(selectedEnquiry.status)}`}>
                     {selectedEnquiry.status?.replace('_', ' ')}
                   </span>
@@ -224,45 +224,45 @@ export const SuperAdminEnquiries = () => {
 
               {/* Customer Information */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">
+                <h3 className="text-[#F97316] font-semibold mb-3 border-b border-[#E7E5E4] pb-2 text-sm uppercase tracking-wider">
                   Customer Information
                 </h3>
-                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white">
-                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Customer Name</p>
-                      <p className="font-bold text-[#202828] text-sm">{selectedEnquiry.customerName}</p>
+                      <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-1">Customer Name</p>
+                      <p className="font-bold text-[#292524] text-sm">{selectedEnquiry.customerName}</p>
                     </div>
                     <div className="p-3.5 bg-white">
-                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Mobile Number</p>
-                      <a href={`tel:${selectedEnquiry.mobileNumber}`} className="font-semibold text-[#164A4A] hover:underline flex items-center gap-1.5 text-sm">
+                      <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-1">Mobile Number</p>
+                      <a href={`tel:${selectedEnquiry.mobileNumber}`} className="font-semibold text-[#F97316] hover:underline flex items-center gap-1.5 text-sm">
                         <Phone size={13} /> {selectedEnquiry.mobileNumber}
                       </a>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white">
-                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Email Address</p>
-                      <a href={`mailto:${selectedEnquiry.email}`} className="font-semibold text-[#164A4A] hover:underline flex items-center gap-1.5 break-all text-sm">
+                      <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-1">Email Address</p>
+                      <a href={`mailto:${selectedEnquiry.email}`} className="font-semibold text-[#F97316] hover:underline flex items-center gap-1.5 break-all text-sm">
                         <Mail size={13} /> {selectedEnquiry.email}
                       </a>
                     </div>
                     <div className="p-3.5 bg-white">
-                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Preferred Contact</p>
-                      <span className="font-semibold text-[#202828] text-sm">
+                      <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-1">Preferred Contact</p>
+                      <span className="font-semibold text-[#292524] text-sm">
                         {selectedEnquiry.preferredContactMethod || 'Phone Call'}
                       </span>
                     </div>
                   </div>
                   {(selectedEnquiry.city || selectedEnquiry.address) && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                       <div className="p-3.5 bg-white">
-                        <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">City</p>
-                        <p className="font-medium text-[#202828] text-sm">{selectedEnquiry.city || 'N/A'}</p>
+                        <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-1">City</p>
+                        <p className="font-medium text-[#292524] text-sm">{selectedEnquiry.city || 'N/A'}</p>
                       </div>
                       <div className="p-3.5 bg-white">
-                        <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Address</p>
-                        <p className="font-medium text-[#202828] text-sm">{selectedEnquiry.address || 'N/A'}</p>
+                        <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-1">Address</p>
+                        <p className="font-medium text-[#292524] text-sm">{selectedEnquiry.address || 'N/A'}</p>
                       </div>
                     </div>
                   )}
@@ -271,22 +271,22 @@ export const SuperAdminEnquiries = () => {
 
               {/* Gym Target */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">
+                <h3 className="text-[#F97316] font-semibold mb-3 border-b border-[#E7E5E4] pb-2 text-sm uppercase tracking-wider">
                   Target Gym Details
                 </h3>
-                <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                     <div className="p-3.5 bg-white">
-                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Gym Name</p>
-                      <p className="font-bold text-[#202828] text-sm flex items-center gap-1.5">
-                        <Building size={14} className="text-[#164A4A]" />
+                      <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-1">Gym Name</p>
+                      <p className="font-bold text-[#292524] text-sm flex items-center gap-1.5">
+                        <Building size={14} className="text-[#F97316]" />
                         {selectedEnquiry.gymId?.name || 'Unknown Gym'}
                       </p>
                     </div>
                     <div className="p-3.5 bg-white">
-                      <p className="text-[#687B78] text-[11px] font-bold uppercase tracking-wider mb-1">Branch / Location</p>
-                      <p className="font-medium text-[#202828] text-sm flex items-center gap-1.5">
-                        <MapPin size={14} className="text-[#164A4A]" />
+                      <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-1">Branch / Location</p>
+                      <p className="font-medium text-[#292524] text-sm flex items-center gap-1.5">
+                        <MapPin size={14} className="text-[#F97316]" />
                         {selectedEnquiry.branchId?.name || selectedEnquiry.gymId?.location?.address || selectedEnquiry.city || 'Main Branch'}
                       </p>
                     </div>
@@ -296,11 +296,11 @@ export const SuperAdminEnquiries = () => {
 
               {/* Enquiry Message */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">
+                <h3 className="text-[#F97316] font-semibold mb-3 border-b border-[#E7E5E4] pb-2 text-sm uppercase tracking-wider">
                   Customer Enquiry Message
                 </h3>
-                <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4 shadow-sm">
-                  <p className="text-[#202828] whitespace-pre-wrap leading-relaxed">
+                <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 shadow-sm">
+                  <p className="text-[#292524] whitespace-pre-wrap leading-relaxed">
                     {selectedEnquiry.message || 'No specific message provided.'}
                   </p>
                 </div>
@@ -308,7 +308,7 @@ export const SuperAdminEnquiries = () => {
 
               {/* Status Update Controls */}
               <div>
-                <h3 className="text-[#164A4A] font-semibold mb-3 border-b border-[#D3DFDA] pb-2 text-sm uppercase tracking-wider">
+                <h3 className="text-[#F97316] font-semibold mb-3 border-b border-[#E7E5E4] pb-2 text-sm uppercase tracking-wider">
                   Update Enquiry Status
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -320,8 +320,8 @@ export const SuperAdminEnquiries = () => {
                       disabled={updatingStatus}
                       className={`px-2.5 py-2 text-xs font-semibold rounded-lg border transition-all text-center ${
                         selectedEnquiry.status === st
-                          ? 'bg-[#164A4A] text-white border-[#164A4A] shadow-sm'
-                          : 'bg-white text-[#455250] border-[#D3DFDA] hover:bg-[#F1F5F3]'
+                          ? 'bg-[#F97316] text-white border-[#F97316] shadow-sm'
+                          : 'bg-white text-[#78716C] border-[#E7E5E4] hover:bg-[#FFFDF8]'
                       }`}
                     >
                       {st.replace('_', ' ')}
@@ -338,13 +338,13 @@ export const SuperAdminEnquiries = () => {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#D3DFDA] flex items-center justify-between shrink-0">
-              <span className="text-xs text-[#687B78]">
-                Enquiry ID: <span className="font-mono font-medium text-[#202828]">{selectedEnquiry.enquiryId}</span>
+            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#E7E5E4] flex items-center justify-between shrink-0">
+              <span className="text-xs text-[#78716C]">
+                Enquiry ID: <span className="font-mono font-medium text-[#292524]">{selectedEnquiry.enquiryId}</span>
               </span>
               <button 
                 onClick={() => setSelectedEnquiry(null)}
-                className="px-5 py-2 bg-[#164A4A] text-white rounded-lg hover:bg-[#123E3E] transition-colors text-sm font-semibold shadow-sm"
+                className="px-5 py-2 bg-[#F97316] text-white rounded-lg hover:bg-[#EA580C] transition-colors text-sm font-semibold shadow-sm"
               >
                 Close
               </button>

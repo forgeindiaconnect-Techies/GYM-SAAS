@@ -3,12 +3,13 @@ import { AuthRequest } from '../middlewares/auth';
 import TrainerSession, { TrainerSessionStatus, TrainerSessionMode } from '../models/TrainerSession';
 import Trainer from '../models/Trainer';
 import User from '../models/User';
+import Gym from '../models/Gym';
 import { notify } from '../utils/notificationUtils';
 
 // 1. Create a Booking Request
 export const createSessionRequest = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const customerId = req.user?.id;
+    const customerId = req.body.customerId || req.user?.id;
     if (!customerId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });
       return;
@@ -163,8 +164,12 @@ export const payForSession = async (req: AuthRequest, res: Response): Promise<vo
       return;
     }
 
-    if (session.status !== TrainerSessionStatus.AWAITING_PAYMENT) {
-      res.status(400).json({ success: false, message: 'Session is not awaiting payment' });
+    if (
+      session.status !== TrainerSessionStatus.AWAITING_PAYMENT &&
+      session.status !== TrainerSessionStatus.PENDING &&
+      session.status !== TrainerSessionStatus.CONFIRMED
+    ) {
+      res.status(400).json({ success: false, message: 'Session is not eligible for payment' });
       return;
     }
 
@@ -370,13 +375,45 @@ export const checkOutSession = async (req: AuthRequest, res: Response): Promise<
       return;
     }
 
-    session.checkOutTime = new Date();
-    session.actualEndTime = new Date();
+    const now = new Date();
+    session.checkOutTime = now;
+    session.actualEndTime = now;
+    session.status = TrainerSessionStatus.COMPLETED;
+    session.attendanceStatus = 'Present';
+
     if (session.checkInTime) {
-      const diffMs = session.checkOutTime.getTime() - session.checkInTime.getTime();
-      session.actualDuration = Math.round(diffMs / 60000);
+      const diffMs = now.getTime() - new Date(session.checkInTime).getTime();
+      session.actualDuration = Math.max(1, Math.round(diffMs / 60000));
+    } else {
+      const autoIn = new Date(now.getTime() - 60 * 60 * 1000);
+      session.checkInTime = autoIn;
+      session.actualDuration = 60;
     }
     await session.save();
+
+    const populated = await TrainerSession.findById(id)
+      .populate('trainerId', 'name')
+      .populate('customerId', 'firstName lastName');
+
+    if (populated && session.gymId) {
+      const gym = await Gym.findById(session.gymId);
+      if (gym?.ownerId) {
+        const cName = `${(populated.customerId as any)?.firstName || ''} ${(populated.customerId as any)?.lastName || ''}`.trim() || 'Member';
+        const tName = (populated.trainerId as any)?.name || 'Trainer';
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+        await notify({
+          recipientId: gym.ownerId.toString(),
+          recipientRole: 'GYM_OWNER',
+          gymId: session.gymId.toString(),
+          title: 'Member Checked Out',
+          message: `${cName} completed training session with ${tName} and checked out at ${timeStr}.`,
+          type: 'success',
+          relatedRecordId: session._id.toString(),
+          link: '/admin/session-bookings'
+        });
+      }
+    }
 
     res.status(200).json({ success: true, message: 'Checked out successfully', session });
   } catch (error: any) {
@@ -571,6 +608,9 @@ export const updateAdminSessionStatus = async (req: AuthRequest, res: Response):
     if (date) session.date = date;
     if (startTime) session.startTime = startTime;
     if (endTime) session.endTime = endTime;
+    if (req.body.attendanceStatus) session.attendanceStatus = req.body.attendanceStatus;
+    if (req.body.checkInTime) session.checkInTime = new Date(req.body.checkInTime);
+    if (req.body.checkOutTime) session.checkOutTime = new Date(req.body.checkOutTime);
 
     await session.save();
 
@@ -585,6 +625,85 @@ export const updateAdminSessionStatus = async (req: AuthRequest, res: Response):
     });
 
     res.status(200).json({ success: true, message: 'Session updated successfully', session });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// 14. Update Session Attendance Status (Present / Late / Self-Learning / Absent)
+export const updateSessionAttendance = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { attendanceStatus, checkInTime, checkOutTime } = req.body;
+
+    const session = await TrainerSession.findById(id);
+    if (!session) {
+      res.status(404).json({ success: false, message: 'Session not found' });
+      return;
+    }
+
+    if (attendanceStatus) {
+      session.attendanceStatus = attendanceStatus;
+      if (attendanceStatus === 'Present') {
+        if (!session.checkInTime) session.checkInTime = new Date();
+        session.status = TrainerSessionStatus.COMPLETED;
+      } else if (attendanceStatus === 'Late') {
+        if (!session.checkInTime) session.checkInTime = new Date();
+      } else if (attendanceStatus === 'Self-Learning') {
+        session.isSelfLearning = true;
+      }
+    }
+
+    if (checkInTime) session.checkInTime = new Date(checkInTime);
+    if (checkOutTime) session.checkOutTime = new Date(checkOutTime);
+
+    await session.save();
+    res.status(200).json({ success: true, message: 'Attendance updated successfully', session });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// Get all reviews/ratings for a trainer
+export const getTrainerReviews = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const trainerId = req.user?.trainerId || req.user?.id;
+    if (!trainerId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    // Find trainer document
+    const trainer = await Trainer.findOne({
+      $or: [{ _id: trainerId }, { userId: trainerId }]
+    });
+    if (!trainer) {
+      res.status(404).json({ success: false, message: 'Trainer not found' });
+      return;
+    }
+
+    const sessions = await TrainerSession.find({
+      trainerId: trainer._id,
+      customerRating: { $exists: true, $gt: 0 }
+    })
+      .populate('customerId', 'firstName lastName email profileImage')
+      .sort({ updatedAt: -1 });
+
+    // Summary stats
+    const totalReviews = sessions.length;
+    const avgRating = totalReviews > 0
+      ? Number((sessions.reduce((acc, s) => acc + (s.customerRating || 0), 0) / totalReviews).toFixed(1))
+      : 0;
+    const ratingBreakdown = [5, 4, 3, 2, 1].map(star => ({
+      star,
+      count: sessions.filter(s => s.customerRating === star).length
+    }));
+
+    res.status(200).json({
+      success: true,
+      reviews: sessions,
+      summary: { totalReviews, avgRating, ratingBreakdown }
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

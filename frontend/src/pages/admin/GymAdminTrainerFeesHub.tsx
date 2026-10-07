@@ -7,9 +7,9 @@ const cards = [
     description: 'Configure and manage fees for each trainer in your gym.',
     icon: Settings,
     path: '/admin/trainer-fees/settings',
-    color: 'from-[#164A4A] to-[#6fa3a0]',
+    color: 'from-[#F97316] to-[#EA580C]',
     bg: 'bg-green-50',
-    iconColor: 'text-[#164A4A]',
+    iconColor: 'text-[#F97316]',
   },
   {
     title: 'Pending Trainer Payments',
@@ -27,7 +27,7 @@ const cards = [
     path: '/admin/trainer-fees/history',
     color: 'from-blue-500 to-indigo-500',
     bg: 'bg-blue-50',
-    iconColor: 'text-[#D2B48C]',
+    iconColor: 'text-[#FED7AA]',
   },
   {
     title: 'Trainer Earnings',
@@ -44,8 +44,8 @@ const GymAdminTrainerFeesHub = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#202828]">Trainer Fees & Payments</h1>
-        <p className="text-[#687B78] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
+        <h1 className="text-2xl font-bold text-[#292524]">Trainer Fees & Payments</h1>
+        <p className="text-[#78716C] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-5">
@@ -55,16 +55,16 @@ const GymAdminTrainerFeesHub = () => {
             <Link
               key={card.path}
               to={card.path}
-              className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#D3DFDA] transition-all group"
+              className="bg-white border border-[#FED7AA] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#E7E5E4] transition-all group"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl ${card.bg} flex items-center justify-center`}>
                   <Icon size={22} className={card.iconColor} />
                 </div>
-                <ChevronRight size={18} className="text-[#CBD5E1] group-hover:text-[#164A4A] group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight size={18} className="text-[#CBD5E1] group-hover:text-[#F97316] group-hover:translate-x-0.5 transition-all" />
               </div>
-              <h3 className="font-bold text-[#202828] mb-1">{card.title}</h3>
-              <p className="text-sm text-[#687B78]">{card.description}</p>
+              <h3 className="font-bold text-[#292524] mb-1">{card.title}</h3>
+              <p className="text-sm text-[#78716C]">{card.description}</p>
             </Link>
           );
         })}

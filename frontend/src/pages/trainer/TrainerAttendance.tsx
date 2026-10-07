@@ -28,10 +28,11 @@ interface AttendanceRecord {
 const TrainerAttendance = () => {
   const [sessions, setSessions] = useState<AttendanceRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [savingId, setSavingId] = useState<string | null>(null);
+
+  const todayStr = new Date().toISOString().split('T')[0];
 
   const fetchAttendance = async () => {
     try {
@@ -51,32 +52,6 @@ const TrainerAttendance = () => {
     fetchAttendance();
   }, []);
 
-  const handleUpdateStatus = async (sessionId: string, newStatus: 'Present' | 'Absent' | 'Late' | 'Self-Learning') => {
-    try {
-      setSavingId(sessionId);
-      const res = await api.post(`/trainer-sessions/${sessionId}/attendance`, {
-        attendanceStatus: newStatus
-      });
-      if (res.data.success) {
-        setSessions(prev =>
-          prev.map(s => (s._id === sessionId ? { ...s, attendanceStatus: newStatus } : s))
-        );
-      }
-    } catch (err: any) {
-      // If endpoint doesn't have dedicated subpath, fallback to updating session
-      try {
-        await api.patch(`/trainer-sessions/${sessionId}`, { attendanceStatus: newStatus });
-        setSessions(prev =>
-          prev.map(s => (s._id === sessionId ? { ...s, attendanceStatus: newStatus } : s))
-        );
-      } catch (fallbackErr: any) {
-        alert(fallbackErr.response?.data?.message || 'Failed to update attendance');
-      }
-    } finally {
-      setSavingId(null);
-    }
-  };
-
   // Filtered Sessions
   const filteredSessions = sessions.filter((s) => {
     const matchesSearch =
@@ -87,7 +62,10 @@ const TrainerAttendance = () => {
           .includes(searchTerm.toLowerCase())) ||
       (s.bookingId && s.bookingId.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesDate = !selectedDate || s.date === selectedDate;
+    const sessionDate = s.date;
+    const checkInDate = s.checkInTime ? new Date(s.checkInTime).toISOString().split('T')[0] : null;
+    const matchesDate = !selectedDate || sessionDate === selectedDate || checkInDate === selectedDate;
+
     const currentAtt = s.attendanceStatus || (s.status === 'Completed' ? 'Present' : 'Pending');
     const matchesStatus = statusFilter === 'All' || currentAtt === statusFilter;
 
@@ -106,11 +84,11 @@ const TrainerAttendance = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#202828] flex items-center gap-2">
-            <CalendarCheck className="text-[#164A4A]" size={28} />
+          <h1 className="text-2xl md:text-3xl font-bold text-[#292524] flex items-center gap-2">
+            <CalendarCheck className="text-[#F97316]" size={28} />
             Client Session Attendance
           </h1>
-          <p className="text-sm text-[#455250]">
+          <p className="text-sm text-[#78716C]">
             Track member attendance, check-in timestamps, and self-learning excuses across online & offline sessions.
           </p>
         </div>
@@ -118,62 +96,73 @@ const TrainerAttendance = () => {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-3.5 shadow-sm text-center">
-          <p className="text-[11px] text-[#455250] font-medium uppercase tracking-wider">Scheduled</p>
-          <p className="text-2xl font-bold text-[#202828] mt-0.5">{totalCount}</p>
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-3.5 shadow-sm text-center">
+          <p className="text-[11px] text-[#78716C] font-medium uppercase tracking-wider">Scheduled</p>
+          <p className="text-2xl font-bold text-[#292524] mt-0.5">{totalCount}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-3.5 shadow-sm text-center">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-3.5 shadow-sm text-center">
           <p className="text-[11px] text-green-700 font-medium uppercase tracking-wider">Present</p>
           <p className="text-2xl font-bold text-green-700 mt-0.5">{presentCount}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-3.5 shadow-sm text-center">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-3.5 shadow-sm text-center">
           <p className="text-[11px] text-blue-700 font-medium uppercase tracking-wider">Self-Learning</p>
           <p className="text-2xl font-bold text-blue-700 mt-0.5">{selfLearningCount}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-3.5 shadow-sm text-center">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-3.5 shadow-sm text-center">
           <p className="text-[11px] text-rose-700 font-medium uppercase tracking-wider">Absent</p>
           <p className="text-2xl font-bold text-rose-700 mt-0.5">{absentCount}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-3.5 shadow-sm text-center">
-          <p className="text-[11px] text-[#164A4A] font-medium uppercase tracking-wider">Attendance %</p>
-          <p className="text-2xl font-bold text-[#164A4A] mt-0.5">{attendanceRate}%</p>
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-3.5 shadow-sm text-center">
+          <p className="text-[11px] text-[#F97316] font-medium uppercase tracking-wider">Attendance %</p>
+          <p className="text-2xl font-bold text-[#F97316] mt-0.5">{attendanceRate}%</p>
         </div>
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
+      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           {/* Search */}
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-56">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search member..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-[#F1F5F3] rounded-xl text-xs outline-none focus:bg-white focus:border-[#164A4A] border border-transparent"
+              className="w-full pl-8 pr-3 py-1.5 bg-[#FFFDF8] rounded-xl text-xs outline-none focus:bg-white focus:border-[#F97316] border border-transparent"
             />
           </div>
 
+          {/* Quick Date Filters */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setSelectedDate('')}
+              className={`text-xs px-3 py-1.5 rounded-xl font-bold transition ${
+                !selectedDate ? 'bg-[#F97316] text-white shadow-sm' : 'bg-[#FFFDF8] text-[#78716C] hover:bg-gray-200'
+              }`}
+            >
+              All Dates
+            </button>
+            <button
+              onClick={() => setSelectedDate(todayStr)}
+              className={`text-xs px-3 py-1.5 rounded-xl font-bold transition ${
+                selectedDate === todayStr ? 'bg-[#F97316] text-white shadow-sm' : 'bg-[#FFFDF8] text-[#78716C] hover:bg-gray-200'
+              }`}
+            >
+              Today
+            </button>
+          </div>
+
           {/* Date Picker */}
-          <div className="flex items-center gap-2 bg-[#F1F5F3] px-3 py-1.5 rounded-xl border border-transparent focus-within:border-[#164A4A]">
-            <Calendar size={16} className="text-[#455250]" />
+          <div className="flex items-center gap-2 bg-[#FFFDF8] px-3 py-1.5 rounded-xl border border-transparent focus-within:border-[#F97316]">
+            <Calendar size={15} className="text-[#78716C]" />
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent text-xs font-semibold text-[#202828] outline-none"
+              className="bg-transparent text-xs font-semibold text-[#292524] outline-none"
             />
           </div>
-
-          <button
-            onClick={() => setSelectedDate('')}
-            className={`text-xs px-2.5 py-1.5 rounded-xl transition ${
-              !selectedDate ? 'bg-[#164A4A] text-white' : 'bg-gray-100 text-[#455250] hover:bg-gray-200'
-            }`}
-          >
-            All Dates
-          </button>
         </div>
 
         {/* Status Pills */}
@@ -184,8 +173,8 @@ const TrainerAttendance = () => {
               onClick={() => setStatusFilter(status)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                 statusFilter === status
-                  ? 'bg-[#164A4A] text-white shadow-sm'
-                  : 'bg-[#F1F5F3] text-[#455250] hover:text-[#202828]'
+                  ? 'bg-[#F97316] text-white shadow-sm'
+                  : 'bg-[#FFFDF8] text-[#78716C] hover:text-[#292524]'
               }`}
             >
               {status}
@@ -195,14 +184,14 @@ const TrainerAttendance = () => {
       </div>
 
       {/* Attendance Roster Table */}
-      <div className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-[#D3DFDA] flex justify-between items-center bg-[#F8FAFB]">
-          <h2 className="text-sm font-bold text-[#202828]">
-            Roster {selectedDate ? `for ${selectedDate}` : '(All History)'} ({filteredSessions.length} sessions)
+      <div className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-[#E7E5E4] flex justify-between items-center bg-[#F8FAFB]">
+          <h2 className="text-sm font-bold text-[#292524]">
+            Roster {selectedDate ? `for ${selectedDate}` : '(All Dates)'} ({filteredSessions.length} session{filteredSessions.length === 1 ? '' : 's'})
           </h2>
           <button
             onClick={fetchAttendance}
-            className="text-xs text-[#164A4A] font-bold hover:underline"
+            className="text-xs text-[#F97316] font-bold hover:underline"
           >
             Refresh Roster
           </button>
@@ -210,16 +199,32 @@ const TrainerAttendance = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[#164A4A]" size={32} />
+            <Loader2 className="animate-spin text-[#F97316]" size={32} />
           </div>
         ) : filteredSessions.length === 0 ? (
-          <div className="p-12 text-center text-[#455250] space-y-2">
+          <div className="p-12 text-center text-[#78716C] space-y-3">
             <CalendarCheck size={36} className="mx-auto text-gray-300" />
-            <p className="font-semibold text-sm">No scheduled sessions match the current filter.</p>
-            <p className="text-xs text-gray-400">Select another date or switch status filter to view history.</p>
+            <p className="font-semibold text-sm">
+              {selectedDate
+                ? `No scheduled sessions found for ${selectedDate}.`
+                : 'No scheduled sessions match the current filter.'}
+            </p>
+            {sessions.length > 0 && selectedDate && (
+              <div className="space-y-2 pt-1">
+                <p className="text-xs text-gray-500">
+                  You have {sessions.length} session{sessions.length === 1 ? '' : 's'} recorded across all dates.
+                </p>
+                <button
+                  onClick={() => setSelectedDate('')}
+                  className="px-4 py-2 bg-[#F97316] hover:bg-[#123838] text-white rounded-xl text-xs font-bold transition shadow-sm"
+                >
+                  View All Sessions ({sessions.length})
+                </button>
+              </div>
+            )}
           </div>
         ) : (
-          <div className="divide-y divide-[#D3DFDA]">
+          <div className="divide-y divide-[#E7E5E4]">
             {filteredSessions.map((session) => {
               const currentStatus = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : 'Pending');
               return (
@@ -229,12 +234,16 @@ const TrainerAttendance = () => {
                 >
                   {/* Member Profile & Session Time */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-full bg-[#164A4A] text-white flex items-center justify-center font-bold text-sm shrink-0">
-                      {session.customerId?.firstName?.[0] || 'C'}
+                    <div className="w-10 h-10 rounded-full bg-[#F97316] text-white flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                      {session.customerId?.profilePhoto ? (
+                        <img src={session.customerId.profilePhoto} alt="profile" className="w-full h-full object-cover" />
+                      ) : (
+                        session.customerId?.firstName?.[0] || 'C'
+                      )}
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="font-bold text-sm text-[#202828] truncate">
+                        <p className="font-bold text-sm text-[#292524] truncate">
                           {session.customerId
                             ? `${session.customerId.firstName} ${session.customerId.lastName}`
                             : 'Client'}
@@ -248,73 +257,51 @@ const TrainerAttendance = () => {
                         >
                           {session.mode}
                         </span>
+                        {session.bookingId && (
+                          <span className="text-[10px] font-mono font-bold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                            {session.bookingId}
+                          </span>
+                        )}
                       </div>
-                      <p className="text-xs text-[#455250] flex items-center gap-2 mt-0.5">
-                        <span>{session.date}</span>
+                      <p className="text-xs text-[#78716C] flex flex-wrap items-center gap-2 mt-0.5">
+                        <span className="font-semibold text-[#292524]">{session.date}</span>
                         <span>•</span>
                         <span>{session.startTime} - {session.endTime}</span>
                         {session.checkInTime && (
-                          <span className="text-green-700 font-medium">
-                            • Check-in: {new Date(session.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          <span className="text-green-700 font-semibold bg-green-50 px-2 py-0.5 rounded-md">
+                            Check-in: {new Date(session.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        )}
+                        {session.checkOutTime && (
+                          <span className="text-purple-700 font-semibold bg-purple-50 px-2 py-0.5 rounded-md">
+                            Check-out: {new Date(session.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         )}
                       </p>
                     </div>
                   </div>
 
-                  {/* Attendance Actions */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    <button
-                      onClick={() => handleUpdateStatus(session._id, 'Present')}
-                      disabled={savingId === session._id}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                  {/* Status Badge */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${
                         currentStatus === 'Present'
-                          ? 'bg-green-600 text-white shadow-sm'
-                          : 'bg-gray-100 text-gray-600 hover:bg-green-100 hover:text-green-700'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                          : currentStatus === 'Late'
+                          ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                          : currentStatus === 'Self-Learning'
+                          ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                          : currentStatus === 'Absent'
+                          ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                          : 'bg-gray-100 text-gray-700 border border-gray-200'
                       }`}
                     >
-                      <CheckCircle size={14} />
-                      <span>Present</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleUpdateStatus(session._id, 'Late')}
-                      disabled={savingId === session._id}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                        currentStatus === 'Late'
-                          ? 'bg-amber-500 text-white shadow-sm'
-                          : 'bg-gray-100 text-gray-600 hover:bg-amber-100 hover:text-amber-700'
-                      }`}
-                    >
-                      <Clock size={14} />
-                      <span>Late</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleUpdateStatus(session._id, 'Self-Learning')}
-                      disabled={savingId === session._id}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                        currentStatus === 'Self-Learning'
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700'
-                      }`}
-                    >
-                      <Dumbbell size={14} />
-                      <span>Self-Learning</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleUpdateStatus(session._id, 'Absent')}
-                      disabled={savingId === session._id}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                        currentStatus === 'Absent'
-                          ? 'bg-rose-600 text-white shadow-sm'
-                          : 'bg-gray-100 text-gray-600 hover:bg-rose-100 hover:text-rose-700'
-                      }`}
-                    >
-                      <XCircle size={14} />
-                      <span>Absent</span>
-                    </button>
+                      {currentStatus === 'Present' && <CheckCircle size={14} className="text-emerald-700" />}
+                      {currentStatus === 'Late' && <Clock size={14} className="text-amber-700" />}
+                      {currentStatus === 'Self-Learning' && <Dumbbell size={14} className="text-blue-700" />}
+                      {currentStatus === 'Absent' && <XCircle size={14} className="text-rose-700" />}
+                      <span>{currentStatus}</span>
+                    </span>
                   </div>
                 </div>
               );

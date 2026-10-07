@@ -192,6 +192,7 @@ export const getCustomerProgress = async (req: AuthRequest, res: Response): Prom
     // Active plan
     const activePlan = await WorkoutPlan.findOne({ customerId, status: 'Published' })
       .populate('workoutDays.exercises.exerciseId', 'name category targetMuscle');
+    const completedIds = new Set(allLogs.map(l => l.exerciseId?.toString()));
 
     let totalPlanExercises = 0;
     const planExerciseList: any[] = [];
@@ -199,18 +200,19 @@ export const getCustomerProgress = async (req: AuthRequest, res: Response): Prom
       activePlan.workoutDays.forEach(day => {
         day.exercises.forEach(ex => {
           totalPlanExercises++;
+          const exIdStr = ex.exerciseId?._id?.toString() || (ex.exerciseId as any)?.toString();
           planExerciseList.push({
             exerciseId: ex.exerciseId?._id,
             name: (ex.exerciseId as any)?.name || 'Exercise',
             sets: ex.sets,
             reps: ex.repetitions,
-            day: day.dayName
+            day: day.dayName,
+            isCompleted: completedIds.has(exIdStr)
           });
         });
       });
     }
 
-    const completedIds = new Set(allLogs.map(l => l.exerciseId?.toString()));
     const completionPercentage = totalPlanExercises > 0
       ? Math.min(100, Math.round((completedIds.size / totalPlanExercises) * 100))
       : (totalWorkouts > 0 ? 100 : 0);
@@ -314,12 +316,60 @@ export const getTrainerClientsOverview = async (req: AuthRequest, res: Response)
       })
     );
 
+    // Fetch real-time recent completed exercise logs for this trainer/clients
+    const recentQuery: any = { status: 'Completed' };
+    if (trainerId && customerIds.length > 0) {
+      recentQuery.$or = [{ trainerId }, { customerId: { $in: customerIds } }];
+    } else if (trainerId) {
+      recentQuery.trainerId = trainerId;
+    } else if (gymId) {
+      recentQuery.gymId = gymId;
+    }
+
+    const recentActivity = await WorkoutProgress.find(recentQuery)
+      .populate('customerId', 'firstName lastName email profilePhoto')
+      .populate('exerciseId', 'name category targetMuscle difficulty')
+      .populate('workoutPlanId', 'planName')
+      .sort({ completedAt: -1 })
+      .limit(20);
+
     res.status(200).json({
       success: true,
-      clients: clientProgressList
+      clients: clientProgressList,
+      recentActivity
     });
   } catch (error: any) {
     console.error('Error fetching trainer clients overview:', error);
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// 5. Get Real-Time Recent Activity Feed for Trainer
+export const getTrainerRecentActivity = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const trainerId = req.user?.id;
+    const gymId = req.user?.gymId;
+
+    const query: any = { status: 'Completed' };
+    if (trainerId) {
+      query.$or = [{ trainerId }, { gymId }];
+    } else if (gymId) {
+      query.gymId = gymId;
+    }
+
+    const recentActivity = await WorkoutProgress.find(query)
+      .populate('customerId', 'firstName lastName email profilePhoto')
+      .populate('exerciseId', 'name category targetMuscle difficulty')
+      .populate('workoutPlanId', 'planName')
+      .sort({ completedAt: -1 })
+      .limit(20);
+
+    res.status(200).json({
+      success: true,
+      recentActivity
+    });
+  } catch (error: any) {
+    console.error('Error fetching trainer recent activity feed:', error);
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };

@@ -203,16 +203,16 @@ const GymStoreOfflineSales = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Offline / In-Gym Sales</h1>
-          <p className="text-[#455250] mt-1">Record sales made in person at the gym with live payment scanning.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Offline / In-Gym Sales</h1>
+          <p className="text-[#78716C] mt-1">Record sales made in person at the gym with live payment scanning.</p>
         </div>
       </div>
 
-      <div className="flex border-b border-[#D3DFDA] space-x-8">
-        <button onClick={() => setTab('record')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'record' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}>
+      <div className="flex border-b border-[#E7E5E4] space-x-8">
+        <button onClick={() => setTab('record')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'record' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#292524]'}`}>
           Record Sale
         </button>
-        <button onClick={() => setTab('history')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'history' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#202828]'}`}>
+        <button onClick={() => setTab('history')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'history' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#292524]'}`}>
           Sale History
         </button>
       </div>
@@ -220,20 +220,20 @@ const GymStoreOfflineSales = () => {
       {tab === 'record' && (
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 space-y-6">
-            <div className="bg-white border border-[#D3DFDA] rounded-2xl p-6 space-y-5">
+            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-5">
               
               {/* Customer and Payment Method row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">Member (optional)</label>
-                  <select value={customerId} onChange={(e) => setCustomerId(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none">
+                  <label className="text-xs font-bold text-[#78716C] uppercase mb-1 block">Member (optional)</label>
+                  <select value={customerId} onChange={(e) => setCustomerId(e.target.value)} className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none">
                     <option value="">Walk-in customer (not linked)</option>
                     {customers.map((c) => <option key={c._id} value={c._id}>{c.firstName} {c.lastName} {c.email ? `· ${c.email}` : ''}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">Payment Method *</label>
-                  <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none font-medium">
+                  <label className="text-xs font-bold text-[#78716C] uppercase mb-1 block">Payment Method *</label>
+                  <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none font-medium">
                     {PAYMENT_METHODS.map((m) => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
@@ -241,7 +241,7 @@ const GymStoreOfflineSales = () => {
 
               {/* Visual Quick Payment Method Selector Pills */}
               <div>
-                <span className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider block mb-2">Select or Switch Method:</span>
+                <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider block mb-2">Select or Switch Method:</span>
                 <div className="flex flex-wrap gap-2">
                   {PAYMENT_METHODS.map((method) => {
                     const isSelected = paymentMethod === method;
@@ -252,8 +252,8 @@ const GymStoreOfflineSales = () => {
                         onClick={() => setPaymentMethod(method)}
                         className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                           isSelected
-                            ? 'bg-[#164A4A] text-white border-[#164A4A] shadow-sm shadow-[#164A4A]/20 scale-[1.02]'
-                            : 'bg-[#F2EFE8] text-[#455250] border-[#D3DFDA] hover:bg-[#EAE7DF] hover:text-[#202828]'
+                            ? 'bg-[#F97316] text-white border-[#F97316] shadow-sm shadow-[#F97316]/20 scale-[1.02]'
+                            : 'bg-[#FFFDF8] text-[#78716C] border-[#E7E5E4] hover:bg-[#EAE7DF] hover:text-[#292524]'
                         }`}
                       >
                         {method === 'Cash' && <Banknote size={14} />}
@@ -274,34 +274,34 @@ const GymStoreOfflineSales = () => {
 
               {/* 1. UPI / Paytm / PhonePe / Google Pay Panel */}
               {isUpiMethod && (
-                <div className="bg-gradient-to-br from-[#F1F5F3] to-[#E8F0EC] border-2 border-[#164A4A]/30 rounded-2xl p-5 shadow-sm space-y-4 animate-in fade-in duration-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D3DFDA] pb-3">
+                <div className="bg-gradient-to-br from-[#FFFDF8] to-[#E8F0EC] border-2 border-[#F97316]/30 rounded-2xl p-5 shadow-sm space-y-4 animate-in fade-in duration-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7E5E4] pb-3">
                     <div className="flex items-center gap-2.5">
                       <div className={`p-2 rounded-xl text-white font-bold flex items-center justify-center ${
                         paymentMethod === 'Paytm' ? 'bg-[#002E6E]' :
                         paymentMethod === 'Google Pay' ? 'bg-[#1a73e8]' :
                         paymentMethod === 'PhonePe' ? 'bg-[#5f259f]' :
-                        'bg-[#164A4A]'
+                        'bg-[#F97316]'
                       }`}>
                         <QrCode size={18} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-[#202828] flex items-center gap-2">
+                        <h4 className="font-bold text-sm text-[#292524] flex items-center gap-2">
                           {paymentMethod === 'Paytm' && 'Paytm UPI QR & Payment'}
                           {paymentMethod === 'Google Pay' && 'Google Pay UPI QR & Payment'}
                           {paymentMethod === 'PhonePe' && 'PhonePe UPI QR & Payment'}
                           {paymentMethod === 'UPI' && 'UPI Instant QR Scanner'}
-                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-white/80 text-[#164A4A] border border-[#164A4A]/20">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-white/80 text-[#F97316] border border-[#F97316]/20">
                             Live Scanner
                           </span>
                         </h4>
-                        <p className="text-xs text-[#455250]">Customer can scan this QR code with {paymentMethod} or any UPI app</p>
+                        <p className="text-xs text-[#78716C]">Customer can scan this QR code with {paymentMethod} or any UPI app</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#687B78] font-medium">Amount to Pay:</span>
-                      <span className="text-base font-black text-[#164A4A] bg-white px-3 py-1 rounded-lg border border-[#D3DFDA]">
+                      <span className="text-xs text-[#78716C] font-medium">Amount to Pay:</span>
+                      <span className="text-base font-black text-[#F97316] bg-white px-3 py-1 rounded-lg border border-[#E7E5E4]">
                         ₹{total}
                       </span>
                     </div>
@@ -310,28 +310,28 @@ const GymStoreOfflineSales = () => {
                   <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pt-1">
                     {/* QR Code Scanner Box */}
                     <div className="flex flex-col items-center shrink-0">
-                      <div className="relative p-4 bg-white border-2 border-[#164A4A]/40 rounded-2xl shadow-md flex items-center justify-center group">
+                      <div className="relative p-4 bg-white border-2 border-[#F97316]/40 rounded-2xl shadow-md flex items-center justify-center group">
                         {/* Viewfinder crosshairs */}
-                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#164A4A] rounded-tl-sm"></div>
-                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#164A4A] rounded-tr-sm"></div>
-                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#164A4A] rounded-bl-sm"></div>
-                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#164A4A] rounded-br-sm"></div>
+                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#F97316] rounded-tl-sm"></div>
+                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#F97316] rounded-tr-sm"></div>
+                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#F97316] rounded-bl-sm"></div>
+                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#F97316] rounded-br-sm"></div>
 
                         {/* QR Code component */}
                         <QRCode
                           value={upiPayUri}
                           size={135}
                           bgColor="#FFFFFF"
-                          fgColor="#202828"
+                          fgColor="#292524"
                           level="M"
                         />
                       </div>
 
                       <div className="text-center mt-2.5 space-y-0.5">
-                        <span className="text-[11px] font-bold text-[#164A4A] uppercase tracking-wider block">
+                        <span className="text-[11px] font-bold text-[#F97316] uppercase tracking-wider block">
                           Scan to Pay ₹{total}
                         </span>
-                        <span className="text-[10px] text-[#687B78]">
+                        <span className="text-[10px] text-[#78716C]">
                           Works with Paytm, GPay, PhonePe, BHIM
                         </span>
                       </div>
@@ -340,16 +340,16 @@ const GymStoreOfflineSales = () => {
                     {/* UPI ID Details & UTR input */}
                     <div className="flex-1 w-full space-y-3">
                       {/* Recipient UPI ID Card */}
-                      <div className="bg-white border border-[#D3DFDA] rounded-xl p-3.5 space-y-2">
+                      <div className="bg-white border border-[#E7E5E4] rounded-xl p-3.5 space-y-2">
                         <div className="flex items-center justify-between">
-                          <label className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">
+                          <label className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider">
                             Recipient UPI ID ({gym?.name || 'Gym Account'})
                           </label>
                           {!isEditingUpi ? (
                             <button
                               type="button"
                               onClick={() => { setIsEditingUpi(true); setTempUpiId(upiId); }}
-                              className="text-xs font-bold text-[#164A4A] hover:underline flex items-center gap-1"
+                              className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1"
                             >
                               <Edit2 size={12} /> Edit UPI
                             </button>
@@ -358,7 +358,7 @@ const GymStoreOfflineSales = () => {
                               <button
                                 type="button"
                                 onClick={handleSaveUpi}
-                                className="text-xs font-bold text-white bg-[#164A4A] px-2 py-0.5 rounded hover:opacity-90"
+                                className="text-xs font-bold text-white bg-[#F97316] px-2 py-0.5 rounded hover:opacity-90"
                               >
                                 Save
                               </button>
@@ -380,12 +380,12 @@ const GymStoreOfflineSales = () => {
                               value={tempUpiId}
                               onChange={(e) => setTempUpiId(e.target.value)}
                               placeholder="e.g. gymname@paytm"
-                              className="flex-1 bg-[#F2EFE8] border border-[#164A4A] rounded-lg px-3 py-1.5 text-xs text-[#202828] font-mono outline-none"
+                              className="flex-1 bg-[#FFFDF8] border border-[#F97316] rounded-lg px-3 py-1.5 text-xs text-[#292524] font-mono outline-none"
                             />
                           </div>
                         ) : (
                           <div className="flex items-center justify-between bg-[#F9F8F6] border border-[#EAE7DF] rounded-lg px-3 py-2">
-                            <span className="font-mono font-bold text-sm text-[#202828] tracking-wide select-all">
+                            <span className="font-mono font-bold text-sm text-[#292524] tracking-wide select-all">
                               {upiId || 'gym@paytm'}
                             </span>
                             <button
@@ -394,7 +394,7 @@ const GymStoreOfflineSales = () => {
                               className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
                                 copiedUpi
                                   ? 'bg-emerald-100 text-emerald-700'
-                                  : 'bg-white border border-[#D3DFDA] text-[#164A4A] hover:bg-[#F2EFE8]'
+                                  : 'bg-white border border-[#E7E5E4] text-[#F97316] hover:bg-[#FFFDF8]'
                               }`}
                             >
                               {copiedUpi ? <Check size={13} /> : <Copy size={13} />}
@@ -404,7 +404,7 @@ const GymStoreOfflineSales = () => {
                         )}
 
                         {/* Quick UPI Handle suggestions */}
-                        <div className="flex items-center gap-2 pt-1 text-[11px] text-[#687B78]">
+                        <div className="flex items-center gap-2 pt-1 text-[11px] text-[#78716C]">
                           <span>Handles:</span>
                           {['@paytm', '@okaxis', '@ybl', '@upi'].map((handle) => {
                             const userPart = upiId.split('@')[0] || 'gym';
@@ -416,8 +416,8 @@ const GymStoreOfflineSales = () => {
                                 onClick={() => { setUpiId(target); setTempUpiId(target); }}
                                 className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
                                   upiId.endsWith(handle)
-                                    ? 'bg-[#164A4A] text-white font-bold'
-                                    : 'bg-[#F2EFE8] text-[#455250] hover:bg-gray-200'
+                                    ? 'bg-[#F97316] text-white font-bold'
+                                    : 'bg-[#FFFDF8] text-[#78716C] hover:bg-gray-200'
                                 }`}
                               >
                                 {handle}
@@ -430,7 +430,7 @@ const GymStoreOfflineSales = () => {
                       {/* Transaction / UTR ID Input */}
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <label className="text-xs font-bold text-[#687B78] uppercase">
+                          <label className="text-xs font-bold text-[#78716C] uppercase">
                             UPI Transaction / UTR Number (12 digits)
                           </label>
                           {transactionId.length === 12 && (
@@ -445,9 +445,9 @@ const GymStoreOfflineSales = () => {
                           value={transactionId}
                           onChange={(e) => setTransactionId(e.target.value.trim())}
                           placeholder="e.g. 429381029381 (from customer's screen)"
-                          className="w-full bg-white border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm font-mono text-[#202828] focus:border-[#164A4A] outline-none"
+                          className="w-full bg-white border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm font-mono text-[#292524] focus:border-[#F97316] outline-none"
                         />
-                        <p className="text-[11px] text-[#687B78] mt-1">
+                        <p className="text-[11px] text-[#78716C] mt-1">
                           Enter the 12-digit UTR reference from {paymentMethod} to record the payment verification.
                         </p>
                       </div>
@@ -458,15 +458,15 @@ const GymStoreOfflineSales = () => {
 
               {/* 2. Cash Payment Panel */}
               {paymentMethod === 'Cash' && (
-                <div className="bg-[#F1F5F3] border border-[#D3DFDA] rounded-2xl p-5 space-y-4 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b border-[#D3DFDA] pb-3">
+                <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl p-5 space-y-4 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-3">
                     <div className="flex items-center gap-2">
-                      <Banknote className="text-[#164A4A]" size={20} />
-                      <h4 className="font-bold text-sm text-[#202828]">Cash Payment Counter</h4>
+                      <Banknote className="text-[#F97316]" size={20} />
+                      <h4 className="font-bold text-sm text-[#292524]">Cash Payment Counter</h4>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#687B78]">Total Due:</span>
-                      <span className="font-black text-sm text-[#164A4A] bg-white px-2.5 py-0.5 rounded border border-[#D3DFDA]">
+                      <span className="text-xs text-[#78716C]">Total Due:</span>
+                      <span className="font-black text-sm text-[#F97316] bg-white px-2.5 py-0.5 rounded border border-[#E7E5E4]">
                         ₹{total}
                       </span>
                     </div>
@@ -474,7 +474,7 @@ const GymStoreOfflineSales = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">
+                      <label className="text-xs font-bold text-[#78716C] uppercase mb-1 block">
                         Cash Handed by Customer (₹)
                       </label>
                       <input
@@ -483,7 +483,7 @@ const GymStoreOfflineSales = () => {
                         value={cashReceived}
                         onChange={(e) => setCashReceived(e.target.value)}
                         placeholder={`e.g. ${total}`}
-                        className="w-full bg-white border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] font-bold focus:border-[#164A4A] outline-none"
+                        className="w-full bg-white border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] font-bold focus:border-[#F97316] outline-none"
                       />
 
                       {/* Quick Denomination Chips */}
@@ -491,7 +491,7 @@ const GymStoreOfflineSales = () => {
                         <button
                           type="button"
                           onClick={() => setCashReceived(String(total))}
-                          className="px-2 py-1 text-[11px] font-bold bg-white border border-[#D3DFDA] rounded-lg hover:border-[#164A4A] text-[#164A4A]"
+                          className="px-2 py-1 text-[11px] font-bold bg-white border border-[#E7E5E4] rounded-lg hover:border-[#F97316] text-[#F97316]"
                         >
                           Exact (₹{total})
                         </button>
@@ -500,7 +500,7 @@ const GymStoreOfflineSales = () => {
                             key={amt}
                             type="button"
                             onClick={() => setCashReceived(String(amt))}
-                            className="px-2 py-1 text-[11px] font-medium bg-white border border-[#D3DFDA] rounded-lg hover:border-[#164A4A] text-[#455250]"
+                            className="px-2 py-1 text-[11px] font-medium bg-white border border-[#E7E5E4] rounded-lg hover:border-[#F97316] text-[#78716C]"
                           >
                             ₹{amt}
                           </button>
@@ -530,7 +530,7 @@ const GymStoreOfflineSales = () => {
                           <p className="text-[11px] text-amber-700 mt-0.5">Customer still owes this balance.</p>
                         </div>
                       ) : (
-                        <div className="bg-white border border-dashed border-[#D3DFDA] rounded-xl p-3 text-center text-xs text-[#687B78]">
+                        <div className="bg-white border border-dashed border-[#E7E5E4] rounded-xl p-3 text-center text-xs text-[#78716C]">
                           Enter cash received to automatically calculate change to return.
                         </div>
                       )}
@@ -541,34 +541,34 @@ const GymStoreOfflineSales = () => {
 
               {/* 3. Bank Transfer Panel */}
               {paymentMethod === 'Bank Transfer' && (
-                <div className="bg-[#F1F5F3] border border-[#D3DFDA] rounded-2xl p-5 space-y-4 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b border-[#D3DFDA] pb-3">
+                <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl p-5 space-y-4 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-3">
                     <div className="flex items-center gap-2">
-                      <Building2 className="text-[#164A4A]" size={20} />
-                      <h4 className="font-bold text-sm text-[#202828]">Bank Account Details</h4>
+                      <Building2 className="text-[#F97316]" size={20} />
+                      <h4 className="font-bold text-sm text-[#292524]">Bank Account Details</h4>
                     </div>
-                    <span className="font-black text-sm text-[#164A4A] bg-white px-2.5 py-0.5 rounded border border-[#D3DFDA]">
+                    <span className="font-black text-sm text-[#F97316] bg-white px-2.5 py-0.5 rounded border border-[#E7E5E4]">
                       ₹{total}
                     </span>
                   </div>
 
                   {gym?.paymentSettings?.accountNumber ? (
-                    <div className="bg-white border border-[#D3DFDA] rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div className="bg-white border border-[#E7E5E4] rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#687B78] block">Account Name</span>
-                        <span className="font-bold text-[#202828]">{gym.paymentSettings.accountName || gym.name}</span>
+                        <span className="text-[10px] uppercase font-bold text-[#78716C] block">Account Name</span>
+                        <span className="font-bold text-[#292524]">{gym.paymentSettings.accountName || gym.name}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#687B78] block">Bank Name</span>
-                        <span className="font-bold text-[#202828]">{gym.paymentSettings.bankName || 'N/A'}</span>
+                        <span className="text-[10px] uppercase font-bold text-[#78716C] block">Bank Name</span>
+                        <span className="font-bold text-[#292524]">{gym.paymentSettings.bankName || 'N/A'}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#687B78] block">Account Number</span>
-                        <span className="font-mono font-bold text-[#202828]">{gym.paymentSettings.accountNumber}</span>
+                        <span className="text-[10px] uppercase font-bold text-[#78716C] block">Account Number</span>
+                        <span className="font-mono font-bold text-[#292524]">{gym.paymentSettings.accountNumber}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#687B78] block">IFSC Code</span>
-                        <span className="font-mono font-bold text-[#202828]">{gym.paymentSettings.ifscCode}</span>
+                        <span className="text-[10px] uppercase font-bold text-[#78716C] block">IFSC Code</span>
+                        <span className="font-mono font-bold text-[#292524]">{gym.paymentSettings.ifscCode}</span>
                       </div>
                     </div>
                   ) : (
@@ -583,7 +583,7 @@ const GymStoreOfflineSales = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">
+                      <label className="text-xs font-bold text-[#78716C] uppercase mb-1 block">
                         Bank Reference / IMPS / NEFT Number *
                       </label>
                       <input
@@ -591,11 +591,11 @@ const GymStoreOfflineSales = () => {
                         value={bankRef}
                         onChange={(e) => setBankRef(e.target.value)}
                         placeholder="e.g. IMPS1928301928"
-                        className="w-full bg-white border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none"
+                        className="w-full bg-white border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">
+                      <label className="text-xs font-bold text-[#78716C] uppercase mb-1 block">
                         Sender Bank / Name (Optional)
                       </label>
                       <input
@@ -603,7 +603,7 @@ const GymStoreOfflineSales = () => {
                         value={bankSender}
                         onChange={(e) => setBankSender(e.target.value)}
                         placeholder="e.g. HDFC Bank - Rajesh"
-                        className="w-full bg-white border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none"
+                        className="w-full bg-white border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none"
                       />
                     </div>
                   </div>
@@ -612,13 +612,13 @@ const GymStoreOfflineSales = () => {
 
               {/* 4. Other Payment Panel */}
               {paymentMethod === 'Other' && (
-                <div className="bg-[#F1F5F3] border border-[#D3DFDA] rounded-2xl p-5 space-y-3 animate-in fade-in duration-200">
-                  <div className="flex items-center gap-2 border-b border-[#D3DFDA] pb-2">
-                    <Wallet className="text-[#164A4A]" size={18} />
-                    <h4 className="font-bold text-sm text-[#202828]">Other Payment Method Details</h4>
+                <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl p-5 space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center gap-2 border-b border-[#E7E5E4] pb-2">
+                    <Wallet className="text-[#F97316]" size={18} />
+                    <h4 className="font-bold text-sm text-[#292524]">Other Payment Method Details</h4>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">
+                    <label className="text-xs font-bold text-[#78716C] uppercase mb-1 block">
                       Payment Reference / POS Slip / Details
                     </label>
                     <input
@@ -626,7 +626,7 @@ const GymStoreOfflineSales = () => {
                       value={otherRef}
                       onChange={(e) => setOtherRef(e.target.value)}
                       placeholder="e.g. Card POS Terminal Auth Code #38192 or Cheque #102931"
-                      className="w-full bg-white border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none"
+                      className="w-full bg-white border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none"
                     />
                   </div>
                 </div>
@@ -635,12 +635,12 @@ const GymStoreOfflineSales = () => {
               {/* Items Section */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <label className="text-xs font-bold text-[#687B78] uppercase">Items *</label>
-                  <button onClick={addLine} className="text-xs font-bold text-[#164A4A] flex items-center gap-1 hover:underline"><Plus size={14} /> Add Item</button>
+                  <label className="text-xs font-bold text-[#78716C] uppercase">Items *</label>
+                  <button onClick={addLine} className="text-xs font-bold text-[#F97316] flex items-center gap-1 hover:underline"><Plus size={14} /> Add Item</button>
                 </div>
                 <div className="space-y-3">
                   {lines.map((line, idx) => (
-                      <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-[#F9F8F6] border border-[#D3DFDA] rounded-xl p-3">
+                      <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl p-3">
                         <select value={line.variantId ? `${line.productId}|${line.variantId}` : line.productId} onChange={(e) => {
                              const val = e.target.value;
                              if (val.includes('|')) {
@@ -650,7 +650,7 @@ const GymStoreOfflineSales = () => {
                                 updateLine(idx, { productId: val, variantId: '' });
                              }
                            }} 
-                           className="flex-1 bg-white border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none">
+                           className="flex-1 bg-white border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none">
                           <option value="">Select product...</option>
                           {products.flatMap((pr) => {
                             if (pr.hasVariants && pr.variants && pr.variants.length > 0) {
@@ -671,13 +671,13 @@ const GymStoreOfflineSales = () => {
                           type="number" min={1}
                           value={line.quantity}
                           onChange={(e) => updateLine(idx, { quantity: e.target.value })}
-                          className="w-full sm:w-20 bg-white border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-center text-[#202828] focus:border-[#164A4A] outline-none"
+                          className="w-full sm:w-20 bg-white border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-center text-[#292524] focus:border-[#F97316] outline-none"
                         />
                         <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-                          <span className="font-bold text-[#202828] w-20 text-right">₹{(priceOfLine(line) * (Number(line.quantity) || 1))}</span>
+                          <span className="font-bold text-[#292524] w-20 text-right">₹{(priceOfLine(line) * (Number(line.quantity) || 1))}</span>
                           <div className="w-8 flex justify-end">
                             {lines.length > 1 && (
-                              <button onClick={() => removeLine(idx)} className="p-1.5 bg-red-50 text-[#6fa3a0] rounded-lg hover:bg-red-100 transition-colors"><Trash2 size={15} /></button>
+                              <button onClick={() => removeLine(idx)} className="p-1.5 bg-red-50 text-[#FED7AA] rounded-lg hover:bg-red-100 transition-colors"><Trash2 size={15} /></button>
                             )}
                           </div>
                         </div>
@@ -687,14 +687,14 @@ const GymStoreOfflineSales = () => {
               </div>
 
               {/* Discount and Note */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#D3DFDA]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#E7E5E4]">
                 <div>
-                  <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">Discount (₹)</label>
-                  <input type="number" min={0} value={discount} onChange={(e) => setDiscount(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" />
+                  <label className="text-xs font-bold text-[#78716C] uppercase mb-1 block">Discount (₹)</label>
+                  <input type="number" min={0} value={discount} onChange={(e) => setDiscount(e.target.value)} className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#687B78] uppercase mb-1 block">Note</label>
-                  <input value={note} onChange={(e) => setNote(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" placeholder="Optional" />
+                  <label className="text-xs font-bold text-[#78716C] uppercase mb-1 block">Note</label>
+                  <input value={note} onChange={(e) => setNote(e.target.value)} className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none" placeholder="Optional" />
                 </div>
               </div>
             </div>
@@ -702,41 +702,41 @@ const GymStoreOfflineSales = () => {
 
           {/* Right Summary Column */}
           <div className="w-full lg:w-[340px]">
-             <div className="bg-[#F1F5F3] border border-[#D3DFDA] rounded-2xl p-6 flex flex-col sticky top-24 shadow-sm">
+             <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl p-6 flex flex-col sticky top-24 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
-                  <Store className="text-[#164A4A]/30" size={32} />
-                  <span className="text-[10px] font-bold tracking-wider text-[#687B78] uppercase bg-[#EAE7DF] px-2.5 py-1 rounded-md">Summary</span>
+                  <Store className="text-[#F97316]/30" size={32} />
+                  <span className="text-[10px] font-bold tracking-wider text-[#78716C] uppercase bg-[#EAE7DF] px-2.5 py-1 rounded-md">Summary</span>
                 </div>
                 
-                <div className="space-y-3 mb-6 border-b border-[#D3DFDA] pb-6">
-                  <div className="flex justify-between text-sm text-[#455250] font-medium">
+                <div className="space-y-3 mb-6 border-b border-[#E7E5E4] pb-6">
+                  <div className="flex justify-between text-sm text-[#78716C] font-medium">
                      <span>Subtotal</span>
                      <span>₹{total + Number(discount || 0)}</span>
                   </div>
                   {Number(discount || 0) > 0 && (
-                    <div className="flex justify-between text-sm text-[#164A4A] font-medium">
+                    <div className="flex justify-between text-sm text-[#F97316] font-medium">
                        <span>Discount</span>
                        <span>- ₹{discount}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-xs text-[#687B78]">
+                  <div className="flex justify-between text-xs text-[#78716C]">
                      <span>Payment Mode</span>
-                     <span className="font-bold text-[#202828]">{paymentMethod}</span>
+                     <span className="font-bold text-[#292524]">{paymentMethod}</span>
                   </div>
                   {isUpiMethod && upiId && (
-                    <div className="flex justify-between text-[11px] text-[#687B78]">
+                    <div className="flex justify-between text-[11px] text-[#78716C]">
                        <span>Recipient UPI</span>
-                       <span className="font-mono text-[#164A4A] font-semibold truncate max-w-[150px]">{upiId}</span>
+                       <span className="font-mono text-[#F97316] font-semibold truncate max-w-[150px]">{upiId}</span>
                     </div>
                   )}
                 </div>
                 
                 <div className="mb-8">
-                  <p className="text-xs font-bold text-[#687B78] uppercase mb-1">Total Amount</p>
-                  <p className="text-4xl font-black text-[#164A4A]">₹{total}</p>
+                  <p className="text-xs font-bold text-[#78716C] uppercase mb-1">Total Amount</p>
+                  <p className="text-4xl font-black text-[#F97316]">₹{total}</p>
                 </div>
 
-                <button onClick={save} disabled={saving} className="w-full py-4 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                <button onClick={save} disabled={saving} className="w-full py-4 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white font-bold rounded-xl shadow-lg shadow-orange-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                   {saving ? <Loader2 className="animate-spin" size={18} /> : <Plus size={18} />}
                   Record Sale
                 </button>
@@ -746,19 +746,19 @@ const GymStoreOfflineSales = () => {
       )}
 
       {tab === 'history' && (
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-[#D3DFDA]">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden">
+          <div className="p-4 border-b border-[#E7E5E4]">
             <div className="relative max-w-sm">
-              <input value={salesSearch} onChange={(e) => setSalesSearch(e.target.value)} placeholder="Search..." className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" />
-              <Search className="absolute left-3 top-2.5 text-[#455250]" size={16} />
+              <input value={salesSearch} onChange={(e) => setSalesSearch(e.target.value)} placeholder="Search..." className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-9 pr-4 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none" />
+              <Search className="absolute left-3 top-2.5 text-[#78716C]" size={16} />
             </div>
           </div>
           {loadingSales ? (
-            <div className="flex justify-center py-16"><Loader2 className="animate-spin text-[#164A4A]" size={36} /></div>
+            <div className="flex justify-center py-16"><Loader2 className="animate-spin text-[#F97316]" size={36} /></div>
           ) : (
             <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-left text-sm text-[#455250] whitespace-nowrap">
-                <thead className="bg-[#FFFFFF] border-b border-[#D3DFDA] text-[#202828]">
+              <table className="w-full text-left text-sm text-[#78716C] whitespace-nowrap">
+                <thead className="bg-[#FFFFFF] border-b border-[#E7E5E4] text-[#292524]">
                   <tr>
                     <th className="px-6 py-4 font-semibold">Sale No.</th>
                     <th className="px-6 py-4 font-semibold">Date</th>
@@ -769,35 +769,35 @@ const GymStoreOfflineSales = () => {
                     <th className="px-6 py-4 font-semibold text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#D3DFDA]">
+                <tbody className="divide-y divide-[#E7E5E4]">
                   {(salesSearch.trim()
                     ? sales.filter((s) => `${s.saleNumber} ${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.toLowerCase().includes(salesSearch.toLowerCase()))
                     : sales).map((s) => (
-                    <tr key={s._id} className="hover:bg-[#F1F5F3] transition-colors">
-                      <td className="px-6 py-4 font-bold text-[#202828]">{s.saleNumber}</td>
+                    <tr key={s._id} className="hover:bg-[#FFFDF8] transition-colors">
+                      <td className="px-6 py-4 font-bold text-[#292524]">{s.saleNumber}</td>
                       <td className="px-6 py-4">{new Date(s.paymentDate || s.createdAt).toLocaleString()}</td>
                       <td className="px-6 py-4 font-semibold">{s.customerId ? `${s.customerId.firstName} ${s.customerId.lastName}` : 'Walk-in'}</td>
                       <td className="px-6 py-4">{s.items.reduce((sum: number, i: any) => sum + i.quantity, 0)} item(s)</td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="font-semibold text-[#202828] flex items-center gap-1.5">
+                          <span className="font-semibold text-[#292524] flex items-center gap-1.5">
                             {s.paymentMethod}
                           </span>
                           {s.transactionId && (
-                            <span className="text-[11px] font-mono text-[#164A4A] mt-0.5">
+                            <span className="text-[11px] font-mono text-[#F97316] mt-0.5">
                               UTR: {s.transactionId}
                             </span>
                           )}
                           {s.upiId && !s.transactionId && (
-                            <span className="text-[10px] font-mono text-[#687B78] mt-0.5">
+                            <span className="text-[10px] font-mono text-[#78716C] mt-0.5">
                               {s.upiId}
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right font-black text-[#164A4A]">₹{s.total}</td>
+                      <td className="px-6 py-4 text-right font-black text-[#F97316]">₹{s.total}</td>
                       <td className="px-6 py-4 text-center">
-                        <button onClick={() => setViewingSale(s)} className="p-1.5 bg-blue-50 text-[#164A4A] rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center justify-center">
+                        <button onClick={() => setViewingSale(s)} className="p-1.5 bg-blue-50 text-[#F97316] rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center justify-center">
                           <Eye size={16} />
                         </button>
                       </td>
@@ -819,57 +819,57 @@ const GymStoreOfflineSales = () => {
               <X size={22} />
             </button>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-[#202828]">Sale Details</h2>
-              <p className="text-sm text-[#687B78] mt-1">{viewingSale.saleNumber}</p>
+              <h2 className="text-2xl font-bold text-[#292524]">Sale Details</h2>
+              <p className="text-sm text-[#78716C] mt-1">{viewingSale.saleNumber}</p>
             </div>
 
             <div className="space-y-4 mb-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs font-bold text-[#687B78] uppercase">Date</p>
-                  <p className="text-sm text-[#202828] font-semibold">{new Date(viewingSale.paymentDate || viewingSale.createdAt).toLocaleString()}</p>
+                  <p className="text-xs font-bold text-[#78716C] uppercase">Date</p>
+                  <p className="text-sm text-[#292524] font-semibold">{new Date(viewingSale.paymentDate || viewingSale.createdAt).toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#687B78] uppercase">Customer</p>
-                  <p className="text-sm text-[#202828] font-semibold">{viewingSale.customerId ? `${viewingSale.customerId.firstName} ${viewingSale.customerId.lastName}` : 'Walk-in customer'}</p>
+                  <p className="text-xs font-bold text-[#78716C] uppercase">Customer</p>
+                  <p className="text-sm text-[#292524] font-semibold">{viewingSale.customerId ? `${viewingSale.customerId.firstName} ${viewingSale.customerId.lastName}` : 'Walk-in customer'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#687B78] uppercase">Payment Method</p>
-                  <p className="text-sm text-[#202828] font-semibold">{viewingSale.paymentMethod}</p>
+                  <p className="text-xs font-bold text-[#78716C] uppercase">Payment Method</p>
+                  <p className="text-sm text-[#292524] font-semibold">{viewingSale.paymentMethod}</p>
                 </div>
                 {viewingSale.transactionId && (
                   <div>
-                    <p className="text-xs font-bold text-[#687B78] uppercase">Transaction / UTR ID</p>
-                    <p className="text-sm text-[#164A4A] font-mono font-bold">{viewingSale.transactionId}</p>
+                    <p className="text-xs font-bold text-[#78716C] uppercase">Transaction / UTR ID</p>
+                    <p className="text-sm text-[#F97316] font-mono font-bold">{viewingSale.transactionId}</p>
                   </div>
                 )}
                 {viewingSale.upiId && (
                   <div>
-                    <p className="text-xs font-bold text-[#687B78] uppercase">UPI ID</p>
-                    <p className="text-sm text-[#202828] font-mono">{viewingSale.upiId}</p>
+                    <p className="text-xs font-bold text-[#78716C] uppercase">UPI ID</p>
+                    <p className="text-sm text-[#292524] font-mono">{viewingSale.upiId}</p>
                   </div>
                 )}
               </div>
             </div>
 
             <div className="mb-6">
-              <p className="text-xs font-bold text-[#687B78] uppercase mb-2">Items Purchased</p>
-              <div className="bg-[#F9F8F6] rounded-xl border border-[#D3DFDA] overflow-hidden">
-                <table className="w-full text-left text-sm text-[#455250]">
-                  <thead className="bg-[#F2EFE8] border-b border-[#D3DFDA]">
+              <p className="text-xs font-bold text-[#78716C] uppercase mb-2">Items Purchased</p>
+              <div className="bg-[#F9F8F6] rounded-xl border border-[#E7E5E4] overflow-hidden">
+                <table className="w-full text-left text-sm text-[#78716C]">
+                  <thead className="bg-[#FFFDF8] border-b border-[#E7E5E4]">
                     <tr>
                       <th className="px-4 py-2 font-semibold">Item</th>
                       <th className="px-4 py-2 font-semibold text-center">Qty</th>
                       <th className="px-4 py-2 font-semibold text-right">Price</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#D3DFDA]">
+                  <tbody className="divide-y divide-[#E7E5E4]">
                     {viewingSale.items.map((item: any, i: number) => (
                       <tr key={i}>
-                        <td className="px-4 py-2 font-medium text-[#202828]">
+                        <td className="px-4 py-2 font-medium text-[#292524]">
                           {item.name}
                           {item.attributes && Object.keys(item.attributes).length > 0 && (
-                            <span className="text-xs text-[#687B78] ml-1">({Object.values(item.attributes).join(', ')})</span>
+                            <span className="text-xs text-[#78716C] ml-1">({Object.values(item.attributes).join(', ')})</span>
                           )}
                         </td>
                         <td className="px-4 py-2 text-center">{item.quantity}</td>
@@ -881,24 +881,24 @@ const GymStoreOfflineSales = () => {
               </div>
             </div>
 
-            <div className="space-y-2 border-t border-[#D3DFDA] pt-4">
-              <div className="flex justify-between text-sm text-[#455250]">
+            <div className="space-y-2 border-t border-[#E7E5E4] pt-4">
+              <div className="flex justify-between text-sm text-[#78716C]">
                 <span>Subtotal</span>
                 <span>₹{viewingSale.total + Number(viewingSale.discount || 0)}</span>
               </div>
               {Number(viewingSale.discount || 0) > 0 && (
-                <div className="flex justify-between text-sm text-[#164A4A]">
+                <div className="flex justify-between text-sm text-[#F97316]">
                   <span>Discount</span>
                   <span>- ₹{viewingSale.discount}</span>
                 </div>
               )}
               {(viewingSale.note || viewingSale.notes) && (
-                <div className="flex justify-between text-sm text-[#455250]">
+                <div className="flex justify-between text-sm text-[#78716C]">
                   <span>Note</span>
                   <span className="text-right max-w-[60%]">{viewingSale.note || viewingSale.notes}</span>
                 </div>
               )}
-              <div className="flex justify-between text-lg font-black text-[#164A4A] pt-2 border-t border-[#D3DFDA] mt-2">
+              <div className="flex justify-between text-lg font-black text-[#F97316] pt-2 border-t border-[#E7E5E4] mt-2">
                 <span>Total</span>
                 <span>₹{viewingSale.total}</span>
               </div>

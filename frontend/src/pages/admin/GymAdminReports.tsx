@@ -7,7 +7,7 @@ import api from '../../utils/api';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const PLAN_COLORS = [
-  'bg-[#164A4A]',
+  'bg-[#F97316]',
   'bg-blue-500',
   'bg-purple-500',
   'bg-emerald-500',
@@ -22,7 +22,7 @@ const GymAdminReports = () => {
 
   // Real data state
   const [members, setMembers] = useState<any[]>([]);
-  const [memberships, setMemberships] = useState<any[]>([]);
+  const [, setMemberships] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [storeSales, setStoreSales] = useState<any[]>([]);
   const [gymDetails, setGymDetails] = useState<any>(null);
@@ -229,8 +229,8 @@ const GymAdminReports = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-28 space-y-4">
-        <Loader2 className="w-10 h-10 text-[#164A4A] animate-spin" />
-        <p className="text-sm font-semibold text-[#687B78]">Loading real-time gym analytics & reports...</p>
+        <Loader2 className="w-10 h-10 text-[#F97316] animate-spin" />
+        <p className="text-sm font-semibold text-[#78716C]">Loading real-time gym analytics & reports...</p>
       </div>
     );
   }
@@ -240,25 +240,25 @@ const GymAdminReports = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Analytics & Reports</h1>
-          <p className="text-[#455250] mt-1">Deep insights into your gym's performance, member retention, and revenue.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Analytics & Reports</h1>
+          <p className="text-[#78716C] mt-1">Deep insights into your gym's performance, member retention, and revenue.</p>
         </div>
         <div className="flex items-center space-x-3">
           <div className="relative">
             <select
               value={timeframe}
               onChange={(e) => setTimeframe(e.target.value as any)}
-              className="px-4 py-2.5 bg-white border border-[#D3DFDA] text-[#202828] text-sm font-bold rounded-xl hover:border-[#164A4A] transition-colors outline-none cursor-pointer appearance-none pr-8 shadow-xs"
+              className="px-4 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] text-sm font-bold rounded-xl hover:border-[#F97316] transition-colors outline-none cursor-pointer appearance-none pr-8 shadow-xs"
             >
               <option value="1week">One Week</option>
               <option value="1month">One Month</option>
               <option value="1year">One Year</option>
             </select>
-            <Calendar className="w-4 h-4 text-[#687B78] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Calendar className="w-4 h-4 text-[#78716C] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
           <button
             onClick={handleExportPDF}
-            className="px-4 py-2.5 bg-[#164A4A] text-white text-sm font-bold rounded-xl hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shadow-md shadow-[#164A4A]/20 cursor-pointer"
+            className="px-4 py-2.5 bg-[#F97316] text-white text-sm font-bold rounded-xl hover:bg-[#EA580C] transition-colors flex items-center gap-2 shadow-md shadow-[#F97316]/20 cursor-pointer"
           >
             <Download size={16} /> Export PDF
           </button>
@@ -268,48 +268,48 @@ const GymAdminReports = () => {
       {/* Top 4 KPI Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Members */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 hover:border-[#164A4A]/30 transition-all shadow-xs">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 hover:border-[#F97316]/30 transition-all shadow-xs">
           <div className="w-12 h-12 bg-blue-500/10 text-blue-600 rounded-xl flex items-center justify-center mb-4">
             <Users size={24} />
           </div>
-          <p className="text-[#455250] font-semibold text-xs uppercase tracking-wider mb-1">Total Members</p>
-          <h3 className="text-3xl font-black text-[#202828]">{metrics.totalMembers.toLocaleString('en-IN')}</h3>
+          <p className="text-[#78716C] font-semibold text-xs uppercase tracking-wider mb-1">Total Members</p>
+          <h3 className="text-3xl font-black text-[#292524]">{metrics.totalMembers.toLocaleString('en-IN')}</h3>
           <p className="text-emerald-700 text-xs font-bold mt-2 flex items-center gap-1">
             <TrendingUp size={14} /> {metrics.activeMembers} Active · {metrics.inactiveMembers} Inactive
           </p>
         </div>
 
         {/* Retention Rate */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 hover:border-[#164A4A]/30 transition-all shadow-xs">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 hover:border-[#F97316]/30 transition-all shadow-xs">
           <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
             <BarChart3 size={24} />
           </div>
-          <p className="text-[#455250] font-semibold text-xs uppercase tracking-wider mb-1">Retention Rate</p>
-          <h3 className="text-3xl font-black text-[#202828]">{metrics.retentionRate}%</h3>
+          <p className="text-[#78716C] font-semibold text-xs uppercase tracking-wider mb-1">Retention Rate</p>
+          <h3 className="text-3xl font-black text-[#292524]">{metrics.retentionRate}%</h3>
           <p className="text-emerald-700 text-xs font-bold mt-2 flex items-center gap-1">
             <TrendingUp size={14} /> Active member ratio
           </p>
         </div>
 
         {/* Churn Rate */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 hover:border-[#164A4A]/30 transition-all shadow-xs">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 hover:border-[#F97316]/30 transition-all shadow-xs">
           <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-xl flex items-center justify-center mb-4">
             <UserMinus size={24} />
           </div>
-          <p className="text-[#455250] font-semibold text-xs uppercase tracking-wider mb-1">Churn Rate</p>
-          <h3 className="text-3xl font-black text-[#202828]">{metrics.churnRate}%</h3>
-          <p className="text-[#455250] text-xs font-medium mt-2">
+          <p className="text-[#78716C] font-semibold text-xs uppercase tracking-wider mb-1">Churn Rate</p>
+          <h3 className="text-3xl font-black text-[#292524]">{metrics.churnRate}%</h3>
+          <p className="text-[#78716C] text-xs font-medium mt-2">
             Non-renewing / inactive members
           </p>
         </div>
 
         {/* Avg Lifetime Value */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 hover:border-[#164A4A]/30 transition-all shadow-xs">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 hover:border-[#F97316]/30 transition-all shadow-xs">
           <div className="w-12 h-12 bg-purple-500/10 text-purple-600 rounded-xl flex items-center justify-center mb-4">
             <IndianRupee size={24} />
           </div>
-          <p className="text-[#455250] font-semibold text-xs uppercase tracking-wider mb-1">Avg. Lifetime Value</p>
-          <h3 className="text-3xl font-black text-[#202828]">₹{metrics.avgLifetimeValue.toLocaleString('en-IN')}</h3>
+          <p className="text-[#78716C] font-semibold text-xs uppercase tracking-wider mb-1">Avg. Lifetime Value</p>
+          <h3 className="text-3xl font-black text-[#292524]">₹{metrics.avgLifetimeValue.toLocaleString('en-IN')}</h3>
           <p className="text-purple-700 text-xs font-bold mt-2 flex items-center gap-1">
             Total Revenue: ₹{metrics.totalRevenue.toLocaleString('en-IN')}
           </p>
@@ -320,11 +320,11 @@ const GymAdminReports = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Membership Growth Bar Chart */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between border-b border-[#D3DFDA] pb-3 mb-6">
-              <h3 className="text-lg font-bold text-[#202828]">Membership Growth ({new Date().getFullYear()})</h3>
-              <span className="text-xs font-semibold text-[#687B78]">
+            <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-3 mb-6">
+              <h3 className="text-lg font-bold text-[#292524]">Membership Growth ({new Date().getFullYear()})</h3>
+              <span className="text-xs font-semibold text-[#78716C]">
                 {metrics.newMembersInPeriod} new in selected period
               </span>
             </div>
@@ -333,37 +333,37 @@ const GymAdminReports = () => {
               {monthlyGrowth.map((item, idx) => (
                 <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
                   {/* Tooltip */}
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#202828] text-white text-xs px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20 shadow-md">
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#292524] text-white text-xs px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20 shadow-md">
                     {item.month}: {item.count} member(s)
                   </div>
                   
                   {/* Bar */}
                   <div
                     className={`w-full rounded-t-md transition-all duration-300 ${
-                      item.count > 0 ? 'bg-[#164A4A] group-hover:bg-[#C6A77D]' : 'bg-[#E8E5DA]/60'
+                      item.count > 0 ? 'bg-[#F97316] group-hover:bg-[#EA580C]' : 'bg-[#FED7AA]/60'
                     }`}
                     style={{ height: `${item.heightPercent}%` }}
                   />
                   
                   {/* Label */}
-                  <span className="text-[11px] font-semibold text-[#687B78] mt-2 block group-hover:text-[#202828]">
+                  <span className="text-[11px] font-semibold text-[#78716C] mt-2 block group-hover:text-[#292524]">
                     {item.month}
                   </span>
                 </div>
               ))}
             </div>
           </div>
-          <p className="text-xs text-[#687B78] mt-2 text-center">
+          <p className="text-xs text-[#78716C] mt-2 text-center">
             Monthly member registrations throughout {new Date().getFullYear()}
           </p>
         </div>
 
         {/* Revenue & Member Share by Plan Type */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between border-b border-[#D3DFDA] pb-3 mb-6">
-              <h3 className="text-lg font-bold text-[#202828]">Members by Plan Type</h3>
-              <span className="text-xs font-semibold text-[#687B78]">
+            <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-3 mb-6">
+              <h3 className="text-lg font-bold text-[#292524]">Members by Plan Type</h3>
+              <span className="text-xs font-semibold text-[#78716C]">
                 {planDistribution.length} Active Plan(s)
               </span>
             </div>
@@ -374,13 +374,13 @@ const GymAdminReports = () => {
                 return (
                   <div key={plan.name} className="space-y-1.5">
                     <div className="flex justify-between text-sm">
-                      <span className="font-bold text-[#202828] capitalize">
+                      <span className="font-bold text-[#292524] capitalize">
                         {plan.name}
-                        <span className="text-xs text-[#687B78] font-normal ml-2">({plan.count} members)</span>
+                        <span className="text-xs text-[#78716C] font-normal ml-2">({plan.count} members)</span>
                       </span>
-                      <span className="font-bold text-[#164A4A]">{plan.percentage}%</span>
+                      <span className="font-bold text-[#F97316]">{plan.percentage}%</span>
                     </div>
-                    <div className="w-full bg-[#F2EFE8] rounded-full h-3 overflow-hidden">
+                    <div className="w-full bg-[#FFFDF8] rounded-full h-3 overflow-hidden">
                       <div
                         className={`${colorClass} h-3 rounded-full transition-all duration-500`}
                         style={{ width: `${Math.max(5, plan.percentage)}%` }}
@@ -392,7 +392,7 @@ const GymAdminReports = () => {
             </div>
           </div>
 
-          <div className="pt-4 mt-6 border-t border-[#D3DFDA] flex justify-between text-xs text-[#687B78]">
+          <div className="pt-4 mt-6 border-t border-[#E7E5E4] flex justify-between text-xs text-[#78716C]">
             <span>Store Sales Revenue: <strong>₹{metrics.storeRevenue.toLocaleString('en-IN')}</strong></span>
             <span>Membership Revenue: <strong>₹{metrics.membershipRevenue.toLocaleString('en-IN')}</strong></span>
           </div>

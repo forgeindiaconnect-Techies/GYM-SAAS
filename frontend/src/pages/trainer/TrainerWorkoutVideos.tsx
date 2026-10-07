@@ -149,17 +149,17 @@ const TrainerWorkoutVideos = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#202828] flex items-center gap-2">
-            <Video className="text-[#164A4A]" size={28} />
+          <h1 className="text-2xl md:text-3xl font-bold text-[#292524] flex items-center gap-2">
+            <Video className="text-[#F97316]" size={28} />
             Workout Videos & Self-Learning
           </h1>
-          <p className="text-sm text-[#455250]">
+          <p className="text-sm text-[#78716C]">
             Assign guided exercise videos to your clients for self-learning and missed session recovery.
           </p>
         </div>
         <button
           onClick={() => setShowAssignModal(true)}
-          className="px-5 py-2.5 bg-[#164A4A] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition-all shadow-md flex items-center justify-center gap-2"
+          className="px-5 py-2.5 bg-[#F97316] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition-all shadow-md flex items-center justify-center gap-2"
         >
           <Plus size={18} />
           <span>Assign Workout Video</span>
@@ -168,34 +168,34 @@ const TrainerWorkoutVideos = () => {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 shadow-sm">
-          <p className="text-xs text-[#455250] font-medium uppercase tracking-wider">Total Assigned</p>
-          <p className="text-2xl font-bold text-[#202828] mt-1">{totalAssigned}</p>
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#78716C] font-medium uppercase tracking-wider">Total Assigned</p>
+          <p className="text-2xl font-bold text-[#292524] mt-1">{totalAssigned}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 shadow-sm">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm">
           <p className="text-xs text-green-700 font-medium uppercase tracking-wider">Completed</p>
           <p className="text-2xl font-bold text-green-700 mt-1">{completedCount}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 shadow-sm">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm">
           <p className="text-xs text-amber-700 font-medium uppercase tracking-wider">In Progress</p>
           <p className="text-2xl font-bold text-amber-700 mt-1">{inProgressCount}</p>
         </div>
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 shadow-sm">
-          <p className="text-xs text-[#164A4A] font-medium uppercase tracking-wider">Completion Rate</p>
-          <p className="text-2xl font-bold text-[#164A4A] mt-1">{completionRate}%</p>
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#F97316] font-medium uppercase tracking-wider">Completion Rate</p>
+          <p className="text-2xl font-bold text-[#F97316] mt-1">{completionRate}%</p>
         </div>
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
+      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
         <div className="relative w-full md:w-80">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A8ADA9]" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
           <input
             type="text"
             placeholder="Search by title, exercise, or client..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#F1F5F3] border border-transparent rounded-xl text-sm focus:border-[#164A4A] focus:bg-white outline-none transition"
+            className="w-full pl-10 pr-4 py-2 bg-[#FFFDF8] border border-transparent rounded-xl text-sm focus:border-[#F97316] focus:bg-white outline-none transition"
           />
         </div>
 
@@ -206,8 +206,8 @@ const TrainerWorkoutVideos = () => {
               onClick={() => setStatusFilter(status)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${
                 statusFilter === status
-                  ? 'bg-[#164A4A] text-white shadow-sm'
-                  : 'bg-[#F1F5F3] text-[#455250] hover:text-[#202828] hover:bg-gray-200'
+                  ? 'bg-[#F97316] text-white shadow-sm'
+                  : 'bg-[#FFFDF8] text-[#78716C] hover:text-[#292524] hover:bg-gray-200'
               }`}
             >
               {status}
@@ -219,20 +219,20 @@ const TrainerWorkoutVideos = () => {
       {/* Video Cards Grid */}
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="animate-spin text-[#164A4A]" size={36} />
+          <Loader2 className="animate-spin text-[#F97316]" size={36} />
         </div>
       ) : filteredVideos.length === 0 ? (
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-12 text-center shadow-sm">
-          <div className="w-16 h-16 bg-[#164A4A]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Video size={28} className="text-[#164A4A]" />
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-12 text-center shadow-sm">
+          <div className="w-16 h-16 bg-[#F97316]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Video size={28} className="text-[#F97316]" />
           </div>
-          <h3 className="text-lg font-bold text-[#202828] mb-1">No Workout Videos Found</h3>
-          <p className="text-sm text-[#455250] max-w-md mx-auto mb-6">
+          <h3 className="text-lg font-bold text-[#292524] mb-1">No Workout Videos Found</h3>
+          <p className="text-sm text-[#78716C] max-w-md mx-auto mb-6">
             Assign custom video workouts for your clients to practice independently or make up for missed sessions.
           </p>
           <button
             onClick={() => setShowAssignModal(true)}
-            className="px-5 py-2.5 bg-[#164A4A] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition shadow"
+            className="px-5 py-2.5 bg-[#F97316] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition shadow"
           >
             Assign First Video
           </button>
@@ -242,11 +242,11 @@ const TrainerWorkoutVideos = () => {
           {filteredVideos.map((video) => (
             <div
               key={video._id}
-              className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
+              className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
             >
               <div>
                 {/* Header Video Preview Bar */}
-                <div className="bg-gradient-to-r from-[#164A4A] to-[#2d6868] p-4 text-white relative">
+                <div className="bg-gradient-to-r from-[#F97316] to-[#2d6868] p-4 text-white relative">
                   <div className="flex items-center justify-between gap-2 mb-2">
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
@@ -278,13 +278,13 @@ const TrainerWorkoutVideos = () => {
                 {/* Body Details */}
                 <div className="p-4 space-y-3">
                   {/* Assigned Client */}
-                  <div className="flex items-center gap-2.5 p-2 bg-[#F1F5F3] rounded-xl">
-                    <div className="w-8 h-8 rounded-full bg-[#164A4A] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                  <div className="flex items-center gap-2.5 p-2 bg-[#FFFDF8] rounded-xl">
+                    <div className="w-8 h-8 rounded-full bg-[#F97316] text-white flex items-center justify-center font-bold text-xs shrink-0">
                       {video.customerId?.firstName?.[0] || 'C'}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs text-[#455250] font-medium">Assigned To</p>
-                      <p className="text-sm font-semibold text-[#202828] truncate">
+                      <p className="text-xs text-[#78716C] font-medium">Assigned To</p>
+                      <p className="text-sm font-semibold text-[#292524] truncate">
                         {video.customerId ? `${video.customerId.firstName} ${video.customerId.lastName}` : 'Direct Client'}
                       </p>
                     </div>
@@ -293,16 +293,16 @@ const TrainerWorkoutVideos = () => {
                   {/* Workout Specs */}
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
                     <div className="bg-slate-50 border border-slate-100 rounded-lg p-1.5">
-                      <span className="text-[#455250] block text-[10px]">Sets</span>
-                      <span className="font-bold text-[#202828]">{video.sets}</span>
+                      <span className="text-[#78716C] block text-[10px]">Sets</span>
+                      <span className="font-bold text-[#292524]">{video.sets}</span>
                     </div>
                     <div className="bg-slate-50 border border-slate-100 rounded-lg p-1.5">
-                      <span className="text-[#455250] block text-[10px]">Reps</span>
-                      <span className="font-bold text-[#202828]">{video.reps}</span>
+                      <span className="text-[#78716C] block text-[10px]">Reps</span>
+                      <span className="font-bold text-[#292524]">{video.reps}</span>
                     </div>
                     <div className="bg-slate-50 border border-slate-100 rounded-lg p-1.5">
-                      <span className="text-[#455250] block text-[10px]">Duration</span>
-                      <span className="font-bold text-[#202828]">{video.duration}</span>
+                      <span className="text-[#78716C] block text-[10px]">Duration</span>
+                      <span className="font-bold text-[#292524]">{video.duration}</span>
                     </div>
                   </div>
 
@@ -327,7 +327,7 @@ const TrainerWorkoutVideos = () => {
               <div className="p-4 pt-0">
                 <button
                   onClick={() => setPreviewVideo(video)}
-                  className="w-full py-2 bg-[#F1F5F3] hover:bg-[#164A4A] hover:text-white text-[#164A4A] font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1.5"
+                  className="w-full py-2 bg-[#FFFDF8] hover:bg-[#F97316] hover:text-white text-[#F97316] font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1.5"
                 >
                   <Play size={14} />
                   <span>Preview & Details</span>
@@ -341,10 +341,10 @@ const TrainerWorkoutVideos = () => {
       {/* Assign Video Modal */}
       {showAssignModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#D3DFDA]">
-            <div className="flex items-center justify-between pb-3 border-b border-[#D3DFDA] mb-4">
-              <h2 className="text-lg font-bold text-[#202828] flex items-center gap-2">
-                <Video size={20} className="text-[#164A4A]" />
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#E7E5E4]">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E7E5E4] mb-4">
+              <h2 className="text-lg font-bold text-[#292524] flex items-center gap-2">
+                <Video size={20} className="text-[#F97316]" />
                 Assign Self-Learning Workout Video
               </h2>
               <button
@@ -358,12 +358,12 @@ const TrainerWorkoutVideos = () => {
             <form onSubmit={handleCreateVideo} className="space-y-4">
               {/* Select Member */}
               <div>
-                <label className="block text-xs font-bold text-[#455250] mb-1">Select Client *</label>
+                <label className="block text-xs font-bold text-[#78716C] mb-1">Select Client *</label>
                 <select
                   required
                   value={formData.customerId}
                   onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-sm text-[#202828] focus:border-[#164A4A] focus:bg-white outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm text-[#292524] focus:border-[#F97316] focus:bg-white outline-none"
                 >
                   <option value="">-- Choose Client --</option>
                   {members.map((m: any) => (
@@ -377,50 +377,50 @@ const TrainerWorkoutVideos = () => {
               {/* Title & Exercise */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-[#455250] mb-1">Workout Title *</label>
+                  <label className="block text-xs font-bold text-[#78716C] mb-1">Workout Title *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g., Chest & Core Mastery"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-3.5 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-sm focus:border-[#164A4A] focus:bg-white outline-none"
+                    className="w-full px-3.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] focus:bg-white outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#455250] mb-1">Exercise Name *</label>
+                  <label className="block text-xs font-bold text-[#78716C] mb-1">Exercise Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g., Incline Dumbbell Press"
                     value={formData.exerciseName}
                     onChange={(e) => setFormData({ ...formData, exerciseName: e.target.value })}
-                    className="w-full px-3.5 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-sm focus:border-[#164A4A] focus:bg-white outline-none"
+                    className="w-full px-3.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] focus:bg-white outline-none"
                   />
                 </div>
               </div>
 
               {/* Video URL */}
               <div>
-                <label className="block text-xs font-bold text-[#455250] mb-1">Video Stream / YouTube URL *</label>
+                <label className="block text-xs font-bold text-[#78716C] mb-1">Video Stream / YouTube URL *</label>
                 <input
                   type="url"
                   required
                   placeholder="https://www.youtube.com/watch?v=... or MP4 URL"
                   value={formData.videoUrl}
                   onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-sm focus:border-[#164A4A] focus:bg-white outline-none"
+                  className="w-full px-3.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] focus:bg-white outline-none"
                 />
               </div>
 
               {/* Difficulty & Duration */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <div>
-                  <label className="block text-xs font-bold text-[#455250] mb-1">Difficulty</label>
+                  <label className="block text-xs font-bold text-[#78716C] mb-1">Difficulty</label>
                   <select
                     value={formData.difficultyLevel}
                     onChange={(e: any) => setFormData({ ...formData, difficultyLevel: e.target.value })}
-                    className="w-full px-2.5 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-xs focus:border-[#164A4A] focus:bg-white outline-none"
+                    className="w-full px-2.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs focus:border-[#F97316] focus:bg-white outline-none"
                   >
                     <option value="Beginner">Beginner</option>
                     <option value="Intermediate">Intermediate</option>
@@ -428,62 +428,62 @@ const TrainerWorkoutVideos = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#455250] mb-1">Duration</label>
+                  <label className="block text-xs font-bold text-[#78716C] mb-1">Duration</label>
                   <input
                     type="text"
                     placeholder="15 mins"
                     value={formData.duration}
                     onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                    className="w-full px-2.5 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-xs focus:border-[#164A4A] focus:bg-white outline-none"
+                    className="w-full px-2.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs focus:border-[#F97316] focus:bg-white outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#455250] mb-1">Sets</label>
+                  <label className="block text-xs font-bold text-[#78716C] mb-1">Sets</label>
                   <input
                     type="text"
                     placeholder="3"
                     value={formData.sets}
                     onChange={(e) => setFormData({ ...formData, sets: e.target.value })}
-                    className="w-full px-2.5 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-xs focus:border-[#164A4A] focus:bg-white outline-none"
+                    className="w-full px-2.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs focus:border-[#F97316] focus:bg-white outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#455250] mb-1">Reps</label>
+                  <label className="block text-xs font-bold text-[#78716C] mb-1">Reps</label>
                   <input
                     type="text"
                     placeholder="12"
                     value={formData.reps}
                     onChange={(e) => setFormData({ ...formData, reps: e.target.value })}
-                    className="w-full px-2.5 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-xs focus:border-[#164A4A] focus:bg-white outline-none"
+                    className="w-full px-2.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs focus:border-[#F97316] focus:bg-white outline-none"
                   />
                 </div>
               </div>
 
               {/* Instructions & Notes */}
               <div>
-                <label className="block text-xs font-bold text-[#455250] mb-1">Technique & Instructions</label>
+                <label className="block text-xs font-bold text-[#78716C] mb-1">Technique & Instructions</label>
                 <textarea
                   rows={2}
                   placeholder="Explain proper form, cadence, breathing pattern..."
                   value={formData.instructions}
                   onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-xs focus:border-[#164A4A] focus:bg-white outline-none"
+                  className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs focus:border-[#F97316] focus:bg-white outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#455250] mb-1">Trainer Special Note</label>
+                <label className="block text-xs font-bold text-[#78716C] mb-1">Trainer Special Note</label>
                 <textarea
                   rows={2}
                   placeholder="e.g., Complete this today to make up for yesterday's missed online session."
                   value={formData.trainerNotes}
                   onChange={(e) => setFormData({ ...formData, trainerNotes: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl text-xs focus:border-[#164A4A] focus:bg-white outline-none"
+                  className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs focus:border-[#F97316] focus:bg-white outline-none"
                 />
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#D3DFDA]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E7E5E4]">
                 <button
                   type="button"
                   onClick={() => setShowAssignModal(false)}
@@ -494,7 +494,7 @@ const TrainerWorkoutVideos = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 bg-[#164A4A] text-white rounded-xl font-semibold text-xs hover:bg-[#0d3535] transition shadow disabled:opacity-50 flex items-center gap-2"
+                  className="px-5 py-2 bg-[#F97316] text-white rounded-xl font-semibold text-xs hover:bg-[#0d3535] transition shadow disabled:opacity-50 flex items-center gap-2"
                 >
                   {submitting && <Loader2 size={14} className="animate-spin" />}
                   <span>Assign Video</span>
@@ -508,11 +508,11 @@ const TrainerWorkoutVideos = () => {
       {/* Preview Modal */}
       {previewVideo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#D3DFDA] space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#D3DFDA]">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#E7E5E4] space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#E7E5E4]">
               <div>
-                <h3 className="text-lg font-bold text-[#202828]">{previewVideo.title}</h3>
-                <p className="text-xs text-[#455250]">{previewVideo.exerciseName}</p>
+                <h3 className="text-lg font-bold text-[#292524]">{previewVideo.title}</h3>
+                <p className="text-xs text-[#78716C]">{previewVideo.exerciseName}</p>
               </div>
               <button
                 onClick={() => setPreviewVideo(null)}
@@ -554,9 +554,9 @@ const TrainerWorkoutVideos = () => {
 
             {/* Instructions */}
             <div className="space-y-2 text-xs">
-              <div className="bg-[#F1F5F3] p-3 rounded-xl">
-                <span className="font-bold text-[#202828] block mb-1">Instructions:</span>
-                <p className="text-[#455250]">{previewVideo.instructions || 'Follow proper posture and controlled breathing.'}</p>
+              <div className="bg-[#FFFDF8] p-3 rounded-xl">
+                <span className="font-bold text-[#292524] block mb-1">Instructions:</span>
+                <p className="text-[#78716C]">{previewVideo.instructions || 'Follow proper posture and controlled breathing.'}</p>
               </div>
               {previewVideo.trainerNotes && (
                 <div className="bg-amber-50 p-3 rounded-xl border border-amber-200">
@@ -566,10 +566,10 @@ const TrainerWorkoutVideos = () => {
               )}
             </div>
 
-            <div className="flex justify-end pt-2 border-t border-[#D3DFDA]">
+            <div className="flex justify-end pt-2 border-t border-[#E7E5E4]">
               <button
                 onClick={() => setPreviewVideo(null)}
-                className="px-4 py-2 bg-[#164A4A] text-white rounded-xl font-semibold text-xs hover:bg-[#0d3535] transition"
+                className="px-4 py-2 bg-[#F97316] text-white rounded-xl font-semibold text-xs hover:bg-[#0d3535] transition"
               >
                 Close Preview
               </button>

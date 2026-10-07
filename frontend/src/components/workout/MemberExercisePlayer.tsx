@@ -57,6 +57,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
   const [repCount, setRepCount] = useState(targetReps);
   const [isPaused, setIsPaused] = useState(false);
   const [workoutElapsed, setWorkoutElapsed] = useState(0);
+  const [restartCount, setRestartCount] = useState(0);
 
   // Rest state
   const [isResting, setIsResting] = useState(false);
@@ -66,6 +67,8 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
   const [workoutFinished, setWorkoutFinished] = useState(false);
   const [savingProgress, setSavingProgress] = useState(false);
+  const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState<number | null>(null);
+  const [completedExerciseIdxs, setCompletedExerciseIdxs] = useState<number[]>([]);
 
   // Active tab in details
   const [activeTab, setActiveTab] = useState<'instructions' | 'notes' | 'safety'>('instructions');
@@ -79,7 +82,8 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
     setRestTimeRemaining(configuredRest);
     setExerciseCompleted(false);
     setIsPaused(false);
-  }, [currentIdx, currentItem]);
+    setAutoAdvanceCountdown(null);
+  }, [currentIdx, currentItem, configuredRest]);
 
   // Workout Timer
   useEffect(() => {
@@ -100,13 +104,26 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
         setRestTimeRemaining(prev => prev - 1);
       }, 1000);
     } else if (isResting && restTimeRemaining <= 0) {
-      // Rest completed, move to next set
+      // Rest completed, ready for next set
       setIsResting(false);
-      setCurrentSet(prev => prev + 1);
       setRestTimeRemaining(configuredRest);
     }
     return () => clearInterval(restInterval);
   }, [isResting, restTimeRemaining, configuredRest]);
+
+  // Auto-advance Countdown to Next Exercise
+  useEffect(() => {
+    let countdownInterval: ReturnType<typeof setInterval>;
+    if (autoAdvanceCountdown !== null && autoAdvanceCountdown > 0) {
+      countdownInterval = setInterval(() => {
+        setAutoAdvanceCountdown(prev => (prev !== null && prev > 1 ? prev - 1 : 0));
+      }, 1000);
+    } else if (autoAdvanceCountdown === 0) {
+      // Auto-advance immediately when countdown reaches 0
+      handleProceedToNextExercise();
+    }
+    return () => clearInterval(countdownInterval);
+  }, [autoAdvanceCountdown]);
 
   const formatTimer = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -117,7 +134,9 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
   // Complete Set handler
   const handleCompleteSet = async () => {
     if (currentSet < totalSets) {
-      // Trigger Rest mode
+      // Completed current set! Move to next set immediately
+      setCurrentSet(prev => prev + 1);
+      // Trigger Rest mode with countdown
       setIsResting(true);
       setRestTimeRemaining(configuredRest);
     } else {
@@ -128,7 +147,6 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
 
   const handleSkipRest = () => {
     setIsResting(false);
-    setCurrentSet(prev => prev + 1);
     setRestTimeRemaining(configuredRest);
   };
 
@@ -139,15 +157,19 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
         await api.post('/workout-progress/log', {
           workoutPlanId: planId,
           exerciseId: ex._id,
+          dayName: dayName,
           completedSets: totalSets,
           totalSets: totalSets,
           completedRepetitions: repCount,
+          targetRepetitions: targetReps,
           duration: workoutElapsed || 60,
           status: 'Completed'
         });
       }
 
+      setCompletedExerciseIdxs(prev => Array.from(new Set([...prev, currentIdx])));
       setExerciseCompleted(true);
+
       if (onCompleteExercise && ex?._id) {
         onCompleteExercise(ex._id);
       }
@@ -155,6 +177,9 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
       // If last exercise in this day
       if (currentIdx === exercises.length - 1) {
         setWorkoutFinished(true);
+      } else {
+        // Auto-advance countdown (3 seconds) to next exercise
+        setAutoAdvanceCountdown(3);
       }
     } catch (err) {
       console.error('Failed to log exercise progress:', err);
@@ -163,7 +188,24 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
     }
   };
 
+  const handleProceedToNextExercise = () => {
+    setAutoAdvanceCountdown(null);
+    if (currentIdx < exercises.length - 1) {
+      setCurrentIdx(prev => prev + 1);
+      setCurrentSet(1);
+      setWorkoutElapsed(0);
+      setIsResting(false);
+      setRestTimeRemaining(configuredRest);
+      setExerciseCompleted(false);
+      setIsPaused(false);
+      setRestartCount(prev => prev + 1);
+    } else {
+      setWorkoutFinished(true);
+    }
+  };
+
   const handleNextExercise = () => {
+    setAutoAdvanceCountdown(null);
     if (currentIdx < exercises.length - 1) {
       setCurrentIdx(prev => prev + 1);
     } else {
@@ -172,18 +214,21 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
   };
 
   const handlePrevExercise = () => {
+    setAutoAdvanceCountdown(null);
     if (currentIdx > 0) {
       setCurrentIdx(prev => prev - 1);
     }
   };
 
   const handleRestart = () => {
+    setAutoAdvanceCountdown(null);
     setCurrentSet(1);
     setWorkoutElapsed(0);
     setIsResting(false);
     setRestTimeRemaining(configuredRest);
     setExerciseCompleted(false);
     setIsPaused(false);
+    setRestartCount(prev => prev + 1);
   };
 
   if (!currentItem || !ex) {
@@ -204,7 +249,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded bg-[#164A4A] text-emerald-300">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded bg-[#F97316] text-emerald-300">
                 {dayName}
               </span>
               <span className="text-xs text-white/60 font-semibold">
@@ -297,52 +342,80 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                 </div>
                 <h3 className="text-2xl font-extrabold text-white tracking-wide">REST PERIOD</h3>
                 <p className="text-xs md:text-sm text-white/60 mt-1 max-w-sm">
-                  Catch your breath and hydrate. Set {currentSet + 1} of {totalSets} will begin automatically.
+                  Catch your breath and hydrate. Set {currentSet} of {totalSets} will begin automatically.
                 </p>
                 <div className="flex gap-3 mt-6">
                   <button
                     onClick={handleSkipRest}
-                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-[#121818] rounded-xl text-xs md:text-sm font-black transition-all shadow-lg shadow-emerald-500/20"
+                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-[#121818] rounded-xl text-xs md:text-sm font-black transition-all shadow-lg shadow-emerald-500/20 cursor-pointer"
                   >
-                    Skip Rest & Begin Set {currentSet + 1}
+                    Skip Rest & Begin Set {currentSet}
                   </button>
                   <button
                     onClick={() => setRestTimeRemaining(prev => prev + 15)}
-                    className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs md:text-sm font-bold transition-colors"
+                    className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs md:text-sm font-bold transition-colors cursor-pointer"
                   >
                     +15s Rest
                   </button>
                 </div>
               </div>
             ) : exerciseCompleted ? (
-              <div className="absolute inset-0 bg-[#164A4A] flex flex-col items-center justify-center p-6 text-center z-30 animate-in zoom-in-95">
-                <div className="w-16 h-16 rounded-full bg-emerald-400 text-[#121818] flex items-center justify-center mb-3 shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-b from-[#132B2B] to-[#0D1F1F] flex flex-col items-center justify-center p-6 text-center z-30 animate-in zoom-in-95">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-300 text-[#121818] flex items-center justify-center mb-3 shadow-xl shadow-emerald-500/30 animate-bounce">
                   <CheckCircle2 size={36} />
                 </div>
-                <h3 className="text-2xl font-black text-white">Exercise Completed!</h3>
-                <p className="text-xs text-white/80 mt-1">
-                  Logged {totalSets} Sets × {repCount} Reps ({formatTimer(workoutElapsed)})
+                <span className="text-[11px] font-extrabold uppercase tracking-widest text-emerald-400">
+                  Exercise {currentIdx + 1} of {exercises.length} Complete!
+                </span>
+                <h3 className="text-2xl font-black text-white mt-1">{ex.name} Finished</h3>
+                <p className="text-xs text-white/70 mt-1 max-w-sm">
+                  Logged {totalSets} Sets × {repCount} Reps ({formatTimer(workoutElapsed)}) • Synced with Trainer
                 </p>
 
-                <div className="flex items-center gap-3 mt-6">
+                {currentIdx < exercises.length - 1 ? (
+                  <div className="mt-4 p-3 bg-black/40 border border-emerald-500/30 rounded-2xl max-w-sm w-full text-left">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="font-extrabold text-emerald-300 uppercase tracking-wider">
+                        Up Next: Exercise {currentIdx + 2}
+                      </span>
+                      <span className="font-mono font-bold text-emerald-400 px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/30">
+                        Starting in {autoAdvanceCountdown ?? 3}s
+                      </span>
+                    </div>
+                    <p className="text-sm font-bold text-white mt-1 truncate">
+                      {exercises[currentIdx + 1]?.exerciseId?.name || 'Next Exercise'}
+                    </p>
+                    <p className="text-[11px] text-white/60 mt-0.5">
+                      {exercises[currentIdx + 1]?.sets || 3} Sets × {exercises[currentIdx + 1]?.repetitions || 12} Reps
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl max-w-sm w-full text-center">
+                    <span className="text-xs font-bold text-emerald-300">
+                      You finished all {exercises.length} exercises in today&apos;s routine!
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3 mt-5">
                   <button
                     onClick={handleRestart}
-                    className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-colors"
+                    className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
                   >
                     Repeat Exercise
                   </button>
                   {currentIdx < exercises.length - 1 ? (
                     <button
-                      onClick={handleNextExercise}
-                      className="px-6 py-2.5 bg-white text-[#164A4A] hover:bg-white/90 rounded-xl text-xs font-extrabold transition-all shadow-lg flex items-center gap-1.5"
+                      onClick={handleProceedToNextExercise}
+                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:opacity-95 text-[#121818] rounded-xl text-xs font-black transition-all shadow-xl shadow-emerald-500/20 flex items-center gap-2 cursor-pointer"
                     >
-                      <span>Next Exercise</span>
-                      <ArrowRight size={14} />
+                      <span>Start Exercise {currentIdx + 2} Now</span>
+                      <ArrowRight size={16} />
                     </button>
                   ) : (
                     <button
                       onClick={() => setWorkoutFinished(true)}
-                      className="px-6 py-2.5 bg-emerald-400 text-[#121818] rounded-xl text-xs font-black transition-all shadow-lg flex items-center gap-1.5"
+                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 text-[#121818] rounded-xl text-xs font-black transition-all shadow-lg flex items-center gap-1.5 cursor-pointer"
                     >
                       <Award size={16} /> Complete Workout
                     </button>
@@ -358,6 +431,9 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                 animationType={ex.animationType}
                 autoPlay={true}
                 loop={true}
+                compact={true}
+                isPlaying={!isPaused && !isResting && !exerciseCompleted}
+                resetTrigger={restartCount}
               />
             )}
           </div>
@@ -365,8 +441,9 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
           {/* Interactive Set Action Controls */}
           <div className="flex items-center justify-between gap-3 pt-2">
             <button
+              type="button"
               onClick={handleRestart}
-              className="p-3 bg-white/10 hover:bg-white/15 text-white/80 hover:text-white rounded-2xl text-xs font-bold transition-colors flex items-center gap-1.5"
+              className="p-3 bg-white/10 hover:bg-white/15 text-white/80 hover:text-white rounded-2xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
               title="Restart Exercise"
             >
               <RotateCcw size={16} />
@@ -374,23 +451,53 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
             </button>
 
             <button
+              type="button"
               onClick={() => setIsPaused(!isPaused)}
-              className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl text-xs md:text-sm font-bold transition-colors flex items-center gap-2"
+              className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl text-xs md:text-sm font-bold transition-colors flex items-center gap-2 cursor-pointer"
             >
               {isPaused ? <Play size={16} className="fill-current" /> : <Pause size={16} />}
               <span>{isPaused ? 'Resume' : 'Pause'}</span>
             </button>
 
-            <button
-              onClick={handleCompleteSet}
-              disabled={isResting || exerciseCompleted || savingProgress}
-              className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/20 active:scale-95 disabled:opacity-40 flex items-center justify-center gap-2"
-            >
-              <CheckCircle2 size={20} />
-              <span>
-                {currentSet === totalSets ? 'Complete Exercise' : `Complete Set ${currentSet}`}
-              </span>
-            </button>
+            {exerciseCompleted && currentIdx < exercises.length - 1 ? (
+              <button
+                type="button"
+                onClick={handleProceedToNextExercise}
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>
+                  Next Exercise: {exercises[currentIdx + 1]?.exerciseId?.name || 'Exercise ' + (currentIdx + 2)} ({autoAdvanceCountdown ?? 3}s)
+                </span>
+                <ArrowRight size={20} />
+              </button>
+            ) : exerciseCompleted && currentIdx === exercises.length - 1 ? (
+              <button
+                type="button"
+                onClick={() => setWorkoutFinished(true)}
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Award size={20} />
+                <span>Complete Workout</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={isResting ? handleSkipRest : handleCompleteSet}
+                disabled={savingProgress}
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/20 active:scale-95 disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <CheckCircle2 size={20} />
+                <span>
+                  {savingProgress
+                    ? 'Saving Exercise Progress...'
+                    : isResting
+                    ? `Skip Rest & Start Set ${currentSet}`
+                    : currentSet === totalSets
+                    ? `Complete Set ${currentSet} & Finish Exercise`
+                    : `Complete Set ${currentSet}`}
+                </span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -477,25 +584,44 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
             <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
               {exercises.map((item, idx) => {
                 const isActive = idx === currentIdx;
+                const isCompleted = completedExerciseIdxs.includes(idx);
                 return (
                   <button
                     key={idx}
-                    onClick={() => setCurrentIdx(idx)}
+                    onClick={() => {
+                      setAutoAdvanceCountdown(null);
+                      setCurrentIdx(idx);
+                    }}
                     className={`w-full text-left p-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
                       isActive
-                        ? 'bg-white/15 text-white border border-white/20'
+                        ? 'bg-[#F97316] text-white border border-emerald-400/50 shadow-sm'
+                        : isCompleted
+                        ? 'bg-emerald-950/40 text-emerald-300 border border-emerald-500/30'
                         : 'text-white/60 hover:bg-white/5 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate">
-                      <span className="w-5 h-5 rounded-full bg-white/10 text-[10px] flex items-center justify-center font-bold">
-                        {idx + 1}
+                      <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold ${
+                        isCompleted
+                          ? 'bg-emerald-500 text-[#121818]'
+                          : isActive
+                          ? 'bg-white text-[#F97316]'
+                          : 'bg-white/10 text-white'
+                      }`}>
+                        {isCompleted ? '✓' : idx + 1}
                       </span>
                       <span className="truncate">{item.exerciseId?.name}</span>
                     </div>
-                    <span className="text-[10px] text-white/40 font-mono">
-                      {item.sets} × {item.repetitions}
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {isCompleted && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/20">
+                          Done
+                        </span>
+                      )}
+                      <span className="text-[10px] text-white/40 font-mono">
+                        {item.sets} × {item.repetitions}
+                      </span>
+                    </div>
                   </button>
                 );
               })}

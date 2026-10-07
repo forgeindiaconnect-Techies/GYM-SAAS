@@ -100,7 +100,7 @@ const MemberDietPlan = () => {
     switch (type) {
       case 'coffee': return <Coffee className="text-orange-500" size={24} />;
       case 'utensils': return <Utensils className="text-green-500" size={24} />;
-      case 'apple': return <Apple className="text-[#6fa3a0]" size={24} />;
+      case 'apple': return <Apple className="text-[#FED7AA]" size={24} />;
       case 'moon': return <Moon className="text-indigo-500" size={24} />;
       default: return <Utensils size={24} />;
     }
@@ -109,16 +109,16 @@ const MemberDietPlan = () => {
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
       {/* Plan Switcher Tabs */}
-      <div className="flex items-center gap-3 border-b border-[#E8E5DA] pb-3">
+      <div className="flex items-center gap-3 border-b border-[#FED7AA] pb-3">
         <Link
           to="/member/workout"
-          className="flex items-center gap-2 px-4 py-2 bg-white text-[#455250] hover:text-[#164A4A] hover:bg-[#F2EFE8] rounded-xl font-bold text-sm border border-[#E8E5DA] transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white text-[#78716C] hover:text-[#F97316] hover:bg-[#FFFDF8] rounded-xl font-bold text-sm border border-[#FED7AA] transition-colors"
         >
           <Dumbbell size={16} /> Workout Plan
         </Link>
         <Link
           to="/member/diet"
-          className="flex items-center gap-2 px-4 py-2 bg-[#164A4A] text-white rounded-xl font-bold text-sm shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-[#F97316] text-white rounded-xl font-bold text-sm shadow-sm"
         >
           <Utensils size={16} /> Diet Plan
         </Link>
@@ -126,8 +126,8 @@ const MemberDietPlan = () => {
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Your Diet Plan</h1>
-          <p className="text-[#455250] mt-1">Fuel your body to achieve maximum results. Click a meal to mark it completed.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Your Diet Plan</h1>
+          <p className="text-[#78716C] mt-1">Fuel your body to achieve maximum results. Click a meal to mark it completed.</p>
         </div>
       </div>
 
@@ -136,12 +136,12 @@ const MemberDietPlan = () => {
         {macros.map((macro, idx) => {
           const percentage = Math.min(100, Math.round((macro.current / macro.target) * 100));
           return (
-            <div key={idx} className="bg-white rounded-2xl p-6 border border-[#E8E5DA] shadow-sm flex flex-col items-center justify-center relative overflow-hidden group hover:border-[#164A4A] transition-all">
+            <div key={idx} className="bg-white rounded-2xl p-6 border border-[#FED7AA] shadow-sm flex flex-col items-center justify-center relative overflow-hidden group hover:border-[#F97316] transition-all">
               <div className="text-center relative z-10">
-                <p className="text-[#687B78] text-sm font-semibold mb-2">{macro.label}</p>
+                <p className="text-[#78716C] text-sm font-semibold mb-2">{macro.label}</p>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-3xl font-bold text-[#202828]">{macro.current}</span>
-                  <span className="text-[#A8ADA9] font-medium text-sm">/ {macro.target} {macro.unit}</span>
+                  <span className="text-3xl font-bold text-[#292524]">{macro.current}</span>
+                  <span className="text-[#78716C] font-medium text-sm">/ {macro.target} {macro.unit}</span>
                 </div>
               </div>
               {/* Progress Bar Background */}
@@ -157,10 +157,10 @@ const MemberDietPlan = () => {
       </div>
 
       {/* Daily Meals Timeline */}
-      <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#E8E5DA] shadow-sm">
+      <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#FED7AA] shadow-sm">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-xl font-bold text-[#202828]">Today's Meals</h2>
-          <span className="text-xs font-semibold text-[#164A4A] bg-[#164A4A]/10 px-3 py-1 rounded-full">
+          <h2 className="text-xl font-bold text-[#292524]">Today's Meals</h2>
+          <span className="text-xs font-semibold text-[#F97316] bg-[#F97316]/10 px-3 py-1 rounded-full">
             {completedMeals.length} of {meals.length} Completed
           </span>
         </div>
@@ -183,29 +183,29 @@ const MemberDietPlan = () => {
               <div 
                 onClick={() => toggleMeal(meal.id)}
                 className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-5 rounded-2xl border transition-all cursor-pointer select-none ${
-                  meal.completed ? 'bg-green-50/40 border-green-200 shadow-sm' : 'bg-white border-[#E8E5DA] hover:border-[#164A4A] hover:shadow-md'
+                  meal.completed ? 'bg-green-50/40 border-green-200 shadow-sm' : 'bg-white border-[#FED7AA] hover:border-[#F97316] hover:shadow-md'
                 }`}
               >
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className={`font-bold text-lg ${meal.completed ? 'text-green-800 line-through opacity-80' : 'text-[#202828]'}`}>
+                    <h3 className={`font-bold text-lg ${meal.completed ? 'text-green-800 line-through opacity-80' : 'text-[#292524]'}`}>
                       {meal.type}
                     </h3>
                     {meal.completed && (
                       <span className="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">Eaten</span>
                     )}
                   </div>
-                  <span className="text-xs font-semibold text-[#687B78] bg-[#F1F5F9] px-2.5 py-1 rounded-full">{meal.time}</span>
+                  <span className="text-xs font-semibold text-[#78716C] bg-[#F1F5F9] px-2.5 py-1 rounded-full">{meal.time}</span>
                 </div>
                 <ul className="space-y-1.5 mb-3">
                   {meal.items.map((item: string, i: number) => (
-                    <li key={i} className="text-[#455250] text-sm flex items-start gap-2">
+                    <li key={i} className="text-[#78716C] text-sm flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-gray-300 mt-2 shrink-0"></span>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="flex items-center gap-3 pt-2 border-t border-gray-100 text-xs text-[#687B78] font-medium">
+                <div className="flex items-center gap-3 pt-2 border-t border-gray-100 text-xs text-[#78716C] font-medium">
                   <span>🔥 {meal.calories} kcal</span>
                   <span>🥩 {meal.protein}g protein</span>
                   <span>🍞 {meal.carbs}g carbs</span>

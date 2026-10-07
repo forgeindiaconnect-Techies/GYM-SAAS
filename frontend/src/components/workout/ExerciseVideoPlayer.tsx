@@ -15,6 +15,8 @@ interface ExerciseVideoPlayerProps {
   loop?: boolean;
   compact?: boolean;
   className?: string;
+  isPlaying?: boolean;
+  resetTrigger?: number;
 }
 
 export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
@@ -29,12 +31,14 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
   autoPlay = false,
   loop = true,
   compact = false,
-  className = ''
+  className = '',
+  isPlaying: externalIsPlaying,
+  resetTrigger
 }) => {
   const displayName = title || exerciseName || 'Exercise';
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
+  const [isPlaying, setIsPlaying] = useState(externalIsPlaying !== undefined ? externalIsPlaying : autoPlay);
   const [isMuted, setIsMuted] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -71,6 +75,28 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
       }
     }
   }, [normalizedVideoUrl, isMixkit, animationType, autoPlay, hasRealVideo]);
+
+  useEffect(() => {
+    if (externalIsPlaying !== undefined) {
+      setIsPlaying(externalIsPlaying);
+      if (videoRef.current) {
+        if (externalIsPlaying) {
+          videoRef.current.play().catch(() => {});
+        } else {
+          videoRef.current.pause();
+        }
+      }
+    }
+  }, [externalIsPlaying]);
+
+  useEffect(() => {
+    if (resetTrigger !== undefined && resetTrigger > 0 && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      if (externalIsPlaying !== false) {
+        videoRef.current.play().catch(() => {});
+      }
+    }
+  }, [resetTrigger, externalIsPlaying]);
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -152,7 +178,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
           {!isPlaying && !compact && (
             <button
               onClick={togglePlay}
-              className="absolute inset-0 m-auto w-16 h-16 bg-[#164A4A]/90 hover:bg-[#164A4A] text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95 z-10 cursor-pointer"
+              className="absolute inset-0 m-auto w-16 h-16 bg-[#F97316]/90 hover:bg-[#F97316] text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95 z-10 cursor-pointer"
               title="Play Video"
             >
               <Play size={28} className="translate-x-0.5 fill-white" />
@@ -170,7 +196,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                 <button
                   onClick={() => setViewMode('video')}
                   className={`px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 cursor-pointer ${
-                    viewMode === 'video' ? 'bg-[#164A4A] text-white' : 'text-white/60 hover:text-white'
+                    viewMode === 'video' ? 'bg-[#F97316] text-white' : 'text-white/60 hover:text-white'
                   }`}
                 >
                   <Video size={10} /> Video
@@ -209,7 +235,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                   <button
                     type="button"
                     onClick={togglePlay}
-                    className="p-1 hover:text-[#C6A77D] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#EA580C] transition-colors cursor-pointer"
                     title={isPlaying ? 'Pause' : 'Play'}
                   >
                     {isPlaying ? <Pause size={18} /> : <Play size={18} />}
@@ -217,7 +243,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                   <button
                     type="button"
                     onClick={handleRestart}
-                    className="p-1 hover:text-[#C6A77D] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#EA580C] transition-colors cursor-pointer"
                     title="Restart"
                   >
                     <RotateCcw size={16} />
@@ -231,7 +257,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                   <button
                     type="button"
                     onClick={toggleMute}
-                    className="p-1 hover:text-[#C6A77D] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#EA580C] transition-colors cursor-pointer"
                     title={isMuted ? 'Unmute' : 'Mute'}
                   >
                     {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
@@ -239,7 +265,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                   <button
                     type="button"
                     onClick={toggleFullscreen}
-                    className="p-1 hover:text-[#C6A77D] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#EA580C] transition-colors cursor-pointer"
                     title="Fullscreen"
                   >
                     <Maximize size={16} />
@@ -277,6 +303,8 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
             duration={initialDuration}
             autoPlay={autoPlay}
             compact={compact}
+            isPlayingExternal={externalIsPlaying !== undefined ? externalIsPlaying : isPlaying}
+            resetTrigger={resetTrigger}
             className="w-full h-full rounded-2xl"
           />
         </div>

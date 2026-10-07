@@ -77,7 +77,7 @@ const TrainerWithdrawFunds = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center py-32">
-      <div className="w-10 h-10 border-4 border-[#164A4A] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -86,43 +86,43 @@ const TrainerWithdrawFunds = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6 p-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#202828]">Request Withdrawal</h1>
-        <p className="text-[#687B78] text-sm mt-1">Withdraw your available earnings directly to your bank account or UPI.</p>
+        <h1 className="text-2xl font-bold text-[#292524]">Request Withdrawal</h1>
+        <p className="text-[#78716C] text-sm mt-1">Withdraw your available earnings directly to your bank account or UPI.</p>
       </div>
 
       {toast && (
         <div className={`p-4 rounded-lg flex items-center gap-3 ${
           toast.type === 'error' ? 'bg-red-50 text-red-800 border border-red-200' : 'bg-green-50 text-green-800 border border-green-200'
         }`}>
-          {toast.type === 'error' ? <AlertCircle className="w-5 h-5 text-[#6fa3a0]" /> : <CheckCircle className="w-5 h-5 text-green-500" />}
+          {toast.type === 'error' ? <AlertCircle className="w-5 h-5 text-[#FED7AA]" /> : <CheckCircle className="w-5 h-5 text-green-500" />}
           <p className="font-medium">{toast.msg}</p>
         </div>
       )}
 
-      <div className="bg-white border border-[#E8E5DA] rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row">
+      <div className="bg-white border border-[#FED7AA] rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row">
         
         {/* Left side: Available Balance */}
-        <div className="bg-[#F1F5F3] p-8 md:w-1/3 flex flex-col justify-center items-center text-center border-b md:border-b-0 md:border-r border-[#D3DFDA]">
-          <p className="text-[#164A4A] font-semibold text-sm uppercase tracking-wider mb-2">Available Balance</p>
-          <h2 className="text-4xl font-bold text-[#202828]">₹{available.toLocaleString('en-IN')}</h2>
-          <p className="text-[#687B78] text-xs mt-3">Minimum withdrawal: ₹100</p>
+        <div className="bg-[#FFFDF8] p-8 md:w-1/3 flex flex-col justify-center items-center text-center border-b md:border-b-0 md:border-r border-[#E7E5E4]">
+          <p className="text-[#F97316] font-semibold text-sm uppercase tracking-wider mb-2">Available Balance</p>
+          <h2 className="text-4xl font-bold text-[#292524]">₹{available.toLocaleString('en-IN')}</h2>
+          <p className="text-[#78716C] text-xs mt-3">Minimum withdrawal: ₹100</p>
         </div>
 
         {/* Right side: Form */}
         <div className="p-8 md:w-2/3">
           {available < 100 ? (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-3">
-              <Clock className="w-12 h-12 text-[#A8ADA9]" />
-              <p className="text-[#455250] font-medium">Insufficient Balance</p>
-              <p className="text-[#687B78] text-sm">You need at least ₹100 in available balance to request a withdrawal.</p>
+              <Clock className="w-12 h-12 text-[#78716C]" />
+              <p className="text-[#78716C] font-medium">Insufficient Balance</p>
+              <p className="text-[#78716C] text-sm">You need at least ₹100 in available balance to request a withdrawal.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               
               <div>
-                <label className="block text-sm font-semibold text-[#202828] mb-1.5">Amount to Withdraw</label>
+                <label className="block text-sm font-semibold text-[#292524] mb-1.5">Amount to Withdraw</label>
                 <div className="relative">
-                  <IndianRupee size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A8ADA9]" />
+                  <IndianRupee size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
                   <input
                     type="number"
                     required
@@ -130,18 +130,18 @@ const TrainerWithdrawFunds = () => {
                     max={available}
                     value={form.amount}
                     onChange={e => setForm({ ...form, amount: e.target.value })}
-                    className="w-full pl-9 pr-4 py-2 border border-[#E8E5DA] rounded-xl outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/30 transition-shadow"
+                    className="w-full pl-9 pr-4 py-2 border border-[#FED7AA] rounded-xl outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30 transition-shadow"
                     placeholder={`Max ₹${available}`}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#202828] mb-1.5">Withdrawal Method</label>
+                <label className="block text-sm font-semibold text-[#292524] mb-1.5">Withdrawal Method</label>
                 <select
                   value={form.withdrawalMethod}
                   onChange={e => setForm({ ...form, withdrawalMethod: e.target.value })}
-                  className="w-full px-4 py-2 border border-[#E8E5DA] rounded-xl outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A]/30"
+                  className="w-full px-4 py-2 border border-[#FED7AA] rounded-xl outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30"
                 >
                   {WITHDRAWAL_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
@@ -151,10 +151,10 @@ const TrainerWithdrawFunds = () => {
                 <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Bank Details</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    <input type="text" placeholder="Account Holder Name" required className="col-span-2 w-full px-3 py-2 border rounded-lg outline-none focus:border-[#D2B48C] text-sm" value={form.bankDetails.accountHolder} onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, accountHolder: e.target.value } })} />
-                    <input type="text" placeholder="Bank Name" required className="col-span-2 w-full px-3 py-2 border rounded-lg outline-none focus:border-[#D2B48C] text-sm" value={form.bankDetails.bankName} onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, bankName: e.target.value } })} />
-                    <input type="text" placeholder="Account Number (9-18 digits)" required maxLength={18} inputMode="numeric" className="w-full px-3 py-2 border rounded-lg outline-none focus:border-[#D2B48C] text-sm font-mono" value={form.bankDetails.accountNumber} onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 18) } })} />
-                    <input type="text" placeholder="IFSC Code (11 chars)" required maxLength={11} className="w-full px-3 py-2 border rounded-lg outline-none focus:border-[#D2B48C] text-sm uppercase font-mono" value={form.bankDetails.ifscCode} onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, ifscCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) } })} />
+                    <input type="text" placeholder="Account Holder Name" required className="col-span-2 w-full px-3 py-2 border rounded-lg outline-none focus:border-[#FED7AA] text-sm" value={form.bankDetails.accountHolder} onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, accountHolder: e.target.value } })} />
+                    <input type="text" placeholder="Bank Name" required className="col-span-2 w-full px-3 py-2 border rounded-lg outline-none focus:border-[#FED7AA] text-sm" value={form.bankDetails.bankName} onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, bankName: e.target.value } })} />
+                    <input type="text" placeholder="Account Number (9-18 digits)" required maxLength={18} inputMode="numeric" className="w-full px-3 py-2 border rounded-lg outline-none focus:border-[#FED7AA] text-sm font-mono" value={form.bankDetails.accountNumber} onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 18) } })} />
+                    <input type="text" placeholder="IFSC Code (11 chars)" required maxLength={11} className="w-full px-3 py-2 border rounded-lg outline-none focus:border-[#FED7AA] text-sm uppercase font-mono" value={form.bankDetails.ifscCode} onChange={e => setForm({ ...form, bankDetails: { ...form.bankDetails, ifscCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) } })} />
                   </div>
                 </div>
               )}
@@ -162,15 +162,15 @@ const TrainerWithdrawFunds = () => {
               {form.withdrawalMethod === 'UPI' && (
                 <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">UPI Details</h3>
-                  <input type="text" placeholder="UPI ID (e.g., name@okbank)" required className="w-full px-3 py-2 border rounded-lg outline-none focus:border-[#D2B48C] text-sm" value={form.upiDetails.upiId} onChange={e => setForm({ ...form, upiDetails: { ...form.upiDetails, upiId: e.target.value } })} />
-                  <input type="text" placeholder="Registered Name" required className="w-full px-3 py-2 border rounded-lg outline-none focus:border-[#D2B48C] text-sm" value={form.upiDetails.upiName} onChange={e => setForm({ ...form, upiDetails: { ...form.upiDetails, upiName: e.target.value } })} />
+                  <input type="text" placeholder="UPI ID (e.g., name@okbank)" required className="w-full px-3 py-2 border rounded-lg outline-none focus:border-[#FED7AA] text-sm" value={form.upiDetails.upiId} onChange={e => setForm({ ...form, upiDetails: { ...form.upiDetails, upiId: e.target.value } })} />
+                  <input type="text" placeholder="Registered Name" required className="w-full px-3 py-2 border rounded-lg outline-none focus:border-[#FED7AA] text-sm" value={form.upiDetails.upiName} onChange={e => setForm({ ...form, upiDetails: { ...form.upiDetails, upiName: e.target.value } })} />
                 </div>
               )}
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-2.5 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-colors disabled:opacity-50 mt-2"
+                className="w-full py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors disabled:opacity-50 mt-2"
               >
                 {submitting ? 'Submitting...' : 'Submit Request'}
               </button>

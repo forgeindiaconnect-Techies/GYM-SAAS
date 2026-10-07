@@ -45,8 +45,8 @@ const SESSION_TYPES = [
   'Consultation', 'Nutrition Session', 'Assessment',
 ];
 
-const INPUT_CLS = 'w-full px-3.5 py-2.5 text-sm border border-[#D3DFDA] rounded-xl focus:border-[#164A4A] focus:outline-none bg-white';
-const LABEL_CLS = 'block text-xs font-bold text-[#455250] mb-1.5 uppercase tracking-wide';
+const INPUT_CLS = 'w-full px-3.5 py-2.5 text-sm border border-[#E7E5E4] rounded-xl focus:border-[#F97316] focus:outline-none bg-white';
+const LABEL_CLS = 'block text-xs font-bold text-[#78716C] mb-1.5 uppercase tracking-wide';
 
 interface SE {
   id: string; bookingId?: string; date: string; startTime: string; endTime?: string;
@@ -173,16 +173,16 @@ const TrainerSchedule = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Schedule</h1>
-          <p className="text-[#455250] mt-0.5 text-sm">Manage your upcoming sessions, member appointments, and availability.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Schedule</h1>
+          <p className="text-[#78716C] mt-0.5 text-sm">Manage your upcoming sessions, member appointments, and availability.</p>
         </div>
         <div className="flex items-center gap-2.5">
           <button onClick={() => fetchSessions(true)} disabled={refreshing}
-            className="w-10 h-10 border border-[#D3DFDA] rounded-2xl bg-white text-[#455250] hover:bg-[#F1F5F3] flex items-center justify-center transition-colors disabled:opacity-50">
+            className="w-10 h-10 border border-[#E7E5E4] rounded-2xl bg-white text-[#78716C] hover:bg-[#FFFDF8] flex items-center justify-center transition-colors disabled:opacity-50">
             <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
           </button>
           <button onClick={() => setAddModal(true)}
-            className="px-5 py-2.5 bg-[#164A4A] text-white rounded-full font-bold flex items-center gap-2 hover:bg-[#0d3535] transition-colors shadow-sm text-sm">
+            className="px-5 py-2.5 bg-[#F97316] text-white rounded-full font-bold flex items-center gap-2 hover:bg-[#0d3535] transition-colors shadow-sm text-sm">
             <Plus size={16} /> Schedule Online Session
           </button>
         </div>
@@ -191,42 +191,42 @@ const TrainerSchedule = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {summaryCards.map(card => (
-          <div key={card.label} className="bg-white border border-[#D3DFDA] rounded-2xl p-4 flex items-center gap-3">
+          <div key={card.label} className="bg-white border border-[#E7E5E4] rounded-2xl p-4 flex items-center gap-3">
             <div className={'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ' + card.color}>
               <card.icon size={18} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#202828] leading-none">{card.value}</p>
-              <p className="text-xs text-[#455250] font-medium mt-0.5">{card.label}</p>
+              <p className="text-2xl font-bold text-[#292524] leading-none">{card.value}</p>
+              <p className="text-xs text-[#78716C] font-medium mt-0.5">{card.label}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white border border-[#D3DFDA] rounded-2xl p-4 space-y-3 shadow-sm">
+      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 space-y-3 shadow-sm">
         <div className="flex flex-col sm:flex-row gap-3 items-center">
           <div className="relative flex-1 w-full">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A8ADA9]" />
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Search member, session type, booking ID..."
-              className="w-full pl-9 pr-4 py-2.5 text-sm border border-[#D3DFDA] rounded-xl focus:border-[#164A4A] focus:outline-none" />
+              className="w-full pl-9 pr-4 py-2.5 text-sm border border-[#E7E5E4] rounded-xl focus:border-[#F97316] focus:outline-none" />
           </div>
           <select value={filterMode} onChange={e => setFilterMode(e.target.value)}
-            className="px-3.5 py-2.5 text-sm border border-[#D3DFDA] rounded-xl focus:border-[#164A4A] focus:outline-none bg-white text-[#455250]">
+            className="px-3.5 py-2.5 text-sm border border-[#E7E5E4] rounded-xl focus:border-[#F97316] focus:outline-none bg-white text-[#78716C]">
             <option value="All">All Modes</option>
             <option value="Online">Online</option>
             <option value="Offline">In-Person</option>
           </select>
           <select value={filterDate} onChange={e => setFilterDate(e.target.value)}
-            className="px-3.5 py-2.5 text-sm border border-[#D3DFDA] rounded-xl focus:border-[#164A4A] focus:outline-none bg-white text-[#455250]">
+            className="px-3.5 py-2.5 text-sm border border-[#E7E5E4] rounded-xl focus:border-[#F97316] focus:outline-none bg-white text-[#78716C]">
             <option value="All">All Dates</option>
             <option value="Today">Today</option>
             <option value="This Week">This Week</option>
             <option value="This Month">This Month</option>
             <option value="Custom">Custom Range</option>
           </select>
-          <span className="flex items-center gap-1 text-xs text-[#455250] font-medium whitespace-nowrap">
+          <span className="flex items-center gap-1 text-xs text-[#78716C] font-medium whitespace-nowrap">
             <Filter size={12} />
             {filtered.length} session{filtered.length !== 1 ? 's' : ''}
           </span>
@@ -234,10 +234,10 @@ const TrainerSchedule = () => {
         {filterDate === 'Custom' && (
           <div className="flex gap-3 items-center pt-2">
             <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#D3DFDA] rounded-xl focus:border-[#164A4A] focus:outline-none" />
-            <span className="text-[#A8ADA9] text-sm">to</span>
+              className="px-3 py-2 text-sm border border-[#E7E5E4] rounded-xl focus:border-[#F97316] focus:outline-none" />
+            <span className="text-[#78716C] text-sm">to</span>
             <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#D3DFDA] rounded-xl focus:border-[#164A4A] focus:outline-none" />
+              className="px-3 py-2 text-sm border border-[#E7E5E4] rounded-xl focus:border-[#F97316] focus:outline-none" />
           </div>
         )}
       </div>
@@ -245,20 +245,20 @@ const TrainerSchedule = () => {
       {/* Session List */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 gap-3">
-          <Loader2 className="animate-spin text-[#164A4A]" size={40} />
-          <p className="text-[#455250] text-sm">Loading your schedule...</p>
+          <Loader2 className="animate-spin text-[#F97316]" size={40} />
+          <p className="text-[#78716C] text-sm">Loading your schedule...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-16 text-center flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-[#F1F5F3] flex items-center justify-center">
-            <CalendarIcon size={32} className="text-[#A8ADA9]" />
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-16 text-center flex flex-col items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-[#FFFDF8] flex items-center justify-center">
+            <CalendarIcon size={32} className="text-[#78716C]" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-[#202828]">No scheduled sessions found</h3>
-            <p className="text-[#455250] text-sm mt-1">No sessions match your search or date filter.</p>
+            <h3 className="text-xl font-bold text-[#292524]">No scheduled sessions found</h3>
+            <p className="text-[#78716C] text-sm mt-1">No sessions match your search or date filter.</p>
           </div>
           <button onClick={() => setAddModal(true)}
-            className="px-5 py-2.5 bg-[#164A4A] text-white rounded-xl font-bold text-sm hover:bg-[#C6A77D] flex items-center gap-2">
+            className="px-5 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] flex items-center gap-2">
             <Plus size={15} /> Add Schedule
           </button>
         </div>
@@ -277,30 +277,30 @@ const TrainerSchedule = () => {
 
             return (
               <div key={s.id}
-                className={'bg-white border rounded-2xl overflow-hidden hover:shadow-md transition-all ' + (todayBadge ? 'border-[#164A4A]/50 ring-1 ring-[#164A4A]/20' : 'border-[#D3DFDA]')}>
+                className={'bg-white border rounded-2xl overflow-hidden hover:shadow-md transition-all ' + (todayBadge ? 'border-[#F97316]/50 ring-1 ring-[#F97316]/20' : 'border-[#E7E5E4]')}>
                 <div className={'h-1 w-full ' + accentColor} />
                 <div className="flex items-stretch">
-                  <div className={'flex flex-col items-center justify-center px-4 py-4 min-w-[76px] shrink-0 border-r border-[#F1F5F3] ' + (todayBadge ? 'bg-[#164A4A]' : 'bg-[#F8FAFC]')}>
-                    <span className={'text-2xl font-black leading-none ' + (todayBadge ? 'text-white' : 'text-[#202828]')}>{day}</span>
-                    <span className={'text-[10px] font-bold tracking-widest mt-0.5 ' + (todayBadge ? 'text-[#C6A77D]' : 'text-[#164A4A]')}>{mon}</span>
+                  <div className={'flex flex-col items-center justify-center px-4 py-4 min-w-[76px] shrink-0 border-r border-[#FFFDF8] ' + (todayBadge ? 'bg-[#F97316]' : 'bg-[#F8FAFC]')}>
+                    <span className={'text-2xl font-black leading-none ' + (todayBadge ? 'text-white' : 'text-[#292524]')}>{day}</span>
+                    <span className={'text-[10px] font-bold tracking-widest mt-0.5 ' + (todayBadge ? 'text-[#EA580C]' : 'text-[#F97316]')}>{mon}</span>
                     {todayBadge && <span className="text-[9px] text-white/80 font-bold mt-1 tracking-wider">TODAY</span>}
                   </div>
                   <div className="flex-1 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 min-w-0">
                     <div className="flex-1 min-w-0 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-bold text-[#202828] text-sm">{s.type}</h3>
+                        <h3 className="font-bold text-[#292524] text-sm">{s.type}</h3>
                         {s.bookingId && !s.isCustom && (
-                          <span className="text-[10px] font-mono text-[#455250] bg-[#F1F5F3] border border-[#D3DFDA] px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-mono text-[#78716C] bg-[#FFFDF8] border border-[#E7E5E4] px-2 py-0.5 rounded-full">
                             {'#' + s.bookingId}
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-[#455250]">
-                        <span className="flex items-center gap-1.5 font-semibold text-[#164A4A]">
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-[#78716C]">
+                        <span className="flex items-center gap-1.5 font-semibold text-[#F97316]">
                           <Clock size={13} />
                           {s.startTime}{s.endTime ? ' – ' + s.endTime : ''} &middot; {s.duration}
                         </span>
-                        <span className="flex items-center gap-1.5 font-bold text-[#202828]">
+                        <span className="flex items-center gap-1.5 font-bold text-[#292524]">
                           <Users size={13} />{s.client}
                         </span>
                       </div>
@@ -308,7 +308,7 @@ const TrainerSchedule = () => {
                     <div className="flex items-center gap-2 shrink-0">
                       <button onClick={() => setDetailModal(s)}
                         title="View Details"
-                        className="p-2.5 border border-[#D3DFDA] rounded-xl text-[#455250] hover:bg-[#F1F5F3] hover:text-[#164A4A] transition-colors">
+                        className="p-2.5 border border-[#E7E5E4] rounded-xl text-[#78716C] hover:bg-[#FFFDF8] hover:text-[#F97316] transition-colors">
                         <Eye size={16} />
                       </button>
                     </div>
@@ -323,13 +323,13 @@ const TrainerSchedule = () => {
       {/* Detail Modal */}
       {detailModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setDetailModal(null)}>
-          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-[#D3DFDA] overflow-hidden max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-[#E7E5E4] overflow-hidden max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className={'h-1.5 w-full ' + (detailModal.status === 'Pending' ? 'bg-amber-400' : detailModal.status === 'Confirmed' ? 'bg-emerald-500' : detailModal.status === 'In Progress' ? 'bg-blue-500' : detailModal.status === 'Completed' ? 'bg-slate-400' : 'bg-red-400')} />
-            <div className="px-6 py-4 border-b border-[#D3DFDA] flex items-center justify-between bg-[#F8FAFC]">
+            <div className="px-6 py-4 border-b border-[#E7E5E4] flex items-center justify-between bg-[#F8FAFC]">
               <div>
-                <h3 className="text-base font-bold text-[#202828]">{detailModal.type}</h3>
+                <h3 className="text-base font-bold text-[#292524]">{detailModal.type}</h3>
                 {detailModal.bookingId && (
-                  <p className="text-[10px] font-mono text-[#164A4A] mt-0.5">{'Booking #' + detailModal.bookingId}</p>
+                  <p className="text-[10px] font-mono text-[#F97316] mt-0.5">{'Booking #' + detailModal.bookingId}</p>
                 )}
               </div>
               <button onClick={() => setDetailModal(null)} className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
@@ -338,26 +338,26 @@ const TrainerSchedule = () => {
             </div>
             <div className="p-6 space-y-4">
               <div className="bg-[#F8FAFC] border border-[#E8EAED] rounded-xl p-4">
-                <p className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-2">Session Details</p>
+                <p className="text-xs font-bold text-[#F97316] uppercase tracking-wider mb-2">Session Details</p>
                 <div className="grid grid-cols-2 gap-2">
-                  <div><span className="text-xs text-[#455250] block">Date</span><span className="font-semibold text-[#202828] text-xs">{fmtDateFull(detailModal.date)}</span></div>
-                  <div><span className="text-xs text-[#455250] block">Time</span><span className="font-semibold text-[#202828] text-xs">{detailModal.startTime}{detailModal.endTime ? ' – ' + detailModal.endTime : ''}</span></div>
-                  <div><span className="text-xs text-[#455250] block">Duration</span><span className="font-semibold text-[#202828] text-xs">{detailModal.duration}</span></div>
-                  <div><span className="text-xs text-[#455250] block">Type</span><span className="font-semibold text-[#202828] text-xs">{detailModal.type}</span></div>
+                  <div><span className="text-xs text-[#78716C] block">Date</span><span className="font-semibold text-[#292524] text-xs">{fmtDateFull(detailModal.date)}</span></div>
+                  <div><span className="text-xs text-[#78716C] block">Time</span><span className="font-semibold text-[#292524] text-xs">{detailModal.startTime}{detailModal.endTime ? ' – ' + detailModal.endTime : ''}</span></div>
+                  <div><span className="text-xs text-[#78716C] block">Duration</span><span className="font-semibold text-[#292524] text-xs">{detailModal.duration}</span></div>
+                  <div><span className="text-xs text-[#78716C] block">Type</span><span className="font-semibold text-[#292524] text-xs">{detailModal.type}</span></div>
                 </div>
               </div>
               <div className="bg-[#F8FAFC] border border-[#E8EAED] rounded-xl p-4">
-                <p className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-2">Member Information</p>
+                <p className="text-xs font-bold text-[#F97316] uppercase tracking-wider mb-2">Member Information</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#164A4A]/10 border border-[#D3DFDA] flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="w-10 h-10 rounded-full bg-[#F97316]/10 border border-[#E7E5E4] flex items-center justify-center shrink-0 overflow-hidden">
                     {detailModal.clientPhoto
                       ? <img src={detailModal.clientPhoto} alt="" className="w-full h-full object-cover" />
-                      : <span className="font-bold text-[#164A4A]">{detailModal.client.charAt(0)}</span>}
+                      : <span className="font-bold text-[#F97316]">{detailModal.client.charAt(0)}</span>}
                   </div>
                   <div>
-                    <p className="font-bold text-[#202828] text-sm">{detailModal.client}</p>
-                    {detailModal.clientEmail && <p className="text-xs text-[#455250] flex items-center gap-1"><Mail size={10} />{detailModal.clientEmail}</p>}
-                    {detailModal.clientPhone && <p className="text-xs text-[#455250] flex items-center gap-1"><Phone size={10} />{detailModal.clientPhone}</p>}
+                    <p className="font-bold text-[#292524] text-sm">{detailModal.client}</p>
+                    {detailModal.clientEmail && <p className="text-xs text-[#78716C] flex items-center gap-1"><Mail size={10} />{detailModal.clientEmail}</p>}
+                    {detailModal.clientPhone && <p className="text-xs text-[#78716C] flex items-center gap-1"><Phone size={10} />{detailModal.clientPhone}</p>}
                   </div>
                 </div>
               </div>
@@ -373,13 +373,13 @@ const TrainerSchedule = () => {
                 </div>
               )}
               {detailModal.sessionNotes?.exercisesCompleted && (
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-[#455250]">
-                  <p className="font-bold text-[#202828] mb-1">Session Notes</p>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-[#78716C]">
+                  <p className="font-bold text-[#292524] mb-1">Session Notes</p>
                   <p>{detailModal.sessionNotes.exercisesCompleted}</p>
                 </div>
               )}
-              <div className="pt-3 border-t border-[#D3DFDA] flex justify-end">
-                <button onClick={() => setDetailModal(null)} className="px-5 py-2.5 bg-[#164A4A] text-white rounded-xl text-xs font-bold hover:bg-[#C6A77D]">Close</button>
+              <div className="pt-3 border-t border-[#E7E5E4] flex justify-end">
+                <button onClick={() => setDetailModal(null)} className="px-5 py-2.5 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#EA580C]">Close</button>
               </div>
             </div>
           </div>
@@ -389,9 +389,9 @@ const TrainerSchedule = () => {
       {/* Add Modal */}
       {addModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#D3DFDA] overflow-hidden max-h-[90vh] overflow-y-auto">
-            <div className="px-6 py-4 border-b border-[#D3DFDA] flex items-center justify-between bg-[#F8FAFC]">
-              <h3 className="font-bold text-[#202828]">Add Schedule Block</h3>
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#E7E5E4] overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-[#E7E5E4] flex items-center justify-between bg-[#F8FAFC]">
+              <h3 className="font-bold text-[#292524]">Add Schedule Block</h3>
               <button onClick={() => setAddModal(false)} className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"><X size={18} /></button>
             </div>
             <form onSubmit={handleAddCustomBlock} className="p-6 space-y-4">
@@ -435,8 +435,8 @@ const TrainerSchedule = () => {
                   placeholder="Special instructions or notes..." className={INPUT_CLS} />
               </div>
               <div className="pt-2 flex gap-3 justify-end">
-                <button type="button" onClick={() => setAddModal(false)} className="px-4 py-2.5 border border-[#D3DFDA] rounded-xl text-sm font-semibold text-[#455250] hover:bg-[#F1F5F3]">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 bg-[#164A4A] text-white rounded-xl text-sm font-bold hover:bg-[#C6A77D]">Save Schedule</button>
+                <button type="button" onClick={() => setAddModal(false)} className="px-4 py-2.5 border border-[#E7E5E4] rounded-xl text-sm font-semibold text-[#78716C] hover:bg-[#FFFDF8]">Cancel</button>
+                <button type="submit" className="px-5 py-2.5 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#EA580C]">Save Schedule</button>
               </div>
             </form>
           </div>

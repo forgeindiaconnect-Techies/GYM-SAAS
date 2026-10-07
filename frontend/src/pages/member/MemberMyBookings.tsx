@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, MapPin, Plus, Video, RefreshCw, XCircle } from 'lucide-react';
+import { Clock, MapPin, Plus, Video, RefreshCw, XCircle, LogOut, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 
@@ -37,7 +37,18 @@ const MemberMyBookings = () => {
     }
   };
 
-  const upcomingStatuses = ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming', 'Reschedule Requested', 'Rescheduled'];
+  const handleCheckOut = async (id: string) => {
+    try {
+      await api.post(`/trainer-sessions/${id}/check-out`);
+      alert('Checked out successfully!');
+      fetchSessions();
+    } catch (err) {
+      console.error(err);
+      alert('Check-out failed');
+    }
+  };
+
+  const upcomingStatuses = ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming', 'In Progress', 'Reschedule Requested', 'Rescheduled'];
   
   const filteredSessions = sessions.filter(s => {
     if (activeTab === 'Upcoming') {
@@ -119,27 +130,27 @@ const MemberMyBookings = () => {
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828]">My Bookings &amp; Sessions</h1>
-          <p className="text-[#455250]">Manage your online training sessions, check in, view notes, and rate trainers.</p>
+          <h1 className="text-3xl font-bold text-[#292524]">My Bookings &amp; Sessions</h1>
+          <p className="text-[#78716C]">Manage your online training sessions, check in, view notes, and rate trainers.</p>
         </div>
         <button 
           onClick={() => navigate('/member/find-trainers')}
-          className="bg-[#164A4A] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#C6A77D] transition-colors shadow-sm"
+          className="bg-[#F97316] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#EA580C] transition-colors shadow-sm"
         >
           <Plus size={18} /> Book New Session
         </button>
       </div>
 
-      <div className="flex gap-4 border-b border-[#D3DFDA] pb-px">
+      <div className="flex gap-4 border-b border-[#E7E5E4] pb-px">
         <button 
           onClick={() => setActiveTab('Upcoming')}
-          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Upcoming' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#164A4A]'}`}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Upcoming' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#F97316]'}`}
         >
           Upcoming / Active
         </button>
         <button 
           onClick={() => setActiveTab('History')}
-          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'History' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#164A4A]'}`}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'History' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#F97316]'}`}
         >
           Session History &amp; Reviews
         </button>
@@ -147,20 +158,20 @@ const MemberMyBookings = () => {
 
       <div className="space-y-4">
         {loading ? (
-          <div className="text-center py-10 text-[#455250]">Loading bookings...</div>
+          <div className="text-center py-10 text-[#78716C]">Loading bookings...</div>
         ) : filteredSessions.length === 0 ? (
-          <div className="text-center py-10 text-[#455250]">No {activeTab.toLowerCase()} bookings found.</div>
+          <div className="text-center py-10 text-[#78716C]">No {activeTab.toLowerCase()} bookings found.</div>
         ) : (
           filteredSessions.map((session) => (
-            <div key={session._id} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+            <div key={session._id} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-[#F8FAFC] border border-[#D3DFDA] rounded-xl flex flex-col items-center justify-center shrink-0">
-                  <span className="text-xs text-[#455250] uppercase font-bold">{new Date(session.date).toLocaleString('default', { month: 'short' })}</span>
-                  <span className="text-xl font-bold text-[#164A4A]">{new Date(session.date).getDate()}</span>
+                <div className="w-16 h-16 bg-[#F8FAFC] border border-[#E7E5E4] rounded-xl flex flex-col items-center justify-center shrink-0">
+                  <span className="text-xs text-[#78716C] uppercase font-bold">{new Date(session.date).toLocaleString('default', { month: 'short' })}</span>
+                  <span className="text-xl font-bold text-[#F97316]">{new Date(session.date).getDate()}</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-lg text-[#202828]">{session.trainerId?.name || 'Assigned Trainer'}</h3>
+                    <h3 className="font-bold text-lg text-[#292524]">{session.trainerId?.name || 'Assigned Trainer'}</h3>
                     <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
                       session.mode === 'Online'
                         ? 'bg-blue-100 text-blue-700 border border-blue-200'
@@ -174,8 +185,8 @@ const MemberMyBookings = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-4 text-sm text-[#455250]">
-                    <span className="flex items-center gap-1 font-semibold"><Clock size={14} className="text-[#164A4A]" /> {session.startTime} - {session.endTime}</span>
+                  <div className="flex flex-wrap gap-4 text-sm text-[#78716C]">
+                    <span className="flex items-center gap-1 font-semibold"><Clock size={14} className="text-[#F97316]" /> {session.startTime} - {session.endTime}</span>
                     {session.mode === 'Online' ? (
                       <span className="flex items-center gap-1 text-blue-700 font-semibold"><Video size={14} /> Online Virtual Session</span>
                     ) : (
@@ -210,6 +221,24 @@ const MemberMyBookings = () => {
                   >
                     Check In
                   </button>
+                )}
+
+                {/* Checkout Button */}
+                {!session.checkOutTime && (session.checkInTime || session.status === 'In Progress' || session.attendanceStatus === 'Present' || ['Confirmed', 'Upcoming'].includes(session.status)) && (
+                  <button
+                    onClick={() => handleCheckOut(session._id)}
+                    className="px-3.5 py-1.5 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"
+                  >
+                    <LogOut size={13} /> Checkout
+                  </button>
+                )}
+
+                {/* Checked Out Badge */}
+                {session.checkOutTime && (
+                  <span className="text-xs bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-lg font-bold border border-emerald-200 flex items-center gap-1">
+                    <CheckCircle2 size={13} className="text-emerald-600" />
+                    Checked Out ({new Date(session.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })})
+                  </span>
                 )}
 
                 {/* View Trainer Session Notes */}
@@ -250,7 +279,7 @@ const MemberMyBookings = () => {
                 {upcomingStatuses.includes(session.status) && session.status !== 'Pending' && (
                   <button 
                     onClick={() => handleReschedulePrompt(session._id)}
-                    className="p-2 border border-[#D3DFDA] hover:bg-[#E8E5DA] text-[#455250] rounded-xl transition-colors" 
+                    className="p-2 border border-[#E7E5E4] hover:bg-[#FED7AA] text-[#78716C] rounded-xl transition-colors" 
                     title="Reschedule Session"
                   >
                     <RefreshCw size={16} />
@@ -276,16 +305,16 @@ const MemberMyBookings = () => {
       {selectedSessionForNotes && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-            <h3 className="text-xl font-bold text-[#202828] border-b pb-3">Trainer Session Notes</h3>
+            <h3 className="text-xl font-bold text-[#292524] border-b pb-3">Trainer Session Notes</h3>
             <div className="space-y-3 text-sm text-[#334155]">
-              <p><span className="font-bold text-[#164A4A]">Exercises Completed:</span> {selectedSessionForNotes.sessionNotes?.exercisesCompleted || 'N/A'}</p>
-              <p><span className="font-bold text-[#164A4A]">Performance:</span> {selectedSessionForNotes.sessionNotes?.customerPerformance || 'N/A'}</p>
-              <p><span className="font-bold text-[#164A4A]">Diet Recommendations:</span> {selectedSessionForNotes.sessionNotes?.dietRecommendations || 'N/A'}</p>
-              <p><span className="font-bold text-[#164A4A]">Workout Modifications:</span> {selectedSessionForNotes.sessionNotes?.workoutModifications || 'N/A'}</p>
-              <p><span className="font-bold text-[#164A4A]">Next Session Focus:</span> {selectedSessionForNotes.sessionNotes?.nextSessionFocus || 'N/A'}</p>
+              <p><span className="font-bold text-[#F97316]">Exercises Completed:</span> {selectedSessionForNotes.sessionNotes?.exercisesCompleted || 'N/A'}</p>
+              <p><span className="font-bold text-[#F97316]">Performance:</span> {selectedSessionForNotes.sessionNotes?.customerPerformance || 'N/A'}</p>
+              <p><span className="font-bold text-[#F97316]">Diet Recommendations:</span> {selectedSessionForNotes.sessionNotes?.dietRecommendations || 'N/A'}</p>
+              <p><span className="font-bold text-[#F97316]">Workout Modifications:</span> {selectedSessionForNotes.sessionNotes?.workoutModifications || 'N/A'}</p>
+              <p><span className="font-bold text-[#F97316]">Next Session Focus:</span> {selectedSessionForNotes.sessionNotes?.nextSessionFocus || 'N/A'}</p>
             </div>
             <div className="pt-3 border-t flex justify-end">
-              <button onClick={() => setSelectedSessionForNotes(null)} className="px-5 py-2 bg-[#164A4A] text-white rounded-xl font-bold text-sm">Close</button>
+              <button onClick={() => setSelectedSessionForNotes(null)} className="px-5 py-2 bg-[#F97316] text-white rounded-xl font-bold text-sm">Close</button>
             </div>
           </div>
         </div>
@@ -295,8 +324,8 @@ const MemberMyBookings = () => {
       {selectedSessionForRate && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <h3 className="text-xl font-bold text-[#202828]">Rate &amp; Review Trainer</h3>
-            <p className="text-xs text-[#687B78]">How was your live session with {selectedSessionForRate.trainerId?.name || 'your trainer'}?</p>
+            <h3 className="text-xl font-bold text-[#292524]">Rate &amp; Review Trainer</h3>
+            <p className="text-xs text-[#78716C]">How was your live session with {selectedSessionForRate.trainerId?.name || 'your trainer'}?</p>
             
             <div className="flex gap-2 justify-center py-2">
               {[1, 2, 3, 4, 5].map(star => (
@@ -316,12 +345,12 @@ const MemberMyBookings = () => {
               value={reviewVal}
               onChange={e => setReviewVal(e.target.value)}
               placeholder="Write your review or feedback..."
-              className="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:border-[#164A4A]"
+              className="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:border-[#F97316]"
             />
 
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={() => setSelectedSessionForRate(null)} className="px-4 py-2 border rounded-xl text-sm font-semibold">Cancel</button>
-              <button onClick={submitRating} disabled={submittingRate} className="px-5 py-2 bg-[#164A4A] text-white rounded-xl text-sm font-bold disabled:opacity-50">
+              <button onClick={submitRating} disabled={submittingRate} className="px-5 py-2 bg-[#F97316] text-white rounded-xl text-sm font-bold disabled:opacity-50">
                 {submittingRate ? 'Submitting...' : 'Submit Rating'}
               </button>
             </div>

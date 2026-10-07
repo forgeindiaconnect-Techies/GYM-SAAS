@@ -84,7 +84,7 @@ const MemberWorkoutVideos = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#164A4A] via-[#1f5c5c] to-[#2a7575] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#F97316] via-[#1f5c5c] to-[#2a7575] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
@@ -119,7 +119,7 @@ const MemberWorkoutVideos = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center justify-between border-b border-[#D3DFDA] pb-3">
+      <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-3">
         <div className="flex items-center gap-2">
           {[
             { id: 'all', label: 'All Videos', count: totalCount },
@@ -131,8 +131,8 @@ const MemberWorkoutVideos = () => {
               onClick={() => setFilter(tab.id as any)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
                 filter === tab.id
-                  ? 'bg-[#164A4A] text-white shadow-sm'
-                  : 'bg-white border border-[#D3DFDA] text-[#455250] hover:text-[#202828]'
+                  ? 'bg-[#F97316] text-white shadow-sm'
+                  : 'bg-white border border-[#E7E5E4] text-[#78716C] hover:text-[#292524]'
               }`}
             >
               <span>{tab.label}</span>
@@ -149,7 +149,7 @@ const MemberWorkoutVideos = () => {
 
         <Link
           to="/member/online-sessions"
-          className="text-xs text-[#164A4A] font-bold hover:underline hidden sm:flex items-center gap-1"
+          className="text-xs text-[#F97316] font-bold hover:underline hidden sm:flex items-center gap-1"
         >
           <span>View Live Sessions</span>
           <ArrowRight size={14} />
@@ -159,26 +159,26 @@ const MemberWorkoutVideos = () => {
       {/* Content Area */}
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="animate-spin text-[#164A4A]" size={36} />
+          <Loader2 className="animate-spin text-[#F97316]" size={36} />
         </div>
       ) : filteredVideos.length === 0 ? (
-        <div className="bg-white border border-[#D3DFDA] rounded-2xl p-12 text-center shadow-sm">
-          <div className="w-16 h-16 bg-[#164A4A]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Video size={28} className="text-[#164A4A]" />
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-12 text-center shadow-sm">
+          <div className="w-16 h-16 bg-[#F97316]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Video size={28} className="text-[#F97316]" />
           </div>
-          <h3 className="text-lg font-bold text-[#202828] mb-1">
+          <h3 className="text-lg font-bold text-[#292524] mb-1">
             {filter === 'completed'
               ? 'No completed videos yet'
               : filter === 'pending'
               ? 'No pending videos to watch'
               : 'No Workout Videos Assigned'}
           </h3>
-          <p className="text-sm text-[#455250] max-w-md mx-auto mb-6">
+          <p className="text-sm text-[#78716C] max-w-md mx-auto mb-6">
             When your online trainer assigns workout tutorials or self-learning videos, they will appear here.
           </p>
           <Link
             to="/member/find-trainers"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#164A4A] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition shadow"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F97316] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition shadow"
           >
             <span>Book Online Trainer</span>
             <ChevronRight size={16} />
@@ -190,12 +190,12 @@ const MemberWorkoutVideos = () => {
             <div
               key={video._id}
               className={`bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between ${
-                video.status === 'Completed' ? 'border-green-200' : 'border-[#D3DFDA]'
+                video.status === 'Completed' ? 'border-green-200' : 'border-[#E7E5E4]'
               }`}
             >
               <div>
                 {/* Header Video Graphic */}
-                <div className="bg-gradient-to-br from-slate-900 via-[#164A4A] to-slate-900 p-5 text-white relative">
+                <div className="bg-gradient-to-br from-slate-900 via-[#F97316] to-slate-900 p-5 text-white relative">
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span
                       className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
@@ -226,25 +226,25 @@ const MemberWorkoutVideos = () => {
                 <div className="p-4 space-y-3">
                   {/* Trainer badge */}
                   {video.trainerId && (
-                    <div className="flex items-center gap-2 text-xs text-[#455250]">
-                      <span className="font-semibold text-[#202828]">Assigned by:</span>
-                      <span className="text-[#164A4A] font-bold">{video.trainerId.name}</span>
+                    <div className="flex items-center gap-2 text-xs text-[#78716C]">
+                      <span className="font-semibold text-[#292524]">Assigned by:</span>
+                      <span className="text-[#F97316] font-bold">{video.trainerId.name}</span>
                     </div>
                   )}
 
                   {/* Workout Specs */}
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                    <div className="bg-[#F1F5F3] rounded-xl p-2">
-                      <span className="text-[#455250] block text-[10px]">Sets</span>
-                      <span className="font-bold text-[#202828] text-sm">{video.sets}</span>
+                    <div className="bg-[#FFFDF8] rounded-xl p-2">
+                      <span className="text-[#78716C] block text-[10px]">Sets</span>
+                      <span className="font-bold text-[#292524] text-sm">{video.sets}</span>
                     </div>
-                    <div className="bg-[#F1F5F3] rounded-xl p-2">
-                      <span className="text-[#455250] block text-[10px]">Reps</span>
-                      <span className="font-bold text-[#202828] text-sm">{video.reps}</span>
+                    <div className="bg-[#FFFDF8] rounded-xl p-2">
+                      <span className="text-[#78716C] block text-[10px]">Reps</span>
+                      <span className="font-bold text-[#292524] text-sm">{video.reps}</span>
                     </div>
-                    <div className="bg-[#F1F5F3] rounded-xl p-2">
-                      <span className="text-[#455250] block text-[10px]">Duration</span>
-                      <span className="font-bold text-[#202828] text-sm">{video.duration}</span>
+                    <div className="bg-[#FFFDF8] rounded-xl p-2">
+                      <span className="text-[#78716C] block text-[10px]">Duration</span>
+                      <span className="font-bold text-[#292524] text-sm">{video.duration}</span>
                     </div>
                   </div>
 
@@ -269,7 +269,7 @@ const MemberWorkoutVideos = () => {
               <div className="p-4 pt-0 space-y-2">
                 <button
                   onClick={() => setActiveVideo(video)}
-                  className="w-full py-2.5 bg-[#164A4A] hover:bg-[#0d3535] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow"
+                  className="w-full py-2.5 bg-[#F97316] hover:bg-[#0d3535] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow"
                 >
                   <Play size={14} />
                   <span>Watch Video & Instructions</span>
@@ -298,11 +298,11 @@ const MemberWorkoutVideos = () => {
       {/* Video Modal Player */}
       {activeVideo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative border border-[#D3DFDA] space-y-4 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between pb-3 border-b border-[#D3DFDA]">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative border border-[#E7E5E4] space-y-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E7E5E4]">
               <div>
-                <h3 className="text-lg font-bold text-[#202828]">{activeVideo.title}</h3>
-                <p className="text-xs text-[#455250]">{activeVideo.exerciseName} • {activeVideo.duration}</p>
+                <h3 className="text-lg font-bold text-[#292524]">{activeVideo.title}</h3>
+                <p className="text-xs text-[#78716C]">{activeVideo.exerciseName} • {activeVideo.duration}</p>
               </div>
               <button
                 onClick={() => setActiveVideo(null)}
@@ -344,24 +344,24 @@ const MemberWorkoutVideos = () => {
 
             {/* Exercise Instructions & Details */}
             <div className="grid grid-cols-3 gap-3 text-center text-xs">
-              <div className="bg-[#F1F5F3] p-2.5 rounded-xl">
-                <span className="text-[#455250] block text-[11px]">Recommended Sets</span>
-                <span className="font-bold text-sm text-[#202828]">{activeVideo.sets}</span>
+              <div className="bg-[#FFFDF8] p-2.5 rounded-xl">
+                <span className="text-[#78716C] block text-[11px]">Recommended Sets</span>
+                <span className="font-bold text-sm text-[#292524]">{activeVideo.sets}</span>
               </div>
-              <div className="bg-[#F1F5F3] p-2.5 rounded-xl">
-                <span className="text-[#455250] block text-[11px]">Reps per Set</span>
-                <span className="font-bold text-sm text-[#202828]">{activeVideo.reps}</span>
+              <div className="bg-[#FFFDF8] p-2.5 rounded-xl">
+                <span className="text-[#78716C] block text-[11px]">Reps per Set</span>
+                <span className="font-bold text-sm text-[#292524]">{activeVideo.reps}</span>
               </div>
-              <div className="bg-[#F1F5F3] p-2.5 rounded-xl">
-                <span className="text-[#455250] block text-[11px]">Difficulty</span>
-                <span className="font-bold text-sm text-[#202828]">{activeVideo.difficultyLevel}</span>
+              <div className="bg-[#FFFDF8] p-2.5 rounded-xl">
+                <span className="text-[#78716C] block text-[11px]">Difficulty</span>
+                <span className="font-bold text-sm text-[#292524]">{activeVideo.difficultyLevel}</span>
               </div>
             </div>
 
             {activeVideo.instructions && (
-              <div className="bg-[#F1F5F3] p-3.5 rounded-2xl text-xs">
-                <span className="font-bold text-[#202828] block mb-1">Technique Instructions:</span>
-                <p className="text-[#455250] leading-relaxed">{activeVideo.instructions}</p>
+              <div className="bg-[#FFFDF8] p-3.5 rounded-2xl text-xs">
+                <span className="font-bold text-[#292524] block mb-1">Technique Instructions:</span>
+                <p className="text-[#78716C] leading-relaxed">{activeVideo.instructions}</p>
               </div>
             )}
 
@@ -373,7 +373,7 @@ const MemberWorkoutVideos = () => {
             )}
 
             {/* Modal Bottom Actions */}
-            <div className="flex items-center justify-between pt-3 border-t border-[#D3DFDA]">
+            <div className="flex items-center justify-between pt-3 border-t border-[#E7E5E4]">
               <button
                 onClick={() => setActiveVideo(null)}
                 className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-xl transition"

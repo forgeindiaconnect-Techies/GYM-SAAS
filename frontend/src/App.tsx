@@ -122,6 +122,7 @@ import MemberDietPlan from './pages/member/MemberDietPlan';
 import MemberAIFitness from './pages/member/MemberAIFitness';
 import MemberAIResults from './pages/member/MemberAIResults';
 import MemberTrainerReview from './pages/member/MemberTrainerReview';
+import MemberSessionReview from './pages/member/MemberSessionReview';
 import MemberProgress from './pages/member/MemberProgress';
 import MemberAttendance from './pages/member/MemberAttendance';
 import MemberSubscription from './pages/member/MemberSubscription';
@@ -155,6 +156,7 @@ import TrainerSettings from './pages/trainer/TrainerSettings';
 import TrainerAIAssistant from './pages/trainer/TrainerAIAssistant';
 import TrainerAIReview from './pages/trainer/TrainerAIReview';
 import TrainerAIFeedback from './pages/trainer/TrainerAIFeedback';
+import TrainerReviewsRatings from './pages/trainer/TrainerReviewsRatings';
 
 // Stub dashboards
 import stubDashboard from './pages/StubDashboard';
@@ -229,6 +231,7 @@ function App() {
             <Route path="ai-assistant" element={<MemberAIFitness />} />
             <Route path="ai-results" element={<MemberAIResults />} />
             <Route path="trainer-review" element={<MemberTrainerReview />} />
+            <Route path="session-review" element={<MemberSessionReview />} />
             <Route path="progress" element={<MemberProgress />} />
             <Route path="attendance" element={<MemberAttendance />} />
             <Route path="subscription" element={<MemberSubscription />} />
@@ -275,6 +278,7 @@ function App() {
             <Route path="ai-assistant" element={<TrainerAIAssistant />} />
             <Route path="ai-review/:customerId" element={<TrainerAIReview />} />
             <Route path="ai-feedback" element={<TrainerAIFeedback />} />
+            <Route path="reviews" element={<TrainerReviewsRatings />} />
           </Route>
 
 {/* Manager Dashboard */}

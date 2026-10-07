@@ -15,7 +15,9 @@ import {
   checkInSession,
   checkOutSession,
   submitSessionNotes,
-  updateAdminSessionStatus
+  updateAdminSessionStatus,
+  updateSessionAttendance,
+  getTrainerReviews
 } from '../controllers/trainerSessionController';
 import { authenticate } from '../middlewares/auth';
 
@@ -33,10 +35,14 @@ router.post('/:id/check-out', authenticate, checkOutSession);
 
 // Trainer routes
 router.get('/trainer', authenticate, getTrainerSessions);
+router.get('/trainer/reviews', authenticate, getTrainerReviews);
 router.post('/:id/accept', authenticate, acceptSession);
 router.post('/:id/reject', authenticate, rejectSession);
 router.post('/:id/complete', authenticate, completeSession);
 router.post('/:id/session-notes', authenticate, submitSessionNotes);
+router.post('/:id/attendance', authenticate, updateSessionAttendance);
+router.patch('/:id/attendance', authenticate, updateSessionAttendance);
+router.patch('/:id', authenticate, updateSessionAttendance);
 
 // Admin / Gym Owner routes
 router.get('/gym', authenticate, getGymSessions);

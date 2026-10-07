@@ -15,8 +15,8 @@ const SAAS_PLANS = [
     tagline: 'Try AI GYM risk-free',
     badge: '1 DAY',
     icon: Zap,
-    iconColor: 'text-[#6fa3a0]',
-    iconBg: 'bg-[#F1F5F3]',
+    iconColor: 'text-[#FED7AA]',
+    iconBg: 'bg-[#FFFDF8]',
     priceMonthly: 0,
     priceAnnual: 0,
     savingsAnnual: 0,
@@ -46,7 +46,7 @@ const SAAS_PLANS = [
     tagline: 'Beginner package for growing gyms',
     badge: 'BEGINNER',
     icon: Star,
-    iconColor: 'text-[#6fa3a0]',
+    iconColor: 'text-[#FED7AA]',
     iconBg: 'bg-slate-100',
     priceMonthly: 799,
     priceAnnual: 7190,
@@ -78,8 +78,8 @@ const SAAS_PLANS = [
     badge: 'MOST POPULAR',
     popular: true,
     icon: Crown,
-    iconColor: 'text-[#164A4A]',
-    iconBg: 'bg-[#164A4A]/10',
+    iconColor: 'text-[#F97316]',
+    iconBg: 'bg-[#F97316]/10',
     priceMonthly: 1499,
     priceAnnual: 13490,
     savingsAnnual: 4498,
@@ -144,17 +144,17 @@ const SUBSCRIBED_CUSTOMERS = [
 
 const PLAN_COLORS: Record<string, string> = {
   FREE_TRIAL: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
-  SILVER: 'bg-[#6fa3a0]/10 text-[#6fa3a0] border-[#6fa3a0]/30',
-  GOLD: 'bg-emerald-500/10 text-[#164A4A] border-[#164A4A]/30',
+  SILVER: 'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/30',
+  GOLD: 'bg-emerald-500/10 text-[#F97316] border-[#F97316]/30',
   PREMIUM: 'bg-purple-500/10 text-purple-600 border-purple-500/30',
   BASIC: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
 };
 
 const STATUS_COLORS: Record<string, string> = {
   Active: 'bg-green-500/10 text-green-400 border-green-500/20',
-  Expired: 'bg-[#6fa3a0]/10 text-teal-400 border-[#6fa3a0]/20',
-  Pending: 'bg-blue-500/10 text-blue-400 border-[#D2B48C]/20',
-  Inactive: 'bg-[#333] text-[#455250] border-[#444]',
+  Expired: 'bg-[#FED7AA]/10 text-teal-400 border-[#FED7AA]/20',
+  Pending: 'bg-blue-500/10 text-blue-400 border-[#FED7AA]/20',
+  Inactive: 'bg-[#333] text-[#78716C] border-[#444]',
   Rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
@@ -210,37 +210,37 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-xl w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 sm:p-8 max-w-xl w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center space-x-3 mb-6">
           <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
             <Icon size={22} className={plan.iconColor} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#202828]">Edit {plan.name} Plan</h2>
-            <p className="text-[#455250] text-sm">{plan.tagline}</p>
+            <h2 className="text-xl font-bold text-[#292524]">Edit {plan.name} Plan</h2>
+            <p className="text-[#78716C] text-sm">{plan.tagline}</p>
           </div>
         </div>
 
         <div className="space-y-5">
-          <h3 className="text-[#202828] font-semibold text-sm uppercase tracking-wider border-b border-[#D3DFDA] pb-2">Pricing</h3>
+          <h3 className="text-[#292524] font-semibold text-sm uppercase tracking-wider border-b border-[#E7E5E4] pb-2">Pricing</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-[#455250] mb-2">Monthly Price (₹)</label>
+              <label className="block text-xs font-medium text-[#78716C] mb-2">Monthly Price (₹)</label>
               <input type="number" value={form.priceMonthly}
                 onChange={e => setForm(f => ({ ...f, priceMonthly: +e.target.value }))}
-                className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#455250] mb-2">Annual Price (₹)</label>
+              <label className="block text-xs font-medium text-[#78716C] mb-2">Annual Price (₹)</label>
               <input type="number" value={form.priceAnnual}
                 onChange={e => setForm(f => ({ ...f, priceAnnual: +e.target.value }))}
-                className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
               />
             </div>
           </div>
 
-          <h3 className="text-[#202828] font-semibold text-sm uppercase tracking-wider border-b border-[#D3DFDA] pb-2 mt-4">Platform Limits</h3>
+          <h3 className="text-[#292524] font-semibold text-sm uppercase tracking-wider border-b border-[#E7E5E4] pb-2 mt-4">Platform Limits</h3>
           <div className="grid grid-cols-2 gap-4">
             {[
               { key: 'members', label: 'Max Members (-1 = Unlimited)' },
@@ -249,10 +249,10 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
               { key: 'branches', label: 'Max Branches' },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs font-medium text-[#455250] mb-2">{label}</label>
+                <label className="block text-xs font-medium text-[#78716C] mb-2">{label}</label>
                 <input type="number" value={(form as any)[key]}
                   onChange={e => setForm(f => ({ ...f, [key]: +e.target.value }))}
-                  className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
                 />
               </div>
             ))}
@@ -260,8 +260,8 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
         </div>
 
         <div className="flex space-x-3 mt-8">
-          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#202828] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Cancel</button>
-          <button onClick={handleSave} className="flex-1 py-3 bg-[#6fa3a0] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">Save Changes</button>
+          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#292524] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Cancel</button>
+          <button onClick={handleSave} className="flex-1 py-3 bg-[#FED7AA] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">Save Changes</button>
         </div>
       </div>
     </div>
@@ -273,32 +273,32 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
   const Icon = plan.icon;
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
               <Icon size={22} className={plan.iconColor} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#202828]">{plan.name} Plan</h2>
-              <p className="text-[#455250] text-sm">{plan.tagline}</p>
+              <h2 className="text-xl font-bold text-[#292524]">{plan.name} Plan</h2>
+              <p className="text-[#78716C] text-sm">{plan.tagline}</p>
             </div>
           </div>
           <span className="bg-green-500/10 text-green-400 border border-green-500/20 text-xs px-2.5 py-1 rounded-full font-bold">{plan.status}</span>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4">
+          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4">
             <p className="text-[#555] text-xs uppercase tracking-widest font-bold mb-1">Monthly Price</p>
-            <p className="text-[#202828] font-bold text-xl">₹{plan.priceMonthly.toLocaleString('en-IN')}</p>
+            <p className="text-[#292524] font-bold text-xl">₹{plan.priceMonthly.toLocaleString('en-IN')}</p>
           </div>
-          <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4">
+          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4">
             <p className="text-[#555] text-xs uppercase tracking-widest font-bold mb-1">Annual Price</p>
-            <p className="text-[#202828] font-bold text-xl">₹{plan.priceAnnual.toLocaleString('en-IN')}</p>
+            <p className="text-[#292524] font-bold text-xl">₹{plan.priceAnnual.toLocaleString('en-IN')}</p>
           </div>
         </div>
 
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4 mb-6">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 mb-6">
           <p className="text-[#555] text-xs uppercase tracking-widest font-bold mb-3">Platform Limits</p>
           <div className="grid grid-cols-2 gap-3 text-sm">
             {[
@@ -309,8 +309,8 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
             ].map(({ label, value, icon: LimitIcon }) => (
               <div key={label} className="flex items-center space-x-2">
                 <LimitIcon size={14} className="text-teal-400" />
-                <span className="text-[#455250]">{label}:</span>
-                <span className="text-[#202828] font-bold">{value === -1 ? '∞' : value}</span>
+                <span className="text-[#78716C]">{label}:</span>
+                <span className="text-[#292524] font-bold">{value === -1 ? '∞' : value}</span>
               </div>
             ))}
           </div>
@@ -328,12 +328,12 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
           </ul>
         </div>
 
-        <div className="flex items-center justify-between bg-[#6fa3a0]/10 border border-[#6fa3a0]/20 rounded-xl p-4 mb-6">
-          <span className="text-[#455250] text-sm">Active Subscribers</span>
+        <div className="flex items-center justify-between bg-[#FED7AA]/10 border border-[#FED7AA]/20 rounded-xl p-4 mb-6">
+          <span className="text-[#78716C] text-sm">Active Subscribers</span>
           <span className="text-teal-400 font-bold text-xl">{plan.subscribedGyms} Gyms</span>
         </div>
 
-        <button onClick={onClose} className="w-full py-3 bg-[#FFFFFF] text-[#202828] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Close</button>
+        <button onClick={onClose} className="w-full py-3 bg-[#FFFFFF] text-[#292524] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Close</button>
       </div>
     </div>
   );
@@ -343,16 +343,16 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
 const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => void }) => {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-white border border-[#D3DFDA] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl my-auto animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] overflow-y-auto">
+      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl my-auto animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#D3DFDA]">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#E7E5E4]">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center shrink-0">
               <IndianRupee size={22} className="text-blue-500" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#202828]">Payment Details</h2>
-              <p className="text-[#455250] text-xs font-medium mt-0.5">{payment.gymName || payment.name}</p>
+              <h2 className="text-xl font-bold text-[#292524]">Payment Details</h2>
+              <p className="text-[#78716C] text-xs font-medium mt-0.5">{payment.gymName || payment.name}</p>
             </div>
           </div>
           <button
@@ -364,31 +364,31 @@ const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => v
         </div>
 
         {/* Contiguous Detail Table touching one by one */}
-        <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm mb-6">
+        <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm mb-6">
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#455250] text-xs font-semibold">Plan</span>
-            <span className="text-[#202828] font-bold text-sm">
+            <span className="text-[#78716C] text-xs font-semibold">Plan</span>
+            <span className="text-[#292524] font-bold text-sm">
               {payment.plan} <span className="text-slate-400 font-normal">({payment.billing})</span>
             </span>
           </div>
 
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#455250] text-xs font-semibold">Amount Paid</span>
-            <span className="text-[#164A4A] font-extrabold text-base">{payment.amount}</span>
+            <span className="text-[#78716C] text-xs font-semibold">Amount Paid</span>
+            <span className="text-[#F97316] font-extrabold text-base">{payment.amount}</span>
           </div>
 
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#455250] text-xs font-semibold">Payment Method</span>
-            <span className="text-[#202828] font-bold text-sm capitalize">{payment.paymentMethod}</span>
+            <span className="text-[#78716C] text-xs font-semibold">Payment Method</span>
+            <span className="text-[#292524] font-bold text-sm capitalize">{payment.paymentMethod}</span>
           </div>
 
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#455250] text-xs font-semibold">Date</span>
-            <span className="text-[#202828] font-bold text-sm">{formatDate(payment.start)}</span>
+            <span className="text-[#78716C] text-xs font-semibold">Date</span>
+            <span className="text-[#292524] font-bold text-sm">{formatDate(payment.start)}</span>
           </div>
 
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#455250] text-xs font-semibold">Status</span>
+            <span className="text-[#78716C] text-xs font-semibold">Status</span>
             <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${STATUS_COLORS[payment.status] || 'bg-gray-100 text-gray-500'}`}>
               {payment.status}
             </span>
@@ -396,12 +396,12 @@ const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => v
         </div>
 
         {(payment.paymentMethod?.toLowerCase().includes('manual') || payment.paymentMethod?.toLowerCase().includes('qr') || payment.paymentMethod?.toLowerCase().includes('paytm') || payment.paymentMethod?.toLowerCase().includes('phonepe') || payment.paymentMethod?.toLowerCase().includes('google')) && (
-          <div className="bg-[#6fa3a0]/10 border border-[#6fa3a0]/30 rounded-xl p-4 mb-6">
+          <div className="bg-[#FED7AA]/10 border border-[#FED7AA]/30 rounded-xl p-4 mb-6">
             <h3 className="text-teal-700 font-bold text-xs mb-1.5 flex items-center gap-1.5">
               <CheckCircle size={14} className="text-teal-600" />
               <span>Manual / QR Payment Verification</span>
             </h3>
-            <p className="text-[#455250] text-xs leading-relaxed">
+            <p className="text-[#78716C] text-xs leading-relaxed">
               This payment was completed via {payment.paymentMethod}. The transaction ID and screenshot have been verified by the billing team.
             </p>
           </div>
@@ -409,7 +409,7 @@ const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => v
 
         <button
           onClick={onClose}
-          className="w-full py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#164A4A]/90 transition-colors text-sm shadow-sm"
+          className="w-full py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#F97316]/90 transition-colors text-sm shadow-sm"
         >
           Close
         </button>
@@ -530,8 +530,8 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
           <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={36} className="text-green-400" />
           </div>
-          <h2 className="text-xl font-bold text-[#202828] mb-2">Plan Saved!</h2>
-          <p className="text-[#455250] text-sm">Your new plan has been added successfully.</p>
+          <h2 className="text-xl font-bold text-[#292524] mb-2">Plan Saved!</h2>
+          <p className="text-[#78716C] text-sm">Your new plan has been added successfully.</p>
         </div>
       </div>
     );
@@ -539,19 +539,19 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#D3DFDA] shrink-0 bg-white">
+        <div className="flex items-center justify-between p-6 border-b border-[#E7E5E4] shrink-0 bg-white">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-[#6fa3a0]/10 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#FED7AA]/10 rounded-xl flex items-center justify-center">
               <Plus size={20} className="text-teal-400" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#202828]">Create New Plan</h2>
-              <p className="text-[#455250] text-sm">Fill in the details to add a new subscription plan</p>
+              <h2 className="text-xl font-bold text-[#292524]">Create New Plan</h2>
+              <p className="text-[#78716C] text-sm">Fill in the details to add a new subscription plan</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#455250] hover:text-[#202828]">
+          <button onClick={onClose} className="text-[#78716C] hover:text-[#292524]">
             <XCircle size={20} />
           </button>
         </div>
@@ -562,26 +562,26 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Basic Info */}
             <div>
-              <h3 className="text-[#202828] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#D3DFDA]">Basic Information</h3>
+              <h3 className="text-[#292524] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#E7E5E4]">Basic Information</h3>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-[#455250] mb-2">Plan Name *</label>
+                    <label className="block text-xs font-medium text-[#78716C] mb-2">Plan Name *</label>
                     <input
                       type="text"
                       value={form.name}
                       onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: '' })); }}
                       placeholder="e.g. Enterprise"
-                      className={`w-full bg-[#FFFFFF] border ${errors.name ? 'border-[#6fa3a0]' : 'border-[#D3DFDA]'} text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0] transition-colors`}
+                      className={`w-full bg-[#FFFFFF] border ${errors.name ? 'border-[#FED7AA]' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA] transition-colors`}
                     />
                     {errors.name && <p className="text-teal-400 text-xs mt-1">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[#455250] mb-2">Icon Style</label>
+                    <label className="block text-xs font-medium text-[#78716C] mb-2">Icon Style</label>
                     <select
                       value={form.selectedIconIdx}
                       onChange={e => setForm(f => ({ ...f, selectedIconIdx: +e.target.value }))}
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
                     >
                       {ICON_OPTIONS.map((opt, i) => (
                         <option key={i} value={i}>{opt.label}</option>
@@ -590,13 +590,13 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#455250] mb-2">Tagline *</label>
+                  <label className="block text-xs font-medium text-[#78716C] mb-2">Tagline *</label>
                   <input
                     type="text"
                     value={form.tagline}
                     onChange={e => { setForm(f => ({ ...f, tagline: e.target.value })); setErrors(er => ({ ...er, tagline: '' })); }}
                     placeholder="e.g. For large-scale gym chains"
-                    className={`w-full bg-[#FFFFFF] border ${errors.tagline ? 'border-[#6fa3a0]' : 'border-[#D3DFDA]'} text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]`}
+                    className={`w-full bg-[#FFFFFF] border ${errors.tagline ? 'border-[#FED7AA]' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]`}
                   />
                   {errors.tagline && <p className="text-teal-400 text-xs mt-1">{errors.tagline}</p>}
                 </div>
@@ -605,24 +605,24 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Pricing */}
             <div>
-              <h3 className="text-[#202828] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#D3DFDA]">Pricing (₹)</h3>
+              <h3 className="text-[#292524] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#E7E5E4]">Pricing (₹)</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#455250] mb-2">Monthly Price</label>
+                  <label className="block text-xs font-medium text-[#78716C] mb-2">Monthly Price</label>
                   <input
                     type="number" min={0}
                     value={form.priceMonthly}
                     onChange={e => setForm(f => ({ ...f, priceMonthly: +e.target.value }))}
-                    className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#455250] mb-2">Annual Price</label>
+                  <label className="block text-xs font-medium text-[#78716C] mb-2">Annual Price</label>
                   <input
                     type="number" min={0}
                     value={form.priceAnnual}
                     onChange={e => setForm(f => ({ ...f, priceAnnual: +e.target.value }))}
-                    className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
                   />
                 </div>
               </div>
@@ -635,7 +635,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Limits */}
             <div>
-              <h3 className="text-[#202828] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#D3DFDA]">Platform Limits <span className="text-[#555] font-normal normal-case text-xs ml-2">(use -1 for Unlimited)</span></h3>
+              <h3 className="text-[#292524] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#E7E5E4]">Platform Limits <span className="text-[#555] font-normal normal-case text-xs ml-2">(use -1 for Unlimited)</span></h3>
               <div className="grid grid-cols-2 gap-4">
                 {[
                   { key: 'members', label: 'Max Members', icon: Users },
@@ -644,7 +644,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   { key: 'branches', label: 'Max Branches', icon: Building2 },
                 ].map(({ key, label, icon: LimitIcon }) => (
                   <div key={key}>
-                    <label className="flex items-center space-x-1.5 text-xs font-medium text-[#455250] mb-2">
+                    <label className="flex items-center space-x-1.5 text-xs font-medium text-[#78716C] mb-2">
                       <LimitIcon size={12} className="text-teal-400" />
                       <span>{label}</span>
                     </label>
@@ -652,7 +652,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                       type="number"
                       value={(form as any)[key]}
                       onChange={e => setForm(f => ({ ...f, [key]: +e.target.value }))}
-                      className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                      className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
                     />
                   </div>
                 ))}
@@ -661,27 +661,27 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Features */}
             <div>
-              <h3 className="text-[#202828] font-bold text-sm uppercase tracking-wider mb-1 pb-2 border-b border-[#D3DFDA]">Features</h3>
+              <h3 className="text-[#292524] font-bold text-sm uppercase tracking-wider mb-1 pb-2 border-b border-[#E7E5E4]">Features</h3>
               <p className="text-[#555] text-xs mb-4">✅ Check = Included &nbsp;|&nbsp; 🚫 Lock = Not available (shown as locked)</p>
               <div className="grid grid-cols-1 gap-2 mb-4">
                 {FEATURE_OPTIONS.map(feat => {
                   const isIncluded = selectedFeatures.includes(feat);
                   const isLocked = lockedFeatures.includes(feat);
                   return (
-                    <div key={feat} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-colors ${isIncluded ? 'bg-green-500/5 border-green-500/20' : isLocked ? 'bg-[#6fa3a0]/5 border-[#6fa3a0]/20' : 'bg-[#FFFFFF] border-[#D3DFDA]'}`}>
-                      <span className={isIncluded ? 'text-[#202828]' : isLocked ? 'text-[#455250] line-through' : 'text-[#455250]'}>{feat}</span>
+                    <div key={feat} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-colors ${isIncluded ? 'bg-green-500/5 border-green-500/20' : isLocked ? 'bg-[#FED7AA]/5 border-[#FED7AA]/20' : 'bg-[#FFFFFF] border-[#E7E5E4]'}`}>
+                      <span className={isIncluded ? 'text-[#292524]' : isLocked ? 'text-[#78716C] line-through' : 'text-[#78716C]'}>{feat}</span>
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => toggleFeature(feat)}
                           title="Include feature"
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isIncluded ? 'bg-green-500 text-[#202828]' : 'bg-[#333] text-[#555] hover:bg-green-500/20 hover:text-green-400'}`}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isIncluded ? 'bg-green-500 text-[#292524]' : 'bg-[#333] text-[#555] hover:bg-green-500/20 hover:text-green-400'}`}
                         >
                           <CheckCircle size={14} />
                         </button>
                         <button
                           onClick={() => toggleLocked(feat)}
                           title="Mark as locked/unavailable"
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isLocked ? 'bg-[#6fa3a0]/80 text-black' : 'bg-[#333] text-[#555] hover:bg-[#6fa3a0]/20 hover:text-teal-400'}`}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isLocked ? 'bg-[#FED7AA]/80 text-black' : 'bg-[#333] text-[#555] hover:bg-[#FED7AA]/20 hover:text-teal-400'}`}
                         >
                           <XCircle size={14} />
                         </button>
@@ -699,11 +699,11 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   onChange={e => setNewFeatureText(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addCustomFeature()}
                   placeholder="Add a custom feature..."
-                  className="flex-1 bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                  className="flex-1 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
                 />
                 <button
                   onClick={addCustomFeature}
-                  className="px-4 py-2.5 bg-[#6fa3a0]/10 border border-[#6fa3a0]/30 text-teal-400 rounded-xl text-sm font-bold hover:bg-[#6fa3a0]/20 transition-colors"
+                  className="px-4 py-2.5 bg-[#FED7AA]/10 border border-[#FED7AA]/30 text-teal-400 rounded-xl text-sm font-bold hover:bg-[#FED7AA]/20 transition-colors"
                 >
                   + Add
                 </button>
@@ -712,12 +712,12 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Preview */}
             {(form.name || selectedFeatures.length > 0) && (
-              <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-4">
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4">
                 <p className="text-[#555] text-xs uppercase tracking-wider font-bold mb-3">Preview</p>
-                <p className="text-[#202828] font-bold text-base">{form.name || 'Plan Name'}</p>
-                <p className="text-[#455250] text-xs mb-2">{form.tagline || 'Tagline'}</p>
+                <p className="text-[#292524] font-bold text-base">{form.name || 'Plan Name'}</p>
+                <p className="text-[#78716C] text-xs mb-2">{form.tagline || 'Tagline'}</p>
                 <p className="text-teal-400 font-bold">₹{form.priceMonthly.toLocaleString('en-IN')}/mo · ₹{form.priceAnnual.toLocaleString('en-IN')}/yr</p>
-                <div className="mt-2 text-xs text-[#455250]">
+                <div className="mt-2 text-xs text-[#78716C]">
                   {selectedFeatures.length} included · {lockedFeatures.length} locked
                 </div>
               </div>
@@ -726,11 +726,11 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
         </div>
 
         {/* Footer */}
-        <div className="flex space-x-3 p-6 border-t border-[#D3DFDA] shrink-0 bg-white">
-          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#202828] rounded-xl font-bold border border-[#D3DFDA] hover:bg-slate-50 transition-colors text-sm">Cancel</button>
+        <div className="flex space-x-3 p-6 border-t border-[#E7E5E4] shrink-0 bg-white">
+          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#292524] rounded-xl font-bold border border-[#E7E5E4] hover:bg-slate-50 transition-colors text-sm">Cancel</button>
           <button
             onClick={handleSave}
-            className="flex-1 py-3 bg-[#6fa3a0] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/30"
+            className="flex-1 py-3 bg-[#FED7AA] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/30"
           >
             <CheckCircle size={16} />
             <span>Save Plan</span>
@@ -808,31 +808,31 @@ const SuperAdminSubscriptions = () => {
       limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
       priceColor: 'text-slate-800',
       labelColor: 'text-slate-700',
-      checkColor: 'text-[#6fa3a0]',
+      checkColor: 'text-[#FED7AA]',
     },
     SILVER: {
-      border: 'border-[#6fa3a0]',
+      border: 'border-[#FED7AA]',
       glow: 'shadow-[0_0_25px_rgba(111,163,160,0.25)]',
       bg: 'bg-white',
       badge: 'bg-teal-50 text-teal-700 border-teal-200',
       headerBg: 'bg-teal-50/50',
       pricingBg: 'bg-teal-50/30 border border-teal-100',
       limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
-      priceColor: 'text-[#6fa3a0]',
-      labelColor: 'text-[#6fa3a0]',
-      checkColor: 'text-[#6fa3a0]',
+      priceColor: 'text-[#FED7AA]',
+      labelColor: 'text-[#FED7AA]',
+      checkColor: 'text-[#FED7AA]',
     },
     GOLD: {
-      border: 'border-[#164A4A]',
+      border: 'border-[#F97316]',
       glow: 'shadow-[0_0_35px_rgba(22,74,74,0.35)]',
       bg: 'bg-white',
-      badge: 'bg-[#164A4A]/10 text-[#164A4A] border-[#164A4A]/25',
-      headerBg: 'bg-[#164A4A]/10',
-      pricingBg: 'bg-[#164A4A]/5 border border-[#164A4A]/20',
+      badge: 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/25',
+      headerBg: 'bg-[#F97316]/10',
+      pricingBg: 'bg-[#F97316]/5 border border-[#F97316]/20',
       limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
-      priceColor: 'text-[#164A4A]',
-      labelColor: 'text-[#164A4A]',
-      checkColor: 'text-[#164A4A]',
+      priceColor: 'text-[#F97316]',
+      labelColor: 'text-[#F97316]',
+      checkColor: 'text-[#F97316]',
     },
     PREMIUM: {
       border: 'border-purple-300',
@@ -887,15 +887,15 @@ const SuperAdminSubscriptions = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight flex items-center space-x-3">
-            <CreditCard className="text-[#6fa3a0]" size={30} />
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight flex items-center space-x-3">
+            <CreditCard className="text-[#FED7AA]" size={30} />
             <span>Subscription Plans</span>
           </h1>
-          <p className="text-[#455250] mt-1">Manage SaaS plans for gym owners on the platform.</p>
+          <p className="text-[#78716C] mt-1">Manage SaaS plans for gym owners on the platform.</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center space-x-2 px-5 py-2.5 bg-[#6fa3a0] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm shadow-lg shadow-amber-500/20"
+          className="flex items-center space-x-2 px-5 py-2.5 bg-[#FED7AA] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm shadow-lg shadow-amber-500/20"
         >
           <Plus size={16} />
           <span>Create New Plan</span>
@@ -923,7 +923,7 @@ const SuperAdminSubscriptions = () => {
           { 
             label: activeTab === 'customers' ? 'Rejected Customers' : 'Rejected Gyms', 
             value: (activeTab === 'customers' ? customers : subscribedGyms).filter(g => g.status === 'Rejected').length, 
-            icon: AlertCircle, color: 'text-[#6fa3a0]', bg: 'bg-red-500/10' 
+            icon: AlertCircle, color: 'text-[#FED7AA]', bg: 'bg-red-500/10' 
           },
           { 
             label: activeTab === 'customers' ? 'Expired Customers' : 'Expired Gyms', 
@@ -931,20 +931,20 @@ const SuperAdminSubscriptions = () => {
             icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/10' 
           },
         ].map((stat, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-5 flex items-center space-x-4">
+          <div key={i} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-5 flex items-center space-x-4">
             <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center`}>
               <stat.icon size={22} className={stat.color} />
             </div>
             <div>
-              <p className="text-[#455250] text-xs font-medium">{stat.label}</p>
-              <p className="text-[#202828] font-bold text-xl">{stat.value}</p>
+              <p className="text-[#78716C] text-xs font-medium">{stat.label}</p>
+              <p className="text-[#292524] font-bold text-xl">{stat.value}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-2 bg-[#FFFFFF] p-1.5 rounded-xl border border-[#D3DFDA] w-fit">
+      <div className="flex space-x-2 bg-[#FFFFFF] p-1.5 rounded-xl border border-[#E7E5E4] w-fit">
         {[
           { key: 'plans', label: 'Plan Management', icon: CreditCard },
           { key: 'subscribers', label: 'Subscribed Gyms', icon: Building2 },
@@ -953,7 +953,7 @@ const SuperAdminSubscriptions = () => {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as any)}
-            className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.key ? 'bg-[#6fa3a0] text-black shadow' : 'text-[#455250] hover:text-[#202828]'}`}
+            className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.key ? 'bg-[#FED7AA] text-black shadow' : 'text-[#78716C] hover:text-[#292524]'}`}
           >
             <tab.icon size={15} />
             <span>{tab.label}</span>
@@ -978,10 +978,10 @@ const SuperAdminSubscriptions = () => {
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <h3 className="text-[#202828] font-bold text-lg">{sp.name} Plan</h3>
+                      <h3 className="text-[#292524] font-bold text-lg">{sp.name} Plan</h3>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border uppercase tracking-wider ${acc.badge}`}>Selected</span>
                     </div>
-                    <p className="text-[#455250] text-sm mt-0.5">{sp.tagline}</p>
+                    <p className="text-[#78716C] text-sm mt-0.5">{sp.tagline}</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-4">
@@ -1005,7 +1005,7 @@ const SuperAdminSubscriptions = () => {
                 <div className="flex items-center space-x-2">
                   <button onClick={() => setViewPlan(sp)} className={`px-4 py-2 rounded-xl text-sm font-bold border ${acc.badge} transition-colors`}>View Details</button>
                   <button onClick={() => setEditPlan(sp)} className={`px-4 py-2 rounded-xl text-sm font-bold ${acc.border.replace('border-', 'bg-').replace('400', '500')} text-black transition-colors`}>Edit Plan</button>
-                  <button onClick={() => setSelectedPlan(null)} className="px-3 py-2 rounded-xl text-xs text-[#555] hover:text-[#164A4A] transition-colors">✕</button>
+                  <button onClick={() => setSelectedPlan(null)} className="px-3 py-2 rounded-xl text-xs text-[#555] hover:text-[#F97316] transition-colors">✕</button>
                 </div>
               </div>
             );
@@ -1027,19 +1027,19 @@ const SuperAdminSubscriptions = () => {
                     isSelected
                       ? `border-2 ${acc.border} ${acc.glow} -translate-y-1 scale-[1.01]`
                       : plan.key === 'GOLD'
-                      ? 'border-2 border-[#164A4A] shadow-md hover:-translate-y-1 hover:shadow-xl'
+                      ? 'border-2 border-[#F97316] shadow-md hover:-translate-y-1 hover:shadow-xl'
                       : plan.key === 'PREMIUM'
                       ? 'border-2 border-purple-200 hover:border-purple-400 hover:-translate-y-1 hover:shadow-lg'
                       : plan.key === 'FREE_TRIAL'
                       ? 'border-2 border-dashed border-slate-300 hover:border-slate-400 hover:-translate-y-1 hover:shadow-lg'
-                      : 'border-2 border-slate-200 hover:border-[#6fa3a0] hover:-translate-y-1 hover:shadow-lg'
+                      : 'border-2 border-slate-200 hover:border-[#FED7AA] hover:-translate-y-1 hover:shadow-lg'
                   }
                   ${!isPlanActive ? 'opacity-60 grayscale' : ''}
                 `}
               >
                 {/* Gold Most Popular Ribbon */}
                 {plan.key === 'GOLD' && (
-                  <div className="bg-[#164A4A] text-white text-[11px] font-extrabold py-2 px-4 flex items-center justify-center gap-1.5 uppercase tracking-widest shrink-0">
+                  <div className="bg-[#F97316] text-white text-[11px] font-extrabold py-2 px-4 flex items-center justify-center gap-1.5 uppercase tracking-widest shrink-0">
                     <Star size={13} className="fill-amber-400 text-amber-400" />
                     <span>MOST POPULAR</span>
                   </div>
@@ -1048,7 +1048,7 @@ const SuperAdminSubscriptions = () => {
                 <div className="p-6 flex flex-col flex-1">
                   {/* Card Header: Name + Badge + Toggle */}
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl font-bold text-[#202828]">{plan.name}</h3>
+                    <h3 className="text-xl font-bold text-[#292524]">{plan.name}</h3>
                     <div className="flex items-center space-x-2">
                       <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md border ${acc.badge}`}>
                         {plan.badge}
@@ -1073,7 +1073,7 @@ const SuperAdminSubscriptions = () => {
                   {/* Pricing Section */}
                   <div className="mb-3">
                     <div className="flex items-baseline space-x-1">
-                      <span className={`text-3xl font-extrabold tracking-tight ${plan.key === 'PREMIUM' ? 'text-purple-600' : plan.key === 'GOLD' ? 'text-[#164A4A]' : plan.key === 'SILVER' ? 'text-[#6fa3a0]' : 'text-slate-900'}`}>
+                      <span className={`text-3xl font-extrabold tracking-tight ${plan.key === 'PREMIUM' ? 'text-purple-600' : plan.key === 'GOLD' ? 'text-[#F97316]' : plan.key === 'SILVER' ? 'text-[#FED7AA]' : 'text-slate-900'}`}>
                         {plan.priceDisplay || `₹${plan.priceMonthly.toLocaleString('en-IN')}`}
                       </span>
                       <span className="text-sm font-semibold text-slate-500">
@@ -1120,7 +1120,7 @@ const SuperAdminSubscriptions = () => {
                   {/* Active Gyms Count */}
                   <div className="pt-3 border-t border-[#E5EAE7] flex items-center justify-between mb-4">
                     <span className="text-slate-500 text-xs font-medium">Active Gyms</span>
-                    <span className="font-extrabold text-sm text-[#164A4A] bg-[#164A4A]/10 px-2.5 py-0.5 rounded-full">
+                    <span className="font-extrabold text-sm text-[#F97316] bg-[#F97316]/10 px-2.5 py-0.5 rounded-full">
                       {activeGymCount}
                     </span>
                   </div>
@@ -1136,7 +1136,7 @@ const SuperAdminSubscriptions = () => {
                     </button>
                     <button
                       onClick={e => { e.stopPropagation(); setEditPlan(plan); }}
-                      className="flex items-center justify-center space-x-1.5 py-2.5 border border-[#164A4A]/20 rounded-xl text-xs font-semibold text-[#164A4A] bg-[#164A4A]/10 hover:bg-[#164A4A]/15 transition-colors shadow-sm"
+                      className="flex items-center justify-center space-x-1.5 py-2.5 border border-[#F97316]/20 rounded-xl text-xs font-semibold text-[#F97316] bg-[#F97316]/10 hover:bg-[#F97316]/15 transition-colors shadow-sm"
                     >
                       <Edit3 size={13} />
                       <span>Edit</span>
@@ -1152,9 +1152,9 @@ const SuperAdminSubscriptions = () => {
 
       {/* ── Tab: Subscribed Gyms ── */}
       {activeTab === 'subscribers' && (
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl overflow-hidden">
           {/* Filters */}
-          <div className="p-5 border-b border-[#D3DFDA] flex flex-col md:flex-row md:items-center gap-3">
+          <div className="p-5 border-b border-[#E7E5E4] flex flex-col md:flex-row md:items-center gap-3">
             <div className="relative flex-1">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555]" />
               <input
@@ -1162,11 +1162,11 @@ const SuperAdminSubscriptions = () => {
                 placeholder="Search gym or owner..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
               />
             </div>
             <select value={filterPlan} onChange={e => setFilterPlan(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]">
+              className="bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]">
               <option value="ALL">All Plans</option>
               <option value="FREE_TRIAL">Free Trial</option>
               <option value="SILVER">Silver</option>
@@ -1174,7 +1174,7 @@ const SuperAdminSubscriptions = () => {
               <option value="PREMIUM">Premium</option>
             </select>
             <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]">
+              className="bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]">
               <option value="ALL">All Statuses</option>
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
@@ -1187,23 +1187,23 @@ const SuperAdminSubscriptions = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#D3DFDA] bg-[#FFFFFF]">
+                <tr className="border-b border-[#E7E5E4] bg-[#FFFFFF]">
                   {['Gym Name', 'Owner', 'Plan', 'Billing', 'Amount', 'Payment Method', 'Start Date', 'Renewal Date', 'Status', 'Action'].map(h => (
-                    <th key={h} className="text-left text-xs font-bold text-[#455250] uppercase tracking-wider px-5 py-3.5">{h}</th>
+                    <th key={h} className="text-left text-xs font-bold text-[#78716C] uppercase tracking-wider px-5 py-3.5">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#D3DFDA]">
+              <tbody className="divide-y divide-[#E7E5E4]">
                 {loadingGyms ? (
                   <tr><td colSpan={10} className="text-center py-16">
-                    <div className="flex flex-col items-center gap-3 text-[#455250]">
-                      <div className="w-8 h-8 border-2 border-[#6fa3a0] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex flex-col items-center gap-3 text-[#78716C]">
+                      <div className="w-8 h-8 border-2 border-[#FED7AA] border-t-transparent rounded-full animate-spin"></div>
                       <span className="text-sm">Loading subscription data...</span>
                     </div>
                   </td></tr>
                 ) : filteredGyms.length === 0 ? (
                   <tr><td colSpan={10} className="text-center py-16">
-                    <div className="flex flex-col items-center gap-2 text-[#455250]">
+                    <div className="flex flex-col items-center gap-2 text-[#78716C]">
                       <CreditCard size={40} className="opacity-30" />
                       <p>No subscriptions found.</p>
                     </div>
@@ -1212,27 +1212,27 @@ const SuperAdminSubscriptions = () => {
                   <tr key={gym.id} className="hover:bg-[#FFFFFF] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-[#6fa3a0]/10 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-[#FED7AA]/10 rounded-lg flex items-center justify-center">
                           <Building2 size={14} className="text-teal-400" />
                         </div>
-                        <span className="text-[#202828] font-semibold text-sm">{gym.gymName}</span>
+                        <span className="text-[#292524] font-semibold text-sm">{gym.gymName}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#455250] text-sm">{gym.owner}</td>
+                    <td className="px-5 py-4 text-[#78716C] text-sm">{gym.owner}</td>
                     <td className="px-5 py-4">
                       <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${PLAN_COLORS[gym.plan]}`}>
                         {SAAS_PLANS.find(p => p.key === gym.plan)?.name || gym.plan}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#455250] text-sm">{gym.billing}</td>
-                    <td className="px-5 py-4 text-[#202828] font-bold text-sm">{gym.amount}</td>
+                    <td className="px-5 py-4 text-[#78716C] text-sm">{gym.billing}</td>
+                    <td className="px-5 py-4 text-[#292524] font-bold text-sm">{gym.amount}</td>
                     <td className="px-5 py-4">
-                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#D3DFDA] rounded-md text-xs text-[#455250]">
+                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#E7E5E4] rounded-md text-xs text-[#78716C]">
                         {gym.paymentMethod}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#455250] text-sm whitespace-nowrap">{formatDate(gym.start)}</td>
-                    <td className="px-5 py-4 text-[#455250] text-sm whitespace-nowrap">{formatDate(gym.renewal)}</td>
+                    <td className="px-5 py-4 text-[#78716C] text-sm whitespace-nowrap">{formatDate(gym.start)}</td>
+                    <td className="px-5 py-4 text-[#78716C] text-sm whitespace-nowrap">{formatDate(gym.renewal)}</td>
                     <td className="px-5 py-4">
                       <select 
                         value={gym.status}
@@ -1252,16 +1252,16 @@ const SuperAdminSubscriptions = () => {
                         className={`outline-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border appearance-none ${STATUS_COLORS[gym.status] || 'bg-gray-100 text-gray-500'}`}
                       >
                         <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                        <option value="Inactive" className="bg-[#FFFFFF] text-[#455250]">Inactive</option>
+                        <option value="Inactive" className="bg-[#FFFFFF] text-[#78716C]">Inactive</option>
                         <option value="Pending" className="bg-[#FFFFFF] text-blue-500">Pending</option>
-                        <option value="Rejected" className="bg-[#FFFFFF] text-[#6fa3a0]">Rejected</option>
+                        <option value="Rejected" className="bg-[#FFFFFF] text-[#FED7AA]">Rejected</option>
                         <option value="Expired" className="bg-[#FFFFFF] text-teal-400">Expired</option>
                       </select>
                     </td>
                     <td className="px-5 py-4">
                       <button
                         onClick={() => setViewPayment(gym)}
-                        className="p-1.5 bg-[#6fa3a0]/10 text-teal-500 rounded-lg hover:bg-[#6fa3a0]/20 transition-colors"
+                        className="p-1.5 bg-[#FED7AA]/10 text-teal-500 rounded-lg hover:bg-[#FED7AA]/20 transition-colors"
                         title="View Details"
                       >
                         <Eye size={16} />
@@ -1277,8 +1277,8 @@ const SuperAdminSubscriptions = () => {
       )}
       {/* ── Tab: Subscribed Customers ── */}
       {activeTab === 'customers' && (
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden shadow-lg mt-6">
-          <div className="p-5 border-b border-[#D3DFDA] flex flex-col md:flex-row md:items-center gap-3">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl overflow-hidden shadow-lg mt-6">
+          <div className="p-5 border-b border-[#E7E5E4] flex flex-col md:flex-row md:items-center gap-3">
             <div className="relative flex-1">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555]" />
               <input
@@ -1286,7 +1286,7 @@ const SuperAdminSubscriptions = () => {
                 placeholder="Search customer..."
                 value={customerSearchQuery}
                 onChange={e => setCustomerSearchQuery(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#D3DFDA] text-[#202828] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#6fa3a0]"
+                className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
               />
             </div>
           </div>
@@ -1294,9 +1294,9 @@ const SuperAdminSubscriptions = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#D3DFDA] bg-[#FFFFFF]">
+                <tr className="border-b border-[#E7E5E4] bg-[#FFFFFF]">
                   {['Customer Name', 'Gym', 'Plan', 'Billing', 'Amount', 'Payment Method', 'Start Date', 'Renewal Date', 'Status', 'Action'].map(h => (
-                    <th key={h} className="text-left text-xs font-bold text-[#455250] uppercase tracking-wider px-5 py-3.5">{h}</th>
+                    <th key={h} className="text-left text-xs font-bold text-[#78716C] uppercase tracking-wider px-5 py-3.5">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -1305,27 +1305,27 @@ const SuperAdminSubscriptions = () => {
                   <tr key={customer.id} className="hover:bg-[#FFFFFF] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-[#333] rounded-full flex items-center justify-center text-[#202828] font-bold text-xs">
+                        <div className="w-8 h-8 bg-[#333] rounded-full flex items-center justify-center text-[#292524] font-bold text-xs">
                           {customer.name.charAt(0)}
                         </div>
-                        <span className="text-[#202828] font-semibold text-sm">{customer.name}</span>
+                        <span className="text-[#292524] font-semibold text-sm">{customer.name}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#455250] text-sm">{customer.gymName}</td>
+                    <td className="px-5 py-4 text-[#78716C] text-sm">{customer.gymName}</td>
                     <td className="px-5 py-4">
-                      <span className="text-xs px-2.5 py-1 rounded-full font-bold border bg-blue-500/10 text-blue-400 border-[#D2B48C]/30">
+                      <span className="text-xs px-2.5 py-1 rounded-full font-bold border bg-blue-500/10 text-blue-400 border-[#FED7AA]/30">
                         {customer.plan}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#455250] text-sm">{customer.billing}</td>
-                    <td className="px-5 py-4 text-[#202828] font-bold text-sm">{customer.amount}</td>
+                    <td className="px-5 py-4 text-[#78716C] text-sm">{customer.billing}</td>
+                    <td className="px-5 py-4 text-[#292524] font-bold text-sm">{customer.amount}</td>
                     <td className="px-5 py-4">
-                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#D3DFDA] rounded-md text-xs text-[#455250]">
+                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#E7E5E4] rounded-md text-xs text-[#78716C]">
                         {customer.paymentMethod}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#455250] text-sm">{customer.start}</td>
-                    <td className="px-5 py-4 text-[#455250] text-sm">{customer.renewal}</td>
+                    <td className="px-5 py-4 text-[#78716C] text-sm">{customer.start}</td>
+                    <td className="px-5 py-4 text-[#78716C] text-sm">{customer.renewal}</td>
                     <td className="px-5 py-4">
                       <select 
                         value={customer.status}
@@ -1336,16 +1336,16 @@ const SuperAdminSubscriptions = () => {
                         className={`outline-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border appearance-none ${STATUS_COLORS[customer.status] || 'bg-gray-100 text-gray-500'}`}
                       >
                         <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                        <option value="Inactive" className="bg-[#FFFFFF] text-[#455250]">Inactive</option>
+                        <option value="Inactive" className="bg-[#FFFFFF] text-[#78716C]">Inactive</option>
                         <option value="Pending" className="bg-[#FFFFFF] text-blue-500">Pending</option>
-                        <option value="Rejected" className="bg-[#FFFFFF] text-[#6fa3a0]">Rejected</option>
+                        <option value="Rejected" className="bg-[#FFFFFF] text-[#FED7AA]">Rejected</option>
                         <option value="Expired" className="bg-[#FFFFFF] text-teal-400">Expired</option>
                       </select>
                     </td>
                     <td className="px-5 py-4">
                       <button
                         onClick={() => setViewPayment(customer)}
-                        className="p-1.5 bg-[#6fa3a0]/10 text-teal-500 rounded-lg hover:bg-[#6fa3a0]/20 transition-colors"
+                        className="p-1.5 bg-[#FED7AA]/10 text-teal-500 rounded-lg hover:bg-[#FED7AA]/20 transition-colors"
                         title="View Details"
                       >
                         <Eye size={16} />

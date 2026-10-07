@@ -71,27 +71,27 @@ const MemberBookings = () => {
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828]">My Bookings</h1>
-          <p className="text-[#455250]">Manage your upcoming and past training sessions.</p>
+          <h1 className="text-3xl font-bold text-[#292524]">My Bookings</h1>
+          <p className="text-[#78716C]">Manage your upcoming and past training sessions.</p>
         </div>
         <button 
           onClick={() => navigate('/member/find-trainers')}
-          className="bg-[#164A4A] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#C6A77D] transition-colors"
+          className="bg-[#F97316] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#EA580C] transition-colors"
         >
           <Plus size={18} /> Book New Session
         </button>
       </div>
 
-      <div className="flex gap-4 border-b border-[#D3DFDA] pb-px">
+      <div className="flex gap-4 border-b border-[#E7E5E4] pb-px">
         <button 
           onClick={() => setActiveTab('Upcoming')}
-          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Upcoming' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#164A4A]'}`}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Upcoming' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#F97316]'}`}
         >
           Upcoming
         </button>
         <button 
           onClick={() => setActiveTab('History')}
-          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'History' ? 'border-[#164A4A] text-[#164A4A]' : 'border-transparent text-[#455250] hover:text-[#164A4A]'}`}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'History' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#F97316]'}`}
         >
           History
         </button>
@@ -99,20 +99,20 @@ const MemberBookings = () => {
 
       <div className="space-y-4">
         {loading ? (
-          <div className="text-center py-10 text-[#455250]">Loading bookings...</div>
+          <div className="text-center py-10 text-[#78716C]">Loading bookings...</div>
         ) : filteredSessions.length === 0 ? (
-          <div className="text-center py-10 text-[#455250]">No {activeTab.toLowerCase()} bookings found.</div>
+          <div className="text-center py-10 text-[#78716C]">No {activeTab.toLowerCase()} bookings found.</div>
         ) : (
           filteredSessions.map((session) => (
-            <div key={session._id} className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div key={session._id} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl flex flex-col items-center justify-center shrink-0">
-                  <span className="text-xs text-[#455250] uppercase">{new Date(session.date).toLocaleString('default', { month: 'short' })}</span>
-                  <span className="text-xl font-bold text-[#164A4A]">{new Date(session.date).getDate()}</span>
+                <div className="w-16 h-16 bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl flex flex-col items-center justify-center shrink-0">
+                  <span className="text-xs text-[#78716C] uppercase">{new Date(session.date).toLocaleString('default', { month: 'short' })}</span>
+                  <span className="text-xl font-bold text-[#F97316]">{new Date(session.date).getDate()}</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-lg text-[#202828]">{session.trainerId?.name || 'Trainer'}</h3>
+                    <h3 className="font-bold text-lg text-[#292524]">{session.trainerId?.name || 'Trainer'}</h3>
                     <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
                       session.mode === 'Online'
                         ? 'bg-blue-100 text-blue-700 border border-blue-200'
@@ -121,7 +121,7 @@ const MemberBookings = () => {
                       {session.mode || 'Online'}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-4 text-sm text-[#455250]">
+                  <div className="flex flex-wrap gap-4 text-sm text-[#78716C]">
                     <span className="flex items-center gap-1"><Clock size={14} /> {session.startTime} - {session.endTime}</span>
                     {session.mode === 'Online' ? (
                       <span className="flex items-center gap-1 text-blue-700 font-semibold"><Video size={14} /> Online Meeting</span>
@@ -146,7 +146,7 @@ const MemberBookings = () => {
                 )}
 
                 {upcomingStatuses.includes(session.status) && session.status !== 'Pending' && (
-                  <button className="p-2 border border-[#D3DFDA] hover:bg-[#E8E5DA] text-[#455250] rounded-lg transition-colors" title="Reschedule">
+                  <button className="p-2 border border-[#E7E5E4] hover:bg-[#FED7AA] text-[#78716C] rounded-lg transition-colors" title="Reschedule">
                     <RefreshCw size={18} />
                   </button>
                 )}

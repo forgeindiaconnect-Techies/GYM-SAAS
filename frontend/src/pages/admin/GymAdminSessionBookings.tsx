@@ -75,8 +75,8 @@ const GymAdminSessionBookings = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Session Bookings</h1>
-          <p className="text-[#455250] mt-1">Manage personal training appointments across your gym.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Session Bookings</h1>
+          <p className="text-[#78716C] mt-1">Manage personal training appointments across your gym.</p>
         </div>
       </div>
 
@@ -87,37 +87,36 @@ const GymAdminSessionBookings = () => {
             placeholder="Search by member, trainer, or booking ID..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#D3DFDA] rounded-xl pl-10 pr-4 py-3 text-[#202828] outline-none focus:border-[#164A4A]"
+            className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl pl-10 pr-4 py-3 text-[#292524] outline-none focus:border-[#F97316]"
           />
-          <Search className="absolute left-3 top-3.5 text-[#455250]" size={18} />
+          <Search className="absolute left-3 top-3.5 text-[#78716C]" size={18} />
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-sm text-[#455250] whitespace-nowrap">
-            <thead className="bg-[#F8FAFC] border-b border-[#D3DFDA] text-[#202828]">
+          <table className="w-full text-left text-sm text-[#78716C] whitespace-nowrap">
+            <thead className="bg-[#F8FAFC] border-b border-[#E7E5E4] text-[#292524]">
               <tr>
                 <th className="px-6 py-4 font-semibold">Booking ID</th>
                 <th className="px-6 py-4 font-semibold">Member</th>
                 <th className="px-6 py-4 font-semibold">Assigned Trainer</th>
                 <th className="px-6 py-4 font-semibold">Schedule</th>
                 <th className="px-6 py-4 font-semibold">Session Type</th>
-                <th className="px-6 py-4 font-semibold">Status</th>
                 <th className="px-6 py-4 font-semibold">Fee</th>
                 <th className="px-6 py-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D3DFDA]">
+            <tbody className="divide-y divide-[#E7E5E4]">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center">
-                    <Loader2 className="animate-spin text-[#164A4A] mx-auto" size={32} />
+                  <td colSpan={7} className="px-6 py-12 text-center">
+                    <Loader2 className="animate-spin text-[#F97316] mx-auto" size={32} />
                   </td>
                 </tr>
               ) : filteredBookings.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-[#455250]">
+                  <td colSpan={7} className="px-6 py-12 text-center text-[#78716C]">
                     No session bookings found.
                   </td>
                 </tr>
@@ -125,14 +124,14 @@ const GymAdminSessionBookings = () => {
                 filteredBookings.map((booking) => (
                   <tr key={booking._id} className="hover:bg-[#F8FAFC] transition-colors relative">
                     {actionLoading === booking._id && (
-                       <td colSpan={8} className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
-                         <Loader2 className="animate-spin text-[#164A4A]" size={24} />
+                       <td colSpan={7} className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
+                         <Loader2 className="animate-spin text-[#F97316]" size={24} />
                        </td>
                     )}
-                    <td className="px-6 py-4 font-mono text-[#164A4A] font-bold">{booking.bookingId || booking._id.slice(-6).toUpperCase()}</td>
-                    <td className="px-6 py-4 font-semibold text-[#202828]">
+                    <td className="px-6 py-4 font-mono text-[#F97316] font-bold">{booking.bookingId || booking._id.slice(-6).toUpperCase()}</td>
+                    <td className="px-6 py-4 font-semibold text-[#292524]">
                       <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 rounded-full bg-[#E8E5DA] flex items-center justify-center text-xs overflow-hidden shrink-0 border border-[#D3DFDA]">
+                        <div className="w-8 h-8 rounded-full bg-[#FED7AA] flex items-center justify-center text-xs overflow-hidden shrink-0 border border-[#E7E5E4]">
                           {booking.customerId?.profilePhoto ? (
                             <img src={booking.customerId.profilePhoto} alt="profile" className="w-full h-full object-cover" />
                           ) : (
@@ -143,37 +142,39 @@ const GymAdminSessionBookings = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="flex items-center"><User size={14} className="mr-2 text-[#455250]"/> {booking.trainerId?.name || 'Trainer'}</span>
+                      <span className="flex items-center"><User size={14} className="mr-2 text-[#78716C]"/> {booking.trainerId?.name || 'Trainer'}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1 text-xs">
-                        <p className="flex items-center text-[#202828]"><CalendarIcon size={12} className="mr-1.5 text-[#164A4A]"/> {formatDateDisplay(booking.date)}</p>
-                        <p className="flex items-center"><Clock size={12} className="mr-1.5 text-[#455250]"/> {booking.startTime}</p>
+                        <p className="flex items-center text-[#292524]"><CalendarIcon size={12} className="mr-1.5 text-[#F97316]"/> {formatDateDisplay(booking.date)}</p>
+                        <p className="flex items-center"><Clock size={12} className="mr-1.5 text-[#78716C]"/> {booking.startTime} - {booking.endTime}</p>
+                        {booking.checkInTime && (
+                          <p className="text-[11px] text-blue-700 font-semibold">
+                            In: {new Date(booking.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        )}
+                        {booking.checkOutTime && (
+                          <p className="text-[11px] text-emerald-700 font-semibold">
+                            Out: {new Date(booking.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-medium text-[#202828] capitalize">
+                    <td className="px-6 py-4 font-medium text-[#292524] capitalize">
                       <span className={`px-2.5 py-1 rounded-md text-xs font-semibold ${
                         booking.mode === 'Online' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-gray-100 text-gray-700 border border-gray-200'
                       }`}>
                         {booking.mode || 'Online'}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wider w-max block text-center ${getStatusColor(booking.status)}`}>
-                        {booking.status}
-                      </span>
-                      {booking.paymentStatus === 'Paid' && (
-                        <span className="text-[10px] font-bold text-green-600 block text-center mt-1">PAID</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 font-bold text-[#164A4A]">
+                    <td className="px-6 py-4 font-bold text-[#F97316]">
                       ₹{booking.fee}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setSelectedBooking(booking)}
-                          className="px-3.5 py-1.5 bg-[#F1F5F9] text-[#202828] border border-[#D3DFDA] hover:bg-[#E8E5DA] font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-sm"
+                          className="px-3.5 py-1.5 bg-[#F1F5F9] text-[#292524] border border-[#E7E5E4] hover:bg-[#FED7AA] font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-sm"
                         >
                           <Eye size={14} /> View Details
                         </button>
@@ -199,17 +200,17 @@ const GymAdminSessionBookings = () => {
       {/* Booking Details Modal */}
       {selectedBooking && (
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-[#D3DFDA] space-y-6 max-h-[85vh] overflow-y-auto my-auto custom-scrollbar">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-[#E7E5E4] space-y-6 max-h-[85vh] overflow-y-auto my-auto custom-scrollbar">
             <div className="flex justify-between items-center border-b pb-4">
               <div>
-                <h3 className="text-xl font-bold text-[#202828]">Session Booking Details</h3>
-                <p className="text-xs text-[#164A4A] font-mono font-bold mt-0.5">
+                <h3 className="text-xl font-bold text-[#292524]">Session Booking Details</h3>
+                <p className="text-xs text-[#F97316] font-mono font-bold mt-0.5">
                   ID: {selectedBooking.bookingId || selectedBooking._id}
                 </p>
               </div>
               <button 
                 onClick={() => setSelectedBooking(null)} 
-                className="p-2 text-[#455250] hover:bg-[#F1F5F9] rounded-full transition-colors"
+                className="p-2 text-[#78716C] hover:bg-[#F1F5F9] rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
@@ -217,9 +218,9 @@ const GymAdminSessionBookings = () => {
 
             <div className="space-y-4 text-sm text-[#334155]">
               {/* Member & Trainer & Session Details - Touching one by one */}
-              <div className="border border-[#D3DFDA] rounded-xl overflow-hidden divide-y divide-[#D3DFDA] bg-white shadow-sm">
+              <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm">
                 <div className="p-3.5 bg-white flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#E8E5DA] flex items-center justify-center text-sm font-bold overflow-hidden border border-[#D3DFDA] shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-[#FED7AA] flex items-center justify-center text-sm font-bold overflow-hidden border border-[#E7E5E4] shrink-0">
                     {selectedBooking.customerId?.profilePhoto ? (
                       <img src={selectedBooking.customerId.profilePhoto} alt="member" className="w-full h-full object-cover" />
                     ) : (
@@ -227,39 +228,39 @@ const GymAdminSessionBookings = () => {
                     )}
                   </div>
                   <div>
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider">Member Name</p>
-                    <p className="font-bold text-[#202828] text-sm">
+                    <p className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider">Member Name</p>
+                    <p className="font-bold text-[#292524] text-sm">
                       {selectedBooking.customerId ? `${selectedBooking.customerId.firstName} ${selectedBooking.customerId.lastName}` : 'Unknown Member'}
                     </p>
-                    {selectedBooking.customerId?.email && <p className="text-xs text-[#687B78]">{selectedBooking.customerId.email}</p>}
+                    {selectedBooking.customerId?.email && <p className="text-xs text-[#78716C]">{selectedBooking.customerId.email}</p>}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                   <div className="p-3.5 bg-white">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Assigned Trainer</p>
-                    <p className="font-bold text-[#202828] text-sm">{selectedBooking.trainerId?.name || 'Trainer'}</p>
-                    <p className="text-xs text-[#164A4A] mt-0.5">{selectedBooking.trainerId?.specialization || 'Fitness Coach'}</p>
+                    <p className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Assigned Trainer</p>
+                    <p className="font-bold text-[#292524] text-sm">{selectedBooking.trainerId?.name || 'Trainer'}</p>
+                    <p className="text-xs text-[#F97316] mt-0.5">{selectedBooking.trainerId?.specialization || 'Fitness Coach'}</p>
                   </div>
                   <div className="p-3.5 bg-white">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Session Mode</p>
-                    <p className="font-bold text-[#202828] text-sm capitalize">{selectedBooking.mode || 'Online'}</p>
+                    <p className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Session Mode</p>
+                    <p className="font-bold text-[#292524] text-sm capitalize">{selectedBooking.mode || 'Online'}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D3DFDA]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
                   <div className="p-3.5 bg-white">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Date & Time</p>
-                    <p className="font-bold text-[#202828] text-sm">{formatDateDisplay(selectedBooking.date)}</p>
-                    <p className="text-xs text-[#455250] mt-0.5">{selectedBooking.startTime} - {selectedBooking.endTime}</p>
+                    <p className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Date & Time</p>
+                    <p className="font-bold text-[#292524] text-sm">{formatDateDisplay(selectedBooking.date)}</p>
+                    <p className="text-xs text-[#78716C] mt-0.5">{selectedBooking.startTime} - {selectedBooking.endTime}</p>
                   </div>
                   <div className="p-3.5 bg-white">
-                    <p className="text-[11px] font-bold text-[#687B78] uppercase tracking-wider mb-1">Status & Fee</p>
+                    <p className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1">Status & Fee</p>
                     <div className="flex items-center gap-2">
                       <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedBooking.status)}`}>
                         {selectedBooking.status}
                       </span>
-                      <p className="font-bold text-[#164A4A] text-sm">₹{selectedBooking.fee} ({selectedBooking.paymentStatus || 'Pending'})</p>
+                      <p className="font-bold text-[#F97316] text-sm">₹{selectedBooking.fee} ({selectedBooking.paymentStatus || 'Pending'})</p>
                     </div>
                   </div>
                 </div>
@@ -292,7 +293,7 @@ const GymAdminSessionBookings = () => {
               )}
               <button 
                 onClick={() => setSelectedBooking(null)} 
-                className="px-5 py-2 bg-[#164A4A] text-white font-bold rounded-xl text-sm hover:bg-[#C6A77D] transition-colors"
+                className="px-5 py-2 bg-[#F97316] text-white font-bold rounded-xl text-sm hover:bg-[#EA580C] transition-colors"
               >
                 Close
               </button>

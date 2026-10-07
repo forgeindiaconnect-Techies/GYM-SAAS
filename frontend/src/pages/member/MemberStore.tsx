@@ -80,17 +80,17 @@ const MemberStore = () => {
   };
 
   if (enabled === null) {
-    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>;
+    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#F97316]" size={40} /></div>;
   }
 
   if (!enabled) {
     return (
-      <div className="max-w-xl mx-auto mt-16 bg-white border border-[#D3DFDA] rounded-3xl p-8 shadow-sm text-center">
-        <div className="w-20 h-20 bg-[#164A4A]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Store className="text-[#164A4A]" size={40} />
+      <div className="max-w-xl mx-auto mt-16 bg-white border border-[#E7E5E4] rounded-3xl p-8 shadow-sm text-center">
+        <div className="w-20 h-20 bg-[#F97316]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Store className="text-[#F97316]" size={40} />
         </div>
-        <h1 className="text-2xl font-bold text-[#202828] mb-3">Food & Merch Store Coming Soon</h1>
-        <p className="text-[#455250]">
+        <h1 className="text-2xl font-bold text-[#292524] mb-3">Food & Merch Store Coming Soon</h1>
+        <p className="text-[#78716C]">
           Your gym hasn't activated its online store yet. Check back soon!
         </p>
       </div>
@@ -101,7 +101,7 @@ const MemberStore = () => {
     <div className="space-y-6">
       {/* Toast notification */}
       {toast && (
-        <div className={`fixed bottom-6 right-6 z-[200] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white font-semibold text-sm transition-all animate-in slide-in-from-bottom-4 ${toast.type === 'success' ? 'bg-[#164A4A]' : 'bg-red-600'}`}>
+        <div className={`fixed bottom-6 right-6 z-[200] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white font-semibold text-sm transition-all animate-in slide-in-from-bottom-4 ${toast.type === 'success' ? 'bg-[#F97316]' : 'bg-red-600'}`}>
           {toast.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
           {toast.msg}
           <button onClick={() => setToast(null)} className="ml-2 opacity-70 hover:opacity-100"><X size={16} /></button>
@@ -110,16 +110,16 @@ const MemberStore = () => {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Gym Store</h1>
-          <p className="text-[#455250] mt-1">Supplements, merch & more from your gym.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Gym Store</h1>
+          <p className="text-[#78716C] mt-1">Supplements, merch & more from your gym.</p>
         </div>
         <button
           onClick={() => navigate('/member/store/cart')}
-          className="relative flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity"
+          className="relative flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white font-bold rounded-xl shadow-lg shadow-orange-200 hover:opacity-90 transition-opacity"
         >
           <ShoppingCart size={18} /> Cart
           {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 w-5 h-5 bg-white text-[#164A4A] rounded-full text-xs font-black flex items-center justify-center shadow">
+            <span className="absolute -top-2 -right-2 w-5 h-5 bg-white text-[#F97316] rounded-full text-xs font-black flex items-center justify-center shadow">
               {cartCount}
             </span>
           )}
@@ -128,21 +128,21 @@ const MemberStore = () => {
 
       <div className="flex flex-col lg:flex-row gap-3">
         <div className="relative flex-1">
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products..." className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none" />
-          <Search className="absolute left-3 top-2.5 text-[#455250]" size={16} />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products..." className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-9 pr-4 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none" />
+          <Search className="absolute left-3 top-2.5 text-[#78716C]" size={16} />
         </div>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className="bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none lg:w-52">
+        <select value={category} onChange={(e) => setCategory(e.target.value)} className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none lg:w-52">
           <option value="all">All Categories</option>
           {categories.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#F97316]" size={40} /></div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-[#D3DFDA] rounded-2xl">
-          <Store className="mx-auto text-[#164A4A]/30 mb-4" size={56} />
-          <p className="text-[#687B78] font-medium">No products are available right now.</p>
+        <div className="text-center py-20 bg-white border border-[#E7E5E4] rounded-2xl">
+          <Store className="mx-auto text-[#F97316]/30 mb-4" size={56} />
+          <p className="text-[#78716C] font-medium">No products are available right now.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -168,46 +168,46 @@ const MemberStore = () => {
             const isLow = totalStock > 0 && totalStock <= (p.lowStockThreshold || 5);
             const out = totalStock <= 0;
             return (
-              <div key={p._id} className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-                <button onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }} className="h-40 bg-[#F1F5F3] relative block w-full text-left">
+              <div key={p._id} className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+                <button onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }} className="h-40 bg-[#FFFDF8] relative block w-full text-left">
                   {p.image ? (
                     <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#164A4A]/30"><ImageIcon size={48} /></div>
+                    <div className="w-full h-full flex items-center justify-center text-[#F97316]/30"><ImageIcon size={48} /></div>
                   )}
                   <span className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-xs font-bold ${
-                    totalStock <= 0 ? 'bg-red-100 text-red-700' : isLow ? 'bg-amber-100 text-amber-700' : 'bg-[#D2B48C]/10 text-[#164A4A]'
+                    totalStock <= 0 ? 'bg-red-100 text-red-700' : isLow ? 'bg-amber-100 text-amber-700' : 'bg-[#FED7AA]/10 text-[#F97316]'
                   }`}>
                     {totalStock <= 0 ? 'Out of stock' : isLow ? `Low (${totalStock})` : `In stock (${totalStock})`}
                   </span>
                   {hasDiscount && (
-                    <span className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-[#164A4A] text-white">
+                    <span className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-[#F97316] text-white">
                       {Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% off
                     </span>
                   )}
                 </button>
                 <div className="p-4 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{p.productType || p.categoryName}</span>
+                    <span className="text-xs font-bold text-[#FED7AA] uppercase tracking-wide">{p.productType || p.categoryName}</span>
                   </div>
-                  <h3 className="font-bold text-[#202828] mt-0.5 truncate">{p.name}</h3>
+                  <h3 className="font-bold text-[#292524] mt-0.5 truncate">{p.name}</h3>
                   <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
                     {p.attributes && Object.entries(p.attributes).slice(0, 2).map(([k, v]) => (
                       <span key={k} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">{String(v)}</span>
                     ))}
                   </div>
-                  {p.brand && <p className="text-xs text-[#455250] mt-1">{p.brand}</p>}
+                  {p.brand && <p className="text-xs text-[#78716C] mt-1">{p.brand}</p>}
                   <div className="mt-2 flex items-center gap-2">
                     {p.hasVariants ? (
                        <>
-                         <span className="text-lg font-black text-[#164A4A]">From ₹{displayPrice}</span>
+                         <span className="text-lg font-black text-[#F97316]">From ₹{displayPrice}</span>
                          {hasDiscount && (
                            <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
                          )}
                        </>
                     ) : (
                        <>
-                         <span className="text-lg font-black text-[#164A4A]">₹{displayPrice}</span>
+                         <span className="text-lg font-black text-[#F97316]">₹{displayPrice}</span>
                          {hasDiscount && (
                            <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
                          )}
@@ -217,7 +217,7 @@ const MemberStore = () => {
                   <div className="mt-4 pt-3 border-t border-[#F1F5F9] flex gap-2">
                     <button
                       onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }}
-                      className="flex-1 px-3 py-2 bg-[#F1F5F3] text-[#6fa3a0] rounded-xl text-sm font-bold hover:bg-[#D3DFDA] transition-colors"
+                      className="flex-1 px-3 py-2 bg-[#FFFDF8] text-[#FED7AA] rounded-xl text-sm font-bold hover:bg-[#E7E5E4] transition-colors"
                     >
                       View
                     </button>
@@ -225,7 +225,7 @@ const MemberStore = () => {
                       <button
                         disabled={out || adding === p._id}
                         onClick={() => addToCart(p, 1)}
-                        className="flex-1 px-3 py-2 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 flex items-center justify-center gap-1"
+                        className="flex-1 px-3 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 flex items-center justify-center gap-1"
                       >
                         {adding === p._id ? <Loader2 className="animate-spin" size={15} /> : <Plus size={15} />} Add
                       </button>
@@ -243,22 +243,22 @@ const MemberStore = () => {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
             <button onClick={() => setSelected(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={22} /></button>
             <div className="flex gap-4 mb-4">
-              <div className="w-28 h-28 rounded-2xl overflow-hidden bg-[#F1F5F3] shrink-0 flex items-center justify-center border border-[#D3DFDA]">
-                {selected.image ? <img src={selected.image} alt={selected.name} className="w-full h-full object-cover" /> : <ImageIcon className="text-[#164A4A]/30" size={36} />}
+              <div className="w-28 h-28 rounded-2xl overflow-hidden bg-[#FFFDF8] shrink-0 flex items-center justify-center border border-[#E7E5E4]">
+                {selected.image ? <img src={selected.image} alt={selected.name} className="w-full h-full object-cover" /> : <ImageIcon className="text-[#F97316]/30" size={36} />}
               </div>
               <div>
-                <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{selected.productType || selected.categoryName}</span>
-                <h2 className="text-xl font-bold text-[#202828]">{selected.name}</h2>
+                <span className="text-xs font-bold text-[#FED7AA] uppercase tracking-wide">{selected.productType || selected.categoryName}</span>
+                <h2 className="text-xl font-bold text-[#292524]">{selected.name}</h2>
                 <div className="flex items-center gap-1.5 flex-wrap mt-1">
                   {selected.attributes && Object.entries(selected.attributes).map(([k, v]) => (
                     <span key={k} className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">{String(v)}</span>
                   ))}
                 </div>
-                {selected.brand && <p className="text-sm text-[#455250] mt-1">{selected.brand}</p>}
+                {selected.brand && <p className="text-sm text-[#78716C] mt-1">{selected.brand}</p>}
                 
                 {selected.hasVariants ? (
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="text-2xl font-black text-[#164A4A]">
+                    <span className="text-2xl font-black text-[#F97316]">
                       ₹{selectedVariant ? selectedVariant.price - (selectedVariant.discountPrice || 0) : 0}
                     </span>
                     {selectedVariant?.discountPrice != null && selectedVariant.discountPrice > 0 && (
@@ -267,7 +267,7 @@ const MemberStore = () => {
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 mt-2">
-                    <span className="text-2xl font-black text-[#164A4A]">
+                    <span className="text-2xl font-black text-[#F97316]">
                       ₹{selected.sellingPrice - (selected.discountPrice || 0)}
                     </span>
                     {selected.discountPrice != null && selected.discountPrice > 0 && (
@@ -275,14 +275,14 @@ const MemberStore = () => {
                     )}
                   </div>
                 )}
-                <p className="text-xs text-[#455250] mt-1">{selected.fulfilmentType || 'Gym Pickup'}</p>
+                <p className="text-xs text-[#78716C] mt-1">{selected.fulfilmentType || 'Gym Pickup'}</p>
               </div>
             </div>
-            {selected.description && <p className="text-sm text-[#455250] mb-4 bg-[#F2EFE8] p-3 rounded-xl border border-gray-100">{selected.description}</p>}
+            {selected.description && <p className="text-sm text-[#78716C] mb-4 bg-[#FFFDF8] p-3 rounded-xl border border-gray-100">{selected.description}</p>}
             
             {selected.hasVariants && (
               <div className="mb-4">
-                <label className="text-xs font-bold text-[#202828] mb-2 block">Select Option:</label>
+                <label className="text-xs font-bold text-[#292524] mb-2 block">Select Option:</label>
                 <div className="flex flex-wrap gap-2 max-h-[150px] overflow-y-auto">
                   {selected.variants.map((v: any) => {
                      const isOut = v.stock <= 0;
@@ -294,11 +294,11 @@ const MemberStore = () => {
                          disabled={isOut}
                          onClick={() => setSelectedVariant(v)}
                          className={`px-3 py-2 rounded-xl text-sm font-medium border text-left flex flex-col min-w-[120px] transition-all
-                           ${isSelected ? 'border-[#164A4A] bg-[#F1F5F3] text-[#6fa3a0] ring-2 ring-[#164A4A]/20' : isOut ? 'border-gray-200 bg-gray-50 text-gray-400 opacity-50 cursor-not-allowed' : 'border-gray-200 hover:border-[#6fa3a0] hover:bg-gray-50 text-[#202828]'}
+                           ${isSelected ? 'border-[#F97316] bg-[#FFFDF8] text-[#FED7AA] ring-2 ring-[#F97316]/20' : isOut ? 'border-gray-200 bg-gray-50 text-gray-400 opacity-50 cursor-not-allowed' : 'border-gray-200 hover:border-[#FED7AA] hover:bg-gray-50 text-[#292524]'}
                          `}
                        >
                          <span>{label}</span>
-                         <span className={isSelected ? 'text-[#164A4A] font-bold' : 'text-gray-500'}>₹{v.price - (v.discountPrice || 0)}</span>
+                         <span className={isSelected ? 'text-[#F97316] font-bold' : 'text-gray-500'}>₹{v.price - (v.discountPrice || 0)}</span>
                        </button>
                      )
                   })}
@@ -307,21 +307,21 @@ const MemberStore = () => {
             )}
 
             {selected.hasVariants ? (
-              <p className={`text-sm font-bold mb-5 ${!selectedVariant ? 'text-gray-400' : selectedVariant.stock <= 5 ? 'text-amber-600' : 'text-[#164A4A]'}`}>
+              <p className={`text-sm font-bold mb-5 ${!selectedVariant ? 'text-gray-400' : selectedVariant.stock <= 5 ? 'text-amber-600' : 'text-[#F97316]'}`}>
                 {!selectedVariant ? 'Please select an option' : selectedVariant.stock <= 5 ? `Hurry! Only ${selectedVariant.stock} left` : `${selectedVariant.stock} in stock`}
               </p>
             ) : (
-              <p className={`text-sm font-bold mb-5 ${selected.stock <= 0 ? 'text-[#6fa3a0]' : selected.stock <= 5 ? 'text-amber-600' : 'text-[#164A4A]'}`}>
+              <p className={`text-sm font-bold mb-5 ${selected.stock <= 0 ? 'text-[#FED7AA]' : selected.stock <= 5 ? 'text-amber-600' : 'text-[#F97316]'}`}>
                 {selected.stock <= 0 ? 'Out of stock' : selected.stock <= 5 ? `Hurry! Only ${selected.stock} left` : `${selected.stock} in stock`}
               </p>
             )}
 
             <div className="flex gap-3">
-              <button onClick={() => setSelected(null)} className="flex-1 py-3 bg-gray-100 text-[#455250] font-bold rounded-xl hover:bg-gray-200 transition-colors">Close</button>
+              <button onClick={() => setSelected(null)} className="flex-1 py-3 bg-gray-100 text-[#78716C] font-bold rounded-xl hover:bg-gray-200 transition-colors">Close</button>
               <button
                 disabled={selected.hasVariants ? (!selectedVariant || selectedVariant.stock <= 0) : (selected.stock <= 0)}
                 onClick={() => { addToCart(selected, 1, selectedVariant?._id); setSelected(null); }}
-                className="flex-1 py-3 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity disabled:opacity-40 flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white font-bold rounded-xl shadow-lg shadow-orange-200 hover:opacity-90 transition-opacity disabled:opacity-40 flex items-center justify-center gap-2"
               >
                 <ShoppingCart size={17} /> Add to Cart
               </button>

@@ -152,7 +152,7 @@ const GymMarketplace = () => {
   const currentSlide = HERO_SLIDES[slideIdx];
 
   return (
-    <div className="min-h-screen bg-[#F1F5F3]">
+    <div className="min-h-screen bg-[#FFFDF8]">
 
       {/* ===== HERO VIDEO SECTION ===== */}
       <div className="relative w-full h-screen overflow-hidden">
@@ -181,7 +181,7 @@ const GymMarketplace = () => {
 
         {/* Strong dark gradient overlays — ensures text is always readable */}
         <div className="absolute inset-0 bg-black/65 z-[1]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-[#F2EFE8] z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-[#FFFDF8] z-[1]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60 z-[1]" />
         {/* Gold glow at center */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.07)_0%,_transparent_65%)] z-[1] pointer-events-none" />
@@ -192,7 +192,7 @@ const GymMarketplace = () => {
             <button
               key={i}
               onClick={() => setSlideIdx(i)}
-              className={`rounded-full transition-all duration-500 ${i === slideIdx ? 'w-8 h-2 bg-[#164A4A]' : 'w-2 h-2 bg-white/30 hover:bg-white/60'}`}
+              className={`rounded-full transition-all duration-500 ${i === slideIdx ? 'w-8 h-2 bg-[#F97316]' : 'w-2 h-2 bg-white/30 hover:bg-white/60'}`}
             />
           ))}
         </div>
@@ -200,7 +200,7 @@ const GymMarketplace = () => {
         {/* Volume Control */}
         <button
           onClick={toggleMute}
-          className="absolute bottom-10 right-8 z-20 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#202828] hover:bg-white/20 transition-all"
+          className="absolute bottom-10 right-8 z-20 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#292524] hover:bg-white/20 transition-all"
           title={muted ? 'Unmute' : 'Mute'}
         >
           {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -212,7 +212,7 @@ const GymMarketplace = () => {
           {/* Slide label badge */}
           <div
             key={`badge-${slideIdx}`}
-            className="inline-flex items-center gap-2 bg-[#164A4A]/20 backdrop-blur-md border border-[#164A4A]/50 text-[#164A4A] text-xs font-bold px-4 py-2 rounded-full mb-6 tracking-widest uppercase"
+            className="inline-flex items-center gap-2 bg-[#F97316]/20 backdrop-blur-md border border-[#F97316]/50 text-[#F97316] text-xs font-bold px-4 py-2 rounded-full mb-6 tracking-widest uppercase"
             style={{ animation: 'fadeInUp 0.7s ease' }}
           >
             <Star size={12} className="fill-current" />
@@ -222,14 +222,14 @@ const GymMarketplace = () => {
           {/* Main Headline — changes with slide */}
           <h1
             key={`title-${slideIdx}`}
-            className="text-5xl md:text-7xl xl:text-8xl font-extrabold text-[#202828] leading-tight tracking-tight drop-shadow-2xl mb-4"
+            className="text-5xl md:text-7xl xl:text-8xl font-extrabold text-[#292524] leading-tight tracking-tight drop-shadow-2xl mb-4"
             style={{ animation: 'fadeInUp 0.8s ease' }}
           >
             {currentSlide.title}
             <br />
-            <span className="text-[#164A4A] relative inline-block">
+            <span className="text-[#F97316] relative inline-block">
               {currentSlide.highlight}
-              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-[#164A4A]/30 rounded-full blur-sm" />
+              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-[#F97316]/30 rounded-full blur-sm" />
             </span>
           </h1>
 
@@ -250,18 +250,18 @@ const GymMarketplace = () => {
           >
             <div className="flex flex-col sm:flex-row gap-2 bg-white/10 backdrop-blur-xl border border-white/25 rounded-2xl p-2 shadow-2xl">
               <div className="flex-1 relative">
-                <Search className="absolute left-4 top-3.5 text-[#455250]" size={20} />
+                <Search className="absolute left-4 top-3.5 text-[#78716C]" size={20} />
                 <input
                   type="text"
                   placeholder="Search gym, area, city or pincode..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-transparent pl-12 pr-4 py-3 text-[#202828] placeholder-[#888] outline-none text-base"
+                  className="w-full bg-transparent pl-12 pr-4 py-3 text-[#292524] placeholder-[#888] outline-none text-base"
                 />
               </div>
               <button
                 type="submit"
-                className="px-8 py-3 bg-[#164A4A] text-[#202828] font-extrabold rounded-xl hover:bg-[#f0c84a] transition-all shadow-[0_0_30px_rgba(212,175,55,0.5)] whitespace-nowrap text-sm tracking-wide"
+                className="px-8 py-3 bg-[#F97316] text-[#292524] font-extrabold rounded-xl hover:bg-[#f0c84a] transition-all shadow-[0_0_30px_rgba(212,175,55,0.5)] whitespace-nowrap text-sm tracking-wide"
               >
                 Search
               </button>
@@ -273,21 +273,21 @@ const GymMarketplace = () => {
             <button
               onClick={handleUseLocation}
               disabled={locationLoading}
-              className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-[#202828] rounded-full hover:bg-white/20 transition-all text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-[#292524] rounded-full hover:bg-white/20 transition-all text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {locationLoading ? (
-                <><Loader2 size={15} className="animate-spin text-[#164A4A]" /> Detecting location...</>
+                <><Loader2 size={15} className="animate-spin text-[#F97316]" /> Detecting location...</>
               ) : (
-                <><Navigation size={15} className="text-[#164A4A]" /> Use My Location</>
+                <><Navigation size={15} className="text-[#F97316]" /> Use My Location</>
               )}
             </button>
             <div className="h-4 w-px bg-white/20" />
-            <div className="text-sm text-[#455250]">
-              <span className="text-[#202828] font-bold text-lg">{gyms.length > 0 ? `${gyms.length}+` : '—'}</span> Gyms Listed
+            <div className="text-sm text-[#78716C]">
+              <span className="text-[#292524] font-bold text-lg">{gyms.length > 0 ? `${gyms.length}+` : '—'}</span> Gyms Listed
             </div>
             <div className="h-4 w-px bg-white/20" />
-            <div className="text-sm text-[#455250]">
-              <span className="text-[#202828] font-bold text-lg">100%</span> Verified
+            <div className="text-sm text-[#78716C]">
+              <span className="text-[#292524] font-bold text-lg">100%</span> Verified
             </div>
           </div>
         </div>
@@ -295,7 +295,7 @@ const GymMarketplace = () => {
         {/* Scroll Down Arrow */}
         <button
           onClick={scrollToGyms}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-[#455250] hover:text-[#164A4A] transition transition-colors"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-[#78716C] hover:text-[#F97316] transition transition-colors"
           style={{ animation: 'bounce 2s infinite' }}
         >
           <span className="text-[10px] tracking-[0.2em] uppercase font-semibold">Explore Gyms</span>
@@ -319,7 +319,7 @@ const GymMarketplace = () => {
       <div id="gym-results" className="max-w-7xl mx-auto px-4 py-16">
 
         {/* Sticky Search Bar */}
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-3 mb-10 shadow-xl sticky top-20 z-20">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-3 mb-10 shadow-xl sticky top-20 z-20">
           <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#555]" size={20} />
@@ -329,7 +329,7 @@ const GymMarketplace = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit(e as any)}
-                className="w-full bg-[#F1F5F3] border border-[#D3DFDA] rounded-xl pl-12 pr-4 py-3 text-[#202828] focus:outline-none focus:border-[#164A4A] transition-colors"
+                className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-12 pr-4 py-3 text-[#292524] focus:outline-none focus:border-[#F97316] transition-colors"
               />
             </div>
             <button
@@ -337,10 +337,10 @@ const GymMarketplace = () => {
               onClick={handleUseLocation}
               title="Near Me"
               disabled={locationLoading}
-              className="shrink-0 p-3 bg-[#FFFFFF] border border-[#D3DFDA] text-[#455250] hover:text-[#164A4A] hover:border-[#164A4A] rounded-xl transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="shrink-0 p-3 bg-[#FFFFFF] border border-[#E7E5E4] text-[#78716C] hover:text-[#F97316] hover:border-[#F97316] rounded-xl transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {locationLoading ? (
-                <Loader2 size={18} className="animate-spin text-[#164A4A]" />
+                <Loader2 size={18} className="animate-spin text-[#F97316]" />
               ) : (
                 <Navigation size={18} />
               )}
@@ -350,7 +350,7 @@ const GymMarketplace = () => {
             </button>
             <button
               type="submit"
-              className="shrink-0 px-7 py-3 bg-[#164A4A] text-[#202828] font-bold rounded-xl hover:bg-[#C6A77D] transition-colors whitespace-nowrap text-sm"
+              className="shrink-0 px-7 py-3 bg-[#F97316] text-[#292524] font-bold rounded-xl hover:bg-[#EA580C] transition-colors whitespace-nowrap text-sm"
             >
               Search
             </button>
@@ -360,12 +360,12 @@ const GymMarketplace = () => {
         {/* Results Header */}
         <div id="gym-results" className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-extrabold text-[#202828]">
+            <h2 className="text-3xl font-extrabold text-[#292524]">
               {loading ? 'Searching...' : `${gyms.length} Gym${gyms.length !== 1 ? 's' : ''} Found`}
             </h2>
-            <p className="text-[#455250] text-sm mt-1">
+            <p className="text-[#78716C] text-sm mt-1">
               {locationCity
-                ? <span>Gyms near <span className="text-[#164A4A] font-semibold">{locationCity}</span></span>
+                ? <span>Gyms near <span className="text-[#F97316] font-semibold">{locationCity}</span></span>
                 : 'Verified fitness centres ready for you'
               }
             </p>
@@ -373,7 +373,7 @@ const GymMarketplace = () => {
           {locationCity && (
             <button
               onClick={() => { setLocationCity(''); setSearchQuery(''); fetchGyms(''); }}
-              className="text-xs text-[#455250] hover:text-[#164A4A] border border-[#D3DFDA] px-3 py-1.5 rounded-lg transition-colors"
+              className="text-xs text-[#78716C] hover:text-[#F97316] border border-[#E7E5E4] px-3 py-1.5 rounded-lg transition-colors"
             >
               Clear Location ✕
             </button>
@@ -383,21 +383,21 @@ const GymMarketplace = () => {
         {/* Results Grid */}
         {loading ? (
           <div className="flex flex-col justify-center items-center py-28 gap-4">
-            <Loader2 className="animate-spin text-[#164A4A]" size={48} />
-            <p className="text-[#455250]">Finding the best gyms for you...</p>
+            <Loader2 className="animate-spin text-[#F97316]" size={48} />
+            <p className="text-[#78716C]">Finding the best gyms for you...</p>
           </div>
         ) : gyms.length === 0 ? (
-          <div className="text-center py-28 bg-[#FFFFFF] rounded-2xl border border-[#D3DFDA]">
-            <MapPin size={56} className="mx-auto text-[#E8E5DA] mb-4" />
-            <h3 className="text-2xl font-bold text-[#202828] mb-2">No Gyms Found</h3>
-            <p className="text-[#455250]">Try adjusting your search or filters to find gyms in your area.</p>
+          <div className="text-center py-28 bg-[#FFFFFF] rounded-2xl border border-[#E7E5E4]">
+            <MapPin size={56} className="mx-auto text-[#FED7AA] mb-4" />
+            <h3 className="text-2xl font-bold text-[#292524] mb-2">No Gyms Found</h3>
+            <p className="text-[#78716C]">Try adjusting your search or filters to find gyms in your area.</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {gyms.map((gym) => (
               <div
                 key={gym._id}
-                className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl overflow-hidden hover:border-[#164A4A]/60 hover:shadow-[0_0_35px_rgba(212,175,55,0.1)] transition-all duration-400 group flex flex-col"
+                className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl overflow-hidden hover:border-[#F97316]/60 hover:shadow-[0_0_35px_rgba(212,175,55,0.1)] transition-all duration-400 group flex flex-col"
               >
                 {/* Card image */}
                 <div className="h-52 bg-[#FFFFFF] relative overflow-hidden">
@@ -416,14 +416,14 @@ const GymMarketplace = () => {
 
                   {/* Rating badge */}
                   <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2.5 py-1.5 rounded-full flex items-center gap-1 border border-white/10">
-                    <Star size={13} className="text-[#164A4A] fill-[#EF4444]" />
+                    <Star size={13} className="text-[#F97316] fill-[#EF4444]" />
                     <span className="text-white text-xs font-bold">{gym.rating || 4.5}</span>
                     {gym.reviewCount > 0 && <span className="text-white/70 text-[10px] ml-0.5">({gym.reviewCount})</span>}
                   </div>
 
                   {/* Gym type badge */}
                   {gym.gymType && (
-                    <div className="absolute top-3 left-3 bg-[#164A4A] text-white px-2.5 py-1 rounded-full text-xs font-bold shadow">
+                    <div className="absolute top-3 left-3 bg-[#F97316] text-white px-2.5 py-1 rounded-full text-xs font-bold shadow">
                       {gym.gymType}
                     </div>
                   )}
@@ -431,20 +431,20 @@ const GymMarketplace = () => {
 
                 {/* Card body */}
                 <div className="p-5 flex-1 flex flex-col">
-                  <h3 className="text-xl font-bold text-[#202828] group-hover:text-[#164A4A] transition transition-colors mb-2 leading-snug">
+                  <h3 className="text-xl font-bold text-[#292524] group-hover:text-[#F97316] transition transition-colors mb-2 leading-snug">
                     {gym.name}
                   </h3>
-                  <div className="flex items-start text-[#455250] text-sm mb-3">
-                    <MapPin size={14} className="mr-1.5 shrink-0 mt-0.5 text-[#164A4A]" />
+                  <div className="flex items-start text-[#78716C] text-sm mb-3">
+                    <MapPin size={14} className="mr-1.5 shrink-0 mt-0.5 text-[#F97316]" />
                     <span className="line-clamp-1">{gym.location?.address}, {gym.location?.city}</span>
                   </div>
 
                   {gym.branches && gym.branches.length > 0 && (
                     <div className="mb-4">
-                      <p className="text-[10px] font-bold text-[#455250] mb-1.5 uppercase tracking-wider">Other Branches:</p>
+                      <p className="text-[10px] font-bold text-[#78716C] mb-1.5 uppercase tracking-wider">Other Branches:</p>
                       <div className="flex flex-wrap gap-1.5">
                         {gym.branches.map((branch: any) => (
-                          <span key={branch._id} className="bg-[#F2EFE8] text-[#164A4A] text-[10px] font-bold px-2 py-1 rounded-md border border-[#D3DFDA] flex items-center gap-1">
+                          <span key={branch._id} className="bg-[#FFFDF8] text-[#F97316] text-[10px] font-bold px-2 py-1 rounded-md border border-[#E7E5E4] flex items-center gap-1">
                             <MapPin size={10} /> {branch.location?.area || branch.location?.city || branch.branchName}
                           </span>
                         ))}
@@ -455,12 +455,12 @@ const GymMarketplace = () => {
                   {/* Facility tags */}
                   <div className="flex flex-wrap gap-2 mb-6">
                     {gym.facilities?.slice(0, 3).map((facility: string, idx: number) => (
-                      <span key={idx} className="bg-[#FFFFFF] text-[#455250] text-xs px-2.5 py-1 rounded-lg border border-[#2e2e2e]">
+                      <span key={idx} className="bg-[#FFFFFF] text-[#78716C] text-xs px-2.5 py-1 rounded-lg border border-[#2e2e2e]">
                         {facility}
                       </span>
                     ))}
                     {gym.facilities?.length > 3 && (
-                      <span className="bg-[#164A4A]/10 text-[#164A4A] text-xs px-2.5 py-1 rounded-lg border border-[#164A4A]/30 font-medium">
+                      <span className="bg-[#F97316]/10 text-[#F97316] text-xs px-2.5 py-1 rounded-lg border border-[#F97316]/30 font-medium">
                         +{gym.facilities.length - 3} more
                       </span>
                     )}
@@ -469,10 +469,10 @@ const GymMarketplace = () => {
                   {/* Price + CTA */}
                   <div className="mt-auto pt-4 border-t border-[#2a2a2a] flex items-center justify-between">
                     <div>
-                      <p className="text-[10px] text-[#455250] uppercase tracking-widest mb-0.5">Starting from</p>
-                      <p className="text-xl font-extrabold text-[#202828]">
+                      <p className="text-[10px] text-[#78716C] uppercase tracking-widest mb-0.5">Starting from</p>
+                      <p className="text-xl font-extrabold text-[#292524]">
                         ₹{gym.subscriptionPlans?.[0]?.price || '0'}
-                        <span className="text-xs font-normal text-[#455250] ml-1">
+                        <span className="text-xs font-normal text-[#78716C] ml-1">
                           /{gym.subscriptionPlans?.[0]?.duration || 'mo'}
                         </span>
                       </p>
@@ -480,13 +480,13 @@ const GymMarketplace = () => {
                     <div className="flex flex-col gap-2">
                       <Link
                         to={`/gyms/${gym._id}`}
-                        className="px-5 py-2 text-center bg-[#FFFFFF] text-[#202828] hover:bg-[#164A4A] hover:text-white rounded-xl text-sm font-bold transition-all border border-[#D3DFDA] hover:border-[#164A4A]"
+                        className="px-5 py-2 text-center bg-[#FFFFFF] text-[#292524] hover:bg-[#F97316] hover:text-white rounded-xl text-sm font-bold transition-all border border-[#E7E5E4] hover:border-[#F97316]"
                       >
                         View Details
                       </Link>
                       <button
                         onClick={() => setEnquiryGym({ id: gym._id, name: gym.name })}
-                        className="px-5 py-2 text-center bg-[#164A4A] text-white hover:bg-[#C6A77D] rounded-xl text-sm font-bold transition-all border border-[#164A4A]"
+                        className="px-5 py-2 text-center bg-[#F97316] text-white hover:bg-[#EA580C] rounded-xl text-sm font-bold transition-all border border-[#F97316]"
                       >
                         Enquire Now
                       </button>

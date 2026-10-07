@@ -329,7 +329,7 @@ const GymStoreProducts = () => {
     setForm({ ...form, variants: newVariants });
   };
 
-  const inputCls = 'w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-lg px-3 py-2 text-xs text-[#202828] focus:border-[#164A4A] outline-none';
+  const inputCls = 'w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-lg px-3 py-2 text-xs text-[#292524] focus:border-[#F97316] outline-none';
 
   const typeConfig = PRODUCT_TYPE_CONFIG[form.productType] || PRODUCT_TYPE_CONFIG['Other'];
 
@@ -337,10 +337,10 @@ const GymStoreProducts = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202828] tracking-tight">Products</h1>
-          <p className="text-[#455250] mt-1">Add, edit and manage your gym store products.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Products</h1>
+          <p className="text-[#78716C] mt-1">Add, edit and manage your gym store products.</p>
         </div>
-        <button onClick={openCreate} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity">
+        <button onClick={openCreate} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white font-bold rounded-xl shadow-lg shadow-orange-200 hover:opacity-90 transition-opacity">
           <Plus size={18} /> Add Product
         </button>
       </div>
@@ -351,26 +351,26 @@ const GymStoreProducts = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search products..."
-            className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl pl-9 pr-4 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none"
+            className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-9 pr-4 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none"
           />
-          <Search className="absolute left-3 top-2.5 text-[#455250]" size={16} />
+          <Search className="absolute left-3 top-2.5 text-[#78716C]" size={16} />
         </div>
-        <select value={filterProductType} onChange={(e) => setFilterProductType(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none lg:w-48">
+        <select value={filterProductType} onChange={(e) => setFilterProductType(e.target.value)} className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none lg:w-48">
           <option value="all">All Types</option>
           {Object.keys(PRODUCT_TYPE_CONFIG).map(type => (
             <option key={type} value={type}>{type}</option>
           ))}
         </select>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none lg:w-48">
+        <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none lg:w-48">
           <option value="all">All Categories</option>
           {categories.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none lg:w-40">
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none lg:w-40">
           <option value="all">All Status</option>
           <option value="Active">Active</option>
           <option value="Inactive">Inactive</option>
         </select>
-        <select value={inventory} onChange={(e) => setInventory(e.target.value)} className="w-full bg-[#F2EFE8] border border-[#D3DFDA] rounded-xl px-3 py-2 text-sm text-[#202828] focus:border-[#164A4A] outline-none lg:w-48">
+        <select value={inventory} onChange={(e) => setInventory(e.target.value)} className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none lg:w-48">
           <option value="all">All Inventory</option>
           <option value="inStock">In Stock</option>
           <option value="outOfStock">Out of Stock</option>
@@ -379,11 +379,11 @@ const GymStoreProducts = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#F97316]" size={40} /></div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-[#D3DFDA] rounded-2xl">
-          <Package className="mx-auto text-[#164A4A]/30 mb-4" size={56} />
-          <p className="text-[#687B78] font-medium">No products found.</p>
+        <div className="text-center py-20 bg-white border border-[#E7E5E4] rounded-2xl">
+          <Package className="mx-auto text-[#F97316]/30 mb-4" size={56} />
+          <p className="text-[#78716C] font-medium">No products found.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -408,60 +408,60 @@ const GymStoreProducts = () => {
 
             const isLow = totalStock > 0 && totalStock <= p.lowStockThreshold;
             return (
-              <div key={p._id} className="bg-white border border-[#D3DFDA] rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-                <div className="h-40 bg-[#F1F5F3] relative">
+              <div key={p._id} className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+                <div className="h-40 bg-[#FFFDF8] relative">
                   {p.image ? (
                     <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#164A4A]/30"><ImageIcon size={48} /></div>
+                    <div className="w-full h-full flex items-center justify-center text-[#F97316]/30"><ImageIcon size={48} /></div>
                   )}
                   <span className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-xs font-bold ${
-                    totalStock <= 0 ? 'bg-red-100 text-red-700' : isLow ? 'bg-amber-100 text-amber-700' : 'bg-[#D2B48C]/10 text-[#164A4A]'
+                    totalStock <= 0 ? 'bg-red-100 text-red-700' : isLow ? 'bg-amber-100 text-amber-700' : 'bg-[#FED7AA]/10 text-[#F97316]'
                   }`}>
                     {totalStock <= 0 ? 'Out of stock' : isLow ? `Low (${totalStock})` : `In stock (${totalStock})`}
                   </span>
                   {hasDiscount && (
-                    <span className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-[#164A4A] text-white">
+                    <span className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-[#F97316] text-white">
                       {Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% off
                     </span>
                   )}
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-[#6fa3a0] uppercase tracking-wide">{p.productType || p.categoryName}</span>
-                    <span className={`text-xs font-bold ${p.status === 'Active' ? 'text-[#164A4A]' : 'text-gray-400'}`}>{p.status}</span>
+                    <span className="text-xs font-bold text-[#FED7AA] uppercase tracking-wide">{p.productType || p.categoryName}</span>
+                    <span className={`text-xs font-bold ${p.status === 'Active' ? 'text-[#F97316]' : 'text-gray-400'}`}>{p.status}</span>
                   </div>
-                  <h3 className="font-bold text-[#202828] truncate">{p.name}</h3>
-                  {p.brand && <p className="text-xs text-[#455250]">{p.brand}</p>}
+                  <h3 className="font-bold text-[#292524] truncate">{p.name}</h3>
+                  {p.brand && <p className="text-xs text-[#78716C]">{p.brand}</p>}
                   
                   <div className="mt-2 flex items-center gap-2">
                     {p.hasVariants ? (
                        <>
-                         <span className="text-lg font-black text-[#164A4A]">From ₹{displayPrice}</span>
+                         <span className="text-lg font-black text-[#F97316]">From ₹{displayPrice}</span>
                          {hasDiscount && (
                            <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
                          )}
                        </>
                     ) : (
                        <>
-                         <span className="text-lg font-black text-[#164A4A]">₹{displayPrice}</span>
+                         <span className="text-lg font-black text-[#F97316]">₹{displayPrice}</span>
                          {hasDiscount && (
                            <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
                          )}
                        </>
                     )}
                   </div>
-                  <div className="mt-3 text-xs text-[#455250] grid grid-cols-2 gap-1">
+                  <div className="mt-3 text-xs text-[#78716C] grid grid-cols-2 gap-1">
                     <span>Channels: {p.availability}</span>
                     <span>Fulfil: {p.fulfilmentType}</span>
                   </div>
                   {p.hasVariants && (
-                    <div className="mt-2 text-xs font-bold text-[#6fa3a0]">
+                    <div className="mt-2 text-xs font-bold text-[#FED7AA]">
                       {p.variants.length} Variants Available
                     </div>
                   )}
                   <div className="mt-4 flex gap-2 pt-3 border-t border-[#F1F5F9]">
-                    <button onClick={() => openEdit(p)} className="flex-1 px-3 py-1.5 bg-blue-50 text-[#D2B48C] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
+                    <button onClick={() => openEdit(p)} className="flex-1 px-3 py-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
                       <Pencil size={13} /> Edit
                     </button>
                     <button onClick={() => deleteProduct(p)} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
@@ -481,15 +481,15 @@ const GymStoreProducts = () => {
             <button onClick={() => setModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
               <X size={20} />
             </button>
-            <h2 className="text-xl font-bold text-[#202828] mb-5">{editing ? 'Edit Product' : 'Add Product'}</h2>
+            <h2 className="text-xl font-bold text-[#292524] mb-5">{editing ? 'Edit Product' : 'Add Product'}</h2>
 
             <div className="space-y-6">
               {/* PRODUCT INFORMATION */}
               <div>
-                <h3 className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-3">Product Information</h3>
+                <h3 className="text-xs font-bold text-[#F97316] uppercase tracking-wider mb-3">Product Information</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Product Type *</label>
+                    <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Product Type *</label>
                     <select value={form.productType} onChange={(e) => setForm({ ...form, productType: e.target.value, attributes: {}, variants: [], hasVariants: false })} className={inputCls}>
                       {Object.keys(PRODUCT_TYPE_CONFIG).map(type => (
                         <option key={type} value={type}>{type}</option>
@@ -497,15 +497,15 @@ const GymStoreProducts = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Product Name *</label>
+                    <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Product Name *</label>
                     <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} placeholder="e.g., Whey Protein 1kg" />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Brand</label>
+                    <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Brand</label>
                     <input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className={inputCls} placeholder="e.g., MuscleBlaze" />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Description</label>
+                    <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Description</label>
                     <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={`${inputCls} resize-none`} rows={2} placeholder="Product description shown to members" />
                   </div>
                 </div>
@@ -514,11 +514,11 @@ const GymStoreProducts = () => {
               {/* PRODUCT DETAILS (DYNAMIC) */}
               {typeConfig.fields.length > 0 && (
                 <div className="pt-4 border-t border-gray-100">
-                  <h3 className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-3">Product Details</h3>
+                  <h3 className="text-xs font-bold text-[#F97316] uppercase tracking-wider mb-3">Product Details</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {typeConfig.fields.map(field => (
                       <div key={field.name}>
-                        <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">{field.label}</label>
+                        <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">{field.label}</label>
                         {field.type === 'select' ? (
                           <select value={form.attributes[field.name] || ''} onChange={(e) => setForm({ ...form, attributes: { ...form.attributes, [field.name]: e.target.value } })} className={inputCls}>
                             <option value="">Select {field.label}</option>
@@ -539,8 +539,8 @@ const GymStoreProducts = () => {
                   <label className="flex items-center gap-2 cursor-pointer w-max">
                     <input type="checkbox" checked={form.hasVariants} onChange={(e) => {
                       setForm({ ...form, hasVariants: e.target.checked });
-                    }} className="accent-[#164A4A] w-4 h-4 rounded" />
-                    <span className="text-sm font-bold text-[#202828]">This product has multiple options/variants</span>
+                    }} className="accent-[#F97316] w-4 h-4 rounded" />
+                    <span className="text-sm font-bold text-[#292524]">This product has multiple options/variants</span>
                   </label>
                 </div>
               )}
@@ -548,12 +548,12 @@ const GymStoreProducts = () => {
               {form.hasVariants ? (
                 <div className="pt-4 border-t border-gray-100">
                   <div className="flex justify-between items-center mb-3">
-                     <h3 className="text-xs font-bold text-[#164A4A] uppercase tracking-wider">Variants</h3>
-                     <button onClick={addVariantRow} type="button" className="px-3 py-1.5 bg-blue-50 text-[#D2B48C] rounded-lg hover:bg-blue-100 text-xs font-bold flex items-center gap-1"><Plus size={14}/> Add Variant</button>
+                     <h3 className="text-xs font-bold text-[#F97316] uppercase tracking-wider">Variants</h3>
+                     <button onClick={addVariantRow} type="button" className="px-3 py-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 text-xs font-bold flex items-center gap-1"><Plus size={14}/> Add Variant</button>
                   </div>
-                  <div className="overflow-x-auto rounded-lg border border-[#D3DFDA]">
+                  <div className="overflow-x-auto rounded-lg border border-[#E7E5E4]">
                     <table className="w-full text-left text-xs whitespace-nowrap">
-                      <thead className="bg-[#F1F5F3] text-[#455250]">
+                      <thead className="bg-[#FFFDF8] text-[#78716C]">
                         <tr>
                           {typeConfig.variantFields.map(f => <th key={f.name} className="p-2 font-semibold">{f.label}</th>)}
                           <th className="p-2 font-semibold">Price (₹)</th>
@@ -569,16 +569,16 @@ const GymStoreProducts = () => {
                            </tr>
                         ) : (
                           form.variants.map((v, idx) => (
-                             <tr key={idx} className="border-t border-[#D3DFDA]">
+                             <tr key={idx} className="border-t border-[#E7E5E4]">
                                 {typeConfig.variantFields.map(f => (
                                    <td key={f.name} className="p-2">
-                                     <input value={v.attributes[f.name] || ''} onChange={(e) => updateVariant(idx, 'attributes', { ...v.attributes, [f.name]: e.target.value })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-[#164A4A] min-w-[100px]" placeholder={f.placeholder} />
+                                     <input value={v.attributes[f.name] || ''} onChange={(e) => updateVariant(idx, 'attributes', { ...v.attributes, [f.name]: e.target.value })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-[#F97316] min-w-[100px]" placeholder={f.placeholder} />
                                    </td>
                                 ))}
                                 <td className="p-2"><input type="number" value={v.price} onChange={(e) => updateVariant(idx, 'price', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
                                 <td className="p-2"><input type="number" value={v.discountPrice} onChange={(e) => updateVariant(idx, 'discountPrice', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="Optional" /></td>
                                 <td className="p-2"><input type="number" value={v.stock} onChange={(e) => updateVariant(idx, 'stock', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
-                                <td className="p-2 text-center"><button type="button" onClick={() => removeVariant(idx)} className="text-[#6fa3a0] hover:text-red-700 bg-red-50 p-1.5 rounded"><Trash2 size={14}/></button></td>
+                                <td className="p-2 text-center"><button type="button" onClick={() => removeVariant(idx)} className="text-[#FED7AA] hover:text-red-700 bg-red-50 p-1.5 rounded"><Trash2 size={14}/></button></td>
                              </tr>
                           ))
                         )}
@@ -588,22 +588,22 @@ const GymStoreProducts = () => {
                 </div>
               ) : (
                 <div className="pt-4 border-t border-gray-100">
-                  <h3 className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-3">Pricing & Inventory</h3>
+                  <h3 className="text-xs font-bold text-[#F97316] uppercase tracking-wider mb-3">Pricing & Inventory</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Selling Price (₹) *</label>
+                      <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Selling Price (₹) *</label>
                       <input type="number" min={0} value={form.sellingPrice} onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })} className={inputCls} placeholder="0" />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Discount Amount (₹)</label>
+                      <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Discount Amount (₹)</label>
                       <input type="number" min={0} value={form.discountPrice} onChange={(e) => setForm({ ...form, discountPrice: e.target.value })} className={inputCls} placeholder="Optional" />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Stock Quantity *</label>
+                      <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Stock Quantity *</label>
                       <input type="number" min={0} value={form.stock} onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })} className={inputCls} />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Low Stock Alert At</label>
+                      <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Low Stock Alert At</label>
                       <input type="number" min={0} value={form.lowStockThreshold} onChange={(e) => setForm({ ...form, lowStockThreshold: Number(e.target.value) })} className={inputCls} />
                     </div>
                   </div>
@@ -612,17 +612,17 @@ const GymStoreProducts = () => {
 
               {/* SALES SETTINGS */}
               <div className="pt-4 border-t border-gray-100">
-                <h3 className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-3">Sales Settings</h3>
+                <h3 className="text-xs font-bold text-[#F97316] uppercase tracking-wider mb-3">Sales Settings</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Status</label>
+                    <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Status</label>
                     <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className={inputCls}>
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Sell Online</label>
+                    <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Sell Online</label>
                     <select value={form.availability} onChange={(e) => setForm({ ...form, availability: e.target.value })} className={inputCls}>
                       <option value="Both">Both Online & In-Gym</option>
                       <option value="Online">Online Only</option>
@@ -630,7 +630,7 @@ const GymStoreProducts = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-[#687B78] uppercase tracking-wider mb-1 block">Fulfilment</label>
+                    <label className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider mb-1 block">Fulfilment</label>
                     <select value={form.fulfilmentType} onChange={(e) => setForm({ ...form, fulfilmentType: e.target.value })} className={inputCls}>
                       <option value="Gym Pickup">Gym Pickup</option>
                       <option value="Delivery">Delivery</option>
@@ -641,21 +641,21 @@ const GymStoreProducts = () => {
               </div>
               
               <div className="pt-4 border-t border-gray-100">
-                <h3 className="text-xs font-bold text-[#164A4A] uppercase tracking-wider mb-3">Product Image</h3>
+                <h3 className="text-xs font-bold text-[#F97316] uppercase tracking-wider mb-3">Product Image</h3>
                 <div className="flex items-center gap-3">
-                  <div className="w-16 h-16 rounded-xl border border-[#D3DFDA] overflow-hidden bg-[#F1F5F3] flex items-center justify-center shrink-0">
+                  <div className="w-16 h-16 rounded-xl border border-[#E7E5E4] overflow-hidden bg-[#FFFDF8] flex items-center justify-center shrink-0">
                     {previewUrl ? (
                       <img src={previewUrl} alt="preview" className="w-full h-full object-cover" />
                     ) : (
-                      <ImageIcon className="text-[#164A4A]/30" size={24} />
+                      <ImageIcon className="text-[#F97316]/30" size={24} />
                     )}
                   </div>
                   <div className="flex-1 flex flex-col gap-2">
                     <div className="flex items-center gap-2">
                       {uploadingImg ? (
-                        <Loader2 className="animate-spin text-[#164A4A]" size={16} />
+                        <Loader2 className="animate-spin text-[#F97316]" size={16} />
                       ) : (
-                        <label className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#F1F5F3] border border-[#D3DFDA] rounded-lg text-xs font-bold text-[#164A4A] cursor-pointer hover:bg-[#D3DFDA] transition-colors">
+                        <label className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-lg text-xs font-bold text-[#F97316] cursor-pointer hover:bg-[#E7E5E4] transition-colors">
                           <Upload size={14} /> Upload Image
                           <input type="file" accept="image/*" className="hidden" onChange={onFileUpload} />
                         </label>
@@ -668,10 +668,10 @@ const GymStoreProducts = () => {
             </div>
 
             <div className="mt-8 flex gap-3">
-              <button onClick={() => setModalOpen(false)} className="flex-1 py-3 bg-gray-100 text-[#455250] text-sm font-bold rounded-xl hover:bg-gray-200 transition-colors">
+              <button onClick={() => setModalOpen(false)} className="flex-1 py-3 bg-gray-100 text-[#78716C] text-sm font-bold rounded-xl hover:bg-gray-200 transition-colors">
                 Cancel
               </button>
-              <button onClick={saveProduct} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#164A4A] to-[#6fa3a0] text-white text-sm font-bold rounded-xl shadow-lg shadow-green-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+              <button onClick={saveProduct} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white text-sm font-bold rounded-xl shadow-lg shadow-orange-200 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                 {saving ? <Loader2 className="animate-spin" size={18} /> : <RefreshCw size={18} />}
                 {editing ? 'Update Product' : 'Create Product'}
               </button>

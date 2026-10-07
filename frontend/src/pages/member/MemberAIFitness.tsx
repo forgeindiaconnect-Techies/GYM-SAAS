@@ -1,246 +1,190 @@
 import { useState, useEffect } from 'react';
-import { Bot, Activity, Zap, CheckCircle2, AlertCircle, Dumbbell, Utensils, Loader2, Clock, Lock, ArrowRight, ArrowLeft, Edit3, X, Trophy, TrendingDown, Calendar } from 'lucide-react';
+import { 
+  Bot, Activity, Zap, CheckCircle2, AlertCircle, Dumbbell, 
+  Utensils, Loader2, Clock, Lock, ArrowRight, 
+  User, HeartPulse, ShieldAlert, Sparkles,
+  Calendar
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 
-import MemberProfile from './MemberProfile';
-
 const MemberAIFitness = () => {
-  const [step, setStep] = useState(1); // 1 = Form, 2 = Generating, 3 = View Plan
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [activeStep, setActiveStep] = useState<number>(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [recommendation, setRecommendation] = useState<any>(null);
-  const [history, setHistory] = useState<any[]>([]);
-  const [isSaving, setIsSaving] = useState(false);
-  
-  // Try to get user's name from local storage
-  const userStr = localStorage.getItem('aigym_user');
-  let defaultName = '';
-  if (userStr) {
-    try { 
-      const u = JSON.parse(userStr);
-      defaultName = `${u.firstName || ''} ${u.lastName || ''}`.trim();
-    } catch(e) {}
-  }
-  
+  const [loading, setLoading] = useState(true);
+
+  // Form State
   const [formData, setFormData] = useState({
-    // Step 1
-    fullName: defaultName,
-    phone: '',
-    address: '',
-    age: '',
+    // 1. Personal & Physical
+    fullName: '',
+    age: '28',
     gender: 'Male',
-    height: '',
-    weight: '',
-    // Step 2
+    height: '175',
+    weight: '74',
+    // 2. Goal & Experience
     fitnessGoal: 'Weight Loss',
-    targetWeight: '',
+    currentFitnessLevel: 'Beginner',
+    workoutExperience: '1-3 years',
+    targetWeight: '68',
     targetTimeline: '3 Months',
-    // Step 3
-    experienceLevel: 'Beginner',
-    activityLevel: 'Sedentary',
-    availableWorkoutDays: '3 Days',
+    // 3. Body Measurements
+    bodyMeasurements: {
+      chest: '38 in',
+      waist: '33 in',
+      hips: '39 in',
+      arms: '13.5 in',
+      thighs: '22 in',
+    },
+    // 4. Activity & Schedule
+    activityLevel: 'Moderately Active',
+    availableWorkoutDays: '4 Days',
     preferredWorkoutDuration: '45 Minutes',
-    // Step 4
-    workoutPreference: 'Full Gym',
-    preferredTrainingTime: 'Morning',
-    preferredExercises: '',
-    avoidExercisesPref: '',
-    // Step 5
-    dietPreference: 'Non-Vegetarian',
+    preferredWorkoutTime: 'Morning',
+    // 5. Workout & Equipment
+    preferredWorkoutType: 'Gym Weights / Resistance',
+    equipmentAvailability: 'Full Commercial Gym',
+    // 6. Nutrition & Diet
+    dietaryPreferences: 'Non-Vegetarian',
     mealsPerDay: '3',
     dailyWaterIntake: '2-3 Liters',
-    dietaryRestrictions: '',
-    // Step 6
-    averageSleep: '6-7 hours',
-    dailyActivity: '',
-    workType: 'Desk Job',
-    stressLevel: 'Low',
-    // Step 7
-    injuries: '',
-    avoidExercisesSafety: '',
-    healthConsiderations: '',
-    doctorRestrictions: ''
+    dietaryRestrictions: 'None',
+    // 7. Health & Limitations
+    injuries: 'None',
+    healthConsiderations: 'None',
+    doctorRestrictions: 'None',
+    averageSleep: '7-8 hours',
+    stressLevel: 'Moderate',
+    notes: ''
   });
 
   useEffect(() => {
-    const checkAccess = async () => {
-      try {
-        // 1. Fetch user registration details to pre-fill the form
-        try {
-          const meRes = await api.get('/auth/me');
-          if (meRes.data?.user) {
-            const u = meRes.data.user;
-            // Calculate age from dateOfBirth
-            let calculatedAge = '';
-            if (u.dateOfBirth) {
-              const dob = new Date(u.dateOfBirth);
-              const diff_ms = Date.now() - dob.getTime();
-              const age_dt = new Date(diff_ms); 
-              calculatedAge = Math.abs(age_dt.getUTCFullYear() - 1970).toString();
-            }
-
-            setFormData(prev => ({
-              ...prev,
-              fullName: `${u.firstName || ''} ${u.lastName || ''}`.trim() || prev.fullName,
-              phone: u.mobile || prev.phone,
-              address: u.city || prev.address,
-              age: calculatedAge || prev.age,
-              gender: u.gender || prev.gender,
-              height: u.height ? u.height.toString() : prev.height,
-              weight: u.weight ? u.weight.toString() : prev.weight,
-              fitnessGoal: u.fitnessGoal || prev.fitnessGoal,
-              experienceLevel: u.experienceLevel || prev.experienceLevel,
-              dietaryRestrictions: u.emergencyContact?.name ? `Emergency Contact: ${u.emergencyContact.name} (${u.emergencyContact.mobile})` : prev.dietaryRestrictions
-            }));
-          }
-        } catch (e) {
-          console.error('Failed to fetch user details for pre-filling', e);
-        }
-
-        const res = await api.get('/memberships/my');
-        const active = res.data.memberships?.some((m: any) => m.status === 'ACTIVE');
-        // Also check if the user is tied to a gym (e.g., Free Trial or Public Signup)
-        const userGymStr = localStorage.getItem('aigym_user');
-        let userHasGym = false;
-        if (userGymStr) {
-          try {
-            const u = JSON.parse(userGymStr);
-            userHasGym = !!u.gymId;
-          } catch(e) {}
-        }
-        
-        const accessGranted = active || userHasGym;
-        setHasAccess(accessGranted);
-
-        if (accessGranted) {
-          fetchLatestRecommendation();
-        }
-      } catch (err) {
-        setHasAccess(false);
-      }
-    };
-    checkAccess();
+    checkAccessAndLoad();
   }, []);
+
+  const checkAccessAndLoad = async () => {
+    try {
+      setLoading(true);
+      // Pre-fill from authenticated user profile
+      try {
+        const meRes = await api.get('/auth/me');
+        if (meRes.data?.user) {
+          const u = meRes.data.user;
+          let calculatedAge = '28';
+          if (u.dateOfBirth) {
+            const dob = new Date(u.dateOfBirth);
+            const diff_ms = Date.now() - dob.getTime();
+            const age_dt = new Date(diff_ms);
+            calculatedAge = Math.abs(age_dt.getUTCFullYear() - 1970).toString();
+          }
+
+          setFormData(prev => ({
+            ...prev,
+            fullName: `${u.firstName || ''} ${u.lastName || ''}`.trim() || prev.fullName,
+            age: calculatedAge,
+            gender: u.gender || prev.gender,
+            height: u.height ? u.height.toString() : prev.height,
+            weight: u.weight ? u.weight.toString() : prev.weight,
+            fitnessGoal: u.fitnessGoal || prev.fitnessGoal,
+            currentFitnessLevel: u.experienceLevel || prev.currentFitnessLevel
+          }));
+        }
+      } catch (e) {
+        console.error('Failed to prefill user details', e);
+      }
+
+      // Check membership access
+      const memRes = await api.get('/memberships/my');
+      const active = memRes.data.memberships?.some((m: any) => m.status === 'ACTIVE' || m.status === 'Active' || m.status === 'Free Trial');
+      const userStr = localStorage.getItem('aigym_user');
+      let userHasGym = false;
+      if (userStr) {
+        try {
+          const u = JSON.parse(userStr);
+          userHasGym = !!u.gymId;
+        } catch (e) {}
+      }
+      const accessGranted = active || userHasGym;
+      setHasAccess(accessGranted);
+
+      if (accessGranted) {
+        await fetchLatestRecommendation();
+      }
+    } catch (err) {
+      console.error(err);
+      setHasAccess(true); // Graceful fallback
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchLatestRecommendation = async () => {
     try {
       const res = await api.get('/ai/member/latest');
-      if (res.data.recommendation) {
+      if (res.data?.recommendation) {
         setRecommendation(res.data.recommendation);
-        
-        if (res.data.history && res.data.history.length > 0) {
-          setHistory(res.data.history);
-        } else {
-          setHistory([{
-            ...res.data.recommendation,
-            fitnessProfile: {
-              ...res.data.recommendation.fitnessProfile,
-              weight: String(parseFloat(res.data.recommendation.fitnessProfile?.weight || '90') + 5),
-              fitnessGoal: 'Weight Loss'
-            }
-          }]);
-        }
-        
         if (res.data.recommendation.fitnessProfile) {
           setFormData(prev => ({
             ...prev,
             ...res.data.recommendation.fitnessProfile
           }));
         }
-        setStep(1); // Show form first as requested
-      } else {
-        setStep(1);
       }
     } catch (err) {
-      console.error('Failed to fetch recommendation', err);
+      console.error('Failed to load recommendation', err);
     }
   };
 
-  const handleGenerate = async () => {
-    setStep(2);
-    try {
-      // Fetch latest profile details to ensure any recent edits are included
-      let latestFormData = { ...formData };
-      try {
-        const meRes = await api.get('/auth/me');
-        if (meRes.data?.user) {
-          const u = meRes.data.user;
-          latestFormData = {
-            ...latestFormData,
-            fullName: `${u.firstName || ''} ${u.lastName || ''}`.trim() || latestFormData.fullName,
-            phone: u.mobile || latestFormData.phone,
-            address: u.city || latestFormData.address,
-            gender: u.gender || latestFormData.gender,
-            height: u.height ? u.height.toString() : latestFormData.height,
-            weight: u.weight ? u.weight.toString() : latestFormData.weight,
-            fitnessGoal: u.fitnessGoal || latestFormData.fitnessGoal,
-            experienceLevel: u.experienceLevel || latestFormData.experienceLevel,
-          };
-          setFormData(latestFormData);
-        }
-      } catch (e) {
-        console.error('Failed to fetch latest user details before generation', e);
+  const handleMeasurementChange = (field: string, val: string) => {
+    setFormData(prev => ({
+      ...prev,
+      bodyMeasurements: {
+        ...prev.bodyMeasurements,
+        [field]: val
       }
+    }));
+  };
 
-      const res = await api.post('/ai/member/generate', { fitnessProfile: latestFormData });
-      if (res.data.recommendation) {
+  const handleSubmitAssessment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const res = await api.post('/ai/member/generate', { fitnessProfile: formData });
+      if (res.data?.recommendation) {
         setRecommendation(res.data.recommendation);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Failed to generate plan. Please try again.');
+      alert(err.response?.data?.message || 'Failed to submit assessment. Please verify your details.');
     } finally {
-      setStep(3);
+      setIsSubmitting(false);
     }
   };
 
-  const handleUpdateFitnessDetails = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSaving(true);
-    try {
-      const userStr = localStorage.getItem('aigym_user');
-      const u = userStr ? JSON.parse(userStr) : null;
-      if (u && (u.id || u._id)) {
-        await api.put(`/users/${u.id || u._id}`, {
-          weight: formData.weight,
-          fitnessGoal: formData.fitnessGoal,
-          experienceLevel: formData.experienceLevel
-        });
-      }
-      
-      // Save current recommendation to history before generating a new one
-      if (recommendation) {
-         setHistory(prev => [recommendation, ...prev]);
-      }
-      
-      setShowUpdateModal(false);
-      handleGenerate(); 
-    } catch(err) {
-      console.error(err);
-      alert('Failed to save details.');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  if (hasAccess === null) {
-    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#164A4A]" size={40} /></div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-24">
+        <Loader2 className="animate-spin text-[#F97316]" size={40} />
+      </div>
+    );
   }
 
   if (!hasAccess) {
     return (
       <div className="max-w-3xl mx-auto mt-10">
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-12 text-center relative overflow-hidden shadow-sm">
-          <div className="w-20 h-20 bg-[#F1F5F9] border border-[#E8E5DA] rounded-full flex items-center justify-center mx-auto mb-6 relative z-10">
-            <Lock size={32} className="text-[#A8ADA9]" />
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-3xl p-12 text-center shadow-sm">
+          <div className="w-20 h-20 bg-[#F1F5F9] border border-[#FED7AA] rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock size={32} className="text-[#78716C]" />
           </div>
-          <h2 className="text-3xl font-bold text-[#202828] mb-4">AI Fitness Coach Locked</h2>
-          <p className="text-[#455250] text-lg mb-8 max-w-lg mx-auto">
-            You need an active gym membership to access personalized AI workout plans, dietary guidance, and progress tracking.
+          <h2 className="text-3xl font-bold text-[#292524] mb-4">AI Fitness Assessment Locked</h2>
+          <p className="text-[#78716C] text-lg mb-8 max-w-lg mx-auto">
+            You need an active gym membership to access personalized AI fitness analysis and certified trainer review.
           </p>
-          <Link to="/gyms" className="inline-flex items-center px-8 py-4 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105 shadow-[0_0_15px_rgba(22,163,74,0.3)]">
+          <Link 
+            to="/gyms" 
+            className="inline-flex items-center px-8 py-4 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-all hover:scale-105 shadow-lg shadow-teal-900/20"
+          >
             <Activity className="mr-2" size={20} /> Find a Gym to Unlock
           </Link>
         </div>
@@ -248,500 +192,940 @@ const MemberAIFitness = () => {
     );
   }
 
+  const isPendingReview = recommendation && (
+    recommendation.status === 'Pending Trainer Review' ||
+    recommendation.status === 'Under Trainer Review' ||
+    recommendation.status === 'AI Generated'
+  );
+
+  const isApproved = recommendation && (
+    recommendation.status === 'Trainer Approved' ||
+    recommendation.status === 'Published to Customer'
+  );
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-5xl mx-auto space-y-8 pb-16">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#164A4A] to-[#6fa3a0] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(22,163,74,0.3)]">
-            <Bot size={24} className="text-white" />
+          <div className="w-12 h-12 bg-gradient-to-br from-[#F97316] to-[#0D9488] rounded-2xl flex items-center justify-center shadow-lg shadow-teal-900/20 text-white">
+            <Bot size={26} />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#202828] tracking-tight">AI Fitness Coach</h1>
-            <p className="text-[#455250] mt-1">Personalized intelligence for your fitness journey.</p>
-          </div>
-        </div>
-        
-        {step === 3 && recommendation && (
-          <div className="flex items-center gap-3">
-            <button onClick={() => setStep(1)} className="px-4 py-2 bg-white border border-[#E8E5DA] text-[#202828] rounded-lg font-medium hover:bg-[#F2EFE8] transition-colors text-sm flex items-center gap-2">
-              <ArrowLeft size={16} /> Back
-            </button>
-            <button onClick={() => setShowProfileModal(true)} className="px-4 py-2 bg-white border border-[#164A4A] text-[#164A4A] rounded-lg font-medium hover:bg-[#F1F5F3] transition-colors text-sm flex items-center gap-2">
-              <Activity size={16} /> View Profile
-            </button>
-            <button onClick={() => setShowUpdateModal(true)} className="px-4 py-2 bg-white border border-[#E8E5DA] text-[#202828] rounded-lg font-medium hover:bg-[#F2EFE8] transition-colors text-sm">
-              Request New Plan
-            </button>
-          </div>
-        )}
-
-
-      </div>
-
-      {step === 1 && (
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-8 shadow-sm text-center">
-          <div className="mb-8 mt-4">
-            <div className="w-20 h-20 bg-[#F1F5F9] border border-[#E8E5DA] rounded-full flex items-center justify-center mx-auto mb-6">
-              <Activity size={32} className="text-[#164A4A]" />
+            <div className="flex items-center gap-2">
+              <h1 className="text-3xl font-bold text-[#292524] tracking-tight">AI Fitness Assessment</h1>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F97316]/10 text-[#F97316]">
+                Step 1 of 3: AI Analysis → Trainer Review → Final Output
+              </span>
             </div>
-            <h2 className="text-2xl font-bold text-[#202828] mb-4">
-              Ready to Generate Your AI Fitness Plan?
-            </h2>
-            <p className="text-[#455250] max-w-lg mx-auto">
-              We've securely loaded your physical profile and fitness goals from your account details. Our AI will now analyze this data to create a fully customized workout routine, diet plan, and lifestyle guide just for you.
+            <p className="text-[#78716C] mt-1 text-sm">
+              Complete your comprehensive health profile to generate a Draft AI Analysis for your certified trainer.
             </p>
           </div>
-          
-          <button 
-            onClick={() => setShowProfileModal(true)} 
-            className="inline-flex items-center px-8 py-4 bg-[#164A4A] text-white font-bold rounded-xl hover:bg-[#C6A77D] transition-all hover:scale-105 shadow-[0_0_15px_rgba(22,163,74,0.3)] mb-4"
-          >
-            <Zap className="mr-2" size={20} /> Review Details & Generate
-          </button>
         </div>
-      )}
 
-      {step === 2 && (
-        <div className="bg-[#FFFFFF] border border-[#D3DFDA] rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-6 shadow-sm min-h-[400px]">
-          <div className="w-16 h-16 border-4 border-[#164A4A]/30 border-t-[#164A4A] rounded-full animate-spin mb-4"></div>
-          <h2 className="text-2xl font-bold text-[#202828] animate-pulse">AI is Generating Your Plan</h2>
-          <p className="text-[#455250] max-w-md">Our intelligence engine is currently crunching your data and building a custom tailored routine optimizing for {formData.fitnessGoal}.</p>
-        </div>
-      )}
-
-      {step === 3 && recommendation && (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          
-          {/* Status Banner */}
-          <div className={`p-4 rounded-xl flex items-center gap-3 border ${
-            recommendation.status === 'Trainer Approved' ? 'bg-[#F1F5F3] border-[#D3DFDA] text-[#0F766E]' 
-            : recommendation.status === 'AI Generated' ? 'bg-[#F2EFE8] border-[#E8E5DA] text-[#455250]'
-            : 'bg-[#FFFBEB] border-[#FEF3C7] text-[#B45309]'
-          }`}>
-            {recommendation.status === 'Trainer Approved' ? <CheckCircle2 size={24} className="text-[#164A4A]" /> : <AlertCircle size={24} />}
-            <div>
-              <p className="font-bold">{recommendation.status}</p>
-              <p className="text-sm opacity-90">
-                {recommendation.status === 'AI Generated' && 'This is an automated plan. It will be sent to your assigned trainer for final review.'}
-                {recommendation.status === 'Under Trainer Review' && 'Your assigned trainer is currently reviewing this plan.'}
-                {recommendation.status === 'Trainer Approved' && 'Your trainer has reviewed, optimized, and approved this final plan for you.'}
-              </p>
-            </div>
+        {recommendation && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setRecommendation(null);
+                setActiveStep(1);
+              }}
+              className="px-4 py-2 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-semibold text-xs hover:bg-[#F9F8F6] transition-colors"
+            >
+              Re-take Assessment
+            </button>
+            {isApproved && (
+              <Link
+                to="/member/workout"
+                className="px-4 py-2 bg-[#F97316] text-white rounded-xl font-bold text-xs hover:bg-[#EA580C] transition-colors flex items-center gap-1.5 shadow-sm"
+              >
+                <CheckCircle2 size={14} /> View Approved Plan
+              </Link>
+            )}
           </div>
+        )}
+      </div>
 
-          {history.length > 0 && (
-            <div className="bg-gradient-to-br from-[#164A4A] to-[#202828] rounded-3xl p-8 text-white shadow-xl relative overflow-hidden mb-6">
-              <div className="absolute top-0 right-0 p-8 opacity-10">
-                <Trophy size={120} />
-              </div>
-              
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Activity className="text-[#C6A77D]" /> Your Fitness Journey
-              </h2>
-              
-              <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-                <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm text-center flex-1 border border-white/20">
-                  <p className="text-sm text-[#D3DFDA] uppercase tracking-wider mb-2">Previous Weight</p>
-                  <p className="text-4xl font-bold">{history[0]?.fitnessProfile?.weight || '-'} <span className="text-xl font-medium">kg</span></p>
-                </div>
-                
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-[#C6A77D] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(198,167,125,0.4)]">
-                    <TrendingDown size={32} className="text-[#164A4A]" />
+      {/* When Recommendation exists: Show Workflow Status Banner & AI Draft Preview */}
+      {recommendation ? (
+        <div className="space-y-6">
+          {/* Status Alert Banner */}
+          {isPendingReview ? (
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 shadow-sm">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Clock size={24} className="animate-pulse" />
                   </div>
-                  <p className="text-[#C6A77D] font-bold mt-2 bg-white/10 px-4 py-1 rounded-full border border-[#C6A77D]/30">
-                    {Math.abs(parseFloat(history[0]?.fitnessProfile?.weight || '0') - parseFloat(recommendation?.fitnessProfile?.weight || '0')).toFixed(1)} kg Difference
-                  </p>
-                </div>
-                
-                <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm text-center flex-1 border border-white/20">
-                  <p className="text-sm text-[#D3DFDA] uppercase tracking-wider mb-2">Current Weight</p>
-                  <p className="text-4xl font-bold text-[#C6A77D]">{recommendation?.fitnessProfile?.weight || '-'} <span className="text-xl font-medium text-white">kg</span></p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {history.length > 0 && (
-            <div className="mb-8">
-              <h3 className="text-xl font-bold text-[#202828] mb-4 flex items-center gap-2">
-                <ArrowRight className="text-[#164A4A]" /> Plan Comparison
-              </h3>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                {/* Previous Result Card */}
-                <div className="bg-gray-50 border border-[#E8E5DA] rounded-2xl p-6 relative opacity-80 hover:opacity-100 transition-opacity">
-                  <div className="absolute top-0 right-0 bg-[#E8E5DA] text-[#687B78] text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">
-                    Archived Plan
-                  </div>
-                  <h4 className="text-lg font-bold text-[#687B78] mb-4 flex items-center gap-2">
-                    <Calendar size={18} /> Previous Result
-                    <span className="text-sm font-normal ml-auto">{new Date(history[0]?.createdAt || Date.now()).toLocaleDateString()}</span>
-                  </h4>
-                  
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-white p-3 rounded-xl border border-[#E8E5DA]">
-                        <p className="text-xs text-[#687B78]">Weight Recorded</p>
-                        <p className="font-bold text-[#202828]">{history[0]?.fitnessProfile?.weight || '-'} kg</p>
-                      </div>
-                      <div className="bg-white p-3 rounded-xl border border-[#E8E5DA]">
-                        <p className="text-xs text-[#687B78]">Primary Goal</p>
-                        <p className="font-bold text-[#202828]">{history[0]?.fitnessProfile?.fitnessGoal || 'General Fitness'}</p>
-                      </div>
-                      <div className="bg-white p-3 rounded-xl border border-[#E8E5DA]">
-                        <p className="text-xs text-[#687B78]">Experience Level</p>
-                        <p className="font-bold text-[#202828]">{history[0]?.fitnessProfile?.experienceLevel || 'Beginner'}</p>
-                      </div>
-                      <div className="bg-white p-3 rounded-xl border border-[#E8E5DA]">
-                        <p className="text-xs text-[#687B78]">Frequency</p>
-                        <p className="font-bold text-[#202828]">{history[0]?.fitnessProfile?.availableWorkoutDays || '3 Days'}</p>
-                      </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                        Pending Trainer Review
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-800">
+                        AI Generated Draft
+                      </span>
                     </div>
-                    
-                    <div className="bg-white p-4 rounded-xl border border-[#E8E5DA]">
-                      <p className="text-sm font-bold flex items-center gap-2 mb-2 text-[#455250]"><Activity size={16}/> Previous Assessment</p>
-                      <p className="text-sm text-[#687B78] line-clamp-3">{history[0]?.aiAnalysis?.assessment || 'General overview of your fitness routine and focus areas.'}</p>
-                    </div>
-                    <div className="bg-white p-4 rounded-xl border border-[#E8E5DA]">
-                      <p className="text-sm font-bold flex items-center gap-2 mb-2 text-[#455250]"><Dumbbell size={16}/> Previous Workout Focus</p>
-                      <p className="text-sm text-[#687B78]">{history[0]?.workoutRecommendation?.exercises?.map((e:any) => e.targetMuscleGroup).filter((v:any,i:any,a:any)=>a.indexOf(v)===i).slice(0,3).join(', ') || 'Full Body Strength'}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Current Result Card */}
-                <div className="bg-white border-2 border-[#164A4A] rounded-2xl p-6 shadow-lg relative">
-                  <div className="absolute top-0 right-0 bg-[#164A4A] text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl rounded-tr-xl shadow-sm">
-                    Active Plan
-                  </div>
-                  <h4 className="text-lg font-bold text-[#164A4A] mb-4 flex items-center gap-2">
-                    <Activity size={18} /> Current Result
-                    <span className="text-sm font-normal text-[#687B78] ml-auto">{new Date(recommendation?.createdAt || Date.now()).toLocaleDateString()}</span>
-                  </h4>
-                  
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-[#F2EFE8] p-3 rounded-xl border border-[#D3DFDA]">
-                        <p className="text-xs text-[#687B78]">Current Weight</p>
-                        <p className="font-bold text-[#164A4A]">{recommendation?.fitnessProfile?.weight || '-'} kg</p>
-                      </div>
-                      <div className="bg-[#F2EFE8] p-3 rounded-xl border border-[#D3DFDA]">
-                        <p className="text-xs text-[#687B78]">New Primary Goal</p>
-                        <p className="font-bold text-[#164A4A]">{recommendation?.fitnessProfile?.fitnessGoal || 'General Fitness'}</p>
-                      </div>
-                      <div className="bg-[#F2EFE8] p-3 rounded-xl border border-[#D3DFDA]">
-                        <p className="text-xs text-[#687B78]">Experience Level</p>
-                        <p className="font-bold text-[#164A4A]">{recommendation?.fitnessProfile?.experienceLevel || 'Beginner'}</p>
-                      </div>
-                      <div className="bg-[#F2EFE8] p-3 rounded-xl border border-[#D3DFDA]">
-                        <p className="text-xs text-[#687B78]">Frequency</p>
-                        <p className="font-bold text-[#164A4A]">{recommendation?.fitnessProfile?.availableWorkoutDays || '3 Days'}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-[#F9F8F6] p-4 rounded-xl border border-[#D3DFDA]">
-                      <p className="text-sm font-bold flex items-center gap-2 mb-2 text-[#202828]"><Activity size={16} className="text-[#164A4A]"/> New AI Assessment</p>
-                      <p className="text-sm text-[#455250] line-clamp-3">{recommendation?.aiAnalysis?.assessment || 'Updated overview of your new fitness routine.'}</p>
-                    </div>
-                    <div className="bg-[#F9F8F6] p-4 rounded-xl border border-[#D3DFDA]">
-                      <p className="text-sm font-bold flex items-center gap-2 mb-2 text-[#202828]"><Dumbbell size={16} className="text-[#164A4A]"/> Updated Workout Focus</p>
-                      <p className="text-sm text-[#455250]">{recommendation?.workoutRecommendation?.exercises?.map((e:any) => e.targetMuscleGroup).filter((v:any,i:any,a:any)=>a.indexOf(v)===i).slice(0,3).join(', ') || 'Customized routine'}</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          )}
-
-          <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-[#202828] mb-4">Fitness Analysis</h2>
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-bold text-[#A8ADA9] uppercase tracking-wider mb-2">Profile Summary</h4>
-                <div className="bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl p-4 grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {recommendation.aiAnalysis?.profileSummary?.split('\n')
-                    .filter((line: string) => !line.toLowerCase().includes('target weight'))
-                    .map((line: string, i: number) => {
-                    const [key, val] = line.split(':');
-                    if (!val) return null;
-                    return (
-                      <div key={i}>
-                        <p className="text-xs text-[#687B78] uppercase">{key}</p>
-                        <p className="font-bold text-[#202828]">{val.trim()}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="pt-2 border-t border-[#D3DFDA]">
-                <h4 className="text-sm font-bold text-[#A8ADA9] uppercase tracking-wider mb-2">AI Assessment</h4>
-                <p className="text-[#202828] leading-relaxed">{recommendation.aiAnalysis?.assessment}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
-              <h3 className="text-xl font-bold text-[#202828] mb-4 flex items-center"><Dumbbell className="mr-2 text-[#164A4A]" size={20}/> Workout Plan</h3>
-              <div className="overflow-x-auto rounded-xl border border-[#D3DFDA] mb-6">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-[#F2EFE8] text-[#455250]">
-                    <tr>
-                      <th className="px-4 py-3 font-bold border-b border-[#D3DFDA]">Day</th>
-                      <th className="px-4 py-3 font-bold border-b border-[#D3DFDA]">Workout</th>
-                      <th className="px-4 py-3 font-bold border-b border-[#D3DFDA]">Duration</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recommendation.workoutRecommendation?.weeklySchedule?.map((item: any, i: number) => (
-                      <tr key={i} className="border-b border-[#E8E5DA] last:border-0 hover:bg-[#F9F8F6]">
-                        <td className="px-4 py-3 font-medium text-[#202828]">{item.day}</td>
-                        <td className="px-4 py-3 text-[#455250]">{item.workout}</td>
-                        <td className="px-4 py-3 text-[#687B78]">{item.duration}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              
-              <h4 className="text-sm font-bold text-[#A8ADA9] uppercase tracking-wider mb-3">Exercise Recommendations</h4>
-              <div className="space-y-3">
-                {recommendation.workoutRecommendation?.exercises?.map((ex: any, i: number) => (
-                  <div key={i} className="p-4 bg-[#F2EFE8] border border-[#E8E5DA] rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3">
-                    <div>
-                      <h4 className="font-bold text-[#202828]">{ex.name}</h4>
-                      <p className="text-[#164A4A] text-sm font-semibold">{ex.targetMuscleGroup}</p>
-                    </div>
-                    <div className="grid grid-cols-2 md:flex gap-4 text-xs text-[#455250] font-medium">
-                      <div><span className="text-[#A8ADA9]">Sets/Reps:</span> <br/>{ex.sets} × {ex.reps}</div>
-                      <div><span className="text-[#A8ADA9]">Duration:</span> <br/>{ex.duration}</div>
-                      <div><span className="text-[#A8ADA9]">Difficulty:</span> <br/>{ex.difficulty}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            <div className="space-y-6">
-              <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
-                <h3 className="text-xl font-bold text-[#202828] mb-4 flex items-center"><Utensils className="mr-2 text-[#164A4A]" size={20}/> Diet & Nutrition Plan</h3>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {['morning', 'breakfast', 'lunch', 'evening', 'dinner'].map((meal, i) => (
-                      <div key={i} className="p-3 border border-[#E8E5DA] rounded-xl bg-[#F9F8F6]">
-                        <h4 className="text-xs font-bold text-[#A8ADA9] uppercase mb-1">{meal}</h4>
-                        <p className="text-sm text-[#202828] font-medium">{recommendation.dietRecommendation?.[meal]}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="p-3 bg-[#FFFBEB] border border-[#FEF3C7] rounded-xl mt-4">
-                    <p className="text-xs text-[#B45309] font-semibold flex items-center gap-1">
-                      <AlertCircle size={14} className="flex-shrink-0"/> 
-                      <span>{recommendation.dietRecommendation?.note || 'This is a demo fitness recommendation and should not be treated as medical or clinical advice.'}</span>
+                    <h3 className="text-lg font-bold text-[#292524]">
+                      Assessment Submitted • AI Draft Generated & Awaiting Trainer Approval
+                    </h3>
+                    <p className="text-sm text-[#78716C] mt-1 max-w-2xl">
+                      The AI has formulated an initial fitness and nutrition draft based on your assessment. 
+                      <strong> This is a draft, not your final plan.</strong> Your assigned certified trainer is reviewing exercises, sets, reps, and diet before publishing your official plan.
                     </p>
                   </div>
                 </div>
-              </div>
 
-              <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm">
-                <h3 className="text-xl font-bold text-[#202828] mb-4 flex items-center"><Clock className="mr-2 text-[#164A4A]" size={20}/> Daily Routine</h3>
-                <div className="space-y-4">
-                  {['morning', 'workoutTime', 'evening', 'night'].map((time, i) => {
-                    const titles: any = { morning: 'Morning', workoutTime: 'Workout Time', evening: 'Evening', night: 'Night' };
-                    return (
-                      <div key={i} className="flex gap-4 items-start">
-                        <div className="w-24 flex-shrink-0 text-sm font-bold text-[#A8ADA9]">{titles[time]}</div>
-                        <div className="flex-1 pb-4 border-b border-[#E8E5DA] last:border-0 last:pb-0">
-                          <p className="text-sm text-[#202828] font-medium">{recommendation.routine?.[time]}</p>
-                        </div>
-                      </div>
-                    )
-                  })}
+                <div className="flex flex-col sm:flex-row items-center gap-2 shrink-0">
+                  <Link
+                    to="/member/trainer-review"
+                    className="px-5 py-2.5 bg-amber-600 text-white font-bold rounded-xl text-xs hover:bg-amber-700 transition-colors shadow-sm"
+                  >
+                    Track Trainer Review →
+                  </Link>
                 </div>
               </div>
 
-              {recommendation.trainerNotes && (
-                <div className="bg-[#FFFBEB] border border-[#FEF3C7] rounded-2xl p-6 shadow-sm">
-                  <h3 className="text-lg font-bold text-[#B45309] mb-2 flex items-center"><AlertCircle className="mr-2" size={18}/> Trainer Notes</h3>
-                  <p className="text-[#92400E] whitespace-pre-wrap">{recommendation.trainerNotes}</p>
+              {recommendation.trainerId && (
+                <div className="mt-4 pt-4 border-t border-amber-200/60 flex items-center gap-3 text-xs text-amber-900 font-medium">
+                  <User size={16} className="text-amber-700" />
+                  <span>
+                    Assigned Trainer: <strong>{recommendation.trainerId.name || 'Certified Trainer'}</strong> ({recommendation.trainerId.specialization || 'Elite Coach'}) • Status: Currently marked Online/Available.
+                  </span>
                 </div>
               )}
             </div>
-          </div>
-          
-          <div className="bg-white border border-[#E8E5DA] rounded-2xl p-6 shadow-sm mt-6">
-            <h3 className="text-xl font-bold text-[#202828] mb-4 flex items-center"><Activity className="mr-2 text-[#164A4A]" size={20}/> Progress Tracking</h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-              <div className="p-4 bg-[#F2EFE8] rounded-xl text-center flex flex-col justify-center items-center">
-                <p className="text-xs text-[#687B78] uppercase font-bold mb-1">Starting Weight</p>
-                <p className="text-xl font-bold text-[#202828]">{recommendation.progressSuggestions?.startingWeight || recommendation.fitnessProfile?.weight || '-'} kg</p>
+          ) : isApproved ? (
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-6 shadow-sm">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 size={24} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        Trainer Approved Plan
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-teal-100 text-teal-800">
+                        Published to Customer
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-[#292524]">
+                      Your Customized Plan Has Been Approved by Your Trainer!
+                    </h3>
+                    <p className="text-sm text-[#78716C] mt-1 max-w-2xl">
+                      Your coach has finalized all workout splits, sets, repetitions, recovery protocols, and diet plans. Your official plan is now active in your dashboard.
+                    </p>
+                  </div>
+                </div>
+
+                <Link
+                  to="/member/workout"
+                  className="px-6 py-3 bg-[#F97316] text-white font-bold rounded-xl text-sm hover:bg-[#EA580C] transition-colors shadow-md shadow-teal-900/10 shrink-0"
+                >
+                  Open My Fitness Plan →
+                </Link>
               </div>
-              <div className="p-4 bg-white border border-[#164A4A] rounded-xl text-center shadow-[0_0_15px_rgba(22,163,74,0.1)] flex flex-col justify-center items-center">
-                <p className="text-xs text-[#164A4A] uppercase font-bold mb-1">Current Weight</p>
-                <p className="text-xl font-bold text-[#164A4A]">{recommendation.fitnessProfile?.weight || '-'} kg</p>
+            </div>
+          ) : null}
+
+          {/* Customer Assessment Details Card */}
+          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm">
+            <div className="flex items-center justify-between mb-4 border-b border-[#FED7AA] pb-3">
+              <div className="flex items-center gap-2">
+                <Activity size={20} className="text-[#F97316]" />
+                <h3 className="text-lg font-bold text-[#292524]">Your Submitted Fitness Profile</h3>
               </div>
-              <div className="p-4 bg-[#F2EFE8] rounded-xl text-center flex flex-col justify-center items-center">
-                <p className="text-xs text-[#687B78] uppercase font-bold mb-1">Target Weight</p>
-                <p className="text-xl font-bold text-[#202828]">{recommendation.fitnessProfile?.targetWeight || '-'} kg</p>
-              </div>
-              <div className="p-4 bg-[#F2EFE8] rounded-xl text-center flex flex-col justify-center items-center">
-                <p className="text-xs text-[#687B78] uppercase font-bold mb-1">Difference</p>
-                <p className="text-xl font-bold text-[#202828]">
-                  {recommendation.fitnessProfile?.weight && recommendation.progressSuggestions?.startingWeight 
-                    ? (parseFloat(recommendation.fitnessProfile.weight) - parseFloat(recommendation.progressSuggestions.startingWeight)).toFixed(1)
-                    : '0.0'} kg
+              <span className="text-xs text-[#78716C]">
+                Last Updated: {new Date(recommendation.updatedAt || recommendation.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-center">
+              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
+                <p className="text-[11px] text-[#78716C] uppercase font-bold">Age / Gender</p>
+                <p className="text-sm font-bold text-[#292524] mt-0.5">
+                  {recommendation.fitnessProfile?.age || formData.age} yrs • {recommendation.fitnessProfile?.gender || formData.gender}
                 </p>
               </div>
-              <div className="p-4 bg-[#F2EFE8] rounded-xl text-center flex flex-col justify-center items-center">
-                <p className="text-xs text-[#687B78] uppercase font-bold mb-1">Last Updated</p>
-                <p className="text-sm font-bold text-[#202828]">{new Date(recommendation.createdAt || new Date()).toLocaleDateString()}</p>
+              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
+                <p className="text-[11px] text-[#78716C] uppercase font-bold">Height / Weight</p>
+                <p className="text-sm font-bold text-[#292524] mt-0.5">
+                  {recommendation.fitnessProfile?.height || formData.height} cm • {recommendation.fitnessProfile?.weight || formData.weight} kg
+                </p>
+              </div>
+              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
+                <p className="text-[11px] text-[#78716C] uppercase font-bold">Primary Goal</p>
+                <p className="text-sm font-bold text-[#F97316] mt-0.5 truncate">
+                  {recommendation.fitnessProfile?.fitnessGoal || formData.fitnessGoal}
+                </p>
+              </div>
+              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
+                <p className="text-[11px] text-[#78716C] uppercase font-bold">Fitness Level</p>
+                <p className="text-sm font-bold text-[#292524] mt-0.5">
+                  {recommendation.fitnessProfile?.currentFitnessLevel || formData.currentFitnessLevel}
+                </p>
+              </div>
+              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
+                <p className="text-[11px] text-[#78716C] uppercase font-bold">Workout Days</p>
+                <p className="text-sm font-bold text-[#292524] mt-0.5">
+                  {recommendation.fitnessProfile?.availableWorkoutDays || formData.availableWorkoutDays}
+                </p>
+              </div>
+              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
+                <p className="text-[11px] text-[#78716C] uppercase font-bold">Equipment</p>
+                <p className="text-sm font-bold text-[#292524] mt-0.5 truncate">
+                  {recommendation.fitnessProfile?.equipmentAvailability || formData.equipmentAvailability}
+                </p>
               </div>
             </div>
-            
-            <div className="flex justify-end">
-              <button onClick={() => setShowUpdateModal(true)} className="px-6 py-2.5 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors flex items-center gap-2">
-                <Edit3 size={16} /> Update My Fitness Details
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {showUpdateModal && (
-        <div className="fixed inset-0 bg-[#202828]/60 flex items-center justify-center p-4 z-[60] backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
-            <div className="p-6 md:p-8 border-b border-[#E8E5DA] relative">
-              <button 
-                onClick={() => setShowUpdateModal(false)}
-                className="absolute top-6 right-6 p-2 hover:bg-[#F1F5F9] rounded-full transition-colors text-[#687B78] hover:text-[#202828]"
-              >
-                <X size={24} />
-              </button>
-              <h2 className="text-2xl font-bold text-[#202828] mb-2">Update Fitness Details</h2>
-              <p className="text-[#687B78]">Update your current stats to generate a more accurate AI plan.</p>
+            {/* Body Measurements Snapshot */}
+            {recommendation.fitnessProfile?.bodyMeasurements && (
+              <div className="mt-4 pt-4 border-t border-[#FED7AA]/80">
+                <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
+                  Body Measurements Logged
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                  {Object.entries(recommendation.fitnessProfile.bodyMeasurements).map(([k, v]: any) => (
+                    <div key={k} className="p-2 bg-[#FFFDF8] rounded-lg text-center">
+                      <span className="text-[10px] text-[#78716C] uppercase font-bold block">{k}</span>
+                      <span className="text-xs font-extrabold text-[#292524]">{v || '-'}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* CONDITIONAL RENDERING: PENDING TRAINER REVIEW vs APPROVED PLAN */}
+          {isPendingReview ? (
+            /* LOCKED DRAFT CARD WHILE PENDING TRAINER REVIEW */
+            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-8 md:p-10 shadow-sm text-center space-y-6">
+              <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-300 text-amber-700 flex items-center justify-center mx-auto">
+                <Lock size={30} />
+              </div>
+
+              <div className="max-w-xl mx-auto space-y-2">
+                <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300 inline-flex items-center gap-1.5">
+                  <Clock size={13} className="text-amber-600 animate-pulse" /> Sent to Trainer Dashboard • Awaiting Review
+                </span>
+                <h3 className="text-2xl font-bold text-[#292524] mt-2">
+                  AI Draft Dispatched to Your Coach
+                </h3>
+                <p className="text-sm text-[#78716C] leading-relaxed">
+                  The initial AI analysis has been generated and automatically sent to your assigned trainer&apos;s dashboard. 
+                  <strong> To ensure your safety, unreviewed AI exercises and diets are not shown on your dashboard yet.</strong> Your coach is calibrating sets, reps, and nutrition. Once your trainer approves the plan, it will be unlocked here immediately.
+                </p>
+              </div>
+
+              {/* 3-Step Timeline */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto pt-2 text-left">
+                <div className="bg-[#F9F8F6] border border-emerald-300 rounded-2xl p-3.5 flex items-center gap-3">
+                  <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
+                  <div>
+                    <p className="text-[10px] font-bold text-emerald-800 uppercase">Step 1</p>
+                    <p className="text-xs font-bold text-[#292524]">Assessment Submitted</p>
+                  </div>
+                </div>
+
+                <div className="bg-white border-2 border-amber-400 rounded-2xl p-3.5 flex items-center gap-3 shadow-sm">
+                  <Clock size={20} className="text-amber-600 animate-pulse shrink-0" />
+                  <div>
+                    <p className="text-[10px] font-extrabold text-amber-800 uppercase">Step 2: In Progress</p>
+                    <p className="text-xs font-bold text-[#292524]">Trainer Reviewing on Dashboard</p>
+                  </div>
+                </div>
+
+                <div className="bg-[#F9F8F6] border border-gray-200 rounded-2xl p-3.5 flex items-center gap-3 opacity-60">
+                  <Lock size={20} className="text-gray-400 shrink-0" />
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase">Step 3</p>
+                    <p className="text-xs font-semibold text-gray-600">Customer Plan Published</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  to="/member/trainer-review"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-xl text-xs transition-colors shadow-sm"
+                >
+                  <Activity size={15} /> Track Coach Review Status
+                </Link>
+              </div>
             </div>
-            
-            <form onSubmit={handleUpdateFitnessDetails} className="p-6 md:p-8 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          ) : isApproved ? (
+            /* APPROVED PLAN: DISPLAY BOTH TRAINER OUTPUT AND AI OUTPUT */
+            <div className="space-y-6">
+              {/* SECTION 1: CERTIFIED TRAINER OUTPUT */}
+              <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <div className="flex items-center justify-between border-b border-[#FED7AA] pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                      <CheckCircle2 size={22} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-[#292524]">
+                        Certified Trainer Output & Calibrations
+                      </h3>
+                      <p className="text-xs text-[#78716C]">
+                        Approved and customized by Coach {recommendation.trainerModifications?.modifiedByTrainerName || recommendation.finalApprovedPlan?.approvedByTrainerName || recommendation.trainerId?.name || 'Your Trainer'}.
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/member/workout"
+                    className="px-5 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm"
+                  >
+                    <Dumbbell size={14} /> Open Workout Player →
+                  </Link>
+                </div>
+
+                {/* Trainer Notes */}
+                {(recommendation.trainerNotes || recommendation.finalApprovedPlan?.trainerNotes || recommendation.trainerModifications?.trainerNotes) && (
+                  <div className="p-4 bg-emerald-50/60 border border-emerald-200 rounded-2xl space-y-1">
+                    <p className="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                      <User size={14} /> Coach Notes
+                    </p>
+                    <p className="text-sm text-[#292524] italic font-medium">
+                      &ldquo;{recommendation.trainerNotes || recommendation.finalApprovedPlan?.trainerNotes || recommendation.trainerModifications?.trainerNotes}&rdquo;
+                    </p>
+                  </div>
+                )}
+
+                {/* Trainer Calibrated Weekly Schedule */}
                 <div>
-                  <label className="block text-sm font-semibold text-[#202828] mb-2">Current Weight (kg)</label>
+                  <h4 className="text-sm font-bold text-[#292524] uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <Calendar size={16} className="text-[#F97316]" /> Approved Weekly Workout Schedule
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {(recommendation.finalApprovedPlan?.workoutPlan?.weeklySchedule || recommendation.workoutRecommendation?.weeklySchedule || []).map((item: any, idx: number) => (
+                      <div key={idx} className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-extrabold text-[#F97316]">{item.day}</p>
+                          <p className="text-xs font-semibold text-[#292524] truncate max-w-[150px]">{item.workout}</p>
+                        </div>
+                        <span className="text-[11px] font-bold text-[#78716C] bg-white px-2 py-0.5 rounded-md border border-[#FED7AA]">
+                          {item.duration}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Calibrated Exercises */}
+                <div>
+                  <h4 className="text-sm font-bold text-[#292524] uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <Dumbbell size={16} className="text-[#F97316]" /> Calibrated Exercises & Repetitions
+                  </h4>
+                  <div className="space-y-2.5">
+                    {(recommendation.finalApprovedPlan?.workoutPlan?.exercises || recommendation.workoutRecommendation?.exercises || []).map((ex: any, idx: number) => (
+                      <div key={idx} className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                          <p className="text-sm font-bold text-[#292524]">{ex.name}</p>
+                          <p className="text-xs text-[#F97316] font-medium">{ex.targetMuscleGroup}</p>
+                        </div>
+                        <div className="flex items-center gap-4 text-xs font-semibold text-[#78716C]">
+                          <span>Sets: <strong className="text-[#292524]">{ex.sets}</strong></span>
+                          <span>Reps: <strong className="text-[#292524]">{ex.reps}</strong></span>
+                          <span>Rest: <strong className="text-[#292524]">{ex.rest || '60s'}</strong></span>
+                          <span className="px-2 py-0.5 rounded bg-white border border-[#FED7AA] text-[10px] text-[#78716C]">
+                            {ex.difficulty || 'Medium'}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Diet & Recovery */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
+                    <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <Utensils size={14} className="text-[#F97316]" /> Trainer-Approved Diet
+                    </h4>
+                    <div className="space-y-1.5 text-xs text-[#292524]">
+                      {recommendation.finalApprovedPlan?.dietPlan && typeof recommendation.finalApprovedPlan.dietPlan === 'object' ? (
+                        <>
+                          <p><strong>Breakfast:</strong> {recommendation.finalApprovedPlan.dietPlan.breakfast || recommendation.dietRecommendation?.breakfast}</p>
+                          <p><strong>Lunch:</strong> {recommendation.finalApprovedPlan.dietPlan.lunch || recommendation.dietRecommendation?.lunch}</p>
+                          <p><strong>Dinner:</strong> {recommendation.finalApprovedPlan.dietPlan.dinner || recommendation.dietRecommendation?.dinner}</p>
+                        </>
+                      ) : (
+                        <p>{String(recommendation.finalApprovedPlan?.dietPlan || recommendation.dietRecommendation?.breakfast || 'Nutritious balanced plan.')}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
+                    <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <HeartPulse size={14} className="text-[#F97316]" /> Recovery Protocol
+                    </h4>
+                    <div className="space-y-1.5 text-xs text-[#292524]">
+                      <p><strong>Sleep:</strong> {recommendation.finalApprovedPlan?.recoveryPlan?.sleep || recommendation.recoveryRecommendations?.sleep || '7.5 - 8.5 hours'}</p>
+                      <p><strong>Active Recovery:</strong> {recommendation.finalApprovedPlan?.recoveryPlan?.activeRecovery || recommendation.recoveryRecommendations?.activeRecovery || 'Light walking & stretching'}</p>
+                      <p><strong>Mobility:</strong> {recommendation.finalApprovedPlan?.recoveryPlan?.stretchingMobility || recommendation.recoveryRecommendations?.stretchingMobility || 'Daily dynamic stretch'}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION 2: AI BIOMETRIC INTELLIGENCE ANALYSIS */}
+              <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <Sparkles size={20} className="text-[#F97316]" />
+                  <h3 className="text-xl font-bold text-[#292524]">
+                    AI Biometric Intelligence Analysis
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
+                    <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1">Goal Analysis</h4>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {recommendation.aiAnalysis?.goalAnalysis || 'Analysis tailored to your fitness targets.'}
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
+                    <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1">Recommended Approach</h4>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {recommendation.aiAnalysis?.recommendedApproach || 'Structured resistance & recovery strategy.'}
+                    </p>
+                  </div>
+                </div>
+
+                {recommendation.aiAnalysis?.limitations && (
+                  <div className="p-4 bg-orange-50 border border-orange-200 rounded-2xl text-xs text-orange-900 flex items-start gap-2.5">
+                    <ShieldAlert size={16} className="text-orange-600 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="block font-bold mb-0.5">Limitations & Health Considerations:</strong>
+                      <span>{recommendation.aiAnalysis.limitations}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        /* Assessment Form Wizard */
+        <form onSubmit={handleSubmitAssessment} className="space-y-6">
+          {/* Form Step Navigation Bar */}
+          <div className="bg-white border border-[#E7E5E4] rounded-2xl p-3 flex items-center justify-between overflow-x-auto gap-2 shadow-sm">
+            {[
+              { num: 1, label: 'Physical Profile' },
+              { num: 2, label: 'Fitness Goals' },
+              { num: 3, label: 'Body Measurements' },
+              { num: 4, label: 'Schedule & Equipment' },
+              { num: 5, label: 'Diet & Recovery' },
+            ].map(s => (
+              <button
+                type="button"
+                key={s.num}
+                onClick={() => setActiveStep(s.num)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                  activeStep === s.num
+                    ? 'bg-[#F97316] text-white shadow-sm'
+                    : 'bg-transparent text-[#78716C] hover:bg-[#F9F8F6]'
+                }`}
+              >
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
+                  activeStep === s.num ? 'bg-white text-[#F97316]' : 'bg-[#FED7AA] text-[#78716C]'
+                }`}>
+                  {s.num}
+                </span>
+                <span>{s.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Step 1: Personal & Physical */}
+          {activeStep === 1 && (
+            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-[#292524]">1. Personal & Physical Biometrics</h3>
+                <p className="text-sm text-[#78716C] mt-0.5">Basic information used to estimate caloric expenditure and metabolic rates.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Full Name</label>
                   <input
-                    type="number"
-                    value={formData.weight}
-                    onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#F9F8F6] border border-[#D3DFDA] rounded-xl focus:outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A] transition-colors"
+                    type="text"
+                    value={formData.fullName}
+                    onChange={e => setFormData({ ...formData, fullName: e.target.value })}
+                    placeholder="Enter your name"
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#202828] mb-2">Primary Fitness Goal</label>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Age</label>
+                  <input
+                    type="number"
+                    value={formData.age}
+                    onChange={e => setFormData({ ...formData, age: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Gender</label>
+                  <select
+                    value={formData.gender}
+                    onChange={e => setFormData({ ...formData, gender: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Height (cm)</label>
+                  <input
+                    type="number"
+                    value={formData.height}
+                    onChange={e => setFormData({ ...formData, height: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Current Weight (kg)</label>
+                  <input
+                    type="number"
+                    value={formData.weight}
+                    onChange={e => setFormData({ ...formData, weight: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Daily Activity Level</label>
+                  <select
+                    value={formData.activityLevel}
+                    onChange={e => setFormData({ ...formData, activityLevel: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="Sedentary">Sedentary (Desk Job, little movement)</option>
+                    <option value="Lightly Active">Lightly Active (1-3 days light movement)</option>
+                    <option value="Moderately Active">Moderately Active (Regular exercise)</option>
+                    <option value="Very Active">Very Active (Heavy training / active work)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(2)}
+                  className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] transition-colors flex items-center gap-1.5"
+                >
+                  Continue to Goals <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Fitness Goal & Experience */}
+          {activeStep === 2 && (
+            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-[#292524]">2. Fitness Goals & Experience</h3>
+                <p className="text-sm text-[#78716C] mt-0.5">Define your targets and prior resistance training familiarity.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Primary Fitness Goal</label>
                   <select
                     value={formData.fitnessGoal}
-                    onChange={(e) => setFormData({ ...formData, fitnessGoal: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#F9F8F6] border border-[#D3DFDA] rounded-xl focus:outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A] transition-colors"
+                    onChange={e => setFormData({ ...formData, fitnessGoal: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
                   >
-                    <option value="Weight Loss">Weight Loss</option>
-                    <option value="Muscle Gain">Muscle Gain</option>
-                    <option value="Endurance">Endurance</option>
-                    <option value="General Fitness">General Fitness</option>
+                    <option value="Weight Loss">Weight Loss & Fat Reduction</option>
+                    <option value="Muscle Building / Hypertrophy">Muscle Building & Hypertrophy</option>
+                    <option value="Strength Training">Pure Strength & Power</option>
+                    <option value="Endurance & Stamina">Cardiovascular Endurance & Stamina</option>
+                    <option value="Functional Fitness">Functional Movement & Mobility</option>
+                    <option value="General Health">General Longevity & Health</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-semibold text-[#202828] mb-2">Experience Level</label>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Current Fitness Level</label>
                   <select
-                    value={formData.experienceLevel}
-                    onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#F9F8F6] border border-[#D3DFDA] rounded-xl focus:outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A] transition-colors"
+                    value={formData.currentFitnessLevel}
+                    onChange={e => setFormData({ ...formData, currentFitnessLevel: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
                   >
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
+                    <option value="Beginner">Beginner (0-6 months experience)</option>
+                    <option value="Intermediate">Intermediate (6-24 months regular lifting)</option>
+                    <option value="Advanced">Advanced (2+ years dedicated training)</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-semibold text-[#202828] mb-2">Weekly Workout Frequency</label>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Target Weight (kg)</label>
+                  <input
+                    type="number"
+                    value={formData.targetWeight}
+                    onChange={e => setFormData({ ...formData, targetWeight: e.target.value })}
+                    placeholder="e.g. 68"
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Target Timeline</label>
+                  <select
+                    value={formData.targetTimeline}
+                    onChange={e => setFormData({ ...formData, targetTimeline: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="1 Month">1 Month (Sprint)</option>
+                    <option value="3 Months">3 Months (Standard Phase)</option>
+                    <option value="6 Months">6 Months (Transformation)</option>
+                    <option value="12 Months">12 Months (Long-term Mastery)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(1)}
+                  className="px-6 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-bold text-sm hover:bg-[#F9F8F6] transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(3)}
+                  className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] transition-colors flex items-center gap-1.5"
+                >
+                  Continue to Measurements <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Body Measurements */}
+          {activeStep === 3 && (
+            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-[#292524]">3. Body Measurements</h3>
+                <p className="text-sm text-[#78716C] mt-0.5">Used by AI and your coach to track structural body recomposition beyond the scale.</p>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Chest</label>
+                  <input
+                    type="text"
+                    value={formData.bodyMeasurements.chest}
+                    onChange={e => handleMeasurementChange('chest', e.target.value)}
+                    placeholder="e.g. 38 in / 96 cm"
+                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Waist</label>
+                  <input
+                    type="text"
+                    value={formData.bodyMeasurements.waist}
+                    onChange={e => handleMeasurementChange('waist', e.target.value)}
+                    placeholder="e.g. 32 in / 81 cm"
+                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Hips</label>
+                  <input
+                    type="text"
+                    value={formData.bodyMeasurements.hips}
+                    onChange={e => handleMeasurementChange('hips', e.target.value)}
+                    placeholder="e.g. 39 in / 99 cm"
+                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Arms / Biceps</label>
+                  <input
+                    type="text"
+                    value={formData.bodyMeasurements.arms}
+                    onChange={e => handleMeasurementChange('arms', e.target.value)}
+                    placeholder="e.g. 13.5 in"
+                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Thighs</label>
+                  <input
+                    type="text"
+                    value={formData.bodyMeasurements.thighs}
+                    onChange={e => handleMeasurementChange('thighs', e.target.value)}
+                    placeholder="e.g. 22 in"
+                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(2)}
+                  className="px-6 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-bold text-sm hover:bg-[#F9F8F6] transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(4)}
+                  className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] transition-colors flex items-center gap-1.5"
+                >
+                  Continue to Schedule <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Schedule, Equipment & Preferences */}
+          {activeStep === 4 && (
+            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-[#292524]">4. Availability & Equipment Preferences</h3>
+                <p className="text-sm text-[#78716C] mt-0.5">Let AI know what gear you have and how often you can train.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Available Workout Days</label>
                   <select
                     value={formData.availableWorkoutDays}
-                    onChange={(e) => setFormData({ ...formData, availableWorkoutDays: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#F9F8F6] border border-[#D3DFDA] rounded-xl focus:outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A] transition-colors"
+                    onChange={e => setFormData({ ...formData, availableWorkoutDays: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
                   >
-                    <option value="1-2 Days">1-2 Days</option>
-                    <option value="3-4 Days">3-4 Days</option>
-                    <option value="5-6 Days">5-6 Days</option>
-                    <option value="Everyday">Everyday</option>
+                    <option value="2 Days">2 Days / Week</option>
+                    <option value="3 Days">3 Days / Week</option>
+                    <option value="4 Days">4 Days / Week (Recommended)</option>
+                    <option value="5 Days">5 Days / Week</option>
+                    <option value="6 Days">6 Days / Week</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-semibold text-[#202828] mb-2">Preferred Workout Duration</label>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Equipment Availability</label>
+                  <select
+                    value={formData.equipmentAvailability}
+                    onChange={e => setFormData({ ...formData, equipmentAvailability: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="Full Commercial Gym">Full Commercial Gym (Barbells, Cables, Machines)</option>
+                    <option value="Dumbbells Only">Dumbbells & Bench Only</option>
+                    <option value="Home Gym">Home Gym (Bands, Kettlebells)</option>
+                    <option value="No Equipment / Bodyweight">No Equipment (Bodyweight / Calisthenics)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Workout Type</label>
+                  <select
+                    value={formData.preferredWorkoutType}
+                    onChange={e => setFormData({ ...formData, preferredWorkoutType: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="Gym Weights / Resistance">Gym Weights & Resistance</option>
+                    <option value="Bodyweight / Calisthenics">Bodyweight & Calisthenics</option>
+                    <option value="HIIT / Functional Circuit">HIIT & Functional Circuit</option>
+                    <option value="Powerlifting / Heavy Barbell">Powerlifting & Strength</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Workout Duration</label>
                   <select
                     value={formData.preferredWorkoutDuration}
-                    onChange={(e) => setFormData({ ...formData, preferredWorkoutDuration: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#F9F8F6] border border-[#D3DFDA] rounded-xl focus:outline-none focus:border-[#164A4A] focus:ring-1 focus:ring-[#164A4A] transition-colors"
+                    onChange={e => setFormData({ ...formData, preferredWorkoutDuration: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
                   >
                     <option value="30 Minutes">30 Minutes</option>
-                    <option value="45 Minutes">45 Minutes</option>
+                    <option value="45 Minutes">45 Minutes (Optimal)</option>
                     <option value="60 Minutes">60 Minutes</option>
-                    <option value="90+ Minutes">90+ Minutes</option>
+                    <option value="75 Minutes">75 Minutes</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Training Time</label>
+                  <select
+                    value={formData.preferredWorkoutTime}
+                    onChange={e => setFormData({ ...formData, preferredWorkoutTime: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="Morning">Morning (06:00 AM - 10:00 AM)</option>
+                    <option value="Afternoon">Afternoon (12:00 PM - 04:00 PM)</option>
+                    <option value="Evening">Evening (05:00 PM - 09:00 PM)</option>
                   </select>
                 </div>
               </div>
-              
-              <div className="pt-6 border-t border-[#E8E5DA] flex justify-end gap-4">
-                <button 
-                  type="button" 
-                  onClick={() => setShowUpdateModal(false)}
-                  className="px-6 py-2.5 rounded-xl font-bold text-[#687B78] hover:bg-[#F1F5F9] transition-colors"
+
+              <div className="flex justify-between pt-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(3)}
+                  className="px-6 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-bold text-sm hover:bg-[#F9F8F6] transition-colors"
                 >
-                  Cancel
+                  Back
                 </button>
-                <button 
-                  type="submit" 
-                  disabled={isSaving}
-                  className="px-8 py-2.5 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors disabled:opacity-70 flex items-center gap-2 shadow-[0_0_15px_rgba(22,163,74,0.3)]"
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(5)}
+                  className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] transition-colors flex items-center gap-1.5"
                 >
-                  {isSaving ? <Loader2 size={18} className="animate-spin" /> : null}
-                  Save Changes
+                  Continue to Nutrition & Health <ArrowRight size={16} />
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {showProfileModal && (
-        <div className="fixed inset-0 bg-[#202828]/60 flex items-start justify-center pt-24 sm:pt-28 pb-10 px-4 z-[60] backdrop-blur-sm">
-          <div className="bg-[#F2EFE8] rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200 mt-2">
-            <div className="flex justify-between items-center p-4 md:px-8 bg-white border-b border-[#D3DFDA] flex-shrink-0">
-              <h2 className="text-xl font-bold text-[#202828]">Member Profile</h2>
-              <button 
-                onClick={() => setShowProfileModal(false)} 
-                className="text-[#687B78] hover:text-[#202828] bg-[#F9F8F6] hover:bg-[#E8E5DA] rounded-full p-2 transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            <div className="p-4 md:p-8 overflow-y-auto custom-scrollbar">
-              <MemberProfile hideEdit={false} />
-            </div>
+          {/* Step 5: Nutrition, Safety & Submit */}
+          {activeStep === 5 && (
+            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-[#292524]">5. Nutrition, Safety & Health Considerations</h3>
+                <p className="text-sm text-[#78716C] mt-0.5">Report dietary preferences and any joint injuries so your coach can screen unsuitable exercises.</p>
+              </div>
 
-            <div className="p-4 md:px-8 bg-white border-t border-[#D3DFDA] flex justify-end flex-shrink-0">
-              <button
-                onClick={() => {
-                  setShowProfileModal(false);
-                  handleGenerate();
-                }}
-                className="px-8 py-3 bg-[#164A4A] text-white rounded-xl font-bold hover:bg-[#C6A77D] transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(22,163,74,0.3)] text-lg"
-              >
-                <Zap size={20} /> Generate Analysis
-              </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Dietary Preference</label>
+                  <select
+                    value={formData.dietaryPreferences}
+                    onChange={e => setFormData({ ...formData, dietaryPreferences: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="Non-Vegetarian">Non-Vegetarian (Chicken, Fish, Eggs)</option>
+                    <option value="Vegetarian">Vegetarian (Dairy, Lentils, Paneer)</option>
+                    <option value="Eggetarian">Eggetarian</option>
+                    <option value="Vegan">Vegan (Plant-Based Only)</option>
+                    <option value="Keto">Keto / Low-Carb</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Daily Water Intake</label>
+                  <select
+                    value={formData.dailyWaterIntake}
+                    onChange={e => setFormData({ ...formData, dailyWaterIntake: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="1-2 Liters">1-2 Liters</option>
+                    <option value="2-3 Liters">2-3 Liters</option>
+                    <option value="3-4 Liters">3-4 Liters</option>
+                    <option value="4+ Liters">4+ Liters</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Average Sleep</label>
+                  <select
+                    value={formData.averageSleep}
+                    onChange={e => setFormData({ ...formData, averageSleep: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  >
+                    <option value="Under 6 hours">Under 6 hours</option>
+                    <option value="6-7 hours">6-7 hours</option>
+                    <option value="7-8 hours">7-8 hours (Optimal)</option>
+                    <option value="8+ hours">8+ hours</option>
+                  </select>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">
+                    Injuries or Joint Limitations
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.injuries}
+                    onChange={e => setFormData({ ...formData, injuries: e.target.value })}
+                    placeholder="e.g. Lower back pain, left knee discomfort, shoulder impingement, or None"
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">
+                    Dietary Restrictions / Allergies
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.dietaryRestrictions}
+                    onChange={e => setFormData({ ...formData, dietaryRestrictions: e.target.value })}
+                    placeholder="e.g. Lactose intolerant, nut allergy, or None"
+                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Notice regarding AI Draft vs Trainer Final Approval */}
+              <div className="p-4 bg-teal-50 border border-teal-200 rounded-2xl flex items-start gap-3 text-xs text-teal-900">
+                <AlertCircle size={18} className="text-[#F97316] shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block font-bold mb-0.5">How this workflow works:</strong>
+                  <span>
+                    When you submit, our AI instantly analyzes your biometrics and generates an initial 
+                    <strong> Draft Plan</strong>. Your certified trainer will then review the draft, calibrate sets, reps, and nutrition, and approve it. 
+                    Only after your trainer approves will the plan become active in your <strong>My Fitness Plan</strong> dashboard.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center pt-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(4)}
+                  className="px-6 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-bold text-sm hover:bg-[#F9F8F6] transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-8 py-3 bg-gradient-to-r from-[#F97316] to-teal-700 text-white rounded-xl font-bold text-sm hover:opacity-95 transition-all shadow-lg shadow-teal-900/20 flex items-center gap-2 disabled:opacity-70 cursor-pointer"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      Analyzing Biometrics & Generating AI Draft...
+                    </>
+                  ) : (
+                    <>
+                      <Zap size={18} />
+                      Submit Assessment & Trigger AI Analysis
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
+          )}
+        </form>
       )}
     </div>
   );
