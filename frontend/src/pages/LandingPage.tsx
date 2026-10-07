@@ -161,19 +161,22 @@ const LandingPage = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
-            <Link to="/gyms" className="w-full sm:w-auto px-8 py-4 bg-[#F97316] text-[#292524] font-semibold rounded-xl hover:bg-[#EA580C] transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#F97316]/20">
+            <Link to="/gyms" className="w-full sm:w-auto px-8 py-4 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#F97316]/20">
               <span>Find a Gym</span>
               <ArrowRight size={20} />
             </Link>
-            <Link to="/gym-owner-introduction" className="w-full sm:w-auto px-8 py-4 bg-[#F97316] text-[#292524] font-semibold rounded-xl hover:bg-[#EA580C] transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#F97316]/20">
+            <Link to="/gym-owner-introduction" className="w-full sm:w-auto px-8 py-4 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#F97316]/20">
               <span>Manage Your Gym</span>
               <ArrowRight size={20} />
             </Link>
           </div>
 
-          <div className="w-full max-w-5xl rounded-3xl overflow-hidden border border-[#E7E5E4] shadow-[0_0_50px_rgba(212,255,0,0.1)] relative">
-            <img src="/images/hero.png" alt="Athlete working out" className="w-full h-auto object-cover aspect-[21/9]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#FFFDF8] to-transparent"></div>
+          <div className="w-full max-w-5xl rounded-3xl overflow-hidden border border-[#E7E5E4] shadow-2xl shadow-stone-900/10 relative bg-[#292524]">
+            <img 
+              src="/images/hero.png" 
+              alt="Athlete working out" 
+              className="w-full h-auto max-h-[580px] object-cover object-center aspect-[16/10] sm:aspect-[16/9] block" 
+            />
           </div>
         </section>
 
