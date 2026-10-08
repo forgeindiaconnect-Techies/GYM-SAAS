@@ -667,7 +667,7 @@ export const updateSessionAttendance = async (req: AuthRequest, res: Response): 
 // Get all reviews/ratings for a trainer
 export const getTrainerReviews = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const trainerId = req.user?.trainerId || req.user?.id;
+    const trainerId = (req.user as any)?.trainerId || req.user?.id;
     if (!trainerId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });
       return;

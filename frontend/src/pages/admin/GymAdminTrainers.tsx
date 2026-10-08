@@ -7,6 +7,7 @@ import {
   GraduationCap, Sparkles, IndianRupee, Activity, Lock
 } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
 
 const GymAdminTrainers = () => {
   const { user } = useAuth();
@@ -246,6 +247,7 @@ const GymAdminTrainers = () => {
 
   return (
     <div className="space-y-6">
+      <TrainerNavigationTabs />
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Trainers</h1>

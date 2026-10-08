@@ -10,9 +10,11 @@ import {
   X, 
   Building,
   Tag,
-  Clock
+  Clock,
+  Download
 } from 'lucide-react';
 import api from '../../utils/api';
+import { exportToExcel, exportToPDF, exportToWord } from '../../utils/export';
 
 export const SuperAdminEnquiries = () => {
   const [enquiries, setEnquiries] = useState<any[]>([]);
@@ -79,6 +81,44 @@ export const SuperAdminEnquiries = () => {
     return `${d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} at ${d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`;
   };
 
+  const handleDownloadReport = (format: 'excel' | 'pdf' | 'word') => {
+    const columns = [
+      'Enquiry ID',
+      'Customer Name',
+      'Mobile Number',
+      'Email Address',
+      'Target Gym',
+      'Target Branch',
+      'Enquiry Category',
+      'Status',
+      'Date & Time'
+    ];
+
+    const data = filteredEnquiries.map(e => [
+      e.enquiryId || e._id?.slice(-8) || 'N/A',
+      e.customerName || 'N/A',
+      e.mobileNumber || 'N/A',
+      e.email || 'N/A',
+      e.gymId?.name || 'Unknown Gym',
+      e.branchId?.name || e.city || 'Main Branch',
+      e.enquiryType || 'General Enquiry',
+      e.status?.replace('_', ' ') || 'NEW',
+      new Date(e.createdAt).toLocaleString('en-IN')
+    ]);
+
+    const dateStr = new Date().toISOString().split('T')[0];
+    const filename = `Customer_Enquiries_Report_${dateStr}`;
+    const title = `Platform Customer Enquiries Report (${new Date().toLocaleDateString()})`;
+
+    if (format === 'pdf') {
+      exportToPDF({ filename, columns, data, title });
+    } else if (format === 'excel') {
+      exportToExcel({ filename, columns, data, title });
+    } else if (format === 'word') {
+      exportToWord({ filename, columns, data, title });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -86,7 +126,7 @@ export const SuperAdminEnquiries = () => {
           <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Platform Enquiries</h1>
           <p className="text-[#78716C] mt-1">Overview of all customer leads across all gyms.</p>
         </div>
-        <div className="flex items-center">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" size={18} />
             <input
@@ -94,8 +134,27 @@ export const SuperAdminEnquiries = () => {
               placeholder="Search enquiries, gyms..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-[#FED7AA] rounded-xl text-sm focus:border-[#FED7AA] focus:ring-1 focus:ring-[#FED7AA] outline-none"
+              className="pl-10 pr-4 py-2 border border-[#FED7AA] rounded-xl text-sm focus:border-[#FED7AA] focus:ring-1 focus:ring-[#FED7AA] outline-none bg-white"
             />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleDownloadReport('excel')}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FFFDF8] border border-[#FED7AA] hover:bg-[#F97316] hover:text-white hover:border-[#F97316] text-[#292524] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0 cursor-pointer"
+              title="Download Excel Report"
+            >
+              <Download size={16} />
+              <span>Excel</span>
+            </button>
+            <button
+              onClick={() => handleDownloadReport('pdf')}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0 cursor-pointer"
+              title="Download PDF Report"
+            >
+              <Download size={16} />
+              <span>PDF</span>
+            </button>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Loader2, ShoppingCart, Plus, X, Store, ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
+import MemberStoreTabs from '../../components/Member/MemberStoreTabs';
 
 const MemberStore = () => {
   const { user } = useAuth();
@@ -99,6 +100,8 @@ const MemberStore = () => {
 
   return (
     <div className="space-y-6">
+      <MemberStoreTabs />
+
       {/* Toast notification */}
       {toast && (
         <div className={`fixed bottom-6 right-6 z-[200] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white font-semibold text-sm transition-all animate-in slide-in-from-bottom-4 ${toast.type === 'success' ? 'bg-[#F97316]' : 'bg-red-600'}`}>

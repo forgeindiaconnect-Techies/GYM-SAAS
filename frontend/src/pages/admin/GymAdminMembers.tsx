@@ -165,23 +165,27 @@ const GymAdminMembers = () => {
   const [statusDropdown, setStatusDropdown] = useState<{
     memberId: string;
     memberStatus: string;
-    top?: number;
-    bottom?: number;
+    top: number;
     right: number;
     maxHeight?: number;
   } | null>(null);
   const [editMember, setEditMember] = useState<any>(null);
   const [editForm, setEditForm] = useState<any>(null);
 
-  // Close dropdown on window scroll or resize
+  // Close dropdown on window scroll or resize (ignoring scroll inside the dropdown)
   useEffect(() => {
     if (!statusDropdown) return;
-    const close = () => setStatusDropdown(null);
-    window.addEventListener('scroll', close, true);
-    window.addEventListener('resize', close);
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest?.('.status-dropdown-menu')) return;
+      setStatusDropdown(null);
+    };
+    const handleResize = () => setStatusDropdown(null);
+    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('scroll', close, true);
-      window.removeEventListener('resize', close);
+      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', handleResize);
     };
   }, [statusDropdown]);
 
@@ -191,35 +195,29 @@ const GymAdminMembers = () => {
       setStatusDropdown(null);
       return;
     }
-    const rect = e.currentTarget.getBoundingClientRect();
+
+    let rect = e.currentTarget.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
-    const spaceAbove = rect.top;
 
-    // Total dropdown height is around 250px (header + 6 items + padding)
-    // If not enough room below and more room above, flip upward
-    const openUpward = spaceBelow < 260 && spaceAbove > spaceBelow;
-    const right = Math.max(12, window.innerWidth - rect.right);
-    const maxHeight = openUpward 
-      ? Math.max(180, spaceAbove - 16) 
-      : Math.max(180, spaceBelow - 16);
-
-    if (openUpward) {
-      setStatusDropdown({
-        memberId: member.id,
-        memberStatus: member.status,
-        bottom: Math.max(8, window.innerHeight - rect.top + 6),
-        right,
-        maxHeight,
-      });
-    } else {
-      setStatusDropdown({
-        memberId: member.id,
-        memberStatus: member.status,
-        top: rect.bottom + 6,
-        right,
-        maxHeight,
-      });
+    // Ensure the menu always opens DOWNWARDS below the button ("come down")
+    // If the button is close to the bottom of the viewport, scroll window down so dropdown has ample room
+    if (spaceBelow < 260) {
+      const needed = 260 - spaceBelow + 24;
+      window.scrollBy({ top: needed, behavior: 'instant' });
+      rect = e.currentTarget.getBoundingClientRect();
     }
+
+    const right = Math.max(12, window.innerWidth - rect.right);
+    const top = rect.bottom + 6;
+    const availableBelow = Math.max(180, window.innerHeight - top - 12);
+
+    setStatusDropdown({
+      memberId: member.id,
+      memberStatus: member.status,
+      top,
+      right,
+      maxHeight: Math.min(availableBelow, 280),
+    });
   };
   
   const navigate = useNavigate();
@@ -1056,12 +1054,11 @@ const GymAdminMembers = () => {
             onClick={() => setStatusDropdown(null)} 
           />
           <div 
-            className="fixed w-48 rounded-xl shadow-2xl bg-white border border-[#E7E5E4] z-[9999] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-100"
+            className="status-dropdown-menu fixed w-48 rounded-xl shadow-2xl bg-white border border-[#E7E5E4] z-[9999] overflow-hidden flex flex-col animate-in fade-in slide-in-from-top-1 duration-150"
             style={{
-              ...(statusDropdown.top !== undefined ? { top: `${statusDropdown.top}px` } : {}),
-              ...(statusDropdown.bottom !== undefined ? { bottom: `${statusDropdown.bottom}px` } : {}),
+              top: `${statusDropdown.top}px`,
               right: `${statusDropdown.right}px`,
-              maxHeight: statusDropdown.maxHeight ? `${statusDropdown.maxHeight}px` : undefined,
+              maxHeight: statusDropdown.maxHeight ? `${statusDropdown.maxHeight}px` : '280px',
             }}
           >
             <div className="px-3.5 py-2 bg-[#FFFDF8] border-b border-[#E7E5E4] flex items-center justify-between shrink-0">

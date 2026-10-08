@@ -9,7 +9,8 @@ import {
   deleteGym,
   getPublicGyms,
   getPublicGymById,
-  updatePaymentSettings
+  updatePaymentSettings,
+  getCommunityTestimonials
 } from '../controllers/gymController';
 import { authenticate } from '../middlewares/auth';
 
@@ -18,6 +19,7 @@ const router = express.Router();
 router.post('/', createGym);
 router.get('/', getGyms);
 router.get('/public', getPublicGyms);
+router.get('/community-testimonials', getCommunityTestimonials);
 router.get('/public/:id', getPublicGymById);
 router.get('/my-gym', authenticate, getMyGym);
 router.get('/:id', getGymById);

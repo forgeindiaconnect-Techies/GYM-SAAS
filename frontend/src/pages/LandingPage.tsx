@@ -13,6 +13,11 @@ const LandingPage = () => {
   const [featuredGyms, setFeaturedGyms] = useState<any[]>([]);
   const [gymsLoading, setGymsLoading] = useState(true);
   
+  const [communityReviews, setCommunityReviews] = useState<any[]>([]);
+  const [communityFilter, setCommunityFilter] = useState<'all' | 'member' | 'trainer' | 'owner'>('all');
+  const [communityCounts, setCommunityCounts] = useState<{ members: number; trainers: number; owners: number; total: number }>({ members: 0, trainers: 0, owners: 0, total: 0 });
+  const [communityGrouped, setCommunityGrouped] = useState<{ members: any[]; trainers: any[]; owners: any[] }>({ members: [], trainers: [], owners: [] });
+  
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
   const [activeFeatureTab, setActiveFeatureTab] = useState<'ai' | 'gym' | 'trainer'>('ai');
   const [featureSlideIndex, setFeatureSlideIndex] = useState(0);
@@ -49,6 +54,21 @@ const LandingPage = () => {
       .then(res => setFeaturedGyms((res.data.gyms || []).slice(0, 3)))
       .catch(() => setFeaturedGyms([]))
       .finally(() => setGymsLoading(false));
+
+    api.get('/gyms/community-testimonials')
+      .then(res => {
+        if (res.data && res.data.success) {
+          setCommunityReviews(res.data.featured || []);
+          setCommunityCounts(res.data.counts || { members: 0, trainers: 0, owners: 0, total: 0 });
+          setCommunityGrouped({
+            members: res.data.members || [],
+            trainers: res.data.trainers || [],
+            owners: res.data.owners || []
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => setCommunityLoading(false));
   }, []);
 
   useEffect(() => {
@@ -644,25 +664,91 @@ const LandingPage = () => {
         {/* Testimonials */}
         <section className="border-t border-[#E7E5E4] bg-[#FFFFFF] py-24" id="testimonials">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
+            <div className="text-center mb-10">
+              <span className="text-[#F97316] text-xs font-bold uppercase tracking-widest mb-2 block">Real Community Feedback</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Don't Just Take Our Word For It</h2>
-              <p className="text-[#78716C]">See what our community is saying about AI GYM.</p>
+              <p className="text-[#78716C] max-w-2xl mx-auto">See what our real gym owners, certified trainers, and active members are saying about AI GYM.</p>
             </div>
+
+            {/* Role Filter Tabs */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+              <button
+                onClick={() => setCommunityFilter('all')}
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
+                  communityFilter === 'all'
+                    ? 'bg-[#F97316] text-black shadow-sm'
+                    : 'bg-[#F5F5F4] text-[#78716C] hover:text-[#292524] hover:bg-[#E7E5E4]'
+                }`}
+              >
+                All Showcase ({communityCounts.total || 3})
+              </button>
+              <button
+                onClick={() => setCommunityFilter('member')}
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
+                  communityFilter === 'member'
+                    ? 'bg-[#F97316] text-black shadow-sm'
+                    : 'bg-[#F5F5F4] text-[#78716C] hover:text-[#292524] hover:bg-[#E7E5E4]'
+                }`}
+              >
+                Members ({communityCounts.members || 0})
+              </button>
+              <button
+                onClick={() => setCommunityFilter('trainer')}
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
+                  communityFilter === 'trainer'
+                    ? 'bg-[#F97316] text-black shadow-sm'
+                    : 'bg-[#F5F5F4] text-[#78716C] hover:text-[#292524] hover:bg-[#E7E5E4]'
+                }`}
+              >
+                Trainers ({communityCounts.trainers || 0})
+              </button>
+              <button
+                onClick={() => setCommunityFilter('owner')}
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
+                  communityFilter === 'owner'
+                    ? 'bg-[#F97316] text-black shadow-sm'
+                    : 'bg-[#F5F5F4] text-[#78716C] hover:text-[#292524] hover:bg-[#E7E5E4]'
+                }`}
+              >
+                Gym Owners ({communityCounts.owners || 0})
+              </button>
+            </div>
+
+            {/* Testimonial Cards */}
             <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
-                { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
-                { name: 'David Chen', role: 'Gym Owner', text: 'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard is incredibly intuitive.' }
-              ].map((review, idx) => (
-                <div key={idx} className="bg-[#FFFFFF] border border-[#E7E5E4] p-8 rounded-2xl relative">
-                  <Quote className="absolute top-8 right-8 text-[#FED7AA]" size={48} />
-                  <div className="flex items-center space-x-1 mb-4 text-[#F97316]">
-                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={16} fill="currentColor" />)}
-                  </div>
-                  <p className="text-[#78716C] italic mb-6 relative z-10 leading-relaxed">"{review.text}"</p>
+              {(
+                communityFilter === 'all'
+                  ? (communityReviews.length > 0 ? communityReviews : [
+                      { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
+                      { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
+                      { name: 'David Chen', role: 'Gym Owner', text: 'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard is incredibly intuitive.' }
+                    ])
+                  : communityFilter === 'member'
+                  ? communityGrouped.members
+                  : communityFilter === 'trainer'
+                  ? communityGrouped.trainers
+                  : communityGrouped.owners
+              ).map((review: any, idx: number) => (
+                <div key={review.id || idx} className="bg-[#FFFFFF] border border-[#E7E5E4] p-8 rounded-2xl relative flex flex-col justify-between hover:border-[#F97316]/50 hover:shadow-md transition-all">
                   <div>
-                    <h4 className="font-bold text-[#292524]">{review.name}</h4>
-                    <span className="text-xs text-[#F97316] uppercase tracking-wider font-semibold">{review.role}</span>
+                    <Quote className="absolute top-8 right-8 text-[#FED7AA]" size={48} />
+                    <div className="flex items-center space-x-1 mb-4 text-[#F97316]">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} size={16} fill={s <= (review.rating || 5) ? 'currentColor' : 'none'} />
+                      ))}
+                    </div>
+                    <p className="text-[#78716C] italic mb-6 relative z-10 leading-relaxed">"{review.text}"</p>
+                  </div>
+                  <div className="pt-4 border-t border-[#F5F5F4]">
+                    <h4 className="font-bold text-[#292524] text-base">{review.name}</h4>
+                    <span className="text-xs text-[#F97316] uppercase tracking-wider font-semibold block mt-0.5">
+                      {review.role}
+                    </span>
+                    {review.subtitle && (
+                      <span className="text-xs text-[#78716C] block mt-1">
+                        {review.subtitle}
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -708,7 +794,6 @@ const LandingPage = () => {
               <h4 className="text-[#292524] font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-[#78716C]">
                 <li><Link to="/about" className="hover:text-[#F97316] transition-colors">About Us</Link></li>
-                <li><Link to="/careers" className="hover:text-[#F97316] transition-colors">Careers</Link></li>
                 <li><Link to="/blog" className="hover:text-[#F97316] transition-colors">Blog</Link></li>
                 <li><Link to="/contact" className="hover:text-[#F97316] transition-colors">Contact</Link></li>
               </ul>

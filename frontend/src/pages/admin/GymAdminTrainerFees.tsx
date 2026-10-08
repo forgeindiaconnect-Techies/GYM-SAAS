@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { IndianRupee, Plus, Edit, CheckCircle, XCircle, Search, ChevronDown, AlertCircle, Clock, X } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
 
 const TRAINING_TYPES = ['Online Training', 'Offline Training', 'Hybrid Training'];
 const BILLING_CYCLES = ['Weekly', 'Monthly'];
@@ -250,6 +251,7 @@ const GymAdminTrainerFees = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      <TrainerNavigationTabs />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

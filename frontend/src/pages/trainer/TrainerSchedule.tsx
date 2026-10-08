@@ -5,6 +5,7 @@ import {
   Eye, Mail, Phone, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerSchedulingTabs from '../../components/Trainer/TrainerSchedulingTabs';
 
 const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -169,6 +170,7 @@ const TrainerSchedule = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-5 pb-10">
+      <TrainerSchedulingTabs />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">

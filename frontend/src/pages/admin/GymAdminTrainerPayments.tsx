@@ -4,6 +4,7 @@ import {
   Building2, Smartphone, QrCode, Copy, Check, X, Banknote
 } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
 const UPI_APPS = [
   { name: 'Google Pay', handle: 'okaxis', color: 'from-blue-500 to-emerald-500' },
   { name: 'PhonePe', handle: 'ybl', color: 'from-purple-600 to-indigo-600' },
@@ -186,6 +187,7 @@ const GymAdminTrainerPayments = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
+      <TrainerNavigationTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Trainer Payments</h1>

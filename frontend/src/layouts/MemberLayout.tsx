@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, User, CreditCard, Dumbbell,
   Utensils, Bot, UserCheck, CalendarCheck,
-  TrendingUp, Bell,
+  TrendingUp, Bell, MessageSquare,
   Activity, Building2, Menu, LogOut, Clock,
   ShoppingBag, ShoppingCart, Receipt, FileText, Star
 } from 'lucide-react';
@@ -80,10 +80,7 @@ const MemberLayout = () => {
     {
       title: 'Training',
       items: [
-        { label: 'Find Trainers', path: '/member/find-trainers', icon: UserCheck },
-        { label: 'My Trainer', path: '/member/trainer', icon: UserCheck },
-        { label: 'My Bookings', path: '/member/bookings', icon: CalendarCheck },
-        { label: 'Online Sessions', path: '/member/online-sessions', icon: Clock },
+        { label: 'Training', path: '/member/find-trainers', icon: Dumbbell },
       ]
     },
     {
@@ -102,15 +99,13 @@ const MemberLayout = () => {
     {
       title: 'Gym Store',
       items: [
-        { label: 'Store', path: '/member/store', icon: ShoppingBag },
-        { label: 'My Cart', path: '/member/store/cart', icon: ShoppingCart },
-        { label: 'My Orders', path: '/member/store/orders', icon: ShoppingBag },
-        { label: 'Payment History', path: '/member/store/payments', icon: Receipt },
+        { label: 'Gym Store', path: '/member/store', icon: ShoppingBag },
       ]
     },
     {
       title: 'Account',
       items: [
+        { label: 'Messages', path: '/member/chat', icon: MessageSquare },
         { label: 'Profile', path: '/member/profile', icon: User },
         { label: 'Membership', path: '/member/subscription', icon: CreditCard },
         { label: 'Notifications', path: '/member/notifications', icon: Bell },
@@ -128,7 +123,11 @@ const MemberLayout = () => {
     }
   ] : navGroups;
 
-  const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname);
+  const isTrainingRoute = ['/member/find-trainers', '/member/training', '/member/trainer', '/member/bookings', '/member/online-sessions', '/member/book-session'].some(p => location.pathname.startsWith(p));
+  const isStoreRoute = ['/member/store'].some(p => location.pathname.startsWith(p));
+  const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname) 
+    || (isTrainingRoute ? { label: 'Training', path: '/member/find-trainers', icon: Dumbbell } : null)
+    || (isStoreRoute ? { label: 'Gym Store', path: '/member/store', icon: ShoppingBag } : null);
 
   const renderSidebar = () => (
     <>
@@ -160,7 +159,11 @@ const MemberLayout = () => {
             <h4 className="px-3 mb-2 text-[10px] font-bold text-[#78716C] uppercase tracking-widest">{group.title}</h4>
             <div className="space-y-0.5">
               {group.items.map((item) => {
-                const isActive = location.pathname === item.path;
+                const isTrainingItem = item.path === '/member/find-trainers';
+                const isStoreItem = item.path === '/member/store';
+                const isActive = location.pathname === item.path 
+                  || (isTrainingItem && isTrainingRoute)
+                  || (isStoreItem && isStoreRoute);
                 const Icon = item.icon;
                 return (
                   <Link

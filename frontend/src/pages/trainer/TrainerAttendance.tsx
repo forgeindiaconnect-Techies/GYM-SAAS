@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import {
   CalendarCheck, CheckCircle, XCircle, Clock,
-  Calendar, Search, Loader2, Dumbbell
+  Calendar, Search, Loader2, Dumbbell, Download
 } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerClientsTabs from '../../components/Trainer/TrainerClientsTabs';
+import { exportToExcel, exportToPDF } from '../../utils/export';
 
 interface AttendanceRecord {
   _id: string;
@@ -79,8 +81,32 @@ const TrainerAttendance = () => {
   const selfLearningCount = sessions.filter(s => s.attendanceStatus === 'Self-Learning').length;
   const attendanceRate = totalCount > 0 ? Math.round(((presentCount + selfLearningCount) / totalCount) * 100) : 0;
 
+  const handleDownloadAttendanceReport = (format: 'pdf' | 'excel' = 'excel') => {
+    const columns = ['Member Name', 'Booking ID', 'Mode', 'Date', 'Scheduled Time', 'Status', 'Check-In', 'Check-Out'];
+    const data = filteredSessions.map(s => [
+      s.customerName || (s.customerId ? `${s.customerId.firstName || ''} ${s.customerId.lastName || ''}`.trim() : 'Member'),
+      s.bookingId || 'N/A',
+      s.mode || 'Offline',
+      s.date,
+      `${s.startTime} - ${s.endTime}`,
+      s.attendanceStatus || s.status || 'Scheduled',
+      s.checkInTime ? new Date(s.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—',
+      s.checkOutTime ? new Date(s.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'
+    ]);
+    const dateStr = new Date().toISOString().split('T')[0];
+    const filename = `Attendance_Report_${dateStr}`;
+    const title = `Client Session Attendance Report (${new Date().toLocaleDateString()})`;
+
+    if (format === 'pdf') {
+      exportToPDF({ filename, columns, data, title });
+    } else {
+      exportToExcel({ filename, columns, data, title });
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      <TrainerClientsTabs />
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -91,6 +117,24 @@ const TrainerAttendance = () => {
           <p className="text-sm text-[#78716C]">
             Track member attendance, check-in timestamps, and self-learning excuses across online & offline sessions.
           </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={() => handleDownloadAttendanceReport('excel')}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] hover:bg-[#F97316] hover:text-white hover:border-[#F97316] text-[#292524] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
+            title="Download Excel Attendance Report"
+          >
+            <Download size={16} />
+            <span>Excel</span>
+          </button>
+          <button
+            onClick={() => handleDownloadAttendanceReport('pdf')}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
+            title="Download PDF Attendance Report"
+          >
+            <Download size={16} />
+            <span>PDF</span>
+          </button>
         </div>
       </div>
 

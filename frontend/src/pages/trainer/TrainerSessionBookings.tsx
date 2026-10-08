@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   Clock, Calendar as CalendarIcon, Video, Loader2, CheckCircle2,
-  X, AlertTriangle, Users, RefreshCw, Filter, FileText, LogOut
+  X, AlertTriangle, Users, RefreshCw, Filter, FileText, LogOut, Eye, Star
 } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerSchedulingTabs from '../../components/Trainer/TrainerSchedulingTabs';
 
 const STATUS_FILTERS = ['All', 'Pending', 'Approved', 'Completed', 'Cancelled', 'Rejected'];
 
@@ -44,6 +45,7 @@ const TrainerSessionBookings = () => {
   const [rejectModal, setRejectModal] = useState<any | null>(null);
   const [rejectReason, setRejectReason] = useState('');
   const [notesModal, setNotesModal] = useState<any | null>(null);
+  const [detailModal, setDetailModal] = useState<any | null>(null);
   const [notesForm, setNotesForm] = useState({
     exercisesCompleted: '',
     customerPerformance: 'Good',
@@ -151,6 +153,7 @@ const TrainerSessionBookings = () => {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
+      <TrainerSchedulingTabs />
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Session Bookings</h1>
@@ -307,6 +310,11 @@ const TrainerSessionBookings = () => {
                           <X size={14} />
                           Reject
                         </button>
+                        <button onClick={() => setDetailModal(booking)}
+                          className="px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-semibold text-[#292524] hover:bg-[#FED7AA] transition-colors flex items-center gap-1"
+                          title="View Details">
+                          <Eye size={13} />
+                        </button>
                       </div>
                     )}
 
@@ -323,6 +331,10 @@ const TrainerSessionBookings = () => {
                             <LogOut size={13} />
                           )}
                           Checkout
+                        </button>
+                        <button onClick={() => setDetailModal(booking)}
+                          className="px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-semibold text-[#292524] hover:bg-[#FED7AA] transition-colors flex items-center gap-1">
+                          <Eye size={13} /> Details
                         </button>
                         <button
                           onClick={() => openNotesModal(booking)}
@@ -343,10 +355,16 @@ const TrainerSessionBookings = () => {
                             {new Date(booking.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <button onClick={() => openNotesModal(booking)}
-                          className="w-full py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-semibold text-[#78716C] hover:bg-[#FED7AA] transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                          <FileText size={13} /> {booking.sessionNotes?.exercisesCompleted ? 'View / Edit Notes' : 'Add Session Notes'}
-                        </button>
+                        <div className="flex gap-2">
+                          <button onClick={() => setDetailModal(booking)}
+                            className="flex-1 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-semibold text-[#292524] hover:bg-[#FED7AA] transition-colors flex items-center justify-center gap-1">
+                            <Eye size={13} /> View Details
+                          </button>
+                          <button onClick={() => openNotesModal(booking)}
+                            className="flex-1 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-semibold text-[#78716C] hover:bg-[#FED7AA] transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                            <FileText size={13} /> {booking.sessionNotes?.exercisesCompleted ? 'Edit Notes' : 'Add Notes'}
+                          </button>
+                        </div>
                       </div>
                     )}
                     {normStatus === 'Completed' && !booking.checkOutTime && (
@@ -354,6 +372,10 @@ const TrainerSessionBookings = () => {
                         <div className="flex-1 py-2 bg-blue-50 border border-blue-200 rounded-xl text-xs font-bold text-blue-700 flex items-center justify-center gap-1.5">
                           <CheckCircle2 size={13} /> Completed
                         </div>
+                        <button onClick={() => setDetailModal(booking)}
+                          className="px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-semibold text-[#292524] hover:bg-[#FED7AA] transition-colors flex items-center gap-1">
+                          <Eye size={13} /> View Details
+                        </button>
                         <button onClick={() => openNotesModal(booking)}
                           className="px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-semibold text-[#78716C] hover:bg-[#FED7AA] transition-colors flex items-center gap-1 cursor-pointer">
                           <FileText size={13} /> Notes
@@ -361,8 +383,14 @@ const TrainerSessionBookings = () => {
                       </div>
                     )}
                     {(normStatus === 'Cancelled' || normStatus === 'Rejected') && (
-                      <div className="py-2 bg-red-50 border border-red-200 rounded-xl text-xs font-semibold text-red-600 text-center">
-                        Session {normStatus}
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 py-2 bg-red-50 border border-red-200 rounded-xl text-xs font-semibold text-red-600 text-center">
+                          Session {normStatus}
+                        </div>
+                        <button onClick={() => setDetailModal(booking)}
+                          className="px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-semibold text-[#292524] hover:bg-[#FED7AA] transition-colors flex items-center gap-1">
+                          <Eye size={13} /> View Details
+                        </button>
                       </div>
                     )}
                   </div>
@@ -370,6 +398,140 @@ const TrainerSessionBookings = () => {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Details Modal */}
+      {detailModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#E7E5E4]">
+            <div className="sticky top-0 bg-white border-b border-[#E7E5E4] px-6 py-4 flex items-center justify-between z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#F97316]/10 border border-[#E7E5E4] flex items-center justify-center shrink-0">
+                  <span className="font-bold text-[#F97316] text-sm">{detailModal.customerId?.firstName?.charAt(0) || 'C'}</span>
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#292524]">
+                    {detailModal.customerId?.firstName} {detailModal.customerId?.lastName}
+                  </h3>
+                  <p className="text-xs text-[#78716C]">{detailModal.customerId?.email || 'No email'}</p>
+                </div>
+              </div>
+              <button onClick={() => setDetailModal(null)} className="text-gray-400 hover:text-gray-600 p-1">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#F8FAFC] p-3 rounded-xl border border-[#E8EAED]">
+                <div>
+                  <span className="text-xs text-[#78716C] block">Booking Identifier</span>
+                  <span className="font-mono font-bold text-sm text-[#292524]">#{detailModal.bookingId || detailModal._id?.slice(-8)}</span>
+                </div>
+                <div className="flex gap-1.5">
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${STATUS_BADGE[normalizeStatus(detailModal.status)] || 'bg-gray-100 text-gray-700'}`}>
+                    {normalizeStatus(detailModal.status)}
+                  </span>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${MODE_BADGE[detailModal.mode] || 'bg-gray-100 text-gray-700'}`}>
+                    {detailModal.mode === 'Online' ? 'Online' : 'In-Gym'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Session Schedule & Fee</h4>
+                <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl p-3 space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#78716C] flex items-center gap-1.5"><CalendarIcon size={14} className="text-[#F97316]" /> Date</span>
+                    <span className="font-semibold text-[#292524]">{formatDate(detailModal.date)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#78716C] flex items-center gap-1.5"><Clock size={14} className="text-[#F97316]" /> Time</span>
+                    <span className="font-semibold text-[#292524]">{detailModal.startTime} – {detailModal.endTime}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#78716C] flex items-center gap-1.5"><Users size={14} className="text-[#F97316]" /> Duration</span>
+                    <span className="font-semibold text-[#292524]">{detailModal.duration || '60'} min</span>
+                  </div>
+                  {detailModal.fee > 0 && (
+                    <div className="flex items-center justify-between pt-1 border-t border-gray-100">
+                      <span className="text-[#78716C]">Session Fee</span>
+                      <span className="font-bold text-[#F97316]">₹{detailModal.fee}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {(detailModal.checkInTime || detailModal.checkOutTime) && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Attendance Records</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    {detailModal.checkInTime && (
+                      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-xs">
+                        <span className="text-emerald-700 block font-medium">Check-In</span>
+                        <span className="font-mono font-bold text-emerald-900">
+                          {new Date(detailModal.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    )}
+                    {detailModal.checkOutTime && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 text-xs">
+                        <span className="text-blue-700 block font-medium">Check-Out</span>
+                        <span className="font-mono font-bold text-blue-900">
+                          {new Date(detailModal.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {detailModal.rejectionReason && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Rejection Reason</h4>
+                  <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs text-rose-700">
+                    {detailModal.rejectionReason}
+                  </div>
+                </div>
+              )}
+
+              {detailModal.customerRating && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Customer Rating</h4>
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 space-y-1">
+                    <div className="flex items-center gap-1 font-bold text-amber-700">
+                      <Star size={16} className="fill-amber-400 text-amber-400" />
+                      <span>{detailModal.customerRating} / 5</span>
+                    </div>
+                    {detailModal.customerReview && (
+                      <p className="italic font-medium text-amber-900">"{detailModal.customerReview}"</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {detailModal.sessionNotes?.exercisesCompleted && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Session Notes</h4>
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs text-gray-800 space-y-1.5">
+                    <p><span className="font-bold text-[#78716C]">Exercises:</span> {detailModal.sessionNotes.exercisesCompleted}</p>
+                    {detailModal.sessionNotes.customerPerformance && (
+                      <p><span className="font-bold text-[#78716C]">Performance:</span> {detailModal.sessionNotes.customerPerformance}</p>
+                    )}
+                    {detailModal.sessionNotes.dietRecommendations && (
+                      <p><span className="font-bold text-[#78716C]">Diet:</span> {detailModal.sessionNotes.dietRecommendations}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="sticky bottom-0 bg-white border-t border-[#E7E5E4] px-6 py-3 flex justify-end">
+              <button onClick={() => setDetailModal(null)} className="px-5 py-2 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#EA580C]">
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

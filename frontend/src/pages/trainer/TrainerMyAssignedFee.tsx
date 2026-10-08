@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { IndianRupee, Clock, CheckCircle, Info, History, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
+import TrainerFinancialsTabs from '../../components/Trainer/TrainerFinancialsTabs';
 
 const cycleBadge = (cycle: string) => {
   const map: Record<string, string> = {
@@ -74,6 +75,7 @@ const TrainerMyAssignedFee = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <TrainerFinancialsTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Assigned Fee</h1>

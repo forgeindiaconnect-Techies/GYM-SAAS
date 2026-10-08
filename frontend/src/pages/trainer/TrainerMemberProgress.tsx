@@ -4,6 +4,7 @@ import {
   ChevronRight, X, Activity, RefreshCw
 } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerClientsTabs from '../../components/Trainer/TrainerClientsTabs';
 
 interface ClientProgress {
   customer: {
@@ -82,6 +83,7 @@ const TrainerMemberProgress: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-16">
+      <TrainerClientsTabs />
       {/* Header */}
       <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>

@@ -108,10 +108,7 @@ const GymAdminLayout = () => {
       {
         title: 'Trainers',
         items: [
-          { label: 'Trainers List', path: '/admin/trainers', icon: Dumbbell },
-          { label: 'Trainer Fees', path: '/admin/trainer-fees', icon: IndianRupee },
-          { label: 'Trainer Payments', path: '/admin/trainer-payments', icon: CreditCard },
-          { label: 'Payment History', path: '/admin/trainer-payments-history', icon: History }
+          { label: 'Trainers', path: '/admin/trainers', icon: Dumbbell }
         ]
       },
       {
@@ -254,7 +251,9 @@ const GymAdminLayout = () => {
               <h3 className="px-3 text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-2">{group.title}</h3>
               <div className="space-y-0.5">
                 {group.items.map((item) => {
-                  const isActive = location.pathname === item.path;
+                  const isActive = item.path === '/admin/trainers'
+                    ? location.pathname.startsWith('/admin/trainer')
+                    : location.pathname === item.path;
                   const Icon = item.icon;
                   return (
                     <Link

@@ -947,21 +947,107 @@ export const memberChatbotQuery = async (req: ExpressRequest, res: ExpressRespon
       return dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     };
 
+    const trainerName = trainerInfo
+      ? `${trainerInfo.firstName || trainerInfo.name || 'Trainer'} ${trainerInfo.lastName || ''}`.trim()
+      : null;
+
     let reply = '';
 
-    if (q.includes('booking') && q.includes('status')) {
-      reply = sessions && sessions.length > 0 ? `Your session status is ${sessions[0].status}.` : "You have no upcoming sessions.";
-    } else if (q.includes('workout plan') || q.includes('plan')) {
-      const rec = recommendations as any;
-      if (rec && rec.status === 'Trainer Approved') {
-        reply = `Your trainer-approved plan for **${rec.fitnessProfile?.fitnessGoal || 'fitness'}** is active! Check My Fitness Plan for full details.`;
-      } else if (rec) {
-        reply = `Your AI Assessment is currently **${rec.status}**. Your trainer will finalize your plan shortly!`;
+    // 1. Booking Status / Sessions Status
+    if (q.includes('booking') || (q.includes('session') && (q.includes('status') || q.includes('book')))) {
+      if (sessions && sessions.length > 0) {
+        const latest = sessions[0] as any;
+        const latestTrainer = latest.trainerId ? `${latest.trainerId.firstName || latest.trainerId.name || 'Trainer'} ${latest.trainerId.lastName || ''}`.trim() : (trainerName || 'assigned trainer');
+        const sessionDate = formatDateStr(latest.date);
+        reply = `You have **${sessions.length}** session booking(s) on record. Your latest booking for **${latest.sessionTitle || '1-on-1 Coaching'}** with **${latestTrainer}** is scheduled for **${sessionDate}** at **${latest.startTime || '09:00 AM'}** (Status: **${latest.status || 'Pending'}**).`;
       } else {
-        reply = "You haven't completed your fitness assessment yet. Go to AI Fitness to submit your assessment.";
+        reply = "You currently have no session bookings. You can browse expert coaches and book a 1-on-1 session under **Find Trainers**!";
       }
-    } else {
-      reply = "I am your AI Gym Assistant. I can assist you with your workout plans, trainer status, schedules, and progress!";
+    } 
+    // 2. Next Session / When is my next session
+    else if (q.includes('next session') || q.includes('when is my next') || (q.includes('upcoming') && q.includes('session'))) {
+      const upcoming = sessions.find((s: any) => {
+        const status = (s.status || '').toLowerCase();
+        return status === 'pending' || status === 'confirmed' || status === 'accepted' || status === 'booked';
+      }) || (sessions.length > 0 ? sessions[0] : null);
+
+      if (upcoming) {
+        const upSess = upcoming as any;
+        const upTrainer = upSess.trainerId ? `${upSess.trainerId.firstName || upSess.trainerId.name || 'Trainer'} ${upSess.trainerId.lastName || ''}`.trim() : (trainerName || 'your trainer');
+        reply = `Your next session **${upSess.sessionTitle || 'Personal Training'}** is on **${formatDateStr(upSess.date)}** at **${upSess.startTime || '09:00 AM'}** with **${upTrainer}** (Status: **${upSess.status}**).`;
+      } else {
+        reply = "You have no upcoming sessions scheduled. Visit **Find Trainers** or **Book Session** to pick your time slot!";
+      }
+    }
+    // 3. Who is my trainer
+    else if (q.includes('trainer') || q.includes('coach') || q.includes('who is my')) {
+      if (trainerName) {
+        const spec = trainerInfo?.specialization || trainerInfo?.expertise || 'Fitness & Conditioning';
+        reply = `Your assigned personal trainer is **${trainerName}** (Specialization: **${spec}**). You can send messages directly to your trainer under **Messages**!`;
+      } else {
+        reply = "You currently don't have a personal trainer assigned. Browse our certified trainers under **Find Trainers** to select your coach!";
+      }
+    }
+    // 4. Show my workout plan / Diet / Assessment
+    else if (q.includes('workout plan') || q.includes('plan') || q.includes('workout') || q.includes('diet')) {
+      const rec = recommendations as any;
+      if (rec && (rec.status === 'Trainer Approved' || rec.status === 'Approved')) {
+        const goal = rec.fitnessProfile?.fitnessGoal || 'General Fitness';
+        reply = `Your trainer-approved plan for **${goal}** is active! Target Calories: **${rec.aiOutput?.caloricTarget || '2,100 kcal/day'}**, Protein: **${rec.aiOutput?.proteinTarget || '130g/day'}**. View your full routines under **Workout Plan**.`;
+      } else if (rec) {
+        reply = `Your AI Assessment is submitted and currently **${rec.status}**. Your trainer will review and activate your plan shortly!`;
+      } else {
+        reply = "You haven't completed your fitness assessment yet. Head to **AI Assistant** to get a custom workout and diet plan!";
+      }
+    }
+    // 5. Payment status / Payments / Membership fee
+    else if (q.includes('payment') || q.includes('paid') || q.includes('bill') || q.includes('invoice') || q.includes('fee')) {
+      if (payments && payments.length > 0) {
+        const latestP = payments[0] as any;
+        reply = `You have **${payments.length}** payment record(s). Your latest payment of **₹${latestP.amount}** on **${formatDateStr(latestP.createdAt)}** via **${latestP.paymentMethod || 'Online'}** was **${latestP.status || 'Completed'}**. Your membership status is **${userAny.subscriptionPlan || 'Active'}**.`;
+      } else if (memberships && memberships.length > 0) {
+        const latestM = memberships[0] as any;
+        reply = `Your active membership plan is **${latestM.planName || userAny.subscriptionPlan || 'Standard Member'}** (Status: **${latestM.status || 'Active'}**).`;
+      } else {
+        reply = `Your account membership status is **${userAny.subscriptionPlan || 'Active Member'}**. Check **Payment History** for transaction logs.`;
+      }
+    }
+    // 6. How is my progress / Weight / Log
+    else if (q.includes('progress') || q.includes('weight') || q.includes('log') || q.includes('tracking')) {
+      if (progressLogs && progressLogs.length > 0) {
+        const latestLog = progressLogs[0] as any;
+        reply = `You have recorded **${progressLogs.length}** progress entry(ies)! Latest log on **${formatDateStr(latestLog.date || latestLog.createdAt)}**: Weight: **${latestLog.weight || '-'} kg**, Workouts Completed: **${latestLog.workoutsCompleted || 1}**, Calories Burned: **${latestLog.caloriesBurned || '-'} kcal**.`;
+      } else {
+        reply = "You haven't logged any progress entries yet. Track your weight, workout completion, and calories in **Customer Progress** to visualize your results!";
+      }
+    }
+    // 7. How can I improve my fitness / Fitness tips / Advice
+    else if (q.includes('improve') || q.includes('tip') || q.includes('advice') || q.includes('better') || q.includes('fitness')) {
+      const goal = (recommendations as any)?.fitnessProfile?.fitnessGoal || 'General Fitness';
+      reply = `Here are personalized recommendations to boost your **${goal}**:
+1. **Consistent Training**: Complete 3-4 structured sessions every week with progressive overload.
+2. **Optimal Protein & Hydration**: Target ~1.6g to 2.0g protein per kg bodyweight and drink 3+ liters of water daily.
+3. **Rest & Recovery**: Ensure 7-8 hours of sleep per night for optimal muscle repair.
+4. **Trainer Chat**: Message your coach under **Messages** for custom adjustments to your routines!`;
+    }
+    // 8. Store / Orders
+    else if (q.includes('order') || q.includes('store') || q.includes('purchase') || q.includes('cart')) {
+      if (orders && orders.length > 0) {
+        const latestO = orders[0] as any;
+        reply = `You have **${orders.length}** order(s) in Gym Store. Latest order **#${latestO._id.toString().slice(-6)}**: Total **₹${latestO.totalAmount}** (Status: **${latestO.status || 'Processing'}**).`;
+      } else {
+        reply = "You haven't placed any store orders yet. Check out fitness gear, supplements, and apparel in **Gym Store**!";
+      }
+    }
+    // 9. Greetings
+    else if (q === 'hi' || q === 'hello' || q === 'hey' || q.startsWith('hi ') || q.startsWith('hello ')) {
+      reply = `Hello **${userAny.firstName}**! 👋 How can I help you today? You can ask about your booking status, next session, assigned trainer, workout plan, payment status, or progress.`;
+    }
+    // 10. Default Smart Context-Aware Answer
+    else {
+      const trainerStr = trainerName ? `assigned to trainer **${trainerName}**` : 'currently unassigned to a personal trainer';
+      const sessionStr = sessions && sessions.length > 0 ? `have **${sessions.length}** session booking(s)` : 'have no active session bookings';
+      reply = `Hello **${userAny.firstName}**! You are ${trainerStr} and ${sessionStr}. I can assist you with your **Booking Status**, **Next Session**, **Trainer Info**, **Workout & Diet Plan**, **Payment History**, or **Progress Tracking**. What would you like to check?`;
     }
 
     return res.status(200).json({

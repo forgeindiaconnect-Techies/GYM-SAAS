@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Star, MapPin, Award, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
+import MemberTrainingTabs from '../../components/Member/MemberTrainingTabs';
 
 const MemberMyTrainer = () => {
   const [trainer, setTrainer] = useState<any>(null);
@@ -43,18 +44,22 @@ const MemberMyTrainer = () => {
 
   if (!trainer) {
     return (
-      <div className="p-8 max-w-7xl mx-auto space-y-8 animate-fade-in text-center">
-        <h1 className="text-3xl font-bold text-[#292524] mb-4">No Trainer Assigned</h1>
-        <p className="text-[#78716C] mb-8">You haven't booked a session with a trainer yet.</p>
-        <Link to="/member/find-trainers" className="px-6 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors">
-          Find a Trainer
-        </Link>
+      <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
+        <MemberTrainingTabs />
+        <div className="p-12 text-center bg-white border border-[#E7E5E4] rounded-2xl">
+          <h1 className="text-3xl font-bold text-[#292524] mb-3">No Trainer Assigned</h1>
+          <p className="text-[#78716C] mb-8">You haven't booked a session with a trainer yet.</p>
+          <Link to="/member/find-trainers" className="px-6 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors">
+            Find a Trainer
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
+      <MemberTrainingTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#292524] tracking-tight">My Trainer</h1>

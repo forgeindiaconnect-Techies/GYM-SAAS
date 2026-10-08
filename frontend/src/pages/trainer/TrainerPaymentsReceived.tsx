@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { History, Search, Filter, CheckCircle, Clock, AlertCircle, Eye, X, CreditCard, Calendar, Hash, IndianRupee, Smartphone } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerFinancialsTabs from '../../components/Trainer/TrainerFinancialsTabs';
 
 const STATUS_ICONS: Record<string, any> = {
   Paid: CheckCircle,
@@ -89,6 +90,7 @@ const TrainerPaymentsReceived = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 p-6">
+      <TrainerFinancialsTabs />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

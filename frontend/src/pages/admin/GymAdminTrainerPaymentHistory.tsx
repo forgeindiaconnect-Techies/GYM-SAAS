@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import api from '../../utils/api';
 import { exportToPDF } from '../../utils/export';
+import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
 
 const STATUS_COLORS: Record<string, string> = {
   Paid: 'bg-[#FED7AA]/10 text-[#F97316]',
@@ -131,6 +132,7 @@ const GymAdminTrainerPaymentHistory = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      <TrainerNavigationTabs />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

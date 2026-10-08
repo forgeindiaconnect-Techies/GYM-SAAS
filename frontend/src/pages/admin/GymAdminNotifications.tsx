@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, AlertCircle, MessageSquare, Info, CheckCircle2, XCircle, CheckCheck } from 'lucide-react';
+import { Bell, AlertCircle, MessageSquare, Info, CheckCircle2, XCircle, CheckCheck, ArrowRight } from 'lucide-react';
 import api from '../../utils/api';
 
 const getIcon = (type: string) => {
@@ -76,11 +76,6 @@ const GymAdminNotifications = () => {
   const openNotification = (notif: any) => {
     if (!notif.isRead) markAsRead(notif._id);
     setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
-    const targetLink = getNotificationLink(notif);
-    if (targetLink) {
-      navigate(targetLink);
-      return;
-    }
     setSelected(notif);
   };
 
@@ -115,7 +110,7 @@ const GymAdminNotifications = () => {
               <button
                 key={notif._id}
                 onClick={() => openNotification(notif)}
-                className={`w-full text-left p-6 flex items-start space-x-4 transition-colors hover:bg-[#FFFDF8] ${!notif.isRead ? 'bg-[#FFFFFF]/50' : ''}`}
+                className={`w-full text-left p-6 flex items-start space-x-4 transition-colors hover:bg-[#FFFDF8] ${selected?._id === notif._id ? 'bg-[#FFFDF8] ring-1 ring-[#F97316]/40' : !notif.isRead ? 'bg-[#FFFFFF]/50' : ''}`}
               >
                 <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center border ${getBg(notif.type)}`}>
                   {getIcon(notif.type)}
@@ -148,45 +143,87 @@ const GymAdminNotifications = () => {
 
       {/* Details Modal */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-[#FED7AA] bg-[#FFFDF8]">
-              <div className="flex items-center gap-2">
-                {getIcon(selected.type)}
-                <h3 className="font-bold text-[#292524]">Notification Details</h3>
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          onClick={() => setSelected(null)}
+        >
+          <div 
+            className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden border border-[#E7E5E4]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-5 border-b border-[#E7E5E4] bg-[#FFFDF8]">
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${getBg(selected.type)}`}>
+                  {getIcon(selected.type)}
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#292524] text-base">Notification Details</h3>
+                  <p className="text-xs text-[#78716C]">Viewing details on this page</p>
+                </div>
               </div>
-              <button onClick={() => setSelected(null)} className="text-[#78716C] hover:text-[#292524]">
+              <button 
+                onClick={() => setSelected(null)} 
+                className="text-[#78716C] hover:text-[#292524] p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                title="Close"
+              >
                 <XCircle size={20} />
               </button>
             </div>
-            <div className="p-5 space-y-4">
+
+            <div className="p-6 space-y-4">
               <div>
-                <p className="text-xs text-[#78716C] uppercase tracking-wide font-semibold mb-1">Title</p>
-                <p className="font-bold text-[#292524]">{selected.title}</p>
+                <p className="text-xs text-[#78716C] uppercase tracking-wider font-semibold mb-1">Subject</p>
+                <p className="font-bold text-lg text-[#292524]">{selected.title}</p>
               </div>
-              <div>
-                <p className="text-xs text-[#78716C] uppercase tracking-wide font-semibold mb-1">Message</p>
-                <p className="text-sm text-[#78716C] leading-relaxed">{selected.message}</p>
+
+              <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl p-4">
+                <p className="text-xs text-[#78716C] uppercase tracking-wider font-semibold mb-2">Message</p>
+                <p className="text-sm text-[#292524] leading-relaxed whitespace-pre-wrap">{selected.message}</p>
               </div>
-              <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
                 <div>
-                  <p className="text-xs text-[#78716C] uppercase tracking-wide font-semibold mb-1">Type</p>
+                  <p className="text-xs text-[#78716C] uppercase tracking-wider font-semibold mb-1">Type</p>
                   <p className="text-sm font-semibold text-[#292524] capitalize">{selected.type || 'info'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-[#78716C] uppercase tracking-wide font-semibold mb-1">Status</p>
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${selected.isRead ? 'bg-gray-100 text-gray-600' : 'bg-[#FED7AA]/10 text-[#F97316]'}`}>
+                  <p className="text-xs text-[#78716C] uppercase tracking-wider font-semibold mb-1">Status</p>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
                     <CheckCircle2 size={12} />
-                    {selected.isRead ? 'Read' : 'Unread'}
+                    Read
                   </span>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-xs text-[#78716C] uppercase tracking-wide font-semibold mb-1">Received At</p>
-                  <p className="text-sm font-semibold text-[#292524]">
-                    {selected.createdAt ? new Date(selected.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '-'}
+                  <p className="text-xs text-[#78716C] uppercase tracking-wider font-semibold mb-1">Received At</p>
+                  <p className="text-sm font-medium text-[#292524]">
+                    {selected.createdAt ? new Date(selected.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}
                   </p>
                 </div>
               </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 p-4 bg-gray-50 border-t border-[#E7E5E4]">
+              <div>
+                {getNotificationLink(selected) && (
+                  <button
+                    onClick={() => {
+                      const link = getNotificationLink(selected);
+                      setSelected(null);
+                      if (link) navigate(link);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#F97316] hover:bg-orange-50 rounded-lg transition-colors border border-transparent hover:border-orange-200"
+                  >
+                    <span>Go to related page</span>
+                    <ArrowRight size={13} />
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => setSelected(null)}
+                className="px-4 py-2 bg-[#292524] text-white text-sm font-bold rounded-xl hover:bg-black transition-colors"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

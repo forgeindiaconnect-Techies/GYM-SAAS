@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, MoreVertical, X, User } from 'lucide-react';
+import { Users, Search, MoreVertical, X, User, Download } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerClientsTabs from '../../components/Trainer/TrainerClientsTabs';
+import { exportToExcel, exportToPDF } from '../../utils/export';
 
 const TrainerMembers = () => {
   const navigate = useNavigate();
@@ -83,8 +85,30 @@ const TrainerMembers = () => {
     );
   });
 
+  const handleDownloadReport = (format: 'pdf' | 'excel' = 'excel') => {
+    const columns = ['Member Name', 'Email', 'Fitness Goal', 'Status', 'Total Sessions', 'Next Session'];
+    const data = filteredClients.map(c => [
+      c.name || 'Member',
+      c.email || 'N/A',
+      c.goal || 'General Fitness',
+      c.status || 'Active',
+      c.sessions?.length || 0,
+      c.nextSession || 'No upcoming sessions'
+    ]);
+    const dateStr = new Date().toISOString().split('T')[0];
+    const filename = `My_Members_Report_${dateStr}`;
+    const title = `Assigned Members & Clients Report (${new Date().toLocaleDateString()})`;
+
+    if (format === 'pdf') {
+      exportToPDF({ filename, columns, data, title });
+    } else {
+      exportToExcel({ filename, columns, data, title });
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      <TrainerClientsTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#292524]">Assigned Users</h1>
@@ -94,24 +118,44 @@ const TrainerMembers = () => {
               : `Manage your ${clients.length} active clients`}
           </p>
         </div>
-        <div className="relative w-full md:w-72">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search clients..."
-            className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl pl-10 pr-10 py-2 text-sm focus:outline-none focus:border-[#F97316] transition-colors text-[#292524]"
-          />
-          {searchTerm && (
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+          <div className="relative flex-1 md:w-64">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search clients..."
+              className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl pl-10 pr-10 py-2 text-sm focus:outline-none focus:border-[#F97316] transition-colors text-[#292524]"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C] hover:text-[#292524]"
+                title="Clear search"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => setSearchTerm('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C] hover:text-[#292524]"
-              title="Clear search"
+              onClick={() => handleDownloadReport('excel')}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FFFDF8] border border-[#E7E5E4] hover:bg-[#F97316] hover:text-white hover:border-[#F97316] text-[#292524] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
+              title="Download Excel Report"
             >
-              <X size={16} />
+              <Download size={16} />
+              <span>Excel</span>
             </button>
-          )}
+            <button
+              onClick={() => handleDownloadReport('pdf')}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
+              title="Download PDF Report"
+            >
+              <Download size={16} />
+              <span>PDF</span>
+            </button>
+          </div>
         </div>
       </div>
 

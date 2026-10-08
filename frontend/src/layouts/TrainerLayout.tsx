@@ -54,17 +54,13 @@ const TrainerLayout = () => {
     {
       title: 'Clients',
       items: [
-        { label: 'My Members', path: '/trainer/members', icon: Users },
-        { label: 'Customer Progress', path: '/trainer/customer-progress', icon: TrendingUp },
-        { label: 'Attendance', path: '/trainer/attendance', icon: CalendarCheck },
+        { label: 'Clients', path: '/trainer/members', icon: Users },
       ]
     },
     {
       title: 'Scheduling',
       items: [
-        { label: 'Schedule', path: '/trainer/schedule', icon: Calendar },
-        { label: 'Session Bookings', path: '/trainer/session-bookings', icon: CalendarCheck },
-        { label: 'Online Sessions', path: '/trainer/online-sessions', icon: Clock },
+        { label: 'Scheduling', path: '/trainer/schedule', icon: Calendar },
       ]
     },
     {
@@ -78,21 +74,27 @@ const TrainerLayout = () => {
     {
       title: 'Financials',
       items: [
-        { label: 'My Assigned Fee', path: '/trainer/my-fee', icon: IndianRupee },
-        { label: 'Payments Received', path: '/trainer/payments-received', icon: Clock },
-        { label: 'Earnings & Balance', path: '/trainer/earnings', icon: TrendingUp },
+        { label: 'Financials', path: '/trainer/my-fee', icon: IndianRupee },
       ]
     },
     {
       title: 'Communication',
       items: [
+        { label: 'Messages', path: '/trainer/messages', icon: MessageSquare },
         { label: 'Notifications', path: '/trainer/notifications', icon: Bell },
         { label: 'Reviews & Ratings', path: '/trainer/reviews', icon: Star },
       ]
     }
   ];
 
-  const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname);
+  const isClientsRoute = ['/trainer/members', '/trainer/customer-progress', '/trainer/member-progress', '/trainer/attendance'].some(p => location.pathname.startsWith(p));
+  const isSchedulingRoute = ['/trainer/schedule', '/trainer/session-bookings', '/trainer/online-sessions'].some(p => location.pathname.startsWith(p));
+  const isFinancialsRoute = ['/trainer/my-fee', '/trainer/payments-received', '/trainer/payment-history', '/trainer/earnings'].some(p => location.pathname.startsWith(p));
+
+  const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname)
+    || (isClientsRoute ? { label: 'Clients', path: '/trainer/members', icon: Users } : null)
+    || (isSchedulingRoute ? { label: 'Scheduling', path: '/trainer/schedule', icon: Calendar } : null)
+    || (isFinancialsRoute ? { label: 'Financials', path: '/trainer/my-fee', icon: IndianRupee } : null);
 
   const renderSidebar = () => (
     <>
@@ -124,7 +126,13 @@ const TrainerLayout = () => {
             <h3 className="px-3 text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-2">{group.title}</h3>
             <div className="space-y-0.5">
               {group.items.map((item) => {
-                const isActive = location.pathname === item.path;
+                const isClientsItem = item.path === '/trainer/members';
+                const isSchedulingItem = item.path === '/trainer/schedule';
+                const isFinancialsItem = item.path === '/trainer/my-fee';
+                const isActive = location.pathname === item.path
+                  || (isClientsItem && isClientsRoute)
+                  || (isSchedulingItem && isSchedulingRoute)
+                  || (isFinancialsItem && isFinancialsRoute);
                 const Icon = item.icon;
                 return (
                   <Link

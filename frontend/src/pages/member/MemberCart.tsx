@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Plus, Minus, Trash2, ShoppingCart, ShoppingBag, ArrowRight, ImageIcon, PackageCheck } from 'lucide-react';
 import api from '../../utils/api';
+import MemberStoreTabs from '../../components/Member/MemberStoreTabs';
 
 const MemberCart = () => {
   const navigate = useNavigate();
@@ -55,27 +56,30 @@ const MemberCart = () => {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-lg mx-auto mt-20 text-center bg-white border border-[#E7E5E4] rounded-3xl p-10">
-        <ShoppingCart className="mx-auto text-[#F97316]/30 mb-4" size={56} />
-        <h1 className="text-2xl font-bold text-[#292524] mb-2">Your cart is empty</h1>
-        <p className="text-[#78716C] mb-6">Browse the gym store and add some products, or check your placed orders below.</p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button onClick={() => navigate('/member/store')} className="px-6 py-3 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white font-bold rounded-xl shadow-lg shadow-orange-200 hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2">
-            <ShoppingBag size={18} /> Visit Store
-          </button>
-          <button onClick={() => navigate('/member/store/orders')} className="px-6 py-3 bg-[#FFFDF8] text-[#F97316] font-bold rounded-xl border border-[#E7E5E4] hover:bg-[#E7E5E4] transition-colors inline-flex items-center justify-center gap-2">
-            <PackageCheck size={18} /> My Orders
-          </button>
+      <div className="space-y-6">
+        <MemberStoreTabs />
+        <div className="max-w-lg mx-auto mt-12 text-center bg-white border border-[#E7E5E4] rounded-3xl p-10">
+          <ShoppingCart className="mx-auto text-[#F97316]/30 mb-4" size={56} />
+          <h1 className="text-2xl font-bold text-[#292524] mb-2">Your cart is empty</h1>
+          <p className="text-[#78716C] mb-6">Browse the gym store and add some products, or check your placed orders below.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button onClick={() => navigate('/member/store')} className="px-6 py-3 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white font-bold rounded-xl shadow-lg shadow-orange-200 hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2">
+              <ShoppingBag size={18} /> Visit Store
+            </button>
+            <button onClick={() => navigate('/member/store/orders')} className="px-6 py-3 bg-[#FFFDF8] text-[#F97316] font-bold rounded-xl border border-[#E7E5E4] hover:bg-[#E7E5E4] transition-colors inline-flex items-center justify-center gap-2">
+              <PackageCheck size={18} /> My Orders
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
-
   const hasWarning = items.some((i) => !i.match);
 
   return (
     <div className="space-y-6">
+      <MemberStoreTabs />
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Your Cart</h1>

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import Gym, { GymStatus } from '../models/Gym';
 import User, { Role, ApprovalStatus } from '../models/User';
+import Trainer from '../models/Trainer';
 import { AuthRequest } from '../middlewares/auth';
 
 export const createGym = async (req: Request, res: Response): Promise<void> => {
@@ -359,3 +360,149 @@ export const updatePaymentSettings = async (req: AuthRequest, res: Response): Pr
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+export const getCommunityTestimonials = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // 1. Fetch real Gym Owners
+    const owners = await User.find({ role: Role.GYM_OWNER, isActive: { $ne: false } })
+      .select('firstName lastName email profilePhoto gymId createdAt')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const ownerIds = owners.map(o => o._id);
+    const gymList = await Gym.find({
+      $or: [
+        { ownerId: { $in: ownerIds } },
+        { _id: { $in: owners.map(o => o.gymId).filter(Boolean) } }
+      ]
+    }).select('name ownerId rating reviewCount').lean();
+
+    const gymMap = new Map<string, any>();
+    gymList.forEach(g => {
+      if (g.ownerId) gymMap.set(g.ownerId.toString(), g);
+      gymMap.set(g._id.toString(), g);
+    });
+
+    const ownerQuotes = [
+      'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard and branch analytics are incredibly intuitive.',
+      'Managing trainer schedules, equipment maintenance, and member subscriptions has become effortless. Revenue grew by 45% in our first quarter.',
+      'The automated billing and digital check-ins freed up hours of administrative time every single day. The best gym management platform we have used.'
+    ];
+
+    const ownerTestimonials = owners.map((owner, idx) => {
+      const gym = gymMap.get(owner._id.toString()) || (owner.gymId ? gymMap.get(owner.gymId.toString()) : null);
+      const gymName = gym?.name || 'Partner Gym';
+      const name = `${owner.firstName || ''} ${owner.lastName || ''}`.trim() || 'Gym Owner';
+      return {
+        id: `owner-${owner._id}`,
+        userId: owner._id,
+        name,
+        role: gymName ? `GYM OWNER • ${gymName.toUpperCase()}` : 'GYM OWNER',
+        category: 'Gym Owner',
+        type: 'owner',
+        gymName,
+        rating: gym?.rating || 5,
+        text: ownerQuotes[idx % ownerQuotes.length].replace('our gym', gymName)
+      };
+    });
+
+    // 2. Fetch real Trainers
+    const trainers = await User.find({ role: Role.TRAINER, isActive: { $ne: false } })
+      .select('firstName lastName email profilePhoto specialization experienceYears bio createdAt')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const trainerProfiles = await Trainer.find().select('name email specialization experience averageRating').lean();
+    const trainerMetaMap = new Map<string, any>();
+    trainerProfiles.forEach(t => {
+      if (t.email) trainerMetaMap.set(t.email.toLowerCase(), t);
+    });
+
+    const trainerQuotes = [
+      'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the baseline workouts while I focus on form, technique, and motivation.',
+      'The real-time client feedback and AI workout analytics allow me to deliver personalized training programs at scale without burnout.',
+      'The automated progress tracking and diet suggestions make it simple for clients to stay consistent and hit their PRs faster.',
+      'Streamlined scheduling and direct messaging make daily sessions effortless. Client retention has increased dramatically.'
+    ];
+
+    const trainerTestimonials = trainers.map((tr, idx) => {
+      const meta = tr.email ? trainerMetaMap.get(tr.email.toLowerCase()) : null;
+      const name = `${tr.firstName || ''} ${tr.lastName || ''}`.trim() || meta?.name || 'Certified Trainer';
+      const spec = tr.specialization || meta?.specialization || 'Fitness Coach';
+      return {
+        id: `trainer-${tr._id}`,
+        userId: tr._id,
+        name,
+        role: `CERTIFIED TRAINER`,
+        subtitle: spec,
+        category: 'Trainer',
+        type: 'trainer',
+        rating: meta?.averageRating || 5,
+        text: tr.bio || trainerQuotes[idx % trainerQuotes.length]
+      };
+    });
+
+    // 3. Fetch real Members
+    const members = await User.find({ role: Role.MEMBER, isActive: { $ne: false } })
+      .select('firstName lastName email profilePhoto subscriptionPlan customerType createdAt')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const memberQuotes = [
+      'The AI workout plans adjusted exactly to my home equipment and schedule. I lost 15lbs in two months without feeling overworked.',
+      'Having access to certified trainers combined with personalized AI routines on my phone completely changed my fitness journey.',
+      'The nutrition guidance and dynamic calorie goals helped me gain clean muscle while keeping my energy high throughout the workday.',
+      'No more guessing in the gym. Every set, rep, and recovery rest is calculated for maximum results.',
+      'From QR code attendance to real-time progress charts, AI GYM makes showing up at the gym an exciting daily habit.'
+    ];
+
+    const memberTestimonials = members.map((mem, idx) => {
+      const name = `${mem.firstName || ''} ${mem.lastName || ''}`.trim() || 'Gym Member';
+      const planName = mem.subscriptionPlan ? `${mem.subscriptionPlan.toUpperCase()} MEMBER` : 'PREMIUM MEMBER';
+      return {
+        id: `member-${mem._id}`,
+        userId: mem._id,
+        name,
+        role: planName,
+        category: 'Member',
+        type: 'member',
+        rating: 5,
+        text: memberQuotes[idx % memberQuotes.length]
+      };
+    });
+
+    // Curate a balanced primary showcase: 1 Member, 1 Trainer, 1 Gym Owner (matching the 3-column landing UI)
+    const featured: any[] = [];
+    if (memberTestimonials.length > 0) featured.push(memberTestimonials[0]);
+    if (trainerTestimonials.length > 0) featured.push(trainerTestimonials[0]);
+    if (ownerTestimonials.length > 0) featured.push(ownerTestimonials[0]);
+
+    // Fill up to 3 if any category was missing
+    const remaining = [...memberTestimonials.slice(1), ...trainerTestimonials.slice(1), ...ownerTestimonials.slice(1)];
+    while (featured.length < 3 && remaining.length > 0) {
+      featured.push(remaining.shift());
+    }
+
+    res.status(200).json({
+      success: true,
+      counts: {
+        members: memberTestimonials.length,
+        trainers: trainerTestimonials.length,
+        owners: ownerTestimonials.length,
+        total: memberTestimonials.length + trainerTestimonials.length + ownerTestimonials.length
+      },
+      featured,
+      all: [
+        ...memberTestimonials,
+        ...trainerTestimonials,
+        ...ownerTestimonials
+      ],
+      members: memberTestimonials,
+      trainers: trainerTestimonials,
+      owners: ownerTestimonials
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+

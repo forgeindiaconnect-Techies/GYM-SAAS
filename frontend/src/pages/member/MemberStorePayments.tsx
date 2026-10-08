@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Loader2, Receipt, CheckCircle, Clock, XCircle, CreditCard, Banknote, Eye, X, Download } from 'lucide-react';
 import api from '../../utils/api';
+import MemberStoreTabs from '../../components/Member/MemberStoreTabs';
 
 const statusColor: Record<string, string> = {
   'Paid': 'bg-[#FED7AA]/10 text-[#F97316]',
@@ -163,6 +164,7 @@ const MemberStorePayments = () => {
 
   return (
     <div className="space-y-6">
+      <MemberStoreTabs />
       <div>
         <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Store Payment History</h1>
         <p className="text-[#78716C] mt-1">Track your payments for all Gym Store orders.</p>

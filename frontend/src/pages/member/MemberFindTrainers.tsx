@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, Star, Calendar, Eye, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
+import MemberTrainingTabs from '../../components/Member/MemberTrainingTabs';
 
 const MemberFindTrainers = () => {
   const [trainers, setTrainers] = useState<any[]>([]);
@@ -37,9 +38,10 @@ const MemberFindTrainers = () => {
 
   return (
     <div className="space-y-6">
+      <MemberTrainingTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Book Online Trainer</h1>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Find Trainers</h1>
           <p className="text-[#78716C] mt-1">Select an active online trainer to review your AI Analysis and guide your live training.</p>
         </div>
         <div className="relative w-full md:w-64">
@@ -103,14 +105,20 @@ const MemberFindTrainers = () => {
                   <p><span className="text-[#292524] font-semibold">Available Slots:</span> {trainer.availableSlot || 5} per day ({trainer.availableStartTime || '09:00 AM'} - {trainer.availableEndTime || '06:00 PM'})</p>
                 </div>
                 
-                <div className="mt-6 flex gap-3">
-                  <button onClick={() => setSelectedTrainer(trainer)} className="flex-1 flex justify-center items-center space-x-2 py-2 bg-[#F1F5F9] text-[#292524] border border-[#E7E5E4] rounded-xl font-semibold hover:bg-[#FED7AA] transition-colors">
-                    <Eye size={16} />
-                    <span>View Details</span>
+                <div className="mt-6 flex items-center gap-2">
+                  <button 
+                    onClick={() => setSelectedTrainer(trainer)} 
+                    className="flex-1 py-2.5 px-3 bg-[#F8FAFC] text-[#292524] border border-[#E7E5E4] rounded-xl font-bold text-xs sm:text-sm hover:bg-[#FED7AA] hover:border-[#F97316]/40 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs min-w-0 cursor-pointer"
+                  >
+                    <Eye size={15} className="shrink-0 text-[#F97316]" />
+                    <span className="whitespace-nowrap truncate">View Details</span>
                   </button>
-                  <Link to={`/member/book-session?trainerId=${trainer._id}`} className="flex-1 flex justify-center items-center space-x-2 py-2 bg-[#F97316] text-white rounded-xl font-semibold hover:bg-[#EA580C] transition-colors">
-                    <Calendar size={16} />
-                    <span>Book Session</span>
+                  <Link 
+                    to={`/member/book-session?trainerId=${trainer._id}`} 
+                    className="flex-1 py-2.5 px-3 bg-[#F97316] text-white rounded-xl font-bold text-xs sm:text-sm hover:bg-[#EA580C] transition-all flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs min-w-0 cursor-pointer"
+                  >
+                    <Calendar size={15} className="shrink-0" />
+                    <span className="whitespace-nowrap truncate">Book Session</span>
                   </Link>
                 </div>
               </div>

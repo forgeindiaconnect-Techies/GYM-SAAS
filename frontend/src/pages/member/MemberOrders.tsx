@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, ShoppingBag, Eye, X, MapPin, Truck, XCircle, Navigation } from 'lucide-react';
 import api from '../../utils/api';
+import MemberStoreTabs from '../../components/Member/MemberStoreTabs';
 
 const statusColor: Record<string, string> = {
   'Pending': 'bg-yellow-100 text-yellow-700',
@@ -169,6 +170,7 @@ const MemberOrders = () => {
 
   return (
     <div className="space-y-6">
+      <MemberStoreTabs />
       <div>
         <h1 className="text-3xl font-bold text-[#292524] tracking-tight">My Orders</h1>
         <p className="text-[#78716C] mt-1">Track your gym store orders from placement to pickup/delivery.</p>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { TrendingUp, IndianRupee, CheckCircle, ArrowDownRight, ArrowDownLeft } from 'lucide-react';
 import api from '../../utils/api';
+import TrainerFinancialsTabs from '../../components/Trainer/TrainerFinancialsTabs';
 
 const TrainerEarnings = () => {
   const [data, setData] = useState<any>(null);
@@ -34,6 +35,7 @@ const TrainerEarnings = () => {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 p-6">
+      <TrainerFinancialsTabs />
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-[#292524]">Earnings &amp; Balance</h1>

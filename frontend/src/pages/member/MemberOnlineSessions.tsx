@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
+import MemberTrainingTabs from '../../components/Member/MemberTrainingTabs';
 import {
   Video, Clock, Calendar, AlertTriangle,
   Play, LogIn, LogOut, RefreshCw, BookOpen, ChevronRight,
@@ -112,6 +113,7 @@ const MemberOnlineSessions = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      <MemberTrainingTabs />
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">

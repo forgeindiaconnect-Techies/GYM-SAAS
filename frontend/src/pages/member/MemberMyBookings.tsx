@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Clock, MapPin, Plus, Video, RefreshCw, XCircle, LogOut, CheckCircle2 } from 'lucide-react';
+import { Clock, MapPin, Plus, Video, RefreshCw, XCircle, LogOut, CheckCircle2, Eye, Star, Calendar, Users, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
+import MemberTrainingTabs from '../../components/Member/MemberTrainingTabs';
 
 const MemberMyBookings = () => {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'Upcoming' | 'History'>('Upcoming');
+  const [activeTab, setActiveTab] = useState<'Booked' | 'History'>('Booked');
 
   const fetchSessions = async () => {
     try {
@@ -48,13 +49,13 @@ const MemberMyBookings = () => {
     }
   };
 
-  const upcomingStatuses = ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming', 'In Progress', 'Reschedule Requested', 'Rescheduled'];
+  const bookedStatuses = ['Pending', 'Awaiting Payment', 'Confirmed', 'Approved', 'Upcoming', 'In Progress', 'Reschedule Requested', 'Rescheduled'];
   
   const filteredSessions = sessions.filter(s => {
-    if (activeTab === 'Upcoming') {
-      return upcomingStatuses.includes(s.status);
+    if (activeTab === 'Booked') {
+      return bookedStatuses.includes(s.status);
     }
-    return !upcomingStatuses.includes(s.status); // History (Completed, Cancelled, Rejected, Refunded)
+    return !bookedStatuses.includes(s.status); // History (Completed, Cancelled, Rejected, Refunded)
   });
 
   const getStatusDisplay = (status: string) => {
@@ -62,9 +63,11 @@ const MemberMyBookings = () => {
       case 'Pending':
         return { label: 'Waiting for Trainer Approval', className: 'text-amber-800 bg-amber-50 border border-amber-300' };
       case 'Confirmed':
+      case 'Approved':
       case 'Upcoming':
-      case 'In Progress':
         return { label: 'Trainer Approved', className: 'text-emerald-800 bg-emerald-50 border border-emerald-300' };
+      case 'In Progress':
+        return { label: 'In Progress', className: 'text-blue-800 bg-blue-50 border border-blue-300' };
       case 'Rejected':
         return { label: 'Trainer Rejected', className: 'text-rose-800 bg-rose-50 border border-rose-300' };
       case 'Completed':
@@ -128,6 +131,7 @@ const MemberMyBookings = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
+      <MemberTrainingTabs />
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold text-[#292524]">My Bookings &amp; Sessions</h1>
@@ -143,10 +147,10 @@ const MemberMyBookings = () => {
 
       <div className="flex gap-4 border-b border-[#E7E5E4] pb-px">
         <button 
-          onClick={() => setActiveTab('Upcoming')}
-          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Upcoming' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#F97316]'}`}
+          onClick={() => setActiveTab('Booked')}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Booked' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#F97316]'}`}
         >
-          Upcoming / Active
+          Booked Session
         </button>
         <button 
           onClick={() => setActiveTab('History')}
@@ -160,7 +164,24 @@ const MemberMyBookings = () => {
         {loading ? (
           <div className="text-center py-10 text-[#78716C]">Loading bookings...</div>
         ) : filteredSessions.length === 0 ? (
-          <div className="text-center py-10 text-[#78716C]">No {activeTab.toLowerCase()} bookings found.</div>
+          <div className="text-center py-12 bg-white rounded-2xl border border-[#E7E5E4] p-8 space-y-3 shadow-sm">
+            <p className="text-base text-[#292524] font-semibold">
+              {activeTab === 'Booked' ? 'No booked sessions found' : 'No session history found'}
+            </p>
+            <p className="text-sm text-[#78716C] max-w-md mx-auto">
+              {activeTab === 'Booked'
+                ? 'When you book a training session with a trainer, all your booking details, schedule, and check-in options will appear here.'
+                : 'Completed and past training sessions will be listed here along with attendance and trainer reviews.'}
+            </p>
+            {activeTab === 'Booked' && (
+              <button
+                onClick={() => navigate('/member/find-trainers')}
+                className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#EA580C] transition-colors shadow-sm"
+              >
+                <Plus size={16} /> Book New Session
+              </button>
+            )}
+          </div>
         ) : (
           filteredSessions.map((session) => (
             <div key={session._id} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
@@ -170,8 +191,18 @@ const MemberMyBookings = () => {
                   <span className="text-xl font-bold text-[#F97316]">{new Date(session.date).getDate()}</span>
                 </div>
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <h3 className="font-bold text-lg text-[#292524]">{session.trainerId?.name || 'Assigned Trainer'}</h3>
+                    {session.trainerId?.specialization && (
+                      <span className="text-xs text-[#78716C] font-medium hidden sm:inline">
+                        • {session.trainerId.specialization}
+                      </span>
+                    )}
+                    {session.bookingId && (
+                      <span className="text-[11px] font-mono bg-stone-100 text-stone-600 px-2 py-0.5 rounded border border-stone-200">
+                        {session.bookingId}
+                      </span>
+                    )}
                     <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
                       session.mode === 'Online'
                         ? 'bg-blue-100 text-blue-700 border border-blue-200'
@@ -192,6 +223,9 @@ const MemberMyBookings = () => {
                     ) : (
                       <span className="flex items-center gap-1"><MapPin size={14} /> In-Gym Session</span>
                     )}
+                    {session.fee > 0 && (
+                      <span className="font-medium text-stone-600">Fee: ₹{session.fee}</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -201,8 +235,24 @@ const MemberMyBookings = () => {
                   {getStatusDisplay(session.status).label}
                 </span>
 
+                {/* Checked In Badge */}
+                {session.checkInTime && (
+                  <span className="text-xs bg-blue-50 text-blue-800 px-2.5 py-1 rounded-lg font-bold border border-blue-200 flex items-center gap-1">
+                    <CheckCircle2 size={13} className="text-blue-600" />
+                    Checked In ({new Date(session.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })})
+                  </span>
+                )}
+
+                {/* Checked Out Badge */}
+                {session.checkOutTime && (
+                  <span className="text-xs bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-lg font-bold border border-emerald-200 flex items-center gap-1">
+                    <CheckCircle2 size={13} className="text-emerald-600" />
+                    Checked Out ({new Date(session.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })})
+                  </span>
+                )}
+
                 {/* Join Online Session Button */}
-                {session.mode === 'Online' && ['Confirmed', 'Upcoming', 'In Progress'].includes(session.status) && (
+                {session.mode === 'Online' && ['Confirmed', 'Approved', 'Upcoming', 'In Progress'].includes(session.status) && (
                   <a
                     href={session.meetingLink || `https://meet.jit.si/aigym-session-${session._id.substr(-6)}`}
                     target="_blank"
@@ -213,18 +263,18 @@ const MemberMyBookings = () => {
                   </a>
                 )}
 
-                {/* Check In Button */}
-                {['Confirmed', 'Upcoming'].includes(session.status) && !session.checkInTime && (
+                {/* Check In Option / Button - for active booked sessions before check in */}
+                {!session.checkInTime && !['Completed', 'Cancelled', 'Rejected'].includes(session.status) && (
                   <button
                     onClick={() => handleCheckIn(session._id)}
-                    className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"
+                    className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"
                   >
-                    Check In
+                    <CheckCircle2 size={13} /> Check In
                   </button>
                 )}
 
-                {/* Checkout Button */}
-                {!session.checkOutTime && (session.checkInTime || session.status === 'In Progress' || session.attendanceStatus === 'Present' || ['Confirmed', 'Upcoming'].includes(session.status)) && (
+                {/* Checkout Option / Button - when checked in or in-progress, before check out */}
+                {!session.checkOutTime && (session.checkInTime || session.status === 'In Progress' || session.attendanceStatus === 'Present') && !['Completed', 'Cancelled', 'Rejected'].includes(session.status) && (
                   <button
                     onClick={() => handleCheckOut(session._id)}
                     className="px-3.5 py-1.5 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"
@@ -233,13 +283,13 @@ const MemberMyBookings = () => {
                   </button>
                 )}
 
-                {/* Checked Out Badge */}
-                {session.checkOutTime && (
-                  <span className="text-xs bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-lg font-bold border border-emerald-200 flex items-center gap-1">
-                    <CheckCircle2 size={13} className="text-emerald-600" />
-                    Checked Out ({new Date(session.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })})
-                  </span>
-                )}
+                {/* View Details Button */}
+                <button
+                  onClick={() => setSelectedSessionForDetails(session)}
+                  className="px-3.5 py-1.5 bg-[#FFFDF8] border border-[#E7E5E4] hover:bg-[#FED7AA] text-[#292524] rounded-xl text-xs font-semibold transition-colors shadow-xs flex items-center gap-1.5"
+                >
+                  <Eye size={14} /> View Details
+                </button>
 
                 {/* View Trainer Session Notes */}
                 {session.sessionNotes?.exercisesCompleted && (
@@ -276,7 +326,7 @@ const MemberMyBookings = () => {
                   </button>
                 )}
 
-                {upcomingStatuses.includes(session.status) && session.status !== 'Pending' && (
+                {bookedStatuses.includes(session.status) && session.status !== 'Pending' && (
                   <button 
                     onClick={() => handleReschedulePrompt(session._id)}
                     className="p-2 border border-[#E7E5E4] hover:bg-[#FED7AA] text-[#78716C] rounded-xl transition-colors" 
@@ -286,7 +336,7 @@ const MemberMyBookings = () => {
                   </button>
                 )}
 
-                {upcomingStatuses.includes(session.status) && (
+                {bookedStatuses.includes(session.status) && (
                   <button 
                     onClick={() => handleCancel(session._id)}
                     className="p-2 border border-red-200 hover:bg-red-50 text-red-500 rounded-xl transition-colors"
@@ -300,6 +350,148 @@ const MemberMyBookings = () => {
           ))
         )}
       </div>
+
+      {/* View Details Modal for Member */}
+      {selectedSessionForDetails && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#E7E5E4]">
+            <div className="sticky top-0 bg-white border-b border-[#E7E5E4] px-6 py-4 flex items-center justify-between z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#F97316]/10 border border-[#E7E5E4] flex items-center justify-center shrink-0">
+                  <span className="font-bold text-[#F97316] text-sm">{selectedSessionForDetails.trainerId?.name?.charAt(0) || 'T'}</span>
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#292524]">
+                    {selectedSessionForDetails.trainerId?.name || 'Assigned Trainer'}
+                  </h3>
+                  <p className="text-xs text-[#78716C]">{selectedSessionForDetails.trainerId?.specialization || 'Personal Trainer'}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelectedSessionForDetails(null)} className="text-gray-400 hover:text-gray-600 p-1">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#F8FAFC] p-3 rounded-xl border border-[#E8EAED]">
+                <div>
+                  <span className="text-xs text-[#78716C] block">Booking Identifier</span>
+                  <span className="font-mono font-bold text-sm text-[#292524]">{selectedSessionForDetails.bookingId || `#${selectedSessionForDetails._id?.slice(-8)}`}</span>
+                </div>
+                <span className={`text-xs px-3 py-1 rounded-full font-bold ${getStatusDisplay(selectedSessionForDetails.status).className}`}>
+                  {getStatusDisplay(selectedSessionForDetails.status).label}
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Session Schedule & Details</h4>
+                <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl p-3 space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#78716C] flex items-center gap-1.5"><Calendar size={14} className="text-[#F97316]" /> Date</span>
+                    <span className="font-semibold text-[#292524]">{new Date(selectedSessionForDetails.date).toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#78716C] flex items-center gap-1.5"><Clock size={14} className="text-[#F97316]" /> Time Slot</span>
+                    <span className="font-semibold text-[#292524]">{selectedSessionForDetails.startTime} – {selectedSessionForDetails.endTime}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#78716C] flex items-center gap-1.5"><Video size={14} className="text-[#F97316]" /> Training Mode</span>
+                    <span className="font-semibold text-blue-700">{selectedSessionForDetails.mode || 'Online Virtual Session'}</span>
+                  </div>
+                  {selectedSessionForDetails.fee > 0 && (
+                    <div className="flex items-center justify-between pt-1 border-t border-gray-100">
+                      <span className="text-[#78716C]">Session Fee</span>
+                      <span className="font-bold text-[#F97316]">₹{selectedSessionForDetails.fee}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {(selectedSessionForDetails.checkInTime || selectedSessionForDetails.checkOutTime) && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Attendance Activity</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    {selectedSessionForDetails.checkInTime && (
+                      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-xs">
+                        <span className="text-emerald-700 block font-medium">Checked In</span>
+                        <span className="font-mono font-bold text-emerald-900">
+                          {new Date(selectedSessionForDetails.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    )}
+                    {selectedSessionForDetails.checkOutTime && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 text-xs">
+                        <span className="text-blue-700 block font-medium">Checked Out</span>
+                        <span className="font-mono font-bold text-blue-900">
+                          {new Date(selectedSessionForDetails.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {selectedSessionForDetails.mode === 'Online' && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Virtual Meeting Room</h4>
+                  <div className="flex items-center justify-between gap-2 bg-blue-50 border border-blue-200 rounded-xl p-3">
+                    <span className="text-xs font-mono text-blue-800 truncate">
+                      {selectedSessionForDetails.meetingLink || `meet.jit.si/aigym-session-${selectedSessionForDetails._id.substr(-6)}`}
+                    </span>
+                    <a
+                      href={selectedSessionForDetails.meetingLink || `https://meet.jit.si/aigym-session-${selectedSessionForDetails._id.substr(-6)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shrink-0"
+                    >
+                      Join Now
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {selectedSessionForDetails.customerRating && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Your Rating & Review</h4>
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 space-y-1">
+                    <div className="flex items-center gap-1 font-bold text-amber-700">
+                      <Star size={16} className="fill-amber-400 text-amber-400" />
+                      <span>{selectedSessionForDetails.customerRating} / 5</span>
+                    </div>
+                    {selectedSessionForDetails.customerReview && (
+                      <p className="italic font-medium">"{selectedSessionForDetails.customerReview}"</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {selectedSessionForDetails.sessionNotes?.exercisesCompleted && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Trainer Notes</h4>
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs text-gray-800 space-y-1.5">
+                    <p><span className="font-bold text-[#78716C]">Exercises:</span> {selectedSessionForDetails.sessionNotes.exercisesCompleted}</p>
+                    {selectedSessionForDetails.sessionNotes.customerPerformance && (
+                      <p><span className="font-bold text-[#78716C]">Performance:</span> {selectedSessionForDetails.sessionNotes.customerPerformance}</p>
+                    )}
+                    {selectedSessionForDetails.sessionNotes.dietRecommendations && (
+                      <p><span className="font-bold text-[#78716C]">Diet:</span> {selectedSessionForDetails.sessionNotes.dietRecommendations}</p>
+                    )}
+                    {selectedSessionForDetails.sessionNotes.nextSessionFocus && (
+                      <p><span className="font-bold text-[#78716C]">Next Focus:</span> {selectedSessionForDetails.sessionNotes.nextSessionFocus}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="sticky bottom-0 bg-white border-t border-[#E7E5E4] px-6 py-3 flex justify-end">
+              <button onClick={() => setSelectedSessionForDetails(null)} className="px-5 py-2 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#EA580C]">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Session Notes Modal */}
       {selectedSessionForNotes && (

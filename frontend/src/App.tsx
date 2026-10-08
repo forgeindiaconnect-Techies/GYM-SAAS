@@ -27,6 +27,7 @@ import PaymentPage from './pages/subscription/PaymentPage';
 import AboutUs from './pages/company/AboutUs';
 import Careers from './pages/company/Careers';
 import Blog from './pages/company/Blog';
+import BlogPost from './pages/company/BlogPost';
 import Contact from './pages/company/Contact';
 
 // Legal
@@ -190,6 +191,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
           
           {/* Legal Routes */}
@@ -220,6 +222,7 @@ function App() {
             <Route path="dashboard" element={<MemberDashboard />} />
             <Route path="profile" element={<MemberProfile />} />
             <Route path="my-gym" element={<MemberGymProfile />} />
+            <Route path="training" element={<MemberFindTrainers />} />
             <Route path="find-trainers" element={<MemberFindTrainers />} />
             <Route path="trainer" element={<MemberMyTrainer />} />
             <Route path="book-session" element={<MemberBookSession />} />
