@@ -9,7 +9,7 @@ import { TourSlide } from '../components/Landing/TourSlide';
 const LandingPage = () => {
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [activeVideo, setActiveVideo] = useState<{ url: string; title: string } | null>(null);
   const [featuredGyms, setFeaturedGyms] = useState<any[]>([]);
   const [gymsLoading, setGymsLoading] = useState(true);
   
@@ -265,13 +265,16 @@ const LandingPage = () => {
               <div className="lg:w-1/2 w-full flex flex-col space-y-6">
                 <div 
                   className="relative group cursor-pointer"
-                  onClick={() => setActiveVideo('8Xg5g6yty3U')} // Placeholder main video
+                  onClick={() => setActiveVideo({
+                    url: 'vc1E5CfRfos',
+                    title: 'Platform Overview & Tour'
+                  })}
                 >
                   <div className="absolute inset-0 bg-[#F97316] rounded-2xl transform translate-x-2 translate-y-2 opacity-20 group-hover:translate-x-4 group-hover:translate-y-4 transition-transform"></div>
                   <div className="relative rounded-2xl overflow-hidden border border-[#E7E5E4] aspect-video bg-[#FFFFFF] flex items-center justify-center">
                     {/* Pseudo video placeholder using an image and play button */}
                     <img src="/images/app-mockup.png" alt="App Tour" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
-                    <div className="w-20 h-20 bg-[#F97316] rounded-full flex items-center justify-center text-black z-10 hover:scale-110 transition-transform shadow-[0_0_30px_rgba(212,175,55,0.5)]">
+                    <div className="w-20 h-20 bg-[#F97316] rounded-full flex items-center justify-center text-white z-10 hover:scale-110 transition-transform shadow-[0_0_30px_rgba(249,115,22,0.5)]">
                       <PlayCircle size={40} fill="currentColor" className="ml-1" />
                     </div>
                   </div>
@@ -283,27 +286,36 @@ const LandingPage = () => {
                     <PlayCircle size={16} className="text-[#F97316]" />
                     <span>Related Videos</span>
                   </h3>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     {[
-                      { title: 'AI Diet Generation', img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80', time: '2:15', videoId: 'UItWltVZZmE' },
-                      { title: 'Booking a Trainer', img: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80', time: '1:45', videoId: 'CB3GgqjwGgg' },
-                      { title: 'Gym Owner Dashboard', img: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80', time: '3:30', videoId: 'X_s18h02Ewg' }
+                      { 
+                        title: 'AI Diet Generation', 
+                        img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80', 
+                        time: '2:15', 
+                        url: 'cbKkB3POqaY' 
+                      },
+                      { 
+                        title: 'Gym Owner Dashboard', 
+                        img: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80', 
+                        time: '3:30', 
+                        url: 'vc1E5CfRfos' 
+                      }
                     ].map((video, idx) => (
                       <div 
                         key={idx} 
                         className="group cursor-pointer"
-                        onClick={() => setActiveVideo(video.videoId)}
+                        onClick={() => setActiveVideo({ url: video.url, title: video.title })}
                       >
                         <div className="relative aspect-video rounded-xl overflow-hidden border border-[#E7E5E4] mb-2 bg-[#FFFFFF]">
                           <img src={video.img} alt={video.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 group-hover:scale-110 transition-all duration-500" />
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <PlayCircle size={24} className="text-[#F97316]" />
+                            <PlayCircle size={28} className="text-[#F97316] drop-shadow-md" />
                           </div>
-                          <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-sm text-[#292524] text-[10px] font-bold px-1.5 py-0.5 rounded">
+                          <div className="absolute bottom-2 right-2 bg-black/85 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">
                             {video.time}
                           </div>
                         </div>
-                        <p className="text-xs text-[#78716C] group-hover:text-[#F97316] transition-colors line-clamp-1 font-medium">{video.title}</p>
+                        <p className="text-xs text-[#78716C] group-hover:text-[#F97316] transition-colors line-clamp-1 font-semibold">{video.title}</p>
                       </div>
                     ))}
                   </div>
@@ -817,23 +829,56 @@ const LandingPage = () => {
       </footer>
       {/* Video Modal */}
       {activeVideo && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-sm" onClick={() => setActiveVideo(null)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-10 md:p-14 bg-black/90 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setActiveVideo(null)}>
           <div 
-            className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden border border-[#E7E5E4] shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+            className="relative w-full max-w-4xl max-h-[85vh] my-auto bg-[#1C1917] rounded-3xl overflow-hidden border border-[#E7E5E4]/20 shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <button 
-              onClick={() => setActiveVideo(null)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-[#F97316] text-white hover:text-black rounded-full flex items-center justify-center transition-colors"
-            >
-              <X size={24} />
-            </button>
-            <iframe 
-              src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&rel=0`} 
-              className="w-full h-full border-0"
-              allow="autoplay; encrypted-media; fullscreen"
-              allowFullScreen
-            ></iframe>
+            {/* Header Bar */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 backdrop-blur-md">
+              <div className="flex items-center gap-2.5">
+                <PlayCircle size={22} className="text-[#F97316]" />
+                <h3 className="text-white font-bold text-sm sm:text-base truncate">{activeVideo.title}</h3>
+              </div>
+              <div className="flex items-center gap-3">
+                <a 
+                  href={activeVideo.url.startsWith('http') ? activeVideo.url : `https://www.youtube.com/watch?v=${activeVideo.url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#FED7AA] hover:text-white bg-white/10 hover:bg-[#F97316] px-3 py-1.5 rounded-full transition-colors font-medium"
+                >
+                  <span>Watch on YouTube</span>
+                  <ArrowRight size={13} />
+                </a>
+                <button 
+                  onClick={() => setActiveVideo(null)}
+                  className="w-9 h-9 bg-white/10 hover:bg-[#F97316] text-white hover:text-white rounded-full flex items-center justify-center transition-all cursor-pointer"
+                  title="Close Video"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+
+            {/* Video Player Box */}
+            <div className="relative aspect-video w-full bg-black flex items-center justify-center">
+              {activeVideo.url.endsWith('.mp4') ? (
+                <video 
+                  src={activeVideo.url} 
+                  controls 
+                  autoPlay 
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <iframe 
+                  src={`https://www.youtube-nocookie.com/embed/${activeVideo.url.replace('https://www.youtube.com/embed/', '').replace('https://youtu.be/', '')}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`} 
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              )}
+            </div>
           </div>
         </div>
       )}
