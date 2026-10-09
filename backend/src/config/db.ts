@@ -90,12 +90,15 @@ const tryStartLocalMongo = async (): Promise<boolean> => {
 
 const connectDB = async () => {
   const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ai-gym';
+  const isLocal = mongoURI.includes('127.0.0.1') || mongoURI.includes('localhost');
 
-  // Check if port 27017 is already listening
-  const isOpen = await isPortOpen(27017);
-  if (!isOpen) {
-    console.log('[Database] MongoDB is not running on port 27017. Attempting auto-start...');
-    await tryStartLocalMongo();
+  if (isLocal) {
+    // Check if port 27017 is already listening
+    const isOpen = await isPortOpen(27017);
+    if (!isOpen) {
+      console.log('[Database] MongoDB is not running on port 27017. Attempting auto-start...');
+      await tryStartLocalMongo();
+    }
   }
 
   try {
