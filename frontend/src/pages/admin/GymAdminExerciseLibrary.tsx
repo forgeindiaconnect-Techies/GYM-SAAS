@@ -263,6 +263,14 @@ export const GymAdminExerciseLibrary: React.FC = () => {
 
         <div className="flex items-center gap-3 flex-wrap">
           <button
+            onClick={handleSeedDefaults}
+            disabled={seedingLoading}
+            className="px-4 py-2.5 bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 font-bold rounded-xl transition-colors flex items-center gap-2 text-sm cursor-pointer disabled:opacity-50"
+          >
+            <Sparkles size={16} className={seedingLoading ? 'animate-spin' : ''} />
+            {seedingLoading ? 'Loading Standard Exercises...' : 'Load Standard Exercises'}
+          </button>
+          <button
             onClick={handleOpenAdd}
             className="px-5 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors flex items-center gap-2 shadow-lg shadow-[#F97316]/20 text-sm cursor-pointer"
           >

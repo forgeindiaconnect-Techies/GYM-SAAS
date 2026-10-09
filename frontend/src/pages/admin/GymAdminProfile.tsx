@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Building2, MapPin, Info, Edit2, ArrowRight, CreditCard, CheckCircle } from 'lucide-react';
+import { Save, Building2, MapPin, Info, Edit2, ArrowRight, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -165,7 +165,7 @@ const GymAdminProfile = () => {
           </p>
         </div>
         <div className="flex items-center gap-2.5">
-          <Link to={isBranchUser ? `/admin/location?branchId=${user.branchId}` : "/admin/location"} className="flex items-center gap-2 px-4 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors shadow-sm text-sm cursor-pointer">
+          <Link to={isBranchUser ? `/admin/location?branchId=${user?.branchId || ''}` : "/admin/location"} className="flex items-center gap-2 px-4 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors shadow-sm text-sm cursor-pointer">
             <MapPin size={16} /> Location Settings
           </Link>
           {!isEditing && (

@@ -14,6 +14,7 @@ const LandingPage = () => {
   const [gymsLoading, setGymsLoading] = useState(true);
   
   const [communityReviews, setCommunityReviews] = useState<any[]>([]);
+  const [communityLoading, setCommunityLoading] = useState(true);
   const [communityFilter, setCommunityFilter] = useState<'all' | 'member' | 'trainer' | 'owner'>('all');
   const [communityCounts, setCommunityCounts] = useState<{ members: number; trainers: number; owners: number; total: number }>({ members: 0, trainers: 0, owners: 0, total: 0 });
   const [communityGrouped, setCommunityGrouped] = useState<{ members: any[]; trainers: any[]; owners: any[] }>({ members: [], trainers: [], owners: [] });
@@ -734,21 +735,26 @@ const LandingPage = () => {
             </div>
 
             {/* Testimonial Cards */}
-            <div className="grid md:grid-cols-3 gap-8">
-              {(
-                communityFilter === 'all'
-                  ? (communityReviews.length > 0 ? communityReviews : [
-                      { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
-                      { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
-                      { name: 'David Chen', role: 'Gym Owner', text: 'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard is incredibly intuitive.' }
-                    ])
-                  : communityFilter === 'member'
-                  ? communityGrouped.members
-                  : communityFilter === 'trainer'
-                  ? communityGrouped.trainers
-                  : communityGrouped.owners
-              ).map((review: any, idx: number) => (
-                <div key={review.id || idx} className="bg-[#FFFFFF] border border-[#E7E5E4] p-8 rounded-2xl relative flex flex-col justify-between hover:border-[#F97316]/50 hover:shadow-md transition-all">
+            {communityLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="animate-spin text-[#F97316]" size={36} />
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-8">
+                {(
+                  communityFilter === 'all'
+                    ? (communityReviews.length > 0 ? communityReviews : [
+                        { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
+                        { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
+                        { name: 'David Chen', role: 'Gym Owner', text: 'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard is incredibly intuitive.' }
+                      ])
+                    : communityFilter === 'member'
+                    ? communityGrouped.members
+                    : communityFilter === 'trainer'
+                    ? communityGrouped.trainers
+                    : communityGrouped.owners
+                ).map((review: any, idx: number) => (
+                  <div key={review.id || idx} className="bg-[#FFFFFF] border border-[#E7E5E4] p-8 rounded-2xl relative flex flex-col justify-between hover:border-[#F97316]/50 hover:shadow-md transition-all">
                   <div>
                     <Quote className="absolute top-8 right-8 text-[#FED7AA]" size={48} />
                     <div className="flex items-center space-x-1 mb-4 text-[#F97316]">
@@ -772,6 +778,7 @@ const LandingPage = () => {
                 </div>
               ))}
             </div>
+            )}
           </div>
         </section>
       </main>

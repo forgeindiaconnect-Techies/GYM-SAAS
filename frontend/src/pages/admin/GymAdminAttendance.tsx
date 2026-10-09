@@ -73,15 +73,13 @@ const GymAdminAttendance = () => {
       const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
       const userBranchParam = user?.branchId ? `&branchId=${user.branchId}` : '';
 
-      const [sessionsRes, trainersRes, membersRes] = await Promise.all([
+      const [sessionsRes] = await Promise.all([
         api.get(`/trainer-sessions/gym${branchParam}`).catch(() => ({ data: { sessions: [] } })),
         api.get(`/trainers${branchParam}`).catch(() => ({ data: { trainers: [] } })),
         api.get(`/users?role=MEMBER${userBranchParam}`).catch(() => ({ data: { users: [] } })),
       ]);
 
       const dbSessions = sessionsRes.data?.sessions || [];
-      const dbTrainers = trainersRes.data?.trainers || [];
-      const dbMembers = membersRes.data?.users || [];
 
       const sessionTrainerRecords: TrainerAttendanceRecord[] = dbSessions.map((s: any) => {
         const tName = s.trainerId?.name || 'Assigned Trainer';

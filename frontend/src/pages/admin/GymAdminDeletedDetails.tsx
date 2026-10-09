@@ -138,7 +138,14 @@ const GymAdminDeletedDetails = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E7E5E4]">
-              {filteredItems.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center">
+                    <Loader2 size={32} className="mx-auto text-[#F97316] animate-spin mb-3" />
+                    <p className="text-[#78716C] font-medium">Loading deleted records...</p>
+                  </td>
+                </tr>
+              ) : filteredItems.length > 0 ? (
                 filteredItems.map((item) => (
                   <tr key={item.id} className="hover:bg-[#FFFDF8] transition-colors">
                     <td className="px-6 py-4 font-mono text-xs">{item.id}</td>

@@ -10,6 +10,7 @@ export interface AuthUser {
   gymId?: string;
   gymName?: string;
   branchId?: string;
+  branchName?: string;
   approvalStatus: string;
   subscriptionStatus: string;
   subscriptionPlan?: string;
