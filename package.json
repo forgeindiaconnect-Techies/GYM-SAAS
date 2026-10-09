@@ -7,6 +7,9 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "postinstall": "npm --prefix backend install",
+    "build": "npm --prefix backend run build",
+    "start": "node backend/dist/server.js",
     "seed": "npm --prefix backend run seed",
     "mongo": "start-mongodb.bat"
   },
