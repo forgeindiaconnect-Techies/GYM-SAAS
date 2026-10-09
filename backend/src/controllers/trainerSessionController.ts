@@ -536,7 +536,19 @@ export const getTrainerSessions = async (req: AuthRequest, res: Response): Promi
 export const getGymSessions = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const gymId = req.user?.gymId;
-    const sessions = await TrainerSession.find({ gymId })
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = req.user?.branchId || branchIdQuery;
+
+    let query: any = { gymId };
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        query.$or = [{ branchId: { $exists: false } }, { branchId: null }];
+      } else {
+        query.branchId = effectiveBranchId;
+      }
+    }
+
+    const sessions = await TrainerSession.find(query)
       .populate('trainerId', 'name profilePhoto specialization trainingMode')
       .populate('customerId', 'firstName lastName profilePhoto email')
       .sort({ date: -1, startTime: -1 });

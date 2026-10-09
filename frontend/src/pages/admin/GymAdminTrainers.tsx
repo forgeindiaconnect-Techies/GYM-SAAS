@@ -54,9 +54,8 @@ const GymAdminTrainers = () => {
   const fetchTrainers = async () => {
     try {
       setIsLoading(true);
-      const branchQuery = selectedBranch && selectedBranch !== 'undefined' && selectedBranch !== 'null'
-        ? `?branchId=${selectedBranch}`
-        : '';
+      const effectiveBranch = user?.branchId || (selectedBranch && selectedBranch !== 'undefined' && selectedBranch !== 'null' ? selectedBranch : '');
+      const branchQuery = effectiveBranch ? `?branchId=${effectiveBranch}` : '';
       const res = await api.get(`/trainers${branchQuery}`);
       const apiTrainers = res.data.trainers || [];
       setTrainers(apiTrainers);
@@ -71,7 +70,7 @@ const GymAdminTrainers = () => {
 
   useEffect(() => {
     fetchTrainers();
-  }, [selectedBranch]);
+  }, [selectedBranch, user?.branchId]);
 
   const validateEmail = (email: string) => {
     return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);

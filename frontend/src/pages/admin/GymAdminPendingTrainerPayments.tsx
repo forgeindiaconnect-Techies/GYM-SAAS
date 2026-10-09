@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Clock, CheckCircle, XCircle, CreditCard, Banknote, Smartphone, ArrowRight, ChevronDown, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const defaultPayForm = {
@@ -20,6 +21,7 @@ const defaultPayForm = {
 };
 
 const GymAdminPendingTrainerPayments = () => {
+  const { user } = useAuth();
   const [pending, setPending] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTrainer, setSelectedTrainer] = useState<any>(null);
@@ -62,14 +64,15 @@ const GymAdminPendingTrainerPayments = () => {
   const fetchPending = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get('/trainer-payments/pending');
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const res = await api.get(`/trainer-payments/pending${branchParam}`);
       setPending(res.data.pending || []);
     } catch {
       showToast('Failed to load pending payments', 'error');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.branchId]);
 
   useEffect(() => { fetchPending(); }, [fetchPending]);
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Send, Search, ArrowLeft, Loader2, UserCheck, MessageSquare, RefreshCw } from 'lucide-react';
+import { Send, Search, ArrowLeft, Loader2, MessageSquare, RefreshCw } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 

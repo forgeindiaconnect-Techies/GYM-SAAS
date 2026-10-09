@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { IndianRupee, Plus, Edit, CheckCircle, XCircle, Search, ChevronDown, AlertCircle, Clock, X } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
 
@@ -36,6 +37,7 @@ const cycleBadge = (cycle: string) => {
 };
 
 const GymAdminTrainerFees = () => {
+  const { user } = useAuth();
   const [fees, setFees] = useState<any[]>([]);
   const [trainers, setTrainers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,9 +56,10 @@ const GymAdminTrainerFees = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
       const [feeRes, trainerRes] = await Promise.allSettled([
-        api.get('/trainer-payments/fees'),
-        api.get('/trainers')
+        api.get(`/trainer-payments/fees${branchParam}`),
+        api.get(`/trainers${branchParam}`)
       ]);
 
       let feeList: any[] = [];
@@ -97,7 +100,7 @@ const GymAdminTrainerFees = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.branchId]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 

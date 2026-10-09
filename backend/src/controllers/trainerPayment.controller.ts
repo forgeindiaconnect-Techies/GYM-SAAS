@@ -16,6 +16,18 @@ const resolveGymId = async (req: AuthRequest): Promise<string | undefined> => {
   return gym?._id?.toString();
 };
 
+const getBranchFilter = (req: AuthRequest) => {
+  const branchIdQuery = req.query.branchId as string;
+  const effectiveBranchId = req.user?.branchId || branchIdQuery;
+  if (effectiveBranchId && effectiveBranchId !== 'all') {
+    if (effectiveBranchId === 'main') {
+      return { $or: [{ branchId: { $exists: false } }, { branchId: null }] };
+    }
+    return { branchId: effectiveBranchId };
+  }
+  return {};
+};
+
 // --- Gym Owner: Trainer Fee Management ---
 
 export const setTrainerFee = async (req: AuthRequest, res: Response) => {
@@ -196,7 +208,8 @@ export const getTrainerFees = async (req: AuthRequest, res: Response) => {
     }
 
     // Fetch all active fees and populate trainer details
-    const feesQuery: any = { status: 'Active' };
+    const branchFilter = getBranchFilter(req);
+    const feesQuery: any = { status: 'Active', ...branchFilter };
     if (gymId) feesQuery.gymId = gymId;
     const fees = await TrainerFee.find(feesQuery)
       .populate({
@@ -231,7 +244,7 @@ export const getTrainerFees = async (req: AuthRequest, res: Response) => {
     });
 
     // Also get all trainers in gym with full details
-    const trainersQuery: any = {};
+    const trainersQuery: any = { ...branchFilter };
     if (gymId) trainersQuery.gymId = gymId;
     const trainers = await Trainer.find(trainersQuery)
       .select('name email phone profilePhoto specialization experience trainingMode fee paymentType status commissionType commissionValue createdAt');
@@ -248,9 +261,10 @@ export const getTrainerFees = async (req: AuthRequest, res: Response) => {
 export const getPendingPayments = async (req: AuthRequest, res: Response) => {
   try {
     const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const branchFilter = getBranchFilter(req);
 
     // For simplicity in this demo logic, we'll return all active fees as "pending" potentials
-    const pendingQuery: any = { status: { $in: ['Active', 'Pending', 'Rejected'] } };
+    const pendingQuery: any = { status: { $in: ['Active', 'Pending', 'Rejected'] }, ...branchFilter };
     if (gymId) pendingQuery.gymId = gymId;
     const activeFees = await TrainerFee.find(pendingQuery)
       .populate('trainerId', 'name email profilePhoto commissionType commissionValue');
@@ -363,8 +377,9 @@ export const processPayment = async (req: AuthRequest, res: Response) => {
 export const getPaymentHistoryGymOwner = async (req: AuthRequest, res: Response) => {
   try {
     const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const branchFilter = getBranchFilter(req);
     
-    const query: any = {};
+    const query: any = { ...branchFilter };
     if (gymId) query.gymId = gymId;
     const payments = await TrainerPayment.find(query)
       .populate('trainerId', 'name email profilePhoto')
@@ -381,8 +396,9 @@ export const getPaymentHistoryGymOwner = async (req: AuthRequest, res: Response)
 export const getTrainerEarningsGymOwner = async (req: AuthRequest, res: Response) => {
   try {
     const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const branchFilter = getBranchFilter(req);
     
-    const query: any = { paymentStatus: 'Paid' };
+    const query: any = { paymentStatus: 'Paid', ...branchFilter };
     if (gymId) query.gymId = gymId;
     const payments = await TrainerPayment.find(query);
     const totalPaidOut = payments.reduce((sum, p) => sum + p.amount, 0);
@@ -631,6 +647,7 @@ export const requestWithdrawal = async (req: AuthRequest, res: Response) => {
 
     const withdrawal = new TrainerWithdrawal({
       gymId: trainer.gymId,
+      branchId: trainer.branchId,
       trainerId: trainer._id,
       amount,
       withdrawalMethod,
@@ -665,12 +682,13 @@ export const requestWithdrawal = async (req: AuthRequest, res: Response) => {
 export const getWithdrawalRequests = async (req: AuthRequest, res: Response) => {
   try {
     const gymId = (await resolveGymId(req)) || req.user?.gymId;
+    const branchFilter = getBranchFilter(req);
     
-    const query: any = {};
+    const query: any = { ...branchFilter };
     if (gymId) query.gymId = gymId;
 
     const requests = await TrainerWithdrawal.find(query)
-      .populate('trainerId', 'name email profilePhoto phone specialization availableBalance totalEarnings')
+      .populate('trainerId', 'name email profilePhoto phone specialization availableBalance totalEarnings branchId')
       .sort({ requestedAt: -1, createdAt: -1 });
 
     res.status(200).json({ success: true, requests });
@@ -704,6 +722,7 @@ export const createManualTrainerWithdrawal = async (req: AuthRequest, res: Respo
 
     const withdrawal = new TrainerWithdrawal({
       gymId: gymId || trainer.gymId,
+      branchId: trainer.branchId,
       trainerId: trainer._id,
       amount: numAmount,
       withdrawalMethod: withdrawalMethod || 'Bank Transfer',
@@ -824,7 +843,8 @@ export const updateWithdrawalStatus = async (req: AuthRequest, res: Response) =>
 export const getGymCommissionData = async (req: AuthRequest, res: Response) => {
   try {
     const gymId = (await resolveGymId(req)) || req.user?.gymId;
-    const query: any = {};
+    const branchFilter = getBranchFilter(req);
+    const query: any = { ...branchFilter };
     if (gymId) query.gymId = gymId;
 
     const [payments, withdrawals, fees] = await Promise.all([

@@ -263,16 +263,6 @@ export const GymAdminExerciseLibrary: React.FC = () => {
 
         <div className="flex items-center gap-3 flex-wrap">
           <button
-            onClick={handleSeedDefaults}
-            disabled={seedingLoading}
-            className="px-4 py-2.5 bg-white text-[#F97316] border border-[#E7E5E4] font-bold rounded-xl hover:bg-[#FFFDF8] transition-colors flex items-center gap-2 shadow-sm text-sm disabled:opacity-50"
-            title="Load standard gym exercises with full instructions and form videos"
-          >
-            <Sparkles size={16} className="text-[#EA580C]" />
-            {seedingLoading ? 'Loading Standard...' : 'Load Standard Exercises'}
-          </button>
-
-          <button
             onClick={handleOpenAdd}
             className="px-5 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors flex items-center gap-2 shadow-lg shadow-[#F97316]/20 text-sm cursor-pointer"
           >
@@ -384,15 +374,9 @@ export const GymAdminExerciseLibrary: React.FC = () => {
           <p className="text-sm text-[#78716C] mt-1 max-w-md mx-auto">
             {search || categoryFilter !== 'All'
               ? 'Try adjusting your search criteria or filters.'
-              : 'Your library is empty. Click "Load Standard Exercises" to bootstrap, or "Add Exercise" to create your own.'}
+              : 'Your library is empty. Click "Add Exercise" to create your own.'}
           </p>
           <div className="mt-6 flex justify-center gap-3">
-            <button
-              onClick={handleSeedDefaults}
-              className="px-5 py-2.5 bg-white border border-[#F97316] text-[#F97316] font-bold rounded-xl hover:bg-[#FFFDF8] transition-colors text-sm"
-            >
-              Load Standard Exercises
-            </button>
             <button
               onClick={handleOpenAdd}
               className="px-5 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors text-sm"

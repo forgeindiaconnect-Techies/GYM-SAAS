@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, AlertCircle, MessageSquare, Info, CheckCircle2, XCircle, CheckCheck, ArrowRight } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const getIcon = (type: string) => {
@@ -38,6 +39,7 @@ const getNotificationLink = (notif: any) => {
 };
 
 const GymAdminNotifications = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +48,8 @@ const GymAdminNotifications = () => {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/notifications');
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const res = await api.get(`/notifications${branchParam}`);
       setNotifications(res.data.notifications || []);
     } catch (err) {
       console.error('Failed to fetch notifications', err);
@@ -54,6 +57,10 @@ const GymAdminNotifications = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [user?.branchId]);
 
   const markAsRead = async (id: string) => {
     try {

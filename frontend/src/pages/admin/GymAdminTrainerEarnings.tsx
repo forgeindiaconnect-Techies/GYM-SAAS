@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { TrendingUp, IndianRupee, Users, CheckCircle, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const GymAdminTrainerEarnings = () => {
+  const { user } = useAuth();
   const [data, setData] = useState<any>(null);
   const [fees, setFees] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
@@ -13,10 +15,11 @@ const GymAdminTrainerEarnings = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
       const [earningsRes, feesRes, historyRes] = await Promise.all([
-        api.get('/trainer-payments/gym-earnings'),
-        api.get('/trainer-payments/fees'),
-        api.get('/trainer-payments/history'),
+        api.get(`/trainer-payments/gym-earnings${branchParam}`),
+        api.get(`/trainer-payments/fees${branchParam}`),
+        api.get(`/trainer-payments/history${branchParam}`),
       ]);
       setData(earningsRes.data);
       setFees(feesRes.data.fees || []);
@@ -26,7 +29,7 @@ const GymAdminTrainerEarnings = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.branchId]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 

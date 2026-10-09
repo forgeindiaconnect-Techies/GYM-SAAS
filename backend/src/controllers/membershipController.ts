@@ -14,13 +14,24 @@ export const getGymMemberships = async (req: AuthRequest, res: Response): Promis
       return;
     }
     // Get the gym for this owner
-    const user = await User.findById(userId).select('gymId');
+    const user = await User.findById(userId).select('gymId branchId');
     if (!user?.gymId) {
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
-    const memberships = await CustomerMembership.find({ gymId: user.gymId })
-      .select('userId planName duration status startDate endDate paymentMethod finalAmount createdAt')
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = user.branchId || branchIdQuery;
+    let query: any = { gymId: user.gymId };
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        query.$or = [{ branchId: { $exists: false } }, { branchId: null }];
+      } else {
+        query.branchId = effectiveBranchId;
+      }
+    }
+
+    const memberships = await CustomerMembership.find(query)
+      .select('userId planName duration status startDate endDate paymentMethod finalAmount createdAt branchId')
       .sort({ createdAt: -1 });
     res.status(200).json({ success: true, memberships });
   } catch (error: any) {

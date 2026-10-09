@@ -212,9 +212,6 @@ const GymStoreOfflineSales = () => {
         <button onClick={() => setTab('record')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'record' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#292524]'}`}>
           Record Sale
         </button>
-        <button onClick={() => setTab('history')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'history' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#292524]'}`}>
-          Sale History
-        </button>
       </div>
 
       {tab === 'record' && (

@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import { IndianRupee, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const GymAdminWithdrawalRequests = () => {
+  const { user } = useAuth();
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
 
   const fetchRequests = async () => {
     try {
-      const res = await api.get('/trainer-payments/withdrawals');
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const res = await api.get(`/trainer-payments/withdrawals${branchParam}`);
       setRequests(res.data.requests);
     } catch (err) {
       console.error('Failed to fetch withdrawal requests', err);
@@ -20,7 +23,7 @@ const GymAdminWithdrawalRequests = () => {
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [user?.branchId]);
 
   const handleApprove = async (id: string) => {
     setProcessing(id);

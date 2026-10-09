@@ -136,15 +136,19 @@ export const getGymById = async (req: Request, res: Response): Promise<void> => 
 
 export const getMyGym = async (req: Request, res: Response): Promise<void> => {
   try {
+    const userId = (req as any).user?._id || (req as any).user?.id;
     const userGymId = (req as any).user?.gymId;
-    if (!userGymId) {
-      res.status(404).json({ success: false, message: 'No gym assigned to this user' });
-      return;
+
+    let gym;
+    if (userGymId) {
+      gym = await Gym.findById(userGymId).populate('ownerId', 'firstName lastName email mobile');
+    }
+    if (!gym && userId) {
+      gym = await Gym.findOne({ ownerId: userId }).populate('ownerId', 'firstName lastName email mobile');
     }
 
-    const gym = await Gym.findById(userGymId).populate('ownerId', 'firstName lastName email mobile');
     if (!gym) {
-      res.status(404).json({ success: false, message: 'Gym not found' });
+      res.status(404).json({ success: false, message: 'No gym assigned to this user' });
       return;
     }
 
@@ -505,4 +509,58 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+export const updateGymLocation = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user?._id || (req as any).user?.id;
+    const userGymId = (req as any).user?.gymId;
+
+    let gym;
+    if (userGymId) {
+      gym = await Gym.findById(userGymId);
+    }
+    if (!gym && userId) {
+      gym = await Gym.findOne({ ownerId: userId });
+    }
+
+    if (!gym) {
+      res.status(404).json({ success: false, message: 'No gym assigned to this user' });
+      return;
+    }
+
+    const { address, area, city, state, country, pinCode, latitude, longitude } = req.body;
+
+    if (!address || !city || !state || !pinCode) {
+      res.status(400).json({ success: false, message: 'Address, City, State, and Pincode are required fields' });
+      return;
+    }
+
+    const parsedLat = (latitude !== undefined && latitude !== null && latitude !== '') ? Number(latitude) : undefined;
+    const parsedLng = (longitude !== undefined && longitude !== null && longitude !== '') ? Number(longitude) : undefined;
+
+    gym.location = {
+      address: String(address).trim(),
+      area: area ? String(area).trim() : (gym.location?.area || ''),
+      city: String(city).trim(),
+      state: String(state).trim(),
+      country: country ? String(country).trim() : (gym.location?.country || 'India'),
+      pinCode: String(pinCode).trim(),
+      latitude: parsedLat !== undefined && !isNaN(parsedLat) ? parsedLat : gym.location?.latitude,
+      longitude: parsedLng !== undefined && !isNaN(parsedLng) ? parsedLng : gym.location?.longitude,
+    };
+
+    await gym.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Gym location saved successfully',
+      location: gym.location,
+      gym
+    });
+  } catch (error: any) {
+    console.error('updateGymLocation error:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error updating location' });
+  }
+};
+
 

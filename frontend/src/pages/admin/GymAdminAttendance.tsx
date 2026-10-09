@@ -40,112 +40,15 @@ interface TrainerAttendanceRecord {
   punctuality?: string;
 }
 
-// Initial customer checkins with date, check-in, check-out
-const INITIAL_CUSTOMER_CHECKINS: CustomerCheckin[] = [
-  { id: 'c-1', name: 'John Doe', email: 'john@example.com', type: 'Member', date: '2026-10-07', checkInTime: '10:45 AM', checkOutTime: '12:15 PM' },
-  { id: 'c-2', name: 'Emily Davis', email: 'emily@example.com', type: 'Member', date: '2026-10-07', checkInTime: '10:32 AM', checkOutTime: 'In Gym' },
-  { id: 'c-3', name: 'Renu Gopal', email: 'renugopal@gmail.com', type: 'VIP Member', date: '2026-10-07', checkInTime: '10:15 AM', checkOutTime: '11:45 AM' },
-  { id: 'c-4', name: 'Guest (Jane S.)', email: 'jane.guest@gmail.com', type: 'Guest', date: '2026-10-07', checkInTime: '09:50 AM', checkOutTime: '11:10 AM' },
-  { id: 'c-5', name: 'Mike Johnson', email: 'mike.j@example.com', type: 'Member', date: '2026-10-07', checkInTime: '09:30 AM', checkOutTime: '11:00 AM' },
-  { id: 'c-6', name: 'Vikram Kumar', email: 'vikram@example.com', type: 'Member', date: '2026-10-07', checkInTime: '09:10 AM', checkOutTime: '10:40 AM' },
-  { id: 'c-7', name: 'Alex Miller', email: 'alex@example.com', type: 'Member', date: '2026-10-07', checkInTime: '08:45 AM', checkOutTime: '10:15 AM' },
-  { id: 'c-8', name: 'Naveen Kumar', email: 'naveen@gmail.com', type: 'Member', date: '2026-10-07', checkInTime: '08:20 AM', checkOutTime: '09:50 AM' },
-];
-
-// Initial trainer attendance records
-const INITIAL_TRAINER_ATTENDANCE: TrainerAttendanceRecord[] = [
-  {
-    id: 'tr-1',
-    trainerName: 'Sameera',
-    specialization: 'HIIT & Weight Management',
-    dutyType: 'Personal Training (In-Gym)',
-    assignedCustomer: 'Vikram Kumar',
-    date: '2026-10-09',
-    scheduledTime: '05:00 PM - 06:00 PM',
-    checkInTime: '11:00 AM',
-    checkOutTime: 'In Progress',
-    punctuality: 'On Time',
-  },
-  {
-    id: 'tr-2',
-    trainerName: 'Selvakumar',
-    specialization: 'Strength & Conditioning',
-    dutyType: 'Personal Training (In-Gym)',
-    assignedCustomer: 'Renu Gopal',
-    date: '2026-10-05',
-    scheduledTime: '07:00 AM - 08:00 AM',
-    checkInTime: '06:55 AM',
-    checkOutTime: '08:02 AM',
-    punctuality: '5m Early',
-  },
-  {
-    id: 'tr-3',
-    trainerName: 'Arnold S.',
-    specialization: 'Bodybuilding & Floor Lead',
-    dutyType: 'Floor Duty (Morning)',
-    assignedCustomer: 'Main Gym Floor',
-    date: '2026-10-07',
-    scheduledTime: '06:00 AM - 12:00 PM',
-    checkInTime: '05:50 AM',
-    checkOutTime: 'In Progress',
-    punctuality: '10m Early',
-  },
-  {
-    id: 'tr-4',
-    trainerName: 'Priya Sharma',
-    specialization: 'Yoga & Functional Mobility',
-    dutyType: 'Online Session (Virtual)',
-    assignedCustomer: 'Renu Gopal',
-    date: '2026-10-06',
-    scheduledTime: '08:30 AM - 09:30 AM',
-    checkInTime: '08:28 AM',
-    checkOutTime: '09:32 AM',
-    punctuality: '2m Early',
-  },
-  {
-    id: 'tr-5',
-    trainerName: 'Sarah C.',
-    specialization: 'Group Fitness & Cardio',
-    dutyType: 'Classes (HIIT Boot Camp)',
-    assignedCustomer: 'Aerobics Studio',
-    date: '2026-10-07',
-    scheduledTime: '09:00 AM - 10:30 AM',
-    checkInTime: '08:50 AM',
-    checkOutTime: '10:35 AM',
-    punctuality: '10m Early',
-  },
-  {
-    id: 'tr-6',
-    trainerName: 'Ananth Kumar',
-    specialization: 'Elite Personal Trainer',
-    dutyType: 'Floor Duty (Afternoon)',
-    assignedCustomer: 'Free Weights Area',
-    date: '2026-10-07',
-    scheduledTime: '12:00 PM - 06:00 PM',
-    checkInTime: '11:55 AM',
-    checkOutTime: 'In Progress',
-    punctuality: '5m Early',
-  },
-  {
-    id: 'tr-7',
-    trainerName: 'Reddy',
-    specialization: 'Functional Cross-Training',
-    dutyType: 'Personal Training',
-    assignedCustomer: 'Naveen Kumar',
-    date: '2026-10-07',
-    scheduledTime: '04:00 PM - 05:00 PM',
-    checkInTime: '03:55 PM',
-    checkOutTime: '05:00 PM',
-    punctuality: 'On Time',
-  },
-];
+import { useAuth } from '../../contexts/AuthContext';
 
 const GymAdminAttendance = () => {
+  const { user } = useAuth();
   // Main Tab View: 'CUSTOMERS' vs 'TRAINERS'
   const [activeTab, setActiveTab] = useState<'CUSTOMERS' | 'TRAINERS'>('CUSTOMERS');
 
-  const [customerCheckins, setCustomerCheckins] = useState<CustomerCheckin[]>(INITIAL_CUSTOMER_CHECKINS);
-  const [trainerRecords, setTrainerRecords] = useState<TrainerAttendanceRecord[]>(INITIAL_TRAINER_ATTENDANCE);
+  const [customerCheckins, setCustomerCheckins] = useState<CustomerCheckin[]>([]);
+  const [trainerRecords, setTrainerRecords] = useState<TrainerAttendanceRecord[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Search input state
@@ -167,122 +70,73 @@ const GymAdminAttendance = () => {
   const loadAttendanceData = async () => {
     try {
       setLoading(true);
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const userBranchParam = user?.branchId ? `&branchId=${user.branchId}` : '';
+
       const [sessionsRes, trainersRes, membersRes] = await Promise.all([
-        api.get('/trainer-sessions/gym').catch(() => ({ data: { sessions: [] } })),
-        api.get('/trainers').catch(() => ({ data: { trainers: [] } })),
-        api.get('/users?role=MEMBER').catch(() => ({ data: { users: [] } })),
+        api.get(`/trainer-sessions/gym${branchParam}`).catch(() => ({ data: { sessions: [] } })),
+        api.get(`/trainers${branchParam}`).catch(() => ({ data: { trainers: [] } })),
+        api.get(`/users?role=MEMBER${userBranchParam}`).catch(() => ({ data: { users: [] } })),
       ]);
 
       const dbSessions = sessionsRes.data?.sessions || [];
       const dbTrainers = trainersRes.data?.trainers || [];
       const dbMembers = membersRes.data?.users || [];
 
-      if (dbSessions.length > 0) {
-        const sessionTrainerRecords: TrainerAttendanceRecord[] = dbSessions.map((s: any) => {
-          const tName = s.trainerId?.name || 'Assigned Trainer';
-          const tSpec = s.trainerId?.specialization || 'Personal Trainer';
-          const cName = `${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.trim() || 'Client';
+      const sessionTrainerRecords: TrainerAttendanceRecord[] = dbSessions.map((s: any) => {
+        const tName = s.trainerId?.name || 'Assigned Trainer';
+        const tSpec = s.trainerId?.specialization || 'Personal Trainer';
+        const cName = `${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.trim() || 'Client';
 
-          let checkInStr = '--:--';
-          let checkOutStr = '--:--';
-          if (s.checkInTime) {
-            checkInStr = new Date(s.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-          }
-          if (s.checkOutTime) {
-            checkOutStr = new Date(s.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-          }
+        let checkInStr = '--:--';
+        let checkOutStr = '--:--';
+        if (s.checkInTime) {
+          checkInStr = new Date(s.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+        if (s.checkOutTime) {
+          checkOutStr = new Date(s.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        return {
+          id: s._id,
+          sessionId: s._id,
+          trainerName: tName,
+          trainerPhoto: s.trainerId?.profilePhoto,
+          specialization: tSpec,
+          dutyType: s.mode === 'Online' ? 'Online Session (Virtual)' : 'Personal Training (In-Gym)',
+          assignedCustomer: cName,
+          date: s.date || '2026-10-07',
+          scheduledTime: `${s.startTime || '10:00 AM'} - ${s.endTime || '11:00 AM'}`,
+          checkInTime: checkInStr !== '--:--' ? checkInStr : (s.startTime || '09:00 AM'),
+          checkOutTime: checkOutStr !== '--:--' ? checkOutStr : (s.status === 'In Progress' ? 'In Progress' : s.endTime || '10:00 AM'),
+          punctuality: s.attendanceStatus === 'Late' ? 'Late' : 'On Time',
+        };
+      });
+
+      const sessionCustomerLogs: CustomerCheckin[] = dbSessions
+        .filter((s: any) => s.customerId)
+        .map((s: any) => {
+          const cName = `${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.trim() || 'Client';
+          let checkInStr = s.checkInTime
+            ? new Date(s.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            : (s.startTime || '10:00 AM');
+          let checkOutStr = s.checkOutTime
+            ? new Date(s.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            : (s.status === 'In Progress' || s.checkInTime ? 'In Gym' : (s.endTime || '11:00 AM'));
 
           return {
-            id: s._id,
-            sessionId: s._id,
-            trainerName: tName,
-            trainerPhoto: s.trainerId?.profilePhoto,
-            specialization: tSpec,
-            dutyType: s.mode === 'Online' ? 'Online Session (Virtual)' : 'Personal Training (In-Gym)',
-            assignedCustomer: cName,
+            id: `sess-cust-${s._id}`,
+            name: cName,
+            email: s.customerId?.email,
+            type: 'Session Member',
             date: s.date || '2026-10-07',
-            scheduledTime: `${s.startTime || '10:00 AM'} - ${s.endTime || '11:00 AM'}`,
-            checkInTime: checkInStr !== '--:--' ? checkInStr : (s.startTime || '09:00 AM'),
-            checkOutTime: checkOutStr !== '--:--' ? checkOutStr : (s.status === 'In Progress' ? 'In Progress' : s.endTime || '10:00 AM'),
-            punctuality: s.attendanceStatus === 'Late' ? 'Late' : 'On Time',
+            checkInTime: checkInStr,
+            checkOutTime: checkOutStr,
           };
         });
 
-        setTrainerRecords((prev) => {
-          const existingIds = new Set(sessionTrainerRecords.map((r) => r.id));
-          const filteredPrev = prev.filter((p) => !existingIds.has(p.id));
-          return [...sessionTrainerRecords, ...filteredPrev];
-        });
-
-        const sessionCustomerLogs: CustomerCheckin[] = dbSessions
-          .filter((s: any) => s.customerId)
-          .map((s: any) => {
-            const cName = `${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.trim() || 'Client';
-            let checkInStr = s.checkInTime
-              ? new Date(s.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-              : (s.startTime || '10:00 AM');
-            let checkOutStr = s.checkOutTime
-              ? new Date(s.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-              : (s.status === 'In Progress' || s.checkInTime ? 'In Gym' : (s.endTime || '11:00 AM'));
-
-            return {
-              id: `sess-cust-${s._id}`,
-              name: cName,
-              email: s.customerId?.email,
-              type: 'Session Member',
-              date: s.date || '2026-10-07',
-              checkInTime: checkInStr,
-              checkOutTime: checkOutStr,
-            };
-          });
-
-        setCustomerCheckins((prev) => {
-          const existingIds = new Set(sessionCustomerLogs.map((c) => c.id));
-          const existingNames = new Set(sessionCustomerLogs.map((c) => c.name.toLowerCase()));
-          const filteredPrev = prev.filter((p) => !existingIds.has(p.id) && !existingNames.has(p.name.toLowerCase()));
-          return [...sessionCustomerLogs, ...filteredPrev];
-        });
-      }
-
-      if (dbMembers.length > 0) {
-        const memberLogs: CustomerCheckin[] = dbMembers.slice(0, 3).map((m: any, idx: number) => ({
-          id: `db-m-${m._id}`,
-          name: `${m.firstName} ${m.lastName || ''}`.trim(),
-          email: m.email,
-          type: 'Member',
-          date: '2026-10-07',
-          checkInTime: `${9 + idx}:20 AM`,
-          checkOutTime: idx === 0 ? 'In Gym' : `${10 + idx}:30 AM`,
-        }));
-
-        setCustomerCheckins((prev) => {
-          const names = new Set(prev.map((p) => p.name));
-          const newUnique = memberLogs.filter((l) => !names.has(l.name));
-          return [...prev, ...newUnique];
-        });
-      }
-
-      if (dbTrainers.length > 0) {
-        const recordedNames = new Set(trainerRecords.map((tr) => tr.trainerName.toLowerCase()));
-        const missingTrainers: TrainerAttendanceRecord[] = dbTrainers
-          .filter((t: any) => !recordedNames.has(t.name.toLowerCase()))
-          .map((t: any) => ({
-            id: `tr-gen-${t._id}`,
-            trainerName: t.name,
-            specialization: t.specialization || 'Personal Trainer',
-            dutyType: 'Floor Duty (General)',
-            assignedCustomer: 'Main Gym Floor',
-            date: '2026-10-07',
-            scheduledTime: '08:00 AM - 04:00 PM',
-            checkInTime: '07:55 AM',
-            checkOutTime: 'In Progress',
-            punctuality: 'On Time',
-          }));
-
-        if (missingTrainers.length > 0) {
-          setTrainerRecords((prev) => [...prev, ...missingTrainers]);
-        }
-      }
+      setTrainerRecords(sessionTrainerRecords);
+      setCustomerCheckins(sessionCustomerLogs);
     } catch (err) {
       console.error('Error loading attendance data:', err);
     } finally {
@@ -292,7 +146,7 @@ const GymAdminAttendance = () => {
 
   useEffect(() => {
     loadAttendanceData();
-  }, []);
+  }, [user?.branchId]);
 
   // Filtered customer records by search query
   const filteredCustomerCheckins = useMemo(() => {

@@ -665,8 +665,18 @@ export const getCustomerProducts = async (req: AuthRequest, res: Response): Prom
     const gymId = user.gymId!;
     const { category, search, page = '1', limit = '40' } = req.query;
     const filter: any = { gymId, status: 'Active', availability: { $in: ['Online', 'Both'] } };
-    if (category && category !== 'all') filter.categoryName = category;
-    if (search && typeof search === 'string' && search.trim()) {
+    
+    if (category && category !== 'all') {
+      filter.$or = [{ categoryName: category }, { productType: category }];
+      if (search && typeof search === 'string' && search.trim()) {
+        const searchRegex = { $regex: search.trim(), $options: 'i' };
+        filter.$and = [
+          { $or: [{ categoryName: category }, { productType: category }] },
+          { $or: [{ name: searchRegex }, { description: searchRegex }, { brand: searchRegex }] }
+        ];
+        delete filter.$or;
+      }
+    } else if (search && typeof search === 'string' && search.trim()) {
       filter.$or = [
         { name: { $regex: search.trim(), $options: 'i' } },
         { description: { $regex: search.trim(), $options: 'i' } },
@@ -1127,15 +1137,16 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
     const gym = await Gym.findById(gymId);
     const owner = gym ? await User.findById(gym.ownerId) : null;
     if (owner) {
+      const itemsList = built.items!.map((it: any) => `${it.name} (x${it.quantity})`).join(', ');
       await notify({
         recipientId: owner._id,
         recipientRole: 'GYM_OWNER',
         gymId,
-        title: 'New store order received',
-        message: `Order ${order.orderNumber} for ₹${total} has been placed${gym ? ` at ${gym.name}` : ''}.`,
-        type: 'success',
+        title: 'New Store Order - Stock Auto-Deducted',
+        message: `Order ${order.orderNumber} (₹${total}) placed by ${user.firstName} ${user.lastName}. Inventory stock reduced for: ${itemsList}.`,
+        type: 'alert',
         relatedRecordId: order._id,
-        link: '/admin/store/orders',
+        link: '/admin/store/inventory',
       });
     }
     await notify({
@@ -1218,15 +1229,31 @@ export const getGymOrders = async (req: AuthRequest, res: Response): Promise<voi
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = req.user?.branchId || branchIdQuery;
+
     const { status, paymentStatus, search, page = '1', limit = '40' } = req.query;
     const filter: any = { gymId };
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        filter.$or = [{ branchId: { $exists: false } }, { branchId: null }];
+      } else {
+        filter.branchId = effectiveBranchId;
+      }
+    }
     if (status && status !== 'all') filter.status = status;
     if (paymentStatus && paymentStatus !== 'all') filter.paymentStatus = paymentStatus;
     if (search && typeof search === 'string' && search.trim()) {
-      filter.$or = [
+      const searchCond = [
         { orderNumber: { $regex: search.trim(), $options: 'i' } },
         { transactionId: { $regex: search.trim(), $options: 'i' } },
       ];
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, { $or: searchCond }];
+        delete filter.$or;
+      } else {
+        filter.$or = searchCond;
+      }
     }
     const pNum = Math.max(1, parseInt(String(page), 10) || 1);
     const lNum = Math.min(200, Math.max(1, parseInt(String(limit), 10) || 40));
@@ -1605,8 +1632,18 @@ export const getOfflineSales = async (req: AuthRequest, res: Response): Promise<
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = req.user?.branchId || branchIdQuery;
+
     const { from, to, page = '1', limit = '40' } = req.query;
     const filter: any = { gymId };
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        filter.$or = [{ branchId: { $exists: false } }, { branchId: null }];
+      } else {
+        filter.branchId = effectiveBranchId;
+      }
+    }
     if (from || to) {
       filter.paymentDate = {};
       if (from) filter.paymentDate.$gte = new Date(String(from));
@@ -1639,6 +1676,18 @@ export const getSalesHistory = async (req: AuthRequest, res: Response): Promise<
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = req.user?.branchId || branchIdQuery;
+
+    let branchCondition: any = {};
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        branchCondition = { $or: [{ branchId: { $exists: false } }, { branchId: null }] };
+      } else {
+        branchCondition = { branchId: effectiveBranchId };
+      }
+    }
+
     const { source = 'all', productName, from, to, page = '1', limit = '40' } = req.query;
     const dateFilter: any = {};
     if (from || to) {
@@ -1655,7 +1704,7 @@ export const getSalesHistory = async (req: AuthRequest, res: Response): Promise<
     let offline: any[] = [];
 
     if (source === 'all' || source === 'online') {
-      const filter: any = { gymId, paymentStatus: { $in: ['Paid', 'Refunded'] }, ...dateFilter };
+      const filter: any = { gymId, paymentStatus: { $in: ['Paid', 'Refunded'] }, ...dateFilter, ...branchCondition };
       if (products && products.length) filter['items.productId'] = { $in: products };
       online = await StoreOrder.find(filter)
         .populate('customerId', 'firstName lastName email mobile profilePhoto')
@@ -1663,7 +1712,7 @@ export const getSalesHistory = async (req: AuthRequest, res: Response): Promise<
         .limit(2000);
     }
     if (source === 'all' || source === 'offline') {
-      const filter: any = { gymId, ...dateFilter };
+      const filter: any = { gymId, ...dateFilter, ...branchCondition };
       if (products && products.length) filter['items.productId'] = { $in: products };
       offline = await StoreOfflineSale.find(filter)
         .populate('customerId', 'firstName lastName email mobile profilePhoto')
@@ -1819,8 +1868,20 @@ export const getStoreDashboard = async (req: AuthRequest, res: Response): Promis
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = req.user?.branchId || branchIdQuery;
+
+    let branchCondition: any = {};
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        branchCondition = { $or: [{ branchId: { $exists: false } }, { branchId: null }] };
+      } else {
+        branchCondition = { branchId: effectiveBranchId };
+      }
+    }
+
     const activeStatuses: string[] = ['Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Out for Delivery'];
-    const pendingOrders = await StoreOrder.countDocuments({ gymId, status: { $in: activeStatuses } } as any);
+    const pendingOrders = await StoreOrder.countDocuments({ gymId, status: { $in: activeStatuses }, ...branchCondition } as any);
     const [
       totalProducts, activeProducts, outOfStock,
       totalOrders, completedOrders,
@@ -1831,27 +1892,27 @@ export const getStoreDashboard = async (req: AuthRequest, res: Response): Promis
       StoreProduct.countDocuments({ gymId }),
       StoreProduct.countDocuments({ gymId, status: 'Active' }),
       StoreProduct.countDocuments({ gymId, stock: { $lte: 0 } }),
-      StoreOrder.countDocuments({ gymId }),
-      StoreOrder.countDocuments({ gymId, status: 'Completed' } as any),
+      StoreOrder.countDocuments({ gymId, ...branchCondition }),
+      StoreOrder.countDocuments({ gymId, status: 'Completed', ...branchCondition } as any),
       StoreOrder.aggregate([
-        { $match: { gymId, paymentStatus: 'Paid' } },
+        { $match: { gymId, paymentStatus: 'Paid', ...branchCondition } },
         { $group: { _id: null, total: { $sum: '$total' }, count: { $sum: 1 } } },
       ]),
       StoreOrder.aggregate([
-        { $match: { gymId } },
+        { $match: { gymId, ...branchCondition } },
         { $group: { _id: null, total: { $sum: '$total' } } },
       ]),
       StoreOfflineSale.aggregate([
-        { $match: { gymId } },
+        { $match: { gymId, ...branchCondition } },
         { $group: { _id: null, total: { $sum: '$total' }, count: { $sum: 1 } } },
       ]),
-      StoreOrder.find({ gymId }).sort({ createdAt: -1 }).limit(5).select('orderNumber status paymentStatus total createdAt'),
+      StoreOrder.find({ gymId, ...branchCondition }).sort({ createdAt: -1 }).limit(5).select('orderNumber status paymentStatus total createdAt'),
     ]);
 
     const lowStockCount = (await StoreProduct.find({ gymId }).select('stock lowStockThreshold').lean() as any[])
       .filter((p) => p.stock > 0 && p.stock <= p.lowStockThreshold).length;
 
-    const recentOrdersWithCustomers = await StoreOrder.find({ gymId })
+    const recentOrdersWithCustomers = await StoreOrder.find({ gymId, ...branchCondition })
       .populate('customerId', 'firstName lastName')
       .sort({ createdAt: -1 })
       .limit(5);

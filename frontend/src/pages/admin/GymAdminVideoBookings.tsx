@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import api from '../../utils/api';
 
+import { useAuth } from '../../contexts/AuthContext';
+
 interface VideoBooking {
   _id: string;
   bookingId: string;
@@ -26,6 +28,7 @@ interface VideoBooking {
 }
 
 const GymAdminVideoBookings = () => {
+  const { user } = useAuth();
   const [bookings, setBookings] = useState<VideoBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -51,10 +54,13 @@ const GymAdminVideoBookings = () => {
   const fetchVideoBookings = async () => {
     try {
       setLoading(true);
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const userBranchParam = user?.branchId ? `&branchId=${user.branchId}` : '';
+
       const [sessionsRes, usersRes, trainersRes] = await Promise.all([
-        api.get('/trainer-sessions/gym').catch(() => ({ data: { sessions: [] } })),
-        api.get('/users?role=MEMBER').catch(() => ({ data: { users: [] } })),
-        api.get('/trainers').catch(() => ({ data: { trainers: [] } })),
+        api.get(`/trainer-sessions/gym${branchParam}`).catch(() => ({ data: { sessions: [] } })),
+        api.get(`/users?role=MEMBER${userBranchParam}`).catch(() => ({ data: { users: [] } })),
+        api.get(`/trainers${branchParam}`).catch(() => ({ data: { trainers: [] } })),
       ]);
 
       const loadedMembers = usersRes.data?.users || [];
@@ -85,68 +91,10 @@ const GymAdminVideoBookings = () => {
           paymentStatus: s.paymentStatus === 'Paid' ? 'Paid' : 'Free Trial',
         }));
 
-      // Initial sample video bookings if gym has fresh data
-      const sampleBookings: VideoBooking[] = [
-        {
-          _id: 'vb-sample-1',
-          bookingId: 'VB-901842',
-          memberName: loadedMembers[0] ? `${loadedMembers[0].firstName} ${loadedMembers[0].lastName}` : 'Renu Gopal',
-          memberEmail: loadedMembers[0]?.email || 'renugopal@gmail.com',
-          memberPhone: loadedMembers[0]?.mobile || '9876556789',
-          trainerName: loadedTrainers[0]?.name || 'Alex Morgan',
-          trainerSpecialization: 'Personal Trainer',
-          sessionType: '1-on-1 Virtual Training',
-          date: new Date().toISOString().split('T')[0],
-          startTime: '04:00 PM',
-          duration: 45,
-          fee: 0,
-          meetingLink: 'https://meet.jit.si/aigym-renu-video',
-          meetingId: 'ROOM-RENU99',
-          status: 'Upcoming',
-          paymentStatus: 'Free Trial',
-        },
-        {
-          _id: 'vb-sample-2',
-          bookingId: 'VB-901843',
-          memberName: loadedMembers[1] ? `${loadedMembers[1].firstName} ${loadedMembers[1].lastName}` : 'Rahul Verma',
-          memberEmail: 'rahul@gmail.com',
-          memberPhone: '9876543210',
-          trainerName: loadedTrainers[1]?.name || 'Priya Sharma',
-          trainerSpecialization: 'Nutrition & Diet Specialist',
-          sessionType: 'Nutrition Consultation',
-          date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-          startTime: '05:30 PM',
-          duration: 30,
-          fee: 499,
-          meetingLink: 'https://meet.jit.si/aigym-rahul-diet',
-          meetingId: 'ROOM-RAHUL499',
-          status: 'Upcoming',
-          paymentStatus: 'Paid',
-        },
-        {
-          _id: 'vb-sample-3',
-          bookingId: 'VB-901841',
-          memberName: 'Sneha Patel',
-          memberEmail: 'sneha@gmail.com',
-          memberPhone: '9812345678',
-          trainerName: loadedTrainers[0]?.name || 'Alex Morgan',
-          trainerSpecialization: 'Biomechanics & Form Coach',
-          sessionType: 'Form & Posture Assessment',
-          date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-          startTime: '03:00 PM',
-          duration: 45,
-          fee: 399,
-          meetingLink: 'https://meet.jit.si/aigym-sneha-form',
-          meetingId: 'ROOM-SNEHA399',
-          status: 'Completed',
-          paymentStatus: 'Paid',
-        },
-      ];
-
       const savedCustom = localStorage.getItem('gym_admin_video_bookings');
       const customBookings: VideoBooking[] = savedCustom ? JSON.parse(savedCustom) : [];
 
-      setBookings([...customBookings, ...dbVideoBookings, ...sampleBookings]);
+      setBookings([...customBookings, ...dbVideoBookings]);
     } catch (err) {
       console.error('Error fetching video bookings:', err);
     } finally {
@@ -156,7 +104,7 @@ const GymAdminVideoBookings = () => {
 
   useEffect(() => {
     fetchVideoBookings();
-  }, []);
+  }, [user?.branchId]);
 
   const handleCopyLink = (link: string, id: string) => {
     navigator.clipboard.writeText(link);

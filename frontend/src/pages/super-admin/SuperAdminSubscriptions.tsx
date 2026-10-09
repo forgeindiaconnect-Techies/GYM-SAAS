@@ -134,14 +134,6 @@ const SAAS_PLANS = [
 
 // (real data fetched from API, see component state)
 
-// Simulated customer subscribers
-const SUBSCRIBED_CUSTOMERS = [
-  { id: 1, name: 'Anil Kumar', gymName: 'FitLife Arena', plan: 'Basic', billing: 'Monthly', status: 'Active', start: '2026-09-01', renewal: '2026-10-01', amount: '₹999', paymentMethod: 'PhonePe' },
-  { id: 2, name: 'Pooja Singh', gymName: 'PowerZone Gym', plan: 'Pro', billing: 'Annual', status: 'Active', start: '2026-08-15', renewal: '2027-08-15', amount: '₹9,990', paymentMethod: 'Card' },
-  { id: 3, name: 'Rahul Verma', gymName: 'Iron Temple', plan: 'Elite', billing: 'Monthly', status: 'Active', start: '2026-09-05', renewal: '2026-10-05', amount: '₹1,499', paymentMethod: 'UPI' },
-  { id: 4, name: 'Sneha Patel', gymName: 'CrossFit Hub', plan: 'Basic', billing: 'Monthly', status: 'Pending', start: '2026-09-09', renewal: '2026-10-09', amount: '₹999', paymentMethod: 'Manual' },
-];
-
 const PLAN_COLORS: Record<string, string> = {
   FREE_TRIAL: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
   SILVER: 'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/30',
@@ -743,7 +735,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 const SuperAdminSubscriptions = () => {
-  const [activeTab, setActiveTab] = useState<'plans' | 'subscribers' | 'customers'>('plans');
+  const [activeTab, setActiveTab] = useState<'plans' | 'subscribers'>('plans');
   const [plans, setPlans] = useState<any[]>(SAAS_PLANS);
   const [planStatuses, setPlanStatuses] = useState<Record<string, boolean>>(
     Object.fromEntries(SAAS_PLANS.map(p => [p.key, true]))
@@ -756,9 +748,6 @@ const SuperAdminSubscriptions = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterPlan, setFilterPlan] = useState('ALL');
   const [filterStatus, setFilterStatus] = useState('ALL');
-
-  const [customerSearchQuery, setCustomerSearchQuery] = useState('');
-  const [customers, setCustomers] = useState(SUBSCRIBED_CUSTOMERS);
 
   // Live data from backend
   const [subscribedGyms, setSubscribedGyms] = useState<any[]>([]);
@@ -865,11 +854,6 @@ const SuperAdminSubscriptions = () => {
     return matchSearch && matchPlan && matchStatus;
   });
 
-  const filteredCustomers = customers.filter(c => 
-    c.name.toLowerCase().includes(customerSearchQuery.toLowerCase()) || 
-    c.gymName.toLowerCase().includes(customerSearchQuery.toLowerCase())
-  );
-
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Modals */}
@@ -906,28 +890,28 @@ const SuperAdminSubscriptions = () => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
           { 
-            label: activeTab === 'customers' ? 'Active Customers' : 'Active Gyms', 
-            value: (activeTab === 'customers' ? customers : subscribedGyms).filter(g => g.status === 'Active').length, 
+            label: 'Active Gyms', 
+            value: subscribedGyms.filter(g => g.status === 'Active').length, 
             icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-500/10' 
           },
           { 
-            label: activeTab === 'customers' ? 'Inactive Customers' : 'Inactive Gyms', 
-            value: (activeTab === 'customers' ? customers : subscribedGyms).filter(g => g.status === 'Inactive').length, 
+            label: 'Inactive Gyms', 
+            value: subscribedGyms.filter(g => g.status === 'Inactive').length, 
             icon: ToggleLeft, color: 'text-slate-500', bg: 'bg-slate-500/10' 
           },
           { 
-            label: activeTab === 'customers' ? 'Pending Customers' : 'Pending Gyms', 
-            value: (activeTab === 'customers' ? customers : subscribedGyms).filter(g => g.status === 'Pending').length, 
+            label: 'Pending Gyms', 
+            value: subscribedGyms.filter(g => g.status === 'Pending').length, 
             icon: Clock, color: 'text-blue-500', bg: 'bg-blue-500/10' 
           },
           { 
-            label: activeTab === 'customers' ? 'Rejected Customers' : 'Rejected Gyms', 
-            value: (activeTab === 'customers' ? customers : subscribedGyms).filter(g => g.status === 'Rejected').length, 
+            label: 'Rejected Gyms', 
+            value: subscribedGyms.filter(g => g.status === 'Rejected').length, 
             icon: AlertCircle, color: 'text-[#FED7AA]', bg: 'bg-red-500/10' 
           },
           { 
-            label: activeTab === 'customers' ? 'Expired Customers' : 'Expired Gyms', 
-            value: (activeTab === 'customers' ? customers : subscribedGyms).filter(g => g.status === 'Expired').length, 
+            label: 'Expired Gyms', 
+            value: subscribedGyms.filter(g => g.status === 'Expired').length, 
             icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/10' 
           },
         ].map((stat, i) => (
@@ -948,7 +932,6 @@ const SuperAdminSubscriptions = () => {
         {[
           { key: 'plans', label: 'Plan Management', icon: CreditCard },
           { key: 'subscribers', label: 'Subscribed Gyms', icon: Building2 },
-          { key: 'customers', label: 'Subscribed Customers', icon: Users },
         ].map(tab => (
           <button
             key={tab.key}
@@ -1272,89 +1255,6 @@ const SuperAdminSubscriptions = () => {
               </tbody>
             </table>
 
-          </div>
-        </div>
-      )}
-      {/* ── Tab: Subscribed Customers ── */}
-      {activeTab === 'customers' && (
-        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl overflow-hidden shadow-lg mt-6">
-          <div className="p-5 border-b border-[#E7E5E4] flex flex-col md:flex-row md:items-center gap-3">
-            <div className="relative flex-1">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555]" />
-              <input
-                type="text"
-                placeholder="Search customer..."
-                value={customerSearchQuery}
-                onChange={e => setCustomerSearchQuery(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#FED7AA]"
-              />
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[#E7E5E4] bg-[#FFFFFF]">
-                  {['Customer Name', 'Gym', 'Plan', 'Billing', 'Amount', 'Payment Method', 'Start Date', 'Renewal Date', 'Status', 'Action'].map(h => (
-                    <th key={h} className="text-left text-xs font-bold text-[#78716C] uppercase tracking-wider px-5 py-3.5">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#2a2a2a]">
-                {filteredCustomers.map(customer => (
-                  <tr key={customer.id} className="hover:bg-[#FFFFFF] transition-colors">
-                    <td className="px-5 py-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-[#333] rounded-full flex items-center justify-center text-[#292524] font-bold text-xs">
-                          {customer.name.charAt(0)}
-                        </div>
-                        <span className="text-[#292524] font-semibold text-sm">{customer.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 text-[#78716C] text-sm">{customer.gymName}</td>
-                    <td className="px-5 py-4">
-                      <span className="text-xs px-2.5 py-1 rounded-full font-bold border bg-blue-500/10 text-blue-400 border-[#FED7AA]/30">
-                        {customer.plan}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 text-[#78716C] text-sm">{customer.billing}</td>
-                    <td className="px-5 py-4 text-[#292524] font-bold text-sm">{customer.amount}</td>
-                    <td className="px-5 py-4">
-                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#E7E5E4] rounded-md text-xs text-[#78716C]">
-                        {customer.paymentMethod}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 text-[#78716C] text-sm">{customer.start}</td>
-                    <td className="px-5 py-4 text-[#78716C] text-sm">{customer.renewal}</td>
-                    <td className="px-5 py-4">
-                      <select 
-                        value={customer.status}
-                        onChange={(e) => {
-                          const newStatus = e.target.value;
-                          setCustomers(prev => prev.map(c => c.id === customer.id ? { ...c, status: newStatus } : c));
-                        }}
-                        className={`outline-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border appearance-none ${STATUS_COLORS[customer.status] || 'bg-gray-100 text-gray-500'}`}
-                      >
-                        <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                        <option value="Inactive" className="bg-[#FFFFFF] text-[#78716C]">Inactive</option>
-                        <option value="Pending" className="bg-[#FFFFFF] text-blue-500">Pending</option>
-                        <option value="Rejected" className="bg-[#FFFFFF] text-[#FED7AA]">Rejected</option>
-                        <option value="Expired" className="bg-[#FFFFFF] text-teal-400">Expired</option>
-                      </select>
-                    </td>
-                    <td className="px-5 py-4">
-                      <button
-                        onClick={() => setViewPayment(customer)}
-                        className="p-1.5 bg-[#FED7AA]/10 text-teal-500 rounded-lg hover:bg-[#FED7AA]/20 transition-colors"
-                        title="View Details"
-                      >
-                        <Eye size={16} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       )}

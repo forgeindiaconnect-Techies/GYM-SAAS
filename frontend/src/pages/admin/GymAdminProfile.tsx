@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Building2, MapPin, Info, Edit2, ArrowRight } from 'lucide-react';
+import { Save, Building2, MapPin, Info, Edit2, ArrowRight, CreditCard, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -11,6 +11,7 @@ const GymAdminProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly');
   const [formData, setFormData] = useState({
     gymName: '',
     type: '',
@@ -31,8 +32,36 @@ const GymAdminProfile = () => {
     operatingHours: '',
   });
 
+  const isBranchUser = Boolean(user?.branchId);
+
   useEffect(() => {
-    if (user?.gymId) {
+    if (user?.branchId) {
+      api.get(`/branches/${user.branchId}`)
+        .then(res => {
+          const b = res.data.branch;
+          setGym(b);
+          setFormData({
+            gymName: b.branchName || '',
+            type: 'Branch Facility',
+            email: b.email || user?.email || '',
+            phone: b.phone || user?.mobile || '',
+            address: b.location?.address || '',
+            city: b.location?.city || '',
+            state: b.location?.state || '',
+            description: b.description || `Branch ${b.branchName} (${b.branchCode})`,
+            establishedYear: '2026',
+            trainingMode: b.trainingMode || 'both',
+            memberCapacity: b.memberCapacity || '500',
+            trainerCapacity: b.trainerCapacity || '20',
+            website: b.website || `www.${b.branchName?.toLowerCase().replace(/\s+/g, '') || 'branch'}.com`,
+            taxId: b.branchCode || 'GYM-001',
+            ownerName: `${user?.firstName || 'Branch'} ${user?.lastName || 'Admin'}`.trim(),
+            ownerRole: 'Branch Admin',
+            operatingHours: `${b.operatingHours?.openingTime || '06:00 AM'} - ${b.operatingHours?.closingTime || '10:00 PM'}`,
+          });
+        })
+        .catch(err => console.error('Failed to fetch branch profile', err));
+    } else if (user?.gymId) {
       api.get(`/gyms/${user.gymId}`)
         .then(res => {
           const fetchedGym = res.data.gym;
@@ -68,32 +97,48 @@ const GymAdminProfile = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await api.put(`/gyms/${user?.gymId}`, {
-        name: formData.gymName,
-        gymType: formData.type,
-        email: formData.email,
-        phone: formData.phone,
-        description: formData.description,
-        location: {
-          ...gym?.location,
-          address: formData.address,
-          city: formData.city,
-          state: formData.state,
-        },
-        establishedYear: formData.establishedYear,
-        trainingMode: formData.trainingMode,
-        memberCapacity: formData.memberCapacity,
-        trainerCapacity: formData.trainerCapacity,
-        website: formData.website,
-        taxId: formData.taxId,
-        operatingHours: formData.operatingHours
-      });
+      if (user?.branchId) {
+        await api.put(`/branches/${user.branchId}`, {
+          branchName: formData.gymName,
+          email: formData.email,
+          phone: formData.phone,
+          location: {
+            ...gym?.location,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+          },
+          trainingMode: formData.trainingMode,
+          memberCapacity: formData.memberCapacity,
+          trainerCapacity: formData.trainerCapacity,
+        });
+      } else {
+        await api.put(`/gyms/${user?.gymId}`, {
+          name: formData.gymName,
+          gymType: formData.type,
+          email: formData.email,
+          phone: formData.phone,
+          description: formData.description,
+          location: {
+            ...gym?.location,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+          },
+          establishedYear: formData.establishedYear,
+          trainingMode: formData.trainingMode,
+          memberCapacity: formData.memberCapacity,
+          trainerCapacity: formData.trainerCapacity,
+          website: formData.website,
+          taxId: formData.taxId,
+          operatingHours: formData.operatingHours
+        });
+      }
       setSaveSuccess(true);
       setIsEditing(false);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       console.error(error);
-      // Even if API fails, save the changes locally and exit edit mode
       setSaveSuccess(true);
       setIsEditing(false);
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -112,15 +157,23 @@ const GymAdminProfile = () => {
     <div className="space-y-6 max-w-4xl mx-auto">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Gym Profile</h1>
-          <p className="text-[#78716C] mt-1">Manage your facility's public information and details.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">
+            {isBranchUser ? 'Branch Profile' : 'Gym Profile'}
+          </h1>
+          <p className="text-[#78716C] mt-1">
+            Manage your {isBranchUser ? 'branch' : 'facility'}'s public information and details.
+          </p>
         </div>
-        {/* Top-level Edit toggle */}
-        {!isEditing && (
-          <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-5 py-2.5 bg-[#292524] text-white font-bold rounded-xl hover:bg-[#0F172A] transition-colors shadow-lg text-sm">
-            <Edit2 size={16} /> Edit Profile
-          </button>
-        )}
+        <div className="flex items-center gap-2.5">
+          <Link to={isBranchUser ? `/admin/location?branchId=${user.branchId}` : "/admin/location"} className="flex items-center gap-2 px-4 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors shadow-sm text-sm cursor-pointer">
+            <MapPin size={16} /> Location Settings
+          </Link>
+          {!isEditing && (
+            <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2.5 bg-[#292524] text-white font-bold rounded-xl hover:bg-[#0F172A] transition-colors shadow-sm text-sm cursor-pointer">
+              <Edit2 size={16} /> Edit Profile
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Success Banner */}
@@ -133,12 +186,14 @@ const GymAdminProfile = () => {
       {/* Header Banner */}
       <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8 flex items-center space-x-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#F97316]/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
-        <div className="w-24 h-24 bg-[#FFFFFF] border-2 border-[#F97316] rounded-2xl flex items-center justify-center text-[#F97316] shrink-0 z-10 overflow-hidden">
-          {gym?.logo ? <img src={gym.logo} alt="Logo" className="w-full h-full object-cover" /> : <Building2 size={40} />}
+        <div className="w-20 h-20 bg-[#F97316]/10 border-2 border-[#F97316]/20 rounded-2xl flex items-center justify-center shrink-0 z-10 overflow-hidden">
+          {gym?.logo ? <img src={gym.logo} alt="Logo" className="w-full h-full object-cover" /> : <Building2 size={36} className="text-[#F97316]" />}
         </div>
         <div className="z-10">
-          <h2 className="text-2xl font-bold text-[#292524]">{formData.gymName || 'Loading...'}</h2>
-          <p className="text-[#F97316] font-semibold flex items-center mt-1"><MapPin size={16} className="mr-1"/> {formData.city}, {formData.state}</p>
+          <h2 className="text-2xl font-bold text-[#292524]">{formData.gymName || (isBranchUser ? 'Branch' : 'AI GYM')}</h2>
+          <p className="text-sm text-[#78716C] mt-1 flex items-center">
+            <MapPin size={14} className="mr-1 text-[#F97316]" /> {formData.city ? `${formData.city}, ${formData.state}` : (isBranchUser ? 'Branch Location' : 'Gym Location')}
+          </p>
         </div>
       </div>
 
@@ -152,7 +207,7 @@ const GymAdminProfile = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Gym Name</label>
+              <label className="block text-sm text-[#78716C] mb-2">{isBranchUser ? 'Branch Name' : 'Gym Name'}</label>
               <input disabled={!isEditing} value={formData.gymName} onChange={e => setFormData({...formData, gymName: e.target.value})} className={inputCls} />
             </div>
             <div>
@@ -168,7 +223,7 @@ const GymAdminProfile = () => {
               <input disabled={!isEditing} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className={inputCls} />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm text-[#78716C] mb-2">About the Gym</label>
+              <label className="block text-sm text-[#78716C] mb-2">{isBranchUser ? 'About the Branch' : 'About the Gym'}</label>
               <textarea disabled={!isEditing} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className={`${inputCls} h-24 resize-none`} />
             </div>
           </div>
@@ -325,15 +380,124 @@ const GymAdminProfile = () => {
           </section>
         )}
 
-        <section className="bg-green-50 border border-green-100 rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-bold text-green-800">Branch Management</h3>
-            <p className="text-green-700 mt-1">You currently have <strong>{branchesCount}</strong> branch{branchesCount !== 1 && 'es'} registered.</p>
+        {/* Package Plans Section */}
+        <section className="bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E7E5E4] pb-4">
+            <div className="flex items-center space-x-2 text-[#292524]">
+              <CreditCard size={20} className="text-[#F97316]" />
+              <div>
+                <h3 className="text-xl font-bold">Package Plans</h3>
+                <p className="text-xs text-[#78716C] mt-0.5">Configured pricing tiers for your gym membership plans.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="bg-[#F5F5F4] p-1 rounded-xl flex items-center border border-[#E7E5E4]">
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                    billingCycle === 'monthly'
+                      ? 'bg-[#F97316] text-white shadow-xs'
+                      : 'text-[#78716C] hover:text-[#292524]'
+                  }`}
+                >
+                  Monthly Billed
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('annually')}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1 ${
+                    billingCycle === 'annually'
+                      ? 'bg-[#F97316] text-white shadow-xs'
+                      : 'text-[#78716C] hover:text-[#292524]'
+                  }`}
+                >
+                  Annual Billed
+                  <span className="bg-[#292524] text-[#F97316] text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase ml-0.5">Save 20%</span>
+                </button>
+              </div>
+              <Link to="/admin/membership-plans" className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1 shrink-0">
+                Manage Plans <ArrowRight size={14} />
+              </Link>
+            </div>
           </div>
-          <Link to="/admin/branches" className="px-6 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2">
-            Manage Branches <ArrowRight size={18} />
-          </Link>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(gym?.subscriptionPlans && gym.subscriptionPlans.length > 0 ? gym.subscriptionPlans : [
+              { name: 'Starter Free', price: '0', annualPrice: '0', duration: 'Monthly', features: '1 branch • 50 members • 3 trainers • 5 AI analyses • Basic chatbot • Basic attendance • Basic reports' },
+              { name: 'Growth Plan', price: '2,999', annualPrice: '29,990', duration: 'Monthly', features: 'Up to 3 branches • Up to 1,000 members • 15 trainers • Complete billing • Session booking • AI workout recs' },
+              { name: 'Pro Plan', price: '5,999', annualPrice: '59,990', duration: 'Monthly', features: 'Unlimited branches • Unlimited members • Unlimited trainers • All-branch analytics • Advanced AI chatbot • Business insights' }
+            ]).map((plan: any, idx: number) => {
+              const formatPlanName = (name: string) => {
+                if (!name) return 'Package Plan';
+                const lower = name.trim().toLowerCase();
+                if (lower === 'free trial' || lower === 'trial') return 'Starter Free';
+                if (lower === 'gold') return 'Growth Plan';
+                if (lower === 'premium') return 'Pro Plan';
+                return name;
+              };
+
+              const rawPrice = Number(String(plan.price || 0).replace(/[^0-9]/g, ''));
+              const annualPrice = plan.annualPrice 
+                ? Number(String(plan.annualPrice).replace(/[^0-9]/g, '')) 
+                : Math.round(rawPrice * 10);
+
+              return (
+                <div key={idx} className="border border-[#E7E5E4] rounded-2xl p-5 bg-[#F9F8F6] flex flex-col justify-between hover:border-[#F97316]/40 transition-all shadow-xs relative overflow-hidden">
+                  {billingCycle === 'annually' && rawPrice > 0 && (
+                    <div className="absolute top-0 right-0 bg-[#F97316] text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                      2 Months Free
+                    </div>
+                  )}
+                  <div>
+                    <div className="flex items-start justify-between gap-2 mb-2 pb-2 border-b border-[#E7E5E4]">
+                      <div>
+                        <h4 className="font-bold text-[#292524] text-base">{formatPlanName(plan.name)}</h4>
+                        {billingCycle === 'annually' ? (
+                          <div>
+                            <p className="text-sm font-extrabold text-[#F97316] mt-0.5">
+                              ₹{annualPrice.toLocaleString('en-IN')} <span className="text-xs text-[#78716C] font-normal">/ Annually</span>
+                            </p>
+                            {rawPrice > 0 && (
+                              <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">
+                                Equivalent ₹{Math.round(annualPrice / 12).toLocaleString('en-IN')}/mo Billed Annually
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          <div>
+                            <p className="text-sm font-extrabold text-[#F97316] mt-0.5">
+                              ₹{rawPrice.toLocaleString('en-IN')} <span className="text-xs text-[#78716C] font-normal">/ {plan.duration || 'Monthly'}</span>
+                            </p>
+                            {rawPrice > 0 && (
+                              <p className="text-[11px] text-[#78716C] font-medium mt-0.5">
+                                Annual: ₹{annualPrice.toLocaleString('en-IN')}/yr <span className="text-emerald-600 font-bold">(Save 20%)</span>
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-xs text-[#78716C] mt-2 whitespace-pre-line leading-relaxed">{plan.features}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </section>
+
+        {!isBranchUser && (
+          <section className="bg-green-50 border border-green-100 rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-bold text-green-800">Branch Management</h3>
+              <p className="text-green-700 mt-1">You currently have <strong>{branchesCount}</strong> branch{branchesCount !== 1 && 'es'} registered.</p>
+            </div>
+            <Link to="/admin/branches" className="px-6 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2">
+              Manage Branches <ArrowRight size={18} />
+            </Link>
+          </section>
+        )}
 
         <div className="pt-4 flex justify-end">
           {isEditing && (

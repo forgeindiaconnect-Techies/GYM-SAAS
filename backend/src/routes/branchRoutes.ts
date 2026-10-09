@@ -16,6 +16,7 @@ router.get('/', authenticate, getBranches);
 router.get('/:id', authenticate, getBranchById);
 router.put('/:id', authenticate, updateBranch);
 router.patch('/:id/status', authenticate, updateBranchStatus);
+router.put('/:id/status', authenticate, updateBranchStatus);
 router.delete('/:id', authenticate, deleteBranch);
 
 export default router;

@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ITrainerWithdrawal extends Document {
   gymId: mongoose.Types.ObjectId;
+  branchId?: mongoose.Types.ObjectId;
   trainerId: mongoose.Types.ObjectId;
   amount: number;
   withdrawalMethod: 'Bank Transfer' | 'UPI';
@@ -24,6 +25,7 @@ export interface ITrainerWithdrawal extends Document {
 
 const trainerWithdrawalSchema = new Schema<ITrainerWithdrawal>({
   gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true },
+  branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
   trainerId: { type: Schema.Types.ObjectId, ref: 'Trainer', required: true },
   amount: { type: Number, required: true },
   withdrawalMethod: { type: String, enum: ['Bank Transfer', 'UPI'], required: true },

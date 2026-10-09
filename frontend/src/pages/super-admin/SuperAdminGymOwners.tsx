@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, AlertCircle, Phone, Mail, Building2, Eye, Edit2, X, Check, Users, Clock, CheckCircle, XCircle, ShieldAlert, Trash2, Download, FileText, Table as TableIcon, Star, Plus } from 'lucide-react';
+import { Search, Loader2, AlertCircle, Phone, Mail, Building2, Eye, Edit2, X, Check, Users, Clock, CheckCircle, XCircle, ShieldAlert, Trash2, Download, FileText, Table as TableIcon, Star, Plus, MapPin, CreditCard } from 'lucide-react';
 import api from '../../utils/api';
 import { exportToPDF, exportToExcel, exportToWord } from '../../utils/export';
 
@@ -19,6 +19,7 @@ interface GymOwner {
   subscriptionStatus?: string;
   subscriptionStart?: string;
   transactionId?: string;
+  branches?: any[];
   gymId?: {
     _id: string;
     name: string;
@@ -87,6 +88,30 @@ const SAAS_PLANS: Record<string, { name: string, price: string, features: string
   }
 };
 
+const defaultBranchPlans = [
+  { 
+    name: 'Starter Free', 
+    price: '0', 
+    annualPrice: '0',
+    duration: 'Monthly', 
+    features: '1 branch • 50 members • 3 trainers • 5 AI analyses • 3 AI workout generations • Basic chatbot • Basic attendance • Basic reports' 
+  },
+  { 
+    name: 'Growth Plan', 
+    price: '2999', 
+    annualPrice: '29990',
+    duration: 'Monthly', 
+    features: 'Up to 3 branches • Up to 1,000 members • 15 trainers • Complete billing • Session booking • Online sessions • AI workout recs' 
+  },
+  { 
+    name: 'Pro Plan', 
+    price: '5999', 
+    annualPrice: '59990',
+    duration: 'Monthly', 
+    features: 'Unlimited branches • Unlimited members • Unlimited trainers • All-branch analytics • Advanced AI chatbot • Business insights' 
+  }
+];
+
 const TABS = [
   { id: 'ALL', label: 'All Owners', icon: Users },
   { id: 'PENDING', label: 'Pending', icon: Clock },
@@ -140,6 +165,7 @@ const SuperAdminGymOwners = () => {
 
   // Modals state
   const [viewOwner, setViewOwner] = useState<GymOwner | null>(null);
+  const [viewBranch, setViewBranch] = useState<any | null>(null);
   const [editOwner, setEditOwner] = useState<GymOwner | null>(null);
   const [viewSubscription, setViewSubscription] = useState<GymOwner | null>(null);
   const [editForm, setEditForm] = useState<any>({});
@@ -157,18 +183,29 @@ const SuperAdminGymOwners = () => {
   const fetchOwners = async () => {
     try {
       setLoading(true);
-      const [res, subsRes] = await Promise.all([
+      const [res, subsRes, branchesRes] = await Promise.all([
         api.get('/users?role=GYM_OWNER'),
-        api.get('/subscriptions/all').catch(() => ({ data: { subscriptions: [] } }))
+        api.get('/subscriptions/all').catch(() => ({ data: { subscriptions: [] } })),
+        api.get('/branches').catch(() => ({ data: { branches: [] } }))
       ]);
       
-      const users = res.data.users;
+      const users = res.data.users || [];
       const subscriptions = subsRes.data.subscriptions || [];
+      const allBranches = branchesRes.data.branches || [];
       
       const mergedUsers = users.map((u: any) => {
         const sub = subscriptions.find((s: any) => s.userId === u._id);
+        const userGymId = u.gymId?._id?.toString() || u.gymId?.toString();
+        const ownerBranches = (u.branches && u.branches.length > 0) 
+          ? u.branches 
+          : allBranches.filter((b: any) => {
+              const bGymId = b.gymId?._id?.toString() || b.gymId?.toString();
+              return bGymId === userGymId;
+            });
+
         return {
           ...u,
+          branches: ownerBranches,
           billingCycle: sub?.billing,
           paymentStatus: sub ? 'Paid' : 'N/A', // If we have an active subscription
           subscriptionStatus: sub?.status || 'N/A',
@@ -196,11 +233,43 @@ const SuperAdminGymOwners = () => {
       await fetchOwners();
     } catch (err: any) {
       console.error('Status update failed:', err);
-      alert(err.response?.data?.message || 'Failed to update status. Please try again.');
       // Revert optimistic update on error
       await fetchOwners();
     } finally {
       setStatusUpdating(null);
+    }
+  };
+
+  const handleBranchStatusChange = async (branchId: string, newStatus: string) => {
+    try {
+      setOwners(prev => prev.map(o => {
+        if (!o.branches) return o;
+        const hasBranch = o.branches.some((b: any) => b._id === branchId);
+        if (!hasBranch) return o;
+        return {
+          ...o,
+          branches: o.branches.map((b: any) => b._id === branchId ? { ...b, status: newStatus } : b)
+        };
+      }));
+
+      if (viewBranch && viewBranch._id === branchId) {
+        setViewBranch((prev: any) => prev ? { ...prev, status: newStatus } : null);
+      }
+
+      if (viewOwner && viewOwner.branches) {
+        setViewOwner((prev: any) => prev ? {
+          ...prev,
+          branches: prev.branches?.map((b: any) => b._id === branchId ? { ...b, status: newStatus } : b)
+        } : null);
+      }
+
+      await api.put(`/branches/${branchId}/status`, { status: newStatus });
+      alert(`Branch approval status updated to ${newStatus}!`);
+      await fetchOwners();
+    } catch (err: any) {
+      console.error('Failed to update branch status:', err);
+      alert(err.response?.data?.message || 'Failed to update branch status.');
+      await fetchOwners();
     }
   };
 
@@ -217,12 +286,13 @@ const SuperAdminGymOwners = () => {
   };
 
   const handleExport = (type: 'pdf' | 'excel' | 'word') => {
-    const columns = ['Name', 'Email', 'Mobile', 'Gym Name', 'City', 'Status', 'Date Joined'];
+    const columns = ['Name', 'Email', 'Mobile', 'Gym Name', 'Branches', 'City', 'Status', 'Date Joined'];
     const data = filteredOwners.map(o => [
       `${o.firstName} ${o.lastName}`,
       o.email,
       o.mobile,
       o.gymId?.name || 'N/A',
+      o.branches && o.branches.length > 0 ? o.branches.map((b: any) => b.branchName).join(', ') : 'Main Gym Only',
       o.city || 'N/A',
       o.approvalStatus,
       new Date(o.createdAt).toLocaleDateString()
@@ -531,6 +601,7 @@ const SuperAdminGymOwners = () => {
                 <tr>
                   <th className="px-6 py-4 font-medium">Gym & Owner</th>
                   <th className="px-5 py-3.5 font-semibold whitespace-nowrap">Contact</th>
+                  <th className="px-5 py-3.5 font-semibold whitespace-nowrap">Branches</th>
                   <th className="px-6 py-4 font-medium">Plan & Billing</th>
                   <th className="px-6 py-4 font-medium">Sub & Payment</th>
                   <th className="px-6 py-4 font-medium">Start & Expiry</th>
@@ -548,7 +619,7 @@ const SuperAdminGymOwners = () => {
                         </div>
                         <div>
                           <div className="font-medium text-[#292524]">{owner.firstName} {owner.lastName}</div>
-                          <div className="text-xs text-[#78716C]">{owner.gymId?.name || 'No Gym'}</div>
+                          <div className="text-xs font-semibold text-[#F97316]">{owner.gymId?.name || 'No Gym'}</div>
                           {owner.gymId?.location?.city && <div className="text-[10px] text-[#78716C]">{owner.gymId.location.city}</div>}
                         </div>
                       </div>
@@ -563,6 +634,46 @@ const SuperAdminGymOwners = () => {
                           <Phone size={14} />
                           <span>{owner.mobile}</span>
                         </div>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <div className="space-y-1">
+                        <button
+                          type="button"
+                          onClick={() => setViewOwner(owner)}
+                          className="flex items-center gap-1.5 font-bold text-xs text-[#292524] hover:text-[#F97316] transition-colors cursor-pointer group text-left"
+                          title="Click to view owner profile & all branches"
+                        >
+                          <Building2 size={14} className="text-[#F97316] group-hover:scale-110 transition-transform" />
+                          <span className="underline underline-offset-2 decoration-[#F97316]/40 group-hover:decoration-[#F97316]">
+                            {owner.branches?.length || 0} {owner.branches?.length === 1 ? 'Branch' : 'Branches'}
+                          </span>
+                        </button>
+                        {owner.branches && owner.branches.length > 0 ? (
+                          <div className="flex flex-col gap-1 max-w-[170px]">
+                            {owner.branches.map((b: any, bIdx: number) => (
+                              <button
+                                key={b._id || bIdx}
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setViewBranch({
+                                    ...b,
+                                    ownerName: `${owner.firstName} ${owner.lastName}`,
+                                    gymName: owner.gymId?.name
+                                  });
+                                }}
+                                className="inline-flex items-center gap-1.5 text-[11px] font-semibold bg-[#FFFDF8] border border-[#FED7AA] text-[#F97316] px-2.5 py-1 rounded-lg hover:bg-[#F97316] hover:text-white transition-all cursor-pointer shadow-2xs group text-left w-fit active:scale-95"
+                                title={`Click to view full details for branch ${b.branchName}`}
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#F97316] group-hover:bg-white shrink-0"></span>
+                                <span className="truncate max-w-[120px]">{b.branchName}</span>
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-[#78716C] italic">1 Main Location</span>
+                        )}
                       </div>
                     </td>
                     <td className="px-5 py-3.5">
@@ -885,6 +996,124 @@ const SuperAdminGymOwners = () => {
                 </div>
               </div>
 
+              {/* Registered Branch Locations */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-[#F97316] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+                    <Building2 size={16} /> Registered Branch Locations ({viewOwner.branches?.length || 0})
+                  </h3>
+                  {viewOwner.branches && viewOwner.branches.length > 0 && (
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#F97316] text-white">
+                      {viewOwner.branches.length} {viewOwner.branches.length === 1 ? 'Branch' : 'Branches'}
+                    </span>
+                  )}
+                </div>
+
+                {viewOwner.branches && viewOwner.branches.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {viewOwner.branches.map((branch: any, idx: number) => (
+                      <div 
+                        key={branch._id || idx} 
+                        onClick={() => setViewBranch({ ...branch, ownerName: `${viewOwner.firstName} ${viewOwner.lastName}`, gymName: viewOwner.gymId?.name })}
+                        className="bg-[#FFFDF8] border border-[#FED7AA] rounded-xl p-4 shadow-xs hover:border-[#F97316] hover:shadow-md transition-all space-y-2.5 cursor-pointer active:scale-98 group"
+                        title="Click to view full branch details"
+                      >
+                        <div className="flex items-start justify-between gap-2 border-b border-[#E7E5E4] pb-2">
+                          <div>
+                            <h4 className="font-bold text-[#292524] text-base group-hover:text-[#F97316] transition-colors">{branch.branchName}</h4>
+                            <p className="text-xs text-[#78716C] font-semibold uppercase tracking-wider">Branch Code: {branch.branchCode || 'N/A'}</p>
+                          </div>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                            branch.status === 'ACTIVE' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                          }`}>
+                            {branch.status || 'ACTIVE'}
+                          </span>
+                        </div>
+                        
+                        <div className="text-xs space-y-1 text-[#78716C]">
+                          <p className="flex items-start gap-1.5">
+                            <MapPin size={14} className="text-[#F97316] shrink-0 mt-0.5" />
+                            <span className="font-medium text-[#292524]">
+                              {branch.location?.address ? `${branch.location.address}, ` : ''}
+                              {branch.location?.area ? `${branch.location.area}, ` : ''}
+                              {branch.location?.city || viewOwner.city || ''} {branch.location?.pinCode ? `- ${branch.location.pinCode}` : ''}
+                            </span>
+                          </p>
+                          {branch.phone && (
+                            <p className="flex items-center gap-1.5">
+                              <Phone size={13} className="text-[#F97316] shrink-0" />
+                              <span className="font-medium">{branch.phone}</span>
+                            </p>
+                          )}
+                          {branch.email && (
+                            <p className="flex items-center gap-1.5">
+                              <Mail size={13} className="text-[#F97316] shrink-0" />
+                              <span className="font-medium">{branch.email}</span>
+                            </p>
+                          )}
+                          {branch.operatingHours && (
+                            <p className="flex items-center gap-1.5 text-[11px]">
+                              <Clock size={13} className="text-[#78716C] shrink-0" />
+                              <span>
+                                Hours: {typeof branch.operatingHours === 'string' 
+                                  ? branch.operatingHours 
+                                  : `${branch.operatingHours.openingTime || ''} - ${branch.operatingHours.closingTime || ''}`}
+                              </span>
+                            </p>
+                          )}
+                        </div>
+                        <div className="pt-2 border-t border-[#FED7AA]/60 flex items-center justify-between gap-2">
+                          <span className="text-[10px] text-[#78716C] font-semibold">Branch Approval:</span>
+                          <div className="flex items-center gap-1">
+                            {branch.status !== 'ACTIVE' && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleBranchStatusChange(branch._id, 'ACTIVE');
+                                }}
+                                className="px-2 py-1 bg-emerald-100 text-emerald-800 hover:bg-emerald-600 hover:text-white font-bold text-[10px] rounded transition-all flex items-center gap-1 cursor-pointer"
+                                title="Approve branch"
+                              >
+                                <CheckCircle size={12} /> Approve
+                              </button>
+                            )}
+                            {branch.status !== 'PENDING' && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleBranchStatusChange(branch._id, 'PENDING');
+                                }}
+                                className="px-2 py-1 bg-amber-100 text-amber-800 hover:bg-amber-600 hover:text-white font-bold text-[10px] rounded transition-all flex items-center gap-1 cursor-pointer"
+                                title="Mark branch pending"
+                              >
+                                <Clock size={12} /> Pending
+                              </button>
+                            )}
+                            {branch.status !== 'SUSPENDED' && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleBranchStatusChange(branch._id, 'SUSPENDED');
+                                }}
+                                className="px-2 py-1 bg-orange-100 text-orange-800 hover:bg-orange-600 hover:text-white font-bold text-[10px] rounded transition-all flex items-center gap-1 cursor-pointer"
+                                title="Suspend branch"
+                              >
+                                <ShieldAlert size={12} /> Suspend
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-[#78716C] italic bg-white p-3.5 border border-[#E7E5E4] rounded-xl">No additional branches registered for this gym owner.</p>
+                )}
+              </div>
+
               {/* Member Subscription Plans */}
               <div className="bg-[#F8FAF9] border border-[#E7E5E4] rounded-xl p-5">
                 <div className="flex items-center justify-between mb-4 border-b border-[#E7E5E4] pb-2">
@@ -981,6 +1210,244 @@ const SuperAdminGymOwners = () => {
             <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#E7E5E4] flex items-center justify-end shrink-0">
               <button 
                 onClick={() => setViewOwner(null)}
+                className="px-5 py-2 bg-[#F97316] text-white rounded-lg hover:bg-[#EA580C] transition-colors text-sm font-semibold shadow-sm"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Branch Details Modal */}
+      {viewBranch && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7E5E4] bg-[#FFFDF8] shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold">
+                  <Building2 size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-[#292524]">{viewBranch.branchName}</h2>
+                  <p className="text-xs text-[#78716C] font-semibold">
+                    Gym: <span className="text-[#F97316]">{viewBranch.gymName || 'N/A'}</span> • Owner: <span className="text-[#292524]">{viewBranch.ownerName || 'N/A'}</span>
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setViewBranch(null)}
+                className="p-1.5 text-[#78716C] hover:text-[#F97316] hover:bg-white rounded-lg transition-colors"
+                title="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto flex-1 space-y-5 text-sm">
+              {/* Approval Actions Panel for Super Admin */}
+              <div className="bg-[#FFFDF8] border border-[#FED7AA] rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                <div>
+                  <h4 className="font-bold text-[#292524] text-xs uppercase tracking-wider">Branch Approval & Status</h4>
+                  <p className="text-xs text-[#78716C] mt-0.5">
+                    Current Status: <strong className={viewBranch.status === 'ACTIVE' ? 'text-emerald-600' : 'text-[#F97316]'}>{viewBranch.status || 'ACTIVE'}</strong>
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {viewBranch.status !== 'ACTIVE' && (
+                    <button
+                      type="button"
+                      onClick={() => handleBranchStatusChange(viewBranch._id, 'ACTIVE')}
+                      className="px-3 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-lg hover:bg-emerald-700 transition-all flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+                    >
+                      <CheckCircle size={14} /> Approve Branch
+                    </button>
+                  )}
+                  {viewBranch.status !== 'PENDING' && (
+                    <button
+                      type="button"
+                      onClick={() => handleBranchStatusChange(viewBranch._id, 'PENDING')}
+                      className="px-3 py-1.5 bg-amber-500 text-white font-bold text-xs rounded-lg hover:bg-amber-600 transition-all flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+                    >
+                      <Clock size={14} /> Mark Pending
+                    </button>
+                  )}
+                  {viewBranch.status !== 'SUSPENDED' && (
+                    <button
+                      type="button"
+                      onClick={() => handleBranchStatusChange(viewBranch._id, 'SUSPENDED')}
+                      className="px-3 py-1.5 bg-orange-500 text-white font-bold text-xs rounded-lg hover:bg-orange-600 transition-all flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+                    >
+                      <ShieldAlert size={14} /> Suspend
+                    </button>
+                  )}
+                  {viewBranch.status !== 'INACTIVE' && (
+                    <button
+                      type="button"
+                      onClick={() => handleBranchStatusChange(viewBranch._id, 'INACTIVE')}
+                      className="px-3 py-1.5 bg-red-500 text-white font-bold text-xs rounded-lg hover:bg-red-600 transition-all flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+                    >
+                      <XCircle size={14} /> Reject / Inactive
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Branch Quick Header Stats */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-[#F8FAF9] border border-[#E7E5E4] rounded-xl">
+                <div>
+                  <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider block">Branch Code</span>
+                  <span className="font-bold text-sm text-[#292524]">{viewBranch.branchCode || 'N/A'}</span>
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider block">Status</span>
+                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold border mt-0.5 ${
+                    viewBranch.status === 'ACTIVE' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                  }`}>
+                    {viewBranch.status || 'ACTIVE'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider block">Training Mode</span>
+                  <span className="font-semibold text-sm text-[#292524] capitalize">{viewBranch.trainingMode || 'offline'}</span>
+                </div>
+              </div>
+
+              {/* Location */}
+              <div>
+                <h3 className="text-[#F97316] font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <MapPin size={15} /> Location Details
+                </h3>
+                <div className="p-4 bg-white border border-[#E7E5E4] rounded-xl space-y-1.5 text-[#292524]">
+                  <p className="font-semibold">{viewBranch.location?.address || 'Address not specified'}</p>
+                  <p className="text-xs text-[#78716C]">
+                    {[viewBranch.location?.area, viewBranch.location?.city, viewBranch.location?.state, viewBranch.location?.pinCode].filter(Boolean).join(', ')}
+                  </p>
+                </div>
+              </div>
+
+              {/* Contact & Hours */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 bg-white border border-[#E7E5E4] rounded-xl space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Contact Info</h4>
+                  {viewBranch.phone && (
+                    <p className="flex items-center gap-2 text-xs text-[#292524] font-semibold">
+                      <Phone size={14} className="text-[#F97316]" /> {viewBranch.phone}
+                    </p>
+                  )}
+                  {viewBranch.email && (
+                    <p className="flex items-center gap-2 text-xs text-[#292524] font-semibold">
+                      <Mail size={14} className="text-[#F97316]" /> {viewBranch.email}
+                    </p>
+                  )}
+                </div>
+                <div className="p-4 bg-white border border-[#E7E5E4] rounded-xl space-y-2">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Capacity & Hours</h4>
+                  <p className="text-xs text-[#292524] flex items-center gap-2 font-semibold">
+                    <Clock size={14} className="text-[#F97316]" />
+                    {typeof viewBranch.operatingHours === 'string' 
+                      ? viewBranch.operatingHours 
+                      : `${viewBranch.operatingHours?.openingTime || '06:00 AM'} - ${viewBranch.operatingHours?.closingTime || '10:00 PM'}`}
+                  </p>
+                  <p className="text-xs text-[#78716C]">
+                    Capacity: <strong className="text-[#292524]">{viewBranch.memberCapacity || 'N/A'} Members</strong> • <strong className="text-[#292524]">{viewBranch.trainerCapacity || 'N/A'} Trainers</strong>
+                  </p>
+                </div>
+              </div>
+
+              {/* Branch Package Plans */}
+              <div className="bg-[#F8FAF9] border border-[#E7E5E4] rounded-xl p-4 space-y-3 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7E5E4] pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <CreditCard size={16} className="text-[#F97316]" />
+                    <h3 className="text-[#F97316] font-bold text-xs uppercase tracking-wider">
+                      Branch Package Plans
+                    </h3>
+                  </div>
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#F97316]/10 text-[#F97316] w-fit">
+                    {((viewBranch.subscriptionPlans && viewBranch.subscriptionPlans.length > 0) ? viewBranch.subscriptionPlans : defaultBranchPlans).length} Active Plans
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {((viewBranch.subscriptionPlans && viewBranch.subscriptionPlans.length > 0) ? viewBranch.subscriptionPlans : defaultBranchPlans).map((plan: any, idx: number) => {
+                    const formatPlanName = (name: string) => {
+                      if (!name) return 'Package Plan';
+                      const lower = name.trim().toLowerCase();
+                      if (lower === 'free trial' || lower === 'trial') return 'Starter Free';
+                      if (lower === 'gold') return 'Growth Plan';
+                      if (lower === 'premium') return 'Pro Plan';
+                      return name;
+                    };
+
+                    const rawPrice = Number(String(plan.price || 0).replace(/[^0-9]/g, ''));
+                    const annualPrice = plan.annualPrice 
+                      ? Number(String(plan.annualPrice).replace(/[^0-9]/g, '')) 
+                      : Math.round(rawPrice * 10);
+
+                    return (
+                      <div key={idx} className="bg-white border border-[#E7E5E4] rounded-xl p-3.5 flex flex-col justify-between shadow-2xs hover:border-[#F97316]/40 transition-all space-y-2">
+                        <div>
+                          <div className="flex justify-between items-start mb-1.5 border-b border-[#E7E5E4] pb-1.5">
+                            <h4 className="font-bold text-[#292524] text-sm">{formatPlanName(plan.name)}</h4>
+                            <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold text-xs">
+                              {rawPrice === 0 ? 'FREE' : `₹${rawPrice.toLocaleString('en-IN')}`}
+                            </span>
+                          </div>
+                          
+                          <div className="space-y-0.5 mb-2">
+                            <p className="text-[11px] font-bold text-[#F97316]">
+                              Monthly: {rawPrice === 0 ? '₹0' : `₹${rawPrice.toLocaleString('en-IN')}/mo`}
+                            </p>
+                            {rawPrice > 0 && (
+                              <p className="text-[10px] text-[#78716C]">
+                                Annual: <strong className="text-[#292524]">₹{annualPrice.toLocaleString('en-IN')}/yr</strong> <span className="text-emerald-600 font-semibold">(2 mos free)</span>
+                              </p>
+                            )}
+                          </div>
+
+                          {plan.features && (
+                            <p className="text-[11px] text-[#78716C] leading-relaxed whitespace-pre-line border-t border-[#E7E5E4]/60 pt-1.5">
+                              {plan.features}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Services & Facilities */}
+              {((viewBranch.services && viewBranch.services.length > 0) || (viewBranch.facilities && viewBranch.facilities.length > 0)) && (
+                <div className="space-y-3">
+                  {viewBranch.services && viewBranch.services.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">Services</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {viewBranch.services.map((s: string, i: number) => (
+                          <span key={i} className="px-2.5 py-1 bg-[#F97316]/10 text-[#F97316] text-xs font-bold rounded-lg border border-[#F97316]/20">{s}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {viewBranch.facilities && viewBranch.facilities.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">Facilities</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {viewBranch.facilities.map((f: string, i: number) => (
+                          <span key={i} className="px-2.5 py-1 bg-[#FFFDF8] border border-[#E7E5E4] text-[#292524] text-xs font-medium rounded-lg">{f}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <div className="px-6 py-3.5 bg-[#F8FAF9] border-t border-[#E7E5E4] flex items-center justify-end shrink-0">
+              <button 
+                onClick={() => setViewBranch(null)}
                 className="px-5 py-2 bg-[#F97316] text-white rounded-lg hover:bg-[#EA580C] transition-colors text-sm font-semibold shadow-sm"
               >
                 Close

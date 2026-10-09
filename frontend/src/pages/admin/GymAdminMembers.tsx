@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, FileSpreadsheet, Download, Check, History, Sparkles } from 'lucide-react';
+import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, Download, Check, History, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AddMemberSelectorModal } from '../../components/GymAdmin/AddMemberSelectorModal';
 import { AddExistingMemberModal } from '../../components/GymAdmin/AddExistingMemberModal';
@@ -59,17 +59,20 @@ const getPlanBadge = (planName: string, isSmall = false) => {
 };
 
 const GymAdminMembers = () => {
+  const { user } = useAuth();
   const [members, setMembers] = useState<any[]>([]);
   
   useEffect(() => {
     fetchMembers();
-  }, []);
+  }, [user?.branchId]);
 
   const fetchMembers = async () => {
     try {
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const userBranchParam = user?.branchId ? `&branchId=${user.branchId}` : '';
       const [usersRes, membershipsRes] = await Promise.all([
-        api.get('/users?role=MEMBER'),
-        api.get('/memberships/gym').catch(() => ({ data: { memberships: [] } })),
+        api.get(`/users?role=MEMBER${userBranchParam}`),
+        api.get(`/memberships/gym${branchParam}`).catch(() => ({ data: { memberships: [] } })),
       ]);
       if (usersRes.data.success) {
         // Build maps: latest membership and full membership history per user
@@ -221,7 +224,6 @@ const GymAdminMembers = () => {
   };
   
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const getMemberLimit = (plan?: string) => {
     switch (plan?.toUpperCase()) {
@@ -387,12 +389,6 @@ const GymAdminMembers = () => {
             <Download size={16} /> Download PDF
           </button>
           <button 
-            onClick={() => navigate('/admin/import-customers')}
-            className="px-3.5 py-2.5 bg-white text-[#78716C] font-bold rounded-xl border border-[#E7E5E4] hover:bg-[#FFFDF8] hover:text-[#F97316] hover:border-[#F97316]/40 transition-all flex items-center gap-2 text-xs sm:text-sm shadow-xs active:scale-95"
-          >
-            <FileSpreadsheet size={16} /> Existing Customers Data
-          </button>
-          <button 
             onClick={handleAddMemberClick}
             className="px-4 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-all flex items-center gap-2 shadow-md shadow-[#F97316]/20 text-xs sm:text-sm active:scale-95 shrink-0"
           >
@@ -452,7 +448,7 @@ const GymAdminMembers = () => {
       {/* Filters & Search Bar */}
       <div className="flex flex-col xl:flex-row gap-3 justify-between items-stretch xl:items-center bg-[#FFFFFF] p-3 sm:p-3.5 rounded-2xl border border-[#E7E5E4] shadow-xs">
         <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar py-0.5 min-w-0">
-          {['All', 'Active', 'Free Trial', 'Inactive', 'Pending', 'Rejected', 'Existing', 'New'].map(f => (
+          {['All', 'Active', 'Free Trial', 'Inactive', 'Pending', 'Rejected', 'New'].map(f => (
             <button 
               key={f}
               onClick={() => setFilter(f)}

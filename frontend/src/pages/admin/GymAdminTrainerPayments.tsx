@@ -3,6 +3,7 @@ import {
   IndianRupee, AlertCircle, Search, CreditCard, CheckCircle,
   Building2, Smartphone, QrCode, Copy, Check, X, Banknote
 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
 const UPI_APPS = [
@@ -35,6 +36,7 @@ const defaultForm = {
 };
 
 const GymAdminTrainerPayments = () => {
+  const { user } = useAuth();
   const [fees, setFees] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -61,14 +63,15 @@ const GymAdminTrainerPayments = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get('/trainer-payments/fees');
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const res = await api.get(`/trainer-payments/fees${branchParam}`);
       setFees(res.data.fees?.filter((f: any) => f.status === 'Active') || []);
     } catch {
       showToast('Failed to load trainer fees', 'error');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.branchId]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 

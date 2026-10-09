@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Send, Loader2, MessageSquare, RefreshCw, Dumbbell } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -28,7 +28,6 @@ interface MessageItem {
 }
 
 const MemberMessages = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const targetTrainerId = searchParams.get('trainerId');
   const { user: currentUser } = useAuth();

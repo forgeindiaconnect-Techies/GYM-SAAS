@@ -4,6 +4,21 @@ import { Search, Loader2, ShoppingCart, Plus, X, Store, ImageIcon, CheckCircle2,
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import MemberStoreTabs from '../../components/Member/MemberStoreTabs';
+import DownSelect from '../../components/common/DownSelect';
+
+const ALL_STORE_CATEGORIES = [
+  'Supplements',
+  'Nutrition & Healthy Snacks',
+  'Fitness Drinks',
+  'Gym Accessories',
+  'Yoga & Recovery',
+  'Gym Clothing',
+  'Gym Merchandise',
+  'Fitness Monitoring',
+  'Personal Care',
+  'Healthy Meals',
+  'Other'
+];
 
 const MemberStore = () => {
   const { user } = useAuth();
@@ -134,10 +149,15 @@ const MemberStore = () => {
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products..." className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-9 pr-4 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none" />
           <Search className="absolute left-3 top-2.5 text-[#78716C]" size={16} />
         </div>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#F97316] outline-none lg:w-52">
-          <option value="all">All Categories</option>
-          {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
+        <DownSelect
+          value={category}
+          onChange={(val) => setCategory(val)}
+          options={[
+            { label: 'All Categories', value: 'all' },
+            ...Array.from(new Set([...ALL_STORE_CATEGORIES, ...categories])).map((c) => ({ label: c, value: c }))
+          ]}
+          className="lg:w-64"
+        />
       </div>
 
       {loading ? (

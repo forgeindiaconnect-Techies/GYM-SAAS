@@ -233,39 +233,47 @@ const GymAdminSubscription = () => {
     return formatPaymentDateTime(user?.subscriptionStartDate || new Date());
   }, [user?.subscriptionStartDate]);
 
-  const paymentHistory = useMemo(() => [
-    { 
-      id: '#INV-2024-09-001', 
-      date: '29 Sep 2024, 09:45 AM', 
-      amount: '₹7,990', 
-      plan: 'Silver Plan (Annual)', 
-      status: 'Paid',
-      paymentMethod: 'UPI (Google Pay)',
-      paymentDetails: 'UPI ID: ananth@okaxis',
-      year: 2024
-    },
-    { 
-      id: '#INV-2025-09-001', 
-      date: '29 Sep 2025, 11:15 AM', 
-      amount: '₹7,990', 
-      plan: 'Silver Plan (Annual)', 
-      status: 'Paid',
-      paymentMethod: 'Manual Transfer',
-      paymentDetails: 'Name: Ananth | Acc No: ****7890',
-      year: 2025
-    },
-    { 
-      id: '#INV-2026-09-001', 
-      date: currentPaymentDateTime, 
-      amount: '₹1,499', 
-      plan: 'Gold Plan (Monthly)', 
-      status: 'Paid',
-      paymentMethod: 'UPI (PhonePe)',
-      paymentDetails: `UPI ID: ${(user?.gymName || 'dude').toLowerCase().replace(/\s+/g, '')}@ybl`,
-      year: 2026,
-      isCurrent: true
-    },
-  ], [currentPaymentDateTime, user?.gymName]);
+  const isBranchUser = Boolean(user?.branchId);
+
+  const paymentHistory = useMemo(() => {
+    if (isBranchUser) return [];
+    if (isAnanth) {
+      return [
+        { 
+          id: '#INV-2024-09-001', 
+          date: '29 Sep 2024, 09:45 AM', 
+          amount: '₹7,990', 
+          plan: 'Silver Plan (Annual)', 
+          status: 'Paid',
+          paymentMethod: 'UPI (Google Pay)',
+          paymentDetails: 'UPI ID: ananth@okaxis',
+          year: 2024
+        },
+        { 
+          id: '#INV-2025-09-001', 
+          date: '29 Sep 2025, 11:15 AM', 
+          amount: '₹7,990', 
+          plan: 'Silver Plan (Annual)', 
+          status: 'Paid',
+          paymentMethod: 'Manual Transfer',
+          paymentDetails: 'Name: Ananth | Acc No: ****7890',
+          year: 2025
+        },
+        { 
+          id: '#INV-2026-09-001', 
+          date: currentPaymentDateTime, 
+          amount: '₹1,499', 
+          plan: 'Gold Plan (Monthly)', 
+          status: 'Paid',
+          paymentMethod: 'UPI (PhonePe)',
+          paymentDetails: `UPI ID: ${(user?.gymName || 'dude').toLowerCase().replace(/\s+/g, '')}@ybl`,
+          year: 2026,
+          isCurrent: true
+        },
+      ];
+    }
+    return [];
+  }, [isBranchUser, isAnanth, currentPaymentDateTime, user?.gymName]);
 
   const startDateFormatted = user?.subscriptionStartDate
     ? formatPaymentDate(user.subscriptionStartDate)
@@ -605,49 +613,57 @@ const GymAdminSubscription = () => {
               </tr>
             </thead>
             <tbody>
-              {(sortAsc ? [...paymentHistory] : [...paymentHistory].reverse()).map((invoice, idx) => (
-                <tr 
-                  key={invoice.id} 
-                  className={`border-b border-[#F1F5F9] transition-colors last:border-0 ${
-                    invoice.isCurrent ? 'bg-[#FFFDF8]/70 hover:bg-[#FFFDF8]' : 'hover:bg-[#F9F8F6]'
-                  }`}
-                >
-                  <td className="py-4 px-4 text-sm font-bold text-[#F97316] text-center whitespace-nowrap">
-                    {idx + 1}
-                  </td>
-                  <td className="py-4 px-4 text-sm font-semibold text-[#292524] whitespace-nowrap">
-                    <span className="font-mono">{invoice.id}</span>
-                    {invoice.isCurrent && (
-                      <span className="ml-2 text-[10px] bg-[#F97316] text-white px-2 py-0.5 rounded-full font-bold">
-                        Current
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-4 px-4 text-sm text-[#78716C] whitespace-nowrap">{invoice.date}</td>
-                  <td className="py-4 px-4 text-sm font-medium text-[#292524] whitespace-nowrap">{invoice.plan}</td>
-                  <td className="py-4 px-4 text-sm font-bold text-[#F97316] whitespace-nowrap">{invoice.amount}</td>
-                  <td className="py-4 px-4 whitespace-nowrap">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-bold text-[#292524]">{invoice.paymentMethod}</span>
-                      <span className="text-xs text-[#78716C]">{invoice.paymentDetails}</span>
-                    </div>
-                  </td>
-                  <td className="py-4 px-4 whitespace-nowrap">
-                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-2.5 py-1 rounded-full">
-                      {invoice.status}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-right whitespace-nowrap">
-                    <button 
-                      onClick={() => handleDownloadInvoice(invoice)}
-                      className="inline-flex items-center space-x-1 text-[#F97316] hover:text-[#EA580C] font-bold text-xs bg-[#FFFDF8] hover:bg-[#D1FAE5] px-3 py-1.5 rounded-lg transition-colors border border-[#E7E5E4]"
-                    >
-                      <Download size={14} />
-                      <span>Invoice</span>
-                    </button>
+              {paymentHistory.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="py-8 text-center text-[#78716C] text-sm font-medium">
+                    No subscription payment history found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                (sortAsc ? [...paymentHistory] : [...paymentHistory].reverse()).map((invoice, idx) => (
+                  <tr 
+                    key={invoice.id} 
+                    className={`border-b border-[#F1F5F9] transition-colors last:border-0 ${
+                      invoice.isCurrent ? 'bg-[#FFFDF8]/70 hover:bg-[#FFFDF8]' : 'hover:bg-[#F9F8F6]'
+                    }`}
+                  >
+                    <td className="py-4 px-4 text-sm font-bold text-[#F97316] text-center whitespace-nowrap">
+                      {idx + 1}
+                    </td>
+                    <td className="py-4 px-4 text-sm font-semibold text-[#292524] whitespace-nowrap">
+                      <span className="font-mono">{invoice.id}</span>
+                      {invoice.isCurrent && (
+                        <span className="ml-2 text-[10px] bg-[#F97316] text-white px-2 py-0.5 rounded-full font-bold">
+                          Current
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-4 px-4 text-sm text-[#78716C] whitespace-nowrap">{invoice.date}</td>
+                    <td className="py-4 px-4 text-sm font-medium text-[#292524] whitespace-nowrap">{invoice.plan}</td>
+                    <td className="py-4 px-4 text-sm font-bold text-[#F97316] whitespace-nowrap">{invoice.amount}</td>
+                    <td className="py-4 px-4 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-[#292524]">{invoice.paymentMethod}</span>
+                        <span className="text-xs text-[#78716C]">{invoice.paymentDetails}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 whitespace-nowrap">
+                      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-2.5 py-1 rounded-full">
+                        {invoice.status}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 text-right whitespace-nowrap">
+                      <button 
+                        onClick={() => handleDownloadInvoice(invoice)}
+                        className="inline-flex items-center space-x-1 text-[#F97316] hover:text-[#EA580C] font-bold text-xs bg-[#FFFDF8] hover:bg-[#D1FAE5] px-3 py-1.5 rounded-lg transition-colors border border-[#E7E5E4]"
+                      >
+                        <Download size={14} />
+                        <span>Invoice</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

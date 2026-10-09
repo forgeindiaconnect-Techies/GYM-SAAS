@@ -5,21 +5,12 @@ import { useOutletContext } from 'react-router-dom';
 import api from '../../utils/api';
 import { exportToPDF } from '../../utils/export';
 
-const mockEquipment = [
-  { id: 'EQ001', name: 'Treadmill Series X', category: 'Cardio', status: 'Active', nextService: '2026-01-15', brand: 'LifeFitness' },
-  { id: 'EQ002', name: 'Elliptical Trainer', category: 'Cardio', status: 'Maintenance', nextService: '2025-09-10', brand: 'Precor' },
-  { id: 'EQ003', name: 'Leg Press Machine', category: 'Strength', status: 'Active', nextService: '2025-11-20', brand: 'Hammer Strength' },
-  { id: 'EQ004', name: 'Cable Crossover', category: 'Strength', status: 'Out of Order', nextService: '2025-09-01', brand: 'Matrix' },
-  { id: 'EQ005', name: 'Rowing Machine', category: 'Cardio', status: 'Active', nextService: '2025-12-05', brand: 'Concept2' },
-  { id: 'EQ006', name: 'Smith Machine', category: 'Strength', status: 'Active', nextService: '2026-02-10', brand: 'Rogue' },
-];
-
 const GymAdminEquipment = () => {
   const { user } = useAuth();
   const { selectedBranch } = useOutletContext<{ selectedBranch: string }>();
   const [search, setSearch] = useState('');
   const [gym, setGym] = useState<any>(null);
-  const [localEquipmentList, setLocalEquipmentList] = useState<any[]>(mockEquipment);
+  const [localEquipmentList, setLocalEquipmentList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -44,29 +35,44 @@ const GymAdminEquipment = () => {
     nextService: ''
   });
 
+  const effectiveBranchId = user?.branchId || (selectedBranch !== 'main' && selectedBranch !== 'all' ? selectedBranch : undefined);
+
   useEffect(() => {
     setIsLoading(true);
-    if (user?.gymId) {
+    if (user?.branchId) {
+      api.get(`/branches/${user.branchId}`)
+        .then(res => {
+          const b = res.data.branch;
+          setGym(b);
+          setLocalEquipmentList(b?.equipment || []);
+        })
+        .catch(err => {
+          console.error(err);
+          setLocalEquipmentList([]);
+        })
+        .finally(() => setIsLoading(false));
+    } else if (user?.gymId) {
       api.get(`/gyms/${user.gymId}`)
         .then(res => {
           setGym(res.data.gym);
-          if (res.data.gym?.equipment) {
-            setLocalEquipmentList(res.data.gym.equipment);
-          }
+          setLocalEquipmentList(res.data.gym?.equipment || []);
         })
-        .catch(() => {
-          // API failed — keep showing mock data
+        .catch(err => {
+          console.error(err);
+          setLocalEquipmentList([]);
         })
         .finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, effectiveBranchId]);
 
   const equipmentToDisplay = localEquipmentList.filter(eq => {
-    // On main branch show everything; on a specific branch filter by branchId
-    if (selectedBranch === 'main') return true;
-    return eq.branchId === selectedBranch;
+    if (user?.branchId) return true;
+    if (!effectiveBranchId || effectiveBranchId === 'main') {
+      return !eq.branchId || eq.branchId === 'main';
+    }
+    return eq.branchId === effectiveBranchId;
   });
 
   const getStatusColor = (status: string) => {

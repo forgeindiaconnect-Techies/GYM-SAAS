@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, Building2, Send, User, LogOut,
-  Users, CreditCard, Trash2, ShieldCheck, Menu, MessageSquare, Bell, Store, PlusCircle
+  CreditCard, ShieldCheck, Menu, PlusCircle
 } from 'lucide-react';
 
 const SuperAdminLayout = () => {
@@ -28,25 +28,15 @@ const SuperAdminLayout = () => {
       ],
     },
     {
-      title: 'Customer Management',
-      items: [
-        { label: 'Customer Details', path: '/super-admin/customers', icon: Users },
-        { label: 'Customer Enquiries', path: '/super-admin/enquiries', icon: MessageSquare },
-      ],
-    },
-    {
       title: 'Finance & Store',
       items: [
         { label: 'Subscription Plans', path: '/super-admin/subscriptions', icon: CreditCard },
-        { label: 'Gym Store', path: '/super-admin/store', icon: Store },
       ],
     },
     {
       title: 'System & Settings',
       items: [
         { label: 'Profile', path: '/super-admin/profile', icon: User },
-        { label: 'Notifications', path: '/super-admin/notifications', icon: Bell },
-        { label: 'Deleted Details', path: '/super-admin/deleted', icon: Trash2 },
       ],
     },
   ];

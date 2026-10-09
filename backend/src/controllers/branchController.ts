@@ -138,7 +138,11 @@ export const updateBranchStatus = async (req: AuthRequest, res: Response): Promi
   try {
     const { id } = req.params;
     const { status } = req.body;
-    const branch = await Branch.findOneAndUpdate({ _id: id, gymId: req.user?.gymId }, { status }, { new: true });
+    let query: any = { _id: id };
+    if (req.user?.role !== Role.SUPER_ADMIN && req.user?.role !== Role.ADMIN) {
+      query.gymId = req.user?.gymId;
+    }
+    const branch = await Branch.findOneAndUpdate(query, { status }, { new: true });
     if (!branch) {
       res.status(404).json({ success: false, message: 'Branch not found' });
       return;

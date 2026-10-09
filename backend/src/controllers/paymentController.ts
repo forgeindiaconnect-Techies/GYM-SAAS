@@ -218,19 +218,27 @@ export const verifyPayment = async (req: AuthRequest, res: Response): Promise<vo
 export const getGymPayments = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id;
-    // For Gym Owner, find their gyms
-    const UserGyms = await User.findById(userId).populate('gymId');
-    const gymId = UserGyms?.gymId;
+    const userDoc = await User.findById(userId).select('gymId branchId');
+    const gymId = userDoc?.gymId;
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = userDoc?.branchId || req.user?.branchId || branchIdQuery;
     
-    let filter = {};
-    if (req.user?.role === 'GYM_OWNER') {
+    let filter: any = {};
+    if (req.user?.role === 'GYM_OWNER' || req.user?.role === 'ADMIN' || req.user?.role === 'GYM_MANAGER') {
       filter = { gymId };
+      if (effectiveBranchId && effectiveBranchId !== 'all') {
+        if (effectiveBranchId === 'main') {
+          filter.$or = [{ branchId: { $exists: false } }, { branchId: null }];
+        } else {
+          filter.branchId = effectiveBranchId;
+        }
+      }
     }
 
     const payments = await Payment.find(filter)
       .populate('customerId', 'firstName lastName email mobile profilePhoto')
       .populate('gymId', 'name')
-      .populate('branchId', 'name')
+      .populate('branchId', 'branchName')
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, payments });

@@ -3,6 +3,7 @@ import { History, Filter, Search, CheckCircle, XCircle, Clock, AlertCircle, Arro
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 import { exportToPDF } from '../../utils/export';
 import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
@@ -22,6 +23,7 @@ const STATUS_ICONS: Record<string, any> = {
 };
 
 const GymAdminTrainerPaymentHistory = () => {
+  const { user } = useAuth();
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -32,14 +34,15 @@ const GymAdminTrainerPaymentHistory = () => {
   const fetchHistory = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get('/trainer-payments/history');
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const res = await api.get(`/trainer-payments/history${branchParam}`);
       setPayments(res.data.payments || []);
     } catch {
       /* silent */
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.branchId]);
 
   useEffect(() => { fetchHistory(); }, [fetchHistory]);
 

@@ -194,7 +194,11 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
-      const drawLimb = (x1: number, y1: number, x2: number, y2: number, limbWidth: number, isTarget: boolean = false) => {
+      const drawLimb = (x1: number, y1: number, x2: number, y2: number, limbWidth: number, isTarget: boolean = false, opacity: number = 1.0) => {
+        ctx.save();
+        if (opacity < 1.0) {
+          ctx.globalAlpha = opacity;
+        }
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -217,6 +221,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         ctx.beginPath();
         ctx.arc(x2, y2, limbWidth * 0.42, 0, Math.PI * 2);
         ctx.fill();
+        ctx.restore();
       };
 
       const drawHead = (hx: number, hy: number, radius: number = 15, facingRight: boolean = false) => {
@@ -322,34 +327,39 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
           const torsoX = centerX - 10;
           const headX = torsoX;
 
+          // Head & Spine
           drawHead(headX, shoulderY - 26, 15, true);
           drawLimb(torsoX, shoulderY - 10, torsoX, shoulderY, 8, false); // neck
           drawLimb(torsoX, shoulderY, torsoX, hipY, 14, false); // vertical spine
 
-          // Leg: upright stance, soft knee
-          drawLimb(torsoX, hipY, torsoX + 2, floorY - 50, 11, false);
-          drawLimb(torsoX + 2, floorY - 50, torsoX, floorY, 10, false);
+          // BOTH LEGS (Far Leg behind with slight offset & depth opacity)
+          drawLimb(torsoX - 10, hipY, torsoX - 8, floorY - 50, 10, false, 0.5); // Far thigh
+          drawLimb(torsoX - 8, floorY - 50, torsoX - 10, floorY, 9, false, 0.5); // Far shin
 
-          // UPPER ARM: Pinned vertically against side ribs!
+          drawLimb(torsoX, hipY, torsoX + 2, floorY - 50, 11, false); // Near thigh
+          drawLimb(torsoX + 2, floorY - 50, torsoX, floorY, 10, false); // Near shin
+
+          // UPPER ARMS: Pinned vertically against side ribs
           const elbowX = torsoX + 2;
           const elbowY = shoulderY + 52;
-          drawLimb(torsoX, shoulderY, elbowX, elbowY, 11, true); // Upper Arm (Biceps - Target!)
 
-          // FOREARM: Hinges forward and up in a 145-degree curl arc
           const forearmLen = 44;
-          // When t=0 (bottom): angle = 90 deg (pointing straight down)
-          // When t=1 (top): angle = -55 deg (curled up to collarbone)
           const curlAngleRad = (Math.PI / 2) - (t * 2.5);
           const handX = elbowX + Math.cos(curlAngleRad) * forearmLen;
           const handY = elbowY + Math.sin(curlAngleRad) * forearmLen;
 
-          drawLimb(elbowX, elbowY, handX, handY, 8, false); // Forearm
-          drawDumbbell(handX, handY, t * 0.4); // Dumbbell
+          // BOTH ARMS (Far Arm rendered first in background)
+          drawLimb(torsoX - 10, shoulderY, elbowX - 10, elbowY, 10, true, 0.5); // Far Upper Arm
+          drawLimb(elbowX - 10, elbowY, handX - 10, handY, 7, false, 0.5); // Far Forearm
+          drawDumbbell(handX - 10, handY, t * 0.4);
+
+          drawLimb(torsoX, shoulderY, elbowX, elbowY, 11, true); // Near Upper Arm
+          drawLimb(elbowX, elbowY, handX, handY, 8, false); // Near Forearm
+          drawDumbbell(handX, handY, t * 0.4);
 
           // Motion Guide Arc showing curl trajectory
           drawMotionGuideArc(elbowX, elbowY, forearmLen, 0.1, Math.PI / 2, 'Curl Arc');
 
-          // Form checkpoint indicator
           if (showFormGuides && !compact) {
             ctx.fillStyle = '#38BDF8';
             ctx.beginPath();
@@ -361,7 +371,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
           }
 
         } else {
-          // --- FRONT VIEW (ANATOMICALLY ACCURATE) ---
+          // --- FRONT VIEW ---
           const shoulderSpan = 24;
           const shoulderL_X = centerX - shoulderSpan;
           const shoulderR_X = centerX + shoulderSpan;
@@ -372,17 +382,20 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
           // Head, Neck, Clavicles, Spine & Pelvis
           drawHead(centerX, shoulderY - 26, 15, false);
-          drawLimb(centerX, shoulderY - 10, centerX, shoulderY, 8, false); // neck
-          drawLimb(shoulderL_X, shoulderY, shoulderR_X, shoulderY, 12, false); // clavicles
-          drawLimb(centerX, shoulderY, centerX, hipY, 14, false); // spine
-          drawLimb(hipL_X, hipY, hipR_X, hipY, 12, false); // pelvis
+          drawLimb(centerX, shoulderY - 10, centerX, shoulderY, 8, false);
+          drawLimb(shoulderL_X, shoulderY, shoulderR_X, shoulderY, 12, false);
+          drawLimb(centerX, shoulderY, centerX, hipY, 14, false);
+          drawLimb(hipL_X, hipY, hipR_X, hipY, 12, false);
 
-          // Stance: shoulder-width
-          drawLimb(hipL_X, hipY, centerX - 18, floorY, 10, false);
-          drawLimb(hipR_X, hipY, centerX + 18, floorY, 10, false);
+          // BOTH LEGS with knees
+          const kneeY = floorY - 50;
+          drawLimb(hipL_X, hipY, centerX - 20, kneeY, 11, false);
+          drawLimb(centerX - 20, kneeY, centerX - 18, floorY, 10, false);
 
-          // UPPER ARMS: Strictly vertical along sides of torso!
-          // Elbows stay pinned at (shoulderL_X, shoulderY + 52)
+          drawLimb(hipR_X, hipY, centerX + 20, kneeY, 11, false);
+          drawLimb(centerX + 20, kneeY, centerX + 18, floorY, 10, false);
+
+          // BOTH ARMS
           const elbowY = shoulderY + 52;
           const elbowX_L = shoulderL_X;
           const elbowX_R = shoulderR_X;
@@ -390,26 +403,21 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
           drawLimb(shoulderL_X, shoulderY, elbowX_L, elbowY, 11, true); // Left Bicep
           drawLimb(shoulderR_X, shoulderY, elbowX_R, elbowY, 11, true); // Right Bicep
 
-          // FOREARMS: Hinging upward around the fixed elbow
-          // At bottom (t=0): hand is at (elbowX, elbowY + 44) (hanging down at thigh)
-          // At peak (t=1): hand is curled up to (elbowX, elbowY - 34) (upper chest height)
           const forearmLen = 42;
           const curlAngle = t * Math.PI * 0.85;
 
           const handY_L = elbowY + Math.cos(curlAngle) * forearmLen;
-          const handX_L = elbowX_L - Math.sin(curlAngle) * 5; // slight inward supination
+          const handX_L = elbowX_L - Math.sin(curlAngle) * 5;
 
           const handY_R = elbowY + Math.cos(curlAngle) * forearmLen;
-          const handX_R = elbowX_R + Math.sin(curlAngle) * 5; // slight inward supination
+          const handX_R = elbowX_R + Math.sin(curlAngle) * 5;
 
           drawLimb(elbowX_L, elbowY, handX_L, handY_L, 8, false);
           drawLimb(elbowX_R, elbowY, handX_R, handY_R, 8, false);
 
-          // Dumbbells: Rotate naturally from vertical at bottom to horizontal at top
           drawDumbbell(handX_L, handY_L, 0);
           drawDumbbell(handX_R, handY_R, 0);
 
-          // Form Checkpoint Cues
           if (showFormGuides && !compact) {
             ctx.fillStyle = '#06B6D4';
             ctx.beginPath();
@@ -429,11 +437,11 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       // =====================================================================
       } else if (isSquat) {
         if (viewAngle === 'side') {
-          // --- SQUAT SIDE PROFILE (THE GOLD STANDARD) ---
-          const squatDepth = t * 60; // drops 60px down
-          const hipPushBack = t * 32; // hips hinge backward 32px
-          const kneeForward = t * 24; // knees travel over midfoot
-          const torsoAngle = t * 0.35; // torso leans forward slightly (neutral back)
+          // --- SQUAT SIDE PROFILE ---
+          const squatDepth = t * 60;
+          const hipPushBack = t * 32;
+          const kneeForward = t * 24;
+          const torsoAngle = t * 0.35;
 
           const hipY = floorY - 110 + squatDepth;
           const hipX = centerX - hipPushBack;
@@ -449,21 +457,26 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
           const shoulderY = hipY - Math.cos(torsoAngle) * torsoLen;
 
           drawHead(shoulderX + 6, shoulderY - 24, 15, true);
-          drawLimb(shoulderX, shoulderY, hipX, hipY, 14, false); // Neutral spine
+          drawLimb(shoulderX, shoulderY, hipX, hipY, 14, false); // Spine
 
-          // Quads & Glutes (Target Muscles!)
-          drawLimb(hipX, hipY, kneeX, kneeY, 13, true); // Thigh (Parallel to floor at bottom!)
-          drawLimb(kneeX, kneeY, ankleX, ankleY, 10, false); // Shin
+          // BOTH LEGS (Far Leg in background with opacity)
+          drawLimb(hipX - 12, hipY, kneeX - 12, kneeY, 12, true, 0.5); // Far Thigh
+          drawLimb(kneeX - 12, kneeY, ankleX - 12, ankleY, 9, false, 0.5); // Far Shin
 
-          // Barbell resting across upper traps
+          drawLimb(hipX, hipY, kneeX, kneeY, 13, true); // Near Thigh
+          drawLimb(kneeX, kneeY, ankleX, ankleY, 10, false); // Near Shin
+
+          // Barbell
           drawBarbell(shoulderX, shoulderY + 2, 80);
 
-          // Arm holding bar
+          // BOTH ARMS holding bar
+          drawLimb(shoulderX - 10, shoulderY, shoulderX - 22, shoulderY + 22, 7, false, 0.5);
+          drawLimb(shoulderX - 22, shoulderY + 22, shoulderX - 10, shoulderY + 2, 6, false, 0.5);
+
           drawLimb(shoulderX, shoulderY, shoulderX - 12, shoulderY + 22, 8, false);
           drawLimb(shoulderX - 12, shoulderY + 22, shoulderX, shoulderY + 2, 7, false);
 
           if (showFormGuides && !compact) {
-            // Parallel depth guideline
             ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
             ctx.setLineDash([4, 4]);
             ctx.beginPath();
@@ -486,26 +499,32 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
           drawHead(centerX, shoulderY - 26, 15, false);
           drawLimb(centerX, shoulderY, centerX, hipY, 14, false);
 
-          // Knees tracking outward over toes
+          // BOTH LEGS tracking outward over toes
           const kneeSpread = 28 + t * 14;
           const kneeY = floorY - 50 + squatDepth * 0.3;
 
-          drawLimb(centerX, hipY, centerX - kneeSpread, kneeY, 13, true); // Quads
-          drawLimb(centerX, hipY, centerX + kneeSpread, kneeY, 13, true);
+          drawLimb(centerX - 10, hipY, centerX - kneeSpread, kneeY, 13, true); // Left Quad
+          drawLimb(centerX + 10, hipY, centerX + kneeSpread, kneeY, 13, true); // Right Quad
 
           drawLimb(centerX - kneeSpread, kneeY, centerX - 32, floorY, 10, false);
           drawLimb(centerX + kneeSpread, kneeY, centerX + 32, floorY, 10, false);
 
           drawBarbell(centerX, shoulderY + 4, 220);
+
+          // BOTH ARMS holding barbell
+          drawLimb(centerX - 24, shoulderY, centerX - 55, shoulderY + 18, 9, false);
+          drawLimb(centerX - 55, shoulderY + 18, centerX - 55, shoulderY + 4, 8, false);
+
+          drawLimb(centerX + 24, shoulderY, centerX + 55, shoulderY + 18, 9, false);
+          drawLimb(centerX + 55, shoulderY + 18, centerX + 55, shoulderY + 4, 8, false);
         }
 
       // =====================================================================
-      // 3. BARBELL ROMANIAN DEADLIFT (RDL) (HIP HINGE, FLAT BACK, BAR SKIMS SHINS)
+      // 3. BARBELL ROMANIAN DEADLIFT (RDL) (HIP HINGE, BOTH ARMS & LEGS VISIBLE)
       // =====================================================================
       } else if (isDeadlift) {
-        // RDL Side Profile is essential to show the pure hip hinge
-        const hingeAngle = t * 1.15; // 0 (upright) to ~65 degrees forward lean
-        const hipX = centerX - t * 36; // Hips push backward
+        const hingeAngle = t * 1.15;
+        const hipX = centerX - t * 36;
         const hipY = floorY - 110 + t * 12;
 
         const torsoLen = 72;
@@ -513,22 +532,26 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const shoulderY = hipY - Math.cos(hingeAngle + 0.2) * torsoLen;
 
         drawHead(shoulderX + 10, shoulderY - 20, 15, true);
-        drawLimb(shoulderX, shoulderY, hipX, hipY, 14, false); // Flat back
+        drawLimb(shoulderX, shoulderY, hipX, hipY, 14, false); // Spine
 
-        // Soft knees (stationary bend, not a squat!)
         const kneeX = centerX - 10;
         const kneeY = floorY - 54;
         const footX = centerX - 12;
 
-        // Hamstrings & Glutes (Target Highlighted!)
-        drawLimb(hipX, hipY, kneeX, kneeY, 13, true); // Hamstrings stretch!
-        drawLimb(kneeX, kneeY, footX, floorY, 10, false); // Shins
+        // BOTH LEGS (Far Leg in background with opacity offset)
+        drawLimb(hipX - 14, hipY, kneeX - 14, kneeY, 12, true, 0.5); // Far Hamstring
+        drawLimb(kneeX - 14, kneeY, footX - 14, floorY, 9, false, 0.5); // Far Shin
 
-        // Arms hang vertically with barbell skimming legs
+        drawLimb(hipX, hipY, kneeX, kneeY, 13, true); // Near Hamstring
+        drawLimb(kneeX, kneeY, footX, floorY, 10, false); // Near Shin
+
         const barX = shoulderX;
         const barY = shoulderY + 68;
 
-        drawLimb(shoulderX, shoulderY, barX, barY, 8, false);
+        // BOTH ARMS hanging vertically with barbell
+        drawLimb(shoulderX - 12, shoulderY, barX - 12, barY, 7, false, 0.5); // Far Arm
+        drawLimb(shoulderX + 6, shoulderY, barX + 6, barY, 8, false); // Near Arm
+
         drawBarbell(barX, barY, 80);
 
         if (showFormGuides && !compact) {
@@ -546,7 +569,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         }
 
       // =====================================================================
-      // 4. PUSH-UPS & BARBELL BENCH PRESS (FULL RANGE, 45° ELBOWS)
+      // 4. PUSH-UPS & BARBELL BENCH PRESS (BOTH ARMS & LEGS RENDERED)
       // =====================================================================
       } else if (isPushUp || isBenchPress) {
         const baseFloor = isBenchPress ? floorY - 40 : floorY;
@@ -564,23 +587,30 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const barY = baseFloor - 78 + pressDepth;
 
         drawHead(centerX - 75, chestY - 10, 14, true);
-        drawLimb(centerX - 60, chestY, centerX + 38, chestY, 14, true); // Pectorals (Target!)
-        drawLimb(centerX + 38, chestY, centerX + 105, baseFloor, 10, false); // Rigid plank legs
+        drawLimb(centerX - 60, chestY, centerX + 38, chestY, 14, true); // Torso/Pectorals
+
+        // BOTH LEGS
+        drawLimb(centerX + 38, chestY - 7, centerX + 105, baseFloor - 7, 9, false, 0.5); // Far Leg
+        drawLimb(centerX + 38, chestY + 4, centerX + 105, baseFloor + 4, 10, false); // Near Leg
 
         const elbowX = centerX - 18;
         const elbowY = isBenchPress ? barY + 28 : baseFloor - 10 + pressDepth * 0.6;
         const handX = centerX - 18;
         const handY = isBenchPress ? barY : baseFloor;
 
-        drawLimb(centerX - 38, chestY, elbowX, elbowY, 9, true); // Chest & Triceps
-        drawLimb(elbowX, elbowY, handX, handY, 8, false);
+        // BOTH ARMS
+        drawLimb(centerX - 48, chestY, elbowX - 10, elbowY - 6, 8, true, 0.5); // Far Upper Arm
+        drawLimb(elbowX - 10, elbowY - 6, handX - 10, handY - 6, 7, false, 0.5); // Far Forearm
+
+        drawLimb(centerX - 28, chestY, elbowX + 10, elbowY + 6, 9, true); // Near Upper Arm
+        drawLimb(elbowX + 10, elbowY + 6, handX + 10, handY + 6, 8, false); // Near Forearm
 
         if (isBenchPress) {
           drawBarbell(handX, barY, 205);
         }
 
       // =====================================================================
-      // 5. PULL-UPS (FULL DEAD HANG TO CHIN OVER BAR)
+      // 5. PULL-UPS (BOTH ARMS & BOTH LEGS PROPERLY ARRANGED)
       // =====================================================================
       } else if (isPullUp) {
         const barY = 38;
@@ -600,10 +630,16 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const kneeY = hipY + 48;
 
         drawHead(barX, headY, 15, false);
-        drawLimb(barX, shoulderY, barX, hipY, 15, true); // Latissimus Dorsi (Target!)
-        drawLimb(barX, hipY, barX - 10, kneeY, 10, false);
-        drawLimb(barX - 10, kneeY, barX - 14, kneeY + 38, 9, false);
+        drawLimb(barX, shoulderY, barX, hipY, 15, true); // Torso / Lats
 
+        // BOTH LEGS (Left and Right legs hanging below hips)
+        drawLimb(barX - 8, hipY, barX - 14, kneeY, 10, false); // Left Thigh
+        drawLimb(barX - 14, kneeY, barX - 18, kneeY + 38, 9, false); // Left Shin
+
+        drawLimb(barX + 8, hipY, barX + 14, kneeY, 10, false); // Right Thigh
+        drawLimb(barX + 14, kneeY, barX + 18, kneeY + 38, 9, false); // Right Shin
+
+        // BOTH ARMS
         const handX_L = barX - 48;
         const handX_R = barX + 48;
         const elbowY = barY + 32 + (1 - t) * 34;
@@ -616,18 +652,25 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         drawLimb(elbowX_R, elbowY, handX_R, barY, 8, false);
 
       // =====================================================================
-      // 6. FOREARM PLANK (FLAT HORIZONTAL SPINE, CORE TENSION)
+      // 6. FOREARM PLANK (BOTH FOREARMS & BOTH LEGS VISIBLE)
       // =====================================================================
       } else if (isPlank) {
         const plankY = floorY - 32;
         const pulse = Math.sin(elapsedTotal * 6) * 2;
 
         drawHead(centerX - 90, plankY - 14 + pulse, 14, true);
-        drawLimb(centerX - 76, plankY + pulse, centerX + 38, plankY + pulse, 15, true); // Core (Target!)
-        drawLimb(centerX + 38, plankY + pulse, centerX + 105, floorY, 11, false);
+        drawLimb(centerX - 76, plankY + pulse, centerX + 38, plankY + pulse, 15, true); // Core
 
-        drawLimb(centerX - 56, plankY + pulse, centerX - 56, floorY, 9, false);
-        drawLimb(centerX - 56, floorY, centerX - 28, floorY, 8, false);
+        // BOTH LEGS
+        drawLimb(centerX + 38, plankY + pulse - 6, centerX + 105, floorY - 6, 9, false, 0.5); // Far Leg
+        drawLimb(centerX + 38, plankY + pulse + 3, centerX + 105, floorY + 3, 11, false); // Near Leg
+
+        // BOTH FOREARMS
+        drawLimb(centerX - 66, plankY + pulse, centerX - 66, floorY, 8, false, 0.5);
+        drawLimb(centerX - 66, floorY, centerX - 38, floorY, 7, false, 0.5);
+
+        drawLimb(centerX - 46, plankY + pulse, centerX - 46, floorY, 9, false);
+        drawLimb(centerX - 46, floorY, centerX - 18, floorY, 8, false);
 
         if (highlightMuscles) {
           ctx.strokeStyle = 'rgba(16, 185, 129, 0.65)';
@@ -638,7 +681,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         }
 
       // =====================================================================
-      // 7. STANDING OVERHEAD PRESS (SHOULDERS TO VERTICAL LOCKOUT)
+      // 7. STANDING OVERHEAD PRESS (BOTH ARMS & BOTH LEGS)
       // =====================================================================
       } else if (isOverheadPress) {
         const shoulderY = floorY - 170;
@@ -648,8 +691,14 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         drawHead(centerX, shoulderY - 26, 15, false);
         drawLimb(centerX - shoulderSpan, shoulderY, centerX + shoulderSpan, shoulderY, 12, false);
         drawLimb(centerX, shoulderY, centerX, hipY, 14, false);
-        drawLimb(centerX, hipY, centerX - 18, floorY, 10, false);
-        drawLimb(centerX, hipY, centerX + 18, floorY, 10, false);
+
+        // BOTH LEGS
+        const kneeY = floorY - 50;
+        drawLimb(centerX - 12, hipY, centerX - 22, kneeY, 10, false);
+        drawLimb(centerX - 22, kneeY, centerX - 20, floorY, 9, false);
+
+        drawLimb(centerX + 12, hipY, centerX + 22, kneeY, 10, false);
+        drawLimb(centerX + 22, kneeY, centerX + 20, floorY, 9, false);
 
         const pressHeight = t * 64;
         const handY = shoulderY - 8 - pressHeight;
@@ -660,13 +709,13 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
           const ey = shoulderY + 14 - pressHeight * 0.4;
           const hx = centerX + side * (shoulderSpan + 14);
 
-          drawLimb(sx, shoulderY, ex, ey, 10, true); // Deltoids (Target!)
+          drawLimb(sx, shoulderY, ex, ey, 10, true);
           drawLimb(ex, ey, hx, handY, 8, false);
           drawDumbbell(hx, handY, 0);
         });
 
       // =====================================================================
-      // 8. RUSSIAN TWISTS (SEATED V-SIT, ROTATIONAL TORSO)
+      // 8. RUSSIAN TWISTS (BOTH ARMS & BOTH LEGS VISIBLE IN V-SIT)
       // =====================================================================
       } else if (isTwist) {
         const seatedY = floorY - 35;
@@ -676,17 +725,24 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const torsoTopY = seatedY - 45;
 
         drawHead(torsoTopX - 10, torsoTopY - 16, 14, false);
-        drawLimb(torsoTopX, torsoTopY, centerX, seatedY, 15, true); // Obliques (Target!)
+        drawLimb(torsoTopX, torsoTopY, centerX, seatedY, 15, true); // Spine/Core
 
         const kneeX = centerX + 40;
         const kneeY = seatedY - 30;
-        drawLimb(centerX, seatedY, kneeX, kneeY, 11, false);
-        drawLimb(kneeX, kneeY, kneeX + 25, seatedY - 10, 10, false);
+
+        // BOTH LEGS
+        drawLimb(centerX - 6, seatedY, kneeX - 6, kneeY - 4, 10, false, 0.5);
+        drawLimb(kneeX - 6, kneeY - 4, kneeX + 18, seatedY - 14, 9, false, 0.5);
+
+        drawLimb(centerX + 6, seatedY, kneeX + 6, kneeY, 11, false);
+        drawLimb(kneeX + 6, kneeY, kneeX + 30, seatedY - 6, 10, false);
 
         const ballX = centerX - 10 + twistAngle * 38;
         const ballY = seatedY - 5;
 
-        drawLimb(torsoTopX, torsoTopY, ballX, ballY, 8, false);
+        // BOTH ARMS holding ball
+        drawLimb(torsoTopX - 10, torsoTopY + 4, ballX - 4, ballY - 4, 7, false, 0.5);
+        drawLimb(torsoTopX + 10, torsoTopY + 4, ballX, ballY, 8, false);
 
         ctx.fillStyle = '#E11D48';
         ctx.beginPath();
@@ -697,7 +753,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         ctx.stroke();
 
       // =====================================================================
-      // 9. WALKING DUMBBELL LUNGES (90° CLEAN KNEE ANGLE, UPRIGHT TORSO)
+      // 9. WALKING DUMBBELL LUNGES (BOTH LEGS & BOTH ARMS VISIBLE)
       // =====================================================================
       } else if (isLunge) {
         const lungeDepth = t * 40;
@@ -705,20 +761,26 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const shoulderY = floorY - 170 + lungeDepth;
 
         drawHead(centerX, shoulderY - 26, 15, true);
-        drawLimb(centerX, shoulderY, centerX, hipY, 14, false); // Strict upright spine
+        drawLimb(centerX, shoulderY, centerX, hipY, 14, false);
 
-        // Front leg 90-degree bend
+        // BOTH LEGS (Front leg pair & Rear leg pair)
         const frontFootX = centerX + 45;
-        drawLimb(centerX, hipY, centerX + 25, floorY - 35, 12, true); // Front Quad
+        const backKneeY = floorY - 10;
+
+        // Rear Leg (Far background)
+        drawLimb(centerX - 6, hipY, centerX - 36, backKneeY, 11, true, 0.5);
+        drawLimb(centerX - 36, backKneeY, centerX - 50, floorY, 9, false, 0.5);
+
+        // Front Leg (Near foreground)
+        drawLimb(centerX + 6, hipY, centerX + 25, floorY - 35, 12, true);
         drawLimb(centerX + 25, floorY - 35, frontFootX, floorY, 10, false);
 
-        // Rear leg knee hovering 1 inch off floor
-        const backKneeY = floorY - 10;
-        drawLimb(centerX, hipY, centerX - 30, backKneeY, 11, true); // Rear Glute
-        drawLimb(centerX - 30, backKneeY, centerX - 45, floorY, 9, false);
+        // BOTH ARMS holding dumbbells
+        drawLimb(centerX - 14, shoulderY, centerX - 14, shoulderY + 45, 7, false, 0.5); // Far Arm
+        drawDumbbell(centerX - 14, shoulderY + 45, 0);
 
-        drawLimb(centerX, shoulderY, centerX, shoulderY + 45, 8, false);
-        drawDumbbell(centerX, shoulderY + 45, 0);
+        drawLimb(centerX + 14, shoulderY, centerX + 14, shoulderY + 45, 8, false); // Near Arm
+        drawDumbbell(centerX + 14, shoulderY + 45, 0);
 
       } else {
         // --- 10. GENERAL / DYNAMIC RESISTANCE MOVEMENT ---
@@ -729,13 +791,20 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         drawHead(centerX, shoulderY - 26, 15, false);
         drawLimb(centerX - 24, shoulderY, centerX + 24, shoulderY, 12, false);
         drawLimb(centerX, shoulderY, centerX, hipY, 14, true);
-        drawLimb(centerX, hipY, centerX - 20, floorY, 11, false);
-        drawLimb(centerX, hipY, centerX + 20, floorY, 11, false);
 
-        drawLimb(centerX - 24, shoulderY, centerX - 32, shoulderY + 40, 9, false);
-        drawLimb(centerX + 24, shoulderY, centerX + 32, shoulderY + 40, 9, false);
-        drawDumbbell(centerX - 32, shoulderY + 40, 0);
-        drawDumbbell(centerX + 32, shoulderY + 40, 0);
+        // BOTH LEGS
+        const kneeY = floorY - 50;
+        drawLimb(centerX - 14, hipY, centerX - 24, kneeY, 11, false);
+        drawLimb(centerX - 24, kneeY, centerX - 20, floorY, 10, false);
+
+        drawLimb(centerX + 14, hipY, centerX + 24, kneeY, 11, false);
+        drawLimb(centerX + 24, kneeY, centerX + 20, floorY, 10, false);
+
+        // BOTH ARMS
+        drawLimb(centerX - 24, shoulderY, centerX - 34, shoulderY + 40, 9, false);
+        drawLimb(centerX + 24, shoulderY, centerX + 34, shoulderY + 40, 9, false);
+        drawDumbbell(centerX - 34, shoulderY + 40, 0);
+        drawDumbbell(centerX + 34, shoulderY + 40, 0);
       }
 
       // Top HUD overlay inside canvas

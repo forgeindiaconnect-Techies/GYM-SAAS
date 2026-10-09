@@ -7,9 +7,11 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const GymAdminTrainerCommission = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'commission' | 'withdrawals'>('commission');
 
   // Stats - ONLY Commission Amounts
@@ -142,7 +144,8 @@ const GymAdminTrainerCommission = () => {
   const fetchCommissionData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get('/trainer-payments/gym-commission');
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const res = await api.get(`/trainer-payments/gym-commission${branchParam}`);
       if (res.data?.success) {
         setStats(res.data.stats || {
           totalCommissionEarned: 0,
@@ -156,9 +159,10 @@ const GymAdminTrainerCommission = () => {
     } catch {
       // Fallback: fetch from payments and history if new endpoint is spinning up
       try {
+        const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
         const [, paymentsRes] = await Promise.allSettled([
-          api.get('/trainer-payments/fees'),
-          api.get('/trainer-payments/history')
+          api.get(`/trainer-payments/fees${branchParam}`),
+          api.get(`/trainer-payments/history${branchParam}`)
         ]);
         let totalRetained = 0;
         let ledger: any[] = [];
@@ -197,7 +201,7 @@ const GymAdminTrainerCommission = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.branchId]);
 
   useEffect(() => {
     fetchCommissionData();

@@ -355,16 +355,17 @@ export const getTrainers = async (req: AuthRequest, res: Response): Promise<void
     }
 
     const resolvedGymId = (await resolveGymId(req)) || gymOwner.gymId;
-    const branchId = req.query.branchId as string;
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = gymOwner.branchId || branchIdQuery;
     let query: any = resolvedGymId ? { gymId: resolvedGymId } : {};
-    if (branchId && branchId !== 'undefined' && branchId !== 'null' && branchId !== 'all') {
-      if (branchId === 'main') {
+    if (effectiveBranchId && effectiveBranchId !== 'undefined' && effectiveBranchId !== 'null' && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
         query.$or = [
           { branchId: { $exists: false } },
           { branchId: null }
         ];
-      } else if (mongoose.Types.ObjectId.isValid(branchId)) {
-        query.branchId = branchId;
+      } else if (mongoose.Types.ObjectId.isValid(effectiveBranchId as string)) {
+        query.branchId = effectiveBranchId;
       }
     }
 

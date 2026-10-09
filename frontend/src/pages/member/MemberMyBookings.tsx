@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, MapPin, Plus, Video, RefreshCw, XCircle, LogOut, CheckCircle2, Eye, Star, Calendar, Users, X } from 'lucide-react';
+import { Clock, MapPin, Plus, Video, RefreshCw, XCircle, LogOut, CheckCircle2, Eye, Star, Calendar, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 import MemberTrainingTabs from '../../components/Member/MemberTrainingTabs';
@@ -81,6 +81,7 @@ const MemberMyBookings = () => {
     }
   };
 
+  const [selectedSessionForDetails, setSelectedSessionForDetails] = useState<any | null>(null);
   const [selectedSessionForNotes, setSelectedSessionForNotes] = useState<any | null>(null);
   const [selectedSessionForRate, setSelectedSessionForRate] = useState<any | null>(null);
   const [ratingVal, setRatingVal] = useState(5);

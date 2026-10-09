@@ -75,8 +75,23 @@ export const getEnquiries = async (req: AuthRequest, res: Response): Promise<voi
 
     if (user.role === Role.SUPER_ADMIN) {
       // Can see all enquiries
-    } else if (user.role === Role.GYM_OWNER || user.role === Role.GYM_MANAGER) {
-      filter.gymOwnerId = user.id;
+    } else if (user.role === Role.GYM_OWNER || user.role === Role.GYM_MANAGER || (user.role as string) === 'ADMIN') {
+      const branchIdQuery = req.query.branchId as string;
+      const effectiveBranchId = user.branchId || branchIdQuery;
+      if (effectiveBranchId && effectiveBranchId !== 'all') {
+        if (effectiveBranchId === 'main') {
+          filter.$or = [
+            { gymOwnerId: user.id, branchId: { $exists: false } },
+            { gymOwnerId: user.id, branchId: null },
+            { gymId: user.gymId, branchId: { $exists: false } },
+            { gymId: user.gymId, branchId: null }
+          ];
+        } else {
+          filter.branchId = effectiveBranchId;
+        }
+      } else {
+        filter.$or = [{ gymOwnerId: user.id }, { gymId: user.gymId }];
+      }
     } else if (user.role === Role.MEMBER) {
       // Customer sees their own enquiries based on email
       // If we eventually link them to a userId, we could filter by that.

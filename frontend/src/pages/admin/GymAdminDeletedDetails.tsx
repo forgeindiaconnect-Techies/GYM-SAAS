@@ -1,16 +1,64 @@
-import { useState } from 'react';
-import { Trash2, Search, RotateCcw, Eye, X, Phone, Mail } from 'lucide-react';
-
-const mockDeletedItems = [
-  { id: 'DEL-001', name: 'John Doe', type: 'Trainer', phone: '+91 98765 43210', email: 'john.doe@fitnesshub.com', deletedAt: '2026-09-14', deletedBy: 'Admin', reason: 'Contract Expired' },
-  { id: 'DEL-002', name: 'Jane Smith', type: 'Member', phone: '+91 98123 45678', email: 'jane.smith@gmail.com', deletedAt: '2026-09-12', deletedBy: 'Admin', reason: 'Requested account deletion' },
-  { id: 'DEL-003', name: 'Mike Johnson', type: 'Trainer', phone: '+91 99887 76655', email: 'mike.johnson@gympro.com', deletedAt: '2026-09-10', deletedBy: 'Admin', reason: 'Violation of terms' },
-];
+import { useState, useEffect } from 'react';
+import { Trash2, Search, RotateCcw, Eye, X, Phone, Mail, Loader2 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../utils/api';
 
 const GymAdminDeletedDetails = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
-  const [deletedItems, setDeletedItems] = useState(mockDeletedItems);
+  const [deletedItems, setDeletedItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+
+  useEffect(() => {
+    fetchDeletedRecords();
+  }, [user?.branchId]);
+
+  const fetchDeletedRecords = async () => {
+    try {
+      setLoading(true);
+      const branchParam = user?.branchId ? `&branchId=${user.branchId}` : '';
+      const [membersRes, trainersRes] = await Promise.all([
+        api.get(`/users?role=MEMBER&status=REJECTED${branchParam}`).catch(() => ({ data: { users: [] } })),
+        api.get(`/trainers${user?.branchId ? `?branchId=${user.branchId}` : ''}`).catch(() => ({ data: { trainers: [] } })),
+      ]);
+
+      const inactiveMembers = (membersRes.data?.users || [])
+        .filter((u: any) => u.approvalStatus === 'REJECTED' || u.approvalStatus === 'SUSPENDED' || u.isActive === false)
+        .map((u: any) => ({
+          id: `DEL-${u._id.slice(-6).toUpperCase()}`,
+          originalId: u._id,
+          name: `${u.firstName || ''} ${u.lastName || ''}`.trim(),
+          type: 'Member',
+          phone: u.mobile || 'N/A',
+          email: u.email || 'N/A',
+          deletedAt: u.updatedAt ? new Date(u.updatedAt).toISOString().split('T')[0] : 'N/A',
+          deletedBy: 'Admin',
+          reason: u.rejectionReason || u.suspensionReason || 'Account deactivated'
+        }));
+
+      const inactiveTrainers = (trainersRes.data?.trainers || [])
+        .filter((t: any) => t.status === 'Inactive' || t.status === 'Suspended' || t.status === 'Terminated')
+        .map((t: any) => ({
+          id: `DEL-${(t._id || t.id || '').slice(-6).toUpperCase()}`,
+          originalId: t._id || t.id,
+          name: t.name,
+          type: 'Trainer',
+          phone: t.phone || 'N/A',
+          email: t.email || 'N/A',
+          deletedAt: t.updatedAt ? new Date(t.updatedAt).toISOString().split('T')[0] : 'N/A',
+          deletedBy: 'Admin',
+          reason: t.terminationReason || 'Contract ended'
+        }));
+
+      setDeletedItems([...inactiveMembers, ...inactiveTrainers]);
+    } catch (err) {
+      console.error('Failed to load deleted records:', err);
+      setDeletedItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getPhoneNumber = (item: any) => {
     if (item?.phone && item.phone !== 'N/A') return item.phone;

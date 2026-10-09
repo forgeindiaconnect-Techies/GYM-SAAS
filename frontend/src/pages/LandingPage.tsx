@@ -431,9 +431,16 @@ const LandingPage = () => {
                     </div>
                     <div className="p-6">
                       <h3 className="text-xl font-bold mb-1 group-hover:text-[#F97316] transition-colors">{gym.name}</h3>
-                      <div className="flex items-center space-x-1 text-[#78716C] text-sm mb-4">
-                        <MapPin size={14} className="text-[#F97316]" />
-                        <span className="truncate">{gym.location?.address}, {gym.location?.city}</span>
+                      <div className="flex items-start space-x-1.5 text-[#78716C] text-sm mb-4">
+                        <MapPin size={15} className="text-[#F97316] shrink-0 mt-0.5" />
+                        <div className="line-clamp-2 text-xs font-medium text-[#57534E]">
+                          {[
+                            gym.location?.address,
+                            gym.location?.area,
+                            gym.location?.city,
+                            gym.location?.pinCode
+                          ].filter(Boolean).join(', ') || 'Address not specified'}
+                        </div>
                       </div>
                       <div className="flex flex-wrap gap-2 mb-6">
                         {(gym.facilities || []).slice(0, 2).map((tag: string, tIdx: number) => (

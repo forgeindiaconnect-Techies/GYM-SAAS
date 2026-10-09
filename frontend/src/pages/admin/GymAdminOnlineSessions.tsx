@@ -23,7 +23,10 @@ interface OnlineSession {
   description?: string;
 }
 
+import { useAuth } from '../../contexts/AuthContext';
+
 const GymAdminOnlineSessions = () => {
+  const { user } = useAuth();
   const [sessions, setSessions] = useState<OnlineSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -48,10 +51,12 @@ const GymAdminOnlineSessions = () => {
   const fetchSessions = async () => {
     try {
       setLoading(true);
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+
       // Try to fetch real sessions from backend
       const [sessionsRes, trainersRes] = await Promise.all([
-        api.get('/trainer-sessions/gym').catch(() => ({ data: { sessions: [] } })),
-        api.get('/trainers').catch(() => ({ data: { trainers: [] } })),
+        api.get(`/trainer-sessions/gym${branchParam}`).catch(() => ({ data: { sessions: [] } })),
+        api.get(`/trainers${branchParam}`).catch(() => ({ data: { trainers: [] } })),
       ]);
 
       const loadedTrainers = trainersRes.data?.trainers || [];
@@ -77,63 +82,11 @@ const GymAdminOnlineSessions = () => {
           description: s.description || 'Virtual session with gym personal trainer.',
         }));
 
-      // If no sessions yet, provide standard gym masterclasses
-      const initialMasterclasses: OnlineSession[] = [
-        {
-          _id: 'live-hiit-1',
-          title: 'Virtual HIIT & Core Burn',
-          trainerName: loadedTrainers[0]?.name || 'Alex Morgan',
-          specialization: 'HIIT Specialist',
-          date: new Date().toISOString().split('T')[0],
-          time: '06:00 PM',
-          duration: 45,
-          category: 'HIIT',
-          attendeesCount: 18,
-          maxCapacity: 30,
-          meetingLink: 'https://meet.jit.si/aigym-hiit-live',
-          status: 'Upcoming',
-          price: 0,
-          description: 'High-energy full body fat burn session. No equipment needed.',
-        },
-        {
-          _id: 'live-yoga-2',
-          title: 'Sunrise Vinyasa Flow',
-          trainerName: loadedTrainers[1]?.name || 'Priya Sharma',
-          specialization: 'Yoga Master',
-          date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-          time: '07:00 AM',
-          duration: 60,
-          category: 'Yoga & Flexibility',
-          attendeesCount: 24,
-          maxCapacity: 40,
-          meetingLink: 'https://meet.jit.si/aigym-yoga-flow',
-          status: 'Upcoming',
-          price: 0,
-          description: 'Invigorating morning breathing, flow and mobility sequence.',
-        },
-        {
-          _id: 'live-strength-3',
-          title: 'Functional Home Strength',
-          trainerName: loadedTrainers[0]?.name || 'Vikram Singh',
-          specialization: 'Strength Coach',
-          date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-          time: '05:30 PM',
-          duration: 50,
-          category: 'Strength',
-          attendeesCount: 22,
-          maxCapacity: 25,
-          meetingLink: 'https://meet.jit.si/aigym-strength-past',
-          status: 'Completed',
-          price: 0,
-          description: 'Dumbbell and bodyweight progressive overload workout.',
-        },
-      ];
-
       // Merge saved sessions from localStorage if any
       const savedCustom = localStorage.getItem('gym_admin_online_sessions');
       const customSessions: OnlineSession[] = savedCustom ? JSON.parse(savedCustom) : [];
 
-      setSessions([...customSessions, ...dbSessions, ...initialMasterclasses]);
+      setSessions([...customSessions, ...dbSessions]);
     } catch (err) {
       console.error('Error fetching online sessions:', err);
     } finally {
@@ -143,7 +96,7 @@ const GymAdminOnlineSessions = () => {
 
   useEffect(() => {
     fetchSessions();
-  }, []);
+  }, [user?.branchId]);
 
   const handleCopyLink = (link: string, id: string) => {
     navigator.clipboard.writeText(link);

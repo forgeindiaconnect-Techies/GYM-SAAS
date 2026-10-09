@@ -3,6 +3,8 @@ import { Users, Dumbbell, Activity, CalendarCheck, TrendingUp, AlertCircle, Arro
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 
+import { useAuth } from '../../contexts/AuthContext';
+
 const getNotificationLink = (notif: any) => {
   if (notif.link) return notif.link;
   const title = (notif.title || '').toLowerCase();
@@ -19,6 +21,7 @@ const getNotificationLink = (notif: any) => {
 
 const GymAdminDashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [stats, setStats] = useState({ trainers: 0, members: 0, bookings: 0, revenue: 0 });
   const [notifications, setNotifications] = useState<any[]>([]);
   const [recentSessions, setRecentSessions] = useState<any[]>([]);
@@ -27,13 +30,17 @@ const GymAdminDashboard = () => {
   const fetchGymStats = async () => {
     try {
       setLoading(true);
+      const effectiveBranchId = user?.branchId;
+      const queryParam = effectiveBranchId ? `?branchId=${effectiveBranchId}` : '';
+      const userQueryParam = effectiveBranchId ? `&branchId=${effectiveBranchId}` : '';
+
       const [membersRes, usersRes, trainersRes, bookingsRes, salesRes, notifsRes] = await Promise.all([
-        api.get('/memberships/gym').catch(() => ({ data: { memberships: [] } })),
-        api.get('/users?role=MEMBER').catch(() => ({ data: { users: [] } })),
-        api.get('/trainers').catch(() => ({ data: { trainers: [] } })),
-        api.get('/trainer-sessions/gym').catch(() => ({ data: { sessions: [] } })),
-        api.get('/store/sales').catch(() => ({ data: { sales: [] } })),
-        api.get('/notifications').catch(() => ({ data: { notifications: [] } }))
+        api.get(`/memberships/gym${queryParam}`).catch(() => ({ data: { memberships: [] } })),
+        api.get(`/users?role=MEMBER${userQueryParam}`).catch(() => ({ data: { users: [] } })),
+        api.get(`/trainers${queryParam}`).catch(() => ({ data: { trainers: [] } })),
+        api.get(`/trainer-sessions/gym${queryParam}`).catch(() => ({ data: { sessions: [] } })),
+        api.get(`/store/admin/sales${queryParam}`).catch(() => ({ data: { sales: [] } })),
+        api.get(`/notifications${queryParam}`).catch(() => ({ data: { notifications: [] } }))
       ]);
 
       const directMembers = usersRes.data?.users?.length || 0;
@@ -42,7 +49,7 @@ const GymAdminDashboard = () => {
 
       const trainersCount = trainersRes.data?.trainers?.filter((t: any) => t.status === 'Active' || !t.status)?.length ?? (trainersRes.data?.trainers?.length || 0);
       const bookingsCount = bookingsRes.data?.sessions?.filter((s: any) => s.status === 'Pending').length || 0;
-      const salesTotal = salesRes.data?.sales?.reduce((acc: number, curr: any) => acc + (curr.totalAmount || curr.total || 0), 0) || 0;
+      const salesTotal = salesRes.data?.totals?.all ?? (salesRes.data?.sales?.reduce((acc: number, curr: any) => acc + (curr.totalAmount || curr.total || 0), 0) || 0);
 
       setStats({
         members: membersCount,
@@ -62,7 +69,7 @@ const GymAdminDashboard = () => {
 
   useEffect(() => {
     fetchGymStats();
-  }, []);
+  }, [user?.branchId]);
 
   const handleNotificationClick = async (notif: any) => {
     try {
@@ -94,8 +101,12 @@ const GymAdminDashboard = () => {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Gym Dashboard</h1>
-          <p className="text-[#78716C] mt-1">Overview of your gym's performance, members, and bookings.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">
+            {user?.branchName || user?.branchId ? `${user?.branchName || 'Branch'} Dashboard` : 'Gym Dashboard'}
+          </h1>
+          <p className="text-[#78716C] mt-1">
+            Overview of {user?.branchName || user?.branchId ? `${user?.branchName || 'branch'}'s` : "your gym's"} performance, members, and bookings.
+          </p>
         </div>
       </div>
 

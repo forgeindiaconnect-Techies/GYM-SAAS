@@ -21,7 +21,7 @@ const GymAdminPayments = () => {
   const fetchPayments = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/payments/gym');
+      const res = await api.get('/payments/gym' + (user?.branchId ? `?branchId=${user.branchId}` : ''));
       setPayments(res.data.payments || []);
     } catch (err) {
       console.error('Error fetching payments:', err);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Star, Activity, CheckCircle, Phone, Mail, Globe, ArrowLeft, Loader2, ShieldCheck, Dumbbell } from 'lucide-react';
+import { MapPin, Star, Activity, CheckCircle, Phone, Mail, Globe, ArrowLeft, Loader2, ShieldCheck, Dumbbell, Navigation, ExternalLink } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
@@ -353,95 +353,133 @@ const GymDetails = () => {
           <div className="sticky top-24 space-y-6">
             {/* Quick Info Card */}
             <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-[#292524] mb-6">Gym Information</h3>
-            
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <MapPin className="text-[#78716C] shrink-0 mt-0.5" size={18} />
-                <div className="text-[#78716C] text-sm">
-                  <span className="text-[#292524] block font-medium mb-1">Address</span>
-                  {gym.location?.address}<br />
-                  {gym.location?.city}, {gym.location?.state} {gym.location?.pinCode}
+              <h3 className="text-lg font-bold text-[#292524] mb-6">Gym Information</h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <MapPin className="text-[#F97316] shrink-0 mt-0.5" size={18} />
+                  <div className="text-[#78716C] text-sm flex-1">
+                    <span className="text-[#292524] block font-medium mb-1">Location & Address</span>
+                    <p className="text-xs text-[#292524] font-medium leading-relaxed mb-3">
+                      {gym.location?.address && <>{gym.location.address}<br /></>}
+                      {gym.location?.area && <>{gym.location.area}<br /></>}
+                      {gym.location?.city}, {gym.location?.state} {gym.location?.pinCode}
+                    </p>
+                    {(() => {
+                      const fullLoc = [gym.location?.address, gym.location?.area, gym.location?.city, gym.location?.state, gym.location?.pinCode].filter(Boolean).join(', ');
+                      const mapUrl = (gym.location?.latitude && gym.location?.longitude)
+                        ? `https://www.google.com/maps?q=${gym.location.latitude},${gym.location.longitude}`
+                        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullLoc || gym.name)}`;
+                      return (
+                        <a
+                          href={mapUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#F97316] text-white hover:bg-[#EA580C] rounded-xl text-xs font-bold transition-all shadow-sm"
+                        >
+                          <Navigation size={13} /> View Map & Directions <ExternalLink size={12} />
+                        </a>
+                      );
+                    })()}
+                  </div>
                 </div>
-              </div>
-              
-              {(gym.email || gym.phone) && (
-                <>
-                  <div className="w-full h-px bg-[#FED7AA] my-4"></div>
-                  {gym.phone && (
-                    <div className="flex items-center gap-3 text-[#78716C] text-sm">
-                      <Phone className="shrink-0" size={18} />
-                      <a href={`tel:${gym.phone}`} className="hover:text-[#F97316] transition transition-colors">{gym.phone}</a>
-                    </div>
-                  )}
-                  {gym.email && (
-                    <div className="flex items-center gap-3 text-[#78716C] text-sm mt-3">
-                      <Mail className="shrink-0" size={18} />
-                      <a href={`mailto:${gym.email}`} className="hover:text-[#F97316] transition transition-colors">{gym.email}</a>
-                    </div>
-                  )}
-                  {gym.website && (
-                    <div className="flex items-center gap-3 text-[#78716C] text-sm mt-3">
-                      <Globe className="shrink-0" size={18} />
-                      <a href={gym.website} target="_blank" rel="noreferrer" className="hover:text-[#F97316] transition transition-colors">Visit Website</a>
-                    </div>
-                  )}
-                </>
-              )}
-
-              <div className="w-full h-px bg-[#FED7AA] my-4"></div>
-              
-              <div className="flex items-start gap-3">
-                <ShieldCheck className="text-green-500 shrink-0 mt-0.5" size={18} />
-                <div className="text-[#78716C] text-sm flex-1">
-                  <span className="text-[#292524] block font-medium mb-1 flex items-center gap-2">
-                    Verified Partner
-                    {gym.ownerId?.subscriptionPlan && gym.ownerId.subscriptionPlan !== 'FREE_TRIAL' && (
-                      <span className="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded-full border border-amber-200 uppercase tracking-wide flex items-center gap-1">
-                        <Star size={10} className="fill-amber-500" />
-                        {gym.ownerId.subscriptionPlan}
-                      </span>
+                
+                {(gym.email || gym.phone) && (
+                  <>
+                    <div className="w-full h-px bg-[#FED7AA] my-4"></div>
+                    {gym.phone && (
+                      <div className="flex items-center gap-3 text-[#78716C] text-sm">
+                        <Phone className="shrink-0 text-[#F97316]" size={18} />
+                        <a href={`tel:${gym.phone}`} className="hover:text-[#F97316] transition transition-colors font-medium">{gym.phone}</a>
+                      </div>
                     )}
-                  </span>
-                  This gym is an officially approved partner of the AI GYM network.
+                    {gym.email && (
+                      <div className="flex items-center gap-3 text-[#78716C] text-sm mt-3">
+                        <Mail className="shrink-0 text-[#F97316]" size={18} />
+                        <a href={`mailto:${gym.email}`} className="hover:text-[#F97316] transition transition-colors font-medium">{gym.email}</a>
+                      </div>
+                    )}
+                    {gym.website && (
+                      <div className="flex items-center gap-3 text-[#78716C] text-sm mt-3">
+                        <Globe className="shrink-0 text-[#F97316]" size={18} />
+                        <a href={gym.website} target="_blank" rel="noreferrer" className="hover:text-[#F97316] transition transition-colors font-medium">Visit Website</a>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                <div className="w-full h-px bg-[#FED7AA] my-4"></div>
+                
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="text-green-500 shrink-0 mt-0.5" size={18} />
+                  <div className="text-[#78716C] text-sm flex-1">
+                    <span className="text-[#292524] block font-medium mb-1 flex items-center gap-2">
+                      Verified Partner
+                      {gym.ownerId?.subscriptionPlan && gym.ownerId.subscriptionPlan !== 'FREE_TRIAL' && (
+                        <span className="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded-full border border-amber-200 uppercase tracking-wide flex items-center gap-1">
+                          <Star size={10} className="fill-amber-500" />
+                          {gym.ownerId.subscriptionPlan}
+                        </span>
+                      )}
+                    </span>
+                    This gym is an officially approved partner of the AI GYM network.
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          
-          {/* Branches Card */}
-          {branches.length > 0 && (
-            <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6">
-              <h3 className="text-lg font-bold text-[#292524] mb-4">Other Branches</h3>
-              <div className="space-y-4 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-                {branches.map((branch: any) => (
-                  <button 
-                    key={branch._id} 
-                    onClick={() => { setSelectedBranch(branch); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    className={`w-full text-left p-3 rounded-xl border transition-all ${selectedBranch?._id === branch._id ? 'bg-[#F97316]/10 border-[#F97316]' : 'bg-[#F9F8F6] border-[#E7E5E4] hover:border-[#F97316]/50'}`}
-                  >
-                    <div className="flex items-start gap-2 mb-1">
-                      <MapPin className="text-[#F97316] shrink-0 mt-0.5" size={14} />
-                      <h4 className="font-bold text-[#292524] text-sm leading-tight">{branch.branchName}</h4>
-                    </div>
-                    <div className="pl-6">
-                      <p className="text-xs text-[#78716C] mb-1">{branch.location?.address}, {branch.location?.city}</p>
-                      {(branch.phone || branch.email) && (
-                        <div className="flex flex-col gap-1 mt-2">
-                          {branch.phone && (
-                            <div className="text-xs text-[#F97316] flex items-center gap-1.5"><Phone size={10} /> {branch.phone}</div>
-                          )}
-                          {branch.email && (
-                            <div className="text-xs text-[#F97316] flex items-center gap-1.5"><Mail size={10} /> {branch.email}</div>
+            
+            {/* Branches Card */}
+            {branches.length > 0 && (
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6">
+                <h3 className="text-lg font-bold text-[#292524] mb-4">Other Branches</h3>
+                <div className="space-y-4 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                  {branches.map((branch: any) => {
+                    const branchLocStr = [branch.location?.address, branch.location?.area, branch.location?.city, branch.location?.state].filter(Boolean).join(', ');
+                    const branchMapUrl = (branch.location?.latitude && branch.location?.longitude)
+                      ? `https://www.google.com/maps?q=${branch.location.latitude},${branch.location.longitude}`
+                      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branchLocStr || branch.branchName)}`;
+
+                    return (
+                      <div 
+                        key={branch._id} 
+                        onClick={() => { setSelectedBranch(branch); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                        className={`w-full text-left p-3.5 rounded-xl border transition-all cursor-pointer ${selectedBranch?._id === branch._id ? 'bg-[#F97316]/10 border-[#F97316]' : 'bg-[#F9F8F6] border-[#E7E5E4] hover:border-[#F97316]/50'}`}
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="text-[#F97316] shrink-0" size={14} />
+                            <h4 className="font-bold text-[#292524] text-sm leading-tight">{branch.branchName}</h4>
+                          </div>
+                          <a
+                            href={branchMapUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-[10px] font-bold text-[#F97316] hover:underline flex items-center gap-0.5 bg-white px-2 py-0.5 rounded border border-[#E7E5E4]"
+                            title="View location on Google Maps"
+                          >
+                            Map <ExternalLink size={9} />
+                          </a>
+                        </div>
+                        <div className="pl-5">
+                          <p className="text-xs text-[#78716C] mb-1">{branch.location?.address}, {branch.location?.city}</p>
+                          {(branch.phone || branch.email) && (
+                            <div className="flex flex-col gap-1 mt-2">
+                              {branch.phone && (
+                                <div className="text-xs text-[#F97316] flex items-center gap-1.5"><Phone size={10} /> {branch.phone}</div>
+                              )}
+                              {branch.email && (
+                                <div className="text-xs text-[#F97316] flex items-center gap-1.5"><Mail size={10} /> {branch.email}</div>
+                              )}
+                            </div>
                           )}
                         </div>
-                      )}
-                    </div>
-                  </button>
-                ))}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           </div>
         </div>

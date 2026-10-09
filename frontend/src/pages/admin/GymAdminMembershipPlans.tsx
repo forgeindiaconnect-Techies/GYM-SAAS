@@ -121,16 +121,15 @@ type FormData = {
   features: string;
 };
 
-const STORAGE_KEY = 'gym_membership_plans_v2';
-
 const GymAdminMembershipPlans = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const storageKey = `gym_membership_plans_${user?.branchId || user?.gymId || 'default'}`;
 
   // Load plans from localStorage or defaults
   const [plans, setPlans] = useState<PlanItem[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(`gym_membership_plans_${user?.branchId || user?.gymId || 'default'}`);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -157,19 +156,40 @@ const GymAdminMembershipPlans = () => {
     features: '',
   });
 
-  // Try to load any synced plans from Gym database if available
+  // Try to load any synced plans from Branch or Gym database if available
   useEffect(() => {
-    if (user?.gymId) {
+    if (user?.branchId) {
+      api.get(`/branches/${user.branchId}`)
+        .then(res => {
+          const bPlans = res.data?.branch?.subscriptionPlans;
+          if (Array.isArray(bPlans) && bPlans.length > 0) {
+            const mapped: PlanItem[] = bPlans.map((p: any, idx: number) => ({
+              id: p._id || `branch-plan-${idx}`,
+              name: p.name,
+              badge: (p.name.toLowerCase().includes('starter') || p.name.toLowerCase().includes('trial')) ? 'starter' : p.name.toLowerCase().includes('pro') || p.name.toLowerCase().includes('premium') ? 'pro' : 'growth',
+              isPopular: idx === 1,
+              monthlyPrice: Number(String(p.price).replace(/[^0-9]/g, '')) || 999,
+              annualPrice: (Number(String(p.price).replace(/[^0-9]/g, '')) || 999) * 10,
+              subscribers: 0,
+              features: typeof p.features === 'string' ? p.features.split('\n').filter(Boolean) : (Array.isArray(p.features) ? p.features : [])
+            }));
+            if (mapped.length > 0) {
+              setPlans(mapped);
+            }
+          }
+        })
+        .catch(() => {});
+    } else if (user?.gymId) {
       api.get(`/gyms/${user.gymId}`)
         .then(res => {
           const gymPlans = res.data?.gym?.subscriptionPlans;
           if (Array.isArray(gymPlans) && gymPlans.length > 0) {
-            // merge if needed or preserve user state
+            // preserved
           }
         })
         .catch(() => {});
     }
-  }, [user?.gymId]);
+  }, [user?.gymId, user?.branchId]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -179,13 +199,22 @@ const GymAdminMembershipPlans = () => {
   const savePlansToStorage = (updatedPlans: PlanItem[]) => {
     setPlans(updatedPlans);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
+      localStorage.setItem(storageKey, JSON.stringify(updatedPlans));
     } catch (e) {
       console.error('Failed to save to localStorage', e);
     }
 
-    // Sync to Gym DB if backend available
-    if (user?.gymId) {
+    // Sync to Branch or Gym DB if backend available
+    if (user?.branchId) {
+      api.put(`/branches/${user.branchId}`, {
+        subscriptionPlans: updatedPlans.map(p => ({
+          name: p.name,
+          price: p.monthlyPrice,
+          duration: 'monthly',
+          features: p.features.join('\n')
+        }))
+      }).catch(() => {});
+    } else if (user?.gymId) {
       api.put(`/gyms/${user.gymId}`, {
         subscriptionPlans: updatedPlans.map(p => ({
           name: p.name,

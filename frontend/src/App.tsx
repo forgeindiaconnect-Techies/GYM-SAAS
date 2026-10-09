@@ -57,6 +57,7 @@ import GymAdminBranches from './pages/admin/GymAdminBranches';
 import GymAdminAddBranch from './pages/admin/GymAdminAddBranch';
 import GymAdminBranchProfile from './pages/admin/GymAdminBranchProfile';
 import GymAdminImportCustomers from './pages/admin/GymAdminImportCustomers';
+import GymAdminLocationSettings from './pages/admin/GymAdminLocationSettings';
 
 import GymAdminTrainerFees from './pages/admin/GymAdminTrainerFees';
 import GymAdminTrainerPayments from './pages/admin/GymAdminTrainerPayments';
@@ -66,6 +67,7 @@ import GymAdminAIPlanDetails from './pages/admin/GymAdminAIPlanDetails';
 import GymAdminOnlineSessions from './pages/admin/GymAdminOnlineSessions';
 import GymAdminVideoBookings from './pages/admin/GymAdminVideoBookings';
 import GymAdminExerciseLibrary from './pages/admin/GymAdminExerciseLibrary';
+import GymExerciseVideos from './pages/common/GymExerciseVideos';
 
 // Gym Store (Admin)
 import GymStoreDashboard from './pages/admin/store/GymStoreDashboard';
@@ -265,6 +267,7 @@ function App() {
             <Route path="session-bookings" element={<TrainerSessionBookings />} />
             <Route path="online-sessions" element={<TrainerOnlineSessions />} />
             <Route path="exercises" element={<TrainerExerciseLibrary />} />
+            <Route path="exercise-videos" element={<GymExerciseVideos />} />
             <Route path="workout-plans" element={<TrainerWorkoutPlans />} />
             <Route path="workout-videos" element={<TrainerWorkoutVideos />} />
             <Route path="diet-plans" element={<TrainerDietPlans />} />
@@ -306,12 +309,14 @@ function App() {
           }>
             <Route path="dashboard" element={<GymAdminDashboard />} />
             <Route path="gym-profile" element={<GymAdminProfile />} />
+            <Route path="location" element={<GymAdminLocationSettings />} />
             <Route path="branches" element={<GymAdminBranches />} />
             <Route path="add-branch" element={<GymAdminAddBranch />} />
             <Route path="branches/:id" element={<GymAdminBranchProfile />} />
             <Route path="trainers" element={<GymAdminTrainers />} />
             <Route path="members" element={<GymAdminMembers />} />
             <Route path="exercises" element={<GymAdminExerciseLibrary />} />
+            <Route path="exercise-videos" element={<GymExerciseVideos />} />
             <Route path="equipment" element={<GymAdminEquipment />} />
             <Route path="membership-plans" element={<GymAdminMembershipPlans />} />
             <Route path="enquiries" element={<GymAdminEnquiries />} />

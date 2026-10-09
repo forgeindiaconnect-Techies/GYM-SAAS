@@ -2,14 +2,23 @@ import { Response } from 'express';
 import Notification from '../models/Notification';
 import { AuthRequest } from '../middlewares/auth';
 
-const getNotificationQuery = (user: any) => {
+const getNotificationQuery = (user: any, branchQuery?: string) => {
   const userId = user.id;
   const gymId = user.gymId;
   const role = user.role;
+  const effectiveBranchId = user.branchId || branchQuery;
 
   const conditions: any[] = [{ recipientId: userId }];
   if (gymId && (role === 'GYM_OWNER' || role === 'ADMIN')) {
-    conditions.push({ gymId, recipientRole: 'GYM_OWNER' });
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        conditions.push({ gymId, recipientRole: 'GYM_OWNER', $or: [{ branchId: { $exists: false } }, { branchId: null }] });
+      } else {
+        conditions.push({ gymId, recipientRole: 'GYM_OWNER', branchId: effectiveBranchId });
+      }
+    } else {
+      conditions.push({ gymId, recipientRole: 'GYM_OWNER' });
+    }
   } else if (gymId && role === 'TRAINER') {
     conditions.push({ gymId, recipientRole: 'TRAINER' });
   }
@@ -19,7 +28,7 @@ const getNotificationQuery = (user: any) => {
 
 export const getNotifications = async (req: AuthRequest, res: Response) => {
   try {
-    const query = getNotificationQuery(req.user!);
+    const query = getNotificationQuery(req.user!, req.query.branchId as string);
     const notifications = await Notification.find(query).sort({ createdAt: -1 }).limit(50);
     const unreadCount = await Notification.countDocuments({ ...query, isRead: false });
 

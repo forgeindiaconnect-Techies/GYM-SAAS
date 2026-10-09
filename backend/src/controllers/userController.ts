@@ -25,11 +25,45 @@ export const getUsersByRole = async (req: AuthRequest, res: Response): Promise<v
       filter.gymId = gymId;
     }
 
-    const users = await User.find(filter)
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = req.user?.branchId || branchIdQuery;
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        filter.$or = [{ branchId: { $exists: false } }, { branchId: null }];
+      } else {
+        filter.branchId = effectiveBranchId;
+      }
+    }
+
+    const rawUsers = await User.find(filter)
       .populate('gymId')
       .populate('branchId', 'name')
       .select('-passwordHash')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const gymIds = rawUsers.map((u: any) => u.gymId?._id || u.gymId).filter(Boolean);
+    let branchesMap: Record<string, any[]> = {};
+    if (gymIds.length > 0) {
+      const Branch = (await import('../models/Branch')).default;
+      const branches = await Branch.find({ gymId: { $in: gymIds } }).lean();
+      branches.forEach((b: any) => {
+        const gId = b.gymId?.toString();
+        if (gId) {
+          if (!branchesMap[gId]) branchesMap[gId] = [];
+          branchesMap[gId].push(b);
+        }
+      });
+    }
+
+    const users = rawUsers.map((u: any) => {
+      const gId = u.gymId?._id?.toString() || u.gymId?.toString();
+      return {
+        ...u,
+        branches: gId && branchesMap[gId] ? branchesMap[gId] : []
+      };
+    });
+
     res.status(200).json({ success: true, users });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });

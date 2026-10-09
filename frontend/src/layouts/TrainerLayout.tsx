@@ -4,10 +4,10 @@ import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, User, Users, FileText,
-  Utensils, Calendar, CalendarCheck, TrendingUp,
+  Utensils, Calendar,
   MessageSquare, IndianRupee, Bell,
   Activity, Menu, LogOut, Bot,
-  Clock, Dumbbell, Star
+  Dumbbell, Star, Video
 } from 'lucide-react';
 
 const TrainerLayout = () => {
@@ -67,6 +67,7 @@ const TrainerLayout = () => {
       title: 'Programs',
       items: [
         { label: 'Exercise Library', path: '/trainer/exercises', icon: Dumbbell },
+        { label: 'Gym Exercise Videos', path: '/trainer/exercise-videos', icon: Video },
         { label: 'Workout Plans', path: '/trainer/workout-plans', icon: FileText },
         { label: 'Diet Plans', path: '/trainer/diet-plans', icon: Utensils },
       ]

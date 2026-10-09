@@ -436,7 +436,14 @@ const GymMarketplace = () => {
                   </h3>
                   <div className="flex items-start text-[#78716C] text-sm mb-3">
                     <MapPin size={14} className="mr-1.5 shrink-0 mt-0.5 text-[#F97316]" />
-                    <span className="line-clamp-1">{gym.location?.address}, {gym.location?.city}</span>
+                    <span className="line-clamp-2 text-xs font-medium text-[#57534E]">
+                      {[
+                        gym.location?.address,
+                        gym.location?.area,
+                        gym.location?.city,
+                        gym.location?.pinCode
+                      ].filter(Boolean).join(', ') || 'Address not specified'}
+                    </span>
                   </div>
 
                   {gym.branches && gym.branches.length > 0 && (

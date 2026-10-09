@@ -8,6 +8,7 @@ export interface AuthRequest extends Request {
     id: string;
     role: string;
     gymId?: string;
+    branchId?: string;
     approvalStatus?: string;
     subscriptionStatus?: string;
   };

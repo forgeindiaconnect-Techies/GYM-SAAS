@@ -718,8 +718,10 @@ export const getAdminRecommendations = async (req: any, res: any) => {
       return res.status(400).json({ success: false, message: 'Gym ID is required' });
     }
     
-    // Group by customer to get the latest recommendation per customer
-    const recommendations = await AIRecommendation.aggregate([
+    const branchIdQuery = req.query.branchId as string;
+    const effectiveBranchId = req.user?.branchId || branchIdQuery;
+
+    const pipeline: any[] = [
       { $match: { gymId: new mongoose.Types.ObjectId(gymId) } },
       { $sort: { createdAt: -1 } },
       { 
@@ -746,7 +748,28 @@ export const getAdminRecommendations = async (req: any, res: any) => {
       },
       { $unwind: "$customer" },
       { $unwind: { path: "$trainer", preserveNullAndEmptyArrays: true } }
-    ]);
+    ];
+
+    if (effectiveBranchId && effectiveBranchId !== 'all') {
+      if (effectiveBranchId === 'main') {
+        pipeline.push({
+          $match: {
+            $or: [
+              { 'customer.branchId': { $exists: false } },
+              { 'customer.branchId': null }
+            ]
+          }
+        });
+      } else {
+        pipeline.push({
+          $match: {
+            'customer.branchId': new mongoose.Types.ObjectId(effectiveBranchId)
+          }
+        });
+      }
+    }
+
+    const recommendations = await AIRecommendation.aggregate(pipeline);
 
     res.status(200).json(recommendations);
   } catch (error: any) {

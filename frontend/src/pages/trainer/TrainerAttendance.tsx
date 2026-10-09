@@ -25,6 +25,7 @@ interface AttendanceRecord {
     email: string;
     profilePhoto?: string;
   };
+  customerName?: string;
 }
 
 const TrainerAttendance = () => {

@@ -11,6 +11,7 @@ import {
   RefreshCw,
   Dumbbell
 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const HOURS = [
@@ -43,6 +44,7 @@ interface ScheduleItem {
 }
 
 const GymAdminTrainerSchedule = () => {
+  const { user } = useAuth();
   // Active week anchor (defaulting to current app date: Oct 07, 2026)
   const [currentDate, setCurrentDate] = useState(() => new Date('2026-10-07T10:00:00'));
   const [dbSessions, setDbSessions] = useState<any[]>([]);
@@ -91,9 +93,10 @@ const GymAdminTrainerSchedule = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
       const [sessionsRes, trainersRes] = await Promise.all([
-        api.get('/trainer-sessions/gym').catch(() => ({ data: { sessions: [] } })),
-        api.get('/trainers').catch(() => ({ data: { trainers: [] } })),
+        api.get(`/trainer-sessions/gym${branchParam}`).catch(() => ({ data: { sessions: [] } })),
+        api.get(`/trainers${branchParam}`).catch(() => ({ data: { trainers: [] } })),
       ]);
 
       if (sessionsRes.data?.sessions) {
@@ -111,7 +114,7 @@ const GymAdminTrainerSchedule = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [user?.branchId]);
 
   // Standardize time string into "HH:00" slot
   const mapTimeToHourSlot = (timeStr: string): string => {

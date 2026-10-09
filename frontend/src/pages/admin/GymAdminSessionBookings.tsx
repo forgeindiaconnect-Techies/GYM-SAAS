@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Search, Calendar as CalendarIcon, Clock, User, Loader2, Eye, X, Video } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const GymAdminSessionBookings = () => {
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +14,8 @@ const GymAdminSessionBookings = () => {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/trainer-sessions/gym');
+      const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+      const res = await api.get(`/trainer-sessions/gym${branchParam}`);
       if (res.data.success) {
         setBookings(res.data.sessions || []);
       }
@@ -25,7 +28,7 @@ const GymAdminSessionBookings = () => {
 
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [user?.branchId]);
 
   const handleRefund = async (id: string) => {
     if (!window.confirm('Are you sure you want to process a full refund for this session? This action cannot be undone.')) return;

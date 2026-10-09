@@ -5,10 +5,10 @@ import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, User, CreditCard, Dumbbell,
-  Utensils, Bot, UserCheck, CalendarCheck,
+  Utensils, Bot, CalendarCheck,
   TrendingUp, Bell, MessageSquare,
   Activity, Building2, Menu, LogOut, Clock,
-  ShoppingBag, ShoppingCart, Receipt, FileText, Star
+  ShoppingBag, FileText, Star
 } from 'lucide-react';
 
 const MemberLayout = () => {

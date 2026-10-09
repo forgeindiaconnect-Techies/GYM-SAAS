@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Building2, MapPin, Phone, Mail, Globe, CheckCircle2, Calendar, Dumbbell, Wind, Star } from 'lucide-react';
+import { Building2, MapPin, Phone, Mail, Globe, CheckCircle2, Calendar, Dumbbell, Wind, Star, Navigation, ExternalLink } from 'lucide-react';
 import api from '../../utils/api';
 
 const MemberGymProfile = () => {
@@ -40,6 +40,11 @@ const MemberGymProfile = () => {
   // Combine services and facilities, removing duplicates
   const allAmenities = Array.from(new Set([...(gym.services || []), ...(gym.facilities || [])]));
 
+  const memberFullLoc = [gym.location?.address, gym.location?.area, gym.location?.city, gym.location?.state, gym.location?.pinCode].filter(Boolean).join(', ');
+  const memberMapUrl = (gym.location?.latitude && gym.location?.longitude)
+    ? `https://www.google.com/maps?q=${gym.location.latitude},${gym.location.longitude}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(memberFullLoc || gym.name)}`;
+
   return (
     <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 animate-fade-in pb-12">
       {/* Header Section */}
@@ -78,10 +83,17 @@ const MemberGymProfile = () => {
                 </div>
               </div>
               {gym.location?.city && (
-                <div className="flex items-center gap-1.5 text-xs font-medium text-[#78716C] bg-[#FFFDF8] border border-[#E7E5E4] px-3 py-2 rounded-xl self-center sm:self-start">
-                  <MapPin size={14} className="text-[#F97316]" />
+                <a
+                  href={memberMapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs font-bold text-[#F97316] bg-[#F97316]/10 hover:bg-[#F97316] hover:text-white border border-[#F97316]/30 px-3.5 py-2 rounded-xl transition-all self-center sm:self-start shadow-2xs"
+                  title="Click to open location in Google Maps"
+                >
+                  <MapPin size={14} />
                   <span>{gym.location.city}{gym.location.state ? `, ${gym.location.state}` : ''}</span>
-                </div>
+                  <ExternalLink size={11} className="ml-0.5" />
+                </a>
               )}
             </div>
           </div>
@@ -322,19 +334,27 @@ const MemberGymProfile = () => {
           <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl md:rounded-3xl p-6 shadow-xs">
             <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-[#292524]">
               <MapPin className="text-[#F97316]" size={18} />
-              Location
+              Location Details
             </h2>
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-xl bg-[#FFFDF8] border border-[#E7E5E4] flex items-center justify-center text-[#78716C] shrink-0">
                 <MapPin size={16} />
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="text-xs text-[#78716C] uppercase tracking-wider font-semibold mb-0.5">Address</p>
-                <p className="text-[#292524] text-sm font-medium leading-relaxed">
-                  {gym.location?.address}<br />
+                <p className="text-[#292524] text-sm font-medium leading-relaxed mb-3">
+                  {gym.location?.address && <>{gym.location.address}<br /></>}
                   {gym.location?.area && <>{gym.location.area}<br /></>}
                   {gym.location?.city}, {gym.location?.state} {gym.location?.pinCode}
                 </p>
+                <a
+                  href={memberMapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#F97316] text-white hover:bg-[#EA580C] rounded-xl text-xs font-bold transition-all shadow-xs"
+                >
+                  <Navigation size={13} /> View Map & Directions <ExternalLink size={12} />
+                </a>
               </div>
             </div>
           </div>

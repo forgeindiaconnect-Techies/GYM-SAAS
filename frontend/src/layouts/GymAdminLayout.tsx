@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
-  History,
+  Video,
   Store, Package, Boxes, ShoppingCart, Bot
 } from 'lucide-react';
 
@@ -83,6 +83,14 @@ const GymAdminLayout = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const isBranchUser = Boolean(user?.branchId || branches.some(b => b.managerId === user?.id || b.email?.toLowerCase() === user?.email?.toLowerCase()));
+
+  useEffect(() => {
+    if (user?.branchId) {
+      setSelectedBranch(String(user.branchId));
+    }
+  }, [user?.branchId]);
+
   useEffect(() => {
     if (user?.gymId) {
       import('../utils/api').then(({ default: api }) => {
@@ -91,7 +99,21 @@ const GymAdminLayout = () => {
           .catch(err => console.error('Failed to fetch gym', err));
 
         api.get(`/branches`)
-          .then(res => setBranches(res.data.branches || []))
+          .then(res => {
+            const bList = res.data.branches || [];
+            setBranches(bList);
+            if (user?.branchId) {
+              setSelectedBranch(String(user.branchId));
+            } else {
+              const matchingBranch = bList.find((b: any) => 
+                b.managerId === user?.id || 
+                b.email?.toLowerCase() === user?.email?.toLowerCase()
+              );
+              if (matchingBranch) {
+                setSelectedBranch(String(matchingBranch._id));
+              }
+            }
+          })
           .catch(err => console.error('Failed to fetch branches', err));
       });
     }
@@ -123,6 +145,7 @@ const GymAdminLayout = () => {
         title: 'Gym & Operations',
         items: [
           { label: 'Exercise Library', path: '/admin/exercises', icon: Dumbbell },
+          { label: 'Gym Exercise Videos', path: '/admin/exercise-videos', icon: Video },
           { label: 'Equipment', path: '/admin/equipment', icon: Activity },
           { label: 'Package Plans', path: '/admin/membership-plans', icon: CreditCard },
           { label: 'Membership Payments', path: '/admin/payments', icon: IndianRupee }
@@ -145,14 +168,20 @@ const GymAdminLayout = () => {
       },
       {
         title: 'Admin & Settings',
-        items: [
-          { label: 'Gym Profile', path: '/admin/gym-profile', icon: Building2 },
-          { label: 'Branches', path: '/admin/branches', icon: MapPin },
-          { label: 'Subscription', path: '/admin/subscription', icon: CreditCard },
-          { label: 'Reports', path: '/admin/reports', icon: BarChart },
-          { label: 'Notifications', path: '/admin/notifications', icon: Bell },
-          { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 }
-        ]
+        items: isBranchUser
+          ? [
+              { label: 'Reports', path: '/admin/reports', icon: BarChart },
+              { label: 'Notifications', path: '/admin/notifications', icon: Bell },
+              { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 }
+            ]
+          : [
+              { label: 'Gym Profile', path: '/admin/gym-profile', icon: Building2 },
+              { label: 'Branches', path: '/admin/branches', icon: MapPin },
+              { label: 'Subscription', path: '/admin/subscription', icon: CreditCard },
+              { label: 'Reports', path: '/admin/reports', icon: BarChart },
+              { label: 'Notifications', path: '/admin/notifications', icon: Bell },
+              { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 }
+            ]
       }
     ];
 
@@ -202,6 +231,16 @@ const GymAdminLayout = () => {
   };
 
 
+  const activeBranch = branches.find(b => 
+    String(b._id) === String(selectedBranch) || 
+    (user?.branchId && String(b._id) === String(user.branchId)) ||
+    b.managerId === user?.id ||
+    b.email?.toLowerCase() === user?.email?.toLowerCase()
+  );
+  const currentBranchName = activeBranch?.branchName || user?.branchName;
+  const sidebarBrandTitle = isBranchUser ? (currentBranchName || 'Branch Dashboard') : (gym?.name || 'AI GYM');
+  const roleSubtitle = isBranchUser ? 'Branch Admin' : 'Gym Owner';
+
   return (
     <div className="flex h-screen bg-[#FFFDF8] text-[#292524] overflow-hidden">
 
@@ -226,8 +265,8 @@ const GymAdminLayout = () => {
             <div className="w-9 h-9 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-200 shrink-0">
               <Activity className="text-[#292524]" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316] truncate max-w-[160px]" title={gym?.name || 'AI GYM'}>
-              {gym?.name || 'AI GYM'}
+            <span className="text-xl font-bold tracking-tight text-[#F97316] truncate max-w-[160px]" title={sidebarBrandTitle}>
+              {sidebarBrandTitle}
             </span>
           </Link>
           <div className="mt-4 flex items-center space-x-3">
@@ -236,7 +275,7 @@ const GymAdminLayout = () => {
             </div>
             <div className="flex-1 overflow-hidden">
               <p className="font-semibold text-sm text-[#292524] truncate">{getOwnerDisplayName()}</p>
-              <p className="text-xs text-[#FED7AA] font-medium truncate">Gym Owner</p>
+              <p className="text-xs text-[#FED7AA] font-medium truncate">{roleSubtitle}</p>
             </div>
           </div>
         </div>
@@ -321,18 +360,19 @@ const GymAdminLayout = () => {
             {branches.length > 0 && (
               <select
                 value={selectedBranch}
+                disabled={isBranchUser && Boolean(user?.branchId)}
                 onChange={(e) => {
                   const val = e.target.value;
                   setSelectedBranch(val);
                   if (val === 'main') {
-                    navigate('/admin/gym-profile');
+                    navigate('/admin/dashboard');
                   } else {
                     navigate(`/admin/branches/${val}`);
                   }
                 }}
                 className="bg-[#FFFDF8] border border-[#E7E5E4] text-[#292524] text-sm rounded-lg focus:ring-[#F97316] focus:border-[#F97316] block p-2 outline-none font-semibold"
               >
-                <option value="main">Main Branch</option>
+                {!isBranchUser && <option value="main">Main Branch</option>}
                 {branches.map(branch => (
                   <option key={branch._id} value={branch._id}>{branch.branchName}</option>
                 ))}
@@ -431,10 +471,10 @@ const GymAdminLayout = () => {
                 </div>
               )}
             </div>
-            <Link to="/admin/gym-profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+            <Link to={isBranchUser && user?.branchId ? `/admin/branches/${user.branchId}` : "/admin/gym-profile"} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-semibold text-[#292524] leading-none mb-0.5">{getOwnerDisplayName()}</p>
-                <p className="text-xs text-[#78716C] leading-none">Gym Owner</p>
+                <p className="text-xs text-[#78716C] leading-none">{roleSubtitle}</p>
               </div>
               <div className="w-9 h-9 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-full flex items-center justify-center text-[#292524] font-bold text-sm shadow">
                 {getOwnerDisplayName()?.[0] || 'A'}

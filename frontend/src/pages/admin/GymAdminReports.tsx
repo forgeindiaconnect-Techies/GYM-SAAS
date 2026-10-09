@@ -31,11 +31,13 @@ const GymAdminReports = () => {
     const fetchReportData = async () => {
       setLoading(true);
       try {
+        const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
+        const userBranchParam = user?.branchId ? `&branchId=${user.branchId}` : '';
         const [usersRes, membershipsRes, paymentsRes, salesRes, gymRes] = await Promise.all([
-          api.get('/users?role=MEMBER').catch(() => ({ data: { users: [] } })),
-          api.get('/memberships/gym').catch(() => ({ data: { memberships: [] } })),
-          api.get('/payments/gym').catch(() => ({ data: { payments: [] } })),
-          api.get('/store/sales').catch(() => ({ data: { sales: [] } })),
+          api.get(`/users?role=MEMBER${userBranchParam}`).catch(() => ({ data: { users: [] } })),
+          api.get(`/memberships/gym${branchParam}`).catch(() => ({ data: { memberships: [] } })),
+          api.get(`/payments/gym${branchParam}`).catch(() => ({ data: { payments: [] } })),
+          api.get(`/store/admin/sales${branchParam}`).catch(() => ({ data: { sales: [] } })),
           user?.gymId ? api.get(`/gyms/${user.gymId}`).catch(() => ({ data: { gym: null } })) : Promise.resolve({ data: { gym: null } })
         ]);
 
@@ -59,7 +61,7 @@ const GymAdminReports = () => {
     };
 
     fetchReportData();
-  }, [user]);
+  }, [user?.branchId, user?.gymId]);
 
   // Filter cutoff based on selected timeframe
   const cutoffDate = useMemo(() => {
