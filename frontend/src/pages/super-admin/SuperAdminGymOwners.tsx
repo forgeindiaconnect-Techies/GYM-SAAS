@@ -52,6 +52,21 @@ interface GymOwner {
 }
 
 const SAAS_PLANS: Record<string, { name: string, price: string, features: string[] }> = {
+  STARTER: {
+    name: 'Starter',
+    price: '₹999 / 1 Month',
+    features: ['1 gym location', 'Up to 100 members', 'Up to 3 trainers', 'Member registration', 'Attendance tracking', 'Membership & fee management', 'Basic reports', 'Basic AI workout plan']
+  },
+  PROFESSIONAL: {
+    name: 'Professional',
+    price: '₹2,499 / 1 Month',
+    features: ['1 gym location', 'Up to 500 members', 'Up to 15 trainers', 'Everything in Starter', 'Advanced AI workout & diet plans', 'Trainer allocation', 'Online session booking', 'AI chatbot', 'Revenue analytics']
+  },
+  ENTERPRISE: {
+    name: 'Enterprise',
+    price: '₹5,999 / 1 Month',
+    features: ['Multiple branches Up to 2', '1000 members', 'Up to 50 trainers', 'Branch-wise reports', 'Advanced AI features', 'Staff permissions', 'Workout video library', 'Priority support']
+  },
   FREE_TRIAL: {
     name: 'Free Trial',
     price: '₹0 / 1 Day',
@@ -203,13 +218,19 @@ const SuperAdminGymOwners = () => {
               return bGymId === userGymId;
             });
 
+        const hasActiveSub = sub?.status?.toUpperCase() === 'ACTIVE';
+        const hasPendingSub = sub?.status?.toUpperCase() === 'PENDING';
+        const subPlanKey = (sub?.plan || u.subscriptionPlan || '').toUpperCase();
+
         return {
           ...u,
           branches: ownerBranches,
-          billingCycle: sub?.billing,
-          paymentStatus: sub ? 'Paid' : 'N/A', // If we have an active subscription
-          subscriptionStatus: sub?.status || 'N/A',
-          subscriptionStart: sub?.start,
+          subscriptionPlan: subPlanKey || u.subscriptionPlan,
+          billingCycle: sub?.billing || u.billingCycle,
+          paymentStatus: hasActiveSub ? 'Paid' : hasPendingSub ? 'Pending' : (u.paymentStatus || 'Pending'),
+          subscriptionStatus: hasActiveSub ? 'Active' : (u.subscriptionStatus === 'Active' && !hasActiveSub ? 'Pending' : (u.subscriptionStatus || 'Pending')),
+          subscriptionStart: sub?.start || u.subscriptionStartDate,
+          subscriptionExpiry: sub?.renewal || u.subscriptionExpiry,
           transactionId: sub?.transactionId
         };
       });

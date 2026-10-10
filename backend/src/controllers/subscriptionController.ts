@@ -119,11 +119,23 @@ export const processPayment = async (req: AuthRequest, res: Response): Promise<v
     subscription.transactionId = generatedTransactionId;
     await subscription.save();
 
-    await User.findByIdAndUpdate(userId, {
+    const updatedUser = await User.findByIdAndUpdate(userId, {
       subscriptionStatus: SubscriptionStatus.ACTIVE,
       subscriptionPlan: subscription.plan,
+      subscriptionStartDate: subscription.startDate,
       subscriptionExpiry: subscription.endDate,
-    });
+      subscriptionExpiryDate: subscription.endDate,
+      paymentStatus: 'Approved',
+    }, { new: true });
+
+    if (updatedUser?.gymId) {
+      await Gym.findByIdAndUpdate(updatedUser.gymId, {
+        'subscription.plan': subscription.plan,
+        'subscription.status': 'Active',
+        'subscription.startDate': subscription.startDate,
+        'subscription.endDate': subscription.endDate,
+      });
+    }
 
     res.status(200).json({
       success: true,

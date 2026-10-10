@@ -6,6 +6,7 @@ import Gym, { GymStatus } from '../models/Gym';
 import Trainer from '../models/Trainer';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
 import Otp from '../models/Otp';
+import Subscription, { SubscriptionPaymentStatus } from '../models/Subscription';
 import { sendOtpEmail } from '../utils/emailService';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
@@ -307,13 +308,26 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
       // 3. Gym Owner / Admin Subscription check
       if (user.role === Role.GYM_OWNER || user.role === Role.ADMIN) {
-        if (user.gymId) {
-          const gym = await Gym.findById(user.gymId);
-          if (gym?.subscription?.endDate && new Date(gym.subscription.endDate) < now) {
-            gym.subscription.status = 'Expired';
-            await gym.save();
+        const activeSub = await Subscription.findOne({
+          userId: user._id,
+          status: SubscriptionPaymentStatus.ACTIVE,
+          endDate: { $gte: now }
+        });
+
+        if (activeSub) {
+          user.subscriptionStatus = SubscriptionStatus.ACTIVE;
+          user.subscriptionPlan = activeSub.plan;
+          user.subscriptionExpiry = activeSub.endDate;
+          user.paymentStatus = 'Approved';
+          isExpired = false;
+        } else {
+          // No active paid subscription - check if gym had previous subscription that expired
+          if (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < now) {
             user.subscriptionStatus = SubscriptionStatus.EXPIRED;
             isExpired = true;
+          } else {
+            user.subscriptionStatus = SubscriptionStatus.NONE;
+            user.paymentStatus = 'Pending Verification';
           }
         }
       }
@@ -437,13 +451,25 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       }
 
       if (user.role === Role.GYM_OWNER || user.role === Role.ADMIN) {
-        if (user.gymId) {
-          const gym = await Gym.findById(user.gymId);
-          if (gym?.subscription?.endDate && new Date(gym.subscription.endDate) < now) {
-            gym.subscription.status = 'Expired';
-            await gym.save();
+        const activeSub = await Subscription.findOne({
+          userId: user._id,
+          status: SubscriptionPaymentStatus.ACTIVE,
+          endDate: { $gte: now }
+        });
+
+        if (activeSub) {
+          user.subscriptionStatus = SubscriptionStatus.ACTIVE;
+          user.subscriptionPlan = activeSub.plan;
+          user.subscriptionExpiry = activeSub.endDate;
+          user.paymentStatus = 'Approved';
+          isExpired = false;
+        } else {
+          if (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < now) {
             user.subscriptionStatus = SubscriptionStatus.EXPIRED;
             isExpired = true;
+          } else {
+            user.subscriptionStatus = SubscriptionStatus.NONE;
+            user.paymentStatus = 'Pending Verification';
           }
         }
       }

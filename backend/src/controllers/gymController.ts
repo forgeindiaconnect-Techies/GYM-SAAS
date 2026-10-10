@@ -188,9 +188,11 @@ export const updateGymStatus = async (req: Request, res: Response): Promise<void
         owner.rejectionReason = undefined;
         (owner as any).suspensionReason = undefined;
         // Require package plan payment before dashboard access
-        owner.subscriptionStatus = 'NONE' as any;
-        owner.paymentStatus = 'Pending' as any;
-        owner.subscriptionExpiry = undefined;
+        if (String(owner.subscriptionStatus).toUpperCase() !== 'ACTIVE') {
+          owner.subscriptionStatus = 'NONE' as any;
+          owner.paymentStatus = 'Pending Verification' as any;
+          owner.subscriptionExpiry = undefined;
+        }
       }
       await owner.save();
     }

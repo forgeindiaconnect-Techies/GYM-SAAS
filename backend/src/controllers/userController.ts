@@ -3,6 +3,7 @@ import User, { Role, SubscriptionStatus } from '../models/User';
 import { AuthRequest } from '../middlewares/auth';
 import Gym from '../models/Gym';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
+import Subscription, { SubscriptionPaymentStatus } from '../models/Subscription';
 
 export const getUsersByRole = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -92,10 +93,11 @@ export const updateUserStatus = async (req: Request, res: Response): Promise<voi
       user.isActive = true;
       user.rejectionReason = undefined;
       (user as any).suspensionReason = undefined;
-      user.paymentStatus = 'Approved';
-      user.subscriptionStatus = SubscriptionStatus.ACTIVE;
 
       if (user.role === Role.MEMBER) {
+        user.paymentStatus = 'Approved';
+        user.subscriptionStatus = SubscriptionStatus.ACTIVE;
+
         const now = new Date();
         const futureDate = new Date();
         futureDate.setFullYear(futureDate.getFullYear() + 1); // 1 year active upon approval
@@ -126,6 +128,27 @@ export const updateUserStatus = async (req: Request, res: Response): Promise<voi
             startDate: now,
             endDate: futureDate,
           });
+        }
+      } else if (user.role === Role.GYM_OWNER || user.role === Role.ADMIN) {
+        // Gym owners must choose a package plan and pay before subscription is active
+        const activeSub = await Subscription.findOne({
+          userId: user._id,
+          status: SubscriptionPaymentStatus.ACTIVE,
+          endDate: { $gte: new Date() }
+        });
+
+        if (activeSub) {
+          user.subscriptionStatus = SubscriptionStatus.ACTIVE;
+          user.subscriptionPlan = activeSub.plan;
+          user.subscriptionExpiry = activeSub.endDate;
+          (user as any).subscriptionExpiryDate = activeSub.endDate;
+          user.paymentStatus = 'Approved';
+        } else {
+          user.subscriptionStatus = SubscriptionStatus.NONE;
+          user.subscriptionPlan = undefined;
+          user.subscriptionExpiry = undefined;
+          (user as any).subscriptionExpiryDate = undefined;
+          user.paymentStatus = 'Pending Verification';
         }
       }
     }
