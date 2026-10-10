@@ -4,8 +4,20 @@ import net from 'net';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import dns from 'dns';
+
+// Ensure Windows Node.js can resolve MongoDB Atlas SRV records
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (err) {
+  console.warn('[Database] DNS setServers notice:', err);
+}
 
 dotenv.config();
+dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.join(__dirname, '../../.env') });
+
+const FALLBACK_MONGO_URI = 'mongodb+srv://forgeindiaconnectfic_db_user:Renugopal@cluster0.tnlxx1f.mongodb.net/ai-gym?retryWrites=true&w=majority&appName=Cluster0';
 
 // Helper to check if a port is open
 const isPortOpen = (port: number, host = '127.0.0.1', timeout = 1500): Promise<boolean> => {
@@ -89,7 +101,7 @@ const tryStartLocalMongo = async (): Promise<boolean> => {
 };
 
 const connectDB = async () => {
-  const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ai-gym';
+  const mongoURI = process.env.MONGO_URI || FALLBACK_MONGO_URI;
   const isLocal = mongoURI.includes('127.0.0.1') || mongoURI.includes('localhost');
 
   if (isLocal) {
