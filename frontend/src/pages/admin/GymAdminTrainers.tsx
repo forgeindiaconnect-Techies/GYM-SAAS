@@ -500,10 +500,19 @@ const GymAdminTrainers = () => {
                       {!otpVerified && (
                         <button 
                           type="button" 
-                          onClick={() => { 
+                          onClick={async () => { 
                             if(validateEmail(manualForm.email)) { 
-                              setOtpSent(true); 
-                              alert('Demo OTP generated: 123456'); 
+                              try {
+                                const res = await api.post('/auth/send-otp', { email: manualForm.email });
+                                if (res.data.success) {
+                                  setOtpSent(true); 
+                                  alert(`Verification code (OTP) sent to ${manualForm.email}. Please check inbox or spam folder!`); 
+                                } else {
+                                  alert(res.data.message || 'Failed to send OTP email.');
+                                }
+                              } catch (err: any) {
+                                alert(err.response?.data?.message || 'Failed to send OTP email.');
+                              }
                             } else { 
                               alert('Enter a valid email address first'); 
                             } 
@@ -537,19 +546,24 @@ const GymAdminTrainers = () => {
                       <div className="mt-2.5 flex space-x-2">
                         <input 
                           type="text" 
-                          placeholder="Enter OTP (123456)" 
+                          placeholder="Enter 6-digit OTP code" 
                           value={otpInput} 
                           onChange={e => setOtpInput(e.target.value)} 
-                          onKeyDown={e => {
+                          onKeyDown={async e => {
                             if (e.key === 'Enter') {
                               e.preventDefault();
-                              if (otpInput.trim() === '123456') {
-                                setOtpVerified(true);
-                                setOtpSent(false);
-                                setOtpInput('');
-                                alert('Email Verified successfully! You can now complete the trainer details.');
-                              } else {
-                                alert('Invalid OTP. Please enter 123456');
+                              try {
+                                const res = await api.post('/auth/verify-otp', { email: manualForm.email, otp: otpInput.trim() });
+                                if (res.data.success) {
+                                  setOtpVerified(true);
+                                  setOtpSent(false);
+                                  setOtpInput('');
+                                  alert('Email Verified successfully! You can now complete the trainer details.');
+                                } else {
+                                  alert(res.data.message || 'Invalid OTP');
+                                }
+                              } catch (err: any) {
+                                alert(err.response?.data?.message || 'Invalid or expired OTP');
                               }
                             }
                           }}
@@ -557,15 +571,20 @@ const GymAdminTrainers = () => {
                         />
                         <button 
                           type="button" 
-                          onClick={() => { 
-                            if(otpInput.trim() === '123456') { 
-                              setOtpVerified(true); 
-                              setOtpSent(false); 
-                              setOtpInput(''); 
-                              alert('Email Verified successfully! You can now complete the trainer details.'); 
-                            } else { 
-                              alert('Invalid OTP. Please enter 123456'); 
-                            } 
+                          onClick={async () => { 
+                            try {
+                              const res = await api.post('/auth/verify-otp', { email: manualForm.email, otp: otpInput.trim() });
+                              if (res.data.success) { 
+                                setOtpVerified(true); 
+                                setOtpSent(false); 
+                                setOtpInput(''); 
+                                alert('Email Verified successfully! You can now complete the trainer details.'); 
+                              } else { 
+                                alert(res.data.message || 'Invalid OTP'); 
+                              }
+                            } catch (err: any) {
+                              alert(err.response?.data?.message || 'Invalid or expired OTP');
+                            }
                           }} 
                           className="px-4 py-2 bg-[#F97316] text-white font-bold rounded-lg hover:bg-[#EA580C] text-sm whitespace-nowrap shadow-sm transition-colors"
                         >
@@ -584,8 +603,8 @@ const GymAdminTrainers = () => {
                         <h4 className="font-bold text-sm text-amber-900">Email OTP Verification Required</h4>
                         <p className="text-xs text-amber-700 mt-1 leading-relaxed">
                           {otpSent 
-                            ? 'Please enter the 6-digit OTP (Demo OTP: 123456) and click "Verify". Once the mail OTP is completed, you can proceed to fill the rest of the form (password, contact, and professional details).'
-                            : 'Please enter the email address above and click "Send OTP". Once the mail OTP is completed, the remaining fields will unlock.'}
+                            ? 'Please enter the 6-digit OTP sent to your email and click "Verify". Once verified, you can proceed to fill the rest of the form.'
+                            : 'Please enter the email address above and click "Send OTP". Once verified, the remaining fields will unlock.'}
                         </p>
                       </div>
                     </div>

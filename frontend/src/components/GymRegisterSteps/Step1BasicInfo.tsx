@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Check, AlertCircle, Lock } from 'lucide-react';
+import { Eye, EyeOff, Check, AlertCircle, Lock, Loader2 } from 'lucide-react';
+import api from '../../utils/api';
 
 interface Step1Props {
   form: any;
@@ -18,28 +19,55 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
   const [otpSent, setOtpSent] = useState(false);
   const [enteredOtp, setEnteredOtp] = useState('');
   const [otpError, setOtpError] = useState('');
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [mobileBlockedNotice, setMobileBlockedNotice] = useState(false);
-  const DEMO_OTP = '123456';
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
       setOtpError('Please enter a valid email first');
       return;
     }
-    setOtpSent(true);
+    setSendingOtp(true);
     setOtpError('');
-    // Demo OTP shown in alert
-    alert(`Demo OTP generated: ${DEMO_OTP}`);
+    try {
+      const res = await api.post('/auth/send-otp', { email: form.email });
+      if (res.data.success) {
+        setOtpSent(true);
+        alert(`Verification code (OTP) sent to ${form.email}. Please check your inbox or spam folder!`);
+      } else {
+        setOtpError(res.data.message || 'Failed to send OTP email.');
+      }
+    } catch (err: any) {
+      const msg = err.response?.data?.message || 'Failed to send OTP email. Please try again.';
+      setOtpError(msg);
+    } finally {
+      setSendingOtp(false);
+    }
   };
 
-  const handleVerifyOtp = () => {
-    if (enteredOtp === DEMO_OTP) {
-      set('emailOtpVerified', true);
-      setOtpError('');
-      setMobileBlockedNotice(false);
-      alert('Email verified successfully! You can now enter your mobile number.');
-    } else {
-      setOtpError('Invalid OTP. Please try again.');
+  const handleVerifyOtp = async () => {
+    if (!enteredOtp || enteredOtp.length !== 6) {
+      setOtpError('Please enter the 6-digit OTP code');
+      return;
+    }
+    setVerifyingOtp(true);
+    setOtpError('');
+    try {
+      const res = await api.post('/auth/verify-otp', { email: form.email, otp: enteredOtp });
+      if (res.data.success) {
+        set('emailOtpVerified', true);
+        setOtpError('');
+        setMobileBlockedNotice(false);
+        alert('Email verified successfully! You can now enter your mobile number.');
+      } else {
+        setOtpError(res.data.message || 'Invalid or expired OTP. Please try again.');
+      }
+    } catch (err: any) {
+      const msg = err.response?.data?.message || 'Invalid or expired OTP. Please try again.';
+      setOtpError(msg);
+    } finally {
+      setVerifyingOtp(false);
     }
   };
 
@@ -86,8 +114,9 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
             }} placeholder="owner@gym.com" className={inputCls('email') + ' flex-1'} disabled={form.emailOtpVerified} />
             
             {!form.emailOtpVerified && (
-              <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#F1F5F9] text-[#78716C] text-sm font-medium rounded-xl border border-[#CBD5E1] hover:bg-[#FED7AA] transition-colors whitespace-nowrap">
-                {otpSent ? 'Resend OTP' : 'Send OTP'}
+              <button type="button" onClick={handleSendOtp} disabled={sendingOtp} className="px-4 py-2 bg-[#F1F5F9] text-[#78716C] text-sm font-medium rounded-xl border border-[#CBD5E1] hover:bg-[#FED7AA] transition-colors whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50">
+                {sendingOtp && <Loader2 size={14} className="animate-spin" />}
+                {sendingOtp ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
               </button>
             )}
             {form.emailOtpVerified && (
@@ -109,8 +138,9 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                 placeholder="Enter 6-digit OTP" 
                 className="w-full px-4 py-2 bg-[#FFFDF8] border border-[#CBD5E1] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316] flex-1"
               />
-              <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#F97316] text-white text-sm font-medium rounded-xl hover:bg-[#EA580C] transition-colors whitespace-nowrap">
-                Verify
+              <button type="button" onClick={handleVerifyOtp} disabled={verifyingOtp} className="px-4 py-2 bg-[#F97316] text-white text-sm font-medium rounded-xl hover:bg-[#EA580C] transition-colors whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50">
+                {verifyingOtp && <Loader2 size={14} className="animate-spin" />}
+                {verifyingOtp ? 'Verifying...' : 'Verify'}
               </button>
             </div>
           )}

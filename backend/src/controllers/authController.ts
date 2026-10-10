@@ -5,6 +5,8 @@ import User, { Role, ApprovalStatus, SubscriptionStatus } from '../models/User';
 import Gym, { GymStatus } from '../models/Gym';
 import Trainer from '../models/Trainer';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
+import Otp from '../models/Otp';
+import { sendOtpEmail } from '../utils/emailService';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
@@ -483,3 +485,70 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+export const sendOtp = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      res.status(400).json({ success: false, message: 'Valid email is required' });
+      return;
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+
+    // Generate random 6-digit OTP
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Store in DB with TTL
+    await Otp.deleteMany({ email: cleanEmail });
+    await Otp.create({ email: cleanEmail, otp: generatedOtp });
+
+    // Send real email via Brevo
+    const emailSent = await sendOtpEmail(cleanEmail, generatedOtp);
+
+    if (emailSent) {
+      res.status(200).json({
+        success: true,
+        message: `OTP sent successfully to ${cleanEmail}`
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to send OTP email via Brevo. Please verify your Brevo credentials and IP whitelist in Brevo settings.'
+      });
+    }
+  } catch (error: any) {
+    console.error('Error sending OTP:', error);
+    res.status(500).json({ success: false, message: error.message || 'Internal server error' });
+  }
+};
+
+export const verifyOtp = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      res.status(400).json({ success: false, message: 'Email and OTP are required' });
+      return;
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+    const otpRecord = await Otp.findOne({ email: cleanEmail, otp: otp.toString().trim() });
+
+    if (!otpRecord) {
+      res.status(400).json({ success: false, message: 'Invalid or expired OTP. Please try again.' });
+      return;
+    }
+
+    // Clear OTP after successful verification
+    await Otp.deleteMany({ email: cleanEmail });
+
+    res.status(200).json({
+      success: true,
+      message: 'Email verified successfully'
+    });
+  } catch (error: any) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ success: false, message: error.message || 'Internal server error' });
+  }
+};
+

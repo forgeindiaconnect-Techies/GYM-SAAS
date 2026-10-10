@@ -63,22 +63,40 @@ const CustomerRegisterPage = () => {
     sessionStorage.setItem('customer_reg_otp', otpVerified.toString());
   }, [otpVerified]);
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
       setErrors(e => ({ ...e, email: 'Enter a valid email first' }));
       return;
     }
-    setOtpSent(true);
-    alert('Demo OTP: 123456');
+    try {
+      const res = await api.post('/auth/send-otp', { email: form.email });
+      if (res.data.success) {
+        setOtpSent(true);
+        alert(`Verification code (OTP) sent to ${form.email}. Please check your inbox or spam folder!`);
+      } else {
+        alert(res.data.message || 'Failed to send OTP email.');
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to send OTP email.');
+    }
   };
 
-  const handleVerifyOtp = () => {
-    if (otp === '123456') {
-      setOtpVerified(true);
-      setErrors(e => { const n = { ...e }; delete n['email']; return n; });
-      alert('OTP Verified Successfully! You can now enter your mobile number.');
-    } else {
-      alert('Invalid OTP');
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length !== 6) {
+      alert('Please enter the 6-digit OTP code');
+      return;
+    }
+    try {
+      const res = await api.post('/auth/verify-otp', { email: form.email, otp });
+      if (res.data.success) {
+        setOtpVerified(true);
+        setErrors(e => { const n = { ...e }; delete n['email']; return n; });
+        alert('OTP Verified Successfully! You can now enter your mobile number.');
+      } else {
+        alert(res.data.message || 'Invalid OTP');
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Invalid or expired OTP');
     }
   };
 
