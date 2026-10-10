@@ -243,8 +243,9 @@ const RegisterPage = () => {
                 <div className="flex gap-2">
                   <input id="reg-email" type="email" value={form.email} onChange={e => { set('email', e.target.value); setOtpVerified(false); setOtpSent(false); }} disabled={otpVerified} placeholder="you@example.com" className={inputCls('email') + ' flex-1'} />
                   {!otpVerified && (
-                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#EA580C] transition-colors whitespace-nowrap">
-                      {otpSent ? 'Resend' : 'Send OTP'}
+                    <button type="button" onClick={handleSendOtp} disabled={sendingOtp} className="px-4 py-2 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#EA580C] transition-colors whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50">
+                      {sendingOtp && <Loader2 size={14} className="animate-spin" />}
+                      {sendingOtp ? 'Sending...' : otpSent ? 'Resend' : 'Send OTP'}
                     </button>
                   )}
                   {otpVerified && (
@@ -259,8 +260,9 @@ const RegisterPage = () => {
                     <label className="block text-xs font-semibold text-[#F97316] mb-2">Enter OTP sent to your email</label>
                     <div className="flex gap-2">
                       <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors flex-1" maxLength={6} />
-                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#292524] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">
-                        Verify
+                      <button type="button" onClick={handleVerifyOtp} disabled={verifyingOtp} className="px-4 py-2 bg-[#292524] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50">
+                        {verifyingOtp && <Loader2 size={14} className="animate-spin" />}
+                        {verifyingOtp ? 'Verifying...' : 'Verify'}
                       </button>
                     </div>
                   </div>

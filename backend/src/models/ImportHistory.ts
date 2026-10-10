@@ -34,7 +34,7 @@ const failedRowSchema = new Schema<IFailedRow>(
     data: { type: Schema.Types.Mixed },
     errors: [{ type: String }],
   },
-  { _id: false }
+  { _id: false, suppressReservedKeysWarning: true }
 );
 
 const importHistorySchema = new Schema<IImportHistory>(
