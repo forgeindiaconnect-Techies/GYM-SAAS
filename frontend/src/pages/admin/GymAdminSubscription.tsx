@@ -10,9 +10,20 @@ import api from '../../utils/api';
 import { plans } from '../subscription/GymOwnerSubscriptionPage';
 
 const PLAN_DETAILS: Record<string, any> = {
-  FREE_TRIAL: {
-    name: 'Free Trial', color: 'text-slate-400', bg: 'bg-slate-400/10', border: 'border-slate-500/30',
-    icon: Zap, limits: { members: 10, trainers: 1, staff: 1, branches: 1 },
+  STARTER: {
+    name: 'Starter', color: 'text-amber-500', bg: 'bg-amber-500/10', border: 'border-amber-500/30',
+    icon: Star, limits: { members: 100, trainers: 3, staff: 2, branches: 1 },
+    priceMonthly: 999, priceAnnual: 9990,
+  },
+  PROFESSIONAL: {
+    name: 'Professional', color: 'text-[#F97316]', bg: 'bg-[#F97316]/10', border: 'border-[#F97316]/40',
+    icon: Crown, limits: { members: 500, trainers: 15, staff: 5, branches: 1 },
+    priceMonthly: 2499, priceAnnual: 24990,
+  },
+  ENTERPRISE: {
+    name: 'Enterprise', color: 'text-purple-400', bg: 'bg-purple-400/10', border: 'border-purple-500/30',
+    icon: Sparkles, limits: { members: 1000, trainers: 50, staff: 10, branches: 2 },
+    priceMonthly: 5999, priceAnnual: 59990,
   },
   SILVER: {
     name: 'Silver', color: 'text-slate-300', bg: 'bg-slate-300/10', border: 'border-slate-400/30',
@@ -29,29 +40,33 @@ const PLAN_DETAILS: Record<string, any> = {
     icon: Sparkles, limits: { members: -1, trainers: -1, staff: -1, branches: 5 },
     priceMonthly: 2499, priceAnnual: 24990,
   },
+  FREE_TRIAL: {
+    name: 'Free Trial', color: 'text-slate-400', bg: 'bg-slate-400/10', border: 'border-slate-500/30',
+    icon: Zap, limits: { members: 10, trainers: 1, staff: 1, branches: 1 },
+  },
 };
 
 const UPGRADE_PLANS = [
   {
-    key: 'SILVER', name: 'Silver', tagline: 'For starting gyms',
-    priceMonthly: 799, priceAnnual: 7990, savingsAnnual: 1598,
-    color: 'text-slate-300', border: 'border-[#E7E5E4]', ctaStyle: 'bg-slate-500/20 border border-slate-400/50 text-slate-300 hover:bg-slate-500/30',
+    key: 'STARTER', name: 'Starter', tagline: 'For essential gym needs',
+    priceMonthly: 999, priceAnnual: 9990, savingsAnnual: 1998,
+    color: 'text-amber-500', border: 'border-amber-400/50', ctaStyle: 'bg-amber-500/20 border border-amber-400/50 text-amber-600 hover:bg-amber-500/30',
     icon: Star,
-    features: ['Up to 100 Members', 'Up to 5 Trainers', 'Up to 2 Staff members', '1 Branch location', 'Basic reporting']
+    features: ['1 gym location', 'Up to 100 Members', 'Up to 3 Trainers', 'Member registration', 'Attendance tracking', 'Membership & fee management', 'Basic reports', 'Basic AI workout plan']
   },
   {
-    key: 'GOLD', name: 'Gold', tagline: 'For growing gyms',
-    priceMonthly: 1499, priceAnnual: 14990, savingsAnnual: 2998,
+    key: 'PROFESSIONAL', name: 'Professional', tagline: 'For growing gyms',
+    priceMonthly: 2499, priceAnnual: 24990, savingsAnnual: 4998,
     color: 'text-[#F97316]', border: 'border-[#F97316]', ctaStyle: 'bg-[#F97316] text-white hover:bg-[#EA580C]',
     icon: Crown, popular: true,
-    features: ['Up to 500 Members', 'Up to 15 Trainers', 'Up to 5 Staff members', 'Up to 2 Branch locations', 'Advanced analytics', 'Priority support']
+    features: ['1 gym location', 'Up to 500 Members', 'Up to 15 Trainers', 'Everything in Starter', 'Advanced AI workout & diet plans', 'Trainer allocation', 'Online session booking', 'AI chatbot', 'Revenue analytics']
   },
   {
-    key: 'PREMIUM', name: 'Premium', tagline: 'Enterprise-grade',
-    priceMonthly: 2499, priceAnnual: 24990, savingsAnnual: 4998,
-    color: 'text-purple-400', border: 'border-purple-500/40', ctaStyle: 'bg-purple-600/80 border border-purple-500/50 text-[#292524] hover:bg-purple-600',
+    key: 'ENTERPRISE', name: 'Enterprise', tagline: 'Multi-branch enterprise',
+    priceMonthly: 5999, priceAnnual: 59990, savingsAnnual: 11988,
+    color: 'text-purple-400', border: 'border-purple-500/40', ctaStyle: 'bg-purple-600 border border-purple-500/50 text-white hover:bg-purple-700',
     icon: Sparkles,
-    features: ['Unlimited Members', 'Unlimited Trainers', 'Unlimited Staff members', 'Up to 5 Branch locations', 'Custom branding', 'Dedicated account manager', 'Gym Store — Sell Supplements & Merch', 'Gym Store — Online Orders & Payments', 'Gym Store — Inventory & Offline Sales', 'Gym Store — 30% Discount']
+    features: ['Multiple branches Up to 2', '1000 members', 'Up to 50 Trainers', 'Branch-wise reports', 'Advanced AI features', 'Staff permissions', 'Workout video library', 'Priority support']
   },
 ];
 
@@ -200,9 +215,9 @@ const GymAdminSubscription = () => {
 
   const isAnanth = user?.firstName?.toLowerCase() === 'ananth' || user?.email?.toLowerCase() === 'ananth@gmail.com';
 
-  const currentPlanKey = (user?.subscriptionPlan || (isAnanth ? 'GOLD' : 'FREE_TRIAL')).toUpperCase();
+  const currentPlanKey = (user?.subscriptionPlan || (isAnanth ? 'PROFESSIONAL' : 'STARTER')).toUpperCase();
   const displayPlanKey = previewPlanKey || currentPlanKey;
-  const currentPlan = PLAN_DETAILS[currentPlanKey] || PLAN_DETAILS.GOLD;
+  const currentPlan = PLAN_DETAILS[currentPlanKey] || PLAN_DETAILS.STARTER;
   const displayPlan = PLAN_DETAILS[displayPlanKey] || PLAN_DETAILS.GOLD;
   const PlanIcon = currentPlan.icon;
 

@@ -2,6 +2,9 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export enum SubscriptionPlan {
   FREE_TRIAL = 'FREE_TRIAL',
+  STARTER = 'STARTER',
+  PROFESSIONAL = 'PROFESSIONAL',
+  ENTERPRISE = 'ENTERPRISE',
   BASIC = 'BASIC',
   SILVER = 'SILVER',
   GOLD = 'GOLD',

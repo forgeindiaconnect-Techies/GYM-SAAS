@@ -5,11 +5,14 @@ import User, { SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
 
 const PLAN_PRICING: Record<string, { monthly: number; annual: number; trial: number; trialDays: number }> = {
-  FREE_TRIAL: { monthly: 0, annual: 0, trial: 0, trialDays: 1 },
-  BASIC:      { monthly: 399, annual: 3990, trial: 0, trialDays: 0 },
-  SILVER:     { monthly: 799, annual: 7190, trial: 0, trialDays: 0 },
-  GOLD:       { monthly: 1499, annual: 13490, trial: 0, trialDays: 0 },
-  PREMIUM:    { monthly: 2499, annual: 22490, trial: 0, trialDays: 0 },
+  FREE_TRIAL:   { monthly: 0, annual: 0, trial: 0, trialDays: 1 },
+  STARTER:      { monthly: 999, annual: 9990, trial: 0, trialDays: 0 },
+  PROFESSIONAL: { monthly: 2499, annual: 24990, trial: 0, trialDays: 0 },
+  ENTERPRISE:   { monthly: 5999, annual: 59990, trial: 0, trialDays: 0 },
+  BASIC:        { monthly: 399, annual: 3990, trial: 0, trialDays: 0 },
+  SILVER:       { monthly: 799, annual: 7190, trial: 0, trialDays: 0 },
+  GOLD:         { monthly: 1499, annual: 13490, trial: 0, trialDays: 0 },
+  PREMIUM:      { monthly: 2499, annual: 22490, trial: 0, trialDays: 0 },
 };
 
 export const selectPlan = async (req: AuthRequest, res: Response): Promise<void> => {

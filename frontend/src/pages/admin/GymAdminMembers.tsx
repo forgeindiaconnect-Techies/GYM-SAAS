@@ -20,11 +20,23 @@ const mockPlans = [
 
 const getPlanBadge = (planName: string, isSmall = false) => {
   const p = (planName || '').trim().toLowerCase();
-  let bgClass = 'bg-[#292524] text-white';
-  let iconColor = 'text-[#E7E5E4]';
-  let label = planName || 'None';
+  let bgClass = 'bg-amber-500/10 text-amber-600 border border-amber-500/30';
+  let iconColor = 'text-amber-500';
+  let label = planName || 'Starter';
 
-  if (p.includes('trial')) {
+  if (p.includes('starter')) {
+    bgClass = 'bg-amber-100 text-amber-900 border border-amber-300 shadow-xs';
+    iconColor = 'text-amber-600';
+    label = 'Starter';
+  } else if (p.includes('professional') || p.includes('pro')) {
+    bgClass = 'bg-orange-600 text-white border border-orange-500 shadow-xs';
+    iconColor = 'text-orange-200';
+    label = 'Professional';
+  } else if (p.includes('enterprise')) {
+    bgClass = 'bg-purple-700 text-purple-50 border border-purple-600 shadow-xs';
+    iconColor = 'text-purple-200';
+    label = 'Enterprise';
+  } else if (p.includes('trial')) {
     bgClass = 'bg-amber-100 text-amber-800 border border-amber-300 shadow-xs';
     iconColor = 'text-amber-600';
     label = 'Free Trial';
@@ -36,22 +48,18 @@ const getPlanBadge = (planName: string, isSmall = false) => {
     bgClass = 'bg-amber-600 text-white border border-amber-500 shadow-xs';
     iconColor = 'text-amber-200';
     label = 'Gold';
-  } else if (p.includes('platinum')) {
-    bgClass = 'bg-indigo-700 text-indigo-50 border border-indigo-500 shadow-xs';
-    iconColor = 'text-indigo-200';
-    label = 'Platinum';
+  } else if (p.includes('platinum') || p.includes('premium')) {
+    bgClass = 'bg-purple-700 text-purple-50 border border-purple-600 shadow-xs';
+    iconColor = 'text-purple-200';
+    label = planName;
   } else if (p.includes('basic')) {
     bgClass = 'bg-emerald-700 text-emerald-50 border border-emerald-600';
     iconColor = 'text-emerald-200';
     label = planName;
-  } else if (p.includes('premium') || p.includes('pro')) {
-    bgClass = 'bg-purple-700 text-purple-50 border border-purple-600';
-    iconColor = 'text-purple-200';
-    label = planName;
   }
 
   return (
-    <span className={`px-2 py-0.5 rounded font-bold inline-flex items-center gap-1 ${isSmall ? 'text-[10px]' : 'text-xs'} ${bgClass}`}>
+    <span className={`px-2.5 py-0.5 rounded-lg font-bold inline-flex items-center gap-1 ${isSmall ? 'text-[10px]' : 'text-xs'} ${bgClass}`}>
       <ShieldCheck size={isSmall ? 10 : 12} className={iconColor} />
       {label}
     </span>
@@ -99,18 +107,18 @@ const GymAdminMembers = () => {
           if (membershipHistory.length === 0) {
             membershipHistory = [{
               _id: 'default-' + userId,
-              planName: u.subscriptionPlan || (u.subscriptionStatus === 'Free Trial' ? 'Free Trial' : 'Active Plan'),
+              planName: u.subscriptionPlan || 'Starter',
               status: u.subscriptionStatus || 'Active',
-              duration: u.subscriptionStatus === 'Free Trial' ? '1 Day' : '1 Year',
+              duration: '1 Month',
               startDate: u.createdAt,
               endDate: u.subscriptionExpiry,
               paymentMethod: 'Membership',
             }];
           }
 
-          // If user had Free Trial originally or registered with trial, ensure it is represented in history
+          // If user had Free Trial originally, ensure it is represented in history
           const hasTrial = membershipHistory.some((h: any) => (h.planName || '').toLowerCase().includes('trial') || h.status === 'Free Trial' || h.paymentMethod === 'Trial');
-          if (!hasTrial && (u.subscriptionStatus === 'Free Trial' || u.customerType === 'NEW_CUSTOMER')) {
+          if (!hasTrial && u.subscriptionStatus === 'Free Trial') {
             membershipHistory.push({
               _id: 'trial-' + userId,
               planName: 'Free Trial',
@@ -131,7 +139,7 @@ const GymAdminMembers = () => {
             name: `${u.firstName} ${u.lastName}`,
             email: u.email,
             phone: u.mobile,
-            plan: u.subscriptionPlan || (membership?.status === 'Free Trial' ? 'Free Trial' : membership?.planName || 'None'),
+            plan: u.subscriptionPlan || membership?.planName || 'Starter',
             status: u.approvalStatus === 'PENDING' ? 'Pending' :
                     u.approvalStatus === 'APPROVED' ? 'Active' :
                     u.approvalStatus === 'REJECTED' ? 'Rejected' :
@@ -567,6 +575,12 @@ const GymAdminMembers = () => {
                         if (!expiryRaw && isTrial && member.originalUser?.createdAt) {
                           const joinDate = new Date(member.originalUser.createdAt);
                           expiryRaw = new Date(joinDate.getTime() + 24 * 60 * 60 * 1000).toISOString();
+                        } else if (!expiryRaw && member.originalUser?.createdAt) {
+                          // Paid plan default: 1 month from joined date
+                          const joinDate = new Date(member.originalUser.createdAt);
+                          const expiry = new Date(joinDate);
+                          expiry.setMonth(expiry.getMonth() + 1);
+                          expiryRaw = expiry.toISOString();
                         }
                         if (!expiryRaw) return (
                           <p className="flex items-center text-[11px] text-[#78716C] font-medium mt-0.5">
