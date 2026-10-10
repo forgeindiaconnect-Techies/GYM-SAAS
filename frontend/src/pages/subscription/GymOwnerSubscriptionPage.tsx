@@ -2,41 +2,12 @@ import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   Activity, CheckCircle, XCircle, ChevronRight, Crown, Star,
-  Sparkles, Zap, LogOut, Gift, AlertCircle
+  Sparkles, LogOut, Gift, AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 export const plans = [
-  {
-    key: 'FREE_TRIAL',
-    name: 'Free Trial',
-    badge: '1 Day',
-    icon: Zap,
-    iconBg: 'bg-[#FFFDF8]',
-    iconColor: 'text-[#FED7AA]',
-    borderDefault: 'border-[#E7E5E4]',
-    borderSelected: 'border-[#F97316]',
-    accentBar: 'bg-[#FED7AA]',
-    priceColor: 'text-[#292524]',
-    checkColor: 'text-[#FED7AA]',
-    trial: true,
-    priceMonthly: 0,
-    priceAnnual: 0,
-    priceAnnualPerMonth: 0,
-    limits: '10 members • 1 trainer • 1 branch',
-    features: [
-      'Basic Gym Profile',
-      'Basic Member Management',
-      'Basic Attendance Tracking',
-      'Basic AI Fitness Assessment',
-      '1 AI-generated Workout Plan',
-      'Basic Diet Recommendation',
-      'Limited AI Chat',
-    ],
-    locked: ['Advanced Analytics', 'Trainer Booking', '1-on-1 Coaching'],
-    ctaText: 'Start Free Trial',
-  },
   {
     key: 'SILVER',
     name: 'Silver',
@@ -137,7 +108,7 @@ export const plans = [
 ];
 
 const GymOwnerSubscriptionPage = () => {
-  const { user, logout, updateUser } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isAnnual, setIsAnnual] = useState(false);
@@ -160,21 +131,10 @@ const GymOwnerSubscriptionPage = () => {
     if (!selectedPlan) return;
     setIsLoading(true);
     try {
-      const billingCycle = selectedPlan === 'FREE_TRIAL' ? 'trial' : (isAnnual ? 'annual' : 'monthly');
+      const billingCycle = isAnnual ? 'annual' : 'monthly';
       const response = await api.post('/subscriptions/select', { plan: selectedPlan, billingCycle });
-      const { subscription, user: updatedUser } = response.data;
-      if (selectedPlan === 'FREE_TRIAL') {
-        updateUser({
-          subscriptionStatus: 'Free Trial',
-          subscriptionPlan: 'FREE_TRIAL',
-          subscriptionExpiry: subscription?.endDate,
-          ...updatedUser,
-        });
-        alert('1-Day Free Trial activated successfully! Welcome to your Gym Dashboard.');
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/gym-owner/payment', { state: { subscription } });
-      }
+      const { subscription } = response.data;
+      navigate('/gym-owner/payment', { state: { subscription } });
     } catch (error: any) {
       console.error('Error selecting plan:', error);
       alert(error.response?.data?.message || 'Failed to select plan. Please try again.');
