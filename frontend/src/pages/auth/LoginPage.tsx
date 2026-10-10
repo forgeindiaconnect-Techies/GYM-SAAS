@@ -73,33 +73,14 @@ const LoginPage = () => {
         sessionStorage.removeItem('checkout_intent');
       }
 
-      const isApprovedMember = user.role === 'MEMBER' && user.approvalStatus?.toUpperCase() === 'APPROVED';
-
-      const isSubCompleted = 
-        !isApprovedMember && (
-          res.data?.isSubscriptionCompleted || 
-          user.subscriptionStatus?.toUpperCase() === 'EXPIRED' || 
-          (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date())
-        );
-
-      if (isSubCompleted) {
-        alert('Your subscription plan is completed. Please upgrade your plan.');
-        if (user.role === 'ADMIN' || user.role === 'GYM_OWNER') {
-          navigate('/gym-owner/subscription', { 
-            state: { message: 'Your subscription plan is completed. Please upgrade your plan.' },
-            replace: true 
-          });
-        } else if (user.role === 'MEMBER') {
-          navigate('/member/dashboard', { 
-            state: { message: 'Your subscription plan is completed. Please upgrade your plan.', showExpiredModal: true },
-            replace: true 
-          });
-        } else {
-          navigate(getDashboardRoute(user), { replace: true });
+      if (user.role === 'GYM_OWNER' || user.role === 'ADMIN') {
+        if (!isSubscriptionActive(user.subscriptionStatus)) {
+          alert('Welcome! Please choose a package plan to activate your Gym Dashboard.');
+          navigate('/gym-owner/subscription', { replace: true });
+          return;
         }
-        return;
       }
-      
+
       alert('Login successfully!');
       navigate(getDashboardRoute(user), { replace: true });
     } catch (err: any) {

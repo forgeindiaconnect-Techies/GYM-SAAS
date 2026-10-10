@@ -3,7 +3,7 @@ import type { AuthUser } from '../contexts/AuthContext';
 export const isSubscriptionActive = (status?: string): boolean => {
   if (!status) return false;
   const s = status.toUpperCase().trim();
-  return s === 'ACTIVE' || s === 'FREE TRIAL' || s === 'FREE_TRIAL';
+  return s === 'ACTIVE';
 };
 
 export const getDashboardRoute = (user: AuthUser): string => {
