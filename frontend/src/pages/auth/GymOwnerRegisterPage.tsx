@@ -85,7 +85,7 @@ const GymOwnerRegisterPage = () => {
       // Images are optional
     }
     if (step === 4) {
-      if (form.subscriptionPlans.length === 0) e.subscriptionPlans = 'Please add at least one subscription plan';
+      if (form.subscriptionPlans.length === 0) e.subscriptionPlans = 'Please add at least one package plan';
     }
     if (step === 5) {
       if (!form.acceptTerms) e.acceptTerms = 'You must accept the Terms & Conditions';

@@ -36,21 +36,21 @@ const Step5Pricing: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
       <div className="border-b border-[#E7E5E4] pb-2 flex justify-between items-center">
         <div>
           <h2 className="text-lg font-semibold text-[#292524]">Membership & Pricing</h2>
-          <p className="text-sm text-[#78716C]">Define your subscription plans for members.</p>
+          <p className="text-sm text-[#78716C]">Define your package plans for members.</p>
         </div>
         {!showAddPlan && (
           <button type="button" onClick={() => setShowAddPlan(true)} className="px-3 py-1.5 bg-[#F97316]/10 text-[#F97316] text-sm font-medium rounded-lg hover:bg-[#F97316]/20 transition-colors flex items-center space-x-1">
-            <Plus size={16} /><span>Add Plan</span>
+            <Plus size={16} /><span>Add Package Plan</span>
           </button>
         )}
       </div>
 
       {showAddPlan && (
         <div className="bg-[#FFFFFF] border border-[#F97316]/30 rounded-xl p-5 space-y-4">
-          <h3 className="font-medium text-[#292524] text-sm">New Membership Plan</h3>
+          <h3 className="font-medium text-[#292524] text-sm">New Package Plan</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Plan Name *</label>
+              <label className="block text-xs text-[#78716C] mb-1">Package Name *</label>
               <input value={newPlan.name} onChange={e => setNewPlan({...newPlan, name: e.target.value})} placeholder="e.g. Monthly Pro" className={inputCls('planName')} />
             </div>
             <div>
@@ -86,9 +86,9 @@ const Step5Pricing: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
 
       {plans.length === 0 && !showAddPlan ? (
         <div className="text-center py-8 bg-[#FFFFFF] border border-[#E7E5E4] border-dashed rounded-xl">
-          <p className="text-[#78716C] text-sm mb-3">No subscription plans added yet.</p>
+          <p className="text-[#78716C] text-sm mb-3">No package plans added yet.</p>
           <button type="button" onClick={() => setShowAddPlan(true)} className="px-4 py-2 bg-[#FFFFFF] text-[#292524] text-sm border border-[#E7E5E4] rounded-lg hover:border-[#F97316]/50 transition-colors">
-            Create First Plan
+            Create First Package Plan
           </button>
         </div>
       ) : (
