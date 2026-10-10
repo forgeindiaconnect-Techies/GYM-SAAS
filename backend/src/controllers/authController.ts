@@ -552,3 +552,86 @@ export const verifyOtp = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      res.status(400).json({ success: false, message: 'Valid email address is required' });
+      return;
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: cleanEmail });
+
+    if (!user) {
+      res.status(404).json({ success: false, message: 'No registered account found with this email address.' });
+      return;
+    }
+
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await Otp.deleteMany({ email: cleanEmail });
+    await Otp.create({ email: cleanEmail, otp: generatedOtp });
+
+    const emailSent = await sendOtpEmail(cleanEmail, generatedOtp);
+
+    if (emailSent) {
+      res.status(200).json({
+        success: true,
+        message: `Password reset OTP sent to ${cleanEmail}`
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to send password reset email via Brevo.'
+      });
+    }
+  } catch (error: any) {
+    console.error('Error in forgotPassword:', error);
+    res.status(500).json({ success: false, message: error.message || 'Internal server error' });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) {
+      res.status(400).json({ success: false, message: 'Email, OTP, and new password are required.' });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      res.status(400).json({ success: false, message: 'Password must be at least 6 characters long.' });
+      return;
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+    const otpRecord = await Otp.findOne({ email: cleanEmail, otp: otp.toString().trim() });
+
+    if (!otpRecord) {
+      res.status(400).json({ success: false, message: 'Invalid or expired OTP code. Please try again.' });
+      return;
+    }
+
+    const user = await User.findOne({ email: cleanEmail });
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found.' });
+      return;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.passwordHash = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    await Otp.deleteMany({ email: cleanEmail });
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successfully. You can now log in with your new password.'
+    });
+  } catch (error: any) {
+    console.error('Error in resetPassword:', error);
+    res.status(500).json({ success: false, message: error.message || 'Internal server error' });
+  }
+};
+
