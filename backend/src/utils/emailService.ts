@@ -1,9 +1,11 @@
 import https from 'https';
 
 export const sendOtpEmail = async (toEmail: string, otp: string): Promise<boolean> => {
-  const apiKey = process.env.BREVO_API_KEY;
-  const senderEmail = process.env.BREVO_SENDER_EMAIL || 'renugopal603@gmail.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'AI GYM';
+  const rawKey = process.env.BREVO_API_KEY || '';
+  // Sanitize string to prevent "Invalid character in header content" errors
+  const apiKey = rawKey.trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderEmail = (process.env.BREVO_SENDER_EMAIL || 'renugopal603@gmail.com').trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderName = (process.env.BREVO_SENDER_NAME || 'AI GYM').trim().replace(/[\r\n\t\f\v"']/g, '');
 
   if (!apiKey) {
     console.error('[EmailService] BREVO_API_KEY is not set in environment variables');
@@ -41,38 +43,43 @@ export const sendOtpEmail = async (toEmail: string, otp: string): Promise<boolea
   });
 
   return new Promise((resolve) => {
-    const options = {
-      hostname: 'api.brevo.com',
-      path: '/v3/smtp/email',
-      method: 'POST',
-      headers: {
-        'accept': 'application/json',
-        'api-key': apiKey,
-        'content-type': 'application/json',
-        'content-length': Buffer.byteLength(payload)
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-          console.log(`[EmailService] OTP Email sent successfully to ${toEmail}`);
-          resolve(true);
-        } else {
-          console.error(`[EmailService] Failed to send email. Status: ${res.statusCode}, Body: ${data}`);
-          resolve(false);
+    try {
+      const options = {
+        hostname: 'api.brevo.com',
+        path: '/v3/smtp/email',
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': apiKey,
+          'content-type': 'application/json',
+          'content-length': Buffer.byteLength(payload)
         }
+      };
+
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => {
+          if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+            console.log(`[EmailService] OTP Email sent successfully to ${toEmail}`);
+            resolve(true);
+          } else {
+            console.error(`[EmailService] Failed to send email. Status: ${res.statusCode}, Body: ${data}`);
+            resolve(false);
+          }
+        });
       });
-    });
 
-    req.on('error', (err) => {
-      console.error(`[EmailService] Request error: ${err.message}`);
+      req.on('error', (err) => {
+        console.error(`[EmailService] Request error: ${err.message}`);
+        resolve(false);
+      });
+
+      req.write(payload);
+      req.end();
+    } catch (err: any) {
+      console.error(`[EmailService] Header/Connection error: ${err.message}`);
       resolve(false);
-    });
-
-    req.write(payload);
-    req.end();
+    }
   });
 };
