@@ -1,6 +1,6 @@
 import CustomerAIChatbot from '../components/CustomerAIChatbot';
 import { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -8,16 +8,25 @@ import {
   Utensils, Bot, CalendarCheck,
   TrendingUp, Bell, MessageSquare,
   Activity, Building2, Menu, LogOut, Clock,
-  ShoppingBag, FileText, Star
+  ShoppingBag, FileText, Star, Lock
 } from 'lucide-react';
 
 const MemberLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showExpiryWarning, setShowExpiryWarning] = useState(false);
   const [gym, setGym] = useState<any>(null);
-  const [isExpired, setIsExpired] = useState(false);
+  const [isExpired, setIsExpired] = useState<boolean>(() => {
+    return user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED';
+  });
+
+  useEffect(() => {
+    if (isExpired && location.pathname !== '/member/subscription') {
+      navigate('/member/subscription', { replace: true });
+    }
+  }, [isExpired, location.pathname, navigate]);
 
   useEffect(() => {
     if (user?.subscriptionExpiry) {
@@ -49,23 +58,42 @@ const MemberLayout = () => {
     }
 
     import('../utils/api').then(({ default: api }) => {
-      api.get('/memberships/my').then(res => {
-        const mems = res.data.memberships || [];
-        const active = mems.find((m: any) => (m.status === 'Active' || m.status === 'Free Trial') && (!m.endDate || new Date(m.endDate) >= new Date()));
-        const pending = mems.find((m: any) => m.status === 'Payment Verification Pending');
-        const expired = mems.find((m: any) => m.status === 'Expired' || ((m.status === 'Active' || m.status === 'Free Trial') && m.endDate && new Date(m.endDate) < new Date()));
-        
-        const isSubExpired = user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date());
-        const isSubPending = user?.subscriptionStatus === 'Payment Verification Pending';
-        const isSubRejected = user?.subscriptionStatus === 'Rejected' || user?.subscriptionStatus === 'REJECTED';
-        const isSubNone = user?.subscriptionStatus === 'None';
+      Promise.all([
+        api.get('/memberships/my').catch(() => ({ data: { memberships: [] } })),
+        api.get('/payments/my').catch(() => ({ data: { payments: [] } }))
+      ]).then(([memRes]) => {
+        const mems = memRes.data?.memberships || [];
+        const now = new Date();
 
-        if (!active && (expired || pending || isSubExpired || isSubPending || isSubRejected || isSubNone)) {
-          setIsExpired(true);
-        } else {
+        // 1. Check for active PAID membership (status === 'Active' and positive price/finalAmount and not expired)
+        const activePaid = mems.find((m: any) => 
+          (m.status === 'Active' || m.status === 'APPROVED') &&
+          Number(m.finalAmount || m.price || 0) > 0 &&
+          (!m.endDate || new Date(m.endDate) >= now)
+        );
+
+        // 2. Check for active FREE TRIAL (status === 'Active' or 'Free Trial', amount === 0, endDate in future)
+        const activeTrial = mems.find((m: any) =>
+          (m.status === 'Free Trial' || (m.status === 'Active' && (Number(m.finalAmount || 0) === 0 || m.planName?.toLowerCase().includes('trial')))) &&
+          m.endDate && new Date(m.endDate) >= now
+        );
+
+        const isUserExpired = user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED';
+
+        if (activePaid) {
           setIsExpired(false);
+        } else if (activeTrial && !isUserExpired) {
+          setIsExpired(false);
+        } else {
+          // Free trial completed, expired, or unpaid membership
+          setIsExpired(true);
         }
-      }).catch(err => console.error('Failed to fetch memberships', err));
+      }).catch(err => {
+        console.error('Failed to fetch memberships', err);
+        if (user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED') {
+          setIsExpired(true);
+        }
+      });
     });
   }, [user]);
 
@@ -115,19 +143,20 @@ const MemberLayout = () => {
 
   const displayNavGroups = isExpired ? [
     {
-      title: 'Action Required',
+      title: 'Membership Required',
       items: [
-        { label: 'Dashboard', path: '/member/dashboard', icon: LayoutDashboard },
-        { label: 'Membership Plans', path: '/member/upgrade', icon: CreditCard },
+        { label: 'Membership Plan', path: '/member/subscription', icon: CreditCard },
       ]
     }
   ] : navGroups;
 
   const isTrainingRoute = ['/member/find-trainers', '/member/training', '/member/trainer', '/member/bookings', '/member/online-sessions', '/member/book-session'].some(p => location.pathname.startsWith(p));
   const isStoreRoute = ['/member/store'].some(p => location.pathname.startsWith(p));
-  const currentNav = navGroups.flatMap(g => g.items).find(item => item.path === location.pathname) 
-    || (isTrainingRoute ? { label: 'Training', path: '/member/find-trainers', icon: Dumbbell } : null)
-    || (isStoreRoute ? { label: 'Gym Store', path: '/member/store', icon: ShoppingBag } : null);
+  const currentNav = isExpired
+    ? { label: 'Membership Plan', path: '/member/subscription', icon: CreditCard }
+    : (navGroups.flatMap(g => g.items).find(item => item.path === location.pathname) 
+      || (isTrainingRoute ? { label: 'Training', path: '/member/find-trainers', icon: Dumbbell } : null)
+      || (isStoreRoute ? { label: 'Gym Store', path: '/member/store', icon: ShoppingBag } : null));
 
   const renderSidebar = () => (
     <>
@@ -147,7 +176,9 @@ const MemberLayout = () => {
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="font-semibold text-sm text-[#292524] truncate">{user?.firstName} {user?.lastName}</p>
-            <p className="text-xs text-[#FED7AA] font-medium truncate capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
+            <p className="text-xs text-[#FED7AA] font-medium truncate capitalize">
+              {isExpired ? 'Free Trial Completed' : `${user?.subscriptionPlan || 'Member'} Plan`}
+            </p>
           </div>
         </div>
       </div>
@@ -192,6 +223,19 @@ const MemberLayout = () => {
           </div>
         ))}
       </nav>
+
+      {/* Locked Menus Notice when Free Trial is completed / expired */}
+      {isExpired && (
+        <div className="mx-3 my-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
+          <div className="w-8 h-8 mx-auto mb-1.5 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-600">
+            <Lock size={15} />
+          </div>
+          <p className="text-xs font-bold text-amber-800 mb-0.5">Side Menus Locked</p>
+          <p className="text-[11px] text-amber-700/80 leading-tight">
+            Complete your subscription payment below to unlock remaining side menus.
+          </p>
+        </div>
+      )}
 
       {/* Logout */}
       <div className="p-3 border-t border-[#E7E5E4]">
@@ -279,21 +323,47 @@ const MemberLayout = () => {
           </div>
 
           <div className="flex items-center space-x-3 md:space-x-5">
-            <Link to="/member/notifications" className="relative text-[#78716C] hover:text-[#F97316] transition-colors p-1">
-              <Bell size={20} />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#FED7AA] rounded-full shadow shadow-cyan-300" />
-            </Link>
-            <Link to="/member/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-              <div className="text-right hidden md:block">
-                <p className="text-sm font-semibold text-[#292524] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
-                <p className="text-xs text-[#78716C] leading-none capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
+            {!isExpired && (
+              <Link to="/member/notifications" className="relative text-[#78716C] hover:text-[#F97316] transition-colors p-1">
+                <Bell size={20} />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#FED7AA] rounded-full shadow shadow-cyan-300" />
+              </Link>
+            )}
+            {!isExpired ? (
+              <Link to="/member/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                <div className="text-right hidden md:block">
+                  <p className="text-sm font-semibold text-[#292524] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
+                  <p className="text-xs text-[#78716C] leading-none capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
+                </div>
+                <div className="w-9 h-9 bg-gradient-to-br from-[#FED7AA] to-[#FED7AA] rounded-full flex items-center justify-center text-[#292524] font-bold text-sm shadow">
+                  {user?.firstName?.[0] || 'U'}
+                </div>
+              </Link>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <div className="text-right hidden md:block">
+                  <p className="text-sm font-semibold text-[#292524] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
+                  <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">Free Trial Completed</span>
+                </div>
+                <div className="w-9 h-9 bg-gradient-to-br from-[#FED7AA] to-[#FED7AA] rounded-full flex items-center justify-center text-[#292524] font-bold text-sm shadow">
+                  {user?.firstName?.[0] || 'U'}
+                </div>
               </div>
-              <div className="w-9 h-9 bg-gradient-to-br from-[#FED7AA] to-[#FED7AA] rounded-full flex items-center justify-center text-[#292524] font-bold text-sm shadow">
-                {user?.firstName?.[0] || 'U'}
-              </div>
-            </Link>
+            )}
           </div>
         </header>
+
+        {isExpired && (
+          <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-3 flex items-center justify-between text-amber-800 text-sm">
+            <div className="flex items-center gap-2">
+              <Clock size={18} className="text-amber-600 shrink-0" />
+              <span><strong>Free Trial / Membership Ended:</strong> Your plan has completed. Please subscribe to an active membership plan to access workouts, diet plans, and trainers.</span>
+            </div>
+            <Link to="/member/subscription" className="px-3 py-1 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-lg text-xs shrink-0 transition-colors">
+              View Plans
+            </Link>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           <Outlet />

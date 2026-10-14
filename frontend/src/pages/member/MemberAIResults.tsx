@@ -3,7 +3,7 @@ import api from '../../utils/api';
 import { 
   Activity, Trophy, TrendingDown, ArrowRight, Calendar, Dumbbell, 
   Utensils, Clock, Loader2, Sparkles, Lock, CheckCircle2, 
-  User, ShieldAlert, HeartPulse, Award
+  User, ShieldAlert, HeartPulse, Award, Zap, ChevronDown, ChevronUp, RefreshCw, Moon
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ const MemberAIResults = () => {
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'output' | 'progress'>('output');
+  const [showAiDraftBaseline, setShowAiDraftBaseline] = useState(true);
 
   useEffect(() => {
     const fetchLatest = async () => {
@@ -343,24 +344,350 @@ const MemberAIResults = () => {
                 </div>
               </div>
 
-              {/* Locked Output Notice (Protects Customer from Unreviewed AI Output) */}
-              <div className="bg-white border border-[#E7E5E4] rounded-3xl p-10 text-center shadow-sm relative overflow-hidden">
-                <div className="w-16 h-16 rounded-full bg-[#FFFDF8] border border-[#FED7AA] flex items-center justify-center mx-auto mb-4 text-[#78716C]">
-                  <Lock size={28} />
+              {/* Section 1: Fitness Analysis */}
+              <div className="bg-white border border-[#FED7AA] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <div className="flex items-center justify-between border-b border-[#FED7AA] pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white flex items-center justify-center font-black shadow-md shadow-orange-900/10">
+                      1
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Sparkles size={18} className="text-[#F97316]" />
+                        <h3 className="text-xl font-black text-[#292524] tracking-tight">Fitness Analysis</h3>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                          AI Draft (Reference)
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#78716C] mt-0.5">
+                        Clinical biometric assessment and baseline fitness testing metrics
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowAiDraftBaseline(!showAiDraftBaseline)}
+                    className="text-xs font-bold text-[#F97316] hover:text-[#EA580C] flex items-center gap-1 transition-colors"
+                  >
+                    {showAiDraftBaseline ? 'Hide Baseline' : 'View Full AI Draft Baseline'}
+                    {showAiDraftBaseline ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  </button>
                 </div>
-                <h3 className="text-xl font-bold text-[#292524]">
-                  Workout & Diet Output Locked Pending Review
-                </h3>
-                <p className="text-sm text-[#78716C] max-w-lg mx-auto mt-2 leading-relaxed">
-                  To protect your safety and guarantee optimal training adaptations, our platform prohibits displaying unreviewed AI routines directly to customers. 
-                  Your trainer is calibrating the plan right now. Once approved, your complete plan with coach notes will appear here immediately.
-                </p>
-                <div className="mt-6 flex justify-center gap-3">
+
+                {/* AI Assessment Summary Box */}
+                <div className="p-4 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl">
+                  <p className="text-xs leading-relaxed text-[#292524]">
+                    <strong className="text-[#292524] font-extrabold">AI Assessment Summary: </strong>
+                    {recommendation.aiAnalysis?.assessment || 
+                      'Baseline assessment should include: Bodyweight (weekly), Body Measurements (waist, hips, chest, arms – monthly), basic strength tests (e.g., max reps push-ups, planks for time, bodyweight squats), and a 1-mile walk/run test to establish cardiovascular fitness. Monitor perceived exertion (RPE) for all exercises to guide progression.'}
+                  </p>
+                </div>
+
+                {showAiDraftBaseline && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
+                      <span className="text-[11px] font-extrabold text-[#78716C] uppercase tracking-wider block mb-1">
+                        Primary Goal Analysis
+                      </span>
+                      <p className="text-xs text-[#292524] leading-relaxed">
+                        {recommendation.aiAnalysis?.goalAnalysis || 'Biometric analysis calculated from baseline fitness indicators.'}
+                      </p>
+                    </div>
+
+                    <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
+                      <span className="text-[11px] font-extrabold text-[#78716C] uppercase tracking-wider block mb-1">
+                        Recommended Training Approach
+                      </span>
+                      <p className="text-xs text-[#292524] leading-relaxed">
+                        {recommendation.aiAnalysis?.recommendedApproach || 'Structured resistance and cardiovascular periodization.'}
+                      </p>
+                    </div>
+
+                    {recommendation.aiAnalysis?.limitations && (
+                      <div className="p-4 bg-orange-50/80 border border-orange-200 rounded-2xl md:col-span-2 text-xs text-orange-950 flex items-start gap-2.5">
+                        <ShieldAlert size={16} className="text-orange-600 shrink-0 mt-0.5" />
+                        <div>
+                          <strong className="font-extrabold block text-orange-900 mb-0.5">Limitations &amp; Health Considerations:</strong>
+                          <span>{recommendation.aiAnalysis.limitations}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Section 2: Personalized Workout Plan */}
+              <div className="bg-white border border-[#FED7AA] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#FED7AA] pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white flex items-center justify-center font-black shadow-md shadow-orange-900/10">
+                      2
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Dumbbell size={18} className="text-[#F97316]" />
+                        <h3 className="text-xl font-black text-[#292524] tracking-tight">Personalized Workout Plan</h3>
+                      </div>
+                      <p className="text-xs text-[#78716C] mt-0.5">
+                        Calibrate exercise routine with exact target muscles, sets, reps, and rest periods
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-[#78716C] bg-[#F9F8F6] px-3 py-1.5 rounded-full border border-[#FED7AA] self-start sm:self-auto">
+                    {approvedExercises.length} Exercises Calibrated
+                  </span>
+                </div>
+
+                {/* Weekly Split Table */}
+                {weeklySchedule.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#78716C] mb-2.5 flex items-center gap-1.5">
+                      <Calendar size={14} className="text-[#F97316]" /> Weekly Training Schedule
+                    </h4>
+                    <div className="overflow-x-auto rounded-2xl border border-[#FED7AA]">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-[#FFFDF8] text-[#78716C] border-b border-[#FED7AA]">
+                          <tr>
+                            <th className="px-4 py-2.5 font-extrabold">Day</th>
+                            <th className="px-4 py-2.5 font-extrabold">Workout Focus</th>
+                            <th className="px-4 py-2.5 font-extrabold">Target Duration</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#FED7AA]/60">
+                          {weeklySchedule.map((item: any, i: number) => (
+                            <tr key={i} className="hover:bg-[#FFFDF8] transition-colors">
+                              <td className="px-4 py-2.5 font-black text-[#F97316]">{item.day}</td>
+                              <td className="px-4 py-2.5 font-semibold text-[#292524]">{item.workout}</td>
+                              <td className="px-4 py-2.5 text-[#78716C] font-medium">{item.duration}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Calibrate Exercise Routine List */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#78716C] flex items-center gap-1.5">
+                      <Zap size={14} className="text-[#F97316]" /> Calibrate Exercise Routine ({approvedExercises.length} Exercises)
+                    </h4>
+                    <span className="text-[11px] text-[#78716C] italic hidden sm:inline">
+                      E.g., AI suggests 4&times;15 reps &rarr; Trainer modifies to 3&times;10 reps
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {approvedExercises.map((ex: any, idx: number) => (
+                      <div 
+                        key={idx} 
+                        className="bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl p-4 sm:p-5 hover:border-[#F97316]/50 transition-all shadow-xs"
+                      >
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-xl bg-[#F97316] text-white flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
+                              {idx + 1}
+                            </div>
+                            <div>
+                              <h5 className="font-extrabold text-[#292524] text-base">{ex.name}</h5>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <span className="text-[11px] text-[#78716C] font-semibold">Target Muscle:</span>
+                                <span className="px-2 py-0.5 bg-white border border-[#FED7AA] rounded-md text-[11px] font-bold text-[#F97316]">
+                                  {ex.targetMuscleGroup}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                            <div className="bg-white border border-[#FED7AA] px-3 py-1.5 rounded-xl text-center min-w-[65px]">
+                              <span className="text-[9px] uppercase font-bold text-[#78716C] block">Sets</span>
+                              <span className="text-xs font-black text-[#292524]">{ex.sets}</span>
+                            </div>
+
+                            <div className="bg-white border border-[#FED7AA] px-3 py-1.5 rounded-xl text-center min-w-[75px]">
+                              <span className="text-[9px] uppercase font-bold text-[#78716C] block">Reps</span>
+                              <span className="text-xs font-black text-[#292524]">{ex.reps}</span>
+                            </div>
+
+                            <div className="bg-white border border-[#FED7AA] px-3 py-1.5 rounded-xl text-center min-w-[65px]">
+                              <span className="text-[9px] uppercase font-bold text-[#78716C] block">Rest</span>
+                              <span className="text-xs font-black text-[#292524]">{ex.rest || '60-75s'}</span>
+                            </div>
+
+                            <div className="bg-white border border-[#FED7AA] px-3 py-1.5 rounded-xl text-center min-w-[80px]">
+                              <span className="text-[9px] uppercase font-bold text-[#78716C] block">Difficulty</span>
+                              <span className="text-xs font-black text-[#292524]">{ex.difficulty || 'Beginner'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 3: Diet and Nutrition Suggestions */}
+              <div className="bg-white border border-[#FED7AA] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <div className="flex items-center gap-3 border-b border-[#FED7AA] pb-4">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white flex items-center justify-center font-black shadow-md shadow-orange-900/10">
+                    3
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Utensils size={18} className="text-[#F97316]" />
+                      <h3 className="text-xl font-black text-[#292524] tracking-tight">Diet and Nutrition Suggestions</h3>
+                    </div>
+                    <p className="text-xs text-[#78716C] mt-0.5">
+                      Tailored nutrition timing, macronutrient distribution, and hydration target
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Morning Hydration */}
+                  <div className="bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl p-4 space-y-2">
+                    <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#78716C] block">
+                      Morning Hydration
+                    </span>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {dietPlan?.morning || 'Warm water with lemon and a pinch of pink Himalayan salt. Pre-workout (5:30 AM): 1 small banana or 2 rice cakes with a spoonful of peanut butter.'}
+                    </p>
+                  </div>
+
+                  {/* Breakfast */}
+                  <div className="bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl p-4 space-y-2">
+                    <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#78716C] block">
+                      Breakfast
+                    </span>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {dietPlan?.breakfast || 'Post-workout (7:30 AM): 3-4 whole eggs scrambled with spinach and mushrooms, 2 slices of whole-wheat toast, and a glass of water.'}
+                    </p>
+                  </div>
+
+                  {/* Lunch */}
+                  <div className="bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl p-4 space-y-2">
+                    <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#78716C] block">
+                      Lunch
+                    </span>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {dietPlan?.lunch || '150-180g grilled chicken breast or fish (e.g., salmon/tuna) with a large serving (1.5 cups) of mixed green salad with olive oil and 1 cup brown rice/quinoa.'}
+                    </p>
+                  </div>
+
+                  {/* Evening Snack */}
+                  <div className="bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl p-4 space-y-2">
+                    <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#78716C] block">
+                      Evening Snack
+                    </span>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {dietPlan?.evening || 'Late Afternoon Snack (4:00 PM): 1 cup Greek yogurt with berries or a handful (30g) of almonds/walnuts. Pre-dinner (6:30 PM): Green tea or black coffee.'}
+                    </p>
+                  </div>
+
+                  {/* Dinner */}
+                  <div className="bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl p-4 space-y-2">
+                    <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#78716C] block">
+                      Dinner
+                    </span>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {dietPlan?.dinner || 'Lean protein (grilled fish, paneer/tofu for a vegetarian option), steamed broccoli and asparagus, minimal complex carbs (e.g., small sweet potato or half a cup of lentils).'}
+                    </p>
+                  </div>
+
+                  {/* Daily Hydration Target */}
+                  <div className="bg-gradient-to-br from-blue-50/70 to-indigo-50/70 border border-blue-200 rounded-2xl p-4 space-y-2">
+                    <span className="text-[10px] uppercase font-extrabold tracking-wider text-blue-900 block">
+                      Daily Hydration Target
+                    </span>
+                    <p className="text-xs text-blue-950 font-medium leading-relaxed">
+                      {dietPlan?.hydration || 'Target 3.5-4 liters of water daily, spread throughout the day. Consider adding electrolyte tablets to water during/after workout.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 4: Fitness Progress Plan */}
+              <div className="bg-white border border-[#FED7AA] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <div className="flex items-center gap-3 border-b border-[#FED7AA] pb-4">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white flex items-center justify-center font-black shadow-md shadow-orange-900/10">
+                    4
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <HeartPulse size={18} className="text-[#F97316]" />
+                      <h3 className="text-xl font-black text-[#292524] tracking-tight">Fitness Progress Plan</h3>
+                    </div>
+                    <p className="text-xs text-[#78716C] mt-0.5">
+                      Recovery protocols, sleep targets, active mobility, and baseline benchmark testing
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Sleep Target */}
+                  <div className="p-4 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#F97316] uppercase tracking-wider">
+                      <Moon size={14} /> Sleep Target
+                    </div>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {recoveryPlan?.sleep || 'Aim for 7-9 hours of consistent, high-quality sleep per night to support tissue repair and hormonal balance.'}
+                    </p>
+                  </div>
+
+                  {/* Active Recovery */}
+                  <div className="p-4 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#F97316] uppercase tracking-wider">
+                      <Activity size={14} /> Active Recovery
+                    </div>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {recoveryPlan?.activeRecovery || 'On designated active recovery days (Tuesday, Thursday, Sunday), incorporate 30-45 minutes of low-intensity walking, swimming, or cycling.'}
+                    </p>
+                  </div>
+
+                  {/* Stretching & Mobility */}
+                  <div className="p-4 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#F97316] uppercase tracking-wider">
+                      <RefreshCw size={14} /> Stretching &amp; Mobility
+                    </div>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {recoveryPlan?.stretchingMobility || 'Dynamic stretching (arm circles, leg swings, torso twists) for 5-10 mins pre-workout; static stretching (holding for 30s) post-workout.'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Progress Tracking Benchmarks */}
+                <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-2">
+                  <span className="text-[11px] font-extrabold text-[#78716C] uppercase tracking-wider block">
+                    Baseline Testing &amp; Progressive Overload Protocols
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div className="bg-white p-3 rounded-xl border border-[#FED7AA]/80">
+                      <strong className="block text-[#F97316] font-bold mb-0.5">Strength Tests:</strong>
+                      <span className="text-[#292524]">Max reps push-ups, planks for time, bodyweight squats recorded every 2 weeks.</span>
+                    </div>
+                    <div className="bg-white p-3 rounded-xl border border-[#FED7AA]/80">
+                      <strong className="block text-[#F97316] font-bold mb-0.5">Cardio Metric:</strong>
+                      <span className="text-[#292524]">1-mile walk/run timed test monthly to evaluate aerobic engine.</span>
+                    </div>
+                    <div className="bg-white p-3 rounded-xl border border-[#FED7AA]/80">
+                      <strong className="block text-[#F97316] font-bold mb-0.5">Body Metrics:</strong>
+                      <span className="text-[#292524]">Bodyweight tracked weekly on Monday morning; circumferences measured monthly.</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trainer Action bar */}
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="text-xs text-[#78716C]">
+                    <span className="font-bold text-[#292524]">Live Trainer Sync:</span> Assigned coach{' '}
+                    <span className="text-[#F97316] font-bold">{trainerName}</span> can calibrate any of these 9 exercises and diet portions in the Review Studio.
+                  </div>
                   <Link
                     to="/member/trainer-review"
-                    className="px-6 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-xl text-xs transition-colors shadow-sm"
+                    className="px-6 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-xl text-xs transition-colors shadow-sm shrink-0"
                   >
-                    View Trainer Feedback Channel
+                    View Trainer Feedback Channel &rarr;
                   </Link>
                 </div>
               </div>

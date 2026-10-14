@@ -45,8 +45,8 @@ interface ScheduleItem {
 
 const GymAdminTrainerSchedule = () => {
   const { user } = useAuth();
-  // Active week anchor (defaulting to current app date: Oct 07, 2026)
-  const [currentDate, setCurrentDate] = useState(() => new Date('2026-10-07T10:00:00'));
+  // Active week anchor (defaults to current date, or anchors to active session date)
+  const [currentDate, setCurrentDate] = useState(() => new Date());
   const [dbSessions, setDbSessions] = useState<any[]>([]);
   const [trainers, setTrainers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +66,7 @@ const GymAdminTrainerSchedule = () => {
     monday.setDate(d.getDate() + distanceToMonday);
 
     const days = [];
+    const todayIso = new Date().toISOString().split('T')[0];
     for (let i = 0; i < 7; i++) {
       const current = new Date(monday);
       current.setDate(monday.getDate() + i);
@@ -76,7 +77,7 @@ const GymAdminTrainerSchedule = () => {
         dayName,
         displayDate,
         isoDate,
-        isToday: isoDate === new Date().toISOString().split('T')[0] || isoDate === '2026-10-07'
+        isToday: isoDate === todayIso
       });
     }
     return days;
@@ -86,8 +87,9 @@ const GymAdminTrainerSchedule = () => {
     if (weekDays.length === 0) return '';
     const start = weekDays[0];
     const end = weekDays[6];
-    return `${start.displayDate} - ${end.displayDate}, 2026`;
-  }, [weekDays]);
+    const yr = new Date(currentDate).getFullYear() || 2026;
+    return `${start.displayDate} - ${end.displayDate}, ${yr}`;
+  }, [weekDays, currentDate]);
 
   // Fetch real customer sessions and trainers from backend
   const fetchData = async () => {
@@ -100,7 +102,19 @@ const GymAdminTrainerSchedule = () => {
       ]);
 
       if (sessionsRes.data?.sessions) {
-        setDbSessions(sessionsRes.data.sessions);
+        const rawSessions = sessionsRes.data.sessions;
+        setDbSessions(rawSessions);
+
+        // Auto-align calendar to the week containing sessions if available
+        const validSessions = rawSessions.filter((s: any) => s.date);
+        if (validSessions.length > 0) {
+          const todayIso = new Date().toISOString().split('T')[0];
+          const targetSession = validSessions.find((s: any) => s.date.split('T')[0] >= todayIso) || validSessions[0];
+          if (targetSession?.date) {
+            const cleanDate = targetSession.date.split('T')[0];
+            setCurrentDate(new Date(cleanDate + 'T12:00:00'));
+          }
+        }
       }
       if (trainersRes.data?.trainers) {
         setTrainers(trainersRes.data.trainers);
@@ -118,18 +132,21 @@ const GymAdminTrainerSchedule = () => {
 
   // Standardize time string into "HH:00" slot
   const mapTimeToHourSlot = (timeStr: string): string => {
-    if (!timeStr) return '08:00';
+    if (!timeStr) return '10:00';
     let s = timeStr.trim().toUpperCase();
+    if (s.includes('-')) {
+      s = s.split('-')[0].trim();
+    }
     const isPM = s.includes('PM');
     const isAM = s.includes('AM');
     s = s.replace(/AM|PM/g, '').trim();
     const [hStr] = s.split(':');
     let h = parseInt(hStr, 10);
-    if (isNaN(h)) return '08:00';
+    if (isNaN(h)) return '10:00';
     if (isPM && h < 12) h += 12;
     if (isAM && h === 12) h = 0;
     const hourFormatted = `${h.toString().padStart(2, '0')}:00`;
-    return HOURS.includes(hourFormatted) ? hourFormatted : '08:00';
+    return HOURS.includes(hourFormatted) ? hourFormatted : '10:00';
   };
 
   // Customer session bookings with trainers (staff shifts removed completely)
@@ -168,7 +185,7 @@ const GymAdminTrainerSchedule = () => {
         customerPhoto: s.customerId?.profilePhoto,
         customerEmail: s.customerId?.email,
         day: dayName,
-        date: s.date,
+        date: s.date ? s.date.split('T')[0] : '',
         time: slotHour,
         endTime: s.endTime,
         duration: s.duration || 60,
@@ -210,7 +227,7 @@ const GymAdminTrainerSchedule = () => {
   };
 
   const handleThisWeek = () => {
-    setCurrentDate(new Date('2026-10-07T10:00:00'));
+    setCurrentDate(new Date());
   };
 
   return (
@@ -395,6 +412,55 @@ const GymAdminTrainerSchedule = () => {
           </div>
         </div>
       </div>
+
+      {/* Roster of Customer Training Sessions */}
+      {filteredScheduleItems.length > 0 && (
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-3">
+            <div>
+              <h3 className="text-base font-bold text-[#292524]">Scheduled Customer Bookings</h3>
+              <p className="text-xs text-[#78716C]">All active customer appointments with assigned trainers</p>
+            </div>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#FFFDF8] border border-[#FED7AA] text-[#F97316]">
+              {filteredScheduleItems.length} Booking{filteredScheduleItems.length === 1 ? '' : 's'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {filteredScheduleItems.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => setSelectedDetail(item)}
+                className="p-4 bg-[#FFFDF8] border border-[#FED7AA] hover:border-[#F97316] rounded-xl cursor-pointer transition-all hover:shadow-xs space-y-2.5"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold text-xs shrink-0">
+                      {item.trainerName.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-[#292524]">{item.trainerName}</p>
+                      <p className="text-[11px] font-semibold text-[#F97316]">Client: {item.customerName || 'Member'}</p>
+                    </div>
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                    item.mode === 'Online' ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-purple-50 text-purple-700 border border-purple-200'
+                  }`}>
+                    {item.mode}
+                  </span>
+                </div>
+
+                <div className="text-xs text-[#78716C] flex items-center justify-between pt-1 border-t border-[#FED7AA]/60">
+                  <span className="flex items-center gap-1 font-medium text-[#292524]">
+                    <CalendarIcon size={12} className="text-[#F97316]" /> {item.date}
+                  </span>
+                  <span className="font-semibold text-[#292524]">{item.time} ({item.duration}m)</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Detail Modal */}
       {selectedDetail && (

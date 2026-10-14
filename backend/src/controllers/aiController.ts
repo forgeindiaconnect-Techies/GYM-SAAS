@@ -13,178 +13,14 @@ import AIRecommendation from '../models/AIRecommendation';
 import User from '../models/User';
 import Trainer from '../models/Trainer';
 
-// AI Generation Service (Rule-Based Expert Engine)
-export const mockAIGeneration = (fitnessProfile: any) => {
-  const goal = fitnessProfile.fitnessGoal || 'General Fitness';
-  const level = fitnessProfile.currentFitnessLevel || fitnessProfile.experienceLevel || 'Beginner';
-  const age = Number(fitnessProfile.age) || 28;
-  const weight = Number(fitnessProfile.weight) || 70;
-  const height = Number(fitnessProfile.height) || 172;
-  const gender = fitnessProfile.gender || 'Not specified';
-  const equipment = fitnessProfile.equipmentAvailability || fitnessProfile.workoutPreference || 'Full Gym';
-  const dietPref = fitnessProfile.dietaryPreferences || fitnessProfile.dietPreference || 'Non-Vegetarian';
-  const injuries = fitnessProfile.injuries || fitnessProfile.healthConsiderations || 'None reported';
-  const activityLevel = fitnessProfile.activityLevel || 'Moderately Active';
+import { 
+  mockAIGeneration, 
+  generateGeminiFitnessPlan, 
+  chatWithGeminiAssistant 
+} from '../utils/geminiService';
 
-  // Body Measurements
-  const measurements = fitnessProfile.bodyMeasurements || {
-    chest: fitnessProfile.chest || '-',
-    waist: fitnessProfile.waist || '-',
-    hips: fitnessProfile.hips || '-',
-    arms: fitnessProfile.arms || '-',
-    thighs: fitnessProfile.thighs || '-'
-  };
+export { mockAIGeneration };
 
-  // BMI Calculation
-  const heightM = height / 100;
-  const bmi = heightM > 0 ? (weight / (heightM * heightM)).toFixed(1) : '22.0';
-
-  let goalAnalysis = '';
-  let recommendedApproach = '';
-  let assessment = '';
-  let limitations = '';
-
-  const lowerGoal = goal.toLowerCase();
-
-  if (lowerGoal.includes('weight loss') || lowerGoal.includes('fat loss')) {
-    goalAnalysis = `Targeting sustainable fat reduction with a controlled caloric deficit (~350–500 kcal/day). Given the current BMI of ${bmi} and ${activityLevel.toLowerCase()} baseline, the objective is preserving lean muscle tissue while optimizing metabolic expenditure.`;
-    recommendedApproach = 'High-density resistance training (compound movements) combined with post-workout Zone 2 cardio (20–25 mins) and steady step accumulation (8,000–10,000 steps/day).';
-    assessment = `Customer presents with a goal of fat reduction. Focus should remain on progressive overload with moderate rest intervals (45–60s), ensuring heart rate elevation without compromising exercise form.`;
-    limitations = injuries !== 'None reported' 
-      ? `Reported considerations: "${injuries}". Strictly avoid ballistic impact on affected joints; substitute high-impact movements with low-impact alternatives.`
-      : 'Maintain strict pelvic stability and avoid spinal flexion under fatigue. High-volume plyometrics should be phased gradually.';
-  } else if (lowerGoal.includes('muscle') || lowerGoal.includes('hypertrophy') || lowerGoal.includes('weight gain')) {
-    goalAnalysis = `Prioritizing mechanical tension, metabolic stress, and myofibrillar hypertrophy. Requires a slight hypercaloric surplus (+250–350 kcal/day) with high bioavailability protein (1.8g–2.2g per kg bodyweight).`;
-    recommendedApproach = 'Targeted resistance split with 8–12 repetition ranges, 2–3 RIR (reps in reserve), and structured eccentric control (2–3 second tempo).';
-    assessment = `Customer profile is primed for hypertrophy. Gradual volume accumulation across major muscle groups will yield optimal adaptation. Rest periods set at 60–90 seconds for ATP replenishment.`;
-    limitations = injuries !== 'None reported'
-      ? `Medical consideration: "${injuries}". Eliminate excessive overhead or deep compression loads where indicated. Prioritize machine guidance for stability.`
-      : 'Ensure adequate scapular retraction and core bracing prior to heavy compounds. Prioritize full range of motion over absolute load.';
-  } else if (lowerGoal.includes('strength')) {
-    goalAnalysis = `Neuromuscular adaptation and force production focus. Low-repetition compound lifts (3–6 reps) at 75–85% 1RM with extended recovery periods.`;
-    recommendedApproach = 'Linear progression model focusing on Squat, Hinge, Push, and Pull movement patterns with 90–120s inter-set recovery.';
-    assessment = `Focus is neuromuscular recruitment and biomechanical proficiency. Work sets should remain strict with thorough dynamic warm-up protocols.`;
-    limitations = 'Ensure mandatory spotters for maximal pressing and squatting. Deload week advised every 5th training week.';
-  } else {
-    goalAnalysis = `Holistic physical conditioning improving cardiovascular endurance, functional mobility, metabolic efficiency, and lean muscle tone.`;
-    recommendedApproach = 'Full-body functional resistance circuit interspersed with mobility drills and active recovery periods.';
-    assessment = `Well-rounded physiological conditioning program balancing joint longevity, cardiovascular output, and musculoskeletal integrity.`;
-    limitations = 'Emphasize dynamic joint mobilization during warm-up. Keep heart rate within 65-75% max HR during conditioning blocks.';
-  }
-
-  // Parse workout days (default to 4)
-  let days = parseInt(fitnessProfile.availableWorkoutDays) || 4;
-  if (String(fitnessProfile.availableWorkoutDays).includes('1-2')) days = 2;
-  if (String(fitnessProfile.availableWorkoutDays).includes('3-4')) days = 4;
-  if (String(fitnessProfile.availableWorkoutDays).includes('5-6')) days = 6;
-  if (String(fitnessProfile.availableWorkoutDays).includes('Every day') || String(fitnessProfile.availableWorkoutDays).includes('7')) days = 6;
-
-  const scheduleTemplate = [
-    { day: 'Monday', workout: 'Lower Body & Core Fundamentals', duration: '50 min' },
-    { day: 'Tuesday', workout: 'Upper Body Push & Pull', duration: '45 min' },
-    { day: 'Wednesday', workout: 'Active Recovery & Mobility Flow', duration: '30 min' },
-    { day: 'Thursday', workout: 'Legs, Posterior Chain & Glutes', duration: '50 min' },
-    { day: 'Friday', workout: 'Upper Body Hypertrophy & Arms', duration: '45 min' },
-    { day: 'Saturday', workout: 'Conditioning & Core Endurance', duration: '35 min' },
-    { day: 'Sunday', workout: 'Full Body Rest & Neural Regeneration', duration: '-' },
-  ];
-
-  const weeklySchedule = scheduleTemplate.map((item, index) => {
-    if (days <= 3 && (index === 1 || index === 3 || index === 5)) {
-      return { ...item, workout: 'Rest & Walking', duration: '30 min' };
-    }
-    if (days === 4 && (index === 2 || index === 5)) {
-      return { ...item, workout: 'Rest / Light Mobility', duration: '20 min' };
-    }
-    return item;
-  });
-
-  // Exercises tailored to equipment & goal
-  const defaultExercises = [
-    { name: 'Barbell Back Squats', sets: 4, reps: '12', duration: '12 min', rest: '75s', difficulty: level, targetMuscleGroup: 'Quads & Glutes' },
-    { name: 'Dumbbell Romanian Deadlifts', sets: 3, reps: '12', duration: '10 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Hamstrings & Lower Back' },
-    { name: 'Incline Dumbbell Chest Press', sets: 4, reps: '10', duration: '10 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Chest & Anterior Deltoids' },
-    { name: 'Seated Cable Row / Lat Pulldown', sets: 4, reps: '12', duration: '10 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Upper Back & Lats' },
-    { name: 'Dumbbell Walking Lunges', sets: 3, reps: '12/leg', duration: '8 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Quads & Glutes' },
-    { name: 'Plank with Shoulder Taps', sets: 3, reps: '45 sec', duration: '6 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Core & Stabilizers' }
-  ];
-
-  // Adjust for home/bodyweight if requested
-  const isHomeOrBodyweight = equipment.toLowerCase().includes('home') || equipment.toLowerCase().includes('bodyweight') || equipment.toLowerCase().includes('no equipment');
-  const exercises = isHomeOrBodyweight ? [
-    { name: 'Bodyweight Goblet Squats', sets: 4, reps: '15', duration: '10 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Quads & Glutes' },
-    { name: 'Tempo Push-ups', sets: 3, reps: '12', duration: '8 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Chest & Triceps' },
-    { name: 'Reverse Lunges', sets: 3, reps: '14/leg', duration: '8 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Hamstrings & Glutes' },
-    { name: 'Glute Bridges (Hold 2s)', sets: 3, reps: '15', duration: '6 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Glutes & Core' },
-    { name: 'Pike Push-ups / Shoulder Taps', sets: 3, reps: '10', duration: '6 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Shoulders & Core' },
-    { name: 'Hollow Body Hold', sets: 3, reps: '30 sec', duration: '5 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Abdominals' }
-  ] : defaultExercises;
-
-  // Diet customization
-  const isVeg = dietPref.toLowerCase().includes('veg') && !dietPref.toLowerCase().includes('non');
-  const morning = isVeg 
-    ? 'Warm lemon water (500ml), overnight soaked chia seeds, 6 almonds, 2 walnuts' 
-    : 'Warm water (500ml) with pinch of Himalayan pink salt, black coffee / green tea';
-
-  const breakfast = isVeg
-    ? 'Paneer bhurji (150g) with 2 multi-grain rotis, or 3-scoop oats with plant protein, chia, and berries'
-    : '3 whole eggs + 2 egg whites omelette with spinach, 2 slices whole wheat toast, 1 apple';
-
-  const lunch = isVeg
-    ? 'Brown rice (150g) or 2 chapatis, 1 large bowl dal/chana, 100g low-fat paneer or tofu, fresh green salad'
-    : 'Grilled chicken breast / fish (180g), 1 cup steamed quinoa or brown rice, roasted broccoli & zucchini';
-
-  const evening = isVeg
-    ? 'Sprouted moong salad with lemon, or roasted makhana (fox nuts) + green tea or whey protein shake'
-    : 'Whey protein shake with unsweetened almond milk, or boiled egg whites (4) + cucumber slices';
-
-  const dinner = isVeg
-    ? 'Soya chunks / paneer curry (light gravy), sautéed bell peppers, 1 multigrain phulka or quinoa bowl'
-    : 'Grilled fish / chicken tikka (150g), large bowl of mixed vegetable soup, steamed green beans';
-
-  return {
-    aiAnalysis: {
-      fitnessSummary: `Customer: ${fitnessProfile.fullName || 'Member'} | Age: ${age} | Gender: ${gender} | Height: ${height} cm | Weight: ${weight} kg | BMI: ${bmi} | Goal: ${goal} | Level: ${level} | Equipment: ${equipment} | Chest: ${measurements.chest} | Waist: ${measurements.waist} | Hips: ${measurements.hips} | Arms: ${measurements.arms} | Thighs: ${measurements.thighs}`,
-      profileSummary: `Current Weight: ${weight} kg\nTarget Weight: ${fitnessProfile.targetWeight || '-'} kg\nHeight: ${height} cm\nBMI: ${bmi}\nFitness Goal: ${goal}\nExperience Level: ${level}\nActivity Level: ${activityLevel}\nTraining Days: ${days} days/week\nEquipment: ${equipment}`,
-      goalAnalysis,
-      recommendedApproach,
-      assessment,
-      limitations,
-      generalRecommendations: 'Prioritize water intake (minimum 3L/day), sleep hygiene (7-8 hrs), progressive resistance tracking, and post-workout protein timing within 90 minutes.'
-    },
-    workoutRecommendation: {
-      weeklySchedule,
-      exercises
-    },
-    dietRecommendation: {
-      morning,
-      breakfast,
-      lunch,
-      evening,
-      dinner,
-      hydration: '3.0 – 3.5 Liters of filtered water throughout the day (500ml upon waking)',
-      note: 'Draft AI nutritional suggestion based on customer profile. Requires assigned Trainer review & approval before adoption.'
-    },
-    recoveryRecommendations: {
-      sleep: '7.5 – 8.5 hours uninterrupted sleep per night for optimal nervous system and muscular regeneration.',
-      activeRecovery: '15–20 minutes low-intensity walking or light mobility on designated rest days.',
-      stretchingMobility: '10 minutes dynamic warm-up pre-workout; 8 minutes static hamstring, quad, and chest stretches post-workout.',
-      notes: 'If experiencing acute muscular soreness (DOMS), incorporate contrast water showers and light foam rolling.'
-    },
-    routine: {
-      morning: 'Hydration (500ml), dynamic joint rotations, wholesome breakfast within 60 mins of waking.',
-      workoutTime: '5-min dynamic warm-up, core workout blocks (45-55 mins), 5-min cool down and stretching.',
-      evening: 'Nutritious snack, light mobility / steps check, hydration.',
-      night: `Clean dinner at least 2 hours before bed, digital detox 30 mins before sleep (${age < 30 ? '8 hours' : '7.5 hours'} target).`
-    },
-    progressSuggestions: {
-      focusAreas: 'Mastering compound movement technique, tracking weekly progressive overload, and logging daily nutrition.',
-      improvementSuggestions: 'Gradually increase weight or reps every 7–10 days while maintaining strict biomechanical form.',
-      progressTracking: 'Log weekly body weight on Monday mornings; measure waist & chest bi-weekly; update progress photos monthly.',
-      startingWeight: String(weight)
-    }
-  };
-};
 
 /* ── 1. Customer Assessment & AI Analysis Generation ──────────────────────────── */
 export const generateRecommendation = async (req: any, res: any) => {
@@ -204,8 +40,29 @@ export const generateRecommendation = async (req: any, res: any) => {
       return res.status(400).json({ success: false, message: 'Gym membership context is required to generate AI plans' });
     }
 
-    // 1. Generate complete Mock AI draft payload
-    const generatedPayload = mockAIGeneration(fitnessProfile);
+    // Sync updated customer registered details to User profile
+    if (userDoc) {
+      if (fitnessProfile.height) userDoc.height = Number(fitnessProfile.height);
+      if (fitnessProfile.weight) userDoc.weight = Number(fitnessProfile.weight);
+      if (fitnessProfile.fitnessGoal) userDoc.fitnessGoal = fitnessProfile.fitnessGoal;
+      if (fitnessProfile.currentFitnessLevel) userDoc.experienceLevel = fitnessProfile.currentFitnessLevel;
+      if (fitnessProfile.preferredTraining) userDoc.preferredTraining = fitnessProfile.preferredTraining;
+      if (fitnessProfile.preferredWorkoutTime) userDoc.preferredWorkoutTime = fitnessProfile.preferredWorkoutTime;
+      if (fitnessProfile.gender) userDoc.gender = fitnessProfile.gender;
+      if (fitnessProfile.city) userDoc.city = fitnessProfile.city;
+      if (fitnessProfile.pinCode) userDoc.pinCode = fitnessProfile.pinCode;
+      if (fitnessProfile.emergencyContactName || fitnessProfile.emergencyContactMobile) {
+        userDoc.emergencyContact = {
+          name: fitnessProfile.emergencyContactName || userDoc.emergencyContact?.name || '',
+          relationship: fitnessProfile.emergencyContactRelation || userDoc.emergencyContact?.relationship || '',
+          mobile: fitnessProfile.emergencyContactMobile || userDoc.emergencyContact?.mobile || ''
+        };
+      }
+      await userDoc.save();
+    }
+
+    // 1. Generate complete AI draft payload with Gemini (fallback to expert engine if needed)
+    const generatedPayload = await generateGeminiFitnessPlan(fitnessProfile);
 
     // 2. Trainer Assignment Rule:
     // "Only trainers who are currently marked as Online/Available should be eligible for new customer trainer assignments."
@@ -922,7 +779,7 @@ export const memberChatbotQuery = async (req: ExpressRequest, res: ExpressRespon
       return res.status(401).json({ success: false, message: 'Authentication required' });
     }
 
-    const { message } = req.body;
+    const { message, history, pageContext } = req.body;
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ success: false, message: 'Message text is required' });
     }
@@ -976,102 +833,155 @@ export const memberChatbotQuery = async (req: ExpressRequest, res: ExpressRespon
 
     let reply = '';
 
-    // 1. Booking Status / Sessions Status
-    if (q.includes('booking') || (q.includes('session') && (q.includes('status') || q.includes('book')))) {
-      if (sessions && sessions.length > 0) {
-        const latest = sessions[0] as any;
-        const latestTrainer = latest.trainerId ? `${latest.trainerId.firstName || latest.trainerId.name || 'Trainer'} ${latest.trainerId.lastName || ''}`.trim() : (trainerName || 'assigned trainer');
-        const sessionDate = formatDateStr(latest.date);
-        reply = `You have **${sessions.length}** session booking(s) on record. Your latest booking for **${latest.sessionTitle || '1-on-1 Coaching'}** with **${latestTrainer}** is scheduled for **${sessionDate}** at **${latest.startTime || '09:00 AM'}** (Status: **${latest.status || 'Pending'}**).`;
-      } else {
-        reply = "You currently have no session bookings. You can browse expert coaches and book a 1-on-1 session under **Find Trainers**!";
-      }
-    } 
-    // 2. Next Session / When is my next session
-    else if (q.includes('next session') || q.includes('when is my next') || (q.includes('upcoming') && q.includes('session'))) {
+    // Attempt Gemini AI Assistant first
+    try {
       const upcoming = sessions.find((s: any) => {
         const status = (s.status || '').toLowerCase();
         return status === 'pending' || status === 'confirmed' || status === 'accepted' || status === 'booked';
       }) || (sessions.length > 0 ? sessions[0] : null);
 
-      if (upcoming) {
-        const upSess = upcoming as any;
-        const upTrainer = upSess.trainerId ? `${upSess.trainerId.firstName || upSess.trainerId.name || 'Trainer'} ${upSess.trainerId.lastName || ''}`.trim() : (trainerName || 'your trainer');
-        reply = `Your next session **${upSess.sessionTitle || 'Personal Training'}** is on **${formatDateStr(upSess.date)}** at **${upSess.startTime || '09:00 AM'}** with **${upTrainer}** (Status: **${upSess.status}**).`;
-      } else {
-        reply = "You have no upcoming sessions scheduled. Visit **Find Trainers** or **Book Session** to pick your time slot!";
-      }
-    }
-    // 3. Who is my trainer
-    else if (q.includes('trainer') || q.includes('coach') || q.includes('who is my')) {
-      if (trainerName) {
-        const spec = trainerInfo?.specialization || trainerInfo?.expertise || 'Fitness & Conditioning';
-        reply = `Your assigned personal trainer is **${trainerName}** (Specialization: **${spec}**). You can send messages directly to your trainer under **Messages**!`;
-      } else {
-        reply = "You currently don't have a personal trainer assigned. Browse our certified trainers under **Find Trainers** to select your coach!";
-      }
-    }
-    // 4. Show my workout plan / Diet / Assessment
-    else if (q.includes('workout plan') || q.includes('plan') || q.includes('workout') || q.includes('diet')) {
+      const nextSessionStr = upcoming
+        ? `${(upcoming as any).sessionTitle || 'Personal Training'} on ${formatDateStr((upcoming as any).date)} at ${(upcoming as any).startTime || '09:00 AM'} with ${(upcoming as any).trainerId ? ((upcoming as any).trainerId.firstName || (upcoming as any).trainerId.name) : (trainerName || 'assigned trainer')} (Status: ${(upcoming as any).status})`
+        : undefined;
+
+      const latestP = (payments && payments.length > 0) ? (payments[0] as any) : null;
+      const paymentSummary = latestP
+        ? `Latest payment ₹${latestP.amount} on ${formatDateStr(latestP.createdAt)} (${latestP.status || 'Completed'})`
+        : 'No payment dues';
+
+      const latestLog = (progressLogs && progressLogs.length > 0) ? (progressLogs[0] as any) : null;
+      const progressSummary = latestLog
+        ? `Latest weight: ${latestLog.weight || '-'} kg, Workouts logged: ${latestLog.workoutsCompleted || 1}, Calories: ${latestLog.caloriesBurned || '-'} kcal`
+        : undefined;
+
       const rec = recommendations as any;
-      if (rec && (rec.status === 'Trainer Approved' || rec.status === 'Approved')) {
-        const goal = rec.fitnessProfile?.fitnessGoal || 'General Fitness';
-        reply = `Your trainer-approved plan for **${goal}** is active! Target Calories: **${rec.aiOutput?.caloricTarget || '2,100 kcal/day'}**, Protein: **${rec.aiOutput?.proteinTarget || '130g/day'}**. View your full routines under **Workout Plan**.`;
-      } else if (rec) {
-        reply = `Your AI Assessment is submitted and currently **${rec.status}**. Your trainer will review and activate your plan shortly!`;
-      } else {
-        reply = "You haven't completed your fitness assessment yet. Head to **AI Assistant** to get a custom workout and diet plan!";
-      }
+      const planSummary = rec
+        ? `Status: ${rec.status}, Goal: ${rec.fitnessProfile?.fitnessGoal || userAny.fitnessGoal || 'General Fitness'}`
+        : undefined;
+
+      reply = await chatWithGeminiAssistant(
+        message.trim(),
+        {
+          name: userAny.firstName || 'Member',
+          gender: userAny.gender,
+          goal: userAny.fitnessGoal || rec?.fitnessProfile?.fitnessGoal,
+          level: userAny.experienceLevel || rec?.fitnessProfile?.currentFitnessLevel,
+          trainerName: trainerName || undefined,
+          trainerSpecialization: trainerInfo?.specialization || trainerInfo?.expertise,
+          nextSession: nextSessionStr,
+          totalSessions: sessions.length,
+          membershipPlan: memberships?.[0]?.planName || userAny.subscriptionPlan || 'Active Member',
+          paymentSummary,
+          progressSummary,
+          planSummary,
+          pageContext: pageContext || 'Customer Dashboard'
+        },
+        Array.isArray(history) ? history : []
+      );
+    } catch (geminiErr: any) {
+      console.warn('Gemini Assistant fallback triggered:', geminiErr.message);
     }
-    // 5. Payment status / Payments / Membership fee
-    else if (q.includes('payment') || q.includes('paid') || q.includes('bill') || q.includes('invoice') || q.includes('fee')) {
-      if (payments && payments.length > 0) {
-        const latestP = payments[0] as any;
-        reply = `You have **${payments.length}** payment record(s). Your latest payment of **₹${latestP.amount}** on **${formatDateStr(latestP.createdAt)}** via **${latestP.paymentMethod || 'Online'}** was **${latestP.status || 'Completed'}**. Your membership status is **${userAny.subscriptionPlan || 'Active'}**.`;
-      } else if (memberships && memberships.length > 0) {
-        const latestM = memberships[0] as any;
-        reply = `Your active membership plan is **${latestM.planName || userAny.subscriptionPlan || 'Standard Member'}** (Status: **${latestM.status || 'Active'}**).`;
-      } else {
-        reply = `Your account membership status is **${userAny.subscriptionPlan || 'Active Member'}**. Check **Payment History** for transaction logs.`;
+
+    // Graceful Rule-Based Fallback if Gemini did not produce a reply
+    if (!reply) {
+      // 1. Booking Status / Sessions Status
+      if (q.includes('booking') || (q.includes('session') && (q.includes('status') || q.includes('book')))) {
+        if (sessions && sessions.length > 0) {
+          const latest = sessions[0] as any;
+          const latestTrainer = latest.trainerId ? `${latest.trainerId.firstName || latest.trainerId.name || 'Trainer'} ${latest.trainerId.lastName || ''}`.trim() : (trainerName || 'assigned trainer');
+          const sessionDate = formatDateStr(latest.date);
+          reply = `You have **${sessions.length}** session booking(s) on record. Your latest booking for **${latest.sessionTitle || '1-on-1 Coaching'}** with **${latestTrainer}** is scheduled for **${sessionDate}** at **${latest.startTime || '09:00 AM'}** (Status: **${latest.status || 'Pending'}**).`;
+        } else {
+          reply = "You currently have no session bookings. You can browse expert coaches and book a 1-on-1 session under **Find Trainers**!";
+        }
+      } 
+      // 2. Next Session / When is my next session
+      else if (q.includes('next session') || q.includes('when is my next') || (q.includes('upcoming') && q.includes('session'))) {
+        const upcoming = sessions.find((s: any) => {
+          const status = (s.status || '').toLowerCase();
+          return status === 'pending' || status === 'confirmed' || status === 'accepted' || status === 'booked';
+        }) || (sessions.length > 0 ? sessions[0] : null);
+
+        if (upcoming) {
+          const upSess = upcoming as any;
+          const upTrainer = upSess.trainerId ? `${upSess.trainerId.firstName || upSess.trainerId.name || 'Trainer'} ${upSess.trainerId.lastName || ''}`.trim() : (trainerName || 'your trainer');
+          reply = `Your next session **${upSess.sessionTitle || 'Personal Training'}** is on **${formatDateStr(upSess.date)}** at **${upSess.startTime || '09:00 AM'}** with **${upTrainer}** (Status: **${upSess.status}**).`;
+        } else {
+          reply = "You have no upcoming sessions scheduled. Visit **Find Trainers** or **Book Session** to pick your time slot!";
+        }
       }
-    }
-    // 6. How is my progress / Weight / Log
-    else if (q.includes('progress') || q.includes('weight') || q.includes('log') || q.includes('tracking')) {
-      if (progressLogs && progressLogs.length > 0) {
-        const latestLog = progressLogs[0] as any;
-        reply = `You have recorded **${progressLogs.length}** progress entry(ies)! Latest log on **${formatDateStr(latestLog.date || latestLog.createdAt)}**: Weight: **${latestLog.weight || '-'} kg**, Workouts Completed: **${latestLog.workoutsCompleted || 1}**, Calories Burned: **${latestLog.caloriesBurned || '-'} kcal**.`;
-      } else {
-        reply = "You haven't logged any progress entries yet. Track your weight, workout completion, and calories in **Customer Progress** to visualize your results!";
+      // 3. Who is my trainer
+      else if (q.includes('trainer') || q.includes('coach') || q.includes('who is my')) {
+        if (trainerName) {
+          const spec = trainerInfo?.specialization || trainerInfo?.expertise || 'Fitness & Conditioning';
+          reply = `Your assigned personal trainer is **${trainerName}** (Specialization: **${spec}**). You can send messages directly to your trainer under **Messages**!`;
+        } else {
+          reply = "You currently don't have a personal trainer assigned. Browse our certified trainers under **Find Trainers** to select your coach!";
+        }
       }
-    }
-    // 7. How can I improve my fitness / Fitness tips / Advice
-    else if (q.includes('improve') || q.includes('tip') || q.includes('advice') || q.includes('better') || q.includes('fitness')) {
-      const goal = (recommendations as any)?.fitnessProfile?.fitnessGoal || 'General Fitness';
-      reply = `Here are personalized recommendations to boost your **${goal}**:
+      // 4. Show my workout plan / Diet / Assessment
+      else if (q.includes('workout plan') || q.includes('plan') || q.includes('workout') || q.includes('diet')) {
+        const rec = recommendations as any;
+        if (rec && (rec.status === 'Trainer Approved' || rec.status === 'Approved')) {
+          const goal = rec.fitnessProfile?.fitnessGoal || 'General Fitness';
+          reply = `Your trainer-approved plan for **${goal}** is active! Target Calories: **${rec.aiOutput?.caloricTarget || '2,100 kcal/day'}**, Protein: **${rec.aiOutput?.proteinTarget || '130g/day'}**. View your full routines under **Workout Plan**.`;
+        } else if (rec) {
+          reply = `Your AI Assessment is submitted and currently **${rec.status}**. Your trainer will review and activate your plan shortly!`;
+        } else {
+          reply = "You haven't completed your fitness assessment yet. Head to **AI Assistant** to get a custom workout and diet plan!";
+        }
+      }
+      // 5. Payment status / Payments / Membership fee
+      else if (q.includes('payment') || q.includes('paid') || q.includes('bill') || q.includes('invoice') || q.includes('fee')) {
+        if (payments && payments.length > 0) {
+          const latestP = payments[0] as any;
+          reply = `You have **${payments.length}** payment record(s). Your latest payment of **₹${latestP.amount}** on **${formatDateStr(latestP.createdAt)}** via **${latestP.paymentMethod || 'Online'}** was **${latestP.status || 'Completed'}**. Your membership status is **${userAny.subscriptionPlan || 'Active'}**.`;
+        } else if (memberships && memberships.length > 0) {
+          const latestM = memberships[0] as any;
+          reply = `Your active membership plan is **${latestM.planName || userAny.subscriptionPlan || 'Standard Member'}** (Status: **${latestM.status || 'Active'}**).`;
+        } else {
+          reply = `Your account membership status is **${userAny.subscriptionPlan || 'Active Member'}**. Check **Payment History** for transaction logs.`;
+        }
+      }
+      // 6. How is my progress / Weight / Log
+      else if (q.includes('progress') || q.includes('weight') || q.includes('log') || q.includes('tracking')) {
+        if (progressLogs && progressLogs.length > 0) {
+          const latestLog = progressLogs[0] as any;
+          reply = `You have recorded **${progressLogs.length}** progress entry(ies)! Latest log on **${formatDateStr(latestLog.date || latestLog.createdAt)}**: Weight: **${latestLog.weight || '-'} kg**, Workouts Completed: **${latestLog.workoutsCompleted || 1}**, Calories Burned: **${latestLog.caloriesBurned || '-'} kcal**.`;
+        } else {
+          reply = "You haven't logged any progress entries yet. Track your weight, workout completion, and calories in **Customer Progress** to visualize your results!";
+        }
+      }
+      // 7. How can I improve my fitness / Fitness tips / Advice
+      else if (q.includes('improve') || q.includes('tip') || q.includes('advice') || q.includes('better') || q.includes('fitness')) {
+        const goal = (recommendations as any)?.fitnessProfile?.fitnessGoal || 'General Fitness';
+        reply = `Here are personalized recommendations to boost your **${goal}**:
 1. **Consistent Training**: Complete 3-4 structured sessions every week with progressive overload.
 2. **Optimal Protein & Hydration**: Target ~1.6g to 2.0g protein per kg bodyweight and drink 3+ liters of water daily.
 3. **Rest & Recovery**: Ensure 7-8 hours of sleep per night for optimal muscle repair.
 4. **Trainer Chat**: Message your coach under **Messages** for custom adjustments to your routines!`;
-    }
-    // 8. Store / Orders
-    else if (q.includes('order') || q.includes('store') || q.includes('purchase') || q.includes('cart')) {
-      if (orders && orders.length > 0) {
-        const latestO = orders[0] as any;
-        reply = `You have **${orders.length}** order(s) in Gym Store. Latest order **#${latestO._id.toString().slice(-6)}**: Total **₹${latestO.totalAmount}** (Status: **${latestO.status || 'Processing'}**).`;
-      } else {
-        reply = "You haven't placed any store orders yet. Check out fitness gear, supplements, and apparel in **Gym Store**!";
+      }
+      // 8. Store / Orders
+      else if (q.includes('order') || q.includes('store') || q.includes('purchase') || q.includes('cart')) {
+        if (orders && orders.length > 0) {
+          const latestO = orders[0] as any;
+          reply = `You have **${orders.length}** order(s) in Gym Store. Latest order **#${latestO._id.toString().slice(-6)}**: Total **₹${latestO.totalAmount}** (Status: **${latestO.status || 'Processing'}**).`;
+        } else {
+          reply = "You haven't placed any store orders yet. Check out fitness gear, supplements, and apparel in **Gym Store**!";
+        }
+      }
+      // 9. Greetings
+      else if (q === 'hi' || q === 'hello' || q === 'hey' || q.startsWith('hi ') || q.startsWith('hello ')) {
+        reply = `Hello **${userAny.firstName}**! 👋 How can I help you today? You can ask about your booking status, next session, assigned trainer, workout plan, payment status, or progress.`;
+      }
+      // 10. Default Smart Context-Aware Answer
+      else {
+        const trainerStr = trainerName ? `assigned to trainer **${trainerName}**` : 'currently unassigned to a personal trainer';
+        const sessionStr = sessions && sessions.length > 0 ? `have **${sessions.length}** session booking(s)` : 'have no active session bookings';
+        reply = `Hello **${userAny.firstName}**! You are ${trainerStr} and ${sessionStr}. I can assist you with your **Booking Status**, **Next Session**, **Trainer Info**, **Workout & Diet Plan**, **Payment History**, or **Progress Tracking**. What would you like to check?`;
       }
     }
-    // 9. Greetings
-    else if (q === 'hi' || q === 'hello' || q === 'hey' || q.startsWith('hi ') || q.startsWith('hello ')) {
-      reply = `Hello **${userAny.firstName}**! 👋 How can I help you today? You can ask about your booking status, next session, assigned trainer, workout plan, payment status, or progress.`;
-    }
-    // 10. Default Smart Context-Aware Answer
-    else {
-      const trainerStr = trainerName ? `assigned to trainer **${trainerName}**` : 'currently unassigned to a personal trainer';
-      const sessionStr = sessions && sessions.length > 0 ? `have **${sessions.length}** session booking(s)` : 'have no active session bookings';
-      reply = `Hello **${userAny.firstName}**! You are ${trainerStr} and ${sessionStr}. I can assist you with your **Booking Status**, **Next Session**, **Trainer Info**, **Workout & Diet Plan**, **Payment History**, or **Progress Tracking**. What would you like to check?`;
-    }
+
 
     return res.status(200).json({
       success: true,

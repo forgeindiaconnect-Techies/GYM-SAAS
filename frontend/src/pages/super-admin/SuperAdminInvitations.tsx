@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDb, updateItem, deleteItem, addItem } from '../../utils/mockDb';
+import api from '../../utils/api';
 import {
   Search, Send, Trash2, Eye, Building2, User, Mail, Phone,
   Calendar, Clock, Copy, Check, ExternalLink, X, PlusCircle,
@@ -106,16 +107,36 @@ const SuperAdminInvitations = () => {
     }
   };
 
-  const handleResend = (invite: any) => {
-    const updated = updateItem('gymInvitations', invite.id, {
-      status: 'Sent',
-      date: new Date().toISOString().split('T')[0]
-    });
-    setInvites(invites.map(i => i.id === invite.id ? updated : i));
-    if (viewInvite?.id === invite.id) {
-      setViewInvite(updated);
+  const handleResend = async (invite: any) => {
+    const inviteLink = invite.link || `${window.location.origin}/register/gym-owner?invite=${invite.id}&email=${encodeURIComponent(invite.email)}&name=${encodeURIComponent(invite.owner || '')}&phone=${encodeURIComponent(invite.phone || '')}`;
+
+    try {
+      const res = await api.post('/auth/send-gym-invitation', {
+        ownerName: invite.owner,
+        ownerEmail: invite.email,
+        ownerPhone: invite.phone,
+        linkExpiry: invite.expiry || '1 Day',
+        inviteLink
+      });
+
+      const updated = updateItem('gymInvitations', invite.id, {
+        status: 'Sent',
+        date: new Date().toISOString().split('T')[0],
+        link: inviteLink
+      });
+      setInvites(invites.map(i => i.id === invite.id ? updated : i));
+      if (viewInvite?.id === invite.id) {
+        setViewInvite(updated);
+      }
+
+      if (res.data?.emailSent) {
+        alert(`Invitation email resent successfully to ${invite.email} via Brevo!`);
+      } else {
+        alert(`Invitation link ready: ${inviteLink}\n\nNotice: ${res.data?.message || 'Brevo email delivery failed. Please copy and share the link directly.'}`);
+      }
+    } catch (err: any) {
+      alert(`Error: ${err.response?.data?.message || err.message}`);
     }
-    alert(`Invitation resent to ${invite.email}! Status updated to "Sent".`);
   };
 
   const handleCancel = (invite: any) => {
@@ -326,11 +347,23 @@ const SuperAdminInvitations = () => {
                         <span>View Details</span>
                       </button>
 
+                      {/* Quick Copy Link Button */}
+                      <button
+                        onClick={() => {
+                          const link = invite.link || `${window.location.origin}/register/gym-owner?invite=${invite.id}&email=${encodeURIComponent(invite.email)}&name=${encodeURIComponent(invite.owner || '')}&phone=${encodeURIComponent(invite.phone || '')}`;
+                          handleCopyLink(link);
+                        }}
+                        className="p-1.5 text-stone-600 hover:text-[#F97316] hover:bg-orange-50 rounded-lg transition-colors"
+                        title="Copy Registration Link"
+                      >
+                        <Copy size={15} />
+                      </button>
+
                       {/* Resend Invitation Button */}
                       <button
                         onClick={() => handleResend(invite)}
                         className="p-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Resend Invitation (updates status to Sent)"
+                        title="Resend Invitation via Email"
                       >
                         <Send size={15} />
                       </button>

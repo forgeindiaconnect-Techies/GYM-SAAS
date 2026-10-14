@@ -1,35 +1,61 @@
 import { useState, useEffect } from 'react';
 import { 
-  Bot, Activity, Zap, CheckCircle2, AlertCircle, Dumbbell, 
-  Utensils, Loader2, Clock, Lock, ArrowRight, 
+  Bot, Activity, CheckCircle2, Dumbbell, 
+  Utensils, Loader2, Clock, Lock, 
   User, HeartPulse, ShieldAlert, Sparkles,
-  Calendar
+  Calendar, Mail, Phone
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 
 const MemberAIFitness = () => {
-  const [activeStep, setActiveStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [recommendation, setRecommendation] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Form State
+  // Form State: Complete Registered Details & Fitness Profile
   const [formData, setFormData] = useState({
-    // 1. Personal & Physical
+    // 1. Personal & Contact Details (Registered in Form)
     fullName: '',
+    email: '',
+    mobile: '',
+    city: '',
+    pinCode: '',
+    dateOfBirth: '',
     age: '28',
     gender: 'Male',
+
+    // 2. Physical Biometrics (Registered in Form)
     height: '175',
     weight: '74',
-    // 2. Goal & Experience
+
+    // 3. Fitness Goals & Training Preferences (Registered in Form)
     fitnessGoal: 'Weight Loss',
     currentFitnessLevel: 'Beginner',
+    preferredTraining: 'Offline',
+    preferredWorkoutTime: 'Morning (7-9am)',
+    availableWorkoutDays: '4 Days',
+    equipmentAvailability: 'Full Commercial Gym',
+    dietaryPreferences: 'Non-Vegetarian',
+
+    // 4. Emergency Contact Details (Registered in Form)
+    emergencyContactName: '',
+    emergencyContactRelation: '',
+    emergencyContactMobile: '',
+
+    // 5. Health & Limitations
+    injuries: 'None',
+    healthConsiderations: 'None',
+    doctorRestrictions: 'None',
+    averageSleep: '7-8 hours',
+    stressLevel: 'Moderate',
+    notes: '',
+
+    // Additional secondary metrics
     workoutExperience: '1-3 years',
     targetWeight: '68',
     targetTimeline: '3 Months',
-    // 3. Body Measurements
     bodyMeasurements: {
       chest: '38 in',
       waist: '33 in',
@@ -37,26 +63,12 @@ const MemberAIFitness = () => {
       arms: '13.5 in',
       thighs: '22 in',
     },
-    // 4. Activity & Schedule
     activityLevel: 'Moderately Active',
-    availableWorkoutDays: '4 Days',
     preferredWorkoutDuration: '45 Minutes',
-    preferredWorkoutTime: 'Morning',
-    // 5. Workout & Equipment
     preferredWorkoutType: 'Gym Weights / Resistance',
-    equipmentAvailability: 'Full Commercial Gym',
-    // 6. Nutrition & Diet
-    dietaryPreferences: 'Non-Vegetarian',
     mealsPerDay: '3',
     dailyWaterIntake: '2-3 Liters',
-    dietaryRestrictions: 'None',
-    // 7. Health & Limitations
-    injuries: 'None',
-    healthConsiderations: 'None',
-    doctorRestrictions: 'None',
-    averageSleep: '7-8 hours',
-    stressLevel: 'Moderate',
-    notes: ''
+    dietaryRestrictions: 'None'
   });
 
   useEffect(() => {
@@ -66,28 +78,41 @@ const MemberAIFitness = () => {
   const checkAccessAndLoad = async () => {
     try {
       setLoading(true);
-      // Pre-fill from authenticated user profile
+      // Pre-fill all registered customer details from authenticated user profile
       try {
         const meRes = await api.get('/auth/me');
         if (meRes.data?.user) {
           const u = meRes.data.user;
           let calculatedAge = '28';
+          let formattedDob = '';
           if (u.dateOfBirth) {
             const dob = new Date(u.dateOfBirth);
             const diff_ms = Date.now() - dob.getTime();
             const age_dt = new Date(diff_ms);
             calculatedAge = Math.abs(age_dt.getUTCFullYear() - 1970).toString();
+            formattedDob = dob.toISOString().split('T')[0];
           }
 
           setFormData(prev => ({
             ...prev,
             fullName: `${u.firstName || ''} ${u.lastName || ''}`.trim() || prev.fullName,
-            age: calculatedAge,
+            email: u.email || prev.email,
+            mobile: u.mobile || u.phone || prev.mobile,
+            city: u.city || prev.city,
+            pinCode: u.pinCode || prev.pinCode,
+            dateOfBirth: formattedDob || prev.dateOfBirth,
+            age: u.age ? u.age.toString() : calculatedAge,
             gender: u.gender || prev.gender,
             height: u.height ? u.height.toString() : prev.height,
             weight: u.weight ? u.weight.toString() : prev.weight,
             fitnessGoal: u.fitnessGoal || prev.fitnessGoal,
-            currentFitnessLevel: u.experienceLevel || prev.currentFitnessLevel
+            currentFitnessLevel: u.experienceLevel || prev.currentFitnessLevel,
+            preferredTraining: u.preferredTraining || prev.preferredTraining,
+            preferredWorkoutTime: u.preferredWorkoutTime || prev.preferredWorkoutTime,
+            availableWorkoutDays: u.preferredWorkoutDays || prev.availableWorkoutDays,
+            emergencyContactName: u.emergencyContact?.name || prev.emergencyContactName,
+            emergencyContactRelation: u.emergencyContact?.relationship || prev.emergencyContactRelation,
+            emergencyContactMobile: u.emergencyContact?.mobile || prev.emergencyContactMobile,
           }));
         }
       } catch (e) {
@@ -134,16 +159,6 @@ const MemberAIFitness = () => {
     } catch (err) {
       console.error('Failed to load recommendation', err);
     }
-  };
-
-  const handleMeasurementChange = (field: string, val: string) => {
-    setFormData(prev => ({
-      ...prev,
-      bodyMeasurements: {
-        ...prev.bodyMeasurements,
-        [field]: val
-      }
-    }));
   };
 
   const handleSubmitAssessment = async (e: React.FormEvent) => {
@@ -203,6 +218,25 @@ const MemberAIFitness = () => {
     recommendation.status === 'Published to Customer'
   );
 
+  const exercisesList = (recommendation?.finalApprovedPlan?.workoutPlan?.exercises?.length > 0)
+    ? recommendation.finalApprovedPlan.workoutPlan.exercises
+    : (recommendation?.workoutRecommendation?.exercises || recommendation?.workoutPlan || []);
+
+  const weeklySchedule = (recommendation?.finalApprovedPlan?.workoutPlan?.weeklySchedule?.length > 0)
+    ? recommendation.finalApprovedPlan.workoutPlan.weeklySchedule
+    : (recommendation?.workoutRecommendation?.weeklySchedule || []);
+
+  const dietPlan = (recommendation?.finalApprovedPlan?.dietPlan && typeof recommendation.finalApprovedPlan.dietPlan === 'object')
+    ? recommendation.finalApprovedPlan.dietPlan
+    : (recommendation?.dietRecommendation || {});
+
+  const recoveryPlan = (recommendation?.finalApprovedPlan?.recoveryPlan && typeof recommendation.finalApprovedPlan.recoveryPlan === 'object')
+    ? recommendation.finalApprovedPlan.recoveryPlan
+    : (recommendation?.recoveryRecommendations || {});
+
+  const progressPlan = recommendation?.progressSuggestions || {};
+
+
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-16">
       {/* Header */}
@@ -229,7 +263,6 @@ const MemberAIFitness = () => {
             <button
               onClick={() => {
                 setRecommendation(null);
-                setActiveStep(1);
               }}
               className="px-4 py-2 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-semibold text-xs hover:bg-[#F9F8F6] transition-colors"
             >
@@ -400,259 +433,350 @@ const MemberAIFitness = () => {
             )}
           </div>
 
-          {/* CONDITIONAL RENDERING: PENDING TRAINER REVIEW vs APPROVED PLAN */}
-          {isPendingReview ? (
-            /* LOCKED DRAFT CARD WHILE PENDING TRAINER REVIEW */
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-8 md:p-10 shadow-sm text-center space-y-6">
-              <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-300 text-amber-700 flex items-center justify-center mx-auto">
-                <Lock size={30} />
+          {/* Workflow Status Banner */}
+          {isPendingReview && (
+            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                  <Clock size={16} className="animate-pulse" />
+                </div>
+                <div>
+                  <p className="font-bold text-[#292524]">
+                    AI Draft Generated &bull; Submitted for Certified Trainer Review
+                  </p>
+                  <p className="text-[#78716C]">
+                    Your coach {recommendation.trainerId?.name ? `(${recommendation.trainerId.name})` : ''} is reviewing these recommendations to tailor your official regimen.
+                  </p>
+                </div>
               </div>
+              <Link
+                to="/member/trainer-review"
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold shrink-0 text-center transition-colors shadow-xs"
+              >
+                Track Trainer Review &rarr;
+              </Link>
+            </div>
+          )}
 
-              <div className="max-w-xl mx-auto space-y-2">
-                <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300 inline-flex items-center gap-1.5">
-                  <Clock size={13} className="text-amber-600 animate-pulse" /> Sent to Trainer Dashboard • Awaiting Review
-                </span>
-                <h3 className="text-2xl font-bold text-[#292524] mt-2">
-                  AI Draft Dispatched to Your Coach
-                </h3>
-                <p className="text-sm text-[#78716C] leading-relaxed">
-                  The initial AI analysis has been generated and automatically sent to your assigned trainer&apos;s dashboard. 
-                  <strong> To ensure your safety, unreviewed AI exercises and diets are not shown on your dashboard yet.</strong> Your coach is calibrating sets, reps, and nutrition. Once your trainer approves the plan, it will be unlocked here immediately.
+          {isApproved && (
+            <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                  <CheckCircle2 size={16} />
+                </div>
+                <div>
+                  <p className="font-bold text-emerald-900">
+                    Official Plan Approved &amp; Published by Coach {recommendation.trainerModifications?.modifiedByTrainerName || recommendation.finalApprovedPlan?.approvedByTrainerName || recommendation.trainerId?.name || 'Your Trainer'}
+                  </p>
+                  <p className="text-emerald-700">
+                    All exercises, sets, reps, and nutrition protocols are calibrated and active.
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/member/workout"
+                className="px-4 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl font-bold shrink-0 text-center transition-colors shadow-xs"
+              >
+                Open Workout Player &rarr;
+              </Link>
+            </div>
+          )}
+
+          {/* 1. FITNESS ANALYSIS (Image 1 Style) */}
+          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-5">
+            <div className="flex items-center justify-between border-b border-[#FED7AA] pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-sm">
+                  1
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#292524]">Fitness Analysis</h3>
+                  <p className="text-xs text-[#78716C]">AI-driven biometric assessment &amp; physiological breakdown</p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                {isApproved ? 'Trainer Approved' : 'AI Draft (Reference)'}
+              </span>
+            </div>
+
+            {/* AI Assessment Summary Box (Image 1 match) */}
+            <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl text-xs text-[#292524] leading-relaxed">
+              <strong className="text-[#292524]">AI Assessment Summary:</strong>{' '}
+              <span className="text-[#44403C]">
+                {recommendation.aiAnalysis?.assessment ||
+                  'Baseline assessment should include: Bodyweight (weekly), Body Measurements (waist, hips, chest, arms – monthly), basic strength tests (e.g., max reps push-ups, planks for time, bodyweight squats), and a 1-mile walk/run test to establish cardiovascular fitness. Monitor perceived exertion (RPE) for all exercises to guide progression.'}
+              </span>
+            </div>
+
+            {/* Goal Analysis & Recommended Approach */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <h4 className="text-xs font-bold text-[#F97316] uppercase tracking-wider">Goal Analysis</h4>
+                <p className="text-xs text-[#292524] leading-relaxed">
+                  {recommendation.aiAnalysis?.goalAnalysis || 'Analysis tailored to your fitness targets.'}
                 </p>
               </div>
 
-              {/* 3-Step Timeline */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto pt-2 text-left">
-                <div className="bg-[#F9F8F6] border border-emerald-300 rounded-2xl p-3.5 flex items-center gap-3">
-                  <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
-                  <div>
-                    <p className="text-[10px] font-bold text-emerald-800 uppercase">Step 1</p>
-                    <p className="text-xs font-bold text-[#292524]">Assessment Submitted</p>
-                  </div>
-                </div>
-
-                <div className="bg-white border-2 border-amber-400 rounded-2xl p-3.5 flex items-center gap-3 shadow-sm">
-                  <Clock size={20} className="text-amber-600 animate-pulse shrink-0" />
-                  <div>
-                    <p className="text-[10px] font-extrabold text-amber-800 uppercase">Step 2: In Progress</p>
-                    <p className="text-xs font-bold text-[#292524]">Trainer Reviewing on Dashboard</p>
-                  </div>
-                </div>
-
-                <div className="bg-[#F9F8F6] border border-gray-200 rounded-2xl p-3.5 flex items-center gap-3 opacity-60">
-                  <Lock size={20} className="text-gray-400 shrink-0" />
-                  <div>
-                    <p className="text-[10px] font-bold text-gray-500 uppercase">Step 3</p>
-                    <p className="text-xs font-semibold text-gray-600">Customer Plan Published</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <Link
-                  to="/member/trainer-review"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-xl text-xs transition-colors shadow-sm"
-                >
-                  <Activity size={15} /> Track Coach Review Status
-                </Link>
+              <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <h4 className="text-xs font-bold text-[#F97316] uppercase tracking-wider">Recommended Approach</h4>
+                <p className="text-xs text-[#292524] leading-relaxed">
+                  {recommendation.aiAnalysis?.recommendedApproach || 'High-density resistance training combined with structured recovery.'}
+                </p>
               </div>
             </div>
-          ) : isApproved ? (
-            /* APPROVED PLAN: DISPLAY BOTH TRAINER OUTPUT AND AI OUTPUT */
-            <div className="space-y-6">
-              {/* SECTION 1: CERTIFIED TRAINER OUTPUT */}
-              <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-                <div className="flex items-center justify-between border-b border-[#FED7AA] pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
-                      <CheckCircle2 size={22} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-[#292524]">
-                        Certified Trainer Output & Calibrations
-                      </h3>
-                      <p className="text-xs text-[#78716C]">
-                        Approved and customized by Coach {recommendation.trainerModifications?.modifiedByTrainerName || recommendation.finalApprovedPlan?.approvedByTrainerName || recommendation.trainerId?.name || 'Your Trainer'}.
-                      </p>
-                    </div>
-                  </div>
 
-                  <Link
-                    to="/member/workout"
-                    className="px-5 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm"
-                  >
-                    <Dumbbell size={14} /> Open Workout Player →
-                  </Link>
-                </div>
-
-                {/* Trainer Notes */}
-                {(recommendation.trainerNotes || recommendation.finalApprovedPlan?.trainerNotes || recommendation.trainerModifications?.trainerNotes) && (
-                  <div className="p-4 bg-emerald-50/60 border border-emerald-200 rounded-2xl space-y-1">
-                    <p className="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
-                      <User size={14} /> Coach Notes
-                    </p>
-                    <p className="text-sm text-[#292524] italic font-medium">
-                      &ldquo;{recommendation.trainerNotes || recommendation.finalApprovedPlan?.trainerNotes || recommendation.trainerModifications?.trainerNotes}&rdquo;
-                    </p>
-                  </div>
-                )}
-
-                {/* Trainer Calibrated Weekly Schedule */}
+            {recommendation.aiAnalysis?.limitations && (
+              <div className="p-4 bg-orange-50 border border-orange-200 rounded-2xl text-xs text-orange-900 flex items-start gap-2.5">
+                <ShieldAlert size={16} className="text-orange-600 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-sm font-bold text-[#292524] uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <Calendar size={16} className="text-[#F97316]" /> Approved Weekly Workout Schedule
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {(recommendation.finalApprovedPlan?.workoutPlan?.weeklySchedule || recommendation.workoutRecommendation?.weeklySchedule || []).map((item: any, idx: number) => (
-                      <div key={idx} className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-extrabold text-[#F97316]">{item.day}</p>
-                          <p className="text-xs font-semibold text-[#292524] truncate max-w-[150px]">{item.workout}</p>
-                        </div>
-                        <span className="text-[11px] font-bold text-[#78716C] bg-white px-2 py-0.5 rounded-md border border-[#FED7AA]">
-                          {item.duration}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Calibrated Exercises */}
-                <div>
-                  <h4 className="text-sm font-bold text-[#292524] uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <Dumbbell size={16} className="text-[#F97316]" /> Calibrated Exercises & Repetitions
-                  </h4>
-                  <div className="space-y-2.5">
-                    {(recommendation.finalApprovedPlan?.workoutPlan?.exercises || recommendation.workoutRecommendation?.exercises || []).map((ex: any, idx: number) => (
-                      <div key={idx} className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <div>
-                          <p className="text-sm font-bold text-[#292524]">{ex.name}</p>
-                          <p className="text-xs text-[#F97316] font-medium">{ex.targetMuscleGroup}</p>
-                        </div>
-                        <div className="flex items-center gap-4 text-xs font-semibold text-[#78716C]">
-                          <span>Sets: <strong className="text-[#292524]">{ex.sets}</strong></span>
-                          <span>Reps: <strong className="text-[#292524]">{ex.reps}</strong></span>
-                          <span>Rest: <strong className="text-[#292524]">{ex.rest || '60s'}</strong></span>
-                          <span className="px-2 py-0.5 rounded bg-white border border-[#FED7AA] text-[10px] text-[#78716C]">
-                            {ex.difficulty || 'Medium'}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Diet & Recovery */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <Utensils size={14} className="text-[#F97316]" /> Trainer-Approved Diet
-                    </h4>
-                    <div className="space-y-1.5 text-xs text-[#292524]">
-                      {recommendation.finalApprovedPlan?.dietPlan && typeof recommendation.finalApprovedPlan.dietPlan === 'object' ? (
-                        <>
-                          <p><strong>Breakfast:</strong> {recommendation.finalApprovedPlan.dietPlan.breakfast || recommendation.dietRecommendation?.breakfast}</p>
-                          <p><strong>Lunch:</strong> {recommendation.finalApprovedPlan.dietPlan.lunch || recommendation.dietRecommendation?.lunch}</p>
-                          <p><strong>Dinner:</strong> {recommendation.finalApprovedPlan.dietPlan.dinner || recommendation.dietRecommendation?.dinner}</p>
-                        </>
-                      ) : (
-                        <p>{String(recommendation.finalApprovedPlan?.dietPlan || recommendation.dietRecommendation?.breakfast || 'Nutritious balanced plan.')}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <HeartPulse size={14} className="text-[#F97316]" /> Recovery Protocol
-                    </h4>
-                    <div className="space-y-1.5 text-xs text-[#292524]">
-                      <p><strong>Sleep:</strong> {recommendation.finalApprovedPlan?.recoveryPlan?.sleep || recommendation.recoveryRecommendations?.sleep || '7.5 - 8.5 hours'}</p>
-                      <p><strong>Active Recovery:</strong> {recommendation.finalApprovedPlan?.recoveryPlan?.activeRecovery || recommendation.recoveryRecommendations?.activeRecovery || 'Light walking & stretching'}</p>
-                      <p><strong>Mobility:</strong> {recommendation.finalApprovedPlan?.recoveryPlan?.stretchingMobility || recommendation.recoveryRecommendations?.stretchingMobility || 'Daily dynamic stretch'}</p>
-                    </div>
-                  </div>
+                  <strong className="block font-bold mb-0.5">Safety &amp; Health Considerations:</strong>
+                  <span>{recommendation.aiAnalysis.limitations}</span>
                 </div>
               </div>
-
-              {/* SECTION 2: AI BIOMETRIC INTELLIGENCE ANALYSIS */}
-              <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <Sparkles size={20} className="text-[#F97316]" />
-                  <h3 className="text-xl font-bold text-[#292524]">
-                    AI Biometric Intelligence Analysis
-                  </h3>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1">Goal Analysis</h4>
-                    <p className="text-xs text-[#292524] leading-relaxed">
-                      {recommendation.aiAnalysis?.goalAnalysis || 'Analysis tailored to your fitness targets.'}
-                    </p>
-                  </div>
-
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1">Recommended Approach</h4>
-                    <p className="text-xs text-[#292524] leading-relaxed">
-                      {recommendation.aiAnalysis?.recommendedApproach || 'Structured resistance & recovery strategy.'}
-                    </p>
-                  </div>
-                </div>
-
-                {recommendation.aiAnalysis?.limitations && (
-                  <div className="p-4 bg-orange-50 border border-orange-200 rounded-2xl text-xs text-orange-900 flex items-start gap-2.5">
-                    <ShieldAlert size={16} className="text-orange-600 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="block font-bold mb-0.5">Limitations & Health Considerations:</strong>
-                      <span>{recommendation.aiAnalysis.limitations}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      ) : (
-        /* Assessment Form Wizard */
-        <form onSubmit={handleSubmitAssessment} className="space-y-6">
-          {/* Form Step Navigation Bar */}
-          <div className="bg-white border border-[#E7E5E4] rounded-2xl p-3 flex items-center justify-between overflow-x-auto gap-2 shadow-sm">
-            {[
-              { num: 1, label: 'Physical Profile' },
-              { num: 2, label: 'Fitness Goals' },
-              { num: 3, label: 'Body Measurements' },
-              { num: 4, label: 'Schedule & Equipment' },
-              { num: 5, label: 'Diet & Recovery' },
-            ].map(s => (
-              <button
-                type="button"
-                key={s.num}
-                onClick={() => setActiveStep(s.num)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
-                  activeStep === s.num
-                    ? 'bg-[#F97316] text-white shadow-sm'
-                    : 'bg-transparent text-[#78716C] hover:bg-[#F9F8F6]'
-                }`}
-              >
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
-                  activeStep === s.num ? 'bg-white text-[#F97316]' : 'bg-[#FED7AA] text-[#78716C]'
-                }`}>
-                  {s.num}
-                </span>
-                <span>{s.label}</span>
-              </button>
-            ))}
+            )}
           </div>
 
-          {/* Step 1: Personal & Physical */}
-          {activeStep === 1 && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+          {/* 2. PERSONALIZED WORKOUT PLAN (Image 2 Style) */}
+          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#FED7AA] pb-3 gap-2">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-sm">
+                  2
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#292524]">Personalized Workout Plan</h3>
+                  <p className="text-xs text-[#78716C]">
+                    Calibrated Exercise Routine ({exercisesList.length} Exercises)
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs text-[#78716C] font-medium">
+                Target Days: <strong>{recommendation.fitnessProfile?.availableWorkoutDays || formData.availableWorkoutDays || 4} Days/Week</strong>
+              </span>
+            </div>
+
+            {/* Weekly Training Schedule */}
+            {weeklySchedule.length > 0 && (
               <div>
-                <h3 className="text-xl font-bold text-[#292524]">1. Personal & Physical Biometrics</h3>
-                <p className="text-sm text-[#78716C] mt-0.5">Basic information used to estimate caloric expenditure and metabolic rates.</p>
+                <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                  <Calendar size={14} className="text-[#F97316]" /> Weekly Training Schedule
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                  {weeklySchedule.map((item: any, idx: number) => (
+                    <div key={idx} className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-extrabold text-[#F97316]">{item.day}</p>
+                        <p className="text-xs font-semibold text-[#292524] truncate max-w-[150px]">{item.workout}</p>
+                      </div>
+                      <span className="text-[11px] font-bold text-[#78716C] bg-white px-2 py-0.5 rounded-md border border-[#FED7AA]">
+                        {item.duration}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Calibrated Exercises List (exact match to Image 2) */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+                <Dumbbell size={14} className="text-[#F97316]" /> Calibrated Exercises &amp; Sets/Reps
+              </h4>
+
+              <div className="space-y-2.5">
+                {exercisesList.map((ex: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 hover:border-[#F97316] transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="w-7 h-7 rounded-lg bg-[#F97316] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                        {idx + 1}
+                      </span>
+                      <div>
+                        <p className="text-sm font-bold text-[#292524]">{ex.name}</p>
+                        <span className="text-xs text-[#78716C] font-medium">
+                          Target Muscle: <strong className="text-[#292524]">{ex.targetMuscleGroup || 'General'}</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-xs font-semibold self-end md:self-center">
+                      <span className="bg-white border border-[#E7E5E4] px-2.5 py-1 rounded-lg">
+                        SETS: <strong className="text-[#F97316] ml-1">{ex.sets}</strong>
+                      </span>
+                      <span className="bg-white border border-[#E7E5E4] px-2.5 py-1 rounded-lg">
+                        REPS: <strong className="text-[#292524] ml-1">{ex.reps}</strong>
+                      </span>
+                      <span className="bg-white border border-[#E7E5E4] px-2.5 py-1 rounded-lg">
+                        REST: <strong className="text-[#78716C] ml-1">{ex.rest || '60s'}</strong>
+                      </span>
+                      <span className="bg-white border border-[#E7E5E4] px-2.5 py-1 rounded-lg text-[11px] text-[#78716C]">
+                        {ex.difficulty || 'Beginner'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 3. DIET AND NUTRITION SUGGESTIONS (Image 3 Style) */}
+          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-5">
+            <div className="flex items-center justify-between border-b border-[#FED7AA] pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-sm">
+                  3
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#292524]">Diet and Nutrition Suggestions</h3>
+                  <p className="text-xs text-[#78716C]">Precision macro &amp; meal schedule tailored to your goal</p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                {recommendation.fitnessProfile?.dietaryPreferences || formData.dietaryPreferences || 'Balanced Nutrition'}
+              </span>
+            </div>
+
+            {/* 6 Meal Cards Grid (Image 3) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 text-xs">
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Morning Hydration</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {dietPlan.morning || 'Warm water with pinch of pink Himalayan salt. Pre-workout (5:30 AM): 1 small banana or 2 rice cakes with peanut butter.'}
+                </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Breakfast</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {dietPlan.breakfast || 'Post-workout (7:30 AM): 3-4 whole eggs scrambled with spinach and mushrooms, 2 slices of whole-wheat toast, and fresh fruit / shake.'}
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Lunch</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {dietPlan.lunch || '150-180g grilled chicken breast or fish/paneer with a large serving (1.5 cups) of mixed green salad with olive oil and brown rice/quinoa.'}
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Evening Snack</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {dietPlan.evening || 'Late Afternoon Snack (4:00 PM): 1 cup Greek yogurt with berries or a handful (30g) of almonds/walnuts. Pre-dinner (6:30 PM): Green tea.'}
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Dinner</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {dietPlan.dinner || 'Grilled fish / chicken tikka (or paneer/tofu), minimal complex carbs (e.g., small sweet potato or lentils), large bowl of mixed vegetable soup.'}
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Daily Hydration Target</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {dietPlan.hydration || 'Target 3.5-4 liters of water daily, spread throughout the day. Consider adding electrolyte tablets to water during/after workouts.'}
+                </p>
+              </div>
+            </div>
+
+            {dietPlan.note && (
+              <p className="text-[11px] text-[#78716C] italic bg-[#FFFDF8] p-2.5 rounded-xl border border-[#E7E5E4]">
+                Note: {dietPlan.note}
+              </p>
+            )}
+          </div>
+
+          {/* 4. FITNESS PROGRESS PLAN (Image 3 Style) */}
+          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-5">
+            <div className="flex items-center justify-between border-b border-[#FED7AA] pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-sm">
+                  4
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#292524]">Fitness Progress Plan &amp; Recovery</h3>
+                  <p className="text-xs text-[#78716C]">Progressive overload tracking, recovery regimen, and milestones</p>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-[#F97316]">
+                Starting Weight: {progressPlan.startingWeight || recommendation.fitnessProfile?.weight || formData.weight} kg
+              </span>
+            </div>
+
+            {/* 3 Recovery Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Sleep Target</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {recoveryPlan.sleep || 'Aim for 7-9 hours of consistent, high-quality sleep per night for optimal nervous system recovery and myofibrillar repair.'}
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Active Recovery</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {recoveryPlan.activeRecovery || 'On designated active recovery days (Tuesday, Thursday, or Sunday), perform 20-30 mins of low-intensity Zone 2 walking, mobility flow, or light swimming.'}
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Stretching &amp; Mobility</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {recoveryPlan.stretchingMobility || 'Dynamic stretching (arm circles, leg swings, torso twists) 8-10 mins pre-workout; static stretching (hamstrings, hip flexors, lats) 8-10 mins post-workout.'}
+                </p>
+              </div>
+            </div>
+
+            {/* Progress Tracking & Overload Guidance */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
+              <div className="p-3.5 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#F97316] uppercase text-[10px] block">Baseline Strength &amp; Cardio Tests</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {progressPlan.progressTracking || 'Baseline assessment: Push-ups test, bodyweight squats max reps, 60s plank, 1-mile walk/run. Monitor perceived exertion (RPE) to calibrate weight load.'}
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl space-y-1">
+                <span className="font-extrabold text-[#F97316] uppercase text-[10px] block">Progressive Overload &amp; Focus Areas</span>
+                <p className="text-[#292524] leading-relaxed">
+                  {progressPlan.improvementSuggestions || 'Gradually increase load by 2.5kg or reps by 1-2 every 7–10 days while maintaining strict biomechanical form.'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      ) : (
+        /* Step 1: Customer Details & Fitness Profile */
+        <form onSubmit={handleSubmitAssessment} className="space-y-6">
+          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F97316] text-white">
+                    Step 1
+                  </span>
+                  <h3 className="text-xl font-bold text-[#292524]">Customer Details &amp; Fitness Profile</h3>
+                </div>
+                <p className="text-sm text-[#78716C] mt-1">
+                  Your registered profile details are displayed below. AI uses these details to generate an initial draft for your certified trainer.
+                </p>
+              </div>
+              <span className="text-xs font-bold text-[#F97316] bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+                Verified Customer Details
+              </span>
+            </div>
+
+            {/* 1. Personal & Contact Information */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
+                <User size={15} className="text-[#F97316]" /> Personal &amp; Contact Details
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Full Name</label>
                   <input
@@ -660,18 +784,35 @@ const MemberAIFitness = () => {
                     value={formData.fullName}
                     onChange={e => setFormData({ ...formData, fullName: e.target.value })}
                     placeholder="Enter your name"
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Age</label>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5 flex items-center gap-1">
+                    <Mail size={12} className="text-[#F97316]" /> Email Address
+                  </label>
                   <input
-                    type="number"
-                    value={formData.age}
-                    onChange={e => setFormData({ ...formData, age: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    type="email"
+                    value={formData.email}
+                    onChange={e => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="email@example.com"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5 flex items-center gap-1">
+                    <Phone size={12} className="text-[#F97316]" /> Mobile Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.mobile}
+                    onChange={e => setFormData({ ...formData, mobile: e.target.value })}
+                    placeholder="Mobile number"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                     required
                   />
                 </div>
@@ -681,7 +822,7 @@ const MemberAIFitness = () => {
                   <select
                     value={formData.gender}
                     onChange={e => setFormData({ ...formData, gender: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -691,12 +832,31 @@ const MemberAIFitness = () => {
                 </div>
 
                 <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Age</label>
+                  <input
+                    type="number"
+                    value={formData.age}
+                    onChange={e => setFormData({ ...formData, age: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Physical Biometrics */}
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
+                <HeartPulse size={15} className="text-[#F97316]" /> Physical Biometrics
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
                   <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Height (cm)</label>
                   <input
                     type="number"
                     value={formData.height}
                     onChange={e => setFormData({ ...formData, height: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                     required
                   />
                 </div>
@@ -707,60 +867,47 @@ const MemberAIFitness = () => {
                     type="number"
                     value={formData.weight}
                     onChange={e => setFormData({ ...formData, weight: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Daily Activity Level</label>
-                  <select
-                    value={formData.activityLevel}
-                    onChange={e => setFormData({ ...formData, activityLevel: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  >
-                    <option value="Sedentary">Sedentary (Desk Job, little movement)</option>
-                    <option value="Lightly Active">Lightly Active (1-3 days light movement)</option>
-                    <option value="Moderately Active">Moderately Active (Regular exercise)</option>
-                    <option value="Very Active">Very Active (Heavy training / active work)</option>
-                  </select>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Estimated BMI</label>
+                  <div className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm font-bold text-[#F97316] flex items-center justify-between">
+                    <span>
+                      {Number(formData.height) > 0 ? (Number(formData.weight) / ((Number(formData.height)/100) * (Number(formData.height)/100))).toFixed(1) : '22.0'}
+                    </span>
+                    <span className="text-[11px] font-semibold text-gray-500 bg-white px-2 py-0.5 rounded border">
+                      Calculated
+                    </span>
+                  </div>
                 </div>
               </div>
-
-              <div className="flex justify-end pt-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(2)}
-                  className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] transition-colors flex items-center gap-1.5"
-                >
-                  Continue to Goals <ArrowRight size={16} />
-                </button>
-              </div>
             </div>
-          )}
 
-          {/* Step 2: Fitness Goal & Experience */}
-          {activeStep === 2 && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-[#292524]">2. Fitness Goals & Experience</h3>
-                <p className="text-sm text-[#78716C] mt-0.5">Define your targets and prior resistance training familiarity.</p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {/* 3. Fitness Goals & Training Preferences */}
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
+                <Dumbbell size={15} className="text-[#F97316]" /> Fitness Goals &amp; Training Preferences
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Primary Fitness Goal</label>
                   <select
                     value={formData.fitnessGoal}
                     onChange={e => setFormData({ ...formData, fitnessGoal: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                   >
-                    <option value="Weight Loss">Weight Loss & Fat Reduction</option>
-                    <option value="Muscle Building / Hypertrophy">Muscle Building & Hypertrophy</option>
-                    <option value="Strength Training">Pure Strength & Power</option>
-                    <option value="Endurance & Stamina">Cardiovascular Endurance & Stamina</option>
-                    <option value="Functional Fitness">Functional Movement & Mobility</option>
-                    <option value="General Health">General Longevity & Health</option>
+                    <option value="Weight Loss">Weight Loss</option>
+                    <option value="Muscle Building">Muscle Building</option>
+                    <option value="Strength Training">Strength Training</option>
+                    <option value="General Fitness">General Fitness</option>
+                    <option value="Bodybuilding">Bodybuilding</option>
+                    <option value="Yoga">Yoga</option>
+                    <option value="CrossFit">CrossFit</option>
+                    <option value="Flexibility & Mobility">Flexibility &amp; Mobility</option>
+                    <option value="Endurance">Endurance</option>
                   </select>
                 </div>
 
@@ -769,362 +916,128 @@ const MemberAIFitness = () => {
                   <select
                     value={formData.currentFitnessLevel}
                     onChange={e => setFormData({ ...formData, currentFitnessLevel: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                   >
-                    <option value="Beginner">Beginner (0-6 months experience)</option>
-                    <option value="Intermediate">Intermediate (6-24 months regular lifting)</option>
-                    <option value="Advanced">Advanced (2+ years dedicated training)</option>
+                    <option value="Beginner">Beginner (New to training)</option>
+                    <option value="Intermediate">Intermediate (1-2 yrs experience)</option>
+                    <option value="Advanced">Advanced (3+ yrs consistent training)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Target Weight (kg)</label>
-                  <input
-                    type="number"
-                    value={formData.targetWeight}
-                    onChange={e => setFormData({ ...formData, targetWeight: e.target.value })}
-                    placeholder="e.g. 68"
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Target Timeline</label>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Training Mode</label>
                   <select
-                    value={formData.targetTimeline}
-                    onChange={e => setFormData({ ...formData, targetTimeline: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    value={formData.preferredTraining}
+                    onChange={e => setFormData({ ...formData, preferredTraining: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                   >
-                    <option value="1 Month">1 Month (Sprint)</option>
-                    <option value="3 Months">3 Months (Standard Phase)</option>
-                    <option value="6 Months">6 Months (Transformation)</option>
-                    <option value="12 Months">12 Months (Long-term Mastery)</option>
+                    <option value="Offline">Offline (In-Gym Training)</option>
+                    <option value="Online">Online (Virtual Training)</option>
+                    <option value="Hybrid">Hybrid (In-Gym + Online)</option>
                   </select>
                 </div>
-              </div>
-
-              <div className="flex justify-between pt-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(1)}
-                  className="px-6 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-bold text-sm hover:bg-[#F9F8F6] transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(3)}
-                  className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] transition-colors flex items-center gap-1.5"
-                >
-                  Continue to Measurements <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Body Measurements */}
-          {activeStep === 3 && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-[#292524]">3. Body Measurements</h3>
-                <p className="text-sm text-[#78716C] mt-0.5">Used by AI and your coach to track structural body recomposition beyond the scale.</p>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Chest</label>
-                  <input
-                    type="text"
-                    value={formData.bodyMeasurements.chest}
-                    onChange={e => handleMeasurementChange('chest', e.target.value)}
-                    placeholder="e.g. 38 in / 96 cm"
-                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  />
-                </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Waist</label>
-                  <input
-                    type="text"
-                    value={formData.bodyMeasurements.waist}
-                    onChange={e => handleMeasurementChange('waist', e.target.value)}
-                    placeholder="e.g. 32 in / 81 cm"
-                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Hips</label>
-                  <input
-                    type="text"
-                    value={formData.bodyMeasurements.hips}
-                    onChange={e => handleMeasurementChange('hips', e.target.value)}
-                    placeholder="e.g. 39 in / 99 cm"
-                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Arms / Biceps</label>
-                  <input
-                    type="text"
-                    value={formData.bodyMeasurements.arms}
-                    onChange={e => handleMeasurementChange('arms', e.target.value)}
-                    placeholder="e.g. 13.5 in"
-                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Thighs</label>
-                  <input
-                    type="text"
-                    value={formData.bodyMeasurements.thighs}
-                    onChange={e => handleMeasurementChange('thighs', e.target.value)}
-                    placeholder="e.g. 22 in"
-                    className="w-full px-3 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-between pt-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(2)}
-                  className="px-6 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-bold text-sm hover:bg-[#F9F8F6] transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(4)}
-                  className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] transition-colors flex items-center gap-1.5"
-                >
-                  Continue to Schedule <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Schedule, Equipment & Preferences */}
-          {activeStep === 4 && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-[#292524]">4. Availability & Equipment Preferences</h3>
-                <p className="text-sm text-[#78716C] mt-0.5">Let AI know what gear you have and how often you can train.</p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Available Workout Days</label>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Workout Days</label>
                   <select
                     value={formData.availableWorkoutDays}
                     onChange={e => setFormData({ ...formData, availableWorkoutDays: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                   >
-                    <option value="2 Days">2 Days / Week</option>
-                    <option value="3 Days">3 Days / Week</option>
-                    <option value="4 Days">4 Days / Week (Recommended)</option>
-                    <option value="5 Days">5 Days / Week</option>
-                    <option value="6 Days">6 Days / Week</option>
+                    <option value="1-2 days">1-2 Days / Week</option>
+                    <option value="3-4 days">3-4 Days / Week (Recommended)</option>
+                    <option value="4 Days">4 Days / Week</option>
+                    <option value="5-6 days">5-6 Days / Week</option>
+                    <option value="Everyday">Everyday</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Equipment Availability</label>
-                  <select
-                    value={formData.equipmentAvailability}
-                    onChange={e => setFormData({ ...formData, equipmentAvailability: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  >
-                    <option value="Full Commercial Gym">Full Commercial Gym (Barbells, Cables, Machines)</option>
-                    <option value="Dumbbells Only">Dumbbells & Bench Only</option>
-                    <option value="Home Gym">Home Gym (Bands, Kettlebells)</option>
-                    <option value="No Equipment / Bodyweight">No Equipment (Bodyweight / Calisthenics)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Workout Type</label>
-                  <select
-                    value={formData.preferredWorkoutType}
-                    onChange={e => setFormData({ ...formData, preferredWorkoutType: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  >
-                    <option value="Gym Weights / Resistance">Gym Weights & Resistance</option>
-                    <option value="Bodyweight / Calisthenics">Bodyweight & Calisthenics</option>
-                    <option value="HIIT / Functional Circuit">HIIT & Functional Circuit</option>
-                    <option value="Powerlifting / Heavy Barbell">Powerlifting & Strength</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Workout Duration</label>
-                  <select
-                    value={formData.preferredWorkoutDuration}
-                    onChange={e => setFormData({ ...formData, preferredWorkoutDuration: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  >
-                    <option value="30 Minutes">30 Minutes</option>
-                    <option value="45 Minutes">45 Minutes (Optimal)</option>
-                    <option value="60 Minutes">60 Minutes</option>
-                    <option value="75 Minutes">75 Minutes</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Training Time</label>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Workout Time</label>
                   <select
                     value={formData.preferredWorkoutTime}
                     onChange={e => setFormData({ ...formData, preferredWorkoutTime: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                   >
-                    <option value="Morning">Morning (06:00 AM - 10:00 AM)</option>
-                    <option value="Afternoon">Afternoon (12:00 PM - 04:00 PM)</option>
-                    <option value="Evening">Evening (05:00 PM - 09:00 PM)</option>
+                    <option value="Early Morning (5-7am)">Early Morning (05:00 AM - 07:00 AM)</option>
+                    <option value="Morning (7-9am)">Morning (07:00 AM - 09:00 AM)</option>
+                    <option value="Mid Morning (9-11am)">Mid Morning (09:00 AM - 11:00 AM)</option>
+                    <option value="Afternoon (12-3pm)">Afternoon (12:00 PM - 03:00 PM)</option>
+                    <option value="Evening (5-8pm)">Evening (05:00 PM - 08:00 PM)</option>
+                    <option value="Night (8-11pm)">Night (08:00 PM - 11:00 PM)</option>
+                    <option value="Flexible">Flexible</option>
                   </select>
                 </div>
-              </div>
 
-              <div className="flex justify-between pt-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(3)}
-                  className="px-6 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-bold text-sm hover:bg-[#F9F8F6] transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(5)}
-                  className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-bold text-sm hover:bg-[#EA580C] transition-colors flex items-center gap-1.5"
-                >
-                  Continue to Nutrition & Health <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
+                <div>
+                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Equipment Access</label>
+                  <select
+                    value={formData.equipmentAvailability}
+                    onChange={e => setFormData({ ...formData, equipmentAvailability: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
+                  >
+                    <option value="Full Commercial Gym">Full Commercial Gym (Barbells, Cables, Machines)</option>
+                    <option value="Home Gym / Dumbbells">Home Gym (Dumbbells, Bench)</option>
+                    <option value="Bodyweight / Calisthenics">Bodyweight Only / Calisthenics</option>
+                  </select>
+                </div>
 
-          {/* Step 5: Nutrition, Safety & Submit */}
-          {activeStep === 5 && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-[#292524]">5. Nutrition, Safety & Health Considerations</h3>
-                <p className="text-sm text-[#78716C] mt-0.5">Report dietary preferences and any joint injuries so your coach can screen unsuitable exercises.</p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                 <div>
                   <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Dietary Preference</label>
                   <select
                     value={formData.dietaryPreferences}
                     onChange={e => setFormData({ ...formData, dietaryPreferences: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
                   >
-                    <option value="Non-Vegetarian">Non-Vegetarian (Chicken, Fish, Eggs)</option>
-                    <option value="Vegetarian">Vegetarian (Dairy, Lentils, Paneer)</option>
+                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                    <option value="Vegetarian">Vegetarian</option>
                     <option value="Eggetarian">Eggetarian</option>
-                    <option value="Vegan">Vegan (Plant-Based Only)</option>
-                    <option value="Keto">Keto / Low-Carb</option>
+                    <option value="Vegan">Vegan</option>
                   </select>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Daily Water Intake</label>
-                  <select
-                    value={formData.dailyWaterIntake}
-                    onChange={e => setFormData({ ...formData, dailyWaterIntake: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  >
-                    <option value="1-2 Liters">1-2 Liters</option>
-                    <option value="2-3 Liters">2-3 Liters</option>
-                    <option value="3-4 Liters">3-4 Liters</option>
-                    <option value="4+ Liters">4+ Liters</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Average Sleep</label>
-                  <select
-                    value={formData.averageSleep}
-                    onChange={e => setFormData({ ...formData, averageSleep: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  >
-                    <option value="Under 6 hours">Under 6 hours</option>
-                    <option value="6-7 hours">6-7 hours</option>
-                    <option value="7-8 hours">7-8 hours (Optimal)</option>
-                    <option value="8+ hours">8+ hours</option>
-                  </select>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">
-                    Injuries or Joint Limitations
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.injuries}
-                    onChange={e => setFormData({ ...formData, injuries: e.target.value })}
-                    placeholder="e.g. Lower back pain, left knee discomfort, shoulder impingement, or None"
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">
-                    Dietary Restrictions / Allergies
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.dietaryRestrictions}
-                    onChange={e => setFormData({ ...formData, dietaryRestrictions: e.target.value })}
-                    placeholder="e.g. Lactose intolerant, nut allergy, or None"
-                    className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Notice regarding AI Draft vs Trainer Final Approval */}
-              <div className="p-4 bg-teal-50 border border-teal-200 rounded-2xl flex items-start gap-3 text-xs text-teal-900">
-                <AlertCircle size={18} className="text-[#F97316] shrink-0 mt-0.5" />
-                <div>
-                  <strong className="block font-bold mb-0.5">How this workflow works:</strong>
-                  <span>
-                    When you submit, our AI instantly analyzes your biometrics and generates an initial 
-                    <strong> Draft Plan</strong>. Your certified trainer will then review the draft, calibrate sets, reps, and nutrition, and approve it. 
-                    Only after your trainer approves will the plan become active in your <strong>My Fitness Plan</strong> dashboard.
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center pt-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(4)}
-                  className="px-6 py-2.5 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-bold text-sm hover:bg-[#F9F8F6] transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-8 py-3 bg-gradient-to-r from-[#F97316] to-teal-700 text-white rounded-xl font-bold text-sm hover:opacity-95 transition-all shadow-lg shadow-teal-900/20 flex items-center gap-2 disabled:opacity-70 cursor-pointer"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 size={18} className="animate-spin" />
-                      Analyzing Biometrics & Generating AI Draft...
-                    </>
-                  ) : (
-                    <>
-                      <Zap size={18} />
-                      Submit Assessment & Trigger AI Analysis
-                    </>
-                  )}
-                </button>
               </div>
             </div>
-          )}
+
+            {/* 4. Health & Medical Notes */}
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
+                <ShieldAlert size={15} className="text-[#F97316]" /> Health Considerations &amp; Medical Notes
+              </h4>
+              <div>
+                <input
+                  type="text"
+                  value={formData.injuries === 'None reported' ? '' : formData.injuries}
+                  onChange={e => setFormData({ ...formData, injuries: e.target.value || 'None' })}
+                  placeholder="Any injuries, past surgeries, or physical limitations? (e.g., lower back stiffness, knee pain, or 'None')"
+                  className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none text-[#292524]"
+                />
+              </div>
+            </div>
+
+            {/* Submit Action */}
+            <div className="pt-6 border-t border-[#E7E5E4] flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-xs text-[#78716C]">
+                Clicking generate will trigger the AI engine and automatically dispatch the draft to your certified trainer.
+              </p>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white rounded-xl font-bold text-sm hover:opacity-95 transition-all shadow-lg shadow-orange-200 flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer shrink-0"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    Generating AI Draft for Trainer...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={18} />
+                    Generate AI Plan for Trainer Review
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </form>
       )}
     </div>

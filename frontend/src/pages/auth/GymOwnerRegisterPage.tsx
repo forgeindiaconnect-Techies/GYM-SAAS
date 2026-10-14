@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Activity, AlertCircle, Loader2, ArrowLeft, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -34,12 +34,38 @@ const initialForm = {
 
 const GymOwnerRegisterPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login } = useAuth();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const emailParam = searchParams.get('email');
+    const nameParam = searchParams.get('name');
+    const phoneParam = searchParams.get('phone');
+
+    if (emailParam || nameParam || phoneParam) {
+      setForm(prev => {
+        let fName = prev.firstName;
+        let lName = prev.lastName;
+        if (nameParam) {
+          const parts = decodeURIComponent(nameParam).trim().split(' ');
+          fName = parts[0] || '';
+          lName = parts.slice(1).join(' ') || '';
+        }
+        return {
+          ...prev,
+          email: emailParam ? decodeURIComponent(emailParam).trim() : prev.email,
+          firstName: fName,
+          lastName: lName,
+          mobile: phoneParam ? decodeURIComponent(phoneParam).trim() : prev.mobile,
+        };
+      });
+    }
+  }, [searchParams]);
 
   const set = (field: string, value: any) => {
     setForm(f => ({ ...f, [field]: value }));

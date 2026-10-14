@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  CalendarCheck, Dumbbell, Video, Loader2, ArrowRight
+  CalendarCheck, Dumbbell, Video, Loader2, ArrowRight, LogIn, LogOut, Activity, CheckCircle2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
@@ -27,6 +27,8 @@ interface SessionAttendance {
 const MemberAttendance = () => {
   const [sessions, setSessions] = useState<SessionAttendance[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [feedbackMsg, setFeedbackMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const fetchAttendance = async () => {
     try {
@@ -46,6 +48,38 @@ const MemberAttendance = () => {
     fetchAttendance();
   }, []);
 
+  const handleCheckIn = async (sessionId: string) => {
+    setActionLoading(sessionId + '-checkin');
+    setFeedbackMsg(null);
+    try {
+      const res = await api.post(`/trainer-sessions/${sessionId}/check-in`);
+      if (res.data.success) {
+        setFeedbackMsg({ text: 'Checked in successfully! Attendance marked Present.', type: 'success' });
+        await fetchAttendance();
+      }
+    } catch (err: any) {
+      setFeedbackMsg({ text: err.response?.data?.message || 'Check-in failed. Please try again.', type: 'error' });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleCheckOut = async (sessionId: string) => {
+    setActionLoading(sessionId + '-checkout');
+    setFeedbackMsg(null);
+    try {
+      const res = await api.post(`/trainer-sessions/${sessionId}/check-out`);
+      if (res.data.success) {
+        setFeedbackMsg({ text: 'Checked out successfully! Session duration logged.', type: 'success' });
+        await fetchAttendance();
+      }
+    } catch (err: any) {
+      setFeedbackMsg({ text: err.response?.data?.message || 'Check-out failed. Please try again.', type: 'error' });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const totalSessions = sessions.length;
   const attendedCount = sessions.filter(
     (s) => s.attendanceStatus === 'Present' || s.status === 'Completed'
@@ -58,6 +92,11 @@ const MemberAttendance = () => {
     totalSessions > 0
       ? Math.round(((attendedCount + selfLearningCount + lateCount) / totalSessions) * 100)
       : 100;
+
+  const ongoingSession = sessions.find((s) => s.checkInTime && !s.checkOutTime);
+  const nextEligibleSession = sessions.find(
+    (s) => !s.checkInTime && s.status !== 'Cancelled' && s.status !== 'Rejected'
+  );
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -85,6 +124,29 @@ const MemberAttendance = () => {
         </div>
       </div>
 
+      {/* Feedback Toast Notification */}
+      {feedbackMsg && (
+        <div
+          className={`p-4 rounded-2xl border text-xs font-bold flex items-center justify-between transition-all ${
+            feedbackMsg.type === 'success'
+              ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+              : 'bg-rose-50 border-rose-300 text-rose-900'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <CheckCircle2 size={16} className={feedbackMsg.type === 'success' ? 'text-emerald-600' : 'text-rose-600'} />
+            <span>{feedbackMsg.text}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setFeedbackMsg(null)}
+            className="text-xs font-bold underline hover:opacity-75 cursor-pointer ml-4"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm text-center">
@@ -104,6 +166,84 @@ const MemberAttendance = () => {
           <p className="text-2xl font-bold text-rose-700 mt-1">{missedCount}</p>
         </div>
       </div>
+
+      {/* Quick Active Check-In & Check-Out Action Bar */}
+      {ongoingSession && (
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-900/10 shrink-0">
+              <Activity size={24} className="animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                <span className="text-xs font-black uppercase text-emerald-800 tracking-wider">
+                  Live Active Session Check-In
+                </span>
+              </div>
+              <h3 className="font-extrabold text-[#292524] text-base mt-0.5">
+                {ongoingSession.trainerId?.name || 'Personal Training Session'} ({ongoingSession.mode})
+              </h3>
+              <p className="text-xs text-emerald-800 mt-0.5">
+                Checked in at{' '}
+                <strong>
+                  {new Date(ongoingSession.checkInTime!).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </strong>{' '}
+                &bull; Ready to complete workout?
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleCheckOut(ongoingSession._id)}
+            disabled={actionLoading === ongoingSession._id + '-checkout'}
+            className="px-5 py-2.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50"
+          >
+            {actionLoading === ongoingSession._id + '-checkout' ? (
+              <Loader2 size={15} className="animate-spin" />
+            ) : (
+              <LogOut size={15} />
+            )}
+            <span>Check Out Now</span>
+          </button>
+        </div>
+      )}
+
+      {!ongoingSession && nextEligibleSession && (
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-[#FED7AA] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white flex items-center justify-center font-bold shadow-md shadow-orange-900/10 shrink-0">
+              <LogIn size={22} />
+            </div>
+            <div>
+              <span className="text-[11px] font-extrabold uppercase text-[#F97316] tracking-wider block">
+                Scheduled Training Session
+              </span>
+              <h3 className="font-extrabold text-[#292524] text-base mt-0.5">
+                {nextEligibleSession.trainerId?.name || 'Assigned Trainer'} ({nextEligibleSession.mode})
+              </h3>
+              <p className="text-xs text-[#78716C] mt-0.5">
+                {nextEligibleSession.date} &bull; {nextEligibleSession.startTime} - {nextEligibleSession.endTime}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleCheckIn(nextEligibleSession._id)}
+            disabled={actionLoading === nextEligibleSession._id + '-checkin'}
+            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50"
+          >
+            {actionLoading === nextEligibleSession._id + '-checkin' ? (
+              <Loader2 size={15} className="animate-spin" />
+            ) : (
+              <LogIn size={15} />
+            )}
+            <span>Check In Now</span>
+          </button>
+        </div>
+      )}
 
       {/* Attendance Log Table */}
       <div className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden shadow-sm">
@@ -135,6 +275,11 @@ const MemberAttendance = () => {
           <div className="divide-y divide-[#E7E5E4]">
             {sessions.map((session) => {
               const status = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : session.status);
+              const checkedIn = Boolean(session.checkInTime);
+              const checkedOut = Boolean(session.checkOutTime);
+              const isCheckingIn = actionLoading === session._id + '-checkin';
+              const isCheckingOut = actionLoading === session._id + '-checkout';
+
               return (
                 <div
                   key={session._id}
@@ -149,29 +294,63 @@ const MemberAttendance = () => {
                         {session.trainerId?.name || 'Assigned Trainer'}
                       </p>
                       <p className="text-xs text-[#78716C] mt-0.5">
-                        {session.date} • {session.startTime} - {session.endTime} ({session.mode})
+                        {session.date} &bull; {session.startTime} - {session.endTime} ({session.mode})
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5 flex-wrap">
                     {session.checkInTime && (
-                      <span className="text-xs text-gray-500 hidden sm:inline">
-                        In: {new Date(session.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      <span className="text-xs font-bold text-emerald-800 bg-emerald-100/70 border border-emerald-300 px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                        <LogIn size={12} className="text-emerald-700" />
+                        <span>In: {new Date(session.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </span>
                     )}
 
+                    {session.checkOutTime && (
+                      <span className="text-xs font-bold text-blue-800 bg-blue-100/70 border border-blue-300 px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                        <LogOut size={12} className="text-blue-700" />
+                        <span>Out: {new Date(session.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      </span>
+                    )}
+
+                    {/* Check In Action Button */}
+                    {!checkedIn && (
+                      <button
+                        type="button"
+                        onClick={() => handleCheckIn(session._id)}
+                        disabled={isCheckingIn}
+                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
+                      >
+                        {isCheckingIn ? <Loader2 size={13} className="animate-spin" /> : <LogIn size={13} />}
+                        <span>Check In</span>
+                      </button>
+                    )}
+
+                    {/* Check Out Action Button */}
+                    {checkedIn && !checkedOut && (
+                      <button
+                        type="button"
+                        onClick={() => handleCheckOut(session._id)}
+                        disabled={isCheckingOut}
+                        className="px-3 py-1.5 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
+                      >
+                        {isCheckingOut ? <Loader2 size={13} className="animate-spin" /> : <LogOut size={13} />}
+                        <span>Check Out</span>
+                      </button>
+                    )}
+
                     <span
-                      className={`text-xs font-bold px-3 py-1 rounded-full ${
+                      className={`text-xs font-extrabold px-3 py-1 rounded-full border ${
                         status === 'Present' || status === 'Completed'
-                          ? 'bg-green-100 text-green-700 border border-green-200'
+                          ? 'bg-green-100 text-green-800 border-green-300'
                           : status === 'Self-Learning'
-                          ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                          ? 'bg-blue-100 text-blue-800 border-blue-300'
                           : status === 'Late'
-                          ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                          ? 'bg-amber-100 text-amber-800 border-amber-300'
                           : status === 'Absent'
-                          ? 'bg-rose-100 text-rose-700 border border-rose-200'
-                          : 'bg-gray-100 text-gray-700'
+                          ? 'bg-rose-100 text-rose-800 border-rose-300'
+                          : 'bg-gray-100 text-gray-700 border-gray-300'
                       }`}
                     >
                       {status}

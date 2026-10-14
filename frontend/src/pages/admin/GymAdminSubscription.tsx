@@ -248,10 +248,23 @@ const GymAdminSubscription = () => {
     return formatPaymentDateTime(user?.subscriptionStartDate || new Date());
   }, [user?.subscriptionStartDate]);
 
+  const [dbHistory, setDbHistory] = useState<any[]>([]);
+
+  useEffect(() => {
+    api.get('/subscriptions/my-history')
+      .then(res => {
+        if (res.data?.history) {
+          setDbHistory(res.data.history);
+        }
+      })
+      .catch(err => console.error('Failed to fetch subscription history', err));
+  }, [user?.id]);
+
   const isBranchUser = Boolean(user?.branchId);
 
   const paymentHistory = useMemo(() => {
     if (isBranchUser) return [];
+    if (dbHistory.length > 0) return dbHistory;
     if (isAnanth) {
       return [
         { 
@@ -287,8 +300,26 @@ const GymAdminSubscription = () => {
         },
       ];
     }
+    if (user?.subscriptionPlan && user?.subscriptionStatus?.toUpperCase() === 'ACTIVE') {
+      const planKey = user.subscriptionPlan.toUpperCase();
+      const planInfo = PLAN_DETAILS[planKey] || PLAN_DETAILS.SILVER;
+      const amt = planInfo.priceMonthly || 799;
+      return [
+        {
+          id: `#INV-${new Date().getFullYear()}-001`,
+          date: currentPaymentDateTime,
+          amount: `₹${amt.toLocaleString('en-IN')}`,
+          plan: `${planInfo.name} Plan (Monthly)`,
+          status: 'Paid',
+          paymentMethod: 'UPI (PhonePe)',
+          paymentDetails: `Plan: ${planInfo.name}`,
+          year: new Date().getFullYear(),
+          isCurrent: true
+        }
+      ];
+    }
     return [];
-  }, [isBranchUser, isAnanth, currentPaymentDateTime, user?.gymName]);
+  }, [isBranchUser, dbHistory, isAnanth, currentPaymentDateTime, user]);
 
   const startDateFormatted = user?.subscriptionStartDate
     ? formatPaymentDate(user.subscriptionStartDate)
@@ -613,18 +644,18 @@ const GymAdminSubscription = () => {
           </button>
         </div>
         
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left border-collapse min-w-[720px]">
             <thead>
-              <tr className="border-b border-[#E7E5E4] bg-[#FFFDF8]/50">
-                <th className="py-3 px-4 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap text-center w-14">S.No</th>
-                <th className="py-3 px-4 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Invoice ID</th>
-                <th className="py-3 px-4 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Date</th>
-                <th className="py-3 px-4 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Plan</th>
-                <th className="py-3 px-4 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Amount</th>
-                <th className="py-3 px-4 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
-                <th className="py-3 px-4 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Status</th>
-                <th className="py-3 px-4 text-xs font-bold text-[#78716C] uppercase tracking-wider text-right whitespace-nowrap">Action</th>
+              <tr className="border-b border-[#E7E5E4] bg-[#FFFDF8]/70">
+                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap text-center w-12">S.No</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Invoice ID</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Date</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Plan</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Amount</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider text-right whitespace-nowrap">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -639,23 +670,25 @@ const GymAdminSubscription = () => {
                   <tr 
                     key={invoice.id} 
                     className={`border-b border-[#F1F5F9] transition-colors last:border-0 ${
-                      invoice.isCurrent ? 'bg-[#FFFDF8]/70 hover:bg-[#FFFDF8]' : 'hover:bg-[#F9F8F6]'
+                      invoice.isCurrent ? 'bg-orange-50/40 hover:bg-orange-50/60' : 'hover:bg-[#F9F8F6]'
                     }`}
                   >
-                    <td className="py-4 px-4 text-sm font-bold text-[#F97316] text-center whitespace-nowrap">
+                    <td className="py-3.5 px-3 text-sm font-bold text-[#F97316] text-center whitespace-nowrap">
                       {idx + 1}
                     </td>
-                    <td className="py-4 px-4 text-sm font-semibold text-[#292524] whitespace-nowrap">
-                      <span className="font-mono">{invoice.id}</span>
-                      {invoice.isCurrent && (
-                        <span className="ml-2 text-[10px] bg-[#F97316] text-white px-2 py-0.5 rounded-full font-bold">
-                          Current
-                        </span>
-                      )}
+                    <td className="py-3.5 px-3 text-sm font-semibold text-[#292524] whitespace-nowrap">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-mono text-xs font-bold">{invoice.id}</span>
+                        {invoice.isCurrent && (
+                          <span className="text-[10px] bg-[#F97316] text-white px-2 py-0.5 rounded-full font-bold">
+                            Current
+                          </span>
+                        )}
+                      </div>
                     </td>
-                    <td className="py-4 px-4 text-sm text-[#78716C] whitespace-nowrap">{invoice.date}</td>
-                    <td className="py-4 px-4 text-sm font-medium text-[#292524] whitespace-nowrap">{invoice.plan}</td>
-                    <td className="py-4 px-4 text-sm font-bold text-[#F97316] whitespace-nowrap">{invoice.amount}</td>
+                    <td className="py-3.5 px-3 text-sm text-[#78716C] whitespace-nowrap">{invoice.date}</td>
+                    <td className="py-3.5 px-3 text-sm font-medium text-[#292524] whitespace-nowrap">{invoice.plan}</td>
+                    <td className="py-3.5 px-3 text-sm font-bold text-[#F97316] whitespace-nowrap">{invoice.amount}</td>
                     <td className="py-4 px-4 whitespace-nowrap">
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-[#292524]">{invoice.paymentMethod}</span>
@@ -663,7 +696,11 @@ const GymAdminSubscription = () => {
                       </div>
                     </td>
                     <td className="py-4 px-4 whitespace-nowrap">
-                      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-2.5 py-1 rounded-full">
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
+                        invoice.status === 'Paid' || invoice.status === 'Active'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-amber-50 text-amber-700 border-amber-200'
+                      }`}>
                         {invoice.status}
                       </span>
                     </td>

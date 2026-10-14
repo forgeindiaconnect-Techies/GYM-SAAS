@@ -73,8 +73,10 @@ const GymAdminPayments = () => {
   };
 
   const filtered = payments.filter(trx => {
-    if (activeTab === 'manual' && trx.paymentMethod !== 'Bank Transfer') return false;
-    if (activeTab === 'qr' && trx.paymentMethod === 'Bank Transfer') return false;
+    const isTrial = (trx.planName || '').toLowerCase().includes('trial') || trx.paymentMethod === 'Trial' || trx.amount === 0;
+    if (activeTab === 'manual' && (trx.paymentMethod !== 'Bank Transfer' || isTrial)) return false;
+    if (activeTab === 'qr' && (trx.paymentMethod === 'Bank Transfer' || isTrial)) return false;
+    if (activeTab === 'trial' && !isTrial) return false;
 
     const s = search.toLowerCase();
     const fullName = `${trx.customerId?.firstName || ''} ${trx.customerId?.lastName || ''}`.toLowerCase();
@@ -94,11 +96,12 @@ const GymAdminPayments = () => {
     const columns = ['Date', 'Customer', 'Plan', 'Amount (INR)', 'Method', 'Transaction ID', 'Status'];
     const data = filtered.map((p: any) => {
       const customerName = `${p.customerId?.firstName || ''} ${p.customerId?.lastName || ''}`.trim() || p.customerBankDetails?.fullName || p.user?.name || 'Unknown';
+      const isTrial = (p.planName || '').toLowerCase().includes('trial') || p.paymentMethod === 'Trial' || p.amount === 0;
       return [
         p.paymentDate || p.createdAt ? new Date(p.paymentDate || p.createdAt).toLocaleString('en-IN') : '-',
         customerName,
         p.planName || '-',
-        `Rs. ${(p.amount || 0).toLocaleString('en-IN')}`,
+        isTrial ? 'Rs. 0 (Free Trial)' : `Rs. ${(p.amount || 0).toLocaleString('en-IN')}`,
         p.paymentMethod || '-',
         p.transactionId || 'N/A',
         p.status || '-'
@@ -116,8 +119,8 @@ const GymAdminPayments = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Payments & Subscriptions</h1>
-          <p className="text-[#78716C] mt-1">Manage member payments and configure payment settings.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Membership Payments</h1>
+          <p className="text-[#78716C] mt-1">Manage gym member membership payments, fee collections, and payment verification.</p>
         </div>
       </div>
 
@@ -126,7 +129,7 @@ const GymAdminPayments = () => {
           onClick={() => setActiveTab('all')}
           className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'all' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#292524]'}`}
         >
-          All Payments
+          All Payments ({payments.length})
         </button>
         <button 
           onClick={() => setActiveTab('manual')}
@@ -140,12 +143,18 @@ const GymAdminPayments = () => {
         >
           QR Code Payments
         </button>
+        <button 
+          onClick={() => setActiveTab('trial')}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'trial' ? 'border-[#F97316] text-[#F97316]' : 'border-transparent text-[#78716C] hover:text-[#292524]'}`}
+        >
+          Free Trials ({payments.filter(p => (p.planName || '').toLowerCase().includes('trial') || p.paymentMethod === 'Trial' || p.amount === 0).length})
+        </button>
       </div>
 
       <div className="space-y-6">
           <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 relative overflow-hidden flex items-center justify-between">
             <div>
-              <p className="text-[#78716C] text-sm font-semibold mb-1">Total Revenue</p>
+              <p className="text-[#78716C] text-sm font-semibold mb-1">Total Member Revenue</p>
               <h3 className="text-3xl font-black text-[#292524]">₹{payments.filter(p => p.status === 'Approved').reduce((acc, curr) => acc + (curr.amount || 0), 0).toLocaleString('en-IN')}</h3>
             </div>
             <IndianRupee size={48} className="text-[#F97316]/20" />
@@ -153,7 +162,7 @@ const GymAdminPayments = () => {
 
           <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl overflow-hidden">
             <div className="p-6 border-b border-[#E7E5E4] flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h3 className="text-lg font-bold text-[#292524]">Payment Verification</h3>
+              <h3 className="text-lg font-bold text-[#292524]">Member Payment Verification</h3>
               <div className="flex gap-4 w-full md:w-auto">
                 <div className="relative flex-1 md:w-72">
                   <input
@@ -205,11 +214,32 @@ const GymAdminPayments = () => {
                         <td className="px-6 py-4">{new Date(trx.paymentDate || trx.createdAt).toLocaleDateString()}</td>
                         <td className="px-6 py-4 font-semibold text-[#292524]">{trx.customerId?.firstName} {trx.customerId?.lastName}</td>
                         <td className="px-6 py-4">
-                          <p className="font-bold text-[#292524]">{trx.planName}</p>
-                          <p className="text-[#F97316] font-bold">₹{trx.amount}</p>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <p className="font-bold text-[#292524]">{trx.planName}</p>
+                            {((trx.planName || '').toLowerCase().includes('trial') || trx.paymentMethod === 'Trial' || trx.amount === 0) && (
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">
+                                Trial
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[#F97316] font-bold text-sm">
+                            {trx.amount === 0 || (trx.planName || '').toLowerCase().includes('trial') ? (
+                              <span className="text-purple-700 font-bold">₹0 (Free Trial)</span>
+                            ) : (
+                              `₹${Number(trx.amount).toLocaleString('en-IN')}`
+                            )}
+                          </p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-[#292524] font-medium">{trx.paymentMethod}</p>
+                          <p className="text-[#292524] font-medium">
+                            {trx.paymentMethod === 'Trial' ? (
+                              <span className="inline-flex items-center gap-1 text-purple-700 font-semibold">
+                                Trial
+                              </span>
+                            ) : (
+                              trx.paymentMethod
+                            )}
+                          </p>
                           <p className="font-mono text-xs text-gray-500">{trx.transactionId || 'N/A'}</p>
                         </td>
                         <td className="px-6 py-4">

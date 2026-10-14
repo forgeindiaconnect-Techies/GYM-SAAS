@@ -138,7 +138,7 @@ const GymStoreProducts = () => {
 
   const loadCategories = async (pType?: string) => {
     try {
-      const qs = pType ? `?productType=${encodeURIComponent(pType)}` : '';
+      const qs = pType && pType !== 'all' ? `?productType=${encodeURIComponent(pType)}` : '';
       const res = await api.get(`/store/admin/categories${qs}`);
       const cats = (res.data.categories || []).filter((c: any) => c.status === 'Active').map((c: any) => c.name);
       const distinct = Array.from(new Set([...cats, 'Uncategorized']));
@@ -165,7 +165,6 @@ const GymStoreProducts = () => {
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, category, status, inventory, filterProductType]);
 
   useEffect(() => {
@@ -173,8 +172,8 @@ const GymStoreProducts = () => {
   }, [loadProducts]);
 
   useEffect(() => {
-    loadCategories(form.productType);
-  }, [form.productType, user?.id]);
+    loadCategories(filterProductType !== 'all' ? filterProductType : undefined);
+  }, [filterProductType, user?.id]);
 
   const openCreate = () => {
     setEditing(null);
@@ -381,32 +380,57 @@ const GymStoreProducts = () => {
       {loading ? (
         <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#F97316]" size={40} /></div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-[#E7E5E4] rounded-2xl">
-          <Package className="mx-auto text-[#F97316]/30 mb-4" size={56} />
-          <p className="text-[#78716C] font-medium">No products found.</p>
+        <div className="text-center py-16 bg-white border border-[#E7E5E4] rounded-2xl flex flex-col items-center justify-center p-8">
+          <div className="w-16 h-16 rounded-full bg-orange-50 flex items-center justify-center mb-4 text-[#F97316]">
+            <Package size={36} />
+          </div>
+          <h3 className="text-xl font-bold text-[#292524] mb-2">No Products in Store</h3>
+          <p className="text-[#78716C] font-medium max-w-md mb-6">
+            You haven't added any products to your gym store yet, or no products match the current filters.
+          </p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <button onClick={openCreate} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white font-bold rounded-xl shadow-lg shadow-orange-200 hover:opacity-90 transition-opacity">
+              <Plus size={18} /> Add First Product
+            </button>
+            {(search || category !== 'all' || status !== 'all' || inventory !== 'all' || filterProductType !== 'all') && (
+              <button onClick={() => { setSearch(''); setCategory('all'); setStatus('all'); setInventory('all'); setFilterProductType('all'); }} className="px-4 py-2.5 bg-gray-100 text-[#78716C] rounded-xl font-bold hover:bg-gray-200 transition-colors">
+                Clear Filters
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {products.map((p) => {
-            let totalStock = p.stock;
-            let displayPrice = p.sellingPrice - (p.discountPrice || 0);
-            let originalPrice = p.sellingPrice;
-            let hasDiscount = p.discountPrice != null && p.discountPrice > 0;
+            let totalStock = Number(p?.stock) || 0;
+            let originalPrice = Number(p?.sellingPrice) || 0;
+            let discountAmt = Number(p?.discountPrice) || 0;
+            let displayPrice = Math.max(0, originalPrice - discountAmt);
+            let hasDiscount = discountAmt > 0 && originalPrice > discountAmt;
 
-            if (p.hasVariants && p.variants && p.variants.length > 0) {
-               totalStock = p.variants.reduce((acc: number, v: any) => acc + v.stock, 0);
+            if (p.hasVariants && Array.isArray(p.variants) && p.variants.length > 0) {
+               totalStock = p.variants.reduce((acc: number, v: any) => acc + (Number(v?.stock) || 0), 0);
                const minVariant = p.variants.reduce((prev: any, curr: any) => {
-                  const prevDisplay = prev.price - (prev.discountPrice || 0);
-                  const currDisplay = curr.price - (curr.discountPrice || 0);
+                  const prevDisplay = (Number(prev?.price) || 0) - (Number(prev?.discountPrice) || 0);
+                  const currDisplay = (Number(curr?.price) || 0) - (Number(curr?.discountPrice) || 0);
                   return currDisplay < prevDisplay ? curr : prev;
                }, p.variants[0]);
                
-               displayPrice = minVariant.price - (minVariant.discountPrice || 0);
-               originalPrice = minVariant.price;
-               hasDiscount = minVariant.discountPrice != null && minVariant.discountPrice > 0;
+               if (minVariant) {
+                 const vPrice = Number(minVariant?.price) || 0;
+                 const vDiscount = Number(minVariant?.discountPrice) || 0;
+                 displayPrice = Math.max(0, vPrice - vDiscount);
+                 originalPrice = vPrice;
+                 hasDiscount = vDiscount > 0 && vPrice > vDiscount;
+               }
             }
 
-            const isLow = totalStock > 0 && totalStock <= p.lowStockThreshold;
+            const lowThreshold = Number(p.lowStockThreshold) || 5;
+            const isLow = totalStock > 0 && totalStock <= lowThreshold;
+            const discountPercent = (hasDiscount && originalPrice > 0) 
+              ? Math.max(1, Math.round(((originalPrice - displayPrice) / originalPrice) * 100)) 
+              : 0;
+
             return (
               <div key={p._id} className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                 <div className="h-40 bg-[#FFFDF8] relative">
@@ -416,20 +440,20 @@ const GymStoreProducts = () => {
                     <div className="w-full h-full flex items-center justify-center text-[#F97316]/30"><ImageIcon size={48} /></div>
                   )}
                   <span className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-xs font-bold ${
-                    totalStock <= 0 ? 'bg-red-100 text-red-700' : isLow ? 'bg-amber-100 text-amber-700' : 'bg-[#FED7AA]/10 text-[#F97316]'
+                    totalStock <= 0 ? 'bg-red-100 text-red-700' : isLow ? 'bg-amber-100 text-amber-700' : 'bg-[#FED7AA]/20 text-[#EA580C]'
                   }`}>
                     {totalStock <= 0 ? 'Out of stock' : isLow ? `Low (${totalStock})` : `In stock (${totalStock})`}
                   </span>
-                  {hasDiscount && (
+                  {hasDiscount && discountPercent > 0 && (
                     <span className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-[#F97316] text-white">
-                      {Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% off
+                      {discountPercent}% off
                     </span>
                   )}
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-[#FED7AA] uppercase tracking-wide">{p.productType || p.categoryName}</span>
-                    <span className={`text-xs font-bold ${p.status === 'Active' ? 'text-[#F97316]' : 'text-gray-400'}`}>{p.status}</span>
+                    <span className="text-xs font-bold text-[#F97316] uppercase tracking-wide">{p.productType || p.categoryName || 'Product'}</span>
+                    <span className={`text-xs font-bold ${p.status === 'Active' ? 'text-green-600' : 'text-gray-400'}`}>{p.status || 'Active'}</span>
                   </div>
                   <h3 className="font-bold text-[#292524] truncate">{p.name}</h3>
                   {p.brand && <p className="text-xs text-[#78716C]">{p.brand}</p>}
@@ -437,31 +461,31 @@ const GymStoreProducts = () => {
                   <div className="mt-2 flex items-center gap-2">
                     {p.hasVariants ? (
                        <>
-                         <span className="text-lg font-black text-[#F97316]">From ₹{displayPrice}</span>
-                         {hasDiscount && (
-                           <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
+                         <span className="text-lg font-black text-[#F97316]">From ₹{displayPrice.toLocaleString('en-IN')}</span>
+                         {hasDiscount && originalPrice > 0 && (
+                           <span className="text-sm text-gray-400 line-through">₹{originalPrice.toLocaleString('en-IN')}</span>
                          )}
                        </>
                     ) : (
                        <>
-                         <span className="text-lg font-black text-[#F97316]">₹{displayPrice}</span>
-                         {hasDiscount && (
-                           <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
+                         <span className="text-lg font-black text-[#F97316]">₹{displayPrice.toLocaleString('en-IN')}</span>
+                         {hasDiscount && originalPrice > 0 && (
+                           <span className="text-sm text-gray-400 line-through">₹{originalPrice.toLocaleString('en-IN')}</span>
                          )}
                        </>
                     )}
                   </div>
                   <div className="mt-3 text-xs text-[#78716C] grid grid-cols-2 gap-1">
-                    <span>Channels: {p.availability}</span>
-                    <span>Fulfil: {p.fulfilmentType}</span>
+                    <span>Channels: {p.availability || 'Both'}</span>
+                    <span>Fulfil: {p.fulfilmentType || 'Gym Pickup'}</span>
                   </div>
                   {p.hasVariants && (
-                    <div className="mt-2 text-xs font-bold text-[#FED7AA]">
-                      {p.variants.length} Variants Available
+                    <div className="mt-2 text-xs font-bold text-[#EA580C]">
+                      {(p.variants?.length || 0)} Variants Available
                     </div>
                   )}
                   <div className="mt-4 flex gap-2 pt-3 border-t border-[#F1F5F9]">
-                    <button onClick={() => openEdit(p)} className="flex-1 px-3 py-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
+                    <button onClick={() => openEdit(p)} className="flex-1 px-3 py-1.5 bg-orange-50 text-[#F97316] rounded-lg hover:bg-orange-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
                       <Pencil size={13} /> Edit
                     </button>
                     <button onClick={() => deleteProduct(p)} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">

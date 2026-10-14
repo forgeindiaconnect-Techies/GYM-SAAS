@@ -10,7 +10,9 @@ import {
   RefreshCw,
   Calendar,
   Activity,
-  LogOut
+  LogOut,
+  Eye,
+  X
 } from 'lucide-react';
 import { exportToPDF } from '../../utils/export';
 import api from '../../utils/api';
@@ -50,6 +52,7 @@ const GymAdminAttendance = () => {
   const [customerCheckins, setCustomerCheckins] = useState<CustomerCheckin[]>([]);
   const [trainerRecords, setTrainerRecords] = useState<TrainerAttendanceRecord[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
 
   // Search input state
   const [searchQuery, setSearchQuery] = useState('');
@@ -473,6 +476,7 @@ const GymAdminAttendance = () => {
                     <th className="py-3 px-4">Date</th>
                     <th className="py-3 px-4">Check-in Time</th>
                     <th className="py-3 px-4">Checkout Time</th>
+                    <th className="py-3 px-4 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E7E5E4]">
@@ -527,6 +531,17 @@ const GymAdminAttendance = () => {
                             {item.checkOutTime}
                           </span>
                         )}
+                      </td>
+
+                      {/* 6. Action */}
+                      <td className="py-3.5 px-4 text-right">
+                        <button
+                          onClick={() => setSelectedRecord({ ...item, recordType: 'customer' })}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFFDF8] hover:bg-orange-50 text-[#F97316] border border-[#F97316]/30 hover:border-[#F97316] text-xs font-semibold shadow-sm transition-all"
+                        >
+                          <Eye size={13} />
+                          <span>View Details</span>
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -689,6 +704,7 @@ const GymAdminAttendance = () => {
                     <th className="py-3 px-4">Scheduled Slot</th>
                     <th className="py-3 px-4">Check-In</th>
                     <th className="py-3 px-4">Check-Out</th>
+                    <th className="py-3 px-4 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E7E5E4]">
@@ -757,10 +773,177 @@ const GymAdminAttendance = () => {
                           {t.checkOutTime}
                         </span>
                       </td>
+
+                      {/* 8. Action */}
+                      <td className="py-3.5 px-4 text-right">
+                        <button
+                          onClick={() => setSelectedRecord({ ...t, recordType: 'trainer' })}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFFDF8] hover:bg-orange-50 text-[#F97316] border border-[#F97316]/30 hover:border-[#F97316] text-xs font-semibold shadow-sm transition-all"
+                        >
+                          <Eye size={13} />
+                          <span>View Details</span>
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Attendance & Shift Details Modal */}
+      {selectedRecord && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl border border-[#E7E5E4] shadow-2xl w-full max-w-lg overflow-hidden animate-scaleIn">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7E5E4] bg-[#FFFDF8]">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 text-[#F97316] flex items-center justify-center font-bold">
+                  <Activity size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#292524]">
+                    {selectedRecord.recordType === 'trainer' ? 'Trainer Shift & Session Details' : 'Member Check-In Details'}
+                  </h3>
+                  <p className="text-xs text-[#78716C]">
+                    {formatDateDisplay(selectedRecord.date)} • {selectedRecord.recordType === 'trainer' ? selectedRecord.dutyType : selectedRecord.type}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedRecord(null)}
+                className="p-2 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-xl transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+              {selectedRecord.recordType === 'trainer' ? (
+                <>
+                  {/* Trainer Info Card */}
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-stone-50 border border-stone-200">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 rounded-full bg-[#F97316] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                        {selectedRecord.trainerName?.charAt(0) || 'T'}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-[#292524] text-sm">{selectedRecord.trainerName}</h4>
+                        <p className="text-xs text-[#78716C]">{selectedRecord.specialization}</p>
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 text-[#F97316] border border-orange-200">
+                      {selectedRecord.punctuality || 'On Time'}
+                    </span>
+                  </div>
+
+                  {/* Details Grid */}
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="p-3 rounded-xl bg-[#FFFDF8] border border-stone-200">
+                      <span className="text-stone-400 font-medium block mb-1">Assigned Client / Area</span>
+                      <span className="font-bold text-[#292524] text-sm">
+                        {selectedRecord.assignedCustomer || 'General Floor'}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#FFFDF8] border border-stone-200">
+                      <span className="text-stone-400 font-medium block mb-1">Session Mode / Duty</span>
+                      <span className="font-bold text-[#292524] text-sm">
+                        {selectedRecord.dutyType}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#FFFDF8] border border-stone-200">
+                      <span className="text-stone-400 font-medium block mb-1">Scheduled Slot</span>
+                      <span className="font-bold text-stone-800 text-sm flex items-center gap-1">
+                        <Clock size={13} className="text-[#F97316]" /> {selectedRecord.scheduledTime}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#FFFDF8] border border-stone-200">
+                      <span className="text-stone-400 font-medium block mb-1">Date</span>
+                      <span className="font-bold text-stone-800 text-sm flex items-center gap-1">
+                        <Calendar size={13} className="text-[#F97316]" /> {formatDateDisplay(selectedRecord.date)}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                      <span className="text-emerald-700 font-medium block mb-1">Check-In Time</span>
+                      <span className="font-bold text-emerald-800 text-sm flex items-center gap-1">
+                        <Clock size={13} /> {selectedRecord.checkInTime}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
+                      <span className="text-blue-700 font-medium block mb-1">Check-Out Time</span>
+                      <span className="font-bold text-blue-800 text-sm flex items-center gap-1">
+                        <LogOut size={13} /> {selectedRecord.checkOutTime}
+                      </span>
+                    </div>
+                  </div>
+
+                  {selectedRecord.sessionId && (
+                    <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between text-xs">
+                      <span className="text-stone-500">Session Reference ID</span>
+                      <span className="font-mono text-stone-700 font-bold">{selectedRecord.sessionId}</span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* Member Info Card */}
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-stone-50 border border-stone-200">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 rounded-full bg-[#F97316]/15 text-[#F97316] flex items-center justify-center font-bold text-base shadow-sm">
+                        {selectedRecord.name?.charAt(0) || 'M'}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-[#292524] text-sm">{selectedRecord.name}</h4>
+                        {selectedRecord.email && <p className="text-xs text-[#78716C]">{selectedRecord.email}</p>}
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-300">
+                      {selectedRecord.type}
+                    </span>
+                  </div>
+
+                  {/* Details Grid */}
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="p-3 rounded-xl bg-[#FFFDF8] border border-stone-200">
+                      <span className="text-stone-400 font-medium block mb-1">Date</span>
+                      <span className="font-bold text-stone-800 text-sm flex items-center gap-1">
+                        <Calendar size={13} className="text-[#F97316]" /> {formatDateDisplay(selectedRecord.date)}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#FFFDF8] border border-stone-200">
+                      <span className="text-stone-400 font-medium block mb-1">Membership / Pass</span>
+                      <span className="font-bold text-[#292524] text-sm">
+                        {selectedRecord.type}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                      <span className="text-emerald-700 font-medium block mb-1">Check-In Time</span>
+                      <span className="font-bold text-emerald-800 text-sm flex items-center gap-1">
+                        <Clock size={13} /> {selectedRecord.checkInTime}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-stone-100 border border-stone-200">
+                      <span className="text-stone-500 font-medium block mb-1">Check-Out Time</span>
+                      <span className="font-bold text-stone-800 text-sm flex items-center gap-1">
+                        <LogOut size={13} /> {selectedRecord.checkOutTime}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end px-6 py-4 border-t border-[#E7E5E4] bg-stone-50">
+              <button
+                onClick={() => setSelectedRecord(null)}
+                className="px-5 py-2 rounded-xl bg-[#292524] hover:bg-stone-800 text-white text-xs font-bold transition-all shadow-sm"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

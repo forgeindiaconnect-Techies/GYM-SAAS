@@ -178,42 +178,62 @@ export const getAllSubscriptions = async (req: AuthRequest, res: Response): Prom
   try {
     const subscriptions = await Subscription.find({}).sort({ createdAt: -1 });
 
-    // Enrich with user and gym info
-    const enriched = await Promise.all(
-      subscriptions.map(async (sub) => {
-        const user = await User.findById(sub.userId).select('firstName lastName gymId');
-        let gymName = 'N/A';
-        if (user?.gymId) {
-          const gym = await Gym.findById(user.gymId).select('name');
-          gymName = gym?.name || 'N/A';
-        }
-        const ownerName = user ? `${user.firstName} ${user.lastName}` : 'Unknown';
-        
-        // Format dates as YYYY-MM-DD for the frontend table
-        const start = sub.startDate ? new Date(sub.startDate).toISOString().split('T')[0] : 'N/A';
-        const renewal = sub.endDate ? new Date(sub.endDate).toISOString().split('T')[0] : 'N/A';
+    // Enrich with user and gym info, strictly filtering for gym owners only
+    const enriched = (
+      await Promise.all(
+        subscriptions.map(async (sub) => {
+          const user = await User.findById(sub.userId).select('firstName lastName gymId role');
+          if (!user || user.role !== 'GYM_OWNER') {
+            return null;
+          }
 
-        // Format status to match UI expectations (Title Case)
-        const formattedStatus = sub.status.charAt(0).toUpperCase() + sub.status.slice(1).toLowerCase();
+          let gymName = 'N/A';
+          if (user?.gymId) {
+            const gym = await Gym.findById(user.gymId).select('name');
+            gymName = gym?.name || 'N/A';
+          }
+          const ownerName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Unknown';
+          
+          // Format dates as YYYY-MM-DD for the frontend table
+          const start = sub.startDate ? new Date(sub.startDate).toISOString().split('T')[0] : 'N/A';
+          const renewal = sub.endDate ? new Date(sub.endDate).toISOString().split('T')[0] : 'N/A';
 
-        return {
-          id: sub._id,
-          userId: sub.userId,
-          gymName,
-          owner: ownerName,
-          plan: sub.plan,
-          billing: sub.billingCycle,
-          amount: `₹${sub.amount.toLocaleString('en-IN')}`,
-          paymentMethod: sub.paymentMethod || 'Manual',
-          transactionId: sub.transactionId,
-          start: start,
-          renewal: renewal,
-          status: formattedStatus,
-        };
-      })
-    );
+          // Format status to match UI expectations (Title Case)
+          const formattedStatus = sub.status.charAt(0).toUpperCase() + sub.status.slice(1).toLowerCase();
+
+          return {
+            id: sub._id,
+            userId: sub.userId,
+            gymName,
+            owner: ownerName,
+            plan: sub.plan,
+            billing: sub.billingCycle,
+            amount: `₹${sub.amount.toLocaleString('en-IN')}`,
+            paymentMethod: sub.paymentMethod || 'Manual',
+            transactionId: sub.transactionId,
+            start: start,
+            renewal: renewal,
+            status: formattedStatus,
+          };
+        })
+      )
+    ).filter((s): s is NonNullable<typeof s> => s !== null);
 
     res.status(200).json({ success: true, subscriptions: enriched });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const deleteSubscription = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const subscription = await Subscription.findByIdAndDelete(id);
+    if (!subscription) {
+      res.status(404).json({ success: false, message: 'Subscription not found' });
+      return;
+    }
+    res.status(200).json({ success: true, message: 'Subscription deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -255,6 +275,53 @@ export const updateSubscriptionStatus = async (req: AuthRequest, res: Response):
     }
 
     res.status(200).json({ success: true, message: `Subscription status updated to ${status}`, subscription });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const getMySubscriptionHistory = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const subscriptions = await Subscription.find({ userId }).sort({ createdAt: -1 });
+
+    const history = subscriptions.map((sub, idx) => {
+      const d = sub.createdAt ? new Date(sub.createdAt) : new Date(sub.startDate || Date.now());
+      const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const dateStr = `${d.getDate().toString().padStart(2, '0')} ${allMonths[d.getMonth()]} ${d.getFullYear()}`;
+      
+      const cleanTrx = (sub.transactionId || '').replace(/^txn_|^PAY-/, '');
+      const invId = cleanTrx 
+        ? `#INV-${d.getFullYear()}-${cleanTrx.slice(-6).toUpperCase()}`
+        : `#INV-${d.getFullYear()}-${String(sub._id).slice(-6).toUpperCase()}`;
+
+      const planName = (sub.plan || 'STARTER');
+      const formattedPlan = `${planName.charAt(0).toUpperCase() + planName.slice(1).toLowerCase()} Plan (${sub.billingCycle === 'annual' ? 'Annual' : 'Monthly'})`;
+
+      return {
+        _id: sub._id,
+        id: invId,
+        date: dateStr,
+        plan: formattedPlan,
+        rawPlan: sub.plan,
+        amount: `₹${Number(sub.amount || 0).toLocaleString('en-IN')}`,
+        rawAmount: sub.amount,
+        paymentMethod: sub.paymentMethod || 'Online',
+        paymentDetails: sub.transactionId ? `TRX ID: ${sub.transactionId}` : `Method: ${sub.paymentMethod || 'Online'}`,
+        status: sub.status === SubscriptionPaymentStatus.ACTIVE ? 'Paid' : sub.status === SubscriptionPaymentStatus.PENDING ? 'Pending' : sub.status,
+        year: d.getFullYear(),
+        startDate: sub.startDate,
+        endDate: sub.endDate,
+        isCurrent: idx === 0 && sub.status === SubscriptionPaymentStatus.ACTIVE,
+      };
+    });
+
+    res.status(200).json({ success: true, history });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }

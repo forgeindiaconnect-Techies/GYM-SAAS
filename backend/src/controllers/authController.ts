@@ -7,7 +7,8 @@ import Trainer from '../models/Trainer';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
 import Otp from '../models/Otp';
 import Subscription, { SubscriptionPaymentStatus } from '../models/Subscription';
-import { sendOtpEmail } from '../utils/emailService';
+import Payment, { PaymentStatus } from '../models/Payment';
+import { sendOtpEmail, sendGymOwnerInvitationEmail } from '../utils/emailService';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
@@ -82,6 +83,20 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         status: CustomerMembershipStatus.FREE_TRIAL,
         startDate: new Date(),
         endDate: trialEndDate,
+      });
+
+      await Payment.create({
+        customerId: user._id,
+        gymId,
+        branchId,
+        planName: 'Free Trial',
+        amount: 0,
+        paymentMethod: 'Trial',
+        transactionId: `TRX-${user._id.toString().slice(-6).toUpperCase()}`,
+        status: PaymentStatus.APPROVED,
+        paymentDate: new Date(),
+        approvedAt: new Date(),
+        notes: 'Free Trial Registration',
       });
     }
 
@@ -278,26 +293,36 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const now = new Date();
     let isExpired = false;
 
-    // 1. Approved member special handling: Once gym owners give approval, member is active
-    if (user.role === Role.MEMBER && user.approvalStatus === ApprovalStatus.APPROVED) {
-      user.subscriptionStatus = SubscriptionStatus.ACTIVE;
-      if (!user.subscriptionExpiry || new Date(user.subscriptionExpiry) < now) {
-        const futureDate = new Date();
-        futureDate.setFullYear(futureDate.getFullYear() + 1);
-        user.subscriptionExpiry = futureDate;
-        (user as any).subscriptionExpiryDate = futureDate;
-      }
-      const latestMembership = await CustomerMembership.findOne({ userId: user._id }).sort({ createdAt: -1 });
+    // 1. Member CustomerMembership & Free Trial expiry check
+    if (user.role === Role.MEMBER) {
+      const latestMembership = await CustomerMembership.findOne({
+        $or: [{ userId: user._id }, { customerId: user._id }]
+      }).sort({ createdAt: -1 });
       if (latestMembership) {
-        if (!latestMembership.endDate || new Date(latestMembership.endDate) < now || latestMembership.status !== CustomerMembershipStatus.ACTIVE) {
-          latestMembership.status = CustomerMembershipStatus.ACTIVE;
-          latestMembership.endDate = user.subscriptionExpiry;
+        if (latestMembership.endDate && new Date(latestMembership.endDate) < now) {
+          latestMembership.status = CustomerMembershipStatus.EXPIRED;
           await latestMembership.save();
+          user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+          isExpired = true;
+        } else if (latestMembership.status === CustomerMembershipStatus.EXPIRED) {
+          user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+          isExpired = true;
+        } else if (latestMembership.status === CustomerMembershipStatus.ACTIVE || latestMembership.status === CustomerMembershipStatus.FREE_TRIAL) {
+          user.subscriptionStatus = latestMembership.status === CustomerMembershipStatus.FREE_TRIAL ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.ACTIVE;
+          isExpired = false;
         }
       }
-      isExpired = false;
+
+      if (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < now) {
+        user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        isExpired = true;
+      }
+      if ((user as any).subscriptionExpiryDate && new Date((user as any).subscriptionExpiryDate) < now) {
+        user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        isExpired = true;
+      }
     } else {
-      // 1. Direct user subscription expiry check
+      // Direct user subscription expiry check for other roles
       if (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < now) {
         if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
           user.subscriptionStatus = SubscriptionStatus.EXPIRED;
@@ -308,21 +333,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
           user.subscriptionStatus = SubscriptionStatus.EXPIRED;
           isExpired = true;
-        }
-      }
-
-      // 2. Member CustomerMembership check
-      if (user.role === Role.MEMBER) {
-        const latestMembership = await CustomerMembership.findOne({ userId: user._id }).sort({ createdAt: -1 });
-        if (latestMembership) {
-          if (latestMembership.endDate && new Date(latestMembership.endDate) < now) {
-            if (latestMembership.status === CustomerMembershipStatus.ACTIVE || latestMembership.status === CustomerMembershipStatus.FREE_TRIAL) {
-              latestMembership.status = CustomerMembershipStatus.EXPIRED;
-              await latestMembership.save();
-            }
-            user.subscriptionStatus = SubscriptionStatus.EXPIRED;
-            isExpired = true;
-          }
         }
       }
 
@@ -433,15 +443,32 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     const now = new Date();
     let isExpired = false;
 
-    if (user.role === Role.MEMBER && user.approvalStatus === ApprovalStatus.APPROVED) {
-      user.subscriptionStatus = SubscriptionStatus.ACTIVE;
-      if (!user.subscriptionExpiry || new Date(user.subscriptionExpiry) < now) {
-        const futureDate = new Date();
-        futureDate.setFullYear(futureDate.getFullYear() + 1);
-        user.subscriptionExpiry = futureDate;
-        (user as any).subscriptionExpiryDate = futureDate;
+    if (user.role === Role.MEMBER) {
+      const latestMembership = await CustomerMembership.findOne({ userId: user._id }).sort({ createdAt: -1 });
+      if (latestMembership) {
+        if (latestMembership.endDate && new Date(latestMembership.endDate) < now) {
+          latestMembership.status = CustomerMembershipStatus.EXPIRED;
+          await latestMembership.save();
+          user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+          isExpired = true;
+        } else if (latestMembership.status === CustomerMembershipStatus.EXPIRED) {
+          user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+          isExpired = true;
+        } else if (latestMembership.status === CustomerMembershipStatus.ACTIVE || latestMembership.status === CustomerMembershipStatus.FREE_TRIAL) {
+          user.subscriptionStatus = latestMembership.status === CustomerMembershipStatus.FREE_TRIAL ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.ACTIVE;
+          isExpired = false;
+        }
       }
-      isExpired = false;
+
+      if (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < now) {
+        user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        isExpired = true;
+      }
+      if ((user as any).subscriptionExpiryDate && new Date((user as any).subscriptionExpiryDate) < now) {
+        user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+        isExpired = true;
+      }
+      await User.updateOne({ _id: user._id }, { $set: { subscriptionStatus: user.subscriptionStatus } });
     } else {
       if (user.subscriptionExpiry && new Date(user.subscriptionExpiry) < now) {
         if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
@@ -453,20 +480,6 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
         if (user.subscriptionStatus === SubscriptionStatus.FREE_TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
           user.subscriptionStatus = SubscriptionStatus.EXPIRED;
           isExpired = true;
-        }
-      }
-
-      if (user.role === Role.MEMBER) {
-        const latestMembership = await CustomerMembership.findOne({ userId: user._id }).sort({ createdAt: -1 });
-        if (latestMembership) {
-          if (latestMembership.endDate && new Date(latestMembership.endDate) < now) {
-            if (latestMembership.status === CustomerMembershipStatus.ACTIVE || latestMembership.status === CustomerMembershipStatus.FREE_TRIAL) {
-              latestMembership.status = CustomerMembershipStatus.EXPIRED;
-              await latestMembership.save();
-            }
-            user.subscriptionStatus = SubscriptionStatus.EXPIRED;
-            isExpired = true;
-          }
         }
       }
 
@@ -678,6 +691,40 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
   } catch (error: any) {
     console.error('Error in resetPassword:', error);
     res.status(500).json({ success: false, message: error.message || 'Internal server error' });
+  }
+};
+
+export const sendGymOwnerInvitation = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { ownerName, ownerEmail, ownerPhone, linkExpiry, inviteLink } = req.body;
+
+    if (!ownerEmail || !/\S+@\S+\.\S+/.test(ownerEmail)) {
+      res.status(400).json({ success: false, message: 'Valid owner email is required' });
+      return;
+    }
+
+    const cleanEmail = ownerEmail.toLowerCase().trim();
+    const finalInviteLink = inviteLink || `http://localhost:5173/register/gym-owner?email=${encodeURIComponent(cleanEmail)}&name=${encodeURIComponent(ownerName || '')}&phone=${encodeURIComponent(ownerPhone || '')}`;
+
+    const emailResult = await sendGymOwnerInvitationEmail(
+      cleanEmail,
+      ownerName || 'Gym Owner',
+      finalInviteLink,
+      linkExpiry || '1 Day'
+    );
+
+    res.status(200).json({
+      success: true,
+      emailSent: emailResult.success,
+      inviteLink: finalInviteLink,
+      message: emailResult.success 
+        ? `Invitation link successfully sent to ${cleanEmail}` 
+        : (emailResult.error || 'Failed to dispatch email via Brevo'),
+      error: emailResult.error
+    });
+  } catch (error: any) {
+    console.error('Error sending gym owner invitation:', error);
+    res.status(500).json({ success: false, message: error.message || 'Failed to send invitation' });
   }
 };
 

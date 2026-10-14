@@ -102,7 +102,6 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
           <h2 className="text-xl font-bold mb-4">Personal Details</h2>
           <div className="space-y-4">
             {[
-              { label: 'Date of Birth', value: displayUser?.dateOfBirth ? new Date(displayUser.dateOfBirth).toLocaleDateString() : 'Not provided' },
               { label: 'Gender', value: displayUser?.gender || 'Not provided' },
               { label: 'Height', value: displayUser?.height ? `${displayUser.height} cm` : 'Not provided' },
               { label: 'Weight', value: displayUser?.weight ? `${displayUser.weight} kg` : 'Not provided' },
@@ -186,15 +185,6 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
                     type="tel"
                     value={formData.mobile}
                     onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                    className="w-full bg-[#FFFDF8] border border-[#FED7AA] rounded-xl px-4 py-3 focus:border-[#F97316] focus:ring-2 focus:ring-[#F97316]/20 outline-none transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-[#292524] mb-2">Date of Birth</label>
-                  <input
-                    type="date"
-                    value={formData.dateOfBirth}
-                    onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
                     className="w-full bg-[#FFFDF8] border border-[#FED7AA] rounded-xl px-4 py-3 focus:border-[#F97316] focus:ring-2 focus:ring-[#F97316]/20 outline-none transition-all"
                   />
                 </div>

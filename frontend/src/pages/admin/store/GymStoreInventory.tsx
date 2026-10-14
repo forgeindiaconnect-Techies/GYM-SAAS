@@ -222,7 +222,9 @@ const GymStoreInventory = () => {
                     {products.length === 0 ? (
                       <tr><td colSpan={7} className="px-6 py-10 text-center">No products found.</td></tr>
                     ) : products.map((p) => {
-                      const level = p.stock <= 0 ? 'out' : p.stock <= p.lowStockThreshold ? 'low' : 'ok';
+                      const stockVal = Number(p?.stock) || 0;
+                      const thresholdVal = Number(p?.lowStockThreshold) || 5;
+                      const level = stockVal <= 0 ? 'out' : stockVal <= thresholdVal ? 'low' : 'ok';
                       return (
                         <tr key={p._id} className="hover:bg-[#FFFDF8] transition-colors">
                           <td className="px-6 py-4">
@@ -230,12 +232,12 @@ const GymStoreInventory = () => {
                             {p.brand && <p className="text-xs text-[#78716C]">{p.brand}</p>}
                           </td>
                           <td className="px-6 py-4 font-mono text-xs">{p.sku || '—'}</td>
-                          <td className="px-6 py-4">{p.categoryName}</td>
-                          <td className="px-6 py-4 text-center font-black text-[#292524]">{p.stock}</td>
-                          <td className="px-6 py-4 text-center">{p.lowStockThreshold}</td>
+                          <td className="px-6 py-4">{p.categoryName || 'General'}</td>
+                          <td className="px-6 py-4 text-center font-black text-[#292524]">{stockVal}</td>
+                          <td className="px-6 py-4 text-center">{thresholdVal}</td>
                           <td className="px-6 py-4">
                             <span className={`px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1 ${
-                              level === 'out' ? 'bg-red-100 text-red-700' : level === 'low' ? 'bg-amber-100 text-amber-700' : 'bg-[#FED7AA]/10 text-[#F97316]'
+                              level === 'out' ? 'bg-red-100 text-red-700' : level === 'low' ? 'bg-amber-100 text-amber-700' : 'bg-[#FED7AA]/20 text-[#EA580C]'
                             }`}>
                               {level === 'out' ? <><AlertTriangle size={12} /> Out of Stock</> : level === 'low' ? <><AlertTriangle size={12} /> Low Stock</> : <><CheckCircle2 size={12} /> In Stock</>}
                             </span>
@@ -273,7 +275,7 @@ const GymStoreInventory = () => {
               </thead>
               <tbody className="divide-y divide-[#E7E5E4]">
                 {transactions.length === 0 ? (
-                  <tr><td colSpan={6} className="px-6 py-10 text-center">No stock transactions yet.</td></tr>
+                  <tr><td colSpan={7} className="px-6 py-10 text-center">No stock transactions yet.</td></tr>
                 ) : transactions.map((t: any) => (
                   <tr key={t._id} className="hover:bg-[#FFFDF8] transition-colors">
                     <td className="px-6 py-4">{new Date(t.createdAt).toLocaleString()}</td>

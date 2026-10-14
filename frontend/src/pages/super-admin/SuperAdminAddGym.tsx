@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, Send, Loader2, Building2, User, Clock } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Send, Loader2, User, Clock, Copy, Check, ExternalLink, Mail } from 'lucide-react';
 import { addItem } from '../../utils/mockDb';
+import api from '../../utils/api';
 
 const INITIAL_DATA = {
-  gymName: '',
-  gymType: 'Commercial Gym',
   ownerName: '',
   ownerEmail: '',
   ownerPhone: '',
@@ -13,20 +12,23 @@ const INITIAL_DATA = {
 };
 
 const SuperAdminAddGym = () => {
-
   const [formData, setFormData] = useState(INITIAL_DATA);
   const [errors, setErrors] = useState<any>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [generatedLink, setGeneratedLink] = useState('');
+  const [copied, setCopied] = useState(false);
+  const [emailDeliveryStatus, setEmailDeliveryStatus] = useState<string | null>(null);
 
   const validate = () => {
     const newErrors: any = {};
-    if (!formData.gymName) newErrors.gymName = 'Gym name is required';
-    if (!formData.ownerName) newErrors.ownerName = 'Owner name is required';
-    if (!formData.ownerEmail) newErrors.ownerEmail = 'Owner email is required';
-    else if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,6}$/.test(formData.ownerEmail)) newErrors.ownerEmail = 'Invalid email format';
-    if (!formData.ownerPhone) newErrors.ownerPhone = 'Phone is required';
-    else if (!/^\d{10}$/.test(formData.ownerPhone)) newErrors.ownerPhone = 'Phone must be 10 digits';
+    if (!formData.ownerName.trim()) newErrors.ownerName = 'Owner name is required';
+    if (!formData.ownerEmail.trim()) newErrors.ownerEmail = 'Owner email is required';
+    else if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,6}$/.test(formData.ownerEmail.trim())) {
+      newErrors.ownerEmail = 'Invalid email format';
+    }
+    if (!formData.ownerPhone.trim()) newErrors.ownerPhone = 'Phone is required';
+    else if (!/^\d{10}$/.test(formData.ownerPhone.trim())) newErrors.ownerPhone = 'Phone must be 10 digits';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -37,23 +39,43 @@ const SuperAdminAddGym = () => {
     if (!validate()) return;
     
     setIsSubmitting(true);
+    setEmailDeliveryStatus(null);
     try {
-      // Simulate API call to send email/invitation
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
       const inviteId = Date.now().toString();
+      const inviteLink = `${window.location.origin}/register/gym-owner?email=${encodeURIComponent(formData.ownerEmail.trim())}&name=${encodeURIComponent(formData.ownerName.trim())}&phone=${encodeURIComponent(formData.ownerPhone.trim())}&invite=${inviteId}`;
+      setGeneratedLink(inviteLink);
 
-      // Save as an invitation in our mock DB
+      // Trigger backend email dispatch via Brevo
+      try {
+        const res = await api.post('/auth/send-gym-invitation', {
+          ownerName: formData.ownerName.trim(),
+          ownerEmail: formData.ownerEmail.trim(),
+          ownerPhone: formData.ownerPhone.trim(),
+          linkExpiry: formData.linkExpiry,
+          inviteLink
+        });
+        if (res.data?.emailSent) {
+          setEmailDeliveryStatus(`Invitation email successfully delivered to ${formData.ownerEmail.trim()} via Brevo.`);
+        } else {
+          setEmailDeliveryStatus(`Notice: ${res.data?.error || res.data?.message || 'Email delivery could not be completed'}. You can copy and share the link below directly.`);
+        }
+      } catch (apiErr: any) {
+        console.warn('Backend email API warning:', apiErr);
+        setEmailDeliveryStatus(`Notice: ${apiErr.response?.data?.message || apiErr.message || 'Email service error'}. You can copy and share the link below directly.`);
+      }
+
+      // Save invitation in mock DB for dashboard listing
       addItem('gymInvitations', {
         id: inviteId,
-        gymName: formData.gymName,
-        type: formData.gymType,
-        owner: formData.ownerName,
-        email: formData.ownerEmail,
-        phone: formData.ownerPhone,
+        gymName: 'Pending Registration',
+        type: 'Gym Owner',
+        owner: formData.ownerName.trim(),
+        email: formData.ownerEmail.trim(),
+        phone: formData.ownerPhone.trim(),
         date: new Date().toISOString().split('T')[0],
         status: 'Sent',
-        expiry: formData.linkExpiry
+        expiry: formData.linkExpiry,
+        link: inviteLink
       });
 
       setIsSuccess(true);
@@ -70,28 +92,88 @@ const SuperAdminAddGym = () => {
   if (isSuccess) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4">
-        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-8 md:p-12 text-center">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-8 md:p-12 text-center shadow-lg">
           <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 size={40} className="text-green-500" />
           </div>
-          <h1 className="text-3xl font-bold text-[#292524] mb-4">Invitation Sent!</h1>
-          <p className="text-[#78716C] text-lg mb-8 max-w-lg mx-auto">
-            An invitation link has been successfully sent to <span className="text-[#292524] font-semibold">{formData.ownerEmail}</span>. 
-            The gym owner can use this link to complete their full registration process.
+          <h1 className="text-3xl font-bold text-[#292524] mb-3">Invitation Sent!</h1>
+          <p className="text-[#78716C] text-base mb-6 max-w-lg mx-auto">
+            An invitation link has been generated and dispatched to <span className="text-[#292524] font-semibold">{formData.ownerEmail}</span>. 
+            The gym owner can use this link to complete their full gym registration process.
           </p>
 
-          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-6 text-left max-w-sm mx-auto mb-10">
-            <h3 className="text-[#292524] font-bold mb-4 border-b border-[#E7E5E4] pb-2">Invitation Details</h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-[#78716C]">Gym Name:</span>
-                <span className="text-[#292524] font-medium">{formData.gymName}</span>
-              </div>
+          {emailDeliveryStatus && (
+            <div className="max-w-md mx-auto mb-6 p-3 bg-orange-50 border border-orange-200 rounded-xl text-xs text-[#EA580C] font-medium flex items-center justify-center gap-2">
+              <Mail size={15} className="shrink-0" />
+              <span>{emailDeliveryStatus}</span>
+            </div>
+          )}
+
+          {/* Invitation Details */}
+          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 text-left max-w-md mx-auto mb-6 shadow-sm">
+            <h3 className="text-[#292524] font-bold text-sm mb-3 border-b border-[#E7E5E4] pb-2">Invitation Details</h3>
+            <div className="space-y-2.5 text-xs">
               <div className="flex justify-between">
                 <span className="text-[#78716C]">Owner:</span>
-                <span className="text-[#292524] font-medium">{formData.ownerName}</span>
+                <span className="text-[#292524] font-semibold">{formData.ownerName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#78716C]">Email Address:</span>
+                <span className="text-[#292524] font-semibold">{formData.ownerEmail}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#78716C]">Phone Number:</span>
+                <span className="text-[#292524] font-semibold">{formData.ownerPhone}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#78716C]">Link Expiry:</span>
+                <span className="text-[#292524] font-semibold">{formData.linkExpiry}</span>
               </div>
             </div>
+          </div>
+
+          {/* Direct Registration Link Card */}
+          <div className="bg-[#FFFDF8] border border-orange-200 rounded-2xl p-4 text-left max-w-md mx-auto mb-8 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-[#292524]">Registration Link for Gym Owner</span>
+              {copied && (
+                <span className="text-xs font-bold text-green-600 flex items-center gap-1">
+                  <Check size={12} /> Copied!
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                readOnly
+                value={generatedLink}
+                className="flex-1 bg-white border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-xs outline-none select-all font-mono"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedLink);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="px-3.5 py-2 bg-[#F97316] text-white hover:bg-[#EA580C] rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0 shadow-sm"
+              >
+                <Copy size={13} />
+                <span>Copy</span>
+              </button>
+              <a
+                href={generatedLink}
+                target="_blank"
+                rel="noreferrer"
+                className="p-2 bg-white border border-[#E7E5E4] hover:bg-stone-50 text-[#292524] rounded-lg text-xs flex items-center justify-center transition-colors shrink-0"
+                title="Open registration link"
+              >
+                <ExternalLink size={14} />
+              </a>
+            </div>
+            <p className="text-[11px] text-[#78716C] mt-2">
+              The gym owner will enter their gym name, type, and details directly through this onboarding link.
+            </p>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -99,14 +181,16 @@ const SuperAdminAddGym = () => {
               onClick={() => {
                 setFormData(INITIAL_DATA);
                 setIsSuccess(false);
+                setGeneratedLink('');
+                setEmailDeliveryStatus(null);
               }}
-              className="px-6 py-3 bg-[#FFFFFF] text-[#292524] rounded-xl font-bold hover:bg-[#FED7AA] transition-colors"
+              className="px-6 py-3 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl font-bold hover:bg-[#FFFDF8] transition-colors text-sm"
             >
               Send Another Invite
             </button>
             <Link 
               to="/super-admin/dashboard"
-              className="px-6 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors shadow-lg shadow-[#F97316]/20"
+              className="px-6 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors shadow-lg shadow-[#F97316]/20 text-sm"
             >
               Back to Dashboard
             </Link>
@@ -125,59 +209,23 @@ const SuperAdminAddGym = () => {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-[#292524]">Add Gym Manually</h1>
-          <p className="text-[#78716C] text-sm mt-1">Send an invitation to a gym owner to complete their onboarding.</p>
+          <p className="text-[#78716C] text-sm mt-1">Send an invitation to a gym owner to complete their gym onboarding.</p>
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8">
+      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8 shadow-sm">
         <form onSubmit={handleSendInvitation} className="space-y-8">
           
-          {/* Gym Details Section */}
-          <div>
-            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
-              <div className="w-10 h-10 bg-[#F97316]/10 rounded-xl flex items-center justify-center">
-                <Building2 className="text-[#F97316]" size={20} />
-              </div>
-              <h2 className="text-lg font-bold text-[#292524]">Gym Details</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-[#78716C] mb-2">Gym Name *</label>
-                <input
-                  type="text"
-                  value={formData.gymName}
-                  onChange={(e) => { setFormData({ ...formData, gymName: e.target.value }); setErrors({ ...errors, gymName: '' }); }}
-                  placeholder="e.g. FitLife Arena"
-                  className={`w-full bg-[#FFFFFF] border ${errors.gymName ? 'border-[#FED7AA]' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
-                />
-                {errors.gymName && <p className="text-[#FED7AA] text-xs mt-1">{errors.gymName}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#78716C] mb-2">Gym Type</label>
-                <select
-                  value={formData.gymType}
-                  onChange={(e) => setFormData({ ...formData, gymType: e.target.value })}
-                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors appearance-none"
-                >
-                  <option>Commercial Gym</option>
-                  <option>Boutique Studio</option>
-                  <option>CrossFit Box</option>
-                  <option>Yoga Studio</option>
-                  <option>Martial Arts Academy</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
           {/* Owner Details Section */}
           <div>
             <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
               <div className="w-10 h-10 bg-[#F97316]/10 rounded-xl flex items-center justify-center">
                 <User className="text-[#F97316]" size={20} />
               </div>
-              <h2 className="text-lg font-bold text-[#292524]">Owner Information</h2>
+              <div>
+                <h2 className="text-lg font-bold text-[#292524]">Owner Information</h2>
+                <p className="text-xs text-[#78716C]">The gym owner will configure their gym name, type, and facilities during registration.</p>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -188,9 +236,9 @@ const SuperAdminAddGym = () => {
                   value={formData.ownerName}
                   onChange={(e) => { setFormData({ ...formData, ownerName: e.target.value }); setErrors({ ...errors, ownerName: '' }); }}
                   placeholder="e.g. John Doe"
-                  className={`w-full bg-[#FFFFFF] border ${errors.ownerName ? 'border-[#FED7AA]' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
+                  className={`w-full bg-[#FFFFFF] border ${errors.ownerName ? 'border-red-400' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
                 />
-                {errors.ownerName && <p className="text-[#FED7AA] text-xs mt-1">{errors.ownerName}</p>}
+                {errors.ownerName && <p className="text-red-500 text-xs mt-1">{errors.ownerName}</p>}
               </div>
 
               <div>
@@ -200,9 +248,9 @@ const SuperAdminAddGym = () => {
                   value={formData.ownerEmail}
                   onChange={(e) => { setFormData({ ...formData, ownerEmail: e.target.value }); setErrors({ ...errors, ownerEmail: '' }); }}
                   placeholder="john@example.com"
-                  className={`w-full bg-[#FFFFFF] border ${errors.ownerEmail ? 'border-[#FED7AA]' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
+                  className={`w-full bg-[#FFFFFF] border ${errors.ownerEmail ? 'border-red-400' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
                 />
-                {errors.ownerEmail && <p className="text-[#FED7AA] text-xs mt-1">{errors.ownerEmail}</p>}
+                {errors.ownerEmail && <p className="text-red-500 text-xs mt-1">{errors.ownerEmail}</p>}
               </div>
 
               <div>
@@ -213,9 +261,9 @@ const SuperAdminAddGym = () => {
                   onChange={(e) => { setFormData({ ...formData, ownerPhone: e.target.value }); setErrors({ ...errors, ownerPhone: '' }); }}
                   placeholder="10-digit mobile number"
                   maxLength={10}
-                  className={`w-full bg-[#FFFFFF] border ${errors.ownerPhone ? 'border-[#FED7AA]' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
+                  className={`w-full bg-[#FFFFFF] border ${errors.ownerPhone ? 'border-red-400' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
                 />
-                {errors.ownerPhone && <p className="text-[#FED7AA] text-xs mt-1">{errors.ownerPhone}</p>}
+                {errors.ownerPhone && <p className="text-red-500 text-xs mt-1">{errors.ownerPhone}</p>}
               </div>
             </div>
           </div>

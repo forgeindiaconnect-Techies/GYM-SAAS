@@ -226,12 +226,49 @@ export const getGymPayments = async (req: AuthRequest, res: Response): Promise<v
     let filter: any = {};
     if (req.user?.role === 'GYM_OWNER' || req.user?.role === 'ADMIN' || req.user?.role === 'GYM_MANAGER') {
       filter = { gymId };
+      const gym = await Gym.findById(gymId).select('ownerId');
+      const ownerId = gym?.ownerId || userId;
+      if (ownerId) {
+        filter.customerId = { $ne: ownerId };
+      }
       if (effectiveBranchId && effectiveBranchId !== 'all') {
         if (effectiveBranchId === 'main') {
           filter.$or = [{ branchId: { $exists: false } }, { branchId: null }];
         } else {
           filter.branchId = effectiveBranchId;
         }
+      }
+    }
+
+    // Auto-sync any Free Trial or CustomerMembership records that lack a Payment document
+    if (gymId) {
+      try {
+        const memberships = await CustomerMembership.find({ gymId }).lean();
+        for (const mem of memberships) {
+          const exists = await Payment.findOne({
+            customerId: mem.userId,
+            gymId: mem.gymId,
+            planName: mem.planName,
+          });
+          if (!exists) {
+            const isTrial = mem.status === CustomerMembershipStatus.FREE_TRIAL || mem.paymentMethod === 'Trial' || (mem.price === 0 && mem.finalAmount === 0);
+            await Payment.create({
+              customerId: mem.userId,
+              gymId: mem.gymId,
+              branchId: mem.branchId,
+              planName: mem.planName || (isTrial ? 'Free Trial' : 'Standard'),
+              amount: mem.finalAmount || 0,
+              paymentMethod: mem.paymentMethod || (isTrial ? 'Trial' : 'Cash at Gym'),
+              transactionId: `TRX-${mem._id.toString().slice(-6).toUpperCase()}`,
+              status: isTrial ? PaymentStatus.APPROVED : PaymentStatus.APPROVED,
+              paymentDate: mem.startDate || (mem as any).createdAt || new Date(),
+              approvedAt: mem.startDate || (mem as any).createdAt || new Date(),
+              notes: isTrial ? 'Free Trial Membership' : 'Gym Membership',
+            });
+          }
+        }
+      } catch (syncErr) {
+        console.error('Error auto-syncing memberships to payments:', syncErr);
       }
     }
 

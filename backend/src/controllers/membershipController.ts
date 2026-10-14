@@ -110,25 +110,23 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       }
     }, { new: true });
 
-    // Record payment if paid plan
-    if (!isFreeTrial && finalAmount > 0) {
-      try {
-        await Payment.create({
-          customerId: userId,
-          gymId,
-          branchId,
-          planName: planName || 'Standard',
-          amount: finalAmount,
-          paymentMethod: paymentMethod || 'UPI',
-          transactionId: paymentReference || `TXN-${Date.now().toString().slice(-8)}${Math.floor(100 + Math.random() * 900)}`,
-          status: PaymentStatus.APPROVED,
-          paymentDate: new Date(),
-          approvedAt: new Date(),
-          notes: `Purchased via Checkout (${memDuration})`
-        });
-      } catch (payErr) {
-        console.error('Failed to create payment record in joinGym:', payErr);
-      }
+    // Record payment for paid plan or Free Trial
+    try {
+      await Payment.create({
+        customerId: userId,
+        gymId,
+        branchId,
+        planName: planName || (isFreeTrial ? 'Free Trial' : 'Standard'),
+        amount: isFreeTrial ? 0 : finalAmount,
+        paymentMethod: isFreeTrial ? 'Trial' : (paymentMethod || 'UPI'),
+        transactionId: paymentReference || `${isFreeTrial ? 'TRX' : 'TXN'}-${Date.now().toString().slice(-8)}${Math.floor(100 + Math.random() * 900)}`,
+        status: PaymentStatus.APPROVED,
+        paymentDate: new Date(),
+        approvedAt: new Date(),
+        notes: isFreeTrial ? 'Free Trial Membership' : `Purchased via Checkout (${memDuration})`
+      });
+    } catch (payErr) {
+      console.error('Failed to create payment record in joinGym:', payErr);
     }
 
     if (gym.ownerId) {
@@ -165,49 +163,20 @@ export const getMyMemberships = async (req: AuthRequest, res: Response): Promise
       return;
     }
 
-    const user = await User.findById(userId);
-    if (user && user.role === Role.MEMBER && user.approvalStatus === ApprovalStatus.APPROVED) {
-      let memberships = await CustomerMembership.find({ userId }).populate('gymId', 'name location logo phone email').sort({ createdAt: -1 });
-      const now = new Date();
-      let hasValidActive = false;
-      for (const m of memberships) {
-        if (m.status === CustomerMembershipStatus.ACTIVE && (!m.endDate || new Date(m.endDate) > now)) {
-          hasValidActive = true;
-          break;
-        }
-      }
+    const memberships = await CustomerMembership.find({
+      $or: [{ userId }, { customerId: userId }]
+    }).populate('gymId', 'name location logo phone email').sort({ createdAt: -1 });
 
-      if (!hasValidActive) {
-        const futureDate = new Date();
-        futureDate.setFullYear(futureDate.getFullYear() + 1);
-        if (memberships.length > 0) {
-          const first = memberships[0];
-          first.status = CustomerMembershipStatus.ACTIVE;
-          first.endDate = futureDate;
-          await first.save();
-        } else {
-          await CustomerMembership.create({
-            userId: user._id,
-            gymId: user.gymId,
-            branchId: user.branchId,
-            planName: user.subscriptionPlan || 'Active Membership',
-            duration: '1 Year',
-            price: 0,
-            discount: 0,
-            finalAmount: 0,
-            paymentMethod: 'Gym Approval',
-            status: CustomerMembershipStatus.ACTIVE,
-            startDate: now,
-            endDate: futureDate,
-          });
+    const now = new Date();
+    for (const m of memberships) {
+      if (m.endDate && new Date(m.endDate) < now) {
+        if (m.status === CustomerMembershipStatus.ACTIVE || m.status === CustomerMembershipStatus.FREE_TRIAL) {
+          m.status = CustomerMembershipStatus.EXPIRED;
+          await m.save();
         }
-        memberships = await CustomerMembership.find({ userId }).populate('gymId', 'name location logo phone email').sort({ createdAt: -1 });
       }
-      res.status(200).json({ success: true, memberships });
-      return;
     }
 
-    const memberships = await CustomerMembership.find({ userId }).populate('gymId', 'name location logo phone email').sort({ createdAt: -1 });
     res.status(200).json({ success: true, memberships });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });

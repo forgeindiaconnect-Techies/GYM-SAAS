@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Loader2, ShoppingCart, Plus, X, Store, ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Search, Loader2, ShoppingCart, Plus, X, Store, ImageIcon, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import MemberStoreTabs from '../../components/Member/MemberStoreTabs';
@@ -191,68 +191,117 @@ const MemberStore = () => {
             const isLow = totalStock > 0 && totalStock <= (p.lowStockThreshold || 5);
             const out = totalStock <= 0;
             return (
-              <div key={p._id} className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-                <button onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }} className="h-40 bg-[#FFFDF8] relative block w-full text-left">
+              <div key={p._id} className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden hover:shadow-md transition-all flex flex-col h-full group">
+                {/* Product Image Header with Consistent Aspect */}
+                <button
+                  type="button"
+                  onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }}
+                  className="h-44 bg-[#FFFDF8] relative block w-full text-left overflow-hidden border-b border-[#E7E5E4]/80 cursor-pointer"
+                >
                   {p.image ? (
-                    <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                    <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#F97316]/30"><ImageIcon size={48} /></div>
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#FFFDF8] to-[#F8FAFA] text-[#F97316]/40">
+                      <ImageIcon size={44} strokeWidth={1.5} />
+                      <span className="text-[10px] font-bold text-[#78716C] mt-1.5">No Image Available</span>
+                    </div>
                   )}
-                  <span className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-xs font-bold ${
-                    totalStock <= 0 ? 'bg-red-100 text-red-700' : isLow ? 'bg-amber-100 text-amber-700' : 'bg-[#FED7AA]/10 text-[#F97316]'
+
+                  <span className={`absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold shadow-xs ${
+                    totalStock <= 0 ? 'bg-red-100 text-red-700 border border-red-200' : isLow ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                   }`}>
                     {totalStock <= 0 ? 'Out of stock' : isLow ? `Low (${totalStock})` : `In stock (${totalStock})`}
                   </span>
+
                   {hasDiscount && (
-                    <span className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-[#F97316] text-white">
+                    <span className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#F97316] text-white shadow-xs">
                       {Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% off
                     </span>
                   )}
                 </button>
-                <div className="p-4 flex-1 flex flex-col">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-xs font-bold text-[#FED7AA] uppercase tracking-wide">{p.productType || p.categoryName}</span>
+
+                {/* Card Content - flex-1 flex flex-col justify-between */}
+                <div className="p-4 flex-1 flex flex-col justify-between">
+                  {/* Top Details with guaranteed heights */}
+                  <div>
+                    {/* Category & Brand line */}
+                    <div className="flex items-center justify-between gap-2 mb-1 h-5">
+                      <span className="text-[11px] font-extrabold text-[#F97316] uppercase tracking-wider truncate">
+                        {p.productType || p.categoryName || 'Product'}
+                      </span>
+                      {p.brand && (
+                        <span className="text-[11px] font-bold text-[#78716C] truncate max-w-[120px]">
+                          {p.brand}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Product Name */}
+                    <h3 className="font-extrabold text-[#292524] text-base leading-snug truncate mb-1.5" title={p.name}>
+                      {p.name}
+                    </h3>
+
+                    {/* Attribute tags with min-h to prevent layout shift */}
+                    <div className="flex items-center gap-1.5 flex-wrap min-h-[22px] mb-2">
+                      {p.attributes && Object.entries(p.attributes).slice(0, 2).map(([k, v]) => (
+                        <span key={k} className="text-[10px] bg-[#F1F5F9] text-gray-700 px-2 py-0.5 rounded-md font-semibold border border-gray-200">
+                          {String(v)}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <h3 className="font-bold text-[#292524] mt-0.5 truncate">{p.name}</h3>
-                  <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
-                    {p.attributes && Object.entries(p.attributes).slice(0, 2).map(([k, v]) => (
-                      <span key={k} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">{String(v)}</span>
-                    ))}
-                  </div>
-                  {p.brand && <p className="text-xs text-[#78716C] mt-1">{p.brand}</p>}
-                  <div className="mt-2 flex items-center gap-2">
-                    {p.hasVariants ? (
-                       <>
-                         <span className="text-lg font-black text-[#F97316]">From ₹{displayPrice}</span>
-                         {hasDiscount && (
-                           <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
-                         )}
-                       </>
-                    ) : (
-                       <>
-                         <span className="text-lg font-black text-[#F97316]">₹{displayPrice}</span>
-                         {hasDiscount && (
-                           <span className="text-sm text-gray-400 line-through">₹{originalPrice}</span>
-                         )}
-                       </>
-                    )}
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-[#F1F5F9] flex gap-2">
-                    <button
-                      onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }}
-                      className="flex-1 px-3 py-2 bg-[#FFFDF8] text-[#FED7AA] rounded-xl text-sm font-bold hover:bg-[#E7E5E4] transition-colors"
-                    >
-                      View
-                    </button>
-                    {!p.hasVariants && (
+
+                  {/* Bottom Area - strictly anchored */}
+                  <div className="mt-auto pt-3 border-t border-[#F1F5F9]">
+                    {/* Price Line */}
+                    <div className="h-7 flex items-baseline gap-2 mb-3">
+                      {p.hasVariants ? (
+                        <>
+                          <span className="text-lg font-black text-[#F97316]">From ₹{displayPrice}</span>
+                          {hasDiscount && (
+                            <span className="text-xs text-gray-400 line-through">₹{originalPrice}</span>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-lg font-black text-[#F97316]">₹{displayPrice}</span>
+                          {hasDiscount && (
+                            <span className="text-xs text-gray-400 line-through">₹{originalPrice}</span>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* 2-Button Grid Row - perfectly aligned across all cards */}
+                    <div className="grid grid-cols-2 gap-2">
                       <button
-                        disabled={out || adding === p._id}
-                        onClick={() => addToCart(p, 1)}
-                        className="flex-1 px-3 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 flex items-center justify-center gap-1"
+                        type="button"
+                        onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }}
+                        className="px-3 py-2 bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#292524] hover:text-[#F97316] border border-[#E2E8F0] rounded-xl text-xs font-bold transition-all flex items-center justify-center text-center cursor-pointer shadow-xs"
                       >
-                        {adding === p._id ? <Loader2 className="animate-spin" size={15} /> : <Plus size={15} />} Add
+                        View
                       </button>
-                    )}
+                      {p.hasVariants ? (
+                        <button
+                          type="button"
+                          onClick={() => { setSelected(p); setSelectedVariant(p.hasVariants && p.variants.length > 0 ? p.variants[0] : null); }}
+                          className="px-3 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white rounded-xl text-xs font-bold transition-opacity flex items-center justify-center gap-1 shadow-xs cursor-pointer"
+                        >
+                          <Sparkles size={13} />
+                          <span>Options</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled={out || adding === p._id}
+                          onClick={() => addToCart(p, 1)}
+                          className="px-3 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white rounded-xl text-xs font-bold transition-opacity disabled:opacity-40 flex items-center justify-center gap-1 shadow-xs cursor-pointer"
+                        >
+                          {adding === p._id ? <Loader2 className="animate-spin" size={13} /> : <Plus size={13} />}
+                          <span>Add</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

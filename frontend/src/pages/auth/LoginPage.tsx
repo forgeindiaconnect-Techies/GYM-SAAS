@@ -73,15 +73,21 @@ const LoginPage = () => {
         sessionStorage.removeItem('checkout_intent');
       }
 
+      if (user.role === 'MEMBER') {
+        const isCompleted = res.data?.isSubscriptionCompleted || user.subscriptionStatus === 'Expired' || user.subscriptionStatus === 'EXPIRED';
+        if (isCompleted) {
+          navigate('/member/subscription', { replace: true, state: { expiredAlert: true } });
+          return;
+        }
+      }
+
       if (user.role === 'GYM_OWNER' || user.role === 'ADMIN') {
         if (!isSubscriptionActive(user.subscriptionStatus)) {
-          alert('Welcome! Please choose a platform subscription plan to activate your Gym Dashboard.');
           navigate('/subscription-plans', { replace: true });
           return;
         }
       }
 
-      alert('Login successfully!');
       navigate(getDashboardRoute(user), { replace: true });
     } catch (err: any) {
       const msg = err.response?.data?.message || (err.message === 'Network Error' || !err.response ? 'Server connection error. Please make sure the backend is running.' : 'Something went wrong. Please try again.');

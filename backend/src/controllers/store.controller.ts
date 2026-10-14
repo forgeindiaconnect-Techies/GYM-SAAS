@@ -24,8 +24,14 @@ import {
 const isObjectId = (v: any): boolean => mongoose.isValidObjectId(v);
 
 const getGymIdForUser = async (userId: string): Promise<mongoose.Types.ObjectId | null> => {
-  const user = await User.findById(userId).select('gymId');
-  return user?.gymId || null;
+  const user = await User.findById(userId).select('gymId role');
+  if (user?.gymId) return user.gymId as mongoose.Types.ObjectId;
+  const gym = await Gym.findOne({ ownerId: userId }).select('_id');
+  if (gym) {
+    await User.findByIdAndUpdate(userId, { gymId: gym._id });
+    return gym._id as mongoose.Types.ObjectId;
+  }
+  return null;
 };
 
 const notify = async ({
@@ -174,10 +180,15 @@ const requireStoreOwner = async (req: AuthRequest, res: Response): Promise<boole
     res.status(404).json({ success: false, message: 'User not found' });
     return false;
   }
+  const role = (user.role || '').toUpperCase();
+  if (role === 'SUPER_ADMIN' || role === 'ADMIN' || role === 'GYM_OWNER') {
+    return true;
+  }
   const userEntitlement = isStoreEnabledForUser(user);
   let gymEntitlement: StoreEntitlementResult = { enabled: false };
-  if (user.gymId) {
-    const gym = await Gym.findById(user.gymId);
+  const gymId = user.gymId || (await Gym.findOne({ ownerId: user._id }).select('_id'))?._id;
+  if (gymId) {
+    const gym = await Gym.findById(gymId);
     if (gym) gymEntitlement = isStoreEnabledForGym(gym);
   }
   if (!userEntitlement.enabled && !gymEntitlement.enabled) {

@@ -152,56 +152,65 @@ const TrainerDashboard = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {pendingAiReviews.map((customer) => (
                   <div
                     key={customer._id}
-                    className="border border-[#FED7AA] rounded-2xl p-5 bg-[#F9F8F6] hover:bg-white hover:border-[#F97316] transition-all hover:shadow-md flex flex-col justify-between space-y-4"
+                    className="border border-[#FED7AA] rounded-2xl p-5 bg-[#F9F8F6] hover:bg-white hover:border-[#F97316] transition-all hover:shadow-md flex flex-col justify-between space-y-4 shadow-xs"
                   >
                     <div>
                       {/* Customer Header */}
-                      <div className="flex items-center justify-between gap-3 mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold text-sm shrink-0">
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-full bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-black text-sm shrink-0 border border-[#FED7AA]">
                             {customer.profilePhoto ? (
                               <img src={customer.profilePhoto} alt="profile" className="w-full h-full object-cover rounded-full" />
                             ) : (
                               customer.firstName?.[0] || 'C'
                             )}
                           </div>
-                          <div>
-                            <h4 className="font-bold text-sm text-[#292524] truncate max-w-[140px]">
+                          <div className="min-w-0">
+                            <h4 className="font-extrabold text-sm text-[#292524] truncate">
                               {customer.firstName} {customer.lastName}
                             </h4>
-                            <p className="text-xs text-[#78716C] truncate max-w-[140px]">{customer.email}</p>
+                            <p className="text-xs text-[#78716C] truncate">{customer.email}</p>
                           </div>
                         </div>
 
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 shrink-0">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 shrink-0 mt-0.5">
                           Pending Review
                         </span>
                       </div>
 
-                      {/* Assessment Highlights */}
-                      <div className="space-y-1.5 text-xs text-[#78716C] bg-white p-3 rounded-xl border border-[#FED7AA]">
-                        <p><strong className="text-[#292524]">Goal:</strong> {customer.goal}</p>
-                        <p><strong className="text-[#292524]">Level:</strong> {customer.level}</p>
-                        {customer.assessmentData?.equipmentAvailability && (
-                          <p><strong className="text-[#292524]">Equipment:</strong> {customer.assessmentData.equipmentAvailability}</p>
-                        )}
-                        {customer.assessmentData?.availableWorkoutDays && (
-                          <p><strong className="text-[#292524]">Frequency:</strong> {customer.assessmentData.availableWorkoutDays}</p>
-                        )}
+                      {/* Assessment Highlights - Clean 2x2 Grid for perfect alignment */}
+                      <div className="grid grid-cols-2 gap-2 text-xs bg-white p-3.5 rounded-xl border border-[#FED7AA]/80">
+                        <div>
+                          <span className="text-[10px] font-bold text-[#78716C] uppercase block">Goal</span>
+                          <span className="font-extrabold text-[#F97316] truncate block">{customer.goal || 'General Fitness'}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-bold text-[#78716C] uppercase block">Level</span>
+                          <span className="font-extrabold text-[#292524] truncate block">{customer.level || 'Beginner'}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-bold text-[#78716C] uppercase block">Equipment</span>
+                          <span className="font-semibold text-[#292524] truncate block">{customer.assessmentData?.equipmentAvailability || 'Full Commercial Gym'}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-bold text-[#78716C] uppercase block">Frequency</span>
+                          <span className="font-semibold text-[#292524] truncate block">{customer.assessmentData?.availableWorkoutDays || '4 Days'}</span>
+                        </div>
                       </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 pt-2 border-t border-[#FED7AA]">
+                    <div className="pt-2 border-t border-[#FED7AA]">
                       <Link
                         to={`/trainer/ai-review/${customer._id}`}
-                        className="flex-1 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 shadow-sm"
+                        className="w-full py-2.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 shadow-sm"
                       >
-                        <Eye size={14} /> Review & Approve
+                        <Eye size={14} />
+                        <span>Review &amp; Approve</span>
                       </Link>
                     </div>
                   </div>

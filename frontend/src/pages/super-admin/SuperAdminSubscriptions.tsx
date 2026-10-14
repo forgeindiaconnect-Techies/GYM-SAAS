@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   CreditCard, Zap, Star, Crown, Sparkles, CheckCircle, XCircle,
   Users, Dumbbell, Building2, UserCheck, Edit3, Eye, ToggleLeft,
-  ToggleRight, Plus, Search, Calendar, IndianRupee, Clock, AlertCircle
+  ToggleRight, Plus, Search, Calendar, IndianRupee, Clock, AlertCircle, Trash2
 } from 'lucide-react';
 
 import api from '../../utils/api';
@@ -1242,13 +1242,33 @@ const SuperAdminSubscriptions = () => {
                       </select>
                     </td>
                     <td className="px-5 py-4">
-                      <button
-                        onClick={() => setViewPayment(gym)}
-                        className="p-1.5 bg-[#FED7AA]/10 text-teal-500 rounded-lg hover:bg-[#FED7AA]/20 transition-colors"
-                        title="View Details"
-                      >
-                        <Eye size={16} />
-                      </button>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => setViewPayment(gym)}
+                          className="p-1.5 bg-[#FED7AA]/10 text-teal-500 rounded-lg hover:bg-[#FED7AA]/20 transition-colors"
+                          title="View Details"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (window.confirm(`Are you sure you want to remove subscription payment record for ${gym.gymName}?`)) {
+                              try {
+                                const res = await api.delete(`/subscriptions/${gym.id}`);
+                                if (res.data.success) {
+                                  setSubscribedGyms(prev => prev.filter(g => g.id !== gym.id));
+                                }
+                              } catch (err) {
+                                console.error('Failed to delete subscription', err);
+                              }
+                            }
+                          }}
+                          className="p-1.5 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors"
+                          title="Remove Subscription"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

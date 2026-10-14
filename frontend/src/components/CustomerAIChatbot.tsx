@@ -253,7 +253,7 @@ const CustomerAIChatbot = () => {
                       )}
                       <div className={`max-w-[82%] space-y-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                         <div
-                          className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
+                          className={`p-3.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
                             msg.sender === 'user'
                               ? 'bg-[#F97316] text-white rounded-tr-xs shadow-sm font-medium'
                               : 'bg-white text-[#292524] border border-[#E7E5E4] rounded-tl-xs shadow-xs'
@@ -277,7 +277,7 @@ const CustomerAIChatbot = () => {
                     </div>
                     <div className="bg-white border border-[#E7E5E4] p-3 rounded-2xl rounded-tl-xs shadow-xs text-xs text-[#78716C] flex items-center gap-2">
                       <Loader2 size={14} className="animate-spin text-[#F97316]" />
-                      <span>Checking your gym data...</span>
+                      <span>AI Coach is thinking...</span>
                     </div>
                   </div>
                 )}
@@ -293,7 +293,7 @@ const CustomerAIChatbot = () => {
                     onChange={e => setInputMessage(e.target.value)}
                     onKeyDown={handleKeyPress}
                     disabled={loading}
-                    placeholder="Ask about bookings, sessions, trainer..."
+                    placeholder="Ask about fitness, workouts, diet, bookings..."
                     className="flex-1 px-4 py-2.5 bg-[#F8FAFC] border border-[#E7E5E4] rounded-xl text-xs focus:outline-none focus:border-[#F97316] text-[#292524] placeholder:text-[#78716C]"
                   />
                   <button

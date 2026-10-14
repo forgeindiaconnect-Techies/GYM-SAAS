@@ -59,11 +59,28 @@ const GymAdminEquipment = () => {
         })
         .catch(err => {
           console.error(err);
-          setLocalEquipmentList([]);
+          // Try /gyms/my-gym as fallback
+          api.get('/gyms/my-gym')
+            .then(res2 => {
+              setGym(res2.data.gym);
+              setLocalEquipmentList(res2.data.gym?.equipment || []);
+            })
+            .catch(() => setLocalEquipmentList([]));
         })
         .finally(() => setIsLoading(false));
     } else {
-      setIsLoading(false);
+      api.get('/gyms/my-gym')
+        .then(res => {
+          if (res.data?.gym) {
+            setGym(res.data.gym);
+            setLocalEquipmentList(res.data.gym?.equipment || []);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          setLocalEquipmentList([]);
+        })
+        .finally(() => setIsLoading(false));
     }
   }, [user, effectiveBranchId]);
 
@@ -93,16 +110,36 @@ const GymAdminEquipment = () => {
     }
   };
 
+  const resolveCurrentGym = async () => {
+    if (gym) return gym;
+    try {
+      if (user?.branchId) {
+        const res = await api.get(`/branches/${user.branchId}`);
+        if (res.data?.branch) { setGym(res.data.branch); return res.data.branch; }
+      }
+      const res = await api.get('/gyms/my-gym');
+      if (res.data?.gym) { setGym(res.data.gym); return res.data.gym; }
+    } catch (e) {
+      console.error('Failed to resolve gym', e);
+    }
+    return null;
+  };
+
   const handleAddEquipment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!gym) return;
+    const currentGym = await resolveCurrentGym();
+    if (!currentGym) {
+      alert('Could not find gym details. Please refresh and try again.');
+      return;
+    }
     
     const newEq = {
       id: `EQ${String(localEquipmentList.length + 1).padStart(3, '0')}`,
       name: formData.name,
       category: formData.category,
       brand: formData.brand,
-      quantity: formData.quantity,
+      quantity: Number(formData.quantity) || 1,
+      condition: formData.condition || 'Excellent',
       branchId: selectedBranch === 'main' ? undefined : selectedBranch,
       status: formData.status,
       nextService: formData.nextService || 'N/A'
@@ -112,11 +149,16 @@ const GymAdminEquipment = () => {
     setLocalEquipmentList(updatedEquipment);
 
     try {
-      await api.put(`/gyms/${gym._id}`, { equipment: updatedEquipment });
+      if (user?.branchId) {
+        await api.put(`/branches/${user.branchId}`, { equipment: updatedEquipment });
+      } else {
+        await api.put(`/gyms/${currentGym._id}`, { equipment: updatedEquipment });
+      }
     } catch (err) {
       console.error('Error saving equipment:', err);
-      // Revert on error
       setLocalEquipmentList(localEquipmentList);
+      alert('Failed to save equipment. Please try again.');
+      return;
     }
     setShowAddModal(false);
     setFormData({ name: '', category: 'Cardio', brand: '', quantity: 1, condition: 'Excellent', status: 'Active', nextService: '' });
@@ -138,7 +180,8 @@ const GymAdminEquipment = () => {
 
   const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingEq || !gym) return;
+    const currentGym = await resolveCurrentGym();
+    if (!editingEq || !currentGym) return;
 
     const targetId = editingEq.id || editingEq._id;
     const updatedEquipment = localEquipmentList.map((eq: any) => {
@@ -148,7 +191,7 @@ const GymAdminEquipment = () => {
           name: editFormData.name,
           category: editFormData.category,
           brand: editFormData.brand,
-          quantity: editFormData.quantity,
+          quantity: Number(editFormData.quantity) || 1,
           condition: editFormData.condition,
           status: editFormData.status,
           nextService: editFormData.nextService || 'N/A'
@@ -162,25 +205,35 @@ const GymAdminEquipment = () => {
     setEditingEq(null);
 
     try {
-      await api.put(`/gyms/${gym._id}`, { equipment: updatedEquipment });
+      if (user?.branchId) {
+        await api.put(`/branches/${user.branchId}`, { equipment: updatedEquipment });
+      } else {
+        await api.put(`/gyms/${currentGym._id}`, { equipment: updatedEquipment });
+      }
     } catch (err) {
       console.error('Error updating equipment:', err);
       setLocalEquipmentList(localEquipmentList);
+      alert('Failed to update equipment. Please try again.');
     }
   };
 
   const handleDeleteEquipment = async (id: string) => {
-    if (!gym || !window.confirm('Are you sure you want to delete this equipment?')) return;
+    const currentGym = await resolveCurrentGym();
+    if (!currentGym || !window.confirm('Are you sure you want to delete this equipment?')) return;
     
     const updatedEquipment = localEquipmentList.filter(eq => (eq.id || eq._id) !== id);
     setLocalEquipmentList(updatedEquipment);
     
     try {
-      await api.put(`/gyms/${gym._id}`, { equipment: updatedEquipment });
+      if (user?.branchId) {
+        await api.put(`/branches/${user.branchId}`, { equipment: updatedEquipment });
+      } else {
+        await api.put(`/gyms/${currentGym._id}`, { equipment: updatedEquipment });
+      }
     } catch (err) {
       console.error('Error deleting equipment:', err);
-      // Revert on error
       setLocalEquipmentList(localEquipmentList);
+      alert('Failed to delete equipment. Please try again.');
     }
   };
 
