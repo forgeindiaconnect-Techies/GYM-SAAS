@@ -48,25 +48,25 @@ const PLAN_DETAILS: Record<string, any> = {
 
 const UPGRADE_PLANS = [
   {
-    key: 'STARTER', name: 'Starter', tagline: 'For essential gym needs',
-    priceMonthly: 999, priceAnnual: 9990, savingsAnnual: 1998,
-    color: 'text-amber-500', border: 'border-amber-400/50', ctaStyle: 'bg-amber-500/20 border border-amber-400/50 text-amber-600 hover:bg-amber-500/30',
+    key: 'SILVER', name: 'Silver', tagline: 'Beginner package for growing gyms',
+    priceMonthly: 799, priceAnnual: 7190, savingsAnnual: 1598,
+    color: 'text-slate-500', border: 'border-slate-300', ctaStyle: 'bg-white border-2 border-[#E7E5E4] text-[#292524] hover:border-[#F97316] hover:bg-[#FFFDF8]',
     icon: Star,
-    features: ['1 gym location', 'Up to 100 Members', 'Up to 3 Trainers', 'Member registration', 'Attendance tracking', 'Membership & fee management', 'Basic reports', 'Basic AI workout plan']
+    features: ['Gym Profile Management', 'Member Management (up to 100)', 'Trainer & Staff Management', 'AI Fitness Assessment', 'Basic AI Workout & Diet Plans', 'AI Chat Assistant', 'Basic Reports (3 types)', 'Membership Tracking']
   },
   {
-    key: 'PROFESSIONAL', name: 'Professional', tagline: 'For growing gyms',
-    priceMonthly: 2499, priceAnnual: 24990, savingsAnnual: 4998,
+    key: 'GOLD', name: 'Gold', tagline: 'Most popular all-in-one powerhouse',
+    priceMonthly: 1499, priceAnnual: 13490, savingsAnnual: 4498,
     color: 'text-[#F97316]', border: 'border-[#F97316]', ctaStyle: 'bg-[#F97316] text-white hover:bg-[#EA580C]',
     icon: Crown, popular: true,
-    features: ['1 gym location', 'Up to 500 Members', 'Up to 15 Trainers', 'Everything in Starter', 'Advanced AI workout & diet plans', 'Trainer allocation', 'Online session booking', 'AI chatbot', 'Revenue analytics']
+    features: ['Everything in Silver', 'Advanced AI Workout & Diet Plans', 'AI Fitness Assistant', 'Goal-Based Workout Recs', 'Trainer Discovery & Booking', 'Trainer Scheduling', 'Detailed Progress Analytics', 'Revenue & Membership Analytics']
   },
   {
-    key: 'ENTERPRISE', name: 'Enterprise', tagline: 'Multi-branch enterprise',
-    priceMonthly: 5999, priceAnnual: 59990, savingsAnnual: 11988,
-    color: 'text-purple-400', border: 'border-purple-500/40', ctaStyle: 'bg-purple-600 border border-purple-500/50 text-white hover:bg-purple-700',
+    key: 'PREMIUM', name: 'Premium', tagline: 'Enterprise-grade multi-branch scale',
+    priceMonthly: 2499, priceAnnual: 22490, savingsAnnual: 7498,
+    color: 'text-purple-600', border: 'border-purple-300', ctaStyle: 'bg-purple-600 border border-purple-500/50 text-white hover:bg-purple-700',
     icon: Sparkles,
-    features: ['Multiple branches Up to 2', '1000 members', 'Up to 50 Trainers', 'Branch-wise reports', 'Advanced AI features', 'Staff permissions', 'Workout video library', 'Priority support']
+    features: ['Everything in Gold', '1-on-1 Online Coaching', 'Live Trainer Sessions', 'Priority Trainer Booking', 'AI + Trainer Hybrid Recs', 'Branch-wise Analytics', 'Member Retention Analytics', 'Gym Store & Supplements', 'Priority Support']
   },
 ];
 

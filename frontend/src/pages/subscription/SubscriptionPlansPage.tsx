@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  Activity, CheckCircle, XCircle, Loader2, LogOut, Crown, Star, Sparkles,
+  Activity, CheckCircle, XCircle, Loader2, LogOut, Zap, Crown, Star, Sparkles,
   Lock, Gift, AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,104 +9,137 @@ import api from '../../utils/api';
 
 const SAAS_PLANS = [
   {
-    key: 'STARTER',
-    name: 'Starter',
-    tagline: 'Essential package for single branch gyms',
-    badge: 'Starter',
-    icon: Star,
-    iconColor: 'text-amber-600',
-    iconBg: 'bg-amber-100',
+    key: 'FREE_TRIAL',
+    name: 'Free Trial',
+    tagline: 'Try AI GYM risk-free',
+    badge: '1 DAY',
+    icon: Zap,
+    iconColor: 'text-[#FED7AA]',
+    iconBg: 'bg-[#FFFDF8]',
     borderColor: 'border-[#E7E5E4]',
-    priceMonthly: 999,
-    priceAnnual: 9990,
-    priceAnnualPerMonth: 832,
-    savingsAnnual: 1998,
-    limits: { members: 100, trainers: 3, staff: 2, branches: 1 },
+    priceMonthly: 0,
+    priceAnnual: 0,
+    priceAnnualPerMonth: 0,
+    savingsAnnual: 0,
+    platformLimits: '10 members • 1 trainer • 1 branch',
+    limits: { members: 10, trainers: 1, staff: 1, branches: 1 },
     features: [
-      { text: '1 gym location', included: true },
-      { text: 'Up to 100 members', included: true },
-      { text: 'Up to 3 trainers', included: true },
-      { text: 'Member registration', included: true },
-      { text: 'Attendance tracking', included: true },
-      { text: 'Membership & fee management', included: true },
-      { text: 'Basic reports', included: true },
-      { text: 'Basic AI workout plan', included: true },
+      { text: 'Basic Gym Profile', included: true },
+      { text: 'Basic Member Management', included: true },
+      { text: 'Basic Attendance', included: true },
+      { text: 'Basic AI Fitness Assessment', included: true },
+      { text: '1 AI Workout Plan', included: true },
+      { text: 'Basic Diet Recommendation', included: true },
+      { text: 'Limited AI Chat', included: true },
+      { text: 'Basic Progress Tracking', included: true },
+      { text: 'Advanced Analytics', included: false },
+      { text: 'Trainer Booking', included: false },
+      { text: '1-on-1 Coaching', included: false },
     ],
-    annualBonuses: ['2 months FREE with annual billing'],
-    ctaText: 'Choose Starter • Pay Now',
-    ctaStyle: 'bg-[#F97316] text-white hover:bg-[#EA580C]',
+    ctaText: 'Start Free Trial',
+    ctaStyle: 'bg-white border-2 border-[#E7E5E4] text-[#292524] hover:border-[#F97316] hover:bg-[#FFFDF8]',
+    trial: true,
+    popular: false,
+  },
+  {
+    key: 'SILVER',
+    name: 'Silver',
+    tagline: 'Beginner package for growing gyms',
+    badge: 'BEGINNER',
+    icon: Star,
+    iconColor: 'text-[#FED7AA]',
+    iconBg: 'bg-slate-100',
+    borderColor: 'border-[#E7E5E4]',
+    priceMonthly: 799,
+    priceAnnual: 7190,
+    priceAnnualPerMonth: 599,
+    savingsAnnual: 1598,
+    platformLimits: '100 members • 5 trainers • 1 branch',
+    limits: { members: 100, trainers: 5, staff: 2, branches: 1 },
+    features: [
+      { text: 'Gym Profile Management', included: true },
+      { text: 'Member Management', included: true },
+      { text: 'Trainer & Staff Management', included: true },
+      { text: 'AI Fitness Assessment', included: true },
+      { text: 'Basic AI Workout & Diet Plans', included: true },
+      { text: 'AI Chat Assistant', included: true },
+      { text: 'Basic Reports (3 types)', included: true },
+      { text: 'Membership Tracking', included: true },
+      { text: 'Advanced Analytics', included: false },
+      { text: 'Trainer Booking', included: false },
+      { text: '1-on-1 Coaching', included: false },
+    ],
+    annualBonuses: ['Save 25% with annual billing'],
+    ctaText: 'Choose Silver',
+    ctaStyle: 'bg-white border-2 border-[#E7E5E4] text-[#292524] hover:border-[#F97316] hover:bg-[#FFFDF8]',
     trial: false,
     popular: false,
   },
   {
-    key: 'PROFESSIONAL',
-    name: 'Professional',
+    key: 'GOLD',
+    name: 'Gold',
     tagline: 'Most popular all-in-one powerhouse',
-    badge: 'Most Popular',
+    badge: 'MOST POPULAR',
     icon: Crown,
     iconColor: 'text-[#F97316]',
     iconBg: 'bg-[#F97316]/10',
     borderColor: 'border-[#F97316]',
-    priceMonthly: 2499,
-    priceAnnual: 24990,
-    priceAnnualPerMonth: 2082,
-    savingsAnnual: 4998,
-    limits: { members: 500, trainers: 15, staff: 5, branches: 1 },
+    priceMonthly: 1499,
+    priceAnnual: 13490,
+    priceAnnualPerMonth: 1124,
+    savingsAnnual: 4498,
+    platformLimits: '500 members • 15 trainers • 2 branches',
+    limits: { members: 500, trainers: 15, staff: 5, branches: 2 },
     features: [
-      { text: '1 gym location', included: true },
-      { text: 'Up to 500 members', included: true },
-      { text: 'Up to 15 trainers', included: true },
-      { text: 'Everything in Starter', included: true },
-      { text: 'Advanced AI workout & diet plans', included: true },
-      { text: 'Trainer allocation', included: true },
-      { text: 'Online session booking', included: true },
-      { text: 'AI chatbot', included: true },
-      { text: 'Revenue analytics', included: true },
+      { text: 'Everything in Silver', included: true },
+      { text: 'Advanced AI Workout & Diet Plans', included: true },
+      { text: 'AI Fitness Assistant', included: true },
+      { text: 'Goal-Based Workout Recs', included: true },
+      { text: 'Trainer Discovery & Booking', included: true },
+      { text: 'Trainer Scheduling', included: true },
+      { text: 'Detailed Progress Analytics', included: true },
+      { text: 'Revenue & Membership Analytics', included: true },
+      { text: '1-on-1 Coaching', included: false },
+      { text: 'Live Trainer Sessions', included: false },
     ],
-    annualBonuses: ['Save ₹4,998 with annual billing'],
-    ctaText: 'Choose Professional • Pay Now',
+    annualBonuses: ['Save ₹4,498 with annual billing'],
+    ctaText: 'Choose Gold',
     ctaStyle: 'bg-[#F97316] text-white hover:bg-[#EA580C] shadow-lg shadow-orange-200',
     trial: false,
     popular: true,
   },
   {
-    key: 'ENTERPRISE',
-    name: 'Enterprise',
-    tagline: 'Multi-branch enterprise solution',
-    badge: 'Multi-Branch',
+    key: 'PREMIUM',
+    name: 'Premium',
+    tagline: 'Enterprise-grade multi-branch scale',
+    badge: 'ADVANCED',
     icon: Sparkles,
     iconColor: 'text-purple-600',
     iconBg: 'bg-purple-100',
     borderColor: 'border-purple-300',
-    priceMonthly: 5999,
-    priceAnnual: 59990,
-    priceAnnualPerMonth: 4999,
-    savingsAnnual: 11988,
-    limits: { members: 1000, trainers: 50, staff: 10, branches: 2 },
+    priceMonthly: 2499,
+    priceAnnual: 22490,
+    priceAnnualPerMonth: 1874,
+    savingsAnnual: 7498,
+    platformLimits: 'Unlimited members & trainers • 5 branches',
+    limits: { members: -1, trainers: -1, staff: -1, branches: 5 },
     features: [
-      { text: 'Multiple branches Up to 2', included: true },
-      { text: '1000 members', included: true },
-      { text: 'Up to 50 trainers', included: true },
-      { text: 'Branch-wise reports', included: true },
-      { text: 'Advanced AI features', included: true },
-      { text: 'Staff permissions', included: true },
-      { text: 'Workout video library', included: true },
-      { text: 'Priority support', included: true },
+      { text: 'Everything in Gold', included: true },
+      { text: '1-on-1 Online Coaching', included: true },
+      { text: 'Live Trainer Sessions', included: true },
+      { text: 'Priority Trainer Booking', included: true },
+      { text: 'AI + Trainer Hybrid Recs', included: true },
+      { text: 'Branch-wise Analytics', included: true },
+      { text: 'Member Retention Analytics', included: true },
+      { text: 'Priority Support & Monthly Review', included: true },
     ],
-    annualBonuses: ['Priority 24/7 dedicated support'],
-    ctaText: 'Choose Enterprise • Pay Now',
-    ctaStyle: 'bg-purple-600 text-white hover:bg-purple-700',
+    annualBonuses: ['Save ₹7,498 with annual billing'],
+    ctaText: 'Choose Premium',
+    ctaStyle: 'bg-white border-2 border-purple-200 text-purple-600 hover:border-purple-500 hover:bg-purple-50',
     trial: false,
     popular: false,
   },
 ];
-
-const LimitBadge = ({ label, value }: { label: string; value: number }) => (
-  <div className="flex items-center justify-between text-xs py-1">
-    <span className="text-[#78716C]">{label}</span>
-    <span className="font-bold text-[#292524]">{value === -1 ? '∞ Unlimited' : `Up to ${value}`}</span>
-  </div>
-);
 
 const SubscriptionPlansPage = () => {
   const navigate = useNavigate();
@@ -350,7 +383,7 @@ const SubscriptionPlansPage = () => {
         )}
 
         {/* ─── Pricing Cards ─── */}
-        <div className="grid lg:grid-cols-3 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
           {SAAS_PLANS.map((plan) => {
             const Icon = plan.icon;
             const priceDisplay = getDisplayPrice(plan);
@@ -392,7 +425,7 @@ const SubscriptionPlansPage = () => {
                         </div>
                       </div>
                       {plan.badge && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFFDF8] border border-[#E7E5E4] text-[#FED7AA]">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${isPopular ? 'bg-orange-50 border-orange-200 text-[#F97316]' : plan.key === 'PREMIUM' ? 'bg-purple-50 border-purple-200 text-purple-600' : 'bg-[#FFFDF8] border-[#E7E5E4] text-[#FED7AA]'}`}>
                           {plan.badge}
                         </span>
                       )}
@@ -421,7 +454,7 @@ const SubscriptionPlansPage = () => {
                             </div>
                           ) : (
                             <p className="text-[#78716C] text-xs">
-                              or ₹{plan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo billed annually
+                              or save 25% with annual
                             </p>
                           )}
                         </div>
@@ -431,22 +464,20 @@ const SubscriptionPlansPage = () => {
 
                   {/* Limits */}
                   <div className="bg-[#FFFDF8] rounded-xl p-3 mb-5 border border-[#E7E5E4]">
-                    <p className="text-[10px] uppercase tracking-widest text-[#78716C] font-bold mb-2">Platform Limits</p>
-                    <LimitBadge label="👥 Members" value={plan.limits.members} />
-                    <LimitBadge label="🏋️ Trainers" value={plan.limits.trainers} />
-                    <LimitBadge label="🏢 Branches" value={plan.limits.branches} />
+                    <p className="text-[10px] uppercase tracking-widest text-[#78716C] font-bold mb-1">PLATFORM LIMITS</p>
+                    <p className="text-xs font-semibold text-[#292524]">{plan.platformLimits}</p>
                   </div>
 
                   {/* Features */}
                   <ul className="space-y-2 mb-4 flex-1">
                     {plan.features.map((f, i) => (
-                      <li key={i} className={`flex items-start space-x-2 text-xs ${f.included ? 'text-[#292524]' : 'text-[#CBD5E1]'}`}>
+                      <li key={i} className={`flex items-start space-x-2 text-xs ${f.included ? 'text-[#292524]' : 'text-[#A8A29E]'}`}>
                         {f.included ? (
-                          <CheckCircle size={14} className={`shrink-0 mt-0.5 ${isPopular ? 'text-[#F97316]' : plan.key === 'PREMIUM' ? 'text-purple-500' : 'text-[#FED7AA]'}`} />
+                          <CheckCircle size={14} className={`shrink-0 mt-0.5 ${plan.key === 'PREMIUM' ? 'text-purple-500' : 'text-[#F97316]'}`} />
                         ) : (
-                          <XCircle size={14} className="shrink-0 mt-0.5 text-[#FED7AA]" />
+                          <XCircle size={14} className="shrink-0 mt-0.5 text-[#D6D3D1]" />
                         )}
-                        <span className={!f.included ? 'line-through' : ''}>{f.text}</span>
+                        <span className={!f.included ? 'line-through text-[#A8A29E]' : ''}>{f.text}</span>
                       </li>
                     ))}
                   </ul>

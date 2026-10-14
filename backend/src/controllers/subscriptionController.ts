@@ -66,11 +66,23 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
     await subscription.save();
 
     if (planKey === 'FREE_TRIAL') {
-      await User.findByIdAndUpdate(userId, {
+      const updatedUser = await User.findByIdAndUpdate(userId, {
         subscriptionStatus: SubscriptionStatus.FREE_TRIAL,
         subscriptionPlan: planKey,
         subscriptionExpiry: endDate,
-      });
+        subscriptionExpiryDate: endDate,
+        approvalStatus: ApprovalStatus.APPROVED,
+      }, { new: true });
+
+      if (updatedUser?.gymId) {
+        await Gym.findByIdAndUpdate(updatedUser.gymId, {
+          status: GymStatus.ACTIVE,
+          'subscription.plan': planKey,
+          'subscription.status': 'Active',
+          'subscription.startDate': now,
+          'subscription.endDate': endDate,
+        });
+      }
     }
 
     res.status(200).json({
