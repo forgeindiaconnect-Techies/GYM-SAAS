@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { 
   Bot, Activity, CheckCircle2, Dumbbell, 
-  Utensils, Loader2, Clock, Lock, 
+  Loader2, Clock, Lock, 
   User, HeartPulse, ShieldAlert, Sparkles,
   Calendar, Mail, Phone
 } from 'lucide-react';
