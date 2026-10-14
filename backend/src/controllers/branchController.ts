@@ -90,12 +90,25 @@ export const createBranch = async (req: AuthRequest, res: Response): Promise<voi
 export const getBranches = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = req.user;
-    if (!user || !user.gymId) {
-      res.status(400).json({ success: false, message: 'No gym associated' });
+    if (!user) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
       return;
     }
 
-    const branches = await Branch.find({ gymId: user.gymId }).populate('managerId', 'firstName lastName email phone').sort({ createdAt: -1 });
+    let query: any = {};
+    if (user.role === Role.SUPER_ADMIN) {
+      if (req.query.gymId) {
+        query.gymId = req.query.gymId;
+      }
+    } else {
+      if (!user.gymId) {
+        res.status(400).json({ success: false, message: 'No gym associated' });
+        return;
+      }
+      query.gymId = user.gymId;
+    }
+
+    const branches = await Branch.find(query).populate('managerId', 'firstName lastName email phone').sort({ createdAt: -1 });
     res.status(200).json({ success: true, branches });
   } catch (error) {
     console.error('Error fetching branches:', error);
@@ -106,7 +119,11 @@ export const getBranches = async (req: AuthRequest, res: Response): Promise<void
 export const getBranchById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const branch = await Branch.findOne({ _id: id, gymId: req.user?.gymId }).populate('managerId', 'firstName lastName email phone');
+    let query: any = { _id: id };
+    if (req.user?.role !== Role.SUPER_ADMIN) {
+      query.gymId = req.user?.gymId;
+    }
+    const branch = await Branch.findOne(query).populate('managerId', 'firstName lastName email phone');
     if (!branch) {
       res.status(404).json({ success: false, message: 'Branch not found' });
       return;
@@ -122,7 +139,11 @@ export const updateBranch = async (req: AuthRequest, res: Response): Promise<voi
   try {
     const { id } = req.params;
     const updateData = req.body;
-    const branch = await Branch.findOneAndUpdate({ _id: id, gymId: req.user?.gymId }, updateData, { new: true });
+    let query: any = { _id: id };
+    if (req.user?.role !== Role.SUPER_ADMIN) {
+      query.gymId = req.user?.gymId;
+    }
+    const branch = await Branch.findOneAndUpdate(query, updateData, { new: true });
     if (!branch) {
       res.status(404).json({ success: false, message: 'Branch not found' });
       return;
@@ -157,7 +178,11 @@ export const updateBranchStatus = async (req: AuthRequest, res: Response): Promi
 export const deleteBranch = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const branch = await Branch.findOneAndDelete({ _id: id, gymId: req.user?.gymId });
+    let query: any = { _id: id };
+    if (req.user?.role !== Role.SUPER_ADMIN) {
+      query.gymId = req.user?.gymId;
+    }
+    const branch = await Branch.findOneAndDelete(query);
     if (!branch) {
       res.status(404).json({ success: false, message: 'Branch not found' });
       return;
