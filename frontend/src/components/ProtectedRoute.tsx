@@ -38,16 +38,14 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
 
   // Subscription & Approval gate for gym owner dashboard
   if (requireSubscription && (user.role === 'ADMIN' || user.role === 'GYM_OWNER')) {
-    if (user.approvalStatus === 'PENDING') return <Navigate to="/status?type=pending" replace />;
     if (user.approvalStatus === 'REJECTED') return <Navigate to="/status?type=rejected" replace />;
     if (user.approvalStatus === 'SUSPENDED') return <Navigate to="/status?type=suspended" replace />;
     if (user.isActive === false) return <Navigate to="/status?type=inactive" replace />;
     
-    if (user.approvalStatus === 'APPROVED') {
-      if (!isSubscriptionActive(user.subscriptionStatus)) {
-        return <Navigate to="/gym-owner/subscription" replace />;
-      }
+    if (!isSubscriptionActive(user.subscriptionStatus)) {
+      return <Navigate to="/subscription-plans" replace />;
     }
+    if (user.approvalStatus === 'PENDING') return <Navigate to="/status?type=pending" replace />;
   }
 
   return <>{children}</>;

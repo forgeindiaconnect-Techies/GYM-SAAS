@@ -20,7 +20,6 @@ import GymCheckout from './pages/marketplace/GymCheckout';
 
 // Subscription
 import SubscriptionPlansPage from './pages/subscription/SubscriptionPlansPage';
-import GymOwnerSubscriptionPage from './pages/subscription/GymOwnerSubscriptionPage';
 import PaymentPage from './pages/subscription/PaymentPage';
 
 // Company
@@ -209,7 +208,7 @@ function App() {
             <ProtectedRoute><SubscriptionPlansPage /></ProtectedRoute>
           } />
           <Route path="/gym-owner/subscription" element={
-            <ProtectedRoute><GymOwnerSubscriptionPage /></ProtectedRoute>
+            <Navigate to="/subscription-plans" replace />
           } />
           <Route path="/gym-owner/payment" element={
             <ProtectedRoute><PaymentPage /></ProtectedRoute>

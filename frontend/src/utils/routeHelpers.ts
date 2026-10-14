@@ -13,14 +13,14 @@ export const getDashboardRoute = (user: AuthUser): string => {
   if (role === 'SUPER_ADMIN') return '/super-admin/dashboard';
   
   if (role === 'ADMIN' || role === 'GYM_OWNER') {
-    if (statusUpper === 'PENDING') return '/status?type=pending';
     if (statusUpper === 'REJECTED') return '/status?type=rejected';
     if (statusUpper === 'SUSPENDED') return '/status?type=suspended';
     if (statusUpper === 'DELETED') return '/status?type=inactive';
     
     if (!isSubscriptionActive(subscriptionStatus)) {
-      return '/gym-owner/subscription';
+      return '/subscription-plans';
     }
+    if (statusUpper === 'PENDING') return '/status?type=pending';
     return '/admin/dashboard';
   }
 

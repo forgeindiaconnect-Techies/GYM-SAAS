@@ -142,12 +142,20 @@ const SubscriptionPlansPage = () => {
     if (!paymentStep) return;
     setLoading(paymentStep);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await api.post('/subscriptions/select', {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const res = await api.post('/subscriptions/select', {
         plan: paymentStep,
         billingCycle: isAnnual ? 'annual' : 'monthly',
       });
-      updateUser({ subscriptionStatus: 'ACTIVE', subscriptionPlan: paymentStep });
+      const subscription = res.data?.subscription;
+      if (subscription?.id) {
+        await api.post('/subscriptions/process-payment', {
+          subscriptionId: subscription.id,
+          paymentMethod: 'Online Card'
+        });
+      }
+      updateUser({ subscriptionStatus: 'ACTIVE', subscriptionPlan: paymentStep, approvalStatus: 'APPROVED' });
+      alert('Subscription activated successfully! Welcome to your Gym Dashboard.');
       navigate('/admin/dashboard', { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || 'Payment failed. Try again.');
@@ -342,7 +350,7 @@ const SubscriptionPlansPage = () => {
         )}
 
         {/* ─── Pricing Cards ─── */}
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-12">
+        <div className="grid lg:grid-cols-3 md:grid-cols-3 gap-6 mb-12">
           {SAAS_PLANS.map((plan) => {
             const Icon = plan.icon;
             const priceDisplay = getDisplayPrice(plan);

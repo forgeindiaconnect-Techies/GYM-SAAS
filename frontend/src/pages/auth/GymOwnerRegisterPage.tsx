@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Activity, AlertCircle, Loader2, ArrowLeft, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 import Step1BasicInfo from '../../components/GymRegisterSteps/Step1BasicInfo';
 import Step3ACDetails from '../../components/GymRegisterSteps/Step3ACDetails';
@@ -33,6 +34,7 @@ const initialForm = {
 
 const GymOwnerRegisterPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -110,7 +112,7 @@ const GymOwnerRegisterPage = () => {
     setApiError('');
     setIsLoading(true);
     try {
-      await api.post('/auth/register-gym-owner', {
+      const res = await api.post('/auth/register-gym-owner', {
         firstName: form.firstName,
         lastName: form.lastName,
         email: form.email,
@@ -138,8 +140,13 @@ const GymOwnerRegisterPage = () => {
         logo: form.logo || undefined,
         images: form.images,
       });
-      alert('Registration successful!');
-      navigate('/pending');
+      alert('Registration successful! Please choose a platform subscription plan to get started.');
+      if (res.data?.token && res.data?.user) {
+        await login(res.data.user, res.data.token, false);
+        navigate('/subscription-plans', { replace: true });
+      } else {
+        navigate('/subscription-plans', { replace: true });
+      }
     } catch (err: any) {
       setApiError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {

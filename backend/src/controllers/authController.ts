@@ -197,14 +197,34 @@ export const registerGymOwner = async (req: Request, res: Response): Promise<voi
     user.gymId = gym._id as any;
     await user.save();
 
+    const payload = {
+      id: user._id,
+      role: user.role,
+      gymId: user.gymId,
+      branchId: user.branchId,
+      branchIds: (user as any).branchIds || [],
+      email: user.email,
+      approvalStatus: user.approvalStatus,
+      subscriptionStatus: user.subscriptionStatus,
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+
     res.status(201).json({
       success: true,
-      message: 'Gym Owner registration successful. Pending Admin approval.',
+      message: 'Gym Owner registration successful.',
+      token,
       user: {
         id: user._id,
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
+        mobile: user.mobile,
         role: user.role,
         approvalStatus: user.approvalStatus,
+        subscriptionStatus: user.subscriptionStatus,
+        gymId: user.gymId,
       },
     });
   } catch (error: any) {

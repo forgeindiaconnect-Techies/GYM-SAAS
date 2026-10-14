@@ -16,7 +16,7 @@ const PaymentPage = () => {
   useEffect(() => {
     // Redirect if no pending subscription is found in state
     if (!subscription || subscription.status !== 'PENDING') {
-      navigate('/gym-owner/subscription');
+      navigate('/subscription-plans');
     }
   }, [subscription, navigate]);
 

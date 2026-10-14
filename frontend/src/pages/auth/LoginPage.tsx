@@ -75,8 +75,8 @@ const LoginPage = () => {
 
       if (user.role === 'GYM_OWNER' || user.role === 'ADMIN') {
         if (!isSubscriptionActive(user.subscriptionStatus)) {
-          alert('Welcome! Please choose a package plan to activate your Gym Dashboard.');
-          navigate('/gym-owner/subscription', { replace: true });
+          alert('Welcome! Please choose a platform subscription plan to activate your Gym Dashboard.');
+          navigate('/subscription-plans', { replace: true });
           return;
         }
       }

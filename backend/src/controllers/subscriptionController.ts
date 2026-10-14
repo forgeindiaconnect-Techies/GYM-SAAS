@@ -1,8 +1,8 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth';
 import Subscription, { SubscriptionPlan, BillingCycle, SubscriptionPaymentStatus } from '../models/Subscription';
-import User, { SubscriptionStatus } from '../models/User';
-import Gym from '../models/Gym';
+import User, { SubscriptionStatus, ApprovalStatus } from '../models/User';
+import Gym, { GymStatus } from '../models/Gym';
 
 const PLAN_PRICING: Record<string, { monthly: number; annual: number; trial: number; trialDays: number }> = {
   FREE_TRIAL:   { monthly: 0, annual: 0, trial: 0, trialDays: 1 },
@@ -126,10 +126,12 @@ export const processPayment = async (req: AuthRequest, res: Response): Promise<v
       subscriptionExpiry: subscription.endDate,
       subscriptionExpiryDate: subscription.endDate,
       paymentStatus: 'Approved',
+      approvalStatus: ApprovalStatus.APPROVED,
     }, { new: true });
 
     if (updatedUser?.gymId) {
       await Gym.findByIdAndUpdate(updatedUser.gymId, {
+        status: GymStatus.ACTIVE,
         'subscription.plan': subscription.plan,
         'subscription.status': 'Active',
         'subscription.startDate': subscription.startDate,
