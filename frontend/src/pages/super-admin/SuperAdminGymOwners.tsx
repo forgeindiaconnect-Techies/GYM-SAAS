@@ -137,7 +137,7 @@ const TABS = [
 
 const GYM_TYPES = ['Commercial', 'Boutique', 'CrossFit', 'Yoga Studio', 'Martial Arts', 'Other'];
 const ALL_SERVICES = [
-  'Gym Membership', 'Strength Training', 'Cardio', 'CrossFit & HIIT',
+  'Strength Training', 'Cardio', 'CrossFit & HIIT',
   'Yoga & Pilates', 'Zumba / Aerobics', 'Personal Training', 'Steam & Sauna',
   'Nutrition Consultation', 'Physiotherapy', 'Locker Room', 'Group Classes',
   'Live Online Classes', '1-on-1 Virtual Training', 'On-Demand Workouts'

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
+import GymSmartAssistant from '../components/GymSmartAssistant';
 import {
   LayoutDashboard, Building2, Send, User, LogOut,
   CreditCard, ShieldCheck, Menu, PlusCircle
@@ -178,6 +179,7 @@ const SuperAdminLayout = () => {
           <Outlet />
         </div>
       </main>
+      <GymSmartAssistant />
     </div>
   );
 };

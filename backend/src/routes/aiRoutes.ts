@@ -12,15 +12,15 @@ import {
   trainerReplyToMember,
   memberChatbotQuery
 } from '../controllers/aiController';
-import { authenticate, authorize } from '../middlewares/auth';
+import { authenticate, authorize, optionalAuthenticate } from '../middlewares/auth';
 
 const router = express.Router();
 
 // Member Routes
 router.post('/member/generate', authenticate, authorize(['MEMBER']), generateRecommendation);
 router.get('/member/latest', authenticate, authorize(['MEMBER']), getLatestRecommendation);
-router.post('/member/reply', authenticate, authorize(['MEMBER']), memberReplyToTrainer);
-router.post('/member/chat', authenticate, authorize(['MEMBER']), memberChatbotQuery);
+router.post('/member/chat', optionalAuthenticate, memberChatbotQuery);
+router.post('/assistant/search', optionalAuthenticate, memberChatbotQuery);
 
 // Trainer Routes
 router.get('/trainer/customers', authenticate, authorize(['TRAINER']), getAssignedCustomersWithAI);

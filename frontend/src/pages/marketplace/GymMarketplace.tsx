@@ -34,6 +34,7 @@ const GymMarketplace = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [slideIdx, setSlideIdx] = useState(0);
   const [enquiryGym, setEnquiryGym] = useState<{ id: string, name: string } | null>(null);
+  const [expandedFacilities, setExpandedFacilities] = useState<Record<string, boolean>>({});
   const [muted, setMuted] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const location = useLocation();
@@ -318,8 +319,8 @@ const GymMarketplace = () => {
       {/* ===== GYM RESULTS SECTION ===== */}
       <div id="gym-results" className="max-w-7xl mx-auto px-4 py-16">
 
-        {/* Sticky Search Bar */}
-        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-3 mb-10 shadow-xl sticky top-20 z-20">
+        {/* Search Bar (Static in page flow) */}
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-3 mb-10 shadow-sm relative">
           <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#555]" size={20} />
@@ -460,16 +461,32 @@ const GymMarketplace = () => {
                   )}
 
                   {/* Facility tags */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {gym.facilities?.slice(0, 3).map((facility: string, idx: number) => (
-                      <span key={idx} className="bg-[#FFFFFF] text-[#78716C] text-xs px-2.5 py-1 rounded-lg border border-[#2e2e2e]">
+                  <div className="flex flex-wrap gap-2 mb-6 items-center">
+                    {(expandedFacilities[gym._id]
+                      ? (gym.facilities || [])
+                      : (gym.facilities || []).slice(0, 3)
+                    ).map((facility: string, idx: number) => (
+                      <span key={idx} className="bg-[#FFFFFF] text-[#78716C] text-xs px-2.5 py-1 rounded-lg border border-[#E7E5E4] shadow-xs">
                         {facility}
                       </span>
                     ))}
-                    {gym.facilities?.length > 3 && (
-                      <span className="bg-[#F97316]/10 text-[#F97316] text-xs px-2.5 py-1 rounded-lg border border-[#F97316]/30 font-medium">
-                        +{gym.facilities.length - 3} more
-                      </span>
+                    {gym.facilities && gym.facilities.length > 3 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedFacilities(prev => ({
+                            ...prev,
+                            [gym._id]: !prev[gym._id]
+                          }));
+                        }}
+                        className="bg-[#F97316]/10 hover:bg-[#F97316]/20 text-[#F97316] text-xs px-2.5 py-1 rounded-lg border border-[#F97316]/30 font-semibold transition-colors cursor-pointer select-none inline-flex items-center gap-1 active:scale-95"
+                        title={expandedFacilities[gym._id] ? "Show fewer facilities" : "Click to view all facilities"}
+                      >
+                        {expandedFacilities[gym._id]
+                          ? 'Show less'
+                          : `+${gym.facilities.length - 3} more`}
+                      </button>
                     )}
                   </div>
 

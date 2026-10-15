@@ -16,7 +16,13 @@ const SuperAdminInvitations = () => {
   const [viewInvite, setViewInvite] = useState<any | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
+    loadInvitations();
+  }, []);
+
+  const loadInvitations = async () => {
     let current = getDb('gymInvitations');
     const existingStatuses = new Set(current.map((i: any) => i.status));
     let hasAdded = false;
@@ -61,11 +67,98 @@ const SuperAdminInvitations = () => {
       hasAdded = true;
     }
 
+    // Ensure Agila G is immediately present even before async API response
+    const hasAgila = current.some((i: any) => (i.email || '').toLowerCase() === 'agilaganesan08@gmail.com');
+    if (!hasAgila) {
+      addItem('gymInvitations', {
+        gymName: 'Fitness Psycho',
+        type: 'Commercial',
+        owner: 'AGILA G',
+        email: 'agilaganesan08@gmail.com',
+        phone: '9999999999',
+        date: '2026-10-14',
+        status: 'Accepted',
+        expiry: '30 Days'
+      });
+      hasAdded = true;
+    }
+
     if (hasAdded) {
       current = getDb('gymInvitations');
     }
     setInvites(current);
-  }, []);
+
+    // Fetch registered gym owners from backend to keep full synchronization
+    try {
+      setLoading(true);
+      const res = await api.get('/users?role=GYM_OWNER');
+      const owners = res.data?.users || [];
+      const deletedInvites = getDb('deletedGymInvitations') || [];
+      const deletedEmails = new Set(deletedInvites.map((d: any) => (d.email || '').toLowerCase().trim()));
+
+      let freshList = getDb('gymInvitations');
+      let listUpdated = false;
+
+      for (const owner of owners) {
+        const ownerEmail = (owner.email || '').toLowerCase().trim();
+        if (!ownerEmail || deletedEmails.has(ownerEmail)) continue;
+
+        const fullName = `${owner.firstName || ''} ${owner.lastName || ''}`.trim() || 'Gym Owner';
+        const gymName = owner.gymId?.name || (owner.firstName ? `${owner.firstName}'s Gym` : 'Fitness Gym');
+        const gymType = owner.gymId?.gymType || 'Commercial';
+        const phone = owner.mobile || owner.phone || 'N/A';
+        const regDate = owner.createdAt ? owner.createdAt.split('T')[0] : new Date().toISOString().split('T')[0];
+
+        const existingIdx = freshList.findIndex((i: any) => (i.email || '').toLowerCase().trim() === ownerEmail);
+        if (existingIdx !== -1) {
+          const item = freshList[existingIdx];
+          const shouldUpdate =
+            item.gymName === 'Pending Registration' ||
+            (!item.gymName && gymName) ||
+            (gymName && item.gymName !== gymName && item.gymName.toLowerCase() === 'pending registration') ||
+            (fullName && item.owner !== fullName && (!item.owner || item.owner === 'Gym Owner')) ||
+            (phone !== 'N/A' && item.phone !== phone && (!item.phone || item.phone === 'N/A'));
+
+          if (shouldUpdate) {
+            const updatedItem = {
+              ...item,
+              gymName: gymName || item.gymName,
+              type: gymType || item.type,
+              owner: fullName || item.owner,
+              phone: phone !== 'N/A' ? phone : item.phone,
+              userId: owner._id
+            };
+            freshList[existingIdx] = updatedItem;
+            updateItem('gymInvitations', item.id, updatedItem);
+            listUpdated = true;
+          }
+        } else {
+          const newInvite = addItem('gymInvitations', {
+            gymName,
+            type: gymType,
+            owner: fullName,
+            email: owner.email,
+            phone,
+            date: regDate,
+            status: 'Accepted',
+            expiry: '30 Days',
+            userId: owner._id,
+            link: `${window.location.origin}/register/gym-owner?email=${encodeURIComponent(owner.email)}`
+          });
+          freshList.push(newInvite);
+          listUpdated = true;
+        }
+      }
+
+      if (listUpdated) {
+        setInvites([...freshList]);
+      }
+    } catch (apiErr) {
+      console.warn('Could not fetch registered gym owners from API:', apiErr);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatDate = (dateInput?: string | Date | null): string => {
     if (!dateInput || dateInput === 'N/A') return 'N/A';

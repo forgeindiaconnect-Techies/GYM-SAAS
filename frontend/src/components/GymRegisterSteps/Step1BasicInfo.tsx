@@ -336,12 +336,12 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                 ]
               : form.trainingMode === 'offline'
               ? [
-                  'Gym Membership', 'Personal Training', 'Group Classes', 
+                  'Personal Training', 'Group Classes', 
                   'Diet Guidance', 'CrossFit & HIIT', 'Yoga & Pilates', 
                   'Physiotherapy', 'Strength & Conditioning'
                 ]
               : [
-                  'Gym Membership', '1-on-1 Virtual Training', 'Personal Training', 
+                  '1-on-1 Virtual Training', 'Personal Training', 
                   'Live Online Classes', 'Group Classes', 'AI Fitness Coaching', 
                   'Diet & Nutrition Guidance', 'On-Demand Workouts', 'CrossFit & HIIT',
                   'Yoga & Pilates', 'Physiotherapy', 'Strength & Conditioning'

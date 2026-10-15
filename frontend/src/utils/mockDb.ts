@@ -21,7 +21,7 @@ export const saveDb = (collection: string, data: any[]) => {
 
 export const addItem = (collection: string, item: any) => {
   const items = getDb(collection);
-  const newItem = { ...item, id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9) };
+  const newItem = { ...item, id: item.id || (Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9)) };
   items.push(newItem);
   saveDb(collection, items);
   return newItem;
@@ -122,6 +122,18 @@ export const seedMockData = () => {
       date: '2026-09-20',
       status: 'Expired',
       expiry: 'Expired'
+    });
+  }
+  if (!existingInvites.some((i: any) => (i.email || '').toLowerCase() === 'agilaganesan08@gmail.com')) {
+    addItem('gymInvitations', {
+      gymName: 'Fitness Psycho',
+      type: 'Commercial',
+      owner: 'AGILA G',
+      email: 'agilaganesan08@gmail.com',
+      phone: '9999999999',
+      date: '2026-10-14',
+      status: 'Accepted',
+      expiry: '30 Days'
     });
   }
   if (getDb('deletedGymInvitations').length === 0) {

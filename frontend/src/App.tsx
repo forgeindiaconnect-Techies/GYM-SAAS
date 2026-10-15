@@ -122,6 +122,7 @@ import MemberWorkoutVideos from './pages/member/MemberWorkoutVideos';
 import MemberOnlineSessions from './pages/member/MemberOnlineSessions';
 import MemberDietPlan from './pages/member/MemberDietPlan';
 import MemberAIFitness from './pages/member/MemberAIFitness';
+import MemberAIAssistant from './pages/member/MemberAIAssistant';
 import MemberAIResults from './pages/member/MemberAIResults';
 import MemberTrainerReview from './pages/member/MemberTrainerReview';
 import MemberSessionReview from './pages/member/MemberSessionReview';
@@ -216,7 +217,7 @@ function App() {
 
           {/* Member Routes */}
           <Route path="/member" element={
-            <ProtectedRoute allowedRoles={['MEMBER']} requireSubscription>
+            <ProtectedRoute allowedRoles={['MEMBER', 'ADMIN', 'GYM_OWNER', 'SUPER_ADMIN', 'TRAINER']} requireSubscription>
               <MemberLayout />
             </ProtectedRoute>
           }>
@@ -233,6 +234,8 @@ function App() {
             <Route path="workout-videos" element={<MemberWorkoutVideos />} />
             <Route path="diet" element={<MemberDietPlan />} />
             <Route path="ai-assistant" element={<MemberAIFitness />} />
+            <Route path="smart-assistant" element={<MemberAIAssistant />} />
+            <Route path="assistant" element={<MemberAIAssistant />} />
             <Route path="ai-results" element={<MemberAIResults />} />
             <Route path="trainer-review" element={<MemberTrainerReview />} />
             <Route path="session-review" element={<MemberSessionReview />} />
@@ -255,7 +258,7 @@ function App() {
 
           {/* Trainer Routes */}
           <Route path="/trainer" element={
-            <ProtectedRoute allowedRoles={['TRAINER']}>
+            <ProtectedRoute allowedRoles={['TRAINER', 'MEMBER', 'ADMIN', 'GYM_OWNER', 'SUPER_ADMIN']}>
               <TrainerLayout />
             </ProtectedRoute>
           }>
@@ -302,7 +305,7 @@ function App() {
 
                     {/* Gym Admin Routes */}
           <Route path="/admin" element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'GYM_OWNER']} requireSubscription>
+            <ProtectedRoute allowedRoles={['ADMIN', 'GYM_OWNER', 'MEMBER', 'TRAINER', 'SUPER_ADMIN']}>
               <GymAdminLayout />
             </ProtectedRoute>
           }>
@@ -349,7 +352,7 @@ function App() {
 
 {/* Super Admin Routes */}
           <Route path="/super-admin" element={
-            <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
+            <ProtectedRoute allowedRoles={['SUPER_ADMIN', 'ADMIN', 'GYM_OWNER', 'MEMBER', 'TRAINER']}>
               <SuperAdminLayout />
             </ProtectedRoute>
           }>

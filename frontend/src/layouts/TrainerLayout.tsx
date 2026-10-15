@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
+import GymSmartAssistant from '../components/GymSmartAssistant';
 import {
   LayoutDashboard, User, Users, FileText,
   Utensils, Calendar,
@@ -243,6 +244,7 @@ const TrainerLayout = () => {
           <Outlet />
         </div>
       </main>
+      <GymSmartAssistant />
     </div>
   );
 };

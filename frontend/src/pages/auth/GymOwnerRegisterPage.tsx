@@ -166,6 +166,39 @@ const GymOwnerRegisterPage = () => {
         logo: form.logo || undefined,
         images: form.images,
       });
+
+      // Synchronize with mockDb gymInvitations
+      try {
+        const { getDb, updateItem, addItem } = await import('../../utils/mockDb');
+        const invites = getDb('gymInvitations');
+        const cleanEmail = form.email.toLowerCase().trim();
+        const existing = invites.find((i: any) => (i.email || '').toLowerCase().trim() === cleanEmail);
+        const ownerFullName = `${form.firstName} ${form.lastName}`.trim() || 'Gym Owner';
+        if (existing) {
+          updateItem('gymInvitations', existing.id, {
+            gymName: form.gymName,
+            type: form.gymType || existing.type || 'Commercial',
+            owner: ownerFullName || existing.owner,
+            phone: form.mobile || existing.phone,
+            status: 'Accepted'
+          });
+        } else {
+          addItem('gymInvitations', {
+            gymName: form.gymName,
+            type: form.gymType || 'Commercial',
+            owner: ownerFullName,
+            email: form.email,
+            phone: form.mobile,
+            date: new Date().toISOString().split('T')[0],
+            status: 'Accepted',
+            expiry: '30 Days',
+            link: `${window.location.origin}/register/gym-owner?email=${encodeURIComponent(form.email)}`
+          });
+        }
+      } catch (mockErr) {
+        console.warn('Could not update gymInvitations:', mockErr);
+      }
+
       alert('Registration successful! Please choose a platform subscription plan to get started.');
       if (res.data?.token && res.data?.user) {
         await login(res.data.user, res.data.token, false);

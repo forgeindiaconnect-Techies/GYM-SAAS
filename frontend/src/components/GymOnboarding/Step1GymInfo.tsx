@@ -60,7 +60,7 @@ export const Step1GymInfo = ({ data, updateData, errors }: any) => {
         <div>
           <label className="block text-sm font-medium text-[#78716C] mb-2">Services Offered *</label>
           <div className={`grid grid-cols-2 gap-3 p-4 border rounded-xl ${errors.services ? 'border-[#FED7AA] bg-[#FFFDF8]/30' : 'border-[#E7E5E4] bg-[#FFFDF8]'}`}>
-            {['Gym Membership', 'Personal Training', 'Group Classes', 'Online Training', 'Offline Training', 'AI Fitness Coaching', 'Diet Guidance'].map(service => (
+            {['Personal Training', 'Group Classes', 'Online Training', 'Offline Training', 'AI Fitness Coaching', 'Diet Guidance'].map(service => (
               <label key={service} className="flex items-center space-x-2 cursor-pointer">
                 <input
                   type="checkbox"

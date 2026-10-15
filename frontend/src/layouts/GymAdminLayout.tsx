@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import { ExpiryPopup } from '../components/ExpiryPopup';
+import GymSmartAssistant from '../components/GymSmartAssistant';
 import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
@@ -487,6 +488,7 @@ const GymAdminLayout = () => {
           <Outlet context={{ selectedBranch }} />
         </div>
       </main>
+      <GymSmartAssistant />
     </div>
   );
 };

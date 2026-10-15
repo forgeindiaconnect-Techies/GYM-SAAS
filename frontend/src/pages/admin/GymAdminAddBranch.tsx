@@ -165,7 +165,7 @@ const GymAdminAddBranch = () => {
   };
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  const allServices = ['Gym Membership', 'Personal Training', 'Group Classes', 'Online Training', 'AI Fitness Coaching', 'Diet Guidance'];
+  const allServices = ['Personal Training', 'Group Classes', 'Online Training', 'AI Fitness Coaching', 'Diet Guidance'];
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
