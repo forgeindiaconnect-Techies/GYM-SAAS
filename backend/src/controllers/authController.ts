@@ -8,7 +8,7 @@ import CustomerMembership, { CustomerMembershipStatus } from '../models/Customer
 import Otp from '../models/Otp';
 import Subscription, { SubscriptionPaymentStatus } from '../models/Subscription';
 import Payment, { PaymentStatus } from '../models/Payment';
-import { sendOtpEmail, sendGymOwnerInvitationEmail } from '../utils/emailService';
+import { sendOtpEmail, sendGymOwnerInvitationEmail, sendGymOwnerExpiryWarningEmail } from '../utils/emailService';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
@@ -725,6 +725,39 @@ export const sendGymOwnerInvitation = async (req: Request, res: Response): Promi
   } catch (error: any) {
     console.error('Error sending gym owner invitation:', error);
     res.status(500).json({ success: false, message: error.message || 'Failed to send invitation' });
+  }
+};
+
+export const sendGymOwnerExpiryWarning = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { ownerName, ownerEmail, inviteLink, timeLeftText } = req.body;
+
+    if (!ownerEmail || !/\S+@\S+\.\S+/.test(ownerEmail)) {
+      res.status(400).json({ success: false, message: 'Valid owner email is required' });
+      return;
+    }
+
+    const cleanEmail = ownerEmail.toLowerCase().trim();
+    const finalInviteLink = inviteLink || `http://localhost:5173/register/gym-owner?email=${encodeURIComponent(cleanEmail)}`;
+
+    const emailResult = await sendGymOwnerExpiryWarningEmail(
+      cleanEmail,
+      ownerName || 'Gym Owner',
+      finalInviteLink,
+      timeLeftText || 'less than 1 hour'
+    );
+
+    res.status(200).json({
+      success: true,
+      emailSent: emailResult.success,
+      message: emailResult.success
+        ? `Expiry warning email successfully dispatched to ${cleanEmail}`
+        : (emailResult.error || 'Failed to dispatch email via Brevo'),
+      error: emailResult.error
+    });
+  } catch (error: any) {
+    console.error('Error sending gym owner expiry warning:', error);
+    res.status(500).json({ success: false, message: error.message || 'Failed to send expiry warning' });
   }
 };
 

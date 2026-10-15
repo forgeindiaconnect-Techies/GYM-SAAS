@@ -11,7 +11,8 @@ import {
   getPublicGymById,
   updatePaymentSettings,
   getCommunityTestimonials,
-  updateGymLocation
+  updateGymLocation,
+  addGymReview
 } from '../controllers/gymController';
 import { authenticate } from '../middlewares/auth';
 
@@ -22,6 +23,8 @@ router.get('/', getGyms);
 router.get('/public', getPublicGyms);
 router.get('/community-testimonials', getCommunityTestimonials);
 router.get('/public/:id', getPublicGymById);
+router.post('/public/:id/reviews', authenticate, addGymReview);
+router.post('/:id/reviews', authenticate, addGymReview);
 router.get('/my-gym', authenticate, getMyGym);
 router.put('/my-gym/location', authenticate, updateGymLocation);
 router.get('/:id', getGymById);

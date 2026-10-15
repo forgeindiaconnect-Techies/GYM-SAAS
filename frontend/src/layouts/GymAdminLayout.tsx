@@ -9,7 +9,7 @@ import {
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
   Video,
-  Store, Package, Boxes, ShoppingCart, Bot
+  Store, Package, Boxes, ShoppingCart, Bot, TrendingUp
 } from 'lucide-react';
 
 const getNotificationLink = (notif: any) => {
@@ -125,7 +125,8 @@ const GymAdminLayout = () => {
       {
         title: 'Main',
         items: [
-          { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard }
+          { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+          { label: 'Revenue & Analytics', path: '/admin/revenue-analytics', icon: TrendingUp }
         ]
       },
       {
@@ -138,8 +139,7 @@ const GymAdminLayout = () => {
         title: 'Members & Enquiries',
         items: [
           { label: 'Members', path: '/admin/members', icon: Users },
-          { label: 'Customer Enquiries', path: '/admin/enquiries', icon: MessageSquare },
-          { label: 'AI Fitness Plans', path: '/admin/ai-plans', icon: Bot }
+          { label: 'Customer Enquiries', path: '/admin/enquiries', icon: MessageSquare }
         ]
       },
       {

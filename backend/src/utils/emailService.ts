@@ -189,3 +189,107 @@ export const sendGymOwnerInvitationEmail = async (
   });
 };
 
+export const sendGymOwnerExpiryWarningEmail = async (
+  toEmail: string,
+  ownerName: string,
+  inviteLink: string,
+  timeLeftText: string = '1 hour'
+): Promise<{ success: boolean; message?: string; error?: string }> => {
+  const rawKey = process.env.BREVO_API_KEY || '';
+  const apiKey = rawKey.trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderEmail = (process.env.BREVO_SENDER_EMAIL || 'renugopal603@gmail.com').trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderName = (process.env.BREVO_SENDER_NAME || 'AI GYM').trim().replace(/[\r\n\t\f\v"']/g, '');
+
+  if (!apiKey) {
+    console.error('[EmailService] BREVO_API_KEY is not set in environment variables');
+    return { success: false, error: 'BREVO_API_KEY is not set in environment variables' };
+  }
+
+  const htmlContent = `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 28px; border: 1px solid #E2E8F0; border-radius: 16px; background-color: #FFFFFF;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">AI GYM</h1>
+        <p style="color: #64748B; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
+      </div>
+
+      <div style="background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+        <div style="display: inline-block; background-color: #EF4444; color: #FFFFFF; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 12px;">
+          URGENT: EXPIRING SOON
+        </div>
+        <h2 style="color: #991B1B; margin-top: 0; font-size: 22px;">Your Registration Link Will Expire Soon!</h2>
+        <p style="color: #475569; font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
+          Hello <strong>${ownerName || 'Gym Partner'}</strong>,<br/>
+          This is an urgent reminder that your gym onboarding invitation link will expire in approximately <strong>${timeLeftText}</strong>.
+          Once expired, the link will no longer work and you will need to request a new invitation.
+        </p>
+
+        <a href="${inviteLink}" style="display: inline-block; background-color: #EF4444; color: #FFFFFF; font-size: 16px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; margin: 12px 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);">
+          Complete Registration Before Expiry &rarr;
+        </a>
+
+        <p style="color: #64748B; font-size: 13px; margin-top: 20px; line-height: 1.5;">
+          Direct link:<br/>
+          <a href="${inviteLink}" style="color: #EF4444; word-break: break-all; font-size: 12px;">${inviteLink}</a>
+        </p>
+      </div>
+
+      <div style="color: #94A3B8; font-size: 12px; text-align: center; border-top: 1px solid #F1F5F9; padding-top: 16px;">
+        &copy; ${new Date().getFullYear()} AI GYM Platform. All rights reserved.
+      </div>
+    </div>
+  `;
+
+  const payload = JSON.stringify({
+    sender: { name: senderName, email: senderEmail },
+    to: [{ email: toEmail, name: ownerName || undefined }],
+    subject: `⚠️ URGENT: Your AI GYM Registration Link Will Expire Soon (${timeLeftText} left)`,
+    htmlContent: htmlContent
+  });
+
+  return new Promise((resolve) => {
+    try {
+      const options = {
+        hostname: 'api.brevo.com',
+        path: '/v3/smtp/email',
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': apiKey,
+          'content-type': 'application/json',
+          'content-length': Buffer.byteLength(payload)
+        }
+      };
+
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => {
+          if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+            console.log(`[EmailService] Expiry Warning Email sent successfully to ${toEmail}`);
+            resolve({ success: true, message: 'Expiry warning email sent successfully' });
+          } else {
+            let errorMsg = `HTTP ${res.statusCode}: ${data}`;
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.message) errorMsg = parsed.message;
+            } catch (_) {}
+            console.error(`[EmailService] Failed to send expiry warning email: ${errorMsg}`);
+            resolve({ success: false, error: errorMsg });
+          }
+        });
+      });
+
+      req.on('error', (err) => {
+        console.error(`[EmailService] Request error: ${err.message}`);
+        resolve({ success: false, error: err.message });
+      });
+
+      req.write(payload);
+      req.end();
+    } catch (err: any) {
+      console.error(`[EmailService] Header/Connection error: ${err.message}`);
+      resolve({ success: false, error: err.message });
+    }
+  });
+};
+

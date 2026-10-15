@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Star, Activity, CheckCircle, Phone, Mail, Globe, ArrowLeft, Loader2, ShieldCheck, Dumbbell, Navigation, ExternalLink } from 'lucide-react';
+import { 
+  MapPin, Star, Activity, CheckCircle, Phone, Mail, Globe, ArrowLeft, 
+  Loader2, ShieldCheck, Dumbbell, Navigation, ExternalLink, MessageSquare, 
+  ThumbsUp, X, Sparkles, MessageCircle 
+} from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
@@ -17,6 +21,17 @@ const GymDetails = () => {
   const [selectedBranch, setSelectedBranch] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showEnquiry, setShowEnquiry] = useState(false);
+
+  // Reviews state
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [ratingStats, setRatingStats] = useState<any>(null);
+  const [reviewFilter, setReviewFilter] = useState<'all' | 'trainer' | 'gym'>('all');
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [formRating, setFormRating] = useState(5);
+  const [formType, setFormType] = useState<'gym' | 'trainer'>('trainer');
+  const [formTrainer, setFormTrainer] = useState('');
+  const [formComment, setFormComment] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   const gym = selectedBranch ? {
     ...mainGym,
@@ -44,6 +59,8 @@ const GymDetails = () => {
         setMainGym(res.data.gym);
         setTrainers(res.data.trainers || []);
         setBranches(res.data.branches || []);
+        setReviews(res.data.reviews || []);
+        setRatingStats(res.data.ratingStats || null);
         if (res.data.branches?.length > 0) {
           setSelectedBranch(res.data.branches[0]);
         }
@@ -53,6 +70,7 @@ const GymDetails = () => {
         setMainGym(resAdmin.data.gym);
         setTrainers([]);
         setBranches([]);
+        setReviews([]);
       }
     } catch (err) {
       console.error('Error fetching gym details:', err);
@@ -60,6 +78,52 @@ const GymDetails = () => {
       setLoading(false);
     }
   };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      alert('Please log in to submit a verified member review.');
+      navigate('/login');
+      return;
+    }
+    if (!formComment.trim()) {
+      alert('Please write your review feedback.');
+      return;
+    }
+
+    try {
+      setSubmittingReview(true);
+      const res = await api.post(`/gyms/${id}/reviews`, {
+        rating: formRating,
+        review: formComment,
+        type: formType,
+        trainerName: formType === 'trainer' ? formTrainer : undefined
+      });
+
+      if (res.data.success) {
+        const newRev = res.data.review;
+        const updatedReviews = [newRev, ...reviews];
+        setReviews(updatedReviews);
+        if (res.data.gymRating) {
+          setMainGym((prev: any) => ({ ...prev, rating: res.data.gymRating, reviewCount: res.data.reviewCount }));
+        }
+        setShowReviewModal(false);
+        setFormComment('');
+        alert('Thank you! Your review has been submitted.');
+      }
+    } catch (err: any) {
+      console.error('Error submitting review:', err);
+      alert(err.response?.data?.message || 'Failed to submit review');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const filteredReviews = reviews.filter((r) => {
+    if (reviewFilter === 'trainer') return r.type === 'trainer';
+    if (reviewFilter === 'gym') return r.type === 'gym';
+    return true;
+  });
 
   const handleJoin = (plan: any) => {
     if (!user) {
@@ -152,12 +216,21 @@ const GymDetails = () => {
                     {gym.gymType}
                   </span>
                 )}
-                <div className="flex items-center text-[#F97316] bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                  <Star size={14} className="fill-current mr-1" />
-                  <span className="text-sm font-bold text-[#292524]">{gym.rating || 4.5}</span>
-                  {gym.reviewCount > 0 && (
-                    <span className="text-xs text-[#78716C] ml-1">({gym.reviewCount})</span>
-                  )}
+                <div 
+                  onClick={() => {
+                    const el = document.getElementById('customer-reviews');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="flex items-center text-[#F97316] bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 cursor-pointer hover:bg-black/80 transition-all shadow-sm"
+                  title="View customer reviews and ratings"
+                >
+                  <Star size={14} className="fill-amber-400 text-amber-400 mr-1.5" />
+                  <span className="text-sm font-bold text-white">
+                    {ratingStats?.averageRating ? Number(ratingStats.averageRating).toFixed(1) : (gym.rating ? Number(gym.rating).toFixed(1) : '4.5')}
+                  </span>
+                  <span className="text-xs text-stone-300 ml-1.5">
+                    ({reviews.length || gym.reviewCount || 0} {reviews.length === 1 ? 'review' : 'reviews'})
+                  </span>
                 </div>
               </div>
               <h1 className="text-4xl md:text-6xl font-extrabold text-[#292524] mb-2 leading-tight tracking-tight">
@@ -266,27 +339,244 @@ const GymDetails = () => {
           )}
 
           {/* Trainers */}
-          <section>
-            <h2 className="text-2xl font-bold text-[#292524] mb-6 border-b border-[#E7E5E4] pb-4">Our Top Trainers</h2>
+          <section id="gym-trainers">
+            <div className="flex items-center justify-between mb-6 border-b border-[#E7E5E4] pb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-[#292524]">Our Top Trainers</h2>
+                <p className="text-xs text-[#78716C] mt-0.5">Certified experts dedicated to your fitness transformation</p>
+              </div>
+              <span className="text-xs font-bold text-[#F97316] bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+                {trainers.length} {trainers.length === 1 ? 'Trainer' : 'Trainers'} Available
+              </span>
+            </div>
             {trainers.length === 0 ? (
               <p className="text-[#78716C]">No trainers listed yet.</p>
             ) : (
               <div className="grid sm:grid-cols-2 gap-6">
                 {trainers.map((trainer) => (
-                  <div key={trainer._id} className="bg-[#FFFFFF] border border-[#E7E5E4] p-5 rounded-2xl flex gap-4 items-start">
+                  <div key={trainer._id} className="bg-[#FFFFFF] border border-[#E7E5E4] p-5 rounded-2xl flex gap-4 items-start hover:border-[#F97316]/40 transition-all shadow-sm">
                     <div className="w-16 h-16 rounded-full bg-[#FFFFFF] border border-[#E7E5E4] overflow-hidden shrink-0">
                       {trainer.profilePhoto ? (
-                        <img src={trainer.profilePhoto} alt={trainer.firstName} className="w-full h-full object-cover" />
+                        <img src={trainer.profilePhoto} alt={trainer.name || trainer.firstName} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[#78716C] font-bold text-xl">
-                          {trainer.firstName[0]}
+                        <div className="w-full h-full flex items-center justify-center text-[#F97316] bg-orange-50 font-bold text-xl">
+                          {trainer.firstName?.[0] || trainer.name?.[0] || 'T'}
                         </div>
                       )}
                     </div>
-                    <div>
-                      <h4 className="text-lg font-bold text-[#292524]">{trainer.firstName} {trainer.lastName}</h4>
-                      <p className="text-[#F97316] text-sm font-medium mb-1">{trainer.specialization || 'Fitness Coach'}</p>
-                      <p className="text-[#78716C] text-xs leading-relaxed line-clamp-2">{trainer.bio || 'Dedicated to helping you reach your peak physical potential.'}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-lg font-bold text-[#292524] truncate">
+                          {trainer.name || `${trainer.firstName || ''} ${trainer.lastName || ''}`.trim()}
+                        </h4>
+                      </div>
+                      <p className="text-[#F97316] text-xs font-bold uppercase tracking-wider mb-1">
+                        {trainer.specialization || 'Fitness Coach'}
+                      </p>
+                      <p className="text-[#78716C] text-xs leading-relaxed line-clamp-2 mb-2">
+                        {trainer.bio || 'Dedicated to helping you reach your peak physical potential.'}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-stone-100">
+                        <span className="inline-flex items-center text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                          <Star size={11} className="fill-amber-500 text-amber-500 mr-1" />
+                          {trainer.averageRating ? Number(trainer.averageRating).toFixed(1) : '5.0'} 
+                          <span className="text-[10px] text-amber-800 ml-1">({trainer.totalReviews || 0} reviews)</span>
+                        </span>
+                        {trainer.experienceYears && (
+                          <span className="text-[11px] font-medium text-[#78716C] bg-stone-100 px-2 py-0.5 rounded-md">
+                            {trainer.experienceYears} yrs experience
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Customer Reviews & Trainer Ratings */}
+          <section id="customer-reviews" className="pt-4 scroll-mt-24">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-[#E7E5E4] pb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-[#292524] flex items-center gap-2">
+                  Customer Reviews & Trainer Ratings
+                  <span className="text-xs bg-[#F97316]/10 text-[#F97316] font-bold px-2.5 py-0.5 rounded-full border border-[#F97316]/20">
+                    {reviews.length} Verified {reviews.length === 1 ? 'Review' : 'Reviews'}
+                  </span>
+                </h2>
+                <p className="text-sm text-[#78716C] mt-1">Real ratings & feedback from verified members and training clients</p>
+              </div>
+              <button
+                onClick={() => {
+                  if (!user) {
+                    alert('Please log in to leave a review.');
+                    navigate('/login');
+                    return;
+                  }
+                  if (trainers.length > 0 && !formTrainer) {
+                    setFormTrainer(trainers[0].name || `${trainers[0].firstName} ${trainers[0].lastName}`);
+                  }
+                  setShowReviewModal(true);
+                }}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#F97316] text-white hover:bg-[#EA580C] font-semibold text-sm rounded-xl transition-all shadow-sm shrink-0"
+              >
+                <Star size={15} className="fill-white" /> Write a Review
+              </button>
+            </div>
+
+            {/* Rating Summary Card */}
+            <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 mb-6 shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                {/* Left: Big Score */}
+                <div className="flex flex-col items-center justify-center text-center p-5 bg-gradient-to-b from-orange-50/60 to-orange-100/40 rounded-2xl border border-orange-100">
+                  <span className="text-5xl font-black text-[#292524] mb-1">
+                    {ratingStats?.averageRating ? Number(ratingStats.averageRating).toFixed(1) : (gym.rating ? Number(gym.rating).toFixed(1) : '4.5')}
+                  </span>
+                  <div className="flex items-center gap-1 my-1.5">
+                    {[1, 2, 3, 4, 5].map((star) => {
+                      const curRating = ratingStats?.averageRating || gym.rating || 4.5;
+                      const isFilled = star <= Math.round(curRating);
+                      return (
+                        <Star
+                          key={star}
+                          size={18}
+                          className={isFilled ? "text-amber-500 fill-amber-500" : "text-stone-300"}
+                        />
+                      );
+                    })}
+                  </div>
+                  <span className="text-xs font-semibold text-[#78716C]">
+                    Based on {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                  </span>
+                </div>
+
+                {/* Center: Star Breakdown Bars */}
+                <div className="md:col-span-2 space-y-2">
+                  {[5, 4, 3, 2, 1].map((stars) => {
+                    const count = ratingStats?.ratingBreakdown?.[stars] || reviews.filter((r: any) => Math.round(Number(r.rating)) === stars).length;
+                    const pct = reviews.length > 0 ? Math.round((count / reviews.length) * 100) : 0;
+                    return (
+                      <div key={stars} className="flex items-center gap-3 text-xs">
+                        <span className="w-12 font-bold text-[#292524] flex items-center gap-1">
+                          {stars} <Star size={12} className="fill-amber-500 text-amber-500" />
+                        </span>
+                        <div className="flex-1 h-2.5 bg-stone-100 rounded-full overflow-hidden border border-stone-200">
+                          <div
+                            className="h-full bg-gradient-to-r from-amber-400 to-[#F97316] rounded-full transition-all duration-500"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="w-14 text-right font-semibold text-[#78716C]">
+                          {count} ({pct}%)
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap items-center gap-2 mb-6">
+              <button
+                onClick={() => setReviewFilter('all')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'all' ? 'bg-[#292524] text-white shadow-sm' : 'bg-white border border-[#E7E5E4] text-[#78716C] hover:text-[#292524]'}`}
+              >
+                All Reviews ({reviews.length})
+              </button>
+              <button
+                onClick={() => setReviewFilter('trainer')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'trainer' ? 'bg-[#292524] text-white shadow-sm' : 'bg-white border border-[#E7E5E4] text-[#78716C] hover:text-[#292524]'}`}
+              >
+                Trainer Feedback ({reviews.filter((r: any) => r.type === 'trainer').length})
+              </button>
+              <button
+                onClick={() => setReviewFilter('gym')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'gym' ? 'bg-[#292524] text-white shadow-sm' : 'bg-white border border-[#E7E5E4] text-[#78716C] hover:text-[#292524]'}`}
+              >
+                Gym Reviews ({reviews.filter((r: any) => r.type === 'gym').length})
+              </button>
+            </div>
+
+            {/* Review Cards List */}
+            {filteredReviews.length === 0 ? (
+              <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-8 text-center">
+                <MessageSquare className="mx-auto text-[#FED7AA] mb-3" size={36} />
+                <h4 className="text-base font-bold text-[#292524]">No reviews in this category yet</h4>
+                <p className="text-xs text-[#78716C] mt-1 mb-4">Be the first to share your thoughts and experience!</p>
+                <button
+                  onClick={() => {
+                    if (!user) {
+                      alert('Please log in to leave a review.');
+                      navigate('/login');
+                      return;
+                    }
+                    setShowReviewModal(true);
+                  }}
+                  className="px-4 py-2 bg-[#F97316] text-white font-semibold text-xs rounded-xl hover:bg-[#EA580C] transition-colors"
+                >
+                  Write a Review
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredReviews.map((rev: any) => (
+                  <div key={rev._id} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-5 hover:border-[#F97316]/40 transition-all shadow-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-[#F97316] text-white font-bold flex items-center justify-center text-sm shadow-sm overflow-hidden shrink-0">
+                          {rev.userPhoto ? (
+                            <img src={rev.userPhoto} alt={rev.userName} className="w-full h-full object-cover" />
+                          ) : (
+                            <span>{rev.userName?.[0]?.toUpperCase() || 'M'}</span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-[#292524] text-sm">{rev.userName}</h4>
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                              <ShieldCheck size={11} className="text-emerald-600" /> Verified Member
+                            </span>
+                          </div>
+                          <span className="text-xs text-[#78716C]">
+                            {new Date(rev.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2">
+                        {rev.type === 'trainer' && rev.trainerName ? (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-700 bg-orange-50 px-3 py-1 rounded-lg border border-orange-200">
+                            <Dumbbell size={13} className="text-[#F97316]" /> Trainer: {rev.trainerName}
+                            {rev.trainerSpecialization && <span className="text-[10px] opacity-75">({rev.trainerSpecialization})</span>}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-700 bg-stone-100 px-3 py-1 rounded-lg border border-stone-200">
+                            Gym Feedback
+                          </span>
+                        )}
+                        {rev.mode && (
+                          <span className="text-[10px] font-semibold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md">
+                            {rev.mode}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 mb-3">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={15}
+                          className={star <= Number(rev.rating) ? "text-amber-500 fill-amber-500" : "text-stone-300"}
+                        />
+                      ))}
+                      <span className="text-xs font-bold text-[#292524] ml-1.5">{rev.rating}.0</span>
+                    </div>
+
+                    <div className="bg-[#FAF9F6] border border-[#E7E5E4] rounded-xl p-3.5 text-sm text-[#292524] font-medium leading-relaxed">
+                      "{rev.review}"
                     </div>
                   </div>
                 ))}
@@ -491,6 +781,135 @@ const GymDetails = () => {
         gymId={gym._id}
         gymName={gym.name}
       />
+
+      {/* Review Submission Modal */}
+      {showReviewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-stone-100 relative">
+            <button
+              onClick={() => setShowReviewModal(false)}
+              className="absolute top-5 right-5 text-stone-400 hover:text-stone-700 p-1.5 rounded-xl hover:bg-stone-100 transition-colors"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="flex items-center gap-2 text-[#F97316] mb-1">
+              <Star size={18} className="fill-[#F97316]" />
+              <span className="text-xs font-bold uppercase tracking-wider">Verified Feedback</span>
+            </div>
+            <h3 className="text-2xl font-black text-[#292524] mb-1">Write a Review</h3>
+            <p className="text-xs text-[#78716C] mb-5">Share your experience with {gym.name} or your personal trainer.</p>
+
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Review Category</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => { setFormType('trainer'); }}
+                    className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all flex flex-col items-center gap-1 ${formType === 'trainer' ? 'bg-[#F97316] text-white border-[#F97316] shadow-md' : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'}`}
+                  >
+                    <Dumbbell size={16} />
+                    <span>Personal Trainer</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setFormType('gym'); }}
+                    className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all flex flex-col items-center gap-1 ${formType === 'gym' ? 'bg-[#F97316] text-white border-[#F97316] shadow-md' : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'}`}
+                  >
+                    <Activity size={16} />
+                    <span>Gym Facilities</span>
+                  </button>
+                </div>
+              </div>
+
+              {formType === 'trainer' && (
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Select Trainer</label>
+                  {trainers.length > 0 ? (
+                    <select
+                      value={formTrainer}
+                      onChange={(e) => setFormTrainer(e.target.value)}
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-sm text-stone-800 font-semibold outline-none focus:border-[#F97316] cursor-pointer"
+                      required
+                    >
+                      {trainers.map((tr: any) => {
+                        const trName = tr.name || `${tr.firstName || ''} ${tr.lastName || ''}`.trim();
+                        return (
+                          <option key={tr._id} value={trName}>
+                            {trName} — {tr.specialization || 'Fitness Coach'}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder="Trainer Name (e.g. Naveen)"
+                      value={formTrainer}
+                      onChange={(e) => setFormTrainer(e.target.value)}
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-sm text-stone-800 outline-none focus:border-[#F97316]"
+                      required
+                    />
+                  )}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Overall Rating</label>
+                <div className="flex items-center gap-2 p-3 bg-stone-50 rounded-xl border border-stone-200">
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setFormRating(star)}
+                        className="p-1 hover:scale-115 transition-transform"
+                      >
+                        <Star
+                          size={28}
+                          className={star <= formRating ? "text-amber-500 fill-amber-500" : "text-stone-300"}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                  <span className="ml-3 font-extrabold text-base text-[#292524]">{formRating}.0 / 5.0</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Your Review Feedback</label>
+                <textarea
+                  rows={3}
+                  value={formComment}
+                  onChange={(e) => setFormComment(e.target.value)}
+                  placeholder="Share details of your workout experience, personal coaching quality, facilities, or results..."
+                  className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-sm text-stone-800 outline-none focus:border-[#F97316] resize-none"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-stone-100">
+                <button
+                  type="button"
+                  onClick={() => setShowReviewModal(false)}
+                  className="px-5 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-semibold text-xs hover:bg-stone-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  className="px-6 py-2.5 bg-[#F97316] text-white font-bold text-xs rounded-xl hover:bg-[#EA580C] transition-all flex items-center gap-2 disabled:opacity-50 shadow-md"
+                >
+                  {submittingReview ? <Loader2 size={14} className="animate-spin" /> : <Star size={14} className="fill-white" />}
+                  Submit Feedback
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

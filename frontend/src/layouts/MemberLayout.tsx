@@ -121,7 +121,7 @@ const MemberLayout = () => {
         { label: 'Diet Plan', path: '/member/diet', icon: Utensils },
         { label: 'Progress', path: '/member/progress', icon: TrendingUp },
         { label: 'Attendance', path: '/member/attendance', icon: CalendarCheck },
-        { label: 'Rate Your Trainer', path: '/member/session-review', icon: Star },
+        { label: 'Review & Ratings', path: '/member/session-review', icon: Star },
       ]
     },
     {

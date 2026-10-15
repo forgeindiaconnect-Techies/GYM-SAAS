@@ -85,6 +85,17 @@ export interface IGym extends Document {
   rejectionReason?: string;
   rating?: number;
   reviewCount?: number;
+  reviews?: {
+    _id?: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
+    userName: string;
+    userPhoto?: string;
+    rating: number;
+    review: string;
+    type?: 'gym' | 'trainer';
+    trainerName?: string;
+    createdAt?: Date;
+  }[];
   paymentSettings?: {
     upiId?: string;
     qrCodeUrl?: string;
@@ -116,6 +127,16 @@ const gymSchema = new Schema<IGym>(
     website: { type: String },
     rating: { type: Number, default: 4.5 },
     reviewCount: { type: Number, default: 0 },
+    reviews: [{
+      userId: { type: Schema.Types.ObjectId, ref: 'User' },
+      userName: { type: String, required: true },
+      userPhoto: { type: String },
+      rating: { type: Number, required: true, min: 1, max: 5 },
+      review: { type: String, required: true },
+      type: { type: String, enum: ['gym', 'trainer'], default: 'gym' },
+      trainerName: { type: String },
+      createdAt: { type: Date, default: Date.now }
+    }],
     subscription: {
       plan: { type: String },
       startDate: { type: Date },
@@ -144,10 +165,10 @@ const gymSchema = new Schema<IGym>(
       branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
       category: { type: String, required: true },
       name: { type: String, required: true },
-      quantity: { type: Number, required: true },
+      quantity: { type: Number, required: true, default: 1 },
       brand: { type: String },
-      condition: { type: String, enum: ['New', 'Good', 'Maintenance Required'], required: true },
-      availability: { type: String, required: true },
+      condition: { type: String, default: 'Good' },
+      availability: { type: String, default: 'Available' },
       image: { type: String },
     }],
     acDetails: {

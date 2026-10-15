@@ -67,6 +67,7 @@ import GymAdminOnlineSessions from './pages/admin/GymAdminOnlineSessions';
 import GymAdminVideoBookings from './pages/admin/GymAdminVideoBookings';
 import GymAdminExerciseLibrary from './pages/admin/GymAdminExerciseLibrary';
 import GymExerciseVideos from './pages/common/GymExerciseVideos';
+import RevenueAnalytics from './pages/admin/RevenueAnalytics';
 
 // Gym Store (Admin)
 import GymStoreDashboard from './pages/admin/store/GymStoreDashboard';
@@ -147,6 +148,7 @@ import TrainerExerciseLibrary from './pages/trainer/TrainerExerciseLibrary';
 import TrainerWorkoutPlans from './pages/trainer/TrainerWorkoutPlans';
 import TrainerWorkoutVideos from './pages/trainer/TrainerWorkoutVideos';
 import TrainerDietPlans from './pages/trainer/TrainerDietPlans';
+import TrainerCustomerWorkplansCompleted from './pages/trainer/TrainerCustomerWorkplansCompleted';
 import TrainerMemberProgress from './pages/trainer/TrainerMemberProgress';
 import TrainerAttendance from './pages/trainer/TrainerAttendance';
 import TrainerMessages from './pages/trainer/TrainerMessages';
@@ -273,6 +275,7 @@ function App() {
             <Route path="workout-plans" element={<TrainerWorkoutPlans />} />
             <Route path="workout-videos" element={<TrainerWorkoutVideos />} />
             <Route path="diet-plans" element={<TrainerDietPlans />} />
+            <Route path="customer-workplan-completed" element={<TrainerCustomerWorkplansCompleted />} />
             <Route path="member-progress" element={<TrainerMemberProgress />} />
             <Route path="customer-progress" element={<TrainerMemberProgress />} />
             <Route path="attendance" element={<TrainerAttendance />} />
@@ -330,6 +333,7 @@ function App() {
             <Route path="video-bookings" element={<GymAdminVideoBookings />} />
             <Route path="payments" element={<GymAdminPayments />} />
             <Route path="attendance" element={<GymAdminAttendance />} />
+            <Route path="revenue-analytics" element={<RevenueAnalytics role="GYM_OWNER" />} />
             <Route path="reports" element={<GymAdminReports />} />
             <Route path="notifications" element={<GymAdminNotifications />} />
             <Route path="profile" element={<GymAdminUserProfile />} />
@@ -357,6 +361,7 @@ function App() {
             </ProtectedRoute>
           }>
             <Route path="dashboard" element={<SuperAdminDashboard />} />
+            <Route path="revenue-analytics" element={<RevenueAnalytics role="SUPER_ADMIN" />} />
             <Route path="leads" element={<SuperAdminLeads />} />
             <Route path="gyms/add" element={<SuperAdminAddGym />} />
             <Route path="gyms/details" element={<SuperAdminGymsDetails />} />

@@ -22,6 +22,67 @@ const SuperAdminInvitations = () => {
     loadInvitations();
   }, []);
 
+  const evaluateInvitations = (list: any[]) => {
+    const now = Date.now();
+
+    return list.map(item => {
+      // If already accepted, keep accepted status
+      if ((item.status || '').toLowerCase() === 'accepted') {
+        return item;
+      }
+
+      const expiryStr = item.expiry || '7 Days';
+      if (expiryStr.toLowerCase() === 'never') {
+        return item;
+      }
+
+      const match = expiryStr.match(/(\d+)/);
+      const days = match ? parseInt(match[1], 10) : 7;
+      const durationMs = days * 24 * 60 * 60 * 1000;
+
+      let targetTime = 0;
+      if (item.expiresAt) {
+        targetTime = new Date(item.expiresAt).getTime();
+      } else if (item.date || item.createdAt) {
+        targetTime = new Date(item.createdAt || item.date).getTime() + durationMs;
+      }
+
+      if (!targetTime || isNaN(targetTime)) {
+        return item;
+      }
+
+      const remainingMs = targetTime - now;
+
+      if (remainingMs <= 0) {
+        // Expiration duration completed! Automatically mark Expired
+        if (item.status !== 'Expired') {
+          updateItem('gymInvitations', item.id, { status: 'Expired' });
+        }
+        return {
+          ...item,
+          status: 'Expired',
+          isExpired: true,
+          isExpiringSoon: false
+        };
+      } else if (remainingMs <= 60 * 60 * 1000) {
+        // Less than 1 hour left
+        const mins = Math.max(1, Math.round(remainingMs / 60000));
+        return {
+          ...item,
+          isExpired: false,
+          isExpiringSoon: true,
+          timeLeftText: `${mins}m left`
+        };
+      }
+
+      return {
+        ...item,
+        isExpired: false,
+        isExpiringSoon: false
+      };
+    });
+  };
+
   const loadInvitations = async () => {
     let current = getDb('gymInvitations');
     const existingStatuses = new Set(current.map((i: any) => i.status));
@@ -86,7 +147,8 @@ const SuperAdminInvitations = () => {
     if (hasAdded) {
       current = getDb('gymInvitations');
     }
-    setInvites(current);
+    const evaluatedList = evaluateInvitations(current);
+    setInvites(evaluatedList);
 
     // Fetch registered gym owners from backend to keep full synchronization
     try {
@@ -151,7 +213,7 @@ const SuperAdminInvitations = () => {
       }
 
       if (listUpdated) {
-        setInvites([...freshList]);
+        setInvites(evaluateInvitations([...freshList]));
       }
     } catch (apiErr) {
       console.warn('Could not fetch registered gym owners from API:', apiErr);
@@ -185,7 +247,7 @@ const SuperAdminInvitations = () => {
       case 'sent':
         return 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100';
       case 'expired':
-        return 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100';
+        return 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100 font-extrabold';
       case 'pending':
       default:
         return 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100';
@@ -200,30 +262,50 @@ const SuperAdminInvitations = () => {
     }
   };
 
+  const handleSendWarning = async (invite: any) => {
+    try {
+      const inviteLink = invite.link || `${window.location.origin}/register/gym-owner?invite=${invite.id}&email=${encodeURIComponent(invite.email)}&name=${encodeURIComponent(invite.owner || '')}&phone=${encodeURIComponent(invite.phone || '')}`;
+      const res = await api.post('/auth/send-expiry-warning', {
+        ownerName: invite.owner,
+        ownerEmail: invite.email,
+        inviteLink,
+        timeLeftText: invite.timeLeftText || 'less than 1 hour'
+      });
+      alert(`⚠️ 1-Hour Expiry Alert dispatched successfully to ${invite.email}!\n\nMessage: ${res.data?.message || 'Warning email dispatched via Brevo'}`);
+    } catch (err: any) {
+      alert(`Notice: Expiry warning alert triggered for ${invite.email}. Please notify recipient.`);
+    }
+  };
+
   const handleResend = async (invite: any) => {
-    const inviteLink = invite.link || `${window.location.origin}/register/gym-owner?invite=${invite.id}&email=${encodeURIComponent(invite.email)}&name=${encodeURIComponent(invite.owner || '')}&phone=${encodeURIComponent(invite.phone || '')}`;
+    const expiryDays = (invite.expiry || '').toLowerCase() === 'never' ? null : (parseInt(invite.expiry, 10) || 7);
+    const expiresAtMs = expiryDays ? Date.now() + expiryDays * 24 * 60 * 60 * 1000 : null;
+    const expiresAtIso = expiresAtMs ? new Date(expiresAtMs).toISOString() : null;
+    const inviteLink = `${window.location.origin}/register/gym-owner?invite=${invite.id}&email=${encodeURIComponent(invite.email)}&name=${encodeURIComponent(invite.owner || '')}&phone=${encodeURIComponent(invite.phone || '')}${expiresAtMs ? `&expiresAt=${expiresAtMs}` : ''}&expiry=${encodeURIComponent(invite.expiry || '7 Days')}`;
 
     try {
       const res = await api.post('/auth/send-gym-invitation', {
         ownerName: invite.owner,
         ownerEmail: invite.email,
         ownerPhone: invite.phone,
-        linkExpiry: invite.expiry || '1 Day',
+        linkExpiry: invite.expiry || '7 Days',
         inviteLink
       });
 
       const updated = updateItem('gymInvitations', invite.id, {
         status: 'Sent',
         date: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString(),
+        expiresAt: expiresAtIso,
         link: inviteLink
       });
-      setInvites(invites.map(i => i.id === invite.id ? updated : i));
+      setInvites(evaluateInvitations(invites.map(i => i.id === invite.id ? updated : i)));
       if (viewInvite?.id === invite.id) {
         setViewInvite(updated);
       }
 
       if (res.data?.emailSent) {
-        alert(`Invitation email resent successfully to ${invite.email} via Brevo!`);
+        alert(`Invitation email resent successfully to ${invite.email} with renewed ${invite.expiry || '7 Days'} validity!`);
       } else {
         alert(`Invitation link ready: ${inviteLink}\n\nNotice: ${res.data?.message || 'Brevo email delivery failed. Please copy and share the link directly.'}`);
       }
@@ -407,10 +489,17 @@ const SuperAdminInvitations = () => {
                   </td>
                   <td className="px-6 py-4 text-[#292524] font-medium">{formatDate(invite.date)}</td>
                   <td className="px-6 py-4 text-[#78716C]">
-                    <span className="inline-flex items-center gap-1">
-                      <Clock size={13} className="text-slate-400" />
-                      <span>{invite.expiry || '7 Days'}</span>
-                    </span>
+                    <div className="flex flex-col gap-1">
+                      <span className="inline-flex items-center gap-1 font-semibold text-[#292524]">
+                        <Clock size={13} className="text-slate-400" />
+                        <span>{invite.expiry || '7 Days'}</span>
+                      </span>
+                      {invite.isExpiringSoon && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-black text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300 w-fit animate-pulse">
+                          <AlertCircle size={10} className="text-amber-700" /> Expiring Soon ({invite.timeLeftText})
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     {/* Interactive Status Selector in Table Row */}
@@ -451,6 +540,17 @@ const SuperAdminInvitations = () => {
                       >
                         <Copy size={15} />
                       </button>
+
+                      {/* Send 1-Hour Expiry Alert Button */}
+                      {invite.isExpiringSoon && (
+                        <button
+                          onClick={() => handleSendWarning(invite)}
+                          className="p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors"
+                          title="Send 1-Hour Expiry Alert Email"
+                        >
+                          <AlertCircle size={15} />
+                        </button>
+                      )}
 
                       {/* Resend Invitation Button */}
                       <button

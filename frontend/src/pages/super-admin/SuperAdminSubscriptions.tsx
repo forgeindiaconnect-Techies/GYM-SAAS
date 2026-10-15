@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import {
   CreditCard, Zap, Star, Crown, Sparkles, CheckCircle, XCircle,
   Users, Dumbbell, Building2, UserCheck, Edit3, Eye, ToggleLeft,
-  ToggleRight, Plus, Search, Calendar, IndianRupee, Clock, AlertCircle, Trash2
+  ToggleRight, Plus, Search, Calendar, IndianRupee, Clock, AlertCircle, Trash2,
+  FileText, Printer, Download
 } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 import api from '../../utils/api';
 
@@ -332,7 +335,15 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
 };
 
 // ─── View Payment Modal ────────────────────────────────────────────────────────
-const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => void }) => {
+const ViewPaymentModal = ({
+  payment,
+  onClose,
+  onOpenInvoice
+}: {
+  payment: any;
+  onClose: () => void;
+  onOpenInvoice?: (payment: any) => void;
+}) => {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
       <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl my-auto animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] overflow-y-auto">
@@ -349,7 +360,7 @@ const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => v
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <XCircle size={22} />
           </button>
@@ -399,12 +410,293 @@ const ViewPaymentModal = ({ payment, onClose }: { payment: any; onClose: () => v
           </div>
         )}
 
-        <button
-          onClick={onClose}
-          className="w-full py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#F97316]/90 transition-colors text-sm shadow-sm"
-        >
-          Close
-        </button>
+        <div className="flex flex-col gap-2.5">
+          {onOpenInvoice && (
+            <button
+              onClick={() => onOpenInvoice(payment)}
+              className="w-full py-2.5 bg-orange-50 hover:bg-orange-100 text-[#F97316] border border-orange-200 rounded-xl font-bold transition-all text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+            >
+              <FileText size={15} />
+              <span>View & Download Tax Invoice</span>
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl font-bold transition-colors text-xs cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── SaaS Subscription Tax Invoice Modal ──────────────────────────────────────
+const SubscriptionInvoiceModal = ({
+  invoice,
+  onClose
+}: {
+  invoice: any;
+  onClose: () => void;
+}) => {
+  const invoiceNumber = `INV-SAAS-${(invoice.id || '101').toString().slice(-6).toUpperCase()}`;
+  const invoiceDate = formatDate(invoice.start !== 'N/A' ? invoice.start : Date.now());
+  const renewalDate = formatDate(invoice.renewal !== 'N/A' ? invoice.renewal : Date.now());
+
+  // Calculation of base + 18% GST
+  const rawNum = Number(String(invoice.amount || '0').replace(/[^0-9]/g, ''));
+  const numericAmount = rawNum > 0 ? rawNum : 1499;
+  const baseAmount = Math.round(numericAmount / 1.18);
+  const totalGst = numericAmount - baseAmount;
+  const cgst = Math.round(totalGst / 2);
+  const sgst = totalGst - cgst;
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Top Brand Banner
+    doc.setFillColor(249, 115, 22);
+    doc.rect(0, 0, 210, 24, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('AI GYM SAAS PLATFORM — TAX INVOICE', 14, 16);
+
+    // Invoice Meta Header
+    doc.setTextColor(41, 37, 36);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Invoice No: ${invoiceNumber}`, 14, 34);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(120, 113, 108);
+    doc.text(`Invoice Date: ${invoiceDate}`, 14, 40);
+    doc.text(`Billing Cycle: ${(invoice.billing || 'Monthly').toUpperCase()}`, 14, 45);
+    doc.text(`Payment Status: PAID (${invoice.status?.toUpperCase() || 'ACTIVE'})`, 14, 50);
+
+    // Platform Info (Right Side)
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(41, 37, 36);
+    doc.text('Issuer: AI Gym SaaS Headquarters', 130, 34);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120, 113, 108);
+    doc.text('Cloud Gym Management Platform', 130, 40);
+    doc.text('Billing: billing@aigym.platform', 130, 45);
+    doc.text('GSTIN: 33AAACG0123M1Z9', 130, 50);
+
+    // Billed To Box
+    doc.setFillColor(250, 250, 249);
+    doc.roundedRect(14, 56, 182, 22, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(249, 115, 22);
+    doc.text('BILLED TO (GYM SUBSCRIBER):', 18, 63);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(41, 37, 36);
+    doc.text(`${invoice.gymName || 'AI Gym'} — ${invoice.owner || 'Gym Owner'}`, 18, 70);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120, 113, 108);
+    doc.text(`Payment Method: ${invoice.paymentMethod || 'UPI / Online'} | Renewal: ${renewalDate}`, 18, 75);
+
+    // Line Items Table
+    autoTable(doc, {
+      startY: 84,
+      head: [['Item & Plan Description', 'Billing Cycle', 'Taxable Value', 'GST (18%)', 'Total (INR)']],
+      body: [
+        [
+          `AI GYM Software SaaS License — ${invoice.plan} Plan\n(Access to Gym ERP, Member App, AI Trainer & Analytics)`,
+          invoice.billing || 'monthly',
+          `Rs. ${baseAmount.toLocaleString('en-IN')}`,
+          `Rs. ${totalGst.toLocaleString('en-IN')}`,
+          `Rs. ${numericAmount.toLocaleString('en-IN')}`
+        ]
+      ],
+      foot: [
+        ['Total Amount Paid', '', '', '', `Rs. ${numericAmount.toLocaleString('en-IN')}`]
+      ],
+      headStyles: { fillColor: [249, 115, 22], textColor: [255, 255, 255], fontStyle: 'bold' },
+      footStyles: { fillColor: [41, 37, 36], textColor: [255, 255, 255], fontStyle: 'bold' },
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 4 }
+    });
+
+    const finalY = (doc as any).lastAutoTable?.finalY || 130;
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('This is a computer-generated tax invoice. No physical signature required.', 14, finalY + 12);
+    doc.text('Thank you for choosing AI GYM SaaS to power your fitness business!', 14, finalY + 17);
+
+    doc.save(`${invoiceNumber}_${(invoice.gymName || 'Gym').replace(/\s+/g, '_')}.pdf`);
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
+      <div className="bg-white border border-[#E7E5E4] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[90vh] my-auto animate-in fade-in zoom-in-95 duration-150">
+        {/* Invoice Modal Header */}
+        <div className="flex items-center justify-between p-5 border-b border-[#E7E5E4] bg-stone-50/50">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-orange-100 text-[#F97316] rounded-xl flex items-center justify-center font-black">
+              <FileText size={20} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-extrabold text-[#292524]">Tax Invoice</h2>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  PAID
+                </span>
+              </div>
+              <p className="text-[#78716C] text-xs font-mono">{invoiceNumber}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrint}
+              className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-colors cursor-pointer"
+              title="Print Invoice"
+            >
+              <Printer size={18} />
+            </button>
+            <button
+              onClick={handleDownloadPDF}
+              className="p-2 text-[#F97316] hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+              title="Download PDF Invoice"
+            >
+              <Download size={18} />
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-lg transition-colors cursor-pointer"
+            >
+              <XCircle size={20} />
+            </button>
+          </div>
+        </div>
+
+        {/* Invoice Preview Document Body */}
+        <div className="p-6 overflow-y-auto space-y-6">
+          {/* Header Billed From & Billed To */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-stone-200 text-xs">
+            {/* Issuer */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Issued By:</span>
+              <strong className="text-sm font-extrabold text-stone-900 block">AI GYM SaaS Platform Inc.</strong>
+              <p className="text-stone-600">Enterprise Cloud Fitness Software</p>
+              <p className="text-stone-500">Email: billing@aigym.platform</p>
+              <p className="text-stone-500 font-mono text-[11px]">GSTIN: 33AAACG0123M1Z9</p>
+            </div>
+
+            {/* Customer Gym */}
+            <div className="space-y-1 sm:text-right">
+              <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Billed To (Subscriber):</span>
+              <strong className="text-sm font-extrabold text-[#F97316] block">{invoice.gymName}</strong>
+              <p className="text-stone-700 font-medium">Owner: {invoice.owner}</p>
+              <p className="text-stone-500">Plan: {invoice.plan} ({invoice.billing})</p>
+              <p className="text-stone-500">Payment: {invoice.paymentMethod}</p>
+            </div>
+          </div>
+
+          {/* Key Dates Badge Row */}
+          <div className="grid grid-cols-3 gap-3 bg-stone-50 p-3.5 rounded-xl border border-stone-200/80 text-xs text-center">
+            <div>
+              <span className="text-[10px] text-stone-500 block uppercase font-bold">Invoice Date</span>
+              <strong className="text-stone-800 font-bold">{invoiceDate}</strong>
+            </div>
+            <div>
+              <span className="text-[10px] text-stone-500 block uppercase font-bold">Billing Cycle</span>
+              <strong className="text-stone-800 font-bold capitalize">{invoice.billing || 'Monthly'}</strong>
+            </div>
+            <div>
+              <span className="text-[10px] text-stone-500 block uppercase font-bold">Next Renewal</span>
+              <strong className="text-stone-800 font-bold">{renewalDate}</strong>
+            </div>
+          </div>
+
+          {/* Line Items Table */}
+          <div className="border border-stone-200 rounded-xl overflow-hidden">
+            <table className="w-full text-xs">
+              <thead className="bg-stone-100/70 border-b border-stone-200 text-stone-600 font-bold uppercase text-[10px]">
+                <tr>
+                  <th className="px-4 py-3 text-left">Description</th>
+                  <th className="px-4 py-3 text-center">Cycle</th>
+                  <th className="px-4 py-3 text-right">Taxable</th>
+                  <th className="px-4 py-3 text-right">GST (18%)</th>
+                  <th className="px-4 py-3 text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-100">
+                <tr>
+                  <td className="px-4 py-3.5">
+                    <strong className="text-stone-900 block">AI GYM SaaS — {invoice.plan} Plan</strong>
+                    <span className="text-stone-500 text-[11px]">Gym ERP, Member & Trainer Management, AI Workout/Diet, Analytics</span>
+                  </td>
+                  <td className="px-4 py-3.5 text-center capitalize text-stone-600">{invoice.billing || 'monthly'}</td>
+                  <td className="px-4 py-3.5 text-right font-medium text-stone-700">₹{baseAmount.toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3.5 text-right text-stone-500">₹{totalGst.toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3.5 text-right font-bold text-stone-900">₹{numericAmount.toLocaleString('en-IN')}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Calculations Breakdown */}
+            <div className="bg-stone-50/60 p-4 border-t border-stone-200 flex flex-col items-end gap-1 text-xs">
+              <div className="flex justify-between w-56 text-stone-600">
+                <span>Subtotal (Net):</span>
+                <span>₹{baseAmount.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="flex justify-between w-56 text-stone-500 text-[11px]">
+                <span>CGST (9%):</span>
+                <span>₹{cgst.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="flex justify-between w-56 text-stone-500 text-[11px]">
+                <span>SGST (9%):</span>
+                <span>₹{sgst.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="flex justify-between w-56 pt-2 border-t border-stone-300 font-extrabold text-sm text-stone-900">
+                <span>Total Paid:</span>
+                <span className="text-[#F97316]">₹{numericAmount.toLocaleString('en-IN')}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Method Notice */}
+          <div className="flex items-center justify-between p-3.5 rounded-xl bg-orange-50/60 border border-orange-200/80 text-xs">
+            <div className="flex items-center gap-2 text-stone-700 font-medium">
+              <CheckCircle size={16} className="text-emerald-600" />
+              <span>Payment settled via <strong>{invoice.paymentMethod}</strong></span>
+            </div>
+            <span className="font-mono text-[11px] text-stone-500">Ref: {(invoice.id || 'TXN101').slice(-10)}</span>
+          </div>
+        </div>
+
+        {/* Modal Footer Controls */}
+        <div className="p-4 border-t border-stone-200 bg-stone-50 flex items-center justify-between gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-white border border-stone-300 text-stone-700 hover:bg-stone-100 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+          >
+            Close
+          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrint}
+              className="px-3.5 py-2 bg-stone-200 hover:bg-stone-300 text-stone-800 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <Printer size={14} />
+              <span>Print</span>
+            </button>
+            <button
+              onClick={handleDownloadPDF}
+              className="px-4 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <Download size={14} />
+              <span>Download PDF Invoice</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -744,10 +1036,12 @@ const SuperAdminSubscriptions = () => {
   const [editPlan, setEditPlan] = useState<any>(null);
   const [viewPlan, setViewPlan] = useState<any>(null);
   const [viewPayment, setViewPayment] = useState<any>(null);
+  const [viewInvoice, setViewInvoice] = useState<any>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterPlan, setFilterPlan] = useState('ALL');
   const [filterStatus, setFilterStatus] = useState('ALL');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly');
 
   // Live data from backend
   const [subscribedGyms, setSubscribedGyms] = useState<any[]>([]);
@@ -865,7 +1159,22 @@ const SuperAdminSubscriptions = () => {
         />
       )}
       {viewPlan && <ViewPlanModal plan={viewPlan} onClose={() => setViewPlan(null)} />}
-      {viewPayment && <ViewPaymentModal payment={viewPayment} onClose={() => setViewPayment(null)} />}
+      {viewPayment && (
+        <ViewPaymentModal
+          payment={viewPayment}
+          onClose={() => setViewPayment(null)}
+          onOpenInvoice={(p) => {
+            setViewPayment(null);
+            setViewInvoice(p);
+          }}
+        />
+      )}
+      {viewInvoice && (
+        <SubscriptionInvoiceModal
+          invoice={viewInvoice}
+          onClose={() => setViewInvoice(null)}
+        />
+      )}
       {showCreateModal && <CreatePlanModal onClose={() => setShowCreateModal(false)} onSave={handleSavePlan} />}
 
       {/* Header */}
@@ -994,6 +1303,53 @@ const SuperAdminSubscriptions = () => {
             );
           })()}
 
+          {/* ── Monthly & Annually Billing Cycle Banner ── */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-orange-50/70 via-white to-amber-50/60 p-4 rounded-2xl border border-orange-200/70 shadow-xs mb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#F97316]" />
+                <h3 className="font-extrabold text-[#292524] text-base">
+                  Subscription Pricing Options: Monthly & Annually
+                </h3>
+                <span className="bg-[#F97316]/10 text-[#F97316] text-[10px] font-extrabold px-2 py-0.5 rounded-full border border-[#F97316]/20">
+                  DUAL BILLING
+                </span>
+              </div>
+              <p className="text-xs text-[#78716C] mt-0.5">
+                Switch billing cycle to review pricing tiers, calculate annual savings, and manage SaaS gym owner plans.
+              </p>
+            </div>
+
+            {/* Monthly vs Annually Toggle Switch */}
+            <div className="flex items-center bg-[#F5F5F4] p-1 rounded-xl border border-[#E7E5E4] shadow-inner shrink-0">
+              <button
+                type="button"
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-4 py-2 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                  billingCycle === 'monthly'
+                    ? 'bg-[#F97316] text-white shadow-xs'
+                    : 'text-[#78716C] hover:text-[#292524]'
+                }`}
+              >
+                Monthly Plans
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingCycle('annually')}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                  billingCycle === 'annually'
+                    ? 'bg-[#F97316] text-white shadow-xs'
+                    : 'text-[#78716C] hover:text-[#292524]'
+                }`}
+              >
+                <span>Annually Plans</span>
+                <span className="bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-wider font-black">
+                  Save 25%
+                </span>
+              </button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
           {plans.map(plan => {
             const isPlanActive = planStatuses[plan.key] ?? true;
@@ -1053,22 +1409,64 @@ const SuperAdminSubscriptions = () => {
                     </div>
                   </div>
 
-                  {/* Pricing Section */}
+                  {/* Pricing Section supporting Monthly & Annually */}
                   <div className="mb-3">
+                    {/* Per-card Quick Option Pills */}
+                    {plan.priceMonthly > 0 && (
+                      <div className="flex items-center gap-1 mb-2.5 bg-[#F5F5F4] p-0.5 rounded-lg border border-[#E7E5E4] w-fit text-[10px] font-bold">
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setBillingCycle('monthly'); }}
+                          className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
+                            billingCycle === 'monthly'
+                              ? 'bg-[#F97316] text-white shadow-xs font-black'
+                              : 'text-[#78716C] hover:text-[#292524]'
+                          }`}
+                        >
+                          Monthly
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setBillingCycle('annually'); }}
+                          className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
+                            billingCycle === 'annually'
+                              ? 'bg-[#F97316] text-white shadow-xs font-black'
+                              : 'text-[#78716C] hover:text-[#292524]'
+                          }`}
+                        >
+                          Annually (-25%)
+                        </button>
+                      </div>
+                    )}
+
                     <div className="flex items-baseline space-x-1">
                       <span className={`text-3xl font-extrabold tracking-tight ${plan.key === 'PREMIUM' ? 'text-purple-600' : plan.key === 'GOLD' ? 'text-[#F97316]' : plan.key === 'SILVER' ? 'text-[#FED7AA]' : 'text-slate-900'}`}>
-                        {plan.priceDisplay || `₹${plan.priceMonthly.toLocaleString('en-IN')}`}
+                        {billingCycle === 'annually' && plan.priceAnnual > 0
+                          ? `₹${plan.priceAnnual.toLocaleString('en-IN')}`
+                          : (plan.priceDisplay || `₹${plan.priceMonthly.toLocaleString('en-IN')}`)}
                       </span>
                       <span className="text-sm font-semibold text-slate-500">
-                        {plan.pricePeriod || '/mo'}
+                        {billingCycle === 'annually' && plan.priceAnnual > 0
+                          ? '/year'
+                          : (plan.pricePeriod || (plan.key === 'FREE_TRIAL' ? '/ 1 day' : '/mo'))}
                       </span>
                     </div>
-                    {plan.savingsAnnual > 0 ? (
-                      <p className="text-xs text-slate-400 font-medium mt-0.5">
-                        or save 25% with annual
+
+                    {billingCycle === 'annually' && plan.priceAnnual > 0 ? (
+                      <div className="mt-1 flex items-center gap-1.5 flex-wrap">
+                        <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                          ₹{Math.round(plan.priceAnnual / 12).toLocaleString('en-IN')}/mo
+                        </span>
+                        <span className="text-xs text-slate-500 font-medium">
+                          • Save ₹{(plan.priceMonthly * 12 - plan.priceAnnual).toLocaleString('en-IN')}/yr
+                        </span>
+                      </div>
+                    ) : plan.savingsAnnual > 0 ? (
+                      <p className="text-xs text-slate-500 font-medium mt-1">
+                        or save 25% with annual (₹{plan.priceAnnual.toLocaleString('en-IN')}/yr)
                       </p>
                     ) : (
-                      <p className="text-xs text-transparent font-medium mt-0.5 select-none">
+                      <p className="text-xs text-transparent font-medium mt-1 select-none">
                         &nbsp;
                       </p>
                     )}
@@ -1245,10 +1643,17 @@ const SuperAdminSubscriptions = () => {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => setViewPayment(gym)}
-                          className="p-1.5 bg-[#FED7AA]/10 text-teal-500 rounded-lg hover:bg-[#FED7AA]/20 transition-colors"
-                          title="View Details"
+                          className="p-1.5 bg-[#FED7AA]/10 text-teal-600 rounded-lg hover:bg-[#FED7AA]/20 transition-colors cursor-pointer"
+                          title="View Payment Details"
                         >
                           <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={() => setViewInvoice(gym)}
+                          className="p-1.5 bg-orange-500/10 text-[#F97316] rounded-lg hover:bg-orange-500/20 transition-colors cursor-pointer"
+                          title="Tax Invoice"
+                        >
+                          <FileText size={16} />
                         </button>
                         <button
                           onClick={async () => {
@@ -1263,7 +1668,7 @@ const SuperAdminSubscriptions = () => {
                               }
                             }
                           }}
-                          className="p-1.5 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors"
+                          className="p-1.5 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors cursor-pointer"
                           title="Remove Subscription"
                         >
                           <Trash2 size={16} />

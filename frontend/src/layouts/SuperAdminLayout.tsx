@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import GymSmartAssistant from '../components/GymSmartAssistant';
 import {
   LayoutDashboard, Building2, Send, User, LogOut,
-  CreditCard, ShieldCheck, Menu, PlusCircle
+  CreditCard, ShieldCheck, Menu, PlusCircle, TrendingUp
 } from 'lucide-react';
 
 const SuperAdminLayout = () => {
@@ -31,6 +31,7 @@ const SuperAdminLayout = () => {
     {
       title: 'Finance & Store',
       items: [
+        { label: 'Revenue & Analytics', path: '/super-admin/revenue-analytics', icon: TrendingUp },
         { label: 'Subscription Plans', path: '/super-admin/subscriptions', icon: CreditCard },
       ],
     },

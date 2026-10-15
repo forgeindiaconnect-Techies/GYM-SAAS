@@ -670,6 +670,27 @@ export const FEATURE_REGISTRY: AssistantRouteItem[] = [
     allowedRoles: ['ADMIN', 'GYM_OWNER']
   },
   {
+    id: 'admin-revenue-analytics',
+    title: 'Revenue & Analytics',
+    description: 'Track member subscriptions, trainer fees, and online vs offline store orders revenue.',
+    category: 'ADMIN',
+    route: '/admin/revenue-analytics',
+    actionLabel: 'Revenue & Analytics',
+    keywords: ['revenue', 'analytics', 'revenue & analytics', 'members revenue', 'trainers revenue', 'orders revenue', 'offline revenue', 'online revenue'],
+    allowedRoles: ['ADMIN', 'GYM_OWNER', 'SUPER_ADMIN'],
+    badge: 'Finance'
+  },
+  {
+    id: 'super-admin-revenue',
+    title: 'Super Admin Revenue & Analytics',
+    description: 'Platform-wide revenue, franchise contributions, trainer payouts, and retail sales.',
+    category: 'ADMIN',
+    route: '/super-admin/revenue-analytics',
+    actionLabel: 'Platform Revenue',
+    keywords: ['super admin revenue', 'platform revenue', 'franchise revenue'],
+    allowedRoles: ['SUPER_ADMIN']
+  },
+  {
     id: 'admin-enquiries',
     title: 'Membership Enquiries & Leads',
     description: 'Convert prospective member enquiries and contact requests into active memberships.',

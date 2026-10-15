@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import Gym, { GymStatus } from '../models/Gym';
 import User, { Role, ApprovalStatus } from '../models/User';
 import Trainer from '../models/Trainer';
+import TrainerSession from '../models/TrainerSession';
 import { AuthRequest } from '../middlewares/auth';
 
 export const createGym = async (req: Request, res: Response): Promise<void> => {
@@ -139,12 +140,30 @@ export const getMyGym = async (req: Request, res: Response): Promise<void> => {
     const userId = (req as any).user?._id || (req as any).user?.id;
     const userGymId = (req as any).user?.gymId;
 
+    let targetGymId = userGymId;
+    if (!targetGymId && userId) {
+      const userDoc = await User.findById(userId);
+      if (userDoc?.gymId) {
+        targetGymId = userDoc.gymId;
+      }
+    }
+    if (!targetGymId && userId) {
+      const CustomerMembership = require('../models/CustomerMembership').default;
+      const membership = await CustomerMembership.findOne({ customerId: userId }).sort({ createdAt: -1 });
+      if (membership?.gymId) {
+        targetGymId = membership.gymId;
+      }
+    }
+
     let gym;
-    if (userGymId) {
-      gym = await Gym.findById(userGymId).populate('ownerId', 'firstName lastName email mobile');
+    if (targetGymId) {
+      gym = await Gym.findById(targetGymId).populate('ownerId', 'firstName lastName email mobile');
     }
     if (!gym && userId) {
       gym = await Gym.findOne({ ownerId: userId }).populate('ownerId', 'firstName lastName email mobile');
+    }
+    if (!gym) {
+      gym = await Gym.findOne({ status: GymStatus.ACTIVE } as any).populate('ownerId', 'firstName lastName email mobile');
     }
 
     if (!gym) {
@@ -329,15 +348,220 @@ export const getPublicGymById = async (req: Request, res: Response): Promise<voi
       return;
     }
     
-    // Also fetch trainers for this gym
-    const trainers = await User.find({ gymId: gym._id.toString(), role: 'TRAINER', isActive: true } as any).select('firstName lastName specialization experienceYears profilePhoto bio');
+    // Fetch trainer profiles from Trainer model
+    const trainerProfiles = await Trainer.find({
+      $or: [
+        { gymId: gym._id },
+        { gymId: gym._id.toString() }
+      ]
+    }).lean();
+
+    // Also fetch trainers from User model
+    const userTrainers = await User.find({
+      $or: [
+        { gymId: gym._id.toString(), role: 'TRAINER' },
+        { gymId: gym._id, role: 'TRAINER' }
+      ],
+      isActive: true
+    } as any).select('firstName lastName specialization experienceYears profilePhoto bio').lean();
+
+    // Unify trainers
+    const unifiedTrainersMap = new Map<string, any>();
+    trainerProfiles.forEach((tp: any) => {
+      const idKey = tp._id.toString();
+      unifiedTrainersMap.set(idKey, {
+        _id: tp._id,
+        userId: tp.userId,
+        name: tp.name || 'Trainer',
+        firstName: tp.name ? tp.name.split(' ')[0] : 'Trainer',
+        lastName: tp.name ? tp.name.split(' ').slice(1).join(' ') : '',
+        specialization: tp.specialization || 'Fitness Coach',
+        experienceYears: tp.experience || 1,
+        profilePhoto: tp.profilePhoto || '',
+        bio: tp.bio || '',
+        averageRating: tp.averageRating || 5,
+        totalReviews: tp.totalReviews || 0
+      });
+    });
+
+    userTrainers.forEach((ut: any) => {
+      const matchInProfiles = trainerProfiles.find((tp: any) => tp.userId?.toString() === ut._id.toString() || tp.email?.toLowerCase() === ut.email?.toLowerCase());
+      if (!matchInProfiles) {
+        unifiedTrainersMap.set(ut._id.toString(), {
+          _id: ut._id,
+          userId: ut._id,
+          name: `${ut.firstName || ''} ${ut.lastName || ''}`.trim() || 'Trainer',
+          firstName: ut.firstName || 'Trainer',
+          lastName: ut.lastName || '',
+          specialization: ut.specialization || 'Fitness Coach',
+          experienceYears: ut.experienceYears || 1,
+          profilePhoto: ut.profilePhoto || '',
+          bio: ut.bio || '',
+          averageRating: 5,
+          totalReviews: 0
+        });
+      }
+    });
+
+    const unifiedTrainers = Array.from(unifiedTrainersMap.values());
 
     // Fetch branches for this gym
     const branches = await Branch.find({ gymId: gym._id, status: 'ACTIVE' } as any);
 
-    res.status(200).json({ success: true, gym, trainers, branches });
+    // Fetch customer reviews from TrainerSession
+    const allTrainerIds = trainerProfiles.map((t: any) => t._id);
+    const allUserIds = trainerProfiles.map((t: any) => t.userId).filter(Boolean);
+    const allIdsToMatch = [...allTrainerIds, ...allUserIds, ...userTrainers.map((u: any) => u._id)];
+
+    const sessionReviews = await TrainerSession.find({
+      $or: [
+        { gymId: gym._id },
+        { gymId: gym._id.toString() },
+        { trainerId: { $in: allIdsToMatch } }
+      ],
+      customerRating: { $exists: true, $gt: 0 }
+    })
+      .populate('customerId', 'firstName lastName email profilePhoto')
+      .populate('trainerId', 'name email specialization profilePhoto experience')
+      .sort({ updatedAt: -1 })
+      .lean();
+
+    const mappedSessionReviews = sessionReviews.map((sess: any) => {
+      const cust = sess.customerId;
+      const custName = cust ? `${cust.firstName || ''} ${cust.lastName || ''}`.trim() : 'Verified Member';
+      const tr = sess.trainerId;
+      const trName = tr?.name || (tr?.firstName ? `${tr.firstName} ${tr.lastName}` : (unifiedTrainers[0]?.name || 'Certified Trainer'));
+      const trSpec = tr?.specialization || unifiedTrainers.find((t: any) => t.name === trName)?.specialization || 'Fitness Coach';
+
+      return {
+        _id: sess._id.toString(),
+        userId: cust?._id,
+        userName: custName || 'Verified Member',
+        userPhoto: cust?.profilePhoto || '',
+        rating: Number(sess.customerRating) || 5,
+        review: sess.customerReview || 'Good training experience',
+        type: 'trainer' as const,
+        trainerName: trName,
+        trainerSpecialization: trSpec,
+        mode: sess.mode,
+        bookingId: sess.bookingId,
+        createdAt: sess.updatedAt || sess.createdAt || sess.date
+      };
+    });
+
+    const directReviews = ((gym as any).reviews || []).map((r: any) => ({
+      _id: r._id?.toString() || Math.random().toString(),
+      userId: r.userId,
+      userName: r.userName || 'Verified Member',
+      userPhoto: r.userPhoto || '',
+      rating: Number(r.rating) || 5,
+      review: r.review,
+      type: (r.type || 'gym') as 'gym' | 'trainer',
+      trainerName: r.trainerName || '',
+      createdAt: r.createdAt
+    }));
+
+    const allReviews = [...mappedSessionReviews, ...directReviews].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    const totalReviews = allReviews.length;
+    const sumRatings = allReviews.reduce((sum, r) => sum + (Number(r.rating) || 5), 0);
+    const averageRating = totalReviews > 0 ? Number((sumRatings / totalReviews).toFixed(1)) : (gym.rating || 4.5);
+    const ratingBreakdown = {
+      5: allReviews.filter(r => Math.round(Number(r.rating)) === 5).length,
+      4: allReviews.filter(r => Math.round(Number(r.rating)) === 4).length,
+      3: allReviews.filter(r => Math.round(Number(r.rating)) === 3).length,
+      2: allReviews.filter(r => Math.round(Number(r.rating)) === 2).length,
+      1: allReviews.filter(r => Math.round(Number(r.rating)) === 1).length,
+    };
+
+    const gymData = gym.toObject();
+    gymData.rating = averageRating;
+    gymData.reviewCount = totalReviews;
+
+    res.status(200).json({ 
+      success: true, 
+      gym: gymData, 
+      trainers: unifiedTrainers, 
+      branches,
+      reviews: allReviews,
+      ratingStats: {
+        averageRating,
+        totalReviews,
+        ratingBreakdown
+      }
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const addGymReview = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { rating, review, type, trainerName } = req.body;
+    
+    if (!rating || !review) {
+      res.status(400).json({ success: false, message: 'Rating and review message are required' });
+      return;
+    }
+
+    const user = await User.findById(req.user?.id);
+    if (!user) {
+      res.status(401).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    const gym = await Gym.findById(id);
+    if (!gym) {
+      res.status(404).json({ success: false, message: 'Gym not found' });
+      return;
+    }
+
+    const newReview = {
+      userId: user._id,
+      userName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Verified Member',
+      userPhoto: user.profilePhoto || '',
+      rating: Math.min(5, Math.max(1, Number(rating))),
+      review: review.trim(),
+      type: (type === 'trainer' ? 'trainer' : 'gym') as 'gym' | 'trainer',
+      trainerName: trainerName?.trim() || '',
+      createdAt: new Date()
+    };
+
+    const userIdStr = (user._id || '').toString();
+    const existingReviews = (gym.reviews || []).filter((r: any) => 
+      !r.userId || r.userId.toString() !== userIdStr
+    );
+    const updatedReviews = [newReview, ...existingReviews];
+
+    // Update gym rating summary
+    const totalReviews = updatedReviews.length;
+    const sumRatings = updatedReviews.reduce((sum: number, r: any) => sum + (Number(r.rating) || 5), 0);
+    const newRating = totalReviews > 0 ? Number((sumRatings / totalReviews).toFixed(1)) : 5.0;
+
+    await Gym.updateOne(
+      { _id: gym._id },
+      {
+        $set: {
+          reviews: updatedReviews,
+          rating: newRating,
+          reviewCount: totalReviews
+        }
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Review submitted successfully',
+      review: newReview,
+      gymRating: newRating,
+      reviewCount: totalReviews
+    });
+  } catch (error: any) {
+    console.error('addGymReview error:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error', error: error.message });
   }
 };
 
@@ -412,17 +636,32 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
       };
     });
 
-    // 2. Fetch real Trainers
+    // 2. Fetch real Trainers and real Customer Reviews given to Trainers
     const trainers = await User.find({ role: Role.TRAINER, isActive: { $ne: false } })
       .select('firstName lastName email profilePhoto specialization experienceYears bio createdAt')
       .sort({ createdAt: -1 })
       .lean();
 
-    const trainerProfiles = await Trainer.find().select('name email specialization experience averageRating').lean();
+    const trainerProfiles = await Trainer.find().select('name email specialization experience averageRating userId').lean();
     const trainerMetaMap = new Map<string, any>();
     trainerProfiles.forEach(t => {
       if (t.email) trainerMetaMap.set(t.email.toLowerCase(), t);
+      if (t.name) trainerMetaMap.set(t.name.toLowerCase(), t);
+      if (t.userId) trainerMetaMap.set(t.userId.toString(), t);
+      trainerMetaMap.set(t._id.toString(), t);
     });
+
+    // Fetch actual customer reviews given to trainers from TrainerSession
+    const reviewedSessions = await TrainerSession.find({
+      $or: [
+        { customerReview: { $exists: true, $ne: '' } },
+        { customerRating: { $exists: true, $gt: 0 } }
+      ]
+    })
+      .populate('customerId', 'firstName lastName email profilePhoto')
+      .populate('trainerId', 'name email specialization experience averageRating userId')
+      .sort({ updatedAt: -1 })
+      .lean();
 
     const trainerQuotes = [
       'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the baseline workouts while I focus on form, technique, and motivation.',
@@ -431,11 +670,64 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
       'Streamlined scheduling and direct messaging make daily sessions effortless. Client retention has increased dramatically.'
     ];
 
-    const trainerTestimonials = trainers.map((tr, idx) => {
+    const trainerTestimonials: any[] = [];
+    const reviewedTrainerKeys = new Set<string>();
+
+    if (reviewedSessions && reviewedSessions.length > 0) {
+      reviewedSessions.forEach((sess: any) => {
+        const tr = sess.trainerId;
+        const cust = sess.customerId;
+        const custName = cust ? `${cust.firstName || ''} ${cust.lastName || ''}`.trim() : 'Verified Member';
+
+        // Find matching trainer user or profile
+        const trUser = trainers.find(t =>
+          (tr && tr.userId && t._id.toString() === tr.userId.toString()) ||
+          (tr && tr._id && t._id.toString() === tr._id.toString()) ||
+          (tr && tr.email && t.email && t.email.toLowerCase() === tr.email.toLowerCase()) ||
+          (tr && tr.name && `${t.firstName || ''} ${t.lastName || ''}`.trim().toLowerCase() === tr.name.toLowerCase())
+        );
+
+        const trainerName = tr?.name || (trUser ? `${trUser.firstName || ''} ${trUser.lastName || ''}`.trim() : 'Certified Trainer');
+        const spec = tr?.specialization || trUser?.specialization || 'ALL';
+        const rating = sess.customerRating || tr?.averageRating || 5;
+        const text = (sess.customerReview && sess.customerReview.trim()) ? sess.customerReview.trim() : 'Outstanding personal training session. Great motivation and coaching!';
+
+        if (tr?._id) reviewedTrainerKeys.add(tr._id.toString());
+        if (trUser?._id) reviewedTrainerKeys.add(trUser._id.toString());
+        if (tr?.email) reviewedTrainerKeys.add(tr.email.toLowerCase());
+        if (trainerName) reviewedTrainerKeys.add(trainerName.toLowerCase());
+
+        trainerTestimonials.push({
+          id: `trainer-review-${sess._id}`,
+          userId: trUser?._id || tr?.userId || tr?._id,
+          name: trainerName,
+          role: 'CERTIFIED TRAINER',
+          subtitle: spec,
+          reviewedBy: custName,
+          category: 'Trainer',
+          type: 'trainer',
+          rating,
+          text
+        });
+      });
+    }
+
+    // For any trainers without a customer review yet, provide their profile card
+    trainers.forEach((tr, idx) => {
+      const trName = `${tr.firstName || ''} ${tr.lastName || ''}`.trim();
       const meta = tr.email ? trainerMetaMap.get(tr.email.toLowerCase()) : null;
-      const name = `${tr.firstName || ''} ${tr.lastName || ''}`.trim() || meta?.name || 'Certified Trainer';
+      if (
+        reviewedTrainerKeys.has(tr._id.toString()) ||
+        (meta && reviewedTrainerKeys.has(meta._id.toString())) ||
+        (tr.email && reviewedTrainerKeys.has(tr.email.toLowerCase())) ||
+        (trName && reviewedTrainerKeys.has(trName.toLowerCase()))
+      ) {
+        return;
+      }
+
+      const name = trName || meta?.name || 'Certified Trainer';
       const spec = tr.specialization || meta?.specialization || 'Fitness Coach';
-      return {
+      trainerTestimonials.push({
         id: `trainer-${tr._id}`,
         userId: tr._id,
         name,
@@ -445,7 +737,7 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
         type: 'trainer',
         rating: meta?.averageRating || 5,
         text: tr.bio || trainerQuotes[idx % trainerQuotes.length]
-      };
+      });
     });
 
     // 3. Fetch real Members

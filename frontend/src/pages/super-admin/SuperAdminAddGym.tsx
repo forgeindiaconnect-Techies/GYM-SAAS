@@ -42,7 +42,11 @@ const SuperAdminAddGym = () => {
     setEmailDeliveryStatus(null);
     try {
       const inviteId = Date.now().toString();
-      const inviteLink = `${window.location.origin}/register/gym-owner?email=${encodeURIComponent(formData.ownerEmail.trim())}&name=${encodeURIComponent(formData.ownerName.trim())}&phone=${encodeURIComponent(formData.ownerPhone.trim())}&invite=${inviteId}`;
+      const expiryDays = formData.linkExpiry === 'Never' ? null : (parseInt(formData.linkExpiry, 10) || 7);
+      const expiresAtMs = expiryDays ? Date.now() + expiryDays * 24 * 60 * 60 * 1000 : null;
+      const expiresAtIso = expiresAtMs ? new Date(expiresAtMs).toISOString() : null;
+
+      const inviteLink = `${window.location.origin}/register/gym-owner?email=${encodeURIComponent(formData.ownerEmail.trim())}&name=${encodeURIComponent(formData.ownerName.trim())}&phone=${encodeURIComponent(formData.ownerPhone.trim())}&invite=${inviteId}${expiresAtMs ? `&expiresAt=${expiresAtMs}` : ''}&expiry=${encodeURIComponent(formData.linkExpiry)}`;
       setGeneratedLink(inviteLink);
 
       // Trigger backend email dispatch via Brevo
@@ -73,6 +77,8 @@ const SuperAdminAddGym = () => {
         email: formData.ownerEmail.trim(),
         phone: formData.ownerPhone.trim(),
         date: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString(),
+        expiresAt: expiresAtIso,
         status: 'Sent',
         expiry: formData.linkExpiry,
         link: inviteLink

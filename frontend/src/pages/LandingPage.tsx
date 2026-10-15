@@ -12,20 +12,20 @@ const LandingPage = () => {
   const [activeVideo, setActiveVideo] = useState<{ url: string; title: string } | null>(null);
   const [featuredGyms, setFeaturedGyms] = useState<any[]>([]);
   const [gymsLoading, setGymsLoading] = useState(true);
-  
+
   const [communityReviews, setCommunityReviews] = useState<any[]>([]);
   const [communityLoading, setCommunityLoading] = useState(true);
   const [communityFilter, setCommunityFilter] = useState<'all' | 'member' | 'trainer' | 'owner'>('all');
   const [communityCounts, setCommunityCounts] = useState<{ members: number; trainers: number; owners: number; total: number }>({ members: 0, trainers: 0, owners: 0, total: 0 });
   const [communityGrouped, setCommunityGrouped] = useState<{ members: any[]; trainers: any[]; owners: any[] }>({ members: [], trainers: [], owners: [] });
-  
+
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
   const [activeFeatureTab, setActiveFeatureTab] = useState<'ai' | 'gym' | 'trainer'>('ai');
   const [featureSlideIndex, setFeatureSlideIndex] = useState(0);
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourJourney, setTourJourney] = useState<'select' | 'customer' | 'owner'>('select');
   const [tourStep, setTourStep] = useState(1);
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const LandingPage = () => {
           });
         }
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setCommunityLoading(false));
   }, []);
 
@@ -102,16 +102,16 @@ const LandingPage = () => {
         if (activeFeatureTab === 'ai') max = 5;
         if (activeFeatureTab === 'gym') max = 7;
         if (activeFeatureTab === 'trainer') max = 7;
-        
+
         if (featureSlideIndex < max - 1) {
-           setFeatureSlideIndex(featureSlideIndex + 1);
+          setFeatureSlideIndex(featureSlideIndex + 1);
         } else {
-           if (activeFeatureTab === 'ai') setActiveFeatureTab('gym');
-           else if (activeFeatureTab === 'gym') setActiveFeatureTab('trainer');
-           else {
-             setIsFeaturesOpen(false);
-             setActiveFeatureTab('ai');
-           }
+          if (activeFeatureTab === 'ai') setActiveFeatureTab('gym');
+          else if (activeFeatureTab === 'gym') setActiveFeatureTab('trainer');
+          else {
+            setIsFeaturesOpen(false);
+            setActiveFeatureTab('ai');
+          }
         }
       }, 3500); // 3.5 seconds per sub-feature
     }
@@ -136,7 +136,7 @@ const LandingPage = () => {
             </div>
             <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
           </button>
-          
+
           <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-[#78716C]">
             <button onClick={() => setIsFeaturesOpen(true)} className="hover:text-[#F97316] transition-colors">Features</button>
             <button onClick={() => { setTourJourney('select'); setTourStep(1); setIsTourOpen(true); }} className="hover:text-[#F97316] transition-colors">Video Tour</button>
@@ -170,17 +170,17 @@ const LandingPage = () => {
       <main>
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center flex flex-col items-center">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#F97316]/10 via-[#FFFDF8]/0 to-[#FFFDF8]/0"></div>
-          
+
           <span className="px-4 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#F97316] text-sm font-medium inline-block mb-6">
             The Future of Fitness is Here
           </span>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-tight">
-            Your Personal <span className="text-[#F97316]">AI Fitness Coach</span> <br className="hidden md:block"/> + Human Trainer
+            Your Personal <span className="text-[#F97316]">AI Fitness Coach</span> <br className="hidden md:block" /> + Human Trainer
           </h1>
           <p className="text-lg md:text-xl text-[#78716C] max-w-2xl mx-auto mb-10">
             Get personalized AI-generated workout and diet plans. Connect with professional trainers and discover the best gyms near you.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
             <Link to="/gyms" className="w-full sm:w-auto px-8 py-4 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#F97316]/20">
               <span>Find a Gym</span>
@@ -193,10 +193,10 @@ const LandingPage = () => {
           </div>
 
           <div className="w-full max-w-5xl rounded-3xl overflow-hidden border border-[#E7E5E4] shadow-2xl shadow-stone-900/10 relative bg-[#292524]">
-            <img 
-              src="/images/hero.png" 
-              alt="Athlete working out" 
-              className="w-full h-auto max-h-[580px] object-cover object-center aspect-[16/10] sm:aspect-[16/9] block" 
+            <img
+              src="/images/hero.png"
+              alt="Athlete working out"
+              className="w-full h-auto max-h-[580px] object-cover object-center aspect-[16/10] sm:aspect-[16/9] block"
             />
           </div>
         </section>
@@ -264,7 +264,7 @@ const LandingPage = () => {
                 </div>
               </div>
               <div className="lg:w-1/2 w-full flex flex-col space-y-6">
-                <div 
+                <div
                   className="relative group cursor-pointer"
                   onClick={() => setActiveVideo({
                     url: 'vc1E5CfRfos',
@@ -289,21 +289,21 @@ const LandingPage = () => {
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     {[
-                      { 
-                        title: 'AI Diet Generation', 
-                        img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80', 
-                        time: '2:15', 
-                        url: 'cbKkB3POqaY' 
+                      {
+                        title: 'AI Diet Generation',
+                        img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80',
+                        time: '2:15',
+                        url: 'cbKkB3POqaY'
                       },
-                      { 
-                        title: 'Gym Owner Dashboard', 
-                        img: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80', 
-                        time: '3:30', 
-                        url: 'vc1E5CfRfos' 
+                      {
+                        title: 'Gym Owner Dashboard',
+                        img: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
+                        time: '3:30',
+                        url: 'vc1E5CfRfos'
                       }
                     ].map((video, idx) => (
-                      <div 
-                        key={idx} 
+                      <div
+                        key={idx}
                         className="group cursor-pointer"
                         onClick={() => setActiveVideo({ url: video.url, title: video.title })}
                       >
@@ -501,7 +501,7 @@ const LandingPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Power Your Gym. Choose Your Plan.</h2>
               <p className="text-[#78716C] mb-8 max-w-xl mx-auto">All plans give your gym access to the AI GYM platform. Scale as your gym grows.</p>
-              
+
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#292524]' : 'text-[#78716C]'}`}>Monthly</span>
                 <button
@@ -521,10 +521,10 @@ const LandingPage = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
               {[
-                { 
+                {
                   key: 'FREE_TRIAL',
                   name: 'Free Trial', badge: '1 Day',
                   price: '₹0', period: '/ 1 day',
@@ -541,7 +541,7 @@ const LandingPage = () => {
                   btnDefault: 'bg-white border-2 border-[#E7E5E4] text-[#292524] hover:border-[#F97316]',
                   btnSelected: 'bg-[#FED7AA] text-white',
                 },
-                { 
+                {
                   key: 'SILVER',
                   name: 'Silver', badge: 'Beginner',
                   price: isAnnual ? '₹7,190' : '₹799', period: isAnnual ? '/year' : '/mo',
@@ -558,7 +558,7 @@ const LandingPage = () => {
                   btnDefault: 'bg-white border-2 border-[#E7E5E4] text-[#292524] hover:border-[#FED7AA]',
                   btnSelected: 'bg-[#FED7AA] text-white',
                 },
-                { 
+                {
                   key: 'GOLD',
                   name: 'Gold', badge: 'Most Popular',
                   price: isAnnual ? '₹13,490' : '₹1,499', period: isAnnual ? '/year' : '/mo',
@@ -575,7 +575,7 @@ const LandingPage = () => {
                   btnDefault: 'bg-[#F97316] text-white hover:bg-[#EA580C] shadow-lg shadow-orange-200',
                   btnSelected: 'bg-[#F97316] text-white hover:bg-[#EA580C]',
                 },
-                { 
+                {
                   key: 'PREMIUM',
                   name: 'Premium', badge: 'Advanced',
                   price: isAnnual ? '₹22,490' : '₹2,499', period: isAnnual ? '/year' : '/mo',
@@ -599,10 +599,9 @@ const LandingPage = () => {
                     key={idx}
                     onClick={() => setSelectedPlan(isSelected ? null : plan.key)}
                     className={`relative flex flex-col bg-white rounded-2xl cursor-pointer transition-all duration-300 overflow-hidden border-2
-                      ${
-                        isSelected
-                          ? `${(plan as any).selBorder} shadow-xl -translate-y-2`
-                          : `${(plan as any).defaultBorder} hover:-translate-y-1 hover:shadow-lg`
+                      ${isSelected
+                        ? `${(plan as any).selBorder} shadow-xl -translate-y-2`
+                        : `${(plan as any).defaultBorder} hover:-translate-y-1 hover:shadow-lg`
                       }`}
                   >
                     {/* Green accent bar when selected */}
@@ -625,9 +624,8 @@ const LandingPage = () => {
                     <div className="p-6 flex flex-col flex-1">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-base font-bold text-[#292524]">{plan.name}</h3>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider ${
-                          plan.popular ? 'bg-[#F97316]/10 text-[#F97316]' : 'bg-[#FFFDF8] text-[#FED7AA]'
-                        }`}>{plan.badge}</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider ${plan.popular ? 'bg-[#F97316]/10 text-[#F97316]' : 'bg-[#FFFDF8] text-[#FED7AA]'
+                          }`}>{plan.badge}</span>
                       </div>
 
                       <div className="mb-3">
@@ -665,11 +663,10 @@ const LandingPage = () => {
                       <Link
                         to="/register/gym-owner"
                         onClick={e => e.stopPropagation()}
-                        className={`w-full py-3 rounded-xl text-center font-bold transition-all text-sm block ${
-                          isSelected
+                        className={`w-full py-3 rounded-xl text-center font-bold transition-all text-sm block ${isSelected
                             ? (plan as any).btnSelected
                             : (plan as any).btnDefault
-                        }`}
+                          }`}
                       >
                         {plan.buttonText}
                       </Link>
@@ -694,41 +691,37 @@ const LandingPage = () => {
             <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
               <button
                 onClick={() => setCommunityFilter('all')}
-                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
-                  communityFilter === 'all'
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${communityFilter === 'all'
                     ? 'bg-[#F97316] text-black shadow-sm'
                     : 'bg-[#F5F5F4] text-[#78716C] hover:text-[#292524] hover:bg-[#E7E5E4]'
-                }`}
+                  }`}
               >
                 All Showcase ({communityCounts.total || 3})
               </button>
               <button
                 onClick={() => setCommunityFilter('member')}
-                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
-                  communityFilter === 'member'
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${communityFilter === 'member'
                     ? 'bg-[#F97316] text-black shadow-sm'
                     : 'bg-[#F5F5F4] text-[#78716C] hover:text-[#292524] hover:bg-[#E7E5E4]'
-                }`}
+                  }`}
               >
                 Members ({communityCounts.members || 0})
               </button>
               <button
                 onClick={() => setCommunityFilter('trainer')}
-                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
-                  communityFilter === 'trainer'
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${communityFilter === 'trainer'
                     ? 'bg-[#F97316] text-black shadow-sm'
                     : 'bg-[#F5F5F4] text-[#78716C] hover:text-[#292524] hover:bg-[#E7E5E4]'
-                }`}
+                  }`}
               >
                 Trainers ({communityCounts.trainers || 0})
               </button>
               <button
                 onClick={() => setCommunityFilter('owner')}
-                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
-                  communityFilter === 'owner'
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${communityFilter === 'owner'
                     ? 'bg-[#F97316] text-black shadow-sm'
                     : 'bg-[#F5F5F4] text-[#78716C] hover:text-[#292524] hover:bg-[#E7E5E4]'
-                }`}
+                  }`}
               >
                 Gym Owners ({communityCounts.owners || 0})
               </button>
@@ -744,40 +737,46 @@ const LandingPage = () => {
                 {(
                   communityFilter === 'all'
                     ? (communityReviews.length > 0 ? communityReviews : [
-                        { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
-                        { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
-                        { name: 'David Chen', role: 'Gym Owner', text: 'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard is incredibly intuitive.' }
-                      ])
+                      { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
+                      { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
+                      { name: 'David Chen', role: 'Gym Owner', text: 'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard is incredibly intuitive.' }
+                    ])
                     : communityFilter === 'member'
-                    ? communityGrouped.members
-                    : communityFilter === 'trainer'
-                    ? communityGrouped.trainers
-                    : communityGrouped.owners
+                      ? communityGrouped.members
+                      : communityFilter === 'trainer'
+                        ? communityGrouped.trainers
+                        : communityGrouped.owners
                 ).map((review: any, idx: number) => (
                   <div key={review.id || idx} className="bg-[#FFFFFF] border border-[#E7E5E4] p-8 rounded-2xl relative flex flex-col justify-between hover:border-[#F97316]/50 hover:shadow-md transition-all">
-                  <div>
-                    <Quote className="absolute top-8 right-8 text-[#FED7AA]" size={48} />
-                    <div className="flex items-center space-x-1 mb-4 text-[#F97316]">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <Star key={s} size={16} fill={s <= (review.rating || 5) ? 'currentColor' : 'none'} />
-                      ))}
+                    <div>
+                      <Quote className="absolute top-8 right-8 text-[#FED7AA]" size={48} />
+                      <div className="flex items-center space-x-1 mb-4 text-[#F97316]">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star key={s} size={16} fill={s <= (review.rating || 5) ? 'currentColor' : 'none'} />
+                        ))}
+                      </div>
+                      <p className="text-[#78716C] italic mb-6 relative z-10 leading-relaxed">"{review.text}"</p>
                     </div>
-                    <p className="text-[#78716C] italic mb-6 relative z-10 leading-relaxed">"{review.text}"</p>
-                  </div>
-                  <div className="pt-4 border-t border-[#F5F5F4]">
-                    <h4 className="font-bold text-[#292524] text-base">{review.name}</h4>
-                    <span className="text-xs text-[#F97316] uppercase tracking-wider font-semibold block mt-0.5">
-                      {review.role}
-                    </span>
-                    {review.subtitle && (
-                      <span className="text-xs text-[#78716C] block mt-1">
-                        {review.subtitle}
+                    <div className="pt-4 border-t border-[#F5F5F4]">
+                      <h4 className="font-bold text-[#292524] text-base">{review.name}</h4>
+                      <span className="text-xs text-[#F97316] uppercase tracking-wider font-semibold block mt-0.5">
+                        {review.role}
                       </span>
-                    )}
+                      {review.subtitle && (
+                        <span className="text-xs text-[#78716C] block mt-1">
+                          {review.subtitle}
+                        </span>
+                      )}
+                      {review.reviewedBy && (
+                        <span className="text-xs text-[#F97316] font-medium block mt-1 flex items-center gap-1">
+                          <CheckCircle size={13} className="text-[#F97316] shrink-0" />
+                          Client Review • {review.reviewedBy}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
             )}
           </div>
         </section>
@@ -844,7 +843,7 @@ const LandingPage = () => {
       {/* Video Modal */}
       {activeVideo && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-10 md:p-14 bg-black/90 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setActiveVideo(null)}>
-          <div 
+          <div
             className="relative w-full max-w-4xl max-h-[85vh] my-auto bg-[#1C1917] rounded-3xl overflow-hidden border border-[#E7E5E4]/20 shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
@@ -855,7 +854,7 @@ const LandingPage = () => {
                 <h3 className="text-white font-bold text-sm sm:text-base truncate">{activeVideo.title}</h3>
               </div>
               <div className="flex items-center gap-3">
-                <a 
+                <a
                   href={activeVideo.url.startsWith('http') ? activeVideo.url : `https://www.youtube.com/watch?v=${activeVideo.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -864,7 +863,7 @@ const LandingPage = () => {
                   <span>Watch on YouTube</span>
                   <ArrowRight size={13} />
                 </a>
-                <button 
+                <button
                   onClick={() => setActiveVideo(null)}
                   className="w-9 h-9 bg-white/10 hover:bg-[#F97316] text-white hover:text-white rounded-full flex items-center justify-center transition-all cursor-pointer"
                   title="Close Video"
@@ -873,19 +872,18 @@ const LandingPage = () => {
                 </button>
               </div>
             </div>
-
             {/* Video Player Box */}
             <div className="relative aspect-video w-full bg-black flex items-center justify-center">
               {activeVideo.url.endsWith('.mp4') ? (
-                <video 
-                  src={activeVideo.url} 
-                  controls 
-                  autoPlay 
+                <video
+                  src={activeVideo.url}
+                  controls
+                  autoPlay
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <iframe 
-                  src={`https://www.youtube-nocookie.com/embed/${activeVideo.url.replace('https://www.youtube.com/embed/', '').replace('https://youtu.be/', '')}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`} 
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${activeVideo.url.replace('https://www.youtube.com/embed/', '').replace('https://youtu.be/', '')}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`}
                   className="w-full h-full border-0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
@@ -908,7 +906,7 @@ const LandingPage = () => {
                 <X size={24} />
               </button>
             </div>
-            
+
             {/* Body */}
             <div className="flex flex-col lg:flex-row p-6 gap-8 h-full">
               {/* Sidebar Tabs */}
@@ -938,17 +936,17 @@ const LandingPage = () => {
                   </div>
                 ))}
               </div>
-              
+
               {/* Preview Area */}
               <div className="w-full lg:w-2/3 bg-[#FFFDF8] rounded-2xl border border-[#E7E5E4] flex items-center justify-center p-8 relative overflow-hidden">
-                <FeaturePreview 
-                   tabId={activeFeatureTab}
-                   slideIndex={featureSlideIndex}
-                   items={
-                     activeFeatureTab === 'ai' ? ['AI Fitness Analysis', 'Personalized Workout Recommendations', 'AI Diet Recommendations', 'Daily Fitness Routine', 'Progress-Based Recommendations'] :
-                     activeFeatureTab === 'gym' ? ['Discover available gyms', 'View gym facilities', 'Equipment information', 'AC / Non-AC information', 'Offers', 'Ratings & Reviews', 'Compare and choose suitable gyms'] :
-                     ['Online Trainers', 'Offline Trainers', 'Trainer Expertise', 'Trainer Availability', 'Personalized Workout Guidance', 'Diet Guidance', 'Trainer-based Progress Tracking']
-                   }
+                <FeaturePreview
+                  tabId={activeFeatureTab}
+                  slideIndex={featureSlideIndex}
+                  items={
+                    activeFeatureTab === 'ai' ? ['AI Fitness Analysis', 'Personalized Workout Recommendations', 'AI Diet Recommendations', 'Daily Fitness Routine', 'Progress-Based Recommendations'] :
+                      activeFeatureTab === 'gym' ? ['Discover available gyms', 'View gym facilities', 'Equipment information', 'AC / Non-AC information', 'Offers', 'Ratings & Reviews', 'Compare and choose suitable gyms'] :
+                        ['Online Trainers', 'Offline Trainers', 'Trainer Expertise', 'Trainer Availability', 'Personalized Workout Guidance', 'Diet Guidance', 'Trainer-based Progress Tracking']
+                  }
                 />
               </div>
             </div>
@@ -972,16 +970,16 @@ const LandingPage = () => {
                 <X size={24} />
               </button>
             </div>
-            
+
             {/* Slide Area */}
             <div className="flex-1 relative overflow-y-auto flex items-center justify-center p-8 bg-gradient-to-br from-[#292524] to-[#0F172A]">
-               <TourSlide 
-                 journey={tourJourney} 
-                 step={tourStep} 
-                 setJourney={(j) => { setTourJourney(j); setTourStep(1); }} 
-               />
+              <TourSlide
+                journey={tourJourney}
+                step={tourStep}
+                setJourney={(j) => { setTourJourney(j); setTourStep(1); }}
+              />
             </div>
-            
+
 
           </div>
         </div>
