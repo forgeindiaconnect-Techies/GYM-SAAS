@@ -526,7 +526,7 @@ const MemberMyBookings = () => {
                   key={star}
                   type="button"
                   onClick={() => setRatingVal(star)}
-                  className={`text-2xl ${star <= ratingVal ? 'text-yellow-500' : 'text-gray-300'}`}
+                  className={`text-2xl ${star <= ratingVal ? 'text-yellow-500' : 'text-stone-600'}`}
                 >
                   ★
                 </button>

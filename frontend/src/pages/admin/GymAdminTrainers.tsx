@@ -342,7 +342,7 @@ const GymAdminTrainers = () => {
                         <button onClick={() => handleSetStatus(trainer._id, 'Pending')} className={`transition-colors ${trainer.status === 'Pending' ? 'text-blue-500' : 'text-[#78716C] hover:text-blue-500'}`} title="Set Pending">
                           <Clock size={18} />
                         </button>
-                        <button onClick={() => handleSetStatus(trainer._id, 'Rejected')} className={`transition-colors ${trainer.status === 'Rejected' ? 'text-[#FED7AA]' : 'text-[#78716C] hover:text-[#FED7AA]'}`} title="Set Rejected">
+                        <button onClick={() => handleSetStatus(trainer._id, 'Rejected')} className={`transition-colors ${trainer.status === 'Rejected' ? 'text-[#EA580C]' : 'text-[#78716C] hover:text-[#EA580C]'}`} title="Set Rejected">
                           <Ban size={18} />
                         </button>
                       </div>
@@ -366,7 +366,7 @@ const GymAdminTrainers = () => {
                     <td className="px-6 py-4 text-xs text-gray-400">—</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-                        invite.status === 'Pending' ? 'bg-blue-500/10 text-[#FED7AA] border-[#FED7AA]/20' : 
+                        invite.status === 'Pending' ? 'bg-blue-50 text-blue-600 border-[#FED7AA]/20' : 
                         invite.status === 'Accepted' ? 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20' : 
                         'bg-gray-500/10 text-gray-500 border-gray-500/20'}`}>
                         Invite {invite.status}
@@ -837,7 +837,7 @@ const GymAdminTrainers = () => {
                 <div>
                   <h3 className="text-2xl font-bold text-[#292524]">{selectedTrainer.name}</h3>
                   <p className="text-[#78716C] text-sm mt-0.5">{selectedTrainer.specialization}</p>
-                  <span className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold border ${selectedTrainer.status === 'Active' ? 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20' : selectedTrainer.status === 'Pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' : 'bg-red-500/10 text-[#FED7AA] border-red-500/20'}`}>
+                  <span className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold border ${selectedTrainer.status === 'Active' ? 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20' : selectedTrainer.status === 'Pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' : 'bg-red-50 text-rose-600 border-red-500/20'}`}>
                     {selectedTrainer.status}
                   </span>
                 </div>
@@ -1138,7 +1138,7 @@ const GymAdminTrainers = () => {
               <X size={20} />
             </button>
             
-            <div className="w-16 h-16 bg-[#FED7AA]/10 border border-[#FED7AA]/20 text-[#FED7AA] rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-[#FED7AA]/10 border border-[#FED7AA]/20 text-[#EA580C] rounded-full flex items-center justify-center mx-auto mb-6">
               <ShieldCheck size={32} />
             </div>
             

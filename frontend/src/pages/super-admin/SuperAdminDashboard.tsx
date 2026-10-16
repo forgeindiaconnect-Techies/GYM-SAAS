@@ -37,7 +37,7 @@ const SuperAdminDashboard = () => {
     { title: 'Approved Gyms', value: stats.approved, icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-500/10' },
     { title: 'Pending Gyms', value: stats.pending, icon: FileText, color: 'text-yellow-500', bg: 'bg-yellow-500/10' },
     { title: 'Suspended Gyms', value: stats.suspended, icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-    { title: 'Rejected Gyms', value: stats.rejected, icon: XCircle, color: 'text-[#FED7AA]', bg: 'bg-red-500/10' },
+    { title: 'Rejected Gyms', value: stats.rejected, icon: XCircle, color: 'text-[#EA580C]', bg: 'bg-red-500/10' },
   ];
 
   return (

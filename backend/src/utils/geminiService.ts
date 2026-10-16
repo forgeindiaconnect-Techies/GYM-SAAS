@@ -128,28 +128,94 @@ export const mockAIGeneration = (fitnessProfile: any) => {
     { name: 'Hollow Body Hold', sets: 3, reps: '30-45 sec', duration: '5 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Deep Abdominals' }
   ] : defaultExercises;
 
-  // Diet matching Image 3
+  // Diet matching non-repeating 7-day Monday to Sunday plan
   const isVeg = dietPref.toLowerCase().includes('veg') && !dietPref.toLowerCase().includes('non');
-  const morning = isVeg 
-    ? 'Warm water with pinch of pink Himalayan salt. Pre-workout (5:30 AM): 1 small banana or 2 rice cakes with a spoonful of peanut butter.'
-    : 'Warm water with pinch of pink Himalayan salt. Pre-workout (5:30 AM): 1 small banana or 2 rice cakes with a spoonful of peanut butter.';
+  
+  const dailyMealPlans = [
+    {
+      day: 'Monday',
+      morning: 'Warm ginger-lemon water + 5 soaked almonds. Pre-workout: 1 banana with peanut butter.',
+      breakfast: isVeg ? '150g Paneer bhurji with tomatoes, spinach, and 2 slices whole-wheat toast.' : '3-4 scrambled whole eggs with spinach, mushrooms, and 2 slices whole-wheat toast.',
+      midMorning: '1 small crisp apple + 1 cup low-fat Greek yogurt.',
+      lunch: isVeg ? '150g grilled tofu steak + 1 cup brown rice + mixed cucumber & tomato garden salad with olive oil.' : '180g grilled chicken breast + 1 cup brown rice + mixed cucumber & tomato garden salad with olive oil.',
+      evening: 'Roasted spiced chana (chickpeas) + roasted pumpkin seeds + green tea.',
+      dinner: isVeg ? 'Yellow dal tadka + sautéed broccoli & bell peppers + 1 small baked sweet potato.' : 'Steamed fish fillet with lemon & herbs + 1 bowl lentil soup + small baked sweet potato.',
+      calories: 2150,
+      macros: { protein: '150g', carbs: '210g', fats: '58g' }
+    },
+    {
+      day: 'Tuesday',
+      morning: 'Warm water with pinch of pink Himalayan salt & chia seeds. Pre-workout: 2 rice cakes with almond butter.',
+      breakfast: isVeg ? 'Rolled oats porridge in almond milk topped with fresh blueberries, chia seeds, and plant protein scoop.' : 'Rolled oats porridge in almond milk topped with fresh blueberries, chia seeds, and 1 scoop whey protein.',
+      midMorning: 'Handful (30g) of raw walnuts and golden raisins.',
+      lunch: isVeg ? 'Spiced rajma (kidney bean) quinoa bowl with diced avocado, cherry tomatoes, and lime vinaigrette.' : 'Turkey or shredded chicken quinoa bowl with diced avocado, bell peppers, and lime vinaigrette.',
+      evening: 'Sprouted moong bean salad with diced onions, tomatoes, coriander, and chaat masala.',
+      dinner: isVeg ? 'Grilled soya chunks / cottage cheese skewers + sautéed asparagus + clear vegetable soup.' : 'Grilled lemon herb chicken skewers + sautéed asparagus + clear vegetable broth.',
+      calories: 2200,
+      macros: { protein: '155g', carbs: '215g', fats: '60g' }
+    },
+    {
+      day: 'Wednesday',
+      morning: 'Warm fenugreek (methi) infused water. Pre-workout: 1 slice whole-grain toast with mashed avocado.',
+      breakfast: isVeg ? 'Moong dal chilla (savory pancakes) stuffed with crumbled paneer & mint chutney, 1 orange.' : 'Vegetable egg white omelette with diced bell peppers, baby spinach, and 1 whole fresh orange.',
+      midMorning: '1 bowl of diced fresh papaya or chilled watermelon cubes.',
+      lunch: isVeg ? 'Chickpea (chana) and spinach curry with 1 cup steamed quinoa and fresh beetroot salad.' : 'Pan-seared salmon fillet with 1 cup steamed quinoa and fresh beetroot & rocket salad.',
+      evening: 'Greek yogurt cup topped with 1 tsp ground flaxseeds and fresh sliced strawberries.',
+      dinner: isVeg ? 'Pan-seared cottage cheese (paneer) with portobello mushrooms & zucchini in light sesame oil.' : 'Stir-fried chicken breast strips with zucchini, snap peas, and bok choy in light sesame oil.',
+      calories: 2180,
+      macros: { protein: '160g', carbs: '200g', fats: '62g' }
+    },
+    {
+      day: 'Thursday',
+      morning: 'Warm water with 1 tbsp raw apple cider vinegar. Pre-workout: 2 Medjool dates + 4 walnut halves.',
+      breakfast: isVeg ? 'High-protein green smoothie bowl: spinach, banana, plant protein, topped with hemp and pumpkin seeds.' : 'High-protein smoothie bowl: unsweetened almond milk, banana, whey isolate, topped with pumpkin seeds.',
+      midMorning: 'Crisp cucumber & carrot crudités with 2 tbsp roasted red pepper hummus.',
+      lunch: isVeg ? 'Spiced vegetable & lentil khichdi with roasted cumin seeds + 1 cup low-fat curd (dahi).' : 'Lemon-rosemary grilled chicken thigh with Mediterranean roasted zucchini, bell peppers, and baby potatoes.',
+      evening: 'Fox nuts (makhana) lightly roasted in half-tsp ghee with rock salt + organic green tea.',
+      dinner: isVeg ? 'Grilled paneer steaks with large bowl of vegetable minestrone soup and sautéed French beans.' : 'Steamed cod or white fish fillet with hearty vegetable minestrone soup and sautéed French beans.',
+      calories: 2120,
+      macros: { protein: '152g', carbs: '205g', fats: '59g' }
+    },
+    {
+      day: 'Friday',
+      morning: 'Freshly brewed green tea + 5 overnight soaked almonds. Pre-workout: 1 small banana with sunflower butter.',
+      breakfast: isVeg ? 'Smashed avocado and grilled spiced tofu on toasted artisan sourdough bread with black coffee.' : 'Poached eggs on toasted artisan sourdough bread with sautéed spinach and black coffee.',
+      midMorning: '1 whole ripe pear or fresh guava slices with a pinch of rock salt.',
+      lunch: isVeg ? 'Black bean, sweet corn, and sautéed fajita bell pepper bowl over wild brown rice with guacamole.' : 'Chicken & bell pepper fajita bowl over wild brown rice with fresh guacamole and pico de gallo.',
+      evening: isVeg ? 'Roasted chana and raw sunflower seeds mix + iced peppermint tea.' : '3 boiled egg whites seasoned with cracked black pepper + green tea.',
+      dinner: isVeg ? 'Thai tofu and broccoli red curry cooked in light coconut milk with cauliflower rice.' : 'Pan-seared tilapia or tuna steak with cauliflower rice, sautéed baby spinach, and side garden salad.',
+      calories: 2240,
+      macros: { protein: '158g', carbs: '220g', fats: '64g' }
+    },
+    {
+      day: 'Saturday',
+      morning: 'Warm water with freshly squeezed lemon juice. Pre-workout: 1 crisp apple with 1 tbsp peanut butter.',
+      breakfast: isVeg ? 'Protein oat pancakes (oats, banana, flax meal) topped with fresh blueberries and 1 tsp pure maple syrup.' : 'Protein oat pancakes (oats, banana, egg whites, whey) topped with fresh blueberries and 1 tsp maple syrup.',
+      midMorning: 'Fresh tender coconut water with soft coconut kernel.',
+      lunch: isVeg ? 'Crispy falafel & roasted garlic hummus whole-wheat wrap with diced cucumber-tomato tabbouleh.' : 'Mediterranean grilled chicken wrap in whole-wheat tortilla with cucumber-tomato tabbouleh.',
+      evening: 'Steamed edamame pods tossed with Himalayan sea salt + iced black/green tea.',
+      dinner: isVeg ? 'Oven-roasted paneer & bell pepper skewers with roasted potato wedges and grilled asparagus.' : 'Herb-roasted chicken breast with oven-baked potato wedges and grilled asparagus.',
+      calories: 2280,
+      macros: { protein: '162g', carbs: '230g', fats: '63g' }
+    },
+    {
+      day: 'Sunday',
+      morning: 'Warm water infused with fresh mint leaves and lemon slices. Pre-workout / Active Rest: Chamomile herbal tea.',
+      breakfast: isVeg ? 'Tofu scramble shakshuka simmered in spiced tomatoes, onions, and bell peppers with multigrain toast.' : 'Traditional shakshuka (eggs poached in rich spiced tomato-pepper sauce) with 1 slice multigrain toast.',
+      midMorning: '1 whole fresh pomegranate or 2 peeled kiwis.',
+      lunch: isVeg ? 'Hearty mixed yellow and black dal tadka with paneer cubes + 1 cup steamed basmati rice + cucumber raita.' : 'Herb-infused roasted chicken breast + 1 cup steamed basmati rice + roasted cumin cucumber raita.',
+      evening: 'Antioxidant trail mix (almonds, walnuts, dried cranberries, pumpkin seeds).',
+      dinner: isVeg ? 'Hearty vegetable & lentil hot pot stew with steamed broccoli, carrots, and warm turmeric golden milk before bed.' : 'Grilled white fish or chicken bone broth soup with steamed carrots, broccoli, and warm golden milk before bed.',
+      calories: 2100,
+      macros: { protein: '148g', carbs: '200g', fats: '58g' }
+    }
+  ];
 
-  const breakfast = isVeg
-    ? 'Post-workout (7:30 AM): 3-4 whole eggs scrambled with spinach and mushrooms (or 150g paneer bhurji), 2 slices of whole-wheat toast, and fresh fruit / shake.'
-    : 'Post-workout (7:30 AM): 3-4 whole eggs scrambled with spinach and mushrooms, 2 slices of whole-wheat toast, and a glass of fresh orange juice or whey protein.';
-
-  const lunch = isVeg
-    ? '150g low-fat paneer/tofu or large bowl dal/chana with a large serving (1.5 cups) of mixed green salad with olive oil and 1 cup brown rice/quinoa.'
-    : '150-180g grilled chicken breast or fish (e.g., salmon/tuna) with a large serving (1.5 cups) of mixed green salad with olive oil and brown rice/quinoa.';
-
-  const evening = isVeg
-    ? 'Late Afternoon Snack (4:00 PM): 1 cup Greek yogurt with berries or a handful (30g) of almonds/walnuts. Pre-dinner (6:30 PM): Green tea.'
-    : 'Late Afternoon Snack (4:00 PM): 1 cup Greek yogurt with berries or a handful (30g) of almonds/walnuts. Pre-dinner (6:30 PM): Green tea or whey shake.';
-
-  const dinner = isVeg
-    ? 'Grilled paneer/tofu with sautéed bell peppers (or lentils), minimal complex carbs (e.g., small sweet potato or half a cup of lentils), large bowl of mixed vegetable soup.'
-    : 'Grilled fish / chicken tikka (150g, or paneer/tofu for vegetarian option), minimal complex carbs (e.g., small sweet potato or half a cup of lentils), large bowl of mixed vegetable soup.';
-
+  const morning = dailyMealPlans[0].morning;
+  const breakfast = dailyMealPlans[0].breakfast;
+  const lunch = dailyMealPlans[0].lunch;
+  const evening = dailyMealPlans[0].evening;
+  const dinner = dailyMealPlans[0].dinner;
   const hydration = 'Target 3.5-4 liters of water daily, spread throughout the day. Consider adding electrolyte tablets to water during/after intense training.';
 
   return {
@@ -167,6 +233,7 @@ export const mockAIGeneration = (fitnessProfile: any) => {
       exercises
     },
     dietRecommendation: {
+      dailyMealPlans,
       morning,
       breakfast,
       lunch,
@@ -256,7 +323,7 @@ export const callGemini = async (
           'Content-Type': 'application/json',
           'Content-Length': Buffer.byteLength(payload)
         },
-        timeout: 25000 // 25s timeout
+        timeout: 45000 // 45s timeout for full 7-day plan generation
       },
       (res) => {
         let raw = '';
@@ -355,11 +422,24 @@ Provide your response as a valid JSON object matching this schema:
     ]
   },
   "dietRecommendation": {
-    "morning": "Morning Hydration & Pre-workout (e.g. Warm water with pinch of pink Himalayan salt. Pre-workout: 1 small banana or 2 rice cakes with peanut butter)",
-    "breakfast": "Post-workout (7:30 AM): 3-4 whole eggs scrambled with spinach and mushrooms, 2 slices whole-wheat toast, and fresh fruit / whey protein",
-    "lunch": "150-180g grilled chicken/fish or paneer/tofu/lentils with a large serving (1.5 cups) mixed green salad with olive oil and brown rice/quinoa",
-    "evening": "Late Afternoon Snack (4:00 PM): 1 cup Greek yogurt with berries or a handful (30g) of almonds/walnuts. Pre-dinner: Green tea",
-    "dinner": "Grilled fish/chicken tikka or paneer/tofu with minimal complex carbs (e.g. small sweet potato or lentils) and mixed vegetable soup",
+    "dailyMealPlans": [
+      {
+        "day": "Monday",
+        "morning": "Morning pre-workout and hydration",
+        "breakfast": "Post-workout breakfast meal",
+        "midMorning": "Mid-morning wholesome snack",
+        "lunch": "Balanced nutrient-dense lunch",
+        "evening": "Late afternoon snack / tea",
+        "dinner": "Light recovery dinner",
+        "calories": 2150,
+        "macros": { "protein": "150g", "carbs": "210g", "fats": "58g" }
+      }
+    ],
+    "morning": "Morning Hydration & Pre-workout suggestion",
+    "breakfast": "Nutritious breakfast suggestion",
+    "lunch": "Lean protein with complex carbs and veggies",
+    "evening": "Afternoon snack and hydration",
+    "dinner": "Clean dinner with lean protein and veggies",
     "hydration": "Target 3.5-4 liters of water daily, spread throughout the day. Consider adding electrolyte tablets to water during/after workouts",
     "note": "Key macronutrient breakdown and daily caloric target"
   },
@@ -382,7 +462,12 @@ Provide your response as a valid JSON object matching this schema:
     "startingWeight": "${fitnessProfile.weight || 70}"
   }
 }
-Generate exactly 9 calibrated exercises in "exercises" matching their equipment (${fitnessProfile.equipmentAvailability || 'Full Gym'}) and goal (${fitnessProfile.fitnessGoal || 'General Fitness'}).`;
+
+CRITICAL RULES FOR DIET GENERATION:
+1. In 'dietRecommendation.dailyMealPlans', generate all 7 DAYS from Monday to Sunday ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday').
+2. EVERY SINGLE DAY MUST HAVE COMPLETELY DIFFERENT, UNIQUE MEALS for morning, breakfast, midMorning, lunch, evening, and dinner. 
+3. MEALS MUST NOT BE REPEATED THROUGHOUT THE WEEK. Provide genuine daily culinary variety tailored to their diet preference (${fitnessProfile.dietaryPreferences || 'Non-Vegetarian'}).
+4. Generate exactly 9 calibrated exercises in 'exercises' matching their equipment (${fitnessProfile.equipmentAvailability || 'Full Gym'}) and goal (${fitnessProfile.fitnessGoal || 'General Fitness'}).`;
 
 
     const rawResponse = await callGemini(
@@ -401,13 +486,21 @@ Generate exactly 9 calibrated exercises in "exercises" matching their equipment 
     const parsed = JSON.parse(cleaned);
 
     if (parsed.aiAnalysis && parsed.workoutRecommendation?.exercises?.length && parsed.dietRecommendation) {
+      const mergedDailyMealPlans = (Array.isArray(parsed.dietRecommendation.dailyMealPlans) && parsed.dietRecommendation.dailyMealPlans.length >= 7)
+        ? parsed.dietRecommendation.dailyMealPlans
+        : fallback.dietRecommendation.dailyMealPlans;
+
       return {
         aiAnalysis: { ...fallback.aiAnalysis, ...parsed.aiAnalysis },
         workoutRecommendation: {
           weeklySchedule: parsed.workoutRecommendation.weeklySchedule || fallback.workoutRecommendation.weeklySchedule,
           exercises: parsed.workoutRecommendation.exercises || fallback.workoutRecommendation.exercises
         },
-        dietRecommendation: { ...fallback.dietRecommendation, ...parsed.dietRecommendation },
+        dietRecommendation: { 
+          ...fallback.dietRecommendation, 
+          ...parsed.dietRecommendation,
+          dailyMealPlans: mergedDailyMealPlans
+        },
         recoveryRecommendations: { ...fallback.recoveryRecommendations, ...parsed.recoveryRecommendations },
         routine: { ...fallback.routine, ...parsed.routine },
         progressSuggestions: { ...fallback.progressSuggestions, ...parsed.progressSuggestions }

@@ -8,7 +8,7 @@ import {
   Utensils, Bot, CalendarCheck,
   TrendingUp, Bell, MessageSquare,
   Activity, Building2, Menu, LogOut, Clock,
-  ShoppingBag, FileText, Star, Lock
+  ShoppingBag, FileText, Star, Lock, Sparkles
 } from 'lucide-react';
 
 const MemberLayout = () => {
@@ -109,19 +109,19 @@ const MemberLayout = () => {
       title: 'Training',
       items: [
         { label: 'Training', path: '/member/find-trainers', icon: Dumbbell },
+        { label: "Trainer's Plan", path: '/member/trainer-plan', icon: FileText },
       ]
     },
     {
       title: 'Fitness',
       items: [
-        { label: 'AI Fitness', path: '/member/ai-assistant', icon: Bot },
-        { label: 'AI Results', path: '/member/ai-results', icon: Bot },
-        { label: 'Trainer Review', path: '/member/trainer-review', icon: FileText },
-        { label: 'My Fitness Plan', path: '/member/workout', icon: Dumbbell },
-        { label: 'Diet Plan', path: '/member/diet', icon: Utensils },
-        { label: 'Progress', path: '/member/progress', icon: TrendingUp },
+        { label: 'AI Fitness Assistant', path: '/member/ai-assistant', icon: Bot },
+        { label: 'My Workout Plan', path: '/member/workout', icon: Dumbbell },
+        { label: 'My Diet Plan', path: '/member/diet', icon: Utensils },
+        { label: 'Progress Tracking', path: '/member/progress', icon: TrendingUp },
         { label: 'Attendance', path: '/member/attendance', icon: CalendarCheck },
-        { label: 'Review & Ratings', path: '/member/session-review', icon: Star },
+        { label: 'Trainer Feedback', path: '/member/trainer-review', icon: MessageSquare },
+        { label: 'Reviews & Ratings', path: '/member/session-review', icon: Star },
       ]
     },
     {
@@ -150,11 +150,13 @@ const MemberLayout = () => {
     }
   ] : navGroups;
 
-  const isTrainingRoute = ['/member/find-trainers', '/member/training', '/member/trainer', '/member/bookings', '/member/online-sessions', '/member/book-session'].some(p => location.pathname.startsWith(p));
+  const isTrainingRoute = (location.pathname !== '/member/trainer-plan' && location.pathname !== '/member/trainers-plan') &&
+    ['/member/find-trainers', '/member/training', '/member/trainer', '/member/bookings', '/member/online-sessions', '/member/book-session'].some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
   const isStoreRoute = ['/member/store'].some(p => location.pathname.startsWith(p));
   const currentNav = isExpired
     ? { label: 'Membership Plan', path: '/member/subscription', icon: CreditCard }
     : (navGroups.flatMap(g => g.items).find(item => item.path === location.pathname) 
+      || (location.pathname === '/member/workout-videos' ? { label: 'My Workout Plan', path: '/member/workout', icon: Dumbbell } : null)
       || (isTrainingRoute ? { label: 'Training', path: '/member/find-trainers', icon: Dumbbell } : null)
       || (isStoreRoute ? { label: 'Gym Store', path: '/member/store', icon: ShoppingBag } : null));
 
@@ -176,7 +178,7 @@ const MemberLayout = () => {
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="font-semibold text-sm text-[#292524] truncate">{user?.firstName} {user?.lastName}</p>
-            <p className="text-xs text-[#FED7AA] font-medium truncate capitalize">
+            <p className="text-xs text-[#292524] font-medium font-medium truncate capitalize">
               {isExpired ? 'Free Trial Completed' : `${user?.subscriptionPlan || 'Member'} Plan`}
             </p>
           </div>
@@ -192,7 +194,9 @@ const MemberLayout = () => {
               {group.items.map((item) => {
                 const isTrainingItem = item.path === '/member/find-trainers';
                 const isStoreItem = item.path === '/member/store';
+                const isWorkoutItem = item.path === '/member/workout';
                 const isActive = location.pathname === item.path 
+                  || (isWorkoutItem && location.pathname === '/member/workout-videos')
                   || (isTrainingItem && isTrainingRoute)
                   || (isStoreItem && isStoreRoute);
                 const Icon = item.icon;
@@ -266,7 +270,7 @@ const MemberLayout = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border-2 border-red-500 text-center">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Clock className="text-[#FED7AA]" size={32} />
+              <Clock className="text-[#EA580C]" size={32} />
             </div>
             <h2 className="text-2xl font-bold text-[#292524] mb-2">Plan Expiring Soon!</h2>
             <p className="text-[#78716C] mb-6">

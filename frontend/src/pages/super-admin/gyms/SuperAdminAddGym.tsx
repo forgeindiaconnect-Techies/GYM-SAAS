@@ -6,12 +6,12 @@ const SuperAdminAddGym = () => {
       <div className="flex justify-between items-end mb-8 border-b border-[#E7E5E4] pb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <PlusSquare className="text-[#FED7AA]" size={32} />
+            <PlusSquare className="text-[#EA580C]" size={32} />
             Add New Gym
           </h1>
           <p className="text-[#78716C] mt-2 font-mono text-sm">Onboard a new organization to the platform.</p>
         </div>
-        <button className="px-6 py-2 bg-[#FED7AA]/10 text-[#FED7AA] border border-[#FED7AA]/30 rounded-xl font-bold hover:bg-[#FED7AA] hover:text-[#F97316] transition-colors">
+        <button className="px-6 py-2 bg-[#FED7AA]/10 text-[#EA580C] border border-[#FED7AA]/30 rounded-xl font-bold hover:bg-[#FED7AA] hover:text-[#F97316] transition-colors">
           Manage
         </button>
       </div>

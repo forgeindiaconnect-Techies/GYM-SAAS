@@ -148,7 +148,7 @@ const GymAdminBranchProfile = () => {
   };
 
   if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-[#F97316]" size={32} /></div>;
-  if (!branch) return <div className="p-12 text-center text-[#FED7AA]">Branch not found</div>;
+  if (!branch) return <div className="p-12 text-center text-[#EA580C]">Branch not found</div>;
 
   const currentPlans = (editMode ? form.subscriptionPlans : branch.subscriptionPlans)?.length 
     ? (editMode ? form.subscriptionPlans : branch.subscriptionPlans) 
@@ -551,7 +551,7 @@ const GymAdminBranchProfile = () => {
                   setShowPlanModal(false);
                   setEditingPlanIndex(null);
                 }}
-                className="text-[#78716C] hover:text-[#FED7AA] transition-colors"
+                className="text-[#78716C] hover:text-[#EA580C] transition-colors"
               >
                 <X size={24} />
               </button>

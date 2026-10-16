@@ -126,7 +126,7 @@ const SuperAdminDeletedDetails = () => {
       <div className="flex justify-between items-center mb-6 shrink-0 relative z-10">
         <div>
           <h1 className="text-3xl font-bold text-[#292524] tracking-tight flex items-center space-x-3">
-            <Trash2 className="text-[#FED7AA]" size={32} />
+            <Trash2 className="text-[#EA580C]" size={32} />
             <span>Deleted Details</span>
           </h1>
           <p className="text-[#78716C] text-sm mt-1">View all deleted customers, gym owners, and gym invitations.</p>
@@ -192,7 +192,7 @@ const SuperAdminDeletedDetails = () => {
             <p>Loading deleted records...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#FED7AA]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#EA580C]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>

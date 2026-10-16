@@ -674,7 +674,7 @@ const GymStoreOfflineSales = () => {
                           <span className="font-bold text-[#292524] w-20 text-right">₹{(priceOfLine(line) * (Number(line.quantity) || 1))}</span>
                           <div className="w-8 flex justify-end">
                             {lines.length > 1 && (
-                              <button onClick={() => removeLine(idx)} className="p-1.5 bg-red-50 text-[#FED7AA] rounded-lg hover:bg-red-100 transition-colors"><Trash2 size={15} /></button>
+                              <button onClick={() => removeLine(idx)} className="p-1.5 bg-red-50 text-rose-600 rounded-lg hover:bg-red-100 transition-colors"><Trash2 size={15} /></button>
                             )}
                           </div>
                         </div>

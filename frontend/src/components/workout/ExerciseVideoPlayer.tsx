@@ -44,11 +44,25 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
   const [duration, setDuration] = useState(0);
   const [hasError, setHasError] = useState(false);
 
-  // Normalize videoUrl if it points to a local upload path
-  // If URL contains mixkit, treat as dead external CDN and ignore
+  // Validate URL to ensure it is a valid web or static media path
+  const isValidMediaUrl = (url?: string): boolean => {
+    if (!url || typeof url !== 'string' || !url.trim()) return false;
+    const trimmed = url.trim();
+    if (trimmed.includes(' ') || trimmed.includes('mixkit.co')) return false;
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      try {
+        const parsed = new URL(trimmed);
+        return Boolean(parsed.hostname && parsed.hostname.includes('.'));
+      } catch {
+        return false;
+      }
+    }
+    return trimmed.startsWith('/') || trimmed.startsWith('./');
+  };
+
   const isMixkit = Boolean(videoUrl && videoUrl.includes('mixkit.co'));
-  const normalizedVideoUrl = (videoUrl && !isMixkit)
-    ? (videoUrl.startsWith('http') ? videoUrl : `http://localhost:5600${videoUrl}`)
+  const normalizedVideoUrl = (isValidMediaUrl(videoUrl) && !isMixkit)
+    ? (videoUrl!.startsWith('http') ? videoUrl! : `http://localhost:5600${videoUrl}`)
     : '';
 
   // Determine initial view mode:

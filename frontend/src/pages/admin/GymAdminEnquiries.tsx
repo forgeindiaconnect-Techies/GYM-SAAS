@@ -203,7 +203,7 @@ export const GymAdminEnquiries = () => {
                 {filteredEnquiries.length === 0 && (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center text-[#78716C]">
-                      <MessageSquare size={40} className="mx-auto text-[#FED7AA] mb-3" />
+                      <MessageSquare size={40} className="mx-auto text-[#EA580C] mb-3" />
                       No enquiries found.
                     </td>
                   </tr>

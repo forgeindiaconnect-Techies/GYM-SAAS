@@ -122,7 +122,7 @@ const MemberCart = () => {
                       </div>
                       <p className="text-xs text-[#78716C]">{p.categoryName}{p.brand ? ` · ${p.brand}` : ''}</p>
                     </div>
-                    <button onClick={() => remove(p._id, row.variantId)} className="p-1.5 bg-red-50 text-[#FED7AA] rounded-lg hover:bg-red-100"><Trash2 size={15} /></button>
+                    <button onClick={() => remove(p._id, row.variantId)} className="p-1.5 bg-red-50 text-rose-600 rounded-lg hover:bg-red-100"><Trash2 size={15} /></button>
                   </div>
                   <div className="mt-2 flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -163,7 +163,7 @@ const MemberCart = () => {
           >
             Proceed to Checkout <ArrowRight size={17} />
           </button>
-          <button onClick={() => navigate('/member/store')} className="mt-3 w-full py-2.5 text-[#FED7AA] font-bold rounded-xl hover:bg-[#FFFDF8] transition-colors text-sm">
+          <button onClick={() => navigate('/member/store')} className="mt-3 w-full py-2.5 text-[#EA580C] font-bold rounded-xl hover:bg-[#FFFDF8] transition-colors text-sm">
             Continue shopping
           </button>
         </div>

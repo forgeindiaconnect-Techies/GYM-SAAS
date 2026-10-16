@@ -201,7 +201,7 @@ const GymAdminTrainerPaymentHistory = () => {
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 px-6">
             <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4">
-              <History size={28} className="text-slate-300" />
+              <History size={28} className="text-stone-600" />
             </div>
             <p className="text-[#292524] font-bold text-lg">No payment records yet</p>
             <p className="text-[#78716C] text-sm mt-2 max-w-sm mx-auto">
@@ -337,7 +337,7 @@ const GymAdminTrainerPaymentHistory = () => {
                     href={selectedPayment.paymentProof}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-[#FED7AA] text-sm font-bold rounded-lg hover:bg-blue-100 transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 text-sm font-bold rounded-lg hover:bg-blue-100 transition-colors"
                   >
                     <FileText size={16} />
                     View Payment Proof

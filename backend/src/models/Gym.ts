@@ -10,14 +10,22 @@ export enum GymStatus {
 }
 
 export interface IGymEquipment {
+  _id?: mongoose.Types.ObjectId | string;
+  id?: string;
   branchId?: mongoose.Types.ObjectId;
   category: string;
   name: string;
   quantity: number;
   brand?: string;
-  condition: 'New' | 'Good' | 'Maintenance Required';
+  condition: 'New' | 'Good' | 'Maintenance Required' | string;
   availability: string;
   image?: string;
+  status?: string;
+  nextService?: string;
+  isApproved?: boolean;
+  approvedBy?: mongoose.Types.ObjectId | string;
+  approvedByName?: string;
+  approvedAt?: Date;
 }
 
 export interface IGymACDetails {
@@ -169,7 +177,13 @@ const gymSchema = new Schema<IGym>(
       brand: { type: String },
       condition: { type: String, default: 'Good' },
       availability: { type: String, default: 'Available' },
+      status: { type: String, default: 'Active' },
+      nextService: { type: String },
       image: { type: String },
+      isApproved: { type: Boolean, default: false },
+      approvedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+      approvedByName: { type: String },
+      approvedAt: { type: Date },
     }],
     acDetails: {
       type: { type: String, enum: ['Fully AC', 'Partially AC', 'Non-AC', 'AC + Non-AC Sections'] },

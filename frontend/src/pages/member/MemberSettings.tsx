@@ -41,7 +41,7 @@ const MemberSettings = () => {
       </div>
       
       <div className="pt-4">
-        <button className="text-[#FED7AA] font-medium hover:underline text-sm">Delete Account</button>
+        <button className="text-[#EA580C] font-medium hover:underline text-sm">Delete Account</button>
       </div>
     </div>
   );

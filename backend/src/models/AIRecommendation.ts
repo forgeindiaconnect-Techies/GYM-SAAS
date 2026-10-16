@@ -54,6 +54,17 @@ export interface IAIRecommendation extends Document {
   workoutPlan?: any[];
   
   dietRecommendation?: {
+    dailyMealPlans?: Array<{
+      day: string;
+      morning?: string;
+      breakfast?: string;
+      midMorning?: string;
+      lunch?: string;
+      evening?: string;
+      dinner?: string;
+      calories?: number | string;
+      macros?: { protein?: string; carbs?: string; fats?: string };
+    }>;
     morning: string;
     breakfast: string;
     lunch: string;
@@ -246,6 +257,7 @@ const aiRecommendationSchema = new Schema<IAIRecommendation>({
   workoutPlan: [{ type: Schema.Types.Mixed }],
   
   dietRecommendation: {
+    dailyMealPlans: [{ type: Schema.Types.Mixed }],
     morning: String,
     breakfast: String,
     lunch: String,

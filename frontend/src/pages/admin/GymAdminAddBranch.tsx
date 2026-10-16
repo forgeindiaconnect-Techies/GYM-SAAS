@@ -468,7 +468,7 @@ const GymAdminAddBranch = () => {
                   setShowPlanModal(false);
                   setEditingPlanIndex(null);
                 }}
-                className="text-[#78716C] hover:text-[#FED7AA] transition-colors"
+                className="text-[#78716C] hover:text-[#EA580C] transition-colors"
               >
                 <X size={24} />
               </button>

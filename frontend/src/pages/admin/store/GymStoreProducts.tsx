@@ -573,7 +573,7 @@ const GymStoreProducts = () => {
                 <div className="pt-4 border-t border-gray-100">
                   <div className="flex justify-between items-center mb-3">
                      <h3 className="text-xs font-bold text-[#F97316] uppercase tracking-wider">Variants</h3>
-                     <button onClick={addVariantRow} type="button" className="px-3 py-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 text-xs font-bold flex items-center gap-1"><Plus size={14}/> Add Variant</button>
+                     <button onClick={addVariantRow} type="button" className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 text-xs font-bold flex items-center gap-1"><Plus size={14}/> Add Variant</button>
                   </div>
                   <div className="overflow-x-auto rounded-lg border border-[#E7E5E4]">
                     <table className="w-full text-left text-xs whitespace-nowrap">
@@ -602,7 +602,7 @@ const GymStoreProducts = () => {
                                 <td className="p-2"><input type="number" value={v.price} onChange={(e) => updateVariant(idx, 'price', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
                                 <td className="p-2"><input type="number" value={v.discountPrice} onChange={(e) => updateVariant(idx, 'discountPrice', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="Optional" /></td>
                                 <td className="p-2"><input type="number" value={v.stock} onChange={(e) => updateVariant(idx, 'stock', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
-                                <td className="p-2 text-center"><button type="button" onClick={() => removeVariant(idx)} className="text-[#FED7AA] hover:text-red-700 bg-red-50 p-1.5 rounded"><Trash2 size={14}/></button></td>
+                                <td className="p-2 text-center"><button type="button" onClick={() => removeVariant(idx)} className="text-[#EA580C] hover:text-red-700 bg-red-50 p-1.5 rounded"><Trash2 size={14}/></button></td>
                              </tr>
                           ))
                         )}

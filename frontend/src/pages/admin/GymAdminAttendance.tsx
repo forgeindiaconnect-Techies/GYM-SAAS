@@ -366,7 +366,7 @@ const GymAdminAttendance = () => {
 
             <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-10 h-10 bg-[#FED7AA]/10 text-[#FED7AA] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-[#FED7AA]/10 text-[#EA580C] rounded-xl flex items-center justify-center">
                   <UserX size={20} />
                 </div>
               </div>

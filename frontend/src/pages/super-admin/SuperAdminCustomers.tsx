@@ -130,7 +130,7 @@ const SuperAdminCustomers = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'APPROVED': return 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20';
-      case 'REJECTED': return 'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/20';
+      case 'REJECTED': return 'bg-[#FED7AA]/10 text-[#EA580C] border-[#FED7AA]/20';
       case 'SUSPENDED': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       default: return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
     }
@@ -209,7 +209,7 @@ const SuperAdminCustomers = () => {
             <p>Loading customers...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#FED7AA]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#EA580C]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
@@ -286,7 +286,7 @@ const SuperAdminCustomers = () => {
                           </button>
                           <button 
                             onClick={() => handleDelete(customer._id)}
-                            className="p-1.5 text-[#78716C] hover:text-[#FED7AA] hover:bg-red-500/10 rounded-md transition-colors"
+                            className="p-1.5 text-[#78716C] hover:text-rose-600 hover:bg-red-50 rounded-md transition-colors"
                             title="Delete Customer"
                           >
                             <Trash2 size={16} />

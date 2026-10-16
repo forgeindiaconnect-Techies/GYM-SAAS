@@ -140,7 +140,7 @@ export const registerGymOwner = async (req: Request, res: Response): Promise<voi
       approxMembers, numTrainers, operatingHours,
       trainingMode, services,
       subscriptionPlans, equipment, acDetails, facilities, offers,
-      rating, reviewCount, logo, images
+      rating, reviewCount, logo, images, description
     } = req.body;
 
     if (!firstName || !lastName || !email || !mobile || !password || !gymName || !gymType || !address || !city) {
@@ -181,6 +181,7 @@ export const registerGymOwner = async (req: Request, res: Response): Promise<voi
     const gym = new Gym({
       ownerId: user._id,
       name: gymName,
+      description: description?.trim() || undefined,
       gymType,
       logo: logo || undefined,
       images: images || [],

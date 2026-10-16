@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Utensils, 
   Plus, 
@@ -10,8 +10,12 @@ import {
   CheckCircle2, 
   UserCheck, 
   Sparkles, 
-  Info
+  Info,
+  Send,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
+import api from '../../utils/api';
 
 interface MealItem {
   mealName: string;
@@ -112,20 +116,50 @@ const initialPlans: DietPlan[] = [
   },
 ];
 
-const mockClients = [
-  { id: '1', name: 'John Doe', email: 'john@example.com', plan: 'Gold Plan' },
-  { id: '2', name: 'Sarah Connor', email: 'sarah@example.com', plan: 'Silver Plan' },
-  { id: '3', name: 'Michael Smith', email: 'michael@example.com', plan: 'Free Trial' },
-  { id: '4', name: 'Emily Davis', email: 'emily@example.com', plan: 'Gold Plan' }
-];
-
 const TrainerDietPlans = () => {
   const [plans, setPlans] = useState<DietPlan[]>(initialPlans);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<DietPlan | null>(null);
   const [assignModalOpen, setAssignModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState('');
+  const [coachNotes, setCoachNotes] = useState('');
   const [assignSuccess, setAssignSuccess] = useState('');
+  const [isSubmittingApproval, setIsSubmittingApproval] = useState(false);
+
+  // Real clients & pending requests
+  const [clients, setClients] = useState<any[]>([]);
+  const [pendingDietRequests, setPendingDietRequests] = useState<any[]>([]);
+  const [approvingRequestId, setApprovingRequestId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchClients();
+    fetchPendingRequests();
+  }, []);
+
+  const fetchClients = async () => {
+    try {
+      const res = await api.get('/trainer-plans/clients');
+      if (res.data?.success && res.data.clients) {
+        setClients(res.data.clients);
+      }
+    } catch (err) {
+      console.error('Failed to load clients:', err);
+    }
+  };
+
+  const fetchPendingRequests = async () => {
+    try {
+      const res = await api.get('/trainer-plans/trainer-requests');
+      if (res.data?.success && res.data.requests) {
+        const dietReqs = res.data.requests.filter(
+          (r: any) => r.planType === 'Diet Plan' && r.status === 'Pending'
+        );
+        setPendingDietRequests(dietReqs);
+      }
+    } catch (err) {
+      console.error('Failed to load pending diet requests:', err);
+    }
+  };
 
   const [form, setForm] = useState({
     name: '',
@@ -168,15 +202,70 @@ const TrainerDietPlans = () => {
     setForm({ name: '', cals: '', p: '', c: '', f: '', type: 'High Protein', targetGoal: '', description: '' });
   };
 
-  const handleAssignToClient = (e: React.FormEvent) => {
+  // Direct Approval & Assignment to Customer Dashboard
+  const handleAssignToClient = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedClientId) return;
-    const client = mockClients.find(c => c.id === selectedClientId);
-    setAssignSuccess(`"${selectedPlan?.name}" successfully assigned to ${client?.name || 'client'}!`);
-    setTimeout(() => {
-      setAssignSuccess('');
-      setAssignModalOpen(false);
-    }, 2200);
+    if (!selectedClientId || !selectedPlan) return;
+
+    try {
+      setIsSubmittingApproval(true);
+      const res = await api.post('/trainer-plans/trainer/approve-and-assign', {
+        customerId: selectedClientId,
+        planType: 'Diet Plan',
+        title: selectedPlan.name,
+        goal: selectedPlan.targetGoal || 'Nutritional Excellence',
+        trainerFeedback: coachNotes || 'Approved by your trainer! Follow this nutrition guide for best results.',
+        dietDetails: {
+          dailyCalories: selectedPlan.cals,
+          protein: selectedPlan.p,
+          carbs: selectedPlan.c,
+          fats: selectedPlan.f,
+          hydration: selectedPlan.hydration,
+          meals: selectedPlan.meals || [],
+          guidelines: selectedPlan.guidelines || []
+        }
+      });
+
+      if (res.data?.success) {
+        const client = clients.find(c => c._id === selectedClientId);
+        const clientName = client ? `${client.firstName} ${client.lastName}` : 'Client';
+        setAssignSuccess(`Diet plan "${selectedPlan.name}" has been Approved and is now LIVE on ${clientName}'s customer dashboard!`);
+        setTimeout(() => {
+          setAssignSuccess('');
+          setAssignModalOpen(false);
+          setSelectedPlan(null);
+          setCoachNotes('');
+        }, 2500);
+      }
+    } catch (err: any) {
+      console.error('Error approving diet plan:', err);
+      alert(err.response?.data?.message || 'Failed to approve and assign diet plan');
+    } finally {
+      setIsSubmittingApproval(false);
+    }
+  };
+
+  // Quick Approval of Pending Customer Request
+  const handleQuickApproveRequest = async (reqId: string) => {
+    try {
+      setApprovingRequestId(reqId);
+      const res = await api.patch(`/trainer-plans/requests/${reqId}/approve`, {
+        trainerFeedback: 'Approved by your trainer! Your customized diet plan is now active on your dashboard.'
+      });
+      if (res.data?.success) {
+        alert('Diet plan approved! It is now directly visible on the customer dashboard.');
+        fetchPendingRequests();
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to approve diet plan request');
+    } finally {
+      setApprovingRequestId(null);
+    }
+  };
+
+  const openApproveModalForPlan = (plan: DietPlan) => {
+    setSelectedPlan(plan);
+    setAssignModalOpen(true);
   };
 
   return (
@@ -185,7 +274,7 @@ const TrainerDietPlans = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#292524]">Diet Plans</h1>
-          <p className="text-[#78716C]">Manage nutrition guidelines, macro splits, and customized meal plans</p>
+          <p className="text-[#78716C]">Manage nutrition guidelines, macro splits, and approved customer meal plans</p>
         </div>
         <button 
           onClick={() => setIsCreateModalOpen(true)}
@@ -194,6 +283,61 @@ const TrainerDietPlans = () => {
           <Plus size={18} /> Create Diet Plan
         </button>
       </div>
+
+      {/* Pending Customer Diet Requests Banner */}
+      {pendingDietRequests.length > 0 && (
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-[#F97316] text-white flex items-center justify-center font-bold text-xs">
+                {pendingDietRequests.length}
+              </span>
+              <div>
+                <h3 className="text-sm font-bold text-stone-900">Pending Customer Diet Plan Approvals</h3>
+                <p className="text-xs text-stone-600">Customers requested nutrition plan approvals. Click Approve to publish directly to their dashboard.</p>
+              </div>
+            </div>
+            <span className="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full border border-amber-300">
+              Needs Approval
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+            {pendingDietRequests.map((req) => (
+              <div key={req._id} className="bg-white rounded-xl p-4 border border-orange-100 shadow-2xs flex flex-col justify-between space-y-3">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-sm text-stone-900">
+                      {req.customerId?.firstName} {req.customerId?.lastName}
+                    </span>
+                    <span className="text-[11px] text-stone-400">
+                      {new Date(req.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-xs font-semibold text-[#F97316] mt-0.5">{req.title}</p>
+                  <p className="text-xs text-stone-600 mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
+                </div>
+
+                <button
+                  onClick={() => handleQuickApproveRequest(req._id)}
+                  disabled={approvingRequestId === req._id}
+                  className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                >
+                  {approvingRequestId === req._id ? (
+                    <>
+                      <Loader2 size={13} className="animate-spin" /> Approving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={14} /> Approve & Publish to Customer Dashboard
+                    </>
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Diet Plan Cards */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -242,13 +386,22 @@ const TrainerDietPlans = () => {
               </div>
             </div>
             
-            {/* View Details Button */}
-            <button 
-              onClick={() => setSelectedPlan(plan)}
-              className="w-full mt-6 py-2.5 border border-[#E7E5E4] hover:border-[#F97316] hover:bg-[#F97316] hover:text-white text-[#292524] rounded-xl text-sm font-semibold transition-all shadow-sm active:scale-98"
-            >
-              View Details
-            </button>
+            {/* Card Buttons: View Details & Approval */}
+            <div className="flex items-center gap-2 mt-6">
+              <button 
+                onClick={() => setSelectedPlan(plan)}
+                className="flex-1 py-2.5 border border-[#E7E5E4] hover:border-[#F97316] hover:bg-orange-50/50 text-[#292524] rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98"
+              >
+                View Details
+              </button>
+              <button 
+                onClick={() => openApproveModalForPlan(plan)}
+                className="flex-1 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 active:scale-98 shadow-emerald-600/20"
+                title="Approve this plan directly to a customer dashboard"
+              >
+                <CheckCircle2 size={14} /> Approval
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -412,8 +565,8 @@ const TrainerDietPlans = () => {
           <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#E7E5E4] overflow-hidden">
             <div className="p-5 border-b border-[#E7E5E4] flex justify-between items-center bg-[#FFFDF8]">
               <div className="flex items-center gap-2">
-                <UserCheck size={20} className="text-[#F97316]" />
-                <h3 className="font-bold text-[#292524] text-base">Assign Diet Plan</h3>
+                <CheckCircle2 size={20} className="text-emerald-600" />
+                <h3 className="font-bold text-[#292524] text-base">Approve & Deliver Diet Plan</h3>
               </div>
               <button 
                 onClick={() => setAssignModalOpen(false)}
@@ -424,13 +577,13 @@ const TrainerDietPlans = () => {
             </div>
 
             <form onSubmit={handleAssignToClient} className="p-5 space-y-4">
-              <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs text-teal-900">
-                Assigning <strong>{selectedPlan.name}</strong> ({selectedPlan.cals} kcal/day)
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900">
+                Approving <strong>{selectedPlan.name}</strong> ({selectedPlan.cals} kcal/day) directly to customer dashboard.
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
-                  Select Gym Member / Client *
+                  Select Customer / Gym Member *
                 </label>
                 <select
                   value={selectedClientId}
@@ -438,13 +591,26 @@ const TrainerDietPlans = () => {
                   className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#F97316]"
                   required
                 >
-                  <option value="">-- Choose a member --</option>
-                  {mockClients.map(client => (
-                    <option key={client.id} value={client.id}>
-                      {client.name} ({client.email}) — {client.plan}
+                  <option value="">-- Choose a customer --</option>
+                  {clients.map(client => (
+                    <option key={client._id} value={client._id}>
+                      {client.firstName} {client.lastName} ({client.email}) {client.fitnessGoal ? `• Goal: ${client.fitnessGoal}` : ''}
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
+                  Coach Message & Nutritional Guidelines
+                </label>
+                <textarea
+                  rows={3}
+                  value={coachNotes}
+                  onChange={(e) => setCoachNotes(e.target.value)}
+                  placeholder="e.g. Follow this meal routine strictly for the next 4 weeks. Stay consistent with your protein and water intake!"
+                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-3 text-xs outline-none focus:border-[#F97316] resize-none"
+                />
               </div>
 
               {assignSuccess && (
@@ -463,10 +629,18 @@ const TrainerDietPlans = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={!selectedClientId}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-[#F97316] text-white hover:bg-[#EA580C] disabled:opacity-50 transition-colors"
+                  disabled={!selectedClientId || isSubmittingApproval}
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 shadow-emerald-600/20"
                 >
-                  Confirm Assignment
+                  {isSubmittingApproval ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" /> Approving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={15} /> Approve & Send to Customer Dashboard
+                    </>
+                  )}
                 </button>
               </div>
             </form>

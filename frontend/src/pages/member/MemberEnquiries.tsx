@@ -105,7 +105,7 @@ export const MemberEnquiries = () => {
                 {filteredEnquiries.length === 0 && (
                   <tr>
                     <td colSpan={4} className="px-6 py-12 text-center text-[#78716C]">
-                      <MessageSquare size={40} className="mx-auto text-[#FED7AA] mb-3" />
+                      <MessageSquare size={40} className="mx-auto text-[#EA580C] mb-3" />
                       You haven't submitted any enquiries yet.
                     </td>
                   </tr>

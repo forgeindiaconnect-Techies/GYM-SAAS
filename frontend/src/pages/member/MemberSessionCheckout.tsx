@@ -136,7 +136,7 @@ const MemberSessionCheckout = () => {
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="h-px bg-[#E7E5E4] flex-1"></div>
-                        <span className="text-[10px] font-black text-[#FED7AA] uppercase tracking-wider">OR</span>
+                        <span className="text-[10px] font-black text-[#EA580C] uppercase tracking-wider">OR</span>
                         <div className="h-px bg-[#E7E5E4] flex-1"></div>
                       </div>
                       <div>

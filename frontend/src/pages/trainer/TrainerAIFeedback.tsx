@@ -272,7 +272,7 @@ const TrainerAIFeedback = () => {
                           <div className="flex flex-wrap gap-3 text-xs text-[#78716C]">
                             {goal !== '—' && (
                               <span className="inline-flex items-center gap-1 font-semibold text-[#78716C]">
-                                <Dumbbell size={12} className="text-[#FED7AA]" /> Goal: {goal}
+                                <Dumbbell size={12} className="text-[#EA580C]" /> Goal: {goal}
                               </span>
                             )}
                             {workoutDays > 0 && (
@@ -322,7 +322,7 @@ const TrainerAIFeedback = () => {
                         {f.workoutRecommendation?.weeklySchedule?.length > 0 && (
                           <div className="bg-white rounded-xl border border-[#E7E5E4] p-4">
                             <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                              <Dumbbell size={13} className="text-[#FED7AA]" /> Workout Plan
+                              <Dumbbell size={13} className="text-[#EA580C]" /> Workout Plan
                             </p>
                             <div className="space-y-2">
                               {f.workoutRecommendation.weeklySchedule.slice(0, 4).map((day: any, i: number) => (
@@ -334,7 +334,7 @@ const TrainerAIFeedback = () => {
                                 </div>
                               ))}
                               {f.workoutRecommendation.weeklySchedule.length > 4 && (
-                                <p className="text-xs text-[#FED7AA] font-semibold">+{f.workoutRecommendation.weeklySchedule.length - 4} more days</p>
+                                <p className="text-xs text-[#292524] font-medium font-semibold">+{f.workoutRecommendation.weeklySchedule.length - 4} more days</p>
                               )}
                             </div>
                           </div>
@@ -344,7 +344,7 @@ const TrainerAIFeedback = () => {
                         {f.dietRecommendation?.mealPlan?.length > 0 && (
                           <div className="bg-white rounded-xl border border-[#E7E5E4] p-4">
                             <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                              <Salad size={13} className="text-[#FED7AA]" /> Diet Plan
+                              <Salad size={13} className="text-[#EA580C]" /> Diet Plan
                             </p>
                             <div className="space-y-2">
                               {f.dietRecommendation.mealPlan.slice(0, 4).map((meal: any, i: number) => (
@@ -354,7 +354,7 @@ const TrainerAIFeedback = () => {
                                 </div>
                               ))}
                               {f.dietRecommendation.mealPlan.length > 4 && (
-                                <p className="text-xs text-[#FED7AA] font-semibold">+{f.dietRecommendation.mealPlan.length - 4} more meals</p>
+                                <p className="text-xs text-[#292524] font-medium font-semibold">+{f.dietRecommendation.mealPlan.length - 4} more meals</p>
                               )}
                             </div>
                           </div>
@@ -430,13 +430,13 @@ const TrainerAIFeedback = () => {
               {/* Workout Schedule */}
               {detail.workoutRecommendation?.weeklySchedule?.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Dumbbell size={13} className="text-[#FED7AA]" /> Weekly Workout Schedule</p>
+                  <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Dumbbell size={13} className="text-[#EA580C]" /> Weekly Workout Schedule</p>
                   <div className="space-y-2">
                     {detail.workoutRecommendation.weeklySchedule.map((day: any, i: number) => (
                       <div key={i} className={`flex items-start justify-between p-3 rounded-xl border ${day.isRest ? 'bg-gray-50 border-gray-100' : 'bg-white border-[#E7E5E4]'}`}>
                         <div>
                           <p className="font-bold text-[#292524] text-sm">{day.day}</p>
-                          {!day.isRest && day.focus && <p className="text-xs text-[#FED7AA] font-semibold mt-0.5">{day.focus}</p>}
+                          {!day.isRest && day.focus && <p className="text-xs text-[#292524] font-medium font-semibold mt-0.5">{day.focus}</p>}
                           {day.isRest && <p className="text-xs text-gray-400 mt-0.5">Rest &amp; Recovery</p>}
                         </div>
                         {!day.isRest && day.exercises?.length > 0 && (
@@ -451,7 +451,7 @@ const TrainerAIFeedback = () => {
               {/* Diet Plan */}
               {detail.dietRecommendation?.mealPlan?.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Salad size={13} className="text-[#FED7AA]" /> Diet / Meal Plan</p>
+                  <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Salad size={13} className="text-[#EA580C]" /> Diet / Meal Plan</p>
                   <div className="space-y-2">
                     {detail.dietRecommendation.mealPlan.map((meal: any, i: number) => (
                       <div key={i} className="flex items-center justify-between p-3 bg-white rounded-xl border border-[#E7E5E4]">

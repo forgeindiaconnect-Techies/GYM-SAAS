@@ -55,7 +55,7 @@ const AdminGymProfile = () => {
             <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
               gym.status === 'ACTIVE' ? 'bg-[#F97316]/10 text-[#F97316]' :
               gym.status === 'PENDING' ? 'bg-orange-500/10 text-orange-500' :
-              'bg-[#FED7AA]/10 text-[#FED7AA]'
+              'bg-[#FED7AA]/10 text-[#EA580C]'
             }`}>
               {gym.status === 'ACTIVE' ? 'Active' : gym.status === 'PENDING' ? 'Pending Approval' : 'Suspended'}
             </span>

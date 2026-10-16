@@ -215,9 +215,9 @@ const GymStoreSalesHistory = () => {
         <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 flex items-center justify-between shadow-xs">
           <div>
             <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Online Orders</p>
-            <h3 className="text-2xl font-black text-[#FED7AA]">₹{totals.online.toLocaleString('en-IN')}</h3>
+            <h3 className="text-2xl font-black text-[#EA580C]">₹{totals.online.toLocaleString('en-IN')}</h3>
           </div>
-          <ShoppingBag className="text-[#FED7AA]/20" size={36} />
+          <ShoppingBag className="text-[#EA580C]/20" size={36} />
         </div>
         <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 flex items-center justify-between shadow-xs">
           <div>

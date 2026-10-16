@@ -202,7 +202,7 @@ const MemberWorkoutVideos = () => {
                         video.difficultyLevel === 'Beginner'
                           ? 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/40'
                           : video.difficultyLevel === 'Intermediate'
-                          ? 'bg-amber-500/30 text-amber-200 border border-amber-400/40'
+                          ? 'bg-amber-500/30 text-amber-600 border border-amber-400/40'
                           : 'bg-rose-500/30 text-rose-200 border border-rose-400/40'
                       }`}
                     >

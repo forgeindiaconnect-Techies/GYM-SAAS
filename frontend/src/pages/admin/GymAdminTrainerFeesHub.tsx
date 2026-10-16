@@ -27,7 +27,7 @@ const cards = [
     path: '/admin/trainer-fees/history',
     color: 'from-blue-500 to-indigo-500',
     bg: 'bg-blue-50',
-    iconColor: 'text-[#FED7AA]',
+    iconColor: 'text-[#EA580C]',
   },
   {
     title: 'Trainer Earnings',

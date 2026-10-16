@@ -37,6 +37,12 @@ const Step8Review: React.FC<StepProps> = ({ form, setStep }) => {
             <div><span className="text-[#78716C] block mb-1">Approx Members</span><span className="text-[#292524] font-medium">{form.approxMembers}</span></div>
             <div><span className="text-[#78716C] block mb-1">Trainers</span><span className="text-[#292524] font-medium">{form.numTrainers}</span></div>
             <div><span className="text-[#78716C] block mb-1">Operating Hours</span><span className="text-[#292524] font-medium">{form.operatingHours}</span></div>
+            {form.description && (
+              <div className="sm:col-span-2">
+                <span className="text-[#78716C] block mb-1">Gym Description</span>
+                <span className="text-[#292524] font-medium leading-relaxed">{form.description}</span>
+              </div>
+            )}
           </div>
         </div>
 

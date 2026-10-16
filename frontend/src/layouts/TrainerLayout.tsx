@@ -8,7 +8,7 @@ import {
   Utensils, Calendar,
   MessageSquare, IndianRupee, Bell,
   Activity, Menu, LogOut, Bot,
-  Dumbbell, Star, Video, CheckCircle2
+  Dumbbell, Star, Video, CheckCircle2, Wrench
 } from 'lucide-react';
 
 const TrainerLayout = () => {
@@ -71,6 +71,7 @@ const TrainerLayout = () => {
         { label: 'Gym Exercise Videos', path: '/trainer/exercise-videos', icon: Video },
         { label: 'Workout Plans', path: '/trainer/workout-plans', icon: FileText },
         { label: 'Diet Plans', path: '/trainer/diet-plans', icon: Utensils },
+        { label: 'Gym Equipments', path: '/trainer/equipments', icon: Wrench },
         { label: 'Customer Workplan Completed', path: '/trainer/customer-workplan-completed', icon: CheckCircle2 },
       ]
     },

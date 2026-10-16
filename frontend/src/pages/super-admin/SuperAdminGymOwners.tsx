@@ -528,7 +528,7 @@ const SuperAdminGymOwners = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'APPROVED': return 'bg-green-500/10 text-green-500 border-green-500/20';
-      case 'REJECTED': return 'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/20';
+      case 'REJECTED': return 'bg-[#FED7AA]/10 text-[#EA580C] border-[#FED7AA]/20';
       case 'SUSPENDED': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       default: return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
     }
@@ -605,7 +605,7 @@ const SuperAdminGymOwners = () => {
             <p>Loading gym owners...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#FED7AA]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#EA580C]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
@@ -770,7 +770,7 @@ const SuperAdminGymOwners = () => {
                             <button 
                               onClick={() => handleStatusChange(owner._id, 'REJECTED')}
                               disabled={statusUpdating === owner._id}
-                              className="p-1 text-[#FED7AA] hover:bg-red-500/10 rounded-md transition-colors disabled:opacity-50"
+                              className="p-1 text-[#EA580C] hover:bg-red-500/10 rounded-md transition-colors disabled:opacity-50"
                               title="Reject"
                             >
                               <XCircle size={18} />
@@ -806,7 +806,7 @@ const SuperAdminGymOwners = () => {
                           </button>
                           <button 
                             onClick={() => handleDelete(owner._id)}
-                            className="p-1.5 text-[#78716C] hover:text-[#FED7AA] hover:bg-red-500/10 rounded-md transition-colors"
+                            className="p-1.5 text-[#78716C] hover:text-rose-600 hover:bg-red-50 rounded-md transition-colors"
                             title="Delete"
                           >
                             <Trash2 size={16} />

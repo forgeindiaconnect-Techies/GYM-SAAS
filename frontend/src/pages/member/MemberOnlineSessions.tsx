@@ -401,7 +401,7 @@ const MemberOnlineSessions = () => {
             <div className="flex items-center justify-center space-x-2 mb-5">
               {[1,2,3,4,5].map(n => (
                 <button key={n} onClick={() => setRating(n)} className="transition-transform hover:scale-110">
-                  <Star size={36} className={n <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'} />
+                  <Star size={36} className={n <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-stone-600'} />
                 </button>
               ))}
             </div>

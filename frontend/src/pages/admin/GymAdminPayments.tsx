@@ -255,7 +255,7 @@ const GymAdminPayments = () => {
                           <div className="flex justify-end gap-2 items-center">
                             <button 
                               onClick={() => setSelectedTrx(trx)}
-                              className="px-3 py-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold whitespace-nowrap"
+                              className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold whitespace-nowrap"
                             >
                               View Details
                             </button>

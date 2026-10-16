@@ -375,6 +375,66 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
           }} placeholder="e.g. 4.8 (Max 5.0)" className={inputCls('rating')} maxLength={4} />
           {errors.rating && <p className="text-teal-400 text-xs mt-1">{errors.rating}</p>}
         </div>
+
+        {/* Gym Description Form */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-sm text-[#78716C] font-medium">Gym Description (Optional)</label>
+            {form.description && (
+              <button
+                type="button"
+                onClick={() => set('description', '')}
+                className="text-xs text-[#F97316] hover:underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <p className="text-xs text-[#78716C] mb-2">
+            Click quick template buttons or enter your custom gym description:
+          </p>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {[
+              {
+                label: '🏋️ Strength & Bodybuilding',
+                text: 'Premier strength and bodybuilding gym equipped with heavy free weights, certified personal trainers, and modern power racks for serious athletes.'
+              },
+              {
+                label: '⚡ CrossFit & Functional',
+                text: 'High-energy functional fitness and CrossFit center featuring turf tracks, kettlebells, rowing stations, and dynamic group workout sessions.'
+              },
+              {
+                label: '🧘 Yoga & Wellness',
+                text: 'Peaceful fitness and wellness sanctuary offering guided yoga, pilates, mobility work, and holistic lifestyle coaching in a serene environment.'
+              },
+              {
+                label: '🌟 Modern All-Round Gym',
+                text: 'State-of-the-art commercial fitness facility providing world-class cardio machines, strength equipment, group fitness classes, and certified trainers.'
+              }
+            ].map(tpl => (
+              <button
+                key={tpl.label}
+                type="button"
+                onClick={() => set('description', tpl.text)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                  form.description === tpl.text
+                    ? 'bg-[#F97316] text-white border-[#F97316] shadow-xs'
+                    : 'bg-[#FFFDF8] border-[#CBD5E1] text-[#292524] hover:border-[#F97316] hover:bg-orange-50/50'
+                }`}
+              >
+                {tpl.label}
+              </button>
+            ))}
+          </div>
+          <textarea
+            rows={3}
+            value={form.description || ''}
+            onChange={e => set('description', e.target.value)}
+            placeholder="Tell prospective members about your gym atmosphere, specialty equipment, trainer expertise, and facilities..."
+            className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#CBD5E1] rounded-xl text-sm text-[#292524] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:border-transparent transition-all"
+          />
+          {errors.description && <p className="text-teal-400 text-xs mt-1">{errors.description}</p>}
+        </div>
         <div>
           <label className="block text-sm text-[#78716C] mb-2">Gym Photo/Logo (Optional)</label>
           <div className="flex items-center gap-4">

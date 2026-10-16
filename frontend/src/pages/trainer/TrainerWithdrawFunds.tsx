@@ -94,7 +94,7 @@ const TrainerWithdrawFunds = () => {
         <div className={`p-4 rounded-lg flex items-center gap-3 ${
           toast.type === 'error' ? 'bg-red-50 text-red-800 border border-red-200' : 'bg-green-50 text-green-800 border border-green-200'
         }`}>
-          {toast.type === 'error' ? <AlertCircle className="w-5 h-5 text-[#FED7AA]" /> : <CheckCircle className="w-5 h-5 text-green-500" />}
+          {toast.type === 'error' ? <AlertCircle className="w-5 h-5 text-rose-600" /> : <CheckCircle className="w-5 h-5 text-green-500" />}
           <p className="font-medium">{toast.msg}</p>
         </div>
       )}

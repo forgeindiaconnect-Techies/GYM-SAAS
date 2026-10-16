@@ -152,7 +152,7 @@ const MemberAIAssistant = () => {
               Gym Smart Assistant
               <Sparkles size={14} className="text-[#F97316]" />
             </h2>
-            <p className="text-xs text-stone-300 font-medium flex items-center gap-1.5">
+            <p className="text-xs text-stone-600 font-medium flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Instant Search &middot; Real-time Gym Knowledge
             </p>
@@ -168,7 +168,7 @@ const MemberAIAssistant = () => {
               <span>Clear</span>
             </button>
           )}
-          <span className="text-xs text-stone-300 bg-stone-800 border border-stone-700 px-3 py-1.5 rounded-full font-medium hidden sm:inline-block">
+          <span className="text-xs text-stone-600 bg-stone-800 border border-stone-700 px-3 py-1.5 rounded-full font-medium hidden sm:inline-block">
             {user?.firstName ? `Hi, ${user.firstName}` : 'Gym Member'}
           </span>
         </div>

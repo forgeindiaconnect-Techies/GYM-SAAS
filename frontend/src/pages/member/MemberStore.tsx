@@ -319,7 +319,7 @@ const MemberStore = () => {
                 {selected.image ? <img src={selected.image} alt={selected.name} className="w-full h-full object-cover" /> : <ImageIcon className="text-[#F97316]/30" size={36} />}
               </div>
               <div>
-                <span className="text-xs font-bold text-[#FED7AA] uppercase tracking-wide">{selected.productType || selected.categoryName}</span>
+                <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wide">{selected.productType || selected.categoryName}</span>
                 <h2 className="text-xl font-bold text-[#292524]">{selected.name}</h2>
                 <div className="flex items-center gap-1.5 flex-wrap mt-1">
                   {selected.attributes && Object.entries(selected.attributes).map(([k, v]) => (
@@ -366,7 +366,7 @@ const MemberStore = () => {
                          disabled={isOut}
                          onClick={() => setSelectedVariant(v)}
                          className={`px-3 py-2 rounded-xl text-sm font-medium border text-left flex flex-col min-w-[120px] transition-all
-                           ${isSelected ? 'border-[#F97316] bg-[#FFFDF8] text-[#FED7AA] ring-2 ring-[#F97316]/20' : isOut ? 'border-gray-200 bg-gray-50 text-gray-400 opacity-50 cursor-not-allowed' : 'border-gray-200 hover:border-[#FED7AA] hover:bg-gray-50 text-[#292524]'}
+                           ${isSelected ? 'border-[#F97316] bg-[#FFFDF8] text-[#EA580C] ring-2 ring-[#F97316]/20' : isOut ? 'border-gray-200 bg-gray-50 text-gray-400 opacity-50 cursor-not-allowed' : 'border-gray-200 hover:border-[#FED7AA] hover:bg-gray-50 text-[#292524]'}
                          `}
                        >
                          <span>{label}</span>
@@ -383,7 +383,7 @@ const MemberStore = () => {
                 {!selectedVariant ? 'Please select an option' : selectedVariant.stock <= 5 ? `Hurry! Only ${selectedVariant.stock} left` : `${selectedVariant.stock} in stock`}
               </p>
             ) : (
-              <p className={`text-sm font-bold mb-5 ${selected.stock <= 0 ? 'text-[#FED7AA]' : selected.stock <= 5 ? 'text-amber-600' : 'text-[#F97316]'}`}>
+              <p className={`text-sm font-bold mb-5 ${selected.stock <= 0 ? 'text-[#EA580C]' : selected.stock <= 5 ? 'text-amber-600' : 'text-[#F97316]'}`}>
                 {selected.stock <= 0 ? 'Out of stock' : selected.stock <= 5 ? `Hurry! Only ${selected.stock} left` : `${selected.stock} in stock`}
               </p>
             )}

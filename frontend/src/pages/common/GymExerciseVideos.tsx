@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { 
   Video, Search, Play, Globe, Dumbbell, Sparkles, Filter, 
   CheckCircle2, Clock, X, Plus, Trash2, Check, AlertCircle, 
-  ExternalLink, Layers, Flame, Info
+  ExternalLink, Layers, Flame, Info, Loader2
 } from 'lucide-react';
+import api from '../../utils/api';
 
 export interface ExerciseVideo {
   id: string;
@@ -24,7 +25,7 @@ export interface ExerciseVideo {
   isCustom?: boolean;
 }
 
-const EXERCISE_VIDEOS: ExerciseVideo[] = [
+export const EXERCISE_VIDEOS: ExerciseVideo[] = [
   {
     id: 'v1',
     title: 'Bench Press Form & Technique Guide',
@@ -208,7 +209,7 @@ const EXERCISE_VIDEOS: ExerciseVideo[] = [
 const LOCAL_STORAGE_KEY = 'gym_manual_exercise_videos';
 
 // Helper to extract YouTube video ID from multiple URL formats
-const extractYouTubeId = (input: string): string => {
+export const extractYouTubeId = (input: string): string => {
   if (!input) return '';
   const trimmed = input.trim();
   if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
@@ -241,6 +242,115 @@ export const GymExerciseVideos = () => {
   // Modal State for "Add Exercise Manually"
   const [showAddModal, setShowAddModal] = useState(false);
   const [addSuccessMsg, setAddSuccessMsg] = useState(false);
+
+  // Approval states
+  const [clients, setClients] = useState<any[]>([]);
+  const [pendingVideoRequests, setPendingVideoRequests] = useState<any[]>([]);
+  const [approvingRequestId, setApprovingRequestId] = useState<string | null>(null);
+
+  const [approveModalVideo, setApproveModalVideo] = useState<ExerciseVideo | null>(null);
+  const [selectedClientId, setSelectedClientId] = useState('');
+  const [customSets, setCustomSets] = useState('3 sets');
+  const [customReps, setCustomReps] = useState('12 reps');
+  const [coachNotes, setCoachNotes] = useState('');
+  const [isSubmittingApproval, setIsSubmittingApproval] = useState(false);
+  const [approvalSuccess, setApprovalSuccess] = useState('');
+
+  useEffect(() => {
+    fetchClients();
+    fetchPendingRequests();
+  }, []);
+
+  const fetchClients = async () => {
+    try {
+      const res = await api.get('/trainer-plans/clients');
+      if (res.data?.success && res.data.clients) {
+        setClients(res.data.clients);
+      }
+    } catch (err) {
+      console.error('Failed to load clients:', err);
+    }
+  };
+
+  const fetchPendingRequests = async () => {
+    try {
+      const res = await api.get('/trainer-plans/trainer-requests');
+      if (res.data?.success && res.data.requests) {
+        const vidReqs = res.data.requests.filter(
+          (r: any) => r.planType === 'Exercise Videos' && r.status === 'Pending'
+        );
+        setPendingVideoRequests(vidReqs);
+      }
+    } catch (err) {
+      console.error('Failed to load pending video requests:', err);
+    }
+  };
+
+  const handleQuickApproveRequest = async (reqId: string) => {
+    try {
+      setApprovingRequestId(reqId);
+      const res = await api.patch(`/trainer-plans/requests/${reqId}/approve`, {
+        trainerFeedback: 'Approved by your trainer! Exercise videos have been granted directly to your dashboard.'
+      });
+      if (res.data?.success) {
+        alert('Video request approved! It is now directly available on the customer dashboard.');
+        fetchPendingRequests();
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to approve video request');
+    } finally {
+      setApprovingRequestId(null);
+    }
+  };
+
+  const openApproveModal = (video: ExerciseVideo) => {
+    setApproveModalVideo(video);
+    setCoachNotes(video.tips?.[0] || 'Watch video demonstration and execute with strict form.');
+    setApprovalSuccess('');
+  };
+
+  const handleApproveVideoToClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedClientId || !approveModalVideo) return;
+
+    try {
+      setIsSubmittingApproval(true);
+      const finalUrl = approveModalVideo.videoUrl 
+        || (approveModalVideo.youtubeId ? `https://www.youtube.com/watch?v=${approveModalVideo.youtubeId}` : '');
+
+      const res = await api.post('/trainer-plans/trainer/approve-and-assign', {
+        customerId: selectedClientId,
+        planType: 'Exercise Videos',
+        title: approveModalVideo.title,
+        goal: `Mastery of ${approveModalVideo.targetMuscle} (${approveModalVideo.category})`,
+        trainerFeedback: coachNotes || 'Approved by your trainer! Follow this video guide for optimal technique.',
+        videoDetails: [
+          {
+            videoTitle: approveModalVideo.title,
+            exerciseName: approveModalVideo.title,
+            videoUrl: finalUrl,
+            instructions: coachNotes
+          }
+        ]
+      });
+
+      if (res.data?.success) {
+        const client = clients.find(c => c._id === selectedClientId);
+        const clientName = client ? `${client.firstName} ${client.lastName}` : 'Client';
+        setApprovalSuccess(`Exercise Video "${approveModalVideo.title}" has been Approved and is now LIVE on ${clientName}'s customer dashboard!`);
+        setTimeout(() => {
+          setApprovalSuccess('');
+          setApproveModalVideo(null);
+          setCoachNotes('');
+        }, 2500);
+      }
+    } catch (err: any) {
+      console.error('Error approving video:', err);
+      alert(err.response?.data?.message || 'Failed to approve video to customer');
+    } finally {
+      setIsSubmittingApproval(false);
+    }
+  };
 
   // Form State
   const [formName, setFormName] = useState('');
@@ -481,6 +591,61 @@ export const GymExerciseVideos = () => {
         </div>
       </div>
 
+      {/* Pending Customer Video Requests Banner */}
+      {pendingVideoRequests.length > 0 && (
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-[#F97316] text-white flex items-center justify-center font-bold text-xs">
+                {pendingVideoRequests.length}
+              </span>
+              <div>
+                <h3 className="text-sm font-bold text-stone-900">Pending Customer Video Approvals</h3>
+                <p className="text-xs text-stone-600">Customers requested gym exercise video guidance. Click Approve to grant access directly to their dashboard.</p>
+              </div>
+            </div>
+            <span className="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full border border-amber-300">
+              Needs Approval
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+            {pendingVideoRequests.map((req) => (
+              <div key={req._id} className="bg-white rounded-xl p-4 border border-orange-100 shadow-2xs flex flex-col justify-between space-y-3">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-sm text-stone-900">
+                      {req.customerId?.firstName} {req.customerId?.lastName}
+                    </span>
+                    <span className="text-[11px] text-stone-400">
+                      {new Date(req.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-xs font-semibold text-[#F97316] mt-0.5">{req.title}</p>
+                  <p className="text-xs text-stone-600 mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
+                </div>
+
+                <button
+                  onClick={() => handleQuickApproveRequest(req._id)}
+                  disabled={approvingRequestId === req._id}
+                  className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                >
+                  {approvingRequestId === req._id ? (
+                    <>
+                      <Loader2 size={13} className="animate-spin" /> Approving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={14} /> Approve & Publish to Customer Dashboard
+                    </>
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Videos Grid */}
       {filteredVideos.length === 0 ? (
         <div className="bg-white border border-[#E7E5E4] rounded-2xl p-12 text-center text-[#78716C] space-y-3">
@@ -594,12 +759,21 @@ export const GymExerciseVideos = () => {
                       </span>
                     </div>
 
-                    <button
-                      onClick={() => setActiveVideo(video)}
-                      className="w-full mt-2 py-2 bg-[#FFFDF8] border border-[#E7E5E4] text-[#F97316] font-bold rounded-xl hover:bg-[#F97316] hover:text-white transition-all flex items-center justify-center gap-2 text-xs cursor-pointer shadow-2xs"
-                    >
-                      <Play size={14} className="fill-current" /> Watch Video Tutorial
-                    </button>
+                    <div className="flex items-center gap-2 mt-2">
+                      <button
+                        onClick={() => setActiveVideo(video)}
+                        className="flex-1 py-2 bg-[#FFFDF8] border border-[#E7E5E4] text-[#F97316] font-bold rounded-xl hover:bg-orange-50 transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-2xs"
+                      >
+                        <Play size={13} className="fill-current" /> Watch Video
+                      </button>
+                      <button
+                        onClick={() => openApproveModal(video)}
+                        className="flex-1 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-sm active:scale-95 shadow-emerald-600/20"
+                        title="Approve this video for customer dashboard"
+                      >
+                        <CheckCircle2 size={13} /> Approval
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -951,6 +1125,95 @@ export const GymExerciseVideos = () => {
                   className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <Plus size={15} /> Save & Add Exercise
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ===================== APPROVE VIDEO FOR CLIENT MODAL ===================== */}
+      {approveModalVideo && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#E7E5E4] overflow-hidden">
+            <div className="p-5 border-b border-[#E7E5E4] flex justify-between items-center bg-[#FFFDF8]">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={20} className="text-emerald-600" />
+                <h3 className="font-bold text-[#292524] text-base">Approve Video Access</h3>
+              </div>
+              <button 
+                onClick={() => setApproveModalVideo(null)}
+                className="p-1.5 text-[#78716C] hover:text-[#292524] hover:bg-gray-100 rounded-lg"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleApproveVideoToClient} className="p-5 space-y-4">
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900">
+                Approving <strong>{approveModalVideo.title}</strong> ({approveModalVideo.category} • {approveModalVideo.duration}) directly to customer dashboard.
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
+                  Select Customer / Gym Member *
+                </label>
+                <select
+                  value={selectedClientId}
+                  onChange={(e) => setSelectedClientId(e.target.value)}
+                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#F97316]"
+                  required
+                >
+                  <option value="">-- Choose a customer --</option>
+                  {clients.map(client => (
+                    <option key={client._id} value={client._id}>
+                      {client.firstName} {client.lastName} ({client.email}) {client.fitnessGoal ? `• Goal: ${client.fitnessGoal}` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
+                  Coach Guidance & Training Focus
+                </label>
+                <textarea
+                  rows={3}
+                  value={coachNotes}
+                  onChange={(e) => setCoachNotes(e.target.value)}
+                  placeholder="e.g. Focus on keeping elbows tucked and pause at bottom for 1 second..."
+                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-3 text-xs outline-none focus:border-[#F97316] resize-none"
+                />
+              </div>
+
+              {approvalSuccess && (
+                <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-xl text-xs font-semibold flex items-center gap-2">
+                  <CheckCircle2 size={16} /> {approvalSuccess}
+                </div>
+              )}
+
+              <div className="pt-3 flex justify-end gap-2 border-t border-[#E7E5E4]">
+                <button
+                  type="button"
+                  onClick={() => setApproveModalVideo(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#78716C] hover:bg-[#FED7AA]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!selectedClientId || isSubmittingApproval}
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 shadow-emerald-600/20"
+                >
+                  {isSubmittingApproval ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" /> Approving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={15} /> Approve & Send to Customer Dashboard
+                    </>
+                  )}
                 </button>
               </div>
             </form>

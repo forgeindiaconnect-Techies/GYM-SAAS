@@ -165,7 +165,7 @@ const TrainerProfile = () => {
               <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
                 displayStatus === 'Active' ? 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20' :
                 displayStatus === 'Pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
-                'bg-red-500/10 text-[#FED7AA] border-red-500/20'
+                'bg-red-50 text-rose-600 border-red-500/20'
               }`}>{displayStatus}</span>
             </div>
             {displaySpecialization && (

@@ -5,7 +5,7 @@ import api from '../../utils/api';
 
 const getIcon = (type: string) => {
   switch (type) {
-    case 'alert': return <AlertCircle size={20} className="text-[#FED7AA]" />;
+    case 'alert': return <AlertCircle size={20} className="text-rose-600" />;
     case 'success': return <CheckCircle2 size={20} className="text-green-500" />;
     case 'message': return <MessageSquare size={20} className="text-blue-500" />;
     case 'info': return <Info size={20} className="text-purple-500" />;
@@ -123,7 +123,7 @@ const SuperAdminNotifications = () => {
 
           {notifications.length === 0 && (
             <div className="p-12 text-center flex flex-col items-center justify-center">
-              <Bell size={48} className="text-[#FED7AA] mb-4" />
+              <Bell size={48} className="text-[#EA580C] mb-4" />
               <h3 className="text-lg font-bold text-[#292524]">All caught up!</h3>
               <p className="text-[#78716C] text-sm mt-1">You have no new notifications.</p>
             </div>

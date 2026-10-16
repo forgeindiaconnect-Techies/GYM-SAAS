@@ -152,7 +152,7 @@ const GymAdminDeletedDetails = () => {
                     <td className="px-6 py-4 font-bold text-[#292524]">{item.name}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${
-                        item.type === 'Trainer' ? 'bg-blue-500/10 text-[#FED7AA]' : 'bg-purple-500/10 text-purple-600'
+                        item.type === 'Trainer' ? 'bg-blue-50 text-blue-600' : 'bg-purple-500/10 text-purple-600'
                       }`}>
                         {item.type}
                       </span>
@@ -161,7 +161,7 @@ const GymAdminDeletedDetails = () => {
                     <td className="px-6 py-4 truncate max-w-xs">{item.reason}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center space-x-3">
-                        <button onClick={() => handleOpenDetails(item)} className="text-[#78716C] hover:text-[#FED7AA] transition-colors" title="View Details">
+                        <button onClick={() => handleOpenDetails(item)} className="text-[#78716C] hover:text-[#EA580C] transition-colors" title="View Details">
                           <Eye size={18} />
                         </button>
                         <button onClick={() => handleRestore(item.id)} className="text-[#78716C] hover:text-[#F97316] transition-colors" title="Restore Data">

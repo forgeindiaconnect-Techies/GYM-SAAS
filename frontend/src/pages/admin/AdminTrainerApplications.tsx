@@ -28,7 +28,7 @@ const AdminTrainerApplications = () => {
               </div>
             </div>
             <div className="flex gap-3">
-              <button className="px-4 py-2 border border-[#FED7AA]/50 text-[#FED7AA] rounded-lg hover:bg-[#FED7AA]/10">Reject</button>
+              <button className="px-4 py-2 border border-[#FED7AA]/50 text-[#EA580C] rounded-lg hover:bg-[#FED7AA]/10">Reject</button>
               <button className="px-4 py-2 bg-[#F97316] text-white rounded-lg hover:bg-[#EA580C]">Approve Trainer</button>
             </div>
           </div>

@@ -18,7 +18,7 @@ const SAAS_PLANS = [
     tagline: 'Try AI GYM risk-free',
     badge: '1 DAY',
     icon: Zap,
-    iconColor: 'text-[#FED7AA]',
+    iconColor: 'text-[#EA580C]',
     iconBg: 'bg-[#FFFDF8]',
     priceMonthly: 0,
     priceAnnual: 0,
@@ -49,7 +49,7 @@ const SAAS_PLANS = [
     tagline: 'Beginner package for growing gyms',
     badge: 'BEGINNER',
     icon: Star,
-    iconColor: 'text-[#FED7AA]',
+    iconColor: 'text-[#EA580C]',
     iconBg: 'bg-slate-100',
     priceMonthly: 799,
     priceAnnual: 7190,
@@ -139,7 +139,7 @@ const SAAS_PLANS = [
 
 const PLAN_COLORS: Record<string, string> = {
   FREE_TRIAL: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
-  SILVER: 'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/30',
+  SILVER: 'bg-[#FED7AA]/10 text-[#EA580C] border-[#FED7AA]/30',
   GOLD: 'bg-emerald-500/10 text-[#F97316] border-[#F97316]/30',
   PREMIUM: 'bg-purple-500/10 text-purple-600 border-purple-500/30',
   BASIC: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
@@ -720,7 +720,7 @@ const FEATURE_OPTIONS = [
 
 const ICON_OPTIONS = [
   { label: 'Zap (Trial)', icon: Zap, color: 'text-slate-400', bg: 'bg-slate-400/10' },
-  { label: 'Star (Silver)', icon: Star, color: 'text-slate-300', bg: 'bg-slate-300/10' },
+  { label: 'Star (Silver)', icon: Star, color: 'text-stone-600', bg: 'bg-slate-300/10' },
   { label: 'Crown (Gold)', icon: Crown, color: 'text-teal-400', bg: 'bg-teal-400/10' },
   { label: 'Sparkles (Premium)', icon: Sparkles, color: 'text-purple-400', bg: 'bg-purple-400/10' },
   { label: 'Credit Card', icon: CreditCard, color: 'text-blue-400', bg: 'bg-blue-400/10' },
@@ -1091,7 +1091,7 @@ const SuperAdminSubscriptions = () => {
       limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
       priceColor: 'text-slate-800',
       labelColor: 'text-slate-700',
-      checkColor: 'text-[#FED7AA]',
+      checkColor: 'text-[#EA580C]',
     },
     SILVER: {
       border: 'border-[#FED7AA]',
@@ -1101,9 +1101,9 @@ const SuperAdminSubscriptions = () => {
       headerBg: 'bg-teal-50/50',
       pricingBg: 'bg-teal-50/30 border border-teal-100',
       limitsBg: 'bg-[#F4F6F4] border border-[#E5EAE7]',
-      priceColor: 'text-[#FED7AA]',
-      labelColor: 'text-[#FED7AA]',
-      checkColor: 'text-[#FED7AA]',
+      priceColor: 'text-[#EA580C]',
+      labelColor: 'text-[#EA580C]',
+      checkColor: 'text-[#EA580C]',
     },
     GOLD: {
       border: 'border-[#F97316]',
@@ -1181,7 +1181,7 @@ const SuperAdminSubscriptions = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-[#292524] tracking-tight flex items-center space-x-3">
-            <CreditCard className="text-[#FED7AA]" size={30} />
+            <CreditCard className="text-[#EA580C]" size={30} />
             <span>Subscription Plans</span>
           </h1>
           <p className="text-[#78716C] mt-1">Manage SaaS plans for gym owners on the platform.</p>
@@ -1216,7 +1216,7 @@ const SuperAdminSubscriptions = () => {
           { 
             label: 'Rejected Gyms', 
             value: subscribedGyms.filter(g => g.status === 'Rejected').length, 
-            icon: AlertCircle, color: 'text-[#FED7AA]', bg: 'bg-red-500/10' 
+            icon: AlertCircle, color: 'text-[#EA580C]', bg: 'bg-red-500/10' 
           },
           { 
             label: 'Expired Gyms', 
@@ -1403,7 +1403,7 @@ const SuperAdminSubscriptions = () => {
                         {isPlanActive ? (
                           <ToggleRight size={26} className="text-emerald-500 hover:text-emerald-600 transition-colors" />
                         ) : (
-                          <ToggleLeft size={26} className="text-slate-300 hover:text-slate-400 transition-colors" />
+                          <ToggleLeft size={26} className="text-stone-600 hover:text-slate-400 transition-colors" />
                         )}
                       </button>
                     </div>
@@ -1440,7 +1440,7 @@ const SuperAdminSubscriptions = () => {
                     )}
 
                     <div className="flex items-baseline space-x-1">
-                      <span className={`text-3xl font-extrabold tracking-tight ${plan.key === 'PREMIUM' ? 'text-purple-600' : plan.key === 'GOLD' ? 'text-[#F97316]' : plan.key === 'SILVER' ? 'text-[#FED7AA]' : 'text-slate-900'}`}>
+                      <span className={`text-3xl font-extrabold tracking-tight ${plan.key === 'PREMIUM' ? 'text-purple-600' : plan.key === 'GOLD' ? 'text-[#F97316]' : plan.key === 'SILVER' ? 'text-[#EA580C]' : 'text-slate-900'}`}>
                         {billingCycle === 'annually' && plan.priceAnnual > 0
                           ? `₹${plan.priceAnnual.toLocaleString('en-IN')}`
                           : (plan.priceDisplay || `₹${plan.priceMonthly.toLocaleString('en-IN')}`)}
@@ -1489,7 +1489,7 @@ const SuperAdminSubscriptions = () => {
                         {feat.included ? (
                           <CheckCircle size={15} className={`shrink-0 mt-0.5 ${acc.checkColor}`} />
                         ) : (
-                          <XCircle size={15} className="shrink-0 mt-0.5 text-slate-300" />
+                          <XCircle size={15} className="shrink-0 mt-0.5 text-stone-600" />
                         )}
                         <span className={feat.included ? 'text-slate-700 font-medium' : 'text-slate-400 line-through opacity-70'}>
                           {feat.text}
@@ -1635,7 +1635,7 @@ const SuperAdminSubscriptions = () => {
                         <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
                         <option value="Inactive" className="bg-[#FFFFFF] text-[#78716C]">Inactive</option>
                         <option value="Pending" className="bg-[#FFFFFF] text-blue-500">Pending</option>
-                        <option value="Rejected" className="bg-[#FFFFFF] text-[#FED7AA]">Rejected</option>
+                        <option value="Rejected" className="bg-[#FFFFFF] text-rose-600 font-bold">Rejected</option>
                         <option value="Expired" className="bg-[#FFFFFF] text-teal-400">Expired</option>
                       </select>
                     </td>

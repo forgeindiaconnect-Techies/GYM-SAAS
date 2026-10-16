@@ -489,7 +489,7 @@ const MemberSessionReview = () => {
             </div>
           ) : !gym ? (
             <div className="bg-white border border-[#E7E5E4] rounded-2xl p-10 text-center shadow-sm">
-              <Building2 size={42} className="mx-auto text-[#FED7AA] mb-3" />
+              <Building2 size={42} className="mx-auto text-[#EA580C] mb-3" />
               <h3 className="text-lg font-bold text-[#292524]">No Gym Assigned</h3>
               <p className="text-xs text-[#78716C] mt-1">You are not currently enrolled in a gym.</p>
             </div>

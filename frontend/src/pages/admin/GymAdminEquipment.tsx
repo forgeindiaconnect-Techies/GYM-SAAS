@@ -96,7 +96,7 @@ const GymAdminEquipment = () => {
     switch(status) {
       case 'Active': return 'bg-green-500/10 text-green-500 border-green-500/20';
       case 'Maintenance': return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
-      case 'Out of Order': return 'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/20';
+      case 'Out of Order': return 'bg-[#FED7AA]/10 text-[#EA580C] border-[#FED7AA]/20';
       default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
     }
   };
@@ -360,7 +360,7 @@ const GymAdminEquipment = () => {
               </button>
               <button 
                 onClick={() => handleDeleteEquipment(eq.id || eq._id)}
-                className="py-2 px-3 bg-[#FFFFFF] border border-[#E7E5E4] hover:bg-red-50 text-[#FED7AA] hover:border-red-200 text-sm font-bold rounded-xl transition-colors"
+                className="py-2 px-3 bg-[#FFFFFF] border border-[#E7E5E4] hover:bg-red-50 text-rose-600 hover:border-red-200 text-sm font-bold rounded-xl transition-colors"
                 title="Delete Equipment"
               >
                 Delete

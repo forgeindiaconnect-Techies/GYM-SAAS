@@ -47,6 +47,7 @@ import GymAdminSessionBookings from './pages/admin/GymAdminSessionBookings';
 import GymAdminPayments from './pages/admin/GymAdminPayments';
 import GymAdminAttendance from './pages/admin/GymAdminAttendance';
 import GymAdminReports from './pages/admin/GymAdminReports';
+import GymAdminReviews from './pages/admin/GymAdminReviews';
 import GymAdminNotifications from './pages/admin/GymAdminNotifications';
 import GymAdminUserProfile from './pages/admin/GymAdminUserProfile';
 import GymAdminSettings from './pages/admin/GymAdminSettings';
@@ -122,6 +123,7 @@ import MemberWorkoutPlan from './pages/member/MemberWorkoutPlan';
 import MemberWorkoutVideos from './pages/member/MemberWorkoutVideos';
 import MemberOnlineSessions from './pages/member/MemberOnlineSessions';
 import MemberDietPlan from './pages/member/MemberDietPlan';
+import MemberTrainerPlan from './pages/member/MemberTrainerPlan';
 import MemberAIFitness from './pages/member/MemberAIFitness';
 import MemberAIAssistant from './pages/member/MemberAIAssistant';
 import MemberAIResults from './pages/member/MemberAIResults';
@@ -148,6 +150,7 @@ import TrainerExerciseLibrary from './pages/trainer/TrainerExerciseLibrary';
 import TrainerWorkoutPlans from './pages/trainer/TrainerWorkoutPlans';
 import TrainerWorkoutVideos from './pages/trainer/TrainerWorkoutVideos';
 import TrainerDietPlans from './pages/trainer/TrainerDietPlans';
+import TrainerGymEquipments from './pages/trainer/TrainerGymEquipments';
 import TrainerCustomerWorkplansCompleted from './pages/trainer/TrainerCustomerWorkplansCompleted';
 import TrainerMemberProgress from './pages/trainer/TrainerMemberProgress';
 import TrainerAttendance from './pages/trainer/TrainerAttendance';
@@ -233,12 +236,14 @@ function App() {
             <Route path="bookings" element={<MemberMyBookings />} />
             <Route path="online-sessions" element={<MemberOnlineSessions />} />
             <Route path="workout" element={<MemberWorkoutPlan />} />
+            <Route path="trainer-plan" element={<MemberTrainerPlan />} />
+            <Route path="trainers-plan" element={<MemberTrainerPlan />} />
             <Route path="workout-videos" element={<MemberWorkoutVideos />} />
             <Route path="diet" element={<MemberDietPlan />} />
             <Route path="ai-assistant" element={<MemberAIFitness />} />
             <Route path="smart-assistant" element={<MemberAIAssistant />} />
             <Route path="assistant" element={<MemberAIAssistant />} />
-            <Route path="ai-results" element={<MemberAIResults />} />
+            <Route path="ai-results" element={<Navigate to="/member/ai-assistant" replace />} />
             <Route path="trainer-review" element={<MemberTrainerReview />} />
             <Route path="session-review" element={<MemberSessionReview />} />
             <Route path="progress" element={<MemberProgress />} />
@@ -275,6 +280,7 @@ function App() {
             <Route path="workout-plans" element={<TrainerWorkoutPlans />} />
             <Route path="workout-videos" element={<TrainerWorkoutVideos />} />
             <Route path="diet-plans" element={<TrainerDietPlans />} />
+            <Route path="equipments" element={<TrainerGymEquipments />} />
             <Route path="customer-workplan-completed" element={<TrainerCustomerWorkplansCompleted />} />
             <Route path="member-progress" element={<TrainerMemberProgress />} />
             <Route path="customer-progress" element={<TrainerMemberProgress />} />
@@ -335,6 +341,7 @@ function App() {
             <Route path="attendance" element={<GymAdminAttendance />} />
             <Route path="revenue-analytics" element={<RevenueAnalytics role="GYM_OWNER" />} />
             <Route path="reports" element={<GymAdminReports />} />
+            <Route path="reviews" element={<GymAdminReviews />} />
             <Route path="notifications" element={<GymAdminNotifications />} />
             <Route path="profile" element={<GymAdminUserProfile />} />
             <Route path="settings" element={<GymAdminSettings />} />

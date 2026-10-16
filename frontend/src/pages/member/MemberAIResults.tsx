@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import api from '../../utils/api';
 import { 
-  Activity, Trophy, TrendingDown, ArrowRight, Calendar, Dumbbell, 
+  Activity, Trophy, TrendingDown, TrendingUp, ArrowRight, Calendar, Dumbbell, 
   Utensils, Clock, Loader2, Sparkles, Lock, CheckCircle2, 
-  User, ShieldAlert, HeartPulse, Award, Zap, ChevronDown, ChevronUp, RefreshCw, Moon
+  User, ShieldAlert, HeartPulse, Award, Zap, ChevronDown, ChevronUp, RefreshCw, Moon,
+  Plus, Edit3, Scale, Ruler, Target, Flame, X, Check, Brain, FileText, CheckCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -13,6 +14,43 @@ const MemberAIResults = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'output' | 'progress'>('output');
   const [showAiDraftBaseline, setShowAiDraftBaseline] = useState(true);
+  const [selectedDietDay, setSelectedDietDay] = useState<string>('Monday');
+
+  // Modal & AI generation state
+  const [showProgressModal, setShowProgressModal] = useState(false);
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+  const [generationSuccessMsg, setGenerationSuccessMsg] = useState('');
+
+  // Comprehensive progress update form state matching all intake form fields
+  const [progressForm, setProgressForm] = useState({
+    weight: '',
+    targetWeight: '',
+    targetTimeline: '3 Months',
+    height: '',
+    currentFitnessLevel: 'Beginner',
+    workoutExperience: '1-3 years',
+    activityLevel: 'Moderately Active',
+    fitnessGoal: 'Weight Loss',
+    preferredTraining: 'Offline',
+    preferredWorkoutTime: 'Morning (7-9am)',
+    preferredWorkoutDays: '4 Days',
+    preferredWorkoutDuration: '45 Minutes',
+    preferredWorkoutType: 'Gym Weights / Resistance',
+    equipmentAvailability: 'Full Commercial Gym',
+    dietaryPreferences: 'Non-Vegetarian',
+    mealsPerDay: '3',
+    dailyWaterIntake: '2-3 Liters',
+    averageSleep: '7-8 hours',
+    stressLevel: 'Moderate',
+    injuries: 'None',
+    healthConsiderations: 'None',
+    chest: '38 in',
+    waist: '33 in',
+    hips: '39 in',
+    arms: '13.5 in',
+    thighs: '22 in',
+    notes: ''
+  });
 
   useEffect(() => {
     const fetchLatest = async () => {
@@ -29,7 +67,15 @@ const MemberAIResults = () => {
               fitnessProfile: {
                 ...res.data.recommendation.fitnessProfile,
                 weight: String(parseFloat(res.data.recommendation.fitnessProfile?.weight || '90') + 5),
-                fitnessGoal: 'Weight Loss'
+                fitnessGoal: 'Weight Loss',
+                bodyMeasurements: {
+                  chest: '40 in',
+                  waist: '35 in',
+                  hips: '41 in',
+                  arms: '13 in',
+                  thighs: '23 in',
+                  ...(res.data.recommendation.fitnessProfile?.bodyMeasurements || {})
+                }
               },
               createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
             }]);
@@ -43,6 +89,115 @@ const MemberAIResults = () => {
     };
     fetchLatest();
   }, []);
+
+  // Sync progressForm whenever recommendation updates
+  useEffect(() => {
+    if (recommendation?.fitnessProfile) {
+      const fp = recommendation.fitnessProfile;
+      setProgressForm(prev => ({
+        ...prev,
+        weight: fp.weight || prev.weight,
+        targetWeight: fp.targetWeight || prev.targetWeight || '68',
+        targetTimeline: fp.targetTimeline || prev.targetTimeline || '3 Months',
+        height: fp.height || prev.height || '175',
+        fitnessGoal: fp.fitnessGoal || prev.fitnessGoal || 'Weight Loss',
+        currentFitnessLevel: fp.currentFitnessLevel || fp.experienceLevel || prev.currentFitnessLevel || 'Beginner',
+        workoutExperience: fp.workoutExperience || prev.workoutExperience || '1-3 years',
+        activityLevel: fp.activityLevel || prev.activityLevel || 'Moderately Active',
+        preferredTraining: fp.preferredTraining || prev.preferredTraining || 'Offline',
+        preferredWorkoutTime: fp.preferredWorkoutTime || prev.preferredWorkoutTime || 'Morning (7-9am)',
+        preferredWorkoutDays: fp.availableWorkoutDays || prev.preferredWorkoutDays || '4 Days',
+        preferredWorkoutDuration: fp.preferredWorkoutDuration || prev.preferredWorkoutDuration || '45 Minutes',
+        preferredWorkoutType: fp.preferredWorkoutType || prev.preferredWorkoutType || 'Gym Weights / Resistance',
+        equipmentAvailability: fp.equipmentAvailability || prev.equipmentAvailability || 'Full Commercial Gym',
+        dietaryPreferences: fp.dietaryPreferences || prev.dietaryPreferences || 'Non-Vegetarian',
+        mealsPerDay: fp.mealsPerDay || prev.mealsPerDay || '3',
+        dailyWaterIntake: fp.dailyWaterIntake || prev.dailyWaterIntake || '2-3 Liters',
+        averageSleep: fp.averageSleep || prev.averageSleep || '7-8 hours',
+        stressLevel: fp.stressLevel || prev.stressLevel || 'Moderate',
+        injuries: fp.injuries || prev.injuries || 'None',
+        healthConsiderations: fp.healthConsiderations || prev.healthConsiderations || 'None',
+        chest: fp.bodyMeasurements?.chest || prev.chest || '38 in',
+        waist: fp.bodyMeasurements?.waist || prev.waist || '33 in',
+        hips: fp.bodyMeasurements?.hips || prev.hips || '39 in',
+        arms: fp.bodyMeasurements?.arms || prev.arms || '13.5 in',
+        thighs: fp.bodyMeasurements?.thighs || prev.thighs || '22 in',
+        notes: fp.notes || prev.notes || ''
+      }));
+    }
+  }, [recommendation]);
+
+  const handleGenerateWithAI = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setIsGeneratingAi(true);
+    setGenerationSuccessMsg('');
+    try {
+      const currentFp = recommendation?.fitnessProfile || {};
+      const updatedProfile = {
+        ...currentFp,
+        weight: progressForm.weight || currentFp.weight || '75',
+        targetWeight: progressForm.targetWeight || currentFp.targetWeight || '68',
+        targetTimeline: progressForm.targetTimeline || currentFp.targetTimeline || '3 Months',
+        height: progressForm.height || currentFp.height || '175',
+        fitnessGoal: progressForm.fitnessGoal || currentFp.fitnessGoal || 'Weight Loss',
+        currentFitnessLevel: progressForm.currentFitnessLevel || currentFp.currentFitnessLevel || 'Beginner',
+        workoutExperience: progressForm.workoutExperience || currentFp.workoutExperience || '1-3 years',
+        activityLevel: progressForm.activityLevel || currentFp.activityLevel || 'Moderately Active',
+        preferredTraining: progressForm.preferredTraining || currentFp.preferredTraining || 'Offline',
+        preferredWorkoutTime: progressForm.preferredWorkoutTime || currentFp.preferredWorkoutTime || 'Morning (7-9am)',
+        availableWorkoutDays: progressForm.preferredWorkoutDays || currentFp.availableWorkoutDays || '4 Days',
+        preferredWorkoutDuration: progressForm.preferredWorkoutDuration || currentFp.preferredWorkoutDuration || '45 Minutes',
+        preferredWorkoutType: progressForm.preferredWorkoutType || currentFp.preferredWorkoutType || 'Gym Weights / Resistance',
+        equipmentAvailability: progressForm.equipmentAvailability || currentFp.equipmentAvailability || 'Full Commercial Gym',
+        dietaryPreferences: progressForm.dietaryPreferences || currentFp.dietaryPreferences || 'Non-Vegetarian',
+        mealsPerDay: progressForm.mealsPerDay || currentFp.mealsPerDay || '3',
+        dailyWaterIntake: progressForm.dailyWaterIntake || currentFp.dailyWaterIntake || '2-3 Liters',
+        averageSleep: progressForm.averageSleep || currentFp.averageSleep || '7-8 hours',
+        stressLevel: progressForm.stressLevel || currentFp.stressLevel || 'Moderate',
+        injuries: progressForm.injuries || currentFp.injuries || 'None',
+        healthConsiderations: progressForm.healthConsiderations || currentFp.healthConsiderations || 'None',
+        notes: progressForm.notes || currentFp.notes || '',
+        bodyMeasurements: {
+          chest: progressForm.chest || currentFp.bodyMeasurements?.chest || '38 in',
+          waist: progressForm.waist || currentFp.bodyMeasurements?.waist || '33 in',
+          hips: progressForm.hips || currentFp.bodyMeasurements?.hips || '39 in',
+          arms: progressForm.arms || currentFp.bodyMeasurements?.arms || '13.5 in',
+          thighs: progressForm.thighs || currentFp.bodyMeasurements?.thighs || '22 in'
+        }
+      };
+
+      // 1. Log to Progress API
+      try {
+        await api.post('/progress/log', {
+          weight: parseFloat(updatedProfile.weight),
+          chestMeasurement: parseFloat(String(updatedProfile.bodyMeasurements.chest).replace(/[^0-9.]/g, '')) || undefined,
+          waistMeasurement: parseFloat(String(updatedProfile.bodyMeasurements.waist).replace(/[^0-9.]/g, '')) || undefined,
+          armsMeasurement: parseFloat(String(updatedProfile.bodyMeasurements.arms).replace(/[^0-9.]/g, '')) || undefined,
+          notes: updatedProfile.notes
+        });
+      } catch (logErr) {
+        console.warn('Progress log error notice:', logErr);
+      }
+
+      // 2. Call AI generate
+      const res = await api.post('/ai/member/generate', { fitnessProfile: updatedProfile });
+      if (res.data?.recommendation) {
+        if (recommendation) {
+          setHistory(prev => [recommendation, ...prev]);
+        }
+        setRecommendation(res.data.recommendation);
+        setShowProgressModal(false);
+        setActiveTab('progress');
+        setGenerationSuccessMsg('New AI result successfully generated! Your progress comparison and plan have been updated.');
+        setTimeout(() => setGenerationSuccessMsg(''), 7000);
+      }
+    } catch (err: any) {
+      console.error('Failed to generate AI plan:', err);
+      alert(err.response?.data?.message || 'Failed to generate updated plan with AI.');
+    } finally {
+      setIsGeneratingAi(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -102,6 +257,9 @@ const MemberAIResults = () => {
     : (recommendation.workoutRecommendation?.weeklySchedule || []);
 
   const dietPlan = recommendation.finalApprovedPlan?.dietPlan || recommendation.dietRecommendation;
+  const activeDailyMeal = (dietPlan?.dailyMealPlans && Array.isArray(dietPlan.dailyMealPlans))
+    ? (dietPlan.dailyMealPlans.find((m: any) => m.day === selectedDietDay) || dietPlan.dailyMealPlans[0])
+    : null;
   const recoveryPlan = recommendation.finalApprovedPlan?.recoveryPlan || recommendation.recoveryRecommendations;
 
   return (
@@ -122,7 +280,14 @@ const MemberAIResults = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setShowProgressModal(true)}
+            className="px-4 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-md shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
+          >
+            <Sparkles size={16} />
+            <span>Generate with AI</span>
+          </button>
           {isApproved ? (
             <span className="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-sm">
               <CheckCircle2 size={14} className="text-emerald-600" /> Trainer Approved Plan
@@ -134,6 +299,19 @@ const MemberAIResults = () => {
           )}
         </div>
       </div>
+
+      {/* Success Notification Alert */}
+      {generationSuccessMsg && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-emerald-900 font-semibold text-sm shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
+            <span>{generationSuccessMsg}</span>
+          </div>
+          <button onClick={() => setGenerationSuccessMsg('')} className="text-emerald-600 hover:text-emerald-800 p-1">
+            <X size={16} />
+          </button>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex border-b border-[#E7E5E4] mb-6">
@@ -529,29 +707,73 @@ const MemberAIResults = () => {
 
               {/* Section 3: Diet and Nutrition Suggestions */}
               <div className="bg-white border border-[#FED7AA] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-                <div className="flex items-center gap-3 border-b border-[#FED7AA] pb-4">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white flex items-center justify-center font-black shadow-md shadow-orange-900/10">
-                    3
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <Utensils size={18} className="text-[#F97316]" />
-                      <h3 className="text-xl font-black text-[#292524] tracking-tight">Diet and Nutrition Suggestions</h3>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#FED7AA] pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white flex items-center justify-center font-black shadow-md shadow-orange-900/10">
+                      3
                     </div>
-                    <p className="text-xs text-[#78716C] mt-0.5">
-                      Tailored nutrition timing, macronutrient distribution, and hydration target
-                    </p>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Utensils size={18} className="text-[#F97316]" />
+                        <h3 className="text-xl font-black text-[#292524] tracking-tight">Diet and Nutrition Suggestions</h3>
+                      </div>
+                      <p className="text-xs text-[#78716C] mt-0.5">
+                        Daily varied culinary plan from Monday to Sunday with zero meal repetition
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-[#F97316] border border-orange-200">
+                      7 Days Varied
+                    </span>
+                    {activeDailyMeal?.calories && (
+                      <span className="text-xs font-extrabold text-[#292524] bg-[#FFFDF8] px-3 py-1 rounded-xl border border-[#FED7AA]">
+                        {activeDailyMeal.calories} kcal
+                      </span>
+                    )}
                   </div>
                 </div>
+
+                {/* 7-Day Monday to Sunday Selector Tabs */}
+                {dietPlan?.dailyMealPlans && dietPlan.dailyMealPlans.length > 0 && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">
+                        Select Day of the Week:
+                      </span>
+                      {activeDailyMeal?.macros && (
+                        <span className="text-xs font-bold text-[#F97316] bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-200">
+                          Protein: {activeDailyMeal.macros.protein || '150g'} • Carbs: {activeDailyMeal.macros.carbs || '210g'} • Fats: {activeDailyMeal.macros.fats || '58g'}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                      {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
+                        <button
+                          key={day}
+                          type="button"
+                          onClick={() => setSelectedDietDay(day)}
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                            selectedDietDay === day
+                              ? 'bg-[#F97316] text-white shadow-sm scale-102'
+                              : 'bg-[#FFFDF8] text-[#78716C] hover:text-[#292524] border border-[#FED7AA]'
+                          }`}
+                        >
+                          {day}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Morning Hydration */}
                   <div className="bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl p-4 space-y-2">
                     <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#78716C] block">
-                      Morning Hydration
+                      Morning Hydration &amp; Pre-Workout
                     </span>
                     <p className="text-xs text-[#292524] leading-relaxed">
-                      {dietPlan?.morning || 'Warm water with lemon and a pinch of pink Himalayan salt. Pre-workout (5:30 AM): 1 small banana or 2 rice cakes with a spoonful of peanut butter.'}
+                      {activeDailyMeal?.morning || dietPlan?.morning || 'Warm water with lemon and a pinch of pink Himalayan salt. Pre-workout (5:30 AM): 1 small banana or 2 rice cakes with a spoonful of peanut butter.'}
                     </p>
                   </div>
 
@@ -561,7 +783,17 @@ const MemberAIResults = () => {
                       Breakfast
                     </span>
                     <p className="text-xs text-[#292524] leading-relaxed">
-                      {dietPlan?.breakfast || 'Post-workout (7:30 AM): 3-4 whole eggs scrambled with spinach and mushrooms, 2 slices of whole-wheat toast, and a glass of water.'}
+                      {activeDailyMeal?.breakfast || dietPlan?.breakfast || 'Post-workout (7:30 AM): 3-4 whole eggs scrambled with spinach and mushrooms, 2 slices of whole-wheat toast, and a glass of water.'}
+                    </p>
+                  </div>
+
+                  {/* Mid-Morning Snack */}
+                  <div className="bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl p-4 space-y-2">
+                    <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#78716C] block">
+                      Mid-Morning Snack
+                    </span>
+                    <p className="text-xs text-[#292524] leading-relaxed">
+                      {activeDailyMeal?.midMorning || '1 small crisp apple or fresh seasonal fruit with a cup of Greek yogurt.'}
                     </p>
                   </div>
 
@@ -571,7 +803,7 @@ const MemberAIResults = () => {
                       Lunch
                     </span>
                     <p className="text-xs text-[#292524] leading-relaxed">
-                      {dietPlan?.lunch || '150-180g grilled chicken breast or fish (e.g., salmon/tuna) with a large serving (1.5 cups) of mixed green salad with olive oil and 1 cup brown rice/quinoa.'}
+                      {activeDailyMeal?.lunch || dietPlan?.lunch || '150-180g grilled protein with a large serving of mixed green salad with olive oil and 1 cup brown rice/quinoa.'}
                     </p>
                   </div>
 
@@ -581,7 +813,7 @@ const MemberAIResults = () => {
                       Evening Snack
                     </span>
                     <p className="text-xs text-[#292524] leading-relaxed">
-                      {dietPlan?.evening || 'Late Afternoon Snack (4:00 PM): 1 cup Greek yogurt with berries or a handful (30g) of almonds/walnuts. Pre-dinner (6:30 PM): Green tea or black coffee.'}
+                      {activeDailyMeal?.evening || dietPlan?.evening || 'Late Afternoon Snack (4:00 PM): 1 cup Greek yogurt with berries or a handful (30g) of almonds/walnuts. Pre-dinner (6:30 PM): Green tea.'}
                     </p>
                   </div>
 
@@ -591,12 +823,12 @@ const MemberAIResults = () => {
                       Dinner
                     </span>
                     <p className="text-xs text-[#292524] leading-relaxed">
-                      {dietPlan?.dinner || 'Lean protein (grilled fish, paneer/tofu for a vegetarian option), steamed broccoli and asparagus, minimal complex carbs (e.g., small sweet potato or half a cup of lentils).'}
+                      {activeDailyMeal?.dinner || dietPlan?.dinner || 'Lean protein with steamed vegetables and clear vegetable broth.'}
                     </p>
                   </div>
 
                   {/* Daily Hydration Target */}
-                  <div className="bg-gradient-to-br from-blue-50/70 to-indigo-50/70 border border-blue-200 rounded-2xl p-4 space-y-2">
+                  <div className="bg-gradient-to-br from-blue-50/70 to-indigo-50/70 border border-blue-200 rounded-2xl p-4 space-y-2 lg:col-span-3">
                     <span className="text-[10px] uppercase font-extrabold tracking-wider text-blue-900 block">
                       Daily Hydration Target
                     </span>
@@ -996,94 +1228,496 @@ const MemberAIResults = () => {
         /* Progress Comparison Tab */
         <>
           {history.length > 0 ? (
-            <>
-              <div className="bg-gradient-to-br from-[#F97316] to-[#292524] rounded-3xl p-8 text-white shadow-xl relative overflow-hidden mb-6">
-                <div className="absolute top-0 right-0 p-8 opacity-10">
-                  <Trophy size={120} />
-                </div>
-                
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <Activity className="text-[#EA580C]" /> Your Fitness Journey
-                </h2>
-                
-                <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-                  <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm text-center flex-1 border border-white/20">
-                    <p className="text-sm text-[#E7E5E4] uppercase tracking-wider mb-2">Previous Weight</p>
-                    <p className="text-4xl font-bold">{history[0]?.fitnessProfile?.weight || '-'} <span className="text-xl font-medium">kg</span></p>
-                  </div>
-                  
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-[#EA580C] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(198,167,125,0.4)]">
-                      <TrendingDown size={32} className="text-[#F97316]" />
-                    </div>
-                    <p className="text-[#EA580C] font-bold mt-2 bg-white/10 px-4 py-1 rounded-full border border-[#EA580C]/30">
-                      {Math.abs(parseFloat(history[0]?.fitnessProfile?.weight || '0') - parseFloat(recommendation?.fitnessProfile?.weight || '0')).toFixed(1)} kg Difference
-                    </p>
-                  </div>
-                  
-                  <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm text-center flex-1 border border-white/20">
-                    <p className="text-sm text-[#E7E5E4] uppercase tracking-wider mb-2">Current Weight</p>
-                    <p className="text-4xl font-bold text-[#EA580C]">{recommendation?.fitnessProfile?.weight || '-'} <span className="text-xl font-medium text-white">kg</span></p>
-                  </div>
-                </div>
-              </div>
+            (() => {
+              const prevRec = history[0] || {};
+              const prevFp = prevRec.fitnessProfile || {};
+              const currRec = recommendation || {};
+              const currFp = currRec.fitnessProfile || {};
 
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-[#292524] mb-4 flex items-center gap-2">
-                  <ArrowRight className="text-[#F97316]" /> Plan Comparison
-                </h3>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Previous Result Card */}
-                  <div className="bg-gray-50 border border-[#FED7AA] rounded-2xl p-6 relative opacity-80 hover:opacity-100 transition-opacity">
-                    <div className="absolute top-0 right-0 bg-[#FED7AA] text-[#78716C] text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">
-                      Archived Plan
+              const prevW = parseFloat(prevFp.weight || '0');
+              const currW = parseFloat(currFp.weight || '0');
+              const diffW = (currW - prevW).toFixed(1);
+              const numDiff = parseFloat(diffW);
+
+              const getDiffBadge = (currStr?: string, prevStr?: string, unit: string = '') => {
+                if (!currStr || !prevStr) return null;
+                const c = parseFloat(String(currStr).replace(/[^0-9.-]/g, ''));
+                const p = parseFloat(String(prevStr).replace(/[^0-9.-]/g, ''));
+                if (isNaN(c) || isNaN(p)) return null;
+                const d = c - p;
+                if (d === 0) return <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-bold">Maintained</span>;
+                const isDown = d < 0;
+                return (
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${isDown ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800'}`}>
+                    {d > 0 ? `+${d.toFixed(1)}` : `${d.toFixed(1)}`} {unit}
+                  </span>
+                );
+              };
+
+              const calcBmi = (w?: string | number, h?: string | number) => {
+                const weightNum = parseFloat(String(w || '0'));
+                const heightNum = parseFloat(String(h || '0'));
+                if (!weightNum || !heightNum) return '-';
+                return (weightNum / Math.pow(heightNum / 100, 2)).toFixed(1);
+              };
+
+              return (
+                <>
+                  {/* Journey Overview Banner */}
+                  <div className="bg-gradient-to-br from-[#F97316] to-[#292524] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden mb-6">
+                    <div className="absolute top-0 right-0 p-8 opacity-10">
+                      <Trophy size={140} />
                     </div>
-                    <h4 className="text-lg font-bold text-[#78716C] mb-4 flex items-center gap-2">
-                      <Calendar size={18} /> Previous Result
-                      <span className="text-sm font-normal ml-auto">{new Date(history[0]?.createdAt || Date.now()).toLocaleDateString()}</span>
-                    </h4>
                     
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-white p-3 rounded-xl border border-[#FED7AA]">
-                          <p className="text-xs text-[#78716C]">Weight Recorded</p>
-                          <p className="font-bold text-[#292524]">{history[0]?.fitnessProfile?.weight || '-'} kg</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative z-10">
+                      <h2 className="text-2xl font-black flex items-center gap-2">
+                        <Activity className="text-orange-300" /> Your Fitness Journey &amp; Progress
+                      </h2>
+                      <button
+                        onClick={() => setShowProgressModal(true)}
+                        className="px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all w-fit cursor-pointer"
+                      >
+                        <Sparkles size={16} className="text-orange-300" />
+                        <span>Generate with AI</span>
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 sm:gap-6 relative z-10">
+                      <div className="bg-white/10 rounded-2xl p-5 backdrop-blur-sm text-center border border-white/20">
+                        <p className="text-xs text-orange-200 uppercase tracking-wider font-bold mb-1">Previous Weight</p>
+                        <p className="text-3xl sm:text-4xl font-extrabold">{prevFp.weight || '-'} <span className="text-lg font-medium">kg</span></p>
+                        <p className="text-[11px] text-white/70 mt-1">{new Date(prevRec.createdAt || Date.now()).toLocaleDateString()}</p>
+                      </div>
+                      
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="w-14 h-14 bg-gradient-to-tr from-[#EA580C] to-[#F97316] rounded-full flex items-center justify-center shadow-lg border-2 border-white/30">
+                          {numDiff <= 0 ? (
+                            <TrendingDown size={28} className="text-white" />
+                          ) : (
+                            <TrendingUp size={28} className="text-white" />
+                          )}
                         </div>
-                        <div className="bg-white p-3 rounded-xl border border-[#FED7AA]">
-                          <p className="text-xs text-[#78716C]">Primary Goal</p>
-                          <p className="font-bold text-[#292524]">{history[0]?.fitnessProfile?.fitnessGoal || 'General Fitness'}</p>
+                        <p className="text-white font-black mt-2 bg-black/30 px-3.5 py-1 rounded-full border border-white/20 text-xs sm:text-sm">
+                          {Math.abs(numDiff).toFixed(1)} kg {numDiff < 0 ? 'Lost' : numDiff > 0 ? 'Gained' : 'Difference'}
+                        </p>
+                      </div>
+                      
+                      <div className="bg-white/10 rounded-2xl p-5 backdrop-blur-sm text-center border border-white/20">
+                        <p className="text-xs text-orange-200 uppercase tracking-wider font-bold mb-1">Current Weight</p>
+                        <p className="text-3xl sm:text-4xl font-extrabold text-orange-300">{currFp.weight || '-'} <span className="text-lg font-medium text-white">kg</span></p>
+                        <p className="text-[11px] text-white/70 mt-1">{new Date(currRec.createdAt || Date.now()).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+
+                    {/* Quick Highlights Bar */}
+                    <div className="mt-6 pt-5 border-t border-white/15 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs relative z-10">
+                      <div className="bg-black/20 p-2.5 rounded-xl border border-white/10">
+                        <span className="text-white/70 block text-[11px]">Target Weight</span>
+                        <span className="font-bold text-white text-sm">{currFp.targetWeight || '68'} kg in {currFp.targetTimeline || '3 Months'}</span>
+                      </div>
+                      <div className="bg-black/20 p-2.5 rounded-xl border border-white/10">
+                        <span className="text-white/70 block text-[11px]">Goal &amp; Level</span>
+                        <span className="font-bold text-orange-200 text-sm">{currFp.fitnessGoal || 'Weight Loss'} • {currFp.currentFitnessLevel || 'Beginner'}</span>
+                      </div>
+                      <div className="bg-black/20 p-2.5 rounded-xl border border-white/10">
+                        <span className="text-white/70 block text-[11px]">Chest Measurement</span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="font-bold text-white text-sm">{currFp.bodyMeasurements?.chest || '38 in'}</span>
+                          {getDiffBadge(currFp.bodyMeasurements?.chest, prevFp.bodyMeasurements?.chest)}
+                        </div>
+                      </div>
+                      <div className="bg-black/20 p-2.5 rounded-xl border border-white/10">
+                        <span className="text-white/70 block text-[11px]">Waist Measurement</span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="font-bold text-white text-sm">{currFp.bodyMeasurements?.waist || '33 in'}</span>
+                          {getDiffBadge(currFp.bodyMeasurements?.waist, prevFp.bodyMeasurements?.waist)}
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Current Result Card */}
-                  <div className="bg-white border-2 border-[#F97316] rounded-2xl p-6 shadow-lg relative">
-                    <div className="absolute top-0 right-0 bg-[#F97316] text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl rounded-tr-xl shadow-sm">
-                      {isApproved ? 'Approved Plan' : 'Draft In Review'}
+                  {/* Section Title & Action Buttons */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black text-[#292524] flex items-center gap-2">
+                        <ArrowRight className="text-[#F97316]" /> Complete Form Progress Comparison
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#78716C] mt-0.5">
+                        Detailed side-by-side comparison of every item from your completed health &amp; fitness assessment intake form.
+                      </p>
                     </div>
-                    <h4 className="text-lg font-bold text-[#F97316] mb-4 flex items-center gap-2">
-                      <Activity size={18} /> Current Result
-                      <span className="text-sm font-normal text-[#78716C] ml-auto">{new Date(recommendation?.createdAt || Date.now()).toLocaleDateString()}</span>
-                    </h4>
-                    
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4]">
-                          <p className="text-xs text-[#78716C]">Current Weight</p>
-                          <p className="font-bold text-[#F97316]">{recommendation?.fitnessProfile?.weight || '-'} kg</p>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <button
+                        onClick={() => setShowProgressModal(true)}
+                        className="px-4 py-2.5 bg-white border border-[#E7E5E4] hover:border-[#F97316] text-[#292524] font-bold rounded-xl text-xs sm:text-sm shadow-xs flex items-center gap-2 transition-all cursor-pointer hover:bg-[#FFFDF8]"
+                      >
+                        <Plus size={16} className="text-[#F97316]" />
+                        <span>Update Progress Form</span>
+                      </button>
+                      <button
+                        onClick={() => setShowProgressModal(true)}
+                        className="px-4 py-2.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md flex items-center gap-2 transition-all cursor-pointer active:scale-95"
+                      >
+                        <Sparkles size={16} />
+                        <span>Generate with AI</span>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Detailed Side-by-Side Comparison Cards */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Previous Result Card (Full Form Items) */}
+                    <div className="bg-[#FAF8F5] border border-[#FED7AA] rounded-3xl p-6 relative opacity-95 hover:opacity-100 transition-opacity space-y-6">
+                      <div className="absolute top-0 right-0 bg-[#FED7AA] text-[#78716C] text-xs font-bold px-4 py-1.5 rounded-bl-2xl rounded-tr-3xl">
+                        Archived Assessment
+                      </div>
+                      
+                      <div className="flex items-center gap-2 border-b border-[#FED7AA] pb-3">
+                        <Calendar size={18} className="text-[#78716C]" />
+                        <h4 className="text-lg font-black text-[#78716C]">Previous Result</h4>
+                        <span className="text-xs text-[#78716C] ml-auto font-semibold">
+                          {new Date(prevRec.createdAt || Date.now()).toLocaleDateString()}
+                        </span>
+                      </div>
+
+                      {/* 1. Biometrics & Target Goals */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+                          <Scale size={14} className="text-[#F97316]" /> 1. Biometrics &amp; Target Goals
+                        </p>
+                        <div className="grid grid-cols-2 gap-2.5">
+                          <div className="bg-white p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Recorded Weight</p>
+                            <p className="font-extrabold text-[#292524] text-base">{prevFp.weight || '-'} kg</p>
+                          </div>
+                          <div className="bg-white p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Target Weight</p>
+                            <p className="font-extrabold text-[#292524] text-base">{prevFp.targetWeight || '68'} kg ({prevFp.targetTimeline || '3 Months'})</p>
+                          </div>
+                          <div className="bg-white p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Height &amp; BMI</p>
+                            <p className="font-bold text-[#292524] text-sm">
+                              {prevFp.height || '175'} cm • BMI {calcBmi(prevFp.weight, prevFp.height)}
+                            </p>
+                          </div>
+                          <div className="bg-white p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Age &amp; Gender</p>
+                            <p className="font-bold text-[#292524] text-sm">{prevFp.age || '28'} yrs • {prevFp.gender || 'Male'}</p>
+                          </div>
                         </div>
-                        <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4]">
-                          <p className="text-xs text-[#78716C]">New Primary Goal</p>
-                          <p className="font-bold text-[#F97316]">{recommendation?.fitnessProfile?.fitnessGoal || 'General Fitness'}</p>
+                      </div>
+
+                      {/* 2. Body Circumference Measurements */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+                          <Ruler size={14} className="text-[#F97316]" /> 2. Body Measurements
+                        </p>
+                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4] text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Chest</span>
+                            <span className="font-bold text-xs text-[#292524]">{prevFp.bodyMeasurements?.chest || '38 in'}</span>
+                          </div>
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4] text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Waist</span>
+                            <span className="font-bold text-xs text-[#292524]">{prevFp.bodyMeasurements?.waist || '33 in'}</span>
+                          </div>
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4] text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Hips</span>
+                            <span className="font-bold text-xs text-[#292524]">{prevFp.bodyMeasurements?.hips || '39 in'}</span>
+                          </div>
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4] text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Arms</span>
+                            <span className="font-bold text-xs text-[#292524]">{prevFp.bodyMeasurements?.arms || '13.5 in'}</span>
+                          </div>
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4] text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Thighs</span>
+                            <span className="font-bold text-xs text-[#292524]">{prevFp.bodyMeasurements?.thighs || '22 in'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 3. Fitness Goals & Activity Profile */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+                          <Target size={14} className="text-[#F97316]" /> 3. Fitness Goals &amp; Activity
+                        </p>
+                        <div className="grid grid-cols-2 gap-2.5">
+                          <div className="bg-white p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Primary Goal</p>
+                            <p className="font-bold text-[#292524] text-sm">{prevFp.fitnessGoal || 'General Fitness'}</p>
+                          </div>
+                          <div className="bg-white p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Fitness Level</p>
+                            <p className="font-bold text-[#292524] text-sm">{prevFp.currentFitnessLevel || prevFp.experienceLevel || 'Beginner'}</p>
+                          </div>
+                          <div className="bg-white p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Experience</p>
+                            <p className="font-bold text-[#292524] text-sm">{prevFp.workoutExperience || '1-3 years'}</p>
+                          </div>
+                          <div className="bg-white p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Daily Activity</p>
+                            <p className="font-bold text-[#292524] text-sm">{prevFp.activityLevel || 'Moderately Active'}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 4. Workout Schedule & Preferences */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+                          <Dumbbell size={14} className="text-[#F97316]" /> 4. Workout Schedule &amp; Preferences
+                        </p>
+                        <div className="bg-white p-3 rounded-xl border border-[#E7E5E4] space-y-1 text-xs">
+                          <div className="flex justify-between py-1 border-b border-gray-100">
+                            <span className="text-[#78716C]">Training Mode:</span>
+                            <span className="font-bold text-[#292524]">{prevFp.preferredTraining || 'Offline'}</span>
+                          </div>
+                          <div className="flex justify-between py-1 border-b border-gray-100">
+                            <span className="text-[#78716C]">Workout Days:</span>
+                            <span className="font-bold text-[#292524]">{prevFp.availableWorkoutDays || '4 Days'}</span>
+                          </div>
+                          <div className="flex justify-between py-1 border-b border-gray-100">
+                            <span className="text-[#78716C]">Preferred Time &amp; Duration:</span>
+                            <span className="font-bold text-[#292524]">{prevFp.preferredWorkoutTime || 'Morning'} ({prevFp.preferredWorkoutDuration || '45 Mins'})</span>
+                          </div>
+                          <div className="flex justify-between py-1">
+                            <span className="text-[#78716C]">Equipment Access:</span>
+                            <span className="font-bold text-[#292524]">{prevFp.equipmentAvailability || 'Full Commercial Gym'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 5. Nutrition & Lifestyle */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+                          <Utensils size={14} className="text-[#F97316]" /> 5. Nutrition &amp; Lifestyle
+                        </p>
+                        <div className="grid grid-cols-2 gap-2.5 text-xs">
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4]">
+                            <span className="text-[#78716C] block text-[10px] font-bold">Diet Preference</span>
+                            <span className="font-bold text-[#292524]">{prevFp.dietaryPreferences || 'Non-Vegetarian'}</span>
+                          </div>
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4]">
+                            <span className="text-[#78716C] block text-[10px] font-bold">Meals / Water</span>
+                            <span className="font-bold text-[#292524]">{prevFp.mealsPerDay || '3'} meals • {prevFp.dailyWaterIntake || '2-3 L'}</span>
+                          </div>
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4]">
+                            <span className="text-[#78716C] block text-[10px] font-bold">Sleep Quality</span>
+                            <span className="font-bold text-[#292524]">{prevFp.averageSleep || '7-8 hours'}</span>
+                          </div>
+                          <div className="bg-white p-2.5 rounded-xl border border-[#E7E5E4]">
+                            <span className="text-[#78716C] block text-[10px] font-bold">Stress Level</span>
+                            <span className="font-bold text-[#292524]">{prevFp.stressLevel || 'Moderate'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 6. Health & Safety Screening */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+                          <ShieldAlert size={14} className="text-[#F97316]" /> 6. Health &amp; Limitations
+                        </p>
+                        <div className="bg-white p-3 rounded-xl border border-[#E7E5E4] text-xs space-y-1">
+                          <p><span className="text-[#78716C] font-semibold">Injuries:</span> <span className="font-bold text-[#292524]">{prevFp.injuries || 'None'}</span></p>
+                          <p><span className="text-[#78716C] font-semibold">Restrictions:</span> <span className="font-bold text-[#292524]">{prevFp.doctorRestrictions || prevFp.healthConsiderations || 'None'}</span></p>
+                          {prevFp.notes && <p className="italic text-[#78716C]">&quot;{prevFp.notes}&quot;</p>}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Current Result Card (Full Form Items + Active Enhancements) */}
+                    <div className="bg-white border-2 border-[#F97316] rounded-3xl p-6 shadow-lg relative space-y-6">
+                      <div className="absolute top-0 right-0 bg-[#F97316] text-white text-xs font-bold px-4 py-1.5 rounded-bl-2xl rounded-tr-3xl shadow-sm">
+                        {isApproved ? 'Approved Regimen' : 'Live Assessment Draft'}
+                      </div>
+                      
+                      <div className="flex items-center gap-2 border-b border-[#FED7AA] pb-3">
+                        <Activity size={18} className="text-[#F97316]" />
+                        <h4 className="text-lg font-black text-[#F97316]">Current Result</h4>
+                        <span className="text-xs text-[#78716C] ml-auto font-semibold">
+                          {new Date(currRec.createdAt || Date.now()).toLocaleDateString()}
+                        </span>
+                      </div>
+
+                      {/* 1. Biometrics & Target Goals */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#F97316] uppercase tracking-wider flex items-center gap-1.5">
+                          <Scale size={14} className="text-[#F97316]" /> 1. Biometrics &amp; Target Goals
+                        </p>
+                        <div className="grid grid-cols-2 gap-2.5">
+                          <div className="bg-[#FFFDF8] p-3 rounded-xl border border-orange-200">
+                            <div className="flex justify-between items-center">
+                              <p className="text-[11px] text-[#78716C] font-semibold">Current Weight</p>
+                              {diffW !== '0.0' && (
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded font-extrabold ${numDiff < 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800'}`}>
+                                  {numDiff > 0 ? `+${diffW}` : diffW} kg
+                                </span>
+                              )}
+                            </div>
+                            <p className="font-extrabold text-[#F97316] text-base mt-0.5">{currFp.weight || '-'} kg</p>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Target Goal</p>
+                            <p className="font-extrabold text-[#292524] text-base">{currFp.targetWeight || '68'} kg ({currFp.targetTimeline || '3 Months'})</p>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Height &amp; BMI</p>
+                            <p className="font-bold text-[#292524] text-sm">
+                              {currFp.height || '175'} cm • BMI {calcBmi(currFp.weight, currFp.height)}
+                            </p>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Age &amp; Gender</p>
+                            <p className="font-bold text-[#292524] text-sm">{currFp.age || '28'} yrs • {currFp.gender || 'Male'}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 2. Body Circumference Measurements */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#F97316] uppercase tracking-wider flex items-center gap-1.5">
+                          <Ruler size={14} className="text-[#F97316]" /> 2. Body Measurements
+                        </p>
+                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-orange-200 text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Chest</span>
+                            <span className="font-bold text-xs text-[#292524]">{currFp.bodyMeasurements?.chest || '38 in'}</span>
+                            <div className="mt-1">{getDiffBadge(currFp.bodyMeasurements?.chest, prevFp.bodyMeasurements?.chest)}</div>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-orange-200 text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Waist</span>
+                            <span className="font-bold text-xs text-[#292524]">{currFp.bodyMeasurements?.waist || '33 in'}</span>
+                            <div className="mt-1">{getDiffBadge(currFp.bodyMeasurements?.waist, prevFp.bodyMeasurements?.waist)}</div>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-orange-200 text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Hips</span>
+                            <span className="font-bold text-xs text-[#292524]">{currFp.bodyMeasurements?.hips || '39 in'}</span>
+                            <div className="mt-1">{getDiffBadge(currFp.bodyMeasurements?.hips, prevFp.bodyMeasurements?.hips)}</div>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-orange-200 text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Arms</span>
+                            <span className="font-bold text-xs text-[#292524]">{currFp.bodyMeasurements?.arms || '13.5 in'}</span>
+                            <div className="mt-1">{getDiffBadge(currFp.bodyMeasurements?.arms, prevFp.bodyMeasurements?.arms)}</div>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-orange-200 text-center">
+                            <span className="text-[10px] text-[#78716C] uppercase font-bold block">Thighs</span>
+                            <span className="font-bold text-xs text-[#292524]">{currFp.bodyMeasurements?.thighs || '22 in'}</span>
+                            <div className="mt-1">{getDiffBadge(currFp.bodyMeasurements?.thighs, prevFp.bodyMeasurements?.thighs)}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 3. Fitness Goals & Activity Profile */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#F97316] uppercase tracking-wider flex items-center gap-1.5">
+                          <Target size={14} className="text-[#F97316]" /> 3. Fitness Goals &amp; Activity
+                        </p>
+                        <div className="grid grid-cols-2 gap-2.5">
+                          <div className="bg-[#FFFDF8] p-3 rounded-xl border border-orange-200">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Primary Goal</p>
+                            <p className="font-bold text-[#F97316] text-sm">{currFp.fitnessGoal || 'General Fitness'}</p>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Fitness Level</p>
+                            <p className="font-bold text-[#292524] text-sm">{currFp.currentFitnessLevel || currFp.experienceLevel || 'Beginner'}</p>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Experience</p>
+                            <p className="font-bold text-[#292524] text-sm">{currFp.workoutExperience || '1-3 years'}</p>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4]">
+                            <p className="text-[11px] text-[#78716C] font-semibold">Daily Activity</p>
+                            <p className="font-bold text-[#292524] text-sm">{currFp.activityLevel || 'Moderately Active'}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 4. Workout Schedule & Preferences */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#F97316] uppercase tracking-wider flex items-center gap-1.5">
+                          <Dumbbell size={14} className="text-[#F97316]" /> 4. Workout Schedule &amp; Preferences
+                        </p>
+                        <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4] space-y-1 text-xs">
+                          <div className="flex justify-between py-1 border-b border-gray-100">
+                            <span className="text-[#78716C]">Training Mode:</span>
+                            <span className="font-bold text-[#292524]">{currFp.preferredTraining || 'Offline'}</span>
+                          </div>
+                          <div className="flex justify-between py-1 border-b border-gray-100">
+                            <span className="text-[#78716C]">Workout Days:</span>
+                            <span className="font-bold text-[#F97316]">{currFp.availableWorkoutDays || '4 Days'}</span>
+                          </div>
+                          <div className="flex justify-between py-1 border-b border-gray-100">
+                            <span className="text-[#78716C]">Preferred Time &amp; Duration:</span>
+                            <span className="font-bold text-[#292524]">{currFp.preferredWorkoutTime || 'Morning'} ({currFp.preferredWorkoutDuration || '45 Mins'})</span>
+                          </div>
+                          <div className="flex justify-between py-1">
+                            <span className="text-[#78716C]">Equipment Access:</span>
+                            <span className="font-bold text-[#292524]">{currFp.equipmentAvailability || 'Full Commercial Gym'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 5. Nutrition & Lifestyle */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#F97316] uppercase tracking-wider flex items-center gap-1.5">
+                          <Utensils size={14} className="text-[#F97316]" /> 5. Nutrition &amp; Lifestyle
+                        </p>
+                        <div className="grid grid-cols-2 gap-2.5 text-xs">
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-[#E7E5E4]">
+                            <span className="text-[#78716C] block text-[10px] font-bold">Diet Preference</span>
+                            <span className="font-bold text-[#292524]">{currFp.dietaryPreferences || 'Non-Vegetarian'}</span>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-[#E7E5E4]">
+                            <span className="text-[#78716C] block text-[10px] font-bold">Meals / Water</span>
+                            <span className="font-bold text-[#292524]">{currFp.mealsPerDay || '3'} meals • {currFp.dailyWaterIntake || '2-3 L'}</span>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-[#E7E5E4]">
+                            <span className="text-[#78716C] block text-[10px] font-bold">Sleep Quality</span>
+                            <span className="font-bold text-[#292524]">{currFp.averageSleep || '7-8 hours'}</span>
+                          </div>
+                          <div className="bg-[#FFFDF8] p-2.5 rounded-xl border border-[#E7E5E4]">
+                            <span className="text-[#78716C] block text-[10px] font-bold">Stress Level</span>
+                            <span className="font-bold text-[#292524]">{currFp.stressLevel || 'Moderate'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 6. Health & Safety Screening */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-[#F97316] uppercase tracking-wider flex items-center gap-1.5">
+                          <ShieldAlert size={14} className="text-[#F97316]" /> 6. Health &amp; Limitations
+                        </p>
+                        <div className="bg-[#FFFDF8] p-3 rounded-xl border border-[#E7E5E4] text-xs space-y-1">
+                          <p><span className="text-[#78716C] font-semibold">Injuries:</span> <span className="font-bold text-[#292524]">{currFp.injuries || 'None'}</span></p>
+                          <p><span className="text-[#78716C] font-semibold">Restrictions:</span> <span className="font-bold text-[#292524]">{currFp.doctorRestrictions || currFp.healthConsiderations || 'None'}</span></p>
+                          {currFp.notes && <p className="italic text-[#78716C]">&quot;{currFp.notes}&quot;</p>}
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </>
+
+                  {/* Bottom Action Card */}
+                  <div className="mt-8 bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-orange-200 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <Sparkles size={20} className="text-[#F97316]" />
+                        <h4 className="text-lg font-black text-[#292524]">Ready to re-assess or log new milestone progress?</h4>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#78716C] max-w-xl">
+                        Update your weight, circumference measurements, and workout availability to generate an updated progressive plan with AI.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setShowProgressModal(true)}
+                      className="px-6 py-3.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-extrabold rounded-xl text-sm shadow-lg shadow-orange-300/30 flex items-center gap-2 transition-all cursor-pointer shrink-0 active:scale-95"
+                    >
+                      <Sparkles size={18} />
+                      <span>Generate with AI</span>
+                    </button>
+                  </div>
+                </>
+              );
+            })()
           ) : (
             <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-12 text-center shadow-sm">
               <h2 className="text-xl font-bold text-[#292524] mb-2">No History Found</h2>
@@ -1091,6 +1725,232 @@ const MemberAIResults = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* ========================================================================= */}
+      {/* PROGRESS COMPARISON UPDATE FORM MODAL & GENERATE WITH AI                  */}
+      {/* ========================================================================= */}
+      {showProgressModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#292524]/60 backdrop-blur-sm overflow-y-auto animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 my-auto">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-[#F97316] via-[#EA580C] to-[#292524] p-6 text-white relative shrink-0">
+              <div className="relative z-10 flex justify-between items-start">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles size={20} className="text-orange-300" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-orange-200">AI Progress Engine</span>
+                  </div>
+                  <h3 className="text-2xl font-black">Complete Progress Form &amp; Generate with AI</h3>
+                  <p className="text-white/80 text-xs sm:text-sm mt-0.5">
+                    Update your current weight, body circumference measurements &amp; workout preferences.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowProgressModal(false)}
+                  className="text-white/70 hover:text-white p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Form Content */}
+            <form onSubmit={handleGenerateWithAI} className="p-6 overflow-y-auto space-y-5 text-[#292524]">
+              {/* 1. Biometrics */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
+                  <Scale size={15} className="text-[#F97316]" /> 1. Current Weight &amp; Target Goal
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-[#78716C] mb-1">Current Weight (kg) *</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      required
+                      value={progressForm.weight}
+                      onChange={e => setProgressForm({ ...progressForm, weight: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                      placeholder="e.g. 74"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#78716C] mb-1">Target Weight (kg)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={progressForm.targetWeight}
+                      onChange={e => setProgressForm({ ...progressForm, targetWeight: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                      placeholder="e.g. 68"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#78716C] mb-1">Target Timeline</label>
+                    <select
+                      value={progressForm.targetTimeline}
+                      onChange={e => setProgressForm({ ...progressForm, targetTimeline: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                    >
+                      <option value="1 Month">1 Month</option>
+                      <option value="2 Months">2 Months</option>
+                      <option value="3 Months">3 Months</option>
+                      <option value="6 Months">6 Months</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Body Circumference Measurements */}
+              <div className="space-y-3 pt-2 border-t border-gray-100">
+                <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
+                  <Ruler size={15} className="text-[#F97316]" /> 2. Body Circumference Measurements
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#78716C] mb-1">Chest</label>
+                    <input
+                      type="text"
+                      value={progressForm.chest}
+                      onChange={e => setProgressForm({ ...progressForm, chest: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                      placeholder="e.g. 38 in"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#78716C] mb-1">Waist</label>
+                    <input
+                      type="text"
+                      value={progressForm.waist}
+                      onChange={e => setProgressForm({ ...progressForm, waist: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                      placeholder="e.g. 33 in"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#78716C] mb-1">Hips</label>
+                    <input
+                      type="text"
+                      value={progressForm.hips}
+                      onChange={e => setProgressForm({ ...progressForm, hips: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                      placeholder="e.g. 39 in"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#78716C] mb-1">Arms</label>
+                    <input
+                      type="text"
+                      value={progressForm.arms}
+                      onChange={e => setProgressForm({ ...progressForm, arms: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                      placeholder="e.g. 13.5 in"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#78716C] mb-1">Thighs</label>
+                    <input
+                      type="text"
+                      value={progressForm.thighs}
+                      onChange={e => setProgressForm({ ...progressForm, thighs: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                      placeholder="e.g. 22 in"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Training Preferences & Availability */}
+              <div className="space-y-3 pt-2 border-t border-gray-100">
+                <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
+                  <Dumbbell size={15} className="text-[#F97316]" /> 3. Training &amp; Routine Updates
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-[#78716C] mb-1">Fitness Level</label>
+                    <select
+                      value={progressForm.currentFitnessLevel}
+                      onChange={e => setProgressForm({ ...progressForm, currentFitnessLevel: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                    >
+                      <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#78716C] mb-1">Available Days / Week</label>
+                    <select
+                      value={progressForm.preferredWorkoutDays}
+                      onChange={e => setProgressForm({ ...progressForm, preferredWorkoutDays: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                    >
+                      <option value="3 Days">3 Days</option>
+                      <option value="4 Days">4 Days</option>
+                      <option value="5 Days">5 Days</option>
+                      <option value="6 Days">6 Days</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#78716C] mb-1">Session Duration</label>
+                    <select
+                      value={progressForm.preferredWorkoutDuration}
+                      onChange={e => setProgressForm({ ...progressForm, preferredWorkoutDuration: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                    >
+                      <option value="30 Minutes">30 Minutes</option>
+                      <option value="45 Minutes">45 Minutes</option>
+                      <option value="60 Minutes">60 Minutes</option>
+                      <option value="75 Minutes">75 Minutes</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Notes & Recovery */}
+              <div className="space-y-3 pt-2 border-t border-gray-100">
+                <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
+                  <FileText size={15} className="text-[#F97316]" /> 4. Notes &amp; Physical Feeling
+                </h4>
+                <textarea
+                  value={progressForm.notes}
+                  onChange={e => setProgressForm({ ...progressForm, notes: e.target.value })}
+                  placeholder="How are your energy levels? Hit a new personal record or feeling soreness? (Optional)"
+                  className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-medium text-[#292524] outline-none focus:border-[#F97316] min-h-[64px]"
+                ></textarea>
+              </div>
+
+              {/* Submit / Cancel Actions */}
+              <div className="pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowProgressModal(false)}
+                  className="w-full sm:w-auto px-5 py-2.5 text-xs font-bold text-[#78716C] hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isGeneratingAi}
+                  className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-black rounded-xl text-sm shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
+                >
+                  {isGeneratingAi ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      <span>Generating with AI...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles size={18} />
+                      <span>Generate with AI</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

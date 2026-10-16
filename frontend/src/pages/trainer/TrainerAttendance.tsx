@@ -248,7 +248,7 @@ const TrainerAttendance = () => {
           </div>
         ) : filteredSessions.length === 0 ? (
           <div className="p-12 text-center text-[#78716C] space-y-3">
-            <CalendarCheck size={36} className="mx-auto text-gray-300" />
+            <CalendarCheck size={36} className="mx-auto text-stone-600" />
             <p className="font-semibold text-sm">
               {selectedDate
                 ? `No scheduled sessions found for ${selectedDate}.`

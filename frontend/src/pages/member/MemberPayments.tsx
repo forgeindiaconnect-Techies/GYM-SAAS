@@ -114,7 +114,7 @@ const MemberPayments = () => {
                       <td className="px-6 py-4">
                         {getStatusBadge(payment.status)}
                         {payment.status === 'Rejected' && payment.rejectionReason && (
-                          <p className="text-xs text-[#FED7AA] mt-1 max-w-xs">{payment.rejectionReason}</p>
+                          <p className="text-xs text-[#292524] font-medium mt-1 max-w-xs">{payment.rejectionReason}</p>
                         )}
                       </td>
                       <td className="px-6 py-4">

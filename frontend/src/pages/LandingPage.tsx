@@ -732,52 +732,97 @@ const LandingPage = () => {
               <div className="flex justify-center py-12">
                 <Loader2 className="animate-spin text-[#F97316]" size={36} />
               </div>
-            ) : (
-              <div className="grid md:grid-cols-3 gap-8">
-                {(
-                  communityFilter === 'all'
-                    ? (communityReviews.length > 0 ? communityReviews : [
-                      { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
-                      { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
-                      { name: 'David Chen', role: 'Gym Owner', text: 'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard is incredibly intuitive.' }
-                    ])
-                    : communityFilter === 'member'
-                      ? communityGrouped.members
-                      : communityFilter === 'trainer'
-                        ? communityGrouped.trainers
-                        : communityGrouped.owners
-                ).map((review: any, idx: number) => (
-                  <div key={review.id || idx} className="bg-[#FFFFFF] border border-[#E7E5E4] p-8 rounded-2xl relative flex flex-col justify-between hover:border-[#F97316]/50 hover:shadow-md transition-all">
-                    <div>
-                      <Quote className="absolute top-8 right-8 text-[#FED7AA]" size={48} />
-                      <div className="flex items-center space-x-1 mb-4 text-[#F97316]">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star key={s} size={16} fill={s <= (review.rating || 5) ? 'currentColor' : 'none'} />
-                        ))}
-                      </div>
-                      <p className="text-[#78716C] italic mb-6 relative z-10 leading-relaxed">"{review.text}"</p>
-                    </div>
-                    <div className="pt-4 border-t border-[#F5F5F4]">
-                      <h4 className="font-bold text-[#292524] text-base">{review.name}</h4>
-                      <span className="text-xs text-[#F97316] uppercase tracking-wider font-semibold block mt-0.5">
-                        {review.role}
-                      </span>
-                      {review.subtitle && (
-                        <span className="text-xs text-[#78716C] block mt-1">
-                          {review.subtitle}
-                        </span>
-                      )}
-                      {review.reviewedBy && (
-                        <span className="text-xs text-[#F97316] font-medium block mt-1 flex items-center gap-1">
-                          <CheckCircle size={13} className="text-[#F97316] shrink-0" />
-                          Client Review • {review.reviewedBy}
-                        </span>
-                      )}
-                    </div>
+            ) : (() => {
+              const currentReviews = (
+                communityFilter === 'all'
+                  ? (communityReviews.length > 0 ? communityReviews : [
+                    { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
+                    { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
+                    { name: 'Arun FIC', role: 'GYM OWNER • PERFECT FITNESS STUDIO', text: 'Since listing Perfect Fitness Studio on AI GYM, our member acquisition has tripled. The management dashboard and branch analytics are incredibly intuitive.' }
+                  ])
+                  : communityFilter === 'member'
+                    ? communityGrouped.members
+                    : communityFilter === 'trainer'
+                      ? communityGrouped.trainers
+                      : communityGrouped.owners
+              );
+
+              if (currentReviews.length === 0) {
+                return (
+                  <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-[#E7E5E4] max-w-md mx-auto">
+                    <p className="text-[#78716C] text-sm">No reviews found in this category yet.</p>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              }
+
+              return (
+                <div className={`grid gap-8 ${
+                  currentReviews.length === 1
+                    ? 'max-w-md mx-auto grid-cols-1'
+                    : currentReviews.length === 2
+                      ? 'max-w-4xl mx-auto md:grid-cols-2'
+                      : 'grid-cols-1 md:grid-cols-3'
+                }`}>
+                  {currentReviews.map((review: any, idx: number) => (
+                    <div key={review.id || idx} className="bg-[#FFFFFF] border border-[#E7E5E4] p-8 rounded-2xl relative flex flex-col justify-between hover:border-[#F97316]/50 hover:shadow-md transition-all">
+                      <div>
+                        <Quote className="absolute top-8 right-8 text-[#FED7AA]" size={48} />
+                        <div className="flex items-center space-x-2 mb-4">
+                          <div className="flex items-center space-x-0.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star
+                                key={s}
+                                size={17}
+                                className={
+                                  s <= Math.round(review.rating || 5)
+                                    ? 'text-[#F97316] fill-[#F97316]'
+                                    : 'text-[#D6D3D1] fill-transparent'
+                                }
+                              />
+                            ))}
+                          </div>
+                          <span className="text-xs font-bold text-[#F97316] bg-[#F97316]/10 px-2 py-0.5 rounded-md">
+                            {(Number(review.rating) || 5).toFixed(1)}
+                          </span>
+                        </div>
+                        <p className="text-[#78716C] italic mb-6 relative z-10 leading-relaxed">"{review.text}"</p>
+                      </div>
+                      <div className="pt-4 border-t border-[#F5F5F4]">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="font-bold text-[#292524] text-base">{review.name}</h4>
+                            <span className="text-xs text-[#F97316] uppercase tracking-wider font-semibold block mt-0.5">
+                              {review.role}
+                            </span>
+                          </div>
+                          {review.type === 'member' && (
+                            <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-orange-50 text-[#F97316] border border-orange-200">
+                              Verified Member
+                            </span>
+                          )}
+                        </div>
+
+                        {review.reviewedGym ? (
+                          <span className="text-xs text-orange-950 font-medium block mt-2.5 flex items-center gap-1.5 bg-orange-50/70 p-2 rounded-lg border border-orange-200">
+                            <CheckCircle size={14} className="text-[#F97316] shrink-0" />
+                            <span>Gym Review: <strong className="text-[#292524]">{review.reviewedGym}</strong>{review.gymLocation ? ` • ${review.gymLocation}` : ''}</span>
+                          </span>
+                        ) : review.reviewedBy ? (
+                          <span className="text-xs text-orange-950 font-medium block mt-2.5 flex items-center gap-1.5 bg-orange-50/70 p-2 rounded-lg border border-orange-200">
+                            <CheckCircle size={14} className="text-[#F97316] shrink-0" />
+                            <span>Client Review • <strong className="text-[#292524]">{review.reviewedBy}</strong></span>
+                          </span>
+                        ) : review.subtitle ? (
+                          <span className="text-xs text-[#78716C] block mt-2">
+                            {review.subtitle}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         </section>
       </main>

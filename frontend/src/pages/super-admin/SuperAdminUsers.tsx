@@ -6,12 +6,12 @@ const SuperAdminUsers = () => {
       <div className="flex justify-between items-end mb-8 border-b border-[#E7E5E4] pb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Users className="text-[#FED7AA]" size={32} />
+            <Users className="text-[#EA580C]" size={32} />
             User Management
           </h1>
           <p className="text-[#78716C] mt-2 font-mono text-sm">Global oversight of all platform users.</p>
         </div>
-        <button className="px-6 py-2 bg-[#FED7AA]/10 text-[#FED7AA] border border-[#FED7AA]/30 rounded-xl font-bold hover:bg-[#FED7AA] hover:text-[#F97316] transition-colors">
+        <button className="px-6 py-2 bg-[#FED7AA]/10 text-[#EA580C] border border-[#FED7AA]/30 rounded-xl font-bold hover:bg-[#FED7AA] hover:text-[#F97316] transition-colors">
           Execute Protocol
         </button>
       </div>
@@ -33,7 +33,7 @@ const SuperAdminUsers = () => {
 
       <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl overflow-hidden">
         <div className="p-4 border-b border-[#E7E5E4] bg-[#FFFFFF]">
-          <h2 className="text-sm font-bold font-mono text-[#FED7AA] uppercase tracking-widest">Global Registry Table</h2>
+          <h2 className="text-sm font-bold font-mono text-[#EA580C] uppercase tracking-widest">Global Registry Table</h2>
         </div>
         <table className="w-full text-left font-mono text-sm">
           <thead>
@@ -53,7 +53,7 @@ const SuperAdminUsers = () => {
                 </td>
                 <td className="p-4 text-[#78716C]">2026-10-12T14:43:0${row}Z</td>
                 <td className="p-4 text-right">
-                  <button className="text-[#555] hover:text-[#FED7AA] transition-colors">Modify</button>
+                  <button className="text-[#555] hover:text-[#EA580C] transition-colors">Modify</button>
                 </td>
               </tr>
             ))}

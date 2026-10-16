@@ -6,7 +6,7 @@ import api from '../../utils/api';
 const TYPE_STYLES: Record<string, { icon: any; color: string; bg: string }> = {
   info: { icon: Info, color: 'text-blue-500', bg: 'bg-blue-500/10' },
   success: { icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-500/10' },
-  alert: { icon: AlertCircle, color: 'text-[#FED7AA]', bg: 'bg-red-500/10' },
+  alert: { icon: AlertCircle, color: 'text-[#EA580C]', bg: 'bg-red-500/10' },
   message: { icon: MessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10' },
 };
 

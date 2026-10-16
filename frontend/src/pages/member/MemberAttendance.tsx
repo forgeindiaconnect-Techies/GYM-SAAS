@@ -261,7 +261,7 @@ const MemberAttendance = () => {
           </div>
         ) : sessions.length === 0 ? (
           <div className="p-12 text-center text-[#78716C] space-y-3">
-            <CalendarCheck size={36} className="mx-auto text-gray-300" />
+            <CalendarCheck size={36} className="mx-auto text-stone-600" />
             <p className="font-semibold text-sm">No session attendance records found yet.</p>
             <p className="text-xs text-gray-400">Book and attend your first online trainer session to view check-in history.</p>
             <Link

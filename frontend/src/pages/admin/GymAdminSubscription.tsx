@@ -26,7 +26,7 @@ const PLAN_DETAILS: Record<string, any> = {
     priceMonthly: 5999, priceAnnual: 59990,
   },
   SILVER: {
-    name: 'Silver', color: 'text-slate-300', bg: 'bg-slate-300/10', border: 'border-slate-400/30',
+    name: 'Silver', color: 'text-stone-600', bg: 'bg-slate-300/10', border: 'border-slate-400/30',
     icon: Star, limits: { members: 100, trainers: 5, staff: 2, branches: 1 },
     priceMonthly: 799, priceAnnual: 7990,
   },
@@ -481,7 +481,7 @@ const GymAdminSubscription = () => {
                   2 months FREE!
                 </span>
               ) : (
-                <span className="text-xs bg-[#FFFDF8] text-[#FED7AA] px-2 py-0.5 rounded-full border border-[#E7E5E4]">
+                <span className="text-xs bg-[#FFFDF8] text-[#EA580C] px-2 py-0.5 rounded-full border border-[#E7E5E4]">
                   Save up to 25%
                 </span>
               )}
@@ -584,7 +584,7 @@ const GymAdminSubscription = () => {
                         ))}
                         {plan.locked.map((f, i) => (
                           <li key={i} className="flex items-start gap-2 text-xs text-[#CBD5E1]">
-                            <XCircle size={13} className="shrink-0 mt-0.5 text-[#FED7AA]" />
+                            <XCircle size={13} className="shrink-0 mt-0.5 text-rose-600" />
                             <span className="line-through">{f}</span>
                           </li>
                         ))}

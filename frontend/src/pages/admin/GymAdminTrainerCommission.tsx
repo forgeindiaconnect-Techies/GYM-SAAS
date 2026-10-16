@@ -489,7 +489,7 @@ const GymAdminTrainerCommission = () => {
               </div>
             ) : filteredLedger.length === 0 ? (
               <div className="p-12 text-center text-[#78716C]">
-                <Percent className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+                <Percent className="w-10 h-10 mx-auto mb-2 text-stone-600" />
                 <p className="font-bold text-sm text-[#292524]">No Commission Records Found</p>
                 <p className="text-xs text-[#78716C] mt-1 max-w-sm mx-auto">
                   When you disburse trainer fees with a commission rate applied, your retained commission will appear here automatically.
@@ -695,7 +695,7 @@ const GymAdminTrainerCommission = () => {
               </div>
             ) : filteredWithdrawals.length === 0 ? (
               <div className="p-12 text-center text-[#78716C]">
-                <Wallet className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+                <Wallet className="w-10 h-10 mx-auto mb-2 text-stone-600" />
                 <p className="font-bold text-sm text-[#292524]">No Commission Withdrawals Yet</p>
                 <p className="text-xs text-[#78716C] mt-1 max-w-sm mx-auto">
                   When you withdraw your commission balance, your payout receipts and transfer logs will appear here.

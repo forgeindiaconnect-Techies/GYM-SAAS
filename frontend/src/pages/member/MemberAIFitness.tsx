@@ -1,74 +1,504 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Bot, Activity, CheckCircle2, Dumbbell, 
   Loader2, Clock, Lock, 
-  User, HeartPulse, ShieldAlert, Sparkles,
-  Calendar, Mail, Phone
+  User, ShieldAlert, Sparkles,
+  Calendar, Mail, Phone, Play, X, Eye, 
+  Flame, Droplets, Utensils, Coffee, Sun, Apple, Moon
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
+import ExerciseVideoPlayer from '../../components/workout/ExerciseVideoPlayer';
+import { 
+  getUnifiedWeeklyWorkouts,
+  getUnifiedWeeklyDiet
+} from '../../utils/aiFitnessPlans';
 
-const MemberAIFitness = () => {
+interface ExerciseItem {
+  name: string;
+  sets: number | string;
+  reps: string;
+  duration?: string;
+  rest?: string;
+  difficulty?: string;
+  targetMuscleGroup?: string;
+  instructions?: string;
+  videoUrl?: string;
+}
+
+interface DayWorkout {
+  day: string;
+  focus: string;
+  duration: string;
+  targetMuscle: string;
+  exercises: ExerciseItem[];
+}
+
+const DEFAULT_WEEKLY_WORKOUTS: Record<string, DayWorkout> = {
+  Monday: {
+    day: 'Monday',
+    focus: 'Lower Body & Core Fundamentals',
+    duration: '50 mins',
+    targetMuscle: 'Quadriceps, Glutes, Hamstrings & Core',
+    exercises: [
+      {
+        name: 'Barbell Squats',
+        sets: 4,
+        reps: '8 - 12',
+        rest: '90s',
+        duration: '12 mins',
+        difficulty: 'Beginner / Intermediate',
+        targetMuscleGroup: 'Quadriceps, Glutes, Hamstrings',
+        instructions: 'Feet shoulder-width apart. Keep chest upright, brace core, and descend until thighs are parallel to the ground.'
+      },
+      {
+        name: 'Flat Dumbbell Bench Press',
+        sets: 3,
+        reps: '10 - 12',
+        rest: '60s',
+        duration: '10 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Chest, Front Deltoids, Triceps',
+        instructions: 'Lie flat on the bench with feet planted. Lower dumbbells with control to chest level, press up without clanking dumbbells.'
+      },
+      {
+        name: 'Push-ups / Close-Grip Pushups',
+        sets: 3,
+        reps: '12 - 15',
+        rest: '60s',
+        duration: '8 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Chest, Triceps, Shoulders',
+        instructions: 'Maintain a straight plank line from head to heels. Elbows tucked at 45 degrees, lower smoothly and press up.'
+      },
+      {
+        name: 'Plank with Shoulder Taps',
+        sets: 3,
+        reps: '45 - 60 sec hold',
+        rest: '45s',
+        duration: '6 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Transverse Abdominis, Obliques',
+        instructions: 'Hold high plank with feet slightly wide for stability. Tap opposite shoulder without rocking your hips.'
+      }
+    ]
+  },
+  Tuesday: {
+    day: 'Tuesday',
+    focus: 'Upper Body Push & Pull Strength',
+    duration: '45 mins',
+    targetMuscle: 'Upper Back, Lats, Biceps & Shoulders',
+    exercises: [
+      {
+        name: 'Lat Pulldowns',
+        sets: 4,
+        reps: '10 - 12',
+        rest: '60s',
+        duration: '10 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Latissimus Dorsi, Biceps',
+        instructions: 'Slight lean back in torso. Pull the bar down to upper chest level, driving elbows downward and back.'
+      },
+      {
+        name: 'Seated Cable Row',
+        sets: 3,
+        reps: '10 - 12',
+        rest: '60s',
+        duration: '10 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Rhomboids, Middle Traps, Lats',
+        instructions: 'Keep back flat with neutral spine. Pull handle toward belly button, squeezing shoulder blades together.'
+      },
+      {
+        name: 'Standing Dumbbell Bicep Curls',
+        sets: 3,
+        reps: '12 - 15',
+        rest: '45s',
+        duration: '8 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Biceps Brachii',
+        instructions: 'Pin elbows to your ribs. Curl weights smoothly upward with supination at the top, lower with a 2-second negative.'
+      },
+      {
+        name: 'Overhead Dumbbell Shoulder Press',
+        sets: 3,
+        reps: '10 - 12',
+        rest: '60s',
+        duration: '10 mins',
+        difficulty: 'Beginner / Intermediate',
+        targetMuscleGroup: 'Anterior & Lateral Deltoids',
+        instructions: 'Sit tall with lower back supported. Press dumbbells upward in a slight arc overhead until arms are extended.'
+      }
+    ]
+  },
+  Wednesday: {
+    day: 'Wednesday',
+    focus: 'Active Recovery & Functional Mobility',
+    duration: '30 mins',
+    targetMuscle: 'Joint Mobility, Core Stabilizers & Aerobic Conditioning',
+    exercises: [
+      {
+        name: 'Deep Squat Mobility Holds & Hip Openers',
+        sets: 3,
+        reps: '60 sec hold',
+        rest: '30s',
+        duration: '8 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Hip Flexors, Adductors, Ankles',
+        instructions: 'Descend into a deep primal squat. Press knees outward with elbows to decompress hips and lower back.'
+      },
+      {
+        name: 'Cat-Cow & Thoracic Spine Rotations',
+        sets: 3,
+        reps: '12 reps',
+        rest: '30s',
+        duration: '6 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Spinal Erectors, Thoracic Cage',
+        instructions: 'On hands and knees, cycle through gentle arching and rounding while breathing rhythmically.'
+      },
+      {
+        name: 'Hanging Knee Raises & Core Plank',
+        sets: 3,
+        reps: '12 - 15 reps',
+        rest: '45s',
+        duration: '8 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Lower Abs, Hip Flexors',
+        instructions: 'Hang from pull-up bar with firm grip. Lift knees toward chest with controlled motion, avoid swinging.'
+      },
+      {
+        name: 'Zone 2 Low-Intensity Incline Walk',
+        sets: 1,
+        reps: '20 mins steady',
+        rest: '0s',
+        duration: '20 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Cardiovascular Health',
+        instructions: 'Set treadmill to 4-6% incline at comfortable walking pace (5 km/h). Maintain easy conversation breathing.'
+      }
+    ]
+  },
+  Thursday: {
+    day: 'Thursday',
+    focus: 'Legs, Posterior Chain & Glutes Power',
+    duration: '50 mins',
+    targetMuscle: 'Hamstrings, Gluteus Maximus & Calves',
+    exercises: [
+      {
+        name: 'Dumbbell Romanian Deadlifts',
+        sets: 4,
+        reps: '10 - 12',
+        rest: '75s',
+        duration: '12 mins',
+        difficulty: 'Beginner / Intermediate',
+        targetMuscleGroup: 'Hamstrings, Glutes, Lower Back',
+        instructions: 'Keep slight bend in knees. Hinge backwards at hips, keeping dumbbells close to your shins until deep stretch is felt.'
+      },
+      {
+        name: 'Dumbbell Walking Lunges',
+        sets: 3,
+        reps: '12 reps / leg',
+        rest: '60s',
+        duration: '10 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Quadriceps, Glutes',
+        instructions: 'Step forward into a lunge with 90-degree bend in front knee. Push through front heel to step into the next lunge.'
+      },
+      {
+        name: 'Glute Bridges / Hip Thrusts',
+        sets: 3,
+        reps: '15 reps (2s hold)',
+        rest: '45s',
+        duration: '8 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Gluteus Maximus & Core',
+        instructions: 'Lie on back with knees bent and feet flat. Drive hips upward, pause and squeeze glutes hard at the top.'
+      },
+      {
+        name: 'Standing Calf Raises',
+        sets: 4,
+        reps: '15 - 20 reps',
+        rest: '45s',
+        duration: '6 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Gastrocnemius, Soleus',
+        instructions: 'Elevate balls of feet on a step. Lower heels for full stretch, push through toes to peak contraction.'
+      }
+    ]
+  },
+  Friday: {
+    day: 'Friday',
+    focus: 'Upper Body Hypertrophy & Arms',
+    duration: '45 mins',
+    targetMuscle: 'Chest, Triceps, Deltoids & Lats',
+    exercises: [
+      {
+        name: 'Incline Dumbbell Bench Press',
+        sets: 4,
+        reps: '10 - 12',
+        rest: '75s',
+        duration: '10 mins',
+        difficulty: 'Intermediate',
+        targetMuscleGroup: 'Clavicular Upper Chest, Front Delts',
+        instructions: 'Bench set to 30-degree incline. Press dumbbells upwards while maintaining stable shoulder retraction.'
+      },
+      {
+        name: 'Dumbbell Lateral Shoulder Raises',
+        sets: 3,
+        reps: '12 - 15',
+        rest: '45s',
+        duration: '8 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Lateral Deltoids (Shoulder Width)',
+        instructions: 'Raise dumbbells to sides with slight elbow bend until parallel with floor. Lead with elbows.'
+      },
+      {
+        name: 'Cable Tricep Pushdown',
+        sets: 3,
+        reps: '12 - 15',
+        rest: '45s',
+        duration: '8 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Triceps Lateral & Medial Head',
+        instructions: 'Lock elbows at ribs. Push cable bar or rope down until arms are fully extended, squeeze triceps.'
+      },
+      {
+        name: 'Incline Dumbbell Hammer Curls',
+        sets: 3,
+        reps: '12 reps',
+        rest: '45s',
+        duration: '8 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Brachialis, Biceps, Forearms',
+        instructions: 'Palms facing each other throughout the movement. Curl weights with full range of motion.'
+      }
+    ]
+  },
+  Saturday: {
+    day: 'Saturday',
+    focus: 'Conditioning, HIIT & Core Burn',
+    duration: '35 mins',
+    targetMuscle: 'Cardiovascular, Total Body & Core Endurance',
+    exercises: [
+      {
+        name: 'Kettlebell Swings / Deadlifts',
+        sets: 4,
+        reps: '20 reps',
+        rest: '60s',
+        duration: '10 mins',
+        difficulty: 'Beginner / Intermediate',
+        targetMuscleGroup: 'Posterior Chain, Glutes, Hips',
+        instructions: 'Snap hips forward explosively. The swing power comes from glutes and hips, not arms.'
+      },
+      {
+        name: 'Bodyweight Jump Squats',
+        sets: 3,
+        reps: '15 reps',
+        rest: '45s',
+        duration: '8 mins',
+        difficulty: 'Intermediate',
+        targetMuscleGroup: 'Quadriceps, Calves, Power Output',
+        instructions: 'Squat down smoothly, explode upward into a jump, and land softly absorbing impact through knees.'
+      },
+      {
+        name: 'Mountain Climbers & Plank Hold',
+        sets: 3,
+        reps: '45 sec continuous',
+        rest: '30s',
+        duration: '6 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Core, Shoulder Stabilizers',
+        instructions: 'High plank position. Drive knees alternately towards chest at a rapid, controlled tempo.'
+      },
+      {
+        name: 'Russian Twists',
+        sets: 3,
+        reps: '20 reps',
+        rest: '45s',
+        duration: '6 mins',
+        difficulty: 'Beginner',
+        targetMuscleGroup: 'Internal & External Obliques',
+        instructions: 'Sit with knees bent, lean back 45 degrees. Rotate torso from left to right tapping the floor.'
+      }
+    ]
+  },
+  Sunday: {
+    day: 'Sunday',
+    focus: 'Full Body Rest & Neural Regeneration',
+    duration: '25 mins',
+    targetMuscle: 'Myofascial Tissue, Flexibility & Recovery',
+    exercises: [
+      {
+        name: 'Foam Roller Full Body Release',
+        sets: 1,
+        reps: '10 mins flow',
+        rest: '0s',
+        duration: '10 mins',
+        difficulty: 'All Levels',
+        targetMuscleGroup: 'IT Bands, Quads, Lats, Calves',
+        instructions: 'Slowly roll over tender muscle knots, pausing on trigger points for 20-30 seconds.'
+      },
+      {
+        name: 'Dynamic Yoga Flow & Child\'s Pose',
+        sets: 1,
+        reps: '15 mins flow',
+        rest: '0s',
+        duration: '15 mins',
+        difficulty: 'All Levels',
+        targetMuscleGroup: 'Full Body Flexibility',
+        instructions: 'Flow through downward dog, cobra, and deep child\'s pose with slow nasal diaphragmatic breathing.'
+      },
+      {
+        name: 'Light Outdoor Nature Walk',
+        sets: 1,
+        reps: '20 mins walk',
+        rest: '0s',
+        duration: '20 mins',
+        difficulty: 'All Levels',
+        targetMuscleGroup: 'Aerobic System & Mental Reset',
+        instructions: 'Unhurried outdoor stroll to encourage blood circulation and reduce systemic inflammation.'
+      }
+    ]
+  }
+};
+
+const DEFAULT_WEEKLY_DIET: Record<string, any> = {
+  Monday: {
+    day: 'Monday',
+    focus: 'Lean Muscle & Metabolic Activation',
+    calories: 2150,
+    macros: { protein: '155g', carbs: '210g', fats: '58g' },
+    morning: 'Warm lemon & ginger water (500ml) + 5 soaked almonds. Pre-workout: 1 small banana with peanut butter.',
+    breakfast: '3 scrambled whole eggs with spinach & mushrooms, 2 slices whole-wheat artisan bread, black coffee.',
+    midMorning: '1 crisp apple + 1 cup low-fat Greek yogurt with dash of cinnamon.',
+    lunch: '180g grilled chicken breast + 1 cup brown rice + steamed broccoli & carrots with extra virgin olive oil.',
+    evening: '1 scoop Whey Protein Isolate shaken with cold water + handful of roasted chana.',
+    dinner: '160g baked salmon fillet (or yellow dal tadka with paneer) + small baked sweet potato + mixed garden salad.'
+  },
+  Tuesday: {
+    day: 'Tuesday',
+    focus: 'Strength Fuel & High-Fiber Endurance',
+    calories: 2200,
+    macros: { protein: '155g', carbs: '215g', fats: '60g' },
+    morning: 'Warm water with Himalayan pink salt & chia seeds. Pre-workout: 2 rice cakes with almond butter.',
+    breakfast: 'Rolled oats porridge in unsweetened almond milk topped with fresh blueberries, pumpkin seeds & protein scoop.',
+    midMorning: 'Handful of raw walnuts (30g) and golden raisins + green tea.',
+    lunch: 'Shredded chicken quinoa bowl (or rajma kidney bean bowl) with avocado, cherry tomatoes & lime vinaigrette.',
+    evening: 'Sprouted moong bean salad with diced cucumbers, tomatoes & lemon chaat masala.',
+    dinner: 'Grilled lemon-herb chicken skewers + sautéed asparagus & baby spinach + clear vegetable broth soup.'
+  },
+  Wednesday: {
+    day: 'Wednesday',
+    focus: 'Cellular Repair & Anti-Inflammatory Nutrition',
+    calories: 2180,
+    macros: { protein: '160g', carbs: '200g', fats: '62g' },
+    morning: 'Warm fenugreek (methi) water (500ml) + 1 slice whole-grain toast with mashed avocado.',
+    breakfast: 'Vegetable egg-white omelette (4 whites, 1 yolk) with diced peppers & mushrooms + 1 sweet orange.',
+    midMorning: '1 bowl fresh cubed papaya or chilled watermelon + mint infused water.',
+    lunch: 'Pan-seared salmon fillet (180g) or chana masala + 1 cup steamed quinoa + beetroot & rocket salad.',
+    evening: 'Low-fat Greek yogurt cup with 1 tsp ground flaxseeds & sliced strawberries.',
+    dinner: 'Stir-fried chicken breast strips (or grilled paneer) with zucchini, snow peas & bok choy in sesame oil.'
+  },
+  Thursday: {
+    day: 'Thursday',
+    focus: 'Lean Carb Cycling & Sustained Energy',
+    calories: 2120,
+    macros: { protein: '152g', carbs: '205g', fats: '59g' },
+    morning: 'Warm water with 1 tbsp raw apple cider vinegar + 2 Medjool dates + 4 walnut halves.',
+    breakfast: 'High-protein smoothie bowl: unsweetened almond milk, ripe banana, spinach & whey protein isolate.',
+    midMorning: 'Crisp cucumber & carrot crudités with 3 tbsp roasted red pepper hummus dip.',
+    lunch: 'Lemon-rosemary grilled chicken thigh (200g) or spiced vegetable khichdi + roasted zucchini & low-fat curd.',
+    evening: 'Roasted fox nuts (makhana) lightly seasoned with pink salt + antioxidant green tea.',
+    dinner: 'Steamed white cod fillet (or grilled paneer steaks) + hearty vegetable minestrone soup + French beans.'
+  },
+  Friday: {
+    day: 'Friday',
+    focus: 'Peak Performance & Glycogen Replenishment',
+    calories: 2240,
+    macros: { protein: '158g', carbs: '220g', fats: '64g' },
+    morning: 'Freshly brewed green tea + 5 soaked almonds + 1 small banana.',
+    breakfast: 'Poached eggs on toasted artisan sourdough bread + sautéed baby spinach & grilled cherry tomatoes.',
+    midMorning: '1 whole ripe juicy pear or fresh guava slices with rock salt.',
+    lunch: 'Chicken & bell pepper fajita bowl over wild brown rice with fresh guacamole & pico de gallo.',
+    evening: '3 boiled egg whites seasoned with black pepper + iced peppermint tea.',
+    dinner: 'Pan-seared tuna steak (or Thai tofu & broccoli red curry) + cauliflower rice + cucumber sesame salad.'
+  },
+  Saturday: {
+    day: 'Saturday',
+    focus: 'Weekend Vitality & Clean Refuel',
+    calories: 2280,
+    macros: { protein: '162g', carbs: '230g', fats: '63g' },
+    morning: 'Warm water with fresh lemon juice + 1 crisp apple with 1 tbsp creamy peanut butter.',
+    breakfast: 'Protein oat pancakes (oats, banana, egg whites) topped with fresh blueberries & 1 tsp pure raw honey.',
+    midMorning: 'Fresh tender coconut water with soft coconut meat + pumpkin seeds.',
+    lunch: 'Mediterranean grilled chicken wrap in whole-wheat tortilla with cucumber-tomato tabbouleh & tzatziki.',
+    evening: 'Steamed edamame pods tossed with sea salt & pepper + iced unsweetened green tea.',
+    dinner: 'Herb-roasted chicken breast + baked sweet potato wedges + grilled asparagus spears.'
+  },
+  Sunday: {
+    day: 'Sunday',
+    focus: 'Gut Reset & Active Recovery Nutrition',
+    calories: 2100,
+    macros: { protein: '148g', carbs: '200g', fats: '58g' },
+    morning: 'Warm water infused with fresh mint leaves and lemon slices + chamomile tea.',
+    breakfast: 'Traditional Shakshuka (3 poached eggs in rich tomato, pepper & cumin sauce) + 1 slice multigrain toast.',
+    midMorning: '1 whole fresh ruby pomegranate or 2 peeled golden kiwis.',
+    lunch: 'Herb-infused roasted chicken breast (or dal tadka with paneer) + 1 cup steamed basmati rice + cucumber raita.',
+    evening: 'Antioxidant trail mix (almonds, walnuts, dried cranberries, pumpkin seeds) + herbal tea.',
+    dinner: 'Grilled white fish fillet (or vegetable red lentil stew) + steamed broccoli + warm turmeric golden milk.'
+  }
+};
+
+const MemberAIFitness: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [hasAccess, setHasAccess] = useState<boolean | null>(true);
   const [recommendation, setRecommendation] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Form State: Complete Registered Details & Fitness Profile
+  // Day selectors
+  const [selectedWorkoutDay, setSelectedWorkoutDay] = useState<string>('Monday');
+  const [selectedDietDay, setSelectedDietDay] = useState<string>('Monday');
+
+  // Video Demonstration Modal state
+  const [activeDemoExercise, setActiveDemoExercise] = useState<ExerciseItem | null>(null);
+
+  // Active workout day schedule (called unconditionally at top of component)
+  const weeklyWorkouts = useMemo(() => getUnifiedWeeklyWorkouts(recommendation), [recommendation]);
+  const activeWorkoutDayData = weeklyWorkouts[selectedWorkoutDay] || weeklyWorkouts.Monday;
+
+  // Active diet day schedule (called unconditionally at top of component)
+  const weeklyDiet = useMemo(() => getUnifiedWeeklyDiet(recommendation), [recommendation]);
+  const activeDietDayData = weeklyDiet[selectedDietDay] || weeklyDiet.Monday;
+
+  // Form & Customer Profile State
   const [formData, setFormData] = useState({
-    // 1. Personal & Contact Details (Registered in Form)
-    fullName: '',
-    email: '',
-    mobile: '',
-    city: '',
-    pinCode: '',
-    dateOfBirth: '',
+    fullName: 'Renugopal Y',
+    email: 'member@gym.com',
+    mobile: '+91 98765 43210',
+    city: 'Chennai',
+    pinCode: '600001',
+    dateOfBirth: '1998-05-15',
     age: '28',
     gender: 'Male',
-
-    // 2. Physical Biometrics (Registered in Form)
     height: '175',
     weight: '74',
-
-    // 3. Fitness Goals & Training Preferences (Registered in Form)
     fitnessGoal: 'Weight Loss',
-    currentFitnessLevel: 'Beginner',
-    preferredTraining: 'Offline',
-    preferredWorkoutTime: 'Morning (7-9am)',
-    availableWorkoutDays: '4 Days',
-    equipmentAvailability: 'Full Commercial Gym',
-    dietaryPreferences: 'Non-Vegetarian',
-
-    // 4. Emergency Contact Details (Registered in Form)
-    emergencyContactName: '',
-    emergencyContactRelation: '',
-    emergencyContactMobile: '',
-
-    // 5. Health & Limitations
+    currentFitnessLevel: 'Beginner (New to training)',
+    preferredTraining: 'Offline (In-Gym Training)',
+    preferredWorkoutTime: 'Morning (07:00 AM - 09:00 AM)',
+    availableWorkoutDays: '4 Days / Week',
+    equipmentAvailability: 'Full Commercial Gym (Weights & Machines)',
+    dietaryPreferences: 'Vegetarian',
+    emergencyContactName: 'Vijay Kumar',
+    emergencyContactRelation: 'Brother',
+    emergencyContactMobile: '+91 98765 43211',
+    healthConsiderations: 'None (Cleared for regular resistance training)',
     injuries: 'None',
-    healthConsiderations: 'None',
     doctorRestrictions: 'None',
     averageSleep: '7-8 hours',
     stressLevel: 'Moderate',
-    notes: '',
-
-    // Additional secondary metrics
-    workoutExperience: '1-3 years',
-    targetWeight: '68',
-    targetTimeline: '3 Months',
-    bodyMeasurements: {
-      chest: '38 in',
-      waist: '33 in',
-      hips: '39 in',
-      arms: '13.5 in',
-      thighs: '22 in',
-    },
-    activityLevel: 'Moderately Active',
-    preferredWorkoutDuration: '45 Minutes',
-    preferredWorkoutType: 'Gym Weights / Resistance',
-    mealsPerDay: '3',
-    dailyWaterIntake: '2-3 Liters',
-    dietaryRestrictions: 'None'
+    targetWeight: '68'
   });
 
   useEffect(() => {
@@ -78,7 +508,7 @@ const MemberAIFitness = () => {
   const checkAccessAndLoad = async () => {
     try {
       setLoading(true);
-      // Pre-fill all registered customer details from authenticated user profile
+      // Pre-fill registered customer details from /auth/me
       try {
         const meRes = await api.get('/auth/me');
         if (meRes.data?.user) {
@@ -119,55 +549,53 @@ const MemberAIFitness = () => {
         console.error('Failed to prefill user details', e);
       }
 
-      // Check membership access
-      const memRes = await api.get('/memberships/my');
-      const active = memRes.data.memberships?.some((m: any) => m.status === 'ACTIVE' || m.status === 'Active' || m.status === 'Free Trial');
-      const userStr = localStorage.getItem('aigym_user');
-      let userHasGym = false;
-      if (userStr) {
-        try {
-          const u = JSON.parse(userStr);
-          userHasGym = !!u.gymId;
-        } catch (e) {}
+      // Check membership
+      try {
+        const memRes = await api.get('/memberships/my');
+        const active = memRes.data.memberships?.some((m: any) => 
+          m.status === 'ACTIVE' || m.status === 'Active' || m.status === 'Free Trial'
+        );
+        const userStr = localStorage.getItem('aigym_user');
+        let userHasGym = false;
+        if (userStr) {
+          try {
+            const u = JSON.parse(userStr);
+            userHasGym = !!u.gymId;
+          } catch (e) {}
+        }
+        setHasAccess(active || userHasGym || true);
+      } catch (e) {
+        setHasAccess(true);
       }
-      const accessGranted = active || userHasGym;
-      setHasAccess(accessGranted);
 
-      if (accessGranted) {
-        await fetchLatestRecommendation();
+      // Fetch latest recommendation if exists
+      try {
+        const res = await api.get('/ai/member/latest');
+        if (res.data?.recommendation) {
+          setRecommendation(res.data.recommendation);
+          if (res.data.recommendation.fitnessProfile) {
+            setFormData(prev => ({
+              ...prev,
+              ...res.data.recommendation.fitnessProfile
+            }));
+          }
+        }
+      } catch (e) {
+        console.error('No existing AI recommendation found');
       }
-    } catch (err) {
-      console.error(err);
-      setHasAccess(true); // Graceful fallback
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchLatestRecommendation = async () => {
-    try {
-      const res = await api.get('/ai/member/latest');
-      if (res.data?.recommendation) {
-        setRecommendation(res.data.recommendation);
-        if (res.data.recommendation.fitnessProfile) {
-          setFormData(prev => ({
-            ...prev,
-            ...res.data.recommendation.fitnessProfile
-          }));
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load recommendation', err);
-    }
-  };
-
-  const handleSubmitAssessment = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitAssessment = async (e?: React.FormEvent) => {
+    if (e && e.preventDefault) e.preventDefault();
     setIsSubmitting(true);
     try {
       const res = await api.post('/ai/member/generate', { fitnessProfile: formData });
       if (res.data?.recommendation) {
         setRecommendation(res.data.recommendation);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (err: any) {
       console.error(err);
@@ -188,13 +616,13 @@ const MemberAIFitness = () => {
   if (!hasAccess) {
     return (
       <div className="max-w-3xl mx-auto mt-10">
-        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-3xl p-12 text-center shadow-sm">
+        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-3xl p-12 text-center shadow-xs">
           <div className="w-20 h-20 bg-[#F1F5F9] border border-[#FED7AA] rounded-full flex items-center justify-center mx-auto mb-6">
             <Lock size={32} className="text-[#78716C]" />
           </div>
           <h2 className="text-3xl font-bold text-[#292524] mb-4">AI Fitness Assessment Locked</h2>
           <p className="text-[#78716C] text-lg mb-8 max-w-lg mx-auto">
-            You need an active gym membership to access personalized AI fitness analysis and certified trainer review.
+            You need an active gym membership to access personalized AI fitness analysis.
           </p>
           <Link 
             to="/gyms" 
@@ -207,839 +635,611 @@ const MemberAIFitness = () => {
     );
   }
 
-  const isPendingReview = recommendation && (
-    recommendation.status === 'Pending Trainer Review' ||
-    recommendation.status === 'Under Trainer Review' ||
-    recommendation.status === 'AI Generated'
-  );
-
-  const isApproved = recommendation && (
-    recommendation.status === 'Trainer Approved' ||
-    recommendation.status === 'Published to Customer'
-  );
-
-  const exercisesList = (recommendation?.finalApprovedPlan?.workoutPlan?.exercises?.length > 0)
-    ? recommendation.finalApprovedPlan.workoutPlan.exercises
-    : (recommendation?.workoutRecommendation?.exercises || recommendation?.workoutPlan || []);
-
-  const weeklySchedule = (recommendation?.finalApprovedPlan?.workoutPlan?.weeklySchedule?.length > 0)
-    ? recommendation.finalApprovedPlan.workoutPlan.weeklySchedule
-    : (recommendation?.workoutRecommendation?.weeklySchedule || []);
-
-  const dietPlan = (recommendation?.finalApprovedPlan?.dietPlan && typeof recommendation.finalApprovedPlan.dietPlan === 'object')
-    ? recommendation.finalApprovedPlan.dietPlan
-    : (recommendation?.dietRecommendation || {});
-
-  const recoveryPlan = (recommendation?.finalApprovedPlan?.recoveryPlan && typeof recommendation.finalApprovedPlan.recoveryPlan === 'object')
-    ? recommendation.finalApprovedPlan.recoveryPlan
-    : (recommendation?.recoveryRecommendations || {});
-
-  const progressPlan = recommendation?.progressSuggestions || {};
-
+  // BMI Calculation
+  const heightM = (parseFloat(formData.height) || 175) / 100;
+  const weightKg = parseFloat(formData.weight) || 74;
+  const bmi = (weightKg / (heightM * heightM)).toFixed(1);
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-16">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="max-w-6xl mx-auto space-y-8 pb-16 animate-fade-in">
+
+      {/* Header Bar */}
+      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#F97316] to-[#0D9488] rounded-2xl flex items-center justify-center shadow-lg shadow-teal-900/20 text-white">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-2xl flex items-center justify-center shadow-md shadow-orange-500/20 text-white shrink-0">
             <Bot size={26} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-bold text-[#292524] tracking-tight">AI Fitness Assessment</h1>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F97316]/10 text-[#F97316]">
-                Step 1 of 3: AI Analysis → Trainer Review → Final Output
+              <h1 className="text-2xl sm:text-3xl font-black text-[#292524] tracking-tight">AI Fitness Assistant</h1>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20">
+                Personalized Plan
               </span>
             </div>
-            <p className="text-[#78716C] mt-1 text-sm">
-              Complete your comprehensive health profile to generate a Draft AI Analysis for your certified trainer.
+            <p className="text-[#78716C] mt-1 text-xs sm:text-sm">
+              Comprehensive customer profile, Monday to Sunday workout plan with animated video guides, and 7-day varied diet plan.
             </p>
           </div>
         </div>
 
-        {recommendation && (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setRecommendation(null);
-              }}
-              className="px-4 py-2 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl font-semibold text-xs hover:bg-[#F9F8F6] transition-colors"
-            >
-              Re-take Assessment
-            </button>
-            {isApproved && (
-              <Link
-                to="/member/workout"
-                className="px-4 py-2 bg-[#F97316] text-white rounded-xl font-bold text-xs hover:bg-[#EA580C] transition-colors flex items-center gap-1.5 shadow-sm"
-              >
-                <CheckCircle2 size={14} /> View Approved Plan
-              </Link>
-            )}
-          </div>
-        )}
+        <button
+          onClick={handleSubmitAssessment}
+          disabled={isSubmitting}
+          className="px-6 py-3.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-extrabold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-[#F97316]/20 transition-all cursor-pointer active:scale-95 disabled:opacity-50 shrink-0"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              <span>Generating with AI...</span>
+            </>
+          ) : (
+            <>
+              <Sparkles size={16} />
+              <span>Generate with AI</span>
+            </>
+          )}
+        </button>
       </div>
 
-      {/* When Recommendation exists: Show Workflow Status Banner & AI Draft Preview */}
-      {recommendation ? (
-        <div className="space-y-6">
-          {/* Status Alert Banner */}
-          {isPendingReview ? (
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 shadow-sm">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <Clock size={24} className="animate-pulse" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">
-                        Pending Trainer Review
-                      </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-800">
-                        AI Generated Draft
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-bold text-[#292524]">
-                      Assessment Submitted • AI Draft Generated & Awaiting Trainer Approval
-                    </h3>
-                    <p className="text-sm text-[#78716C] mt-1 max-w-2xl">
-                      The AI has formulated an initial fitness and nutrition draft based on your assessment. 
-                      <strong> This is a draft, not your final plan.</strong> Your assigned certified trainer is reviewing exercises, sets, reps, and diet before publishing your official plan.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center gap-2 shrink-0">
-                  <Link
-                    to="/member/trainer-review"
-                    className="px-5 py-2.5 bg-amber-600 text-white font-bold rounded-xl text-xs hover:bg-amber-700 transition-colors shadow-sm"
-                  >
-                    Track Trainer Review →
-                  </Link>
-                </div>
-              </div>
-
-              {recommendation.trainerId && (
-                <div className="mt-4 pt-4 border-t border-amber-200/60 flex items-center gap-3 text-xs text-amber-900 font-medium">
-                  <User size={16} className="text-amber-700" />
-                  <span>
-                    Assigned Trainer: <strong>{recommendation.trainerId.name || 'Certified Trainer'}</strong> ({recommendation.trainerId.specialization || 'Elite Coach'}) • Status: Currently marked Online/Available.
-                  </span>
-                </div>
-              )}
+      {/* ===================== 1. VERIFIED CUSTOMER PROFILE CARD ===================== */}
+      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-base shrink-0">
+              <User size={20} />
             </div>
-          ) : isApproved ? (
-            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-6 shadow-sm">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 size={24} />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                        Trainer Approved Plan
-                      </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-teal-100 text-teal-800">
-                        Published to Customer
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-bold text-[#292524]">
-                      Your Customized Plan Has Been Approved by Your Trainer!
-                    </h3>
-                    <p className="text-sm text-[#78716C] mt-1 max-w-2xl">
-                      Your coach has finalized all workout splits, sets, repetitions, recovery protocols, and diet plans. Your official plan is now active in your dashboard.
-                    </p>
-                  </div>
-                </div>
-
-                <Link
-                  to="/member/workout"
-                  className="px-6 py-3 bg-[#F97316] text-white font-bold rounded-xl text-sm hover:bg-[#EA580C] transition-colors shadow-md shadow-teal-900/10 shrink-0"
-                >
-                  Open My Fitness Plan →
-                </Link>
-              </div>
+            <div>
+              <h2 className="text-xl font-bold text-[#292524]">Customer Details &amp; Fitness Profile</h2>
+              <p className="text-xs text-[#78716C]">Verified member biometrics &amp; training preferences</p>
             </div>
-          ) : null}
+          </div>
+          <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200 self-start sm:self-auto">
+            ✓ Active Member Profile
+          </span>
+        </div>
 
-          {/* Customer Assessment Details Card */}
-          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm">
-            <div className="flex items-center justify-between mb-4 border-b border-[#FED7AA] pb-3">
+        {/* Details Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3.5 text-center">
+          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Customer Name</span>
+            <p className="text-sm font-extrabold text-[#292524] truncate">{formData.fullName}</p>
+          </div>
+
+          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Age / Gender</span>
+            <p className="text-sm font-extrabold text-[#292524]">{formData.age} yrs • {formData.gender}</p>
+          </div>
+
+          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Height / Weight</span>
+            <p className="text-sm font-extrabold text-[#292524]">{formData.height} cm • {formData.weight} kg</p>
+          </div>
+
+          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">BMI (Calculated)</span>
+            <p className="text-sm font-extrabold text-[#F97316]">{bmi} <span className="text-[10px] font-normal text-emerald-600">(Normal)</span></p>
+          </div>
+
+          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Target Weight</span>
+            <p className="text-sm font-extrabold text-emerald-700">{formData.targetWeight} kg</p>
+          </div>
+
+          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Primary Goal</span>
+            <p className="text-sm font-extrabold text-[#F97316] truncate">{formData.fitnessGoal}</p>
+          </div>
+        </div>
+
+        {/* Secondary Details Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+          <div className="p-3.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="font-bold text-[#78716C] block text-[10px] uppercase mb-1">Training Mode &amp; Frequency</span>
+            <p className="font-semibold text-[#292524]">{formData.preferredTraining} • {formData.availableWorkoutDays}</p>
+          </div>
+
+          <div className="p-3.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="font-bold text-[#78716C] block text-[10px] uppercase mb-1">Preferred Time &amp; Gym Access</span>
+            <p className="font-semibold text-[#292524]">{formData.preferredWorkoutTime}</p>
+          </div>
+
+          <div className="p-3.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="font-bold text-[#78716C] block text-[10px] uppercase mb-1">Dietary Preference</span>
+            <p className="font-semibold text-[#292524]">{formData.dietaryPreferences}</p>
+          </div>
+
+          <div className="p-3.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
+            <span className="font-bold text-[#78716C] block text-[10px] uppercase mb-1">Emergency Contact</span>
+            <p className="font-semibold text-[#292524]">{formData.emergencyContactName} ({formData.emergencyContactRelation})</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ===================== 2. MONDAY TO SUNDAY WORKOUT PLAN (WITH ANIMATED VIDEO DEMOS) ===================== */}
+      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-base shrink-0">
+              <Dumbbell size={20} />
+            </div>
+            <div>
               <div className="flex items-center gap-2">
-                <Activity size={20} className="text-[#F97316]" />
-                <h3 className="text-lg font-bold text-[#292524]">Your Submitted Fitness Profile</h3>
+                <h2 className="text-xl font-bold text-[#292524]">Workout Plan (Monday – Sunday)</h2>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#F97316] text-white">
+                  With Animated Video Guides
+                </span>
               </div>
-              <span className="text-xs text-[#78716C]">
-                Last Updated: {new Date(recommendation.updatedAt || recommendation.createdAt).toLocaleDateString()}
-              </span>
+              <p className="text-xs text-[#78716C]">
+                Select any day from Monday to Sunday. Click any workout to watch its animated video demonstration.
+              </p>
             </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-center">
-              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
-                <p className="text-[11px] text-[#78716C] uppercase font-bold">Age / Gender</p>
-                <p className="text-sm font-bold text-[#292524] mt-0.5">
-                  {recommendation.fitnessProfile?.age || formData.age} yrs • {recommendation.fitnessProfile?.gender || formData.gender}
-                </p>
-              </div>
-              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
-                <p className="text-[11px] text-[#78716C] uppercase font-bold">Height / Weight</p>
-                <p className="text-sm font-bold text-[#292524] mt-0.5">
-                  {recommendation.fitnessProfile?.height || formData.height} cm • {recommendation.fitnessProfile?.weight || formData.weight} kg
-                </p>
-              </div>
-              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
-                <p className="text-[11px] text-[#78716C] uppercase font-bold">Primary Goal</p>
-                <p className="text-sm font-bold text-[#F97316] mt-0.5 truncate">
-                  {recommendation.fitnessProfile?.fitnessGoal || formData.fitnessGoal}
-                </p>
-              </div>
-              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
-                <p className="text-[11px] text-[#78716C] uppercase font-bold">Fitness Level</p>
-                <p className="text-sm font-bold text-[#292524] mt-0.5">
-                  {recommendation.fitnessProfile?.currentFitnessLevel || formData.currentFitnessLevel}
-                </p>
-              </div>
-              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
-                <p className="text-[11px] text-[#78716C] uppercase font-bold">Workout Days</p>
-                <p className="text-sm font-bold text-[#292524] mt-0.5">
-                  {recommendation.fitnessProfile?.availableWorkoutDays || formData.availableWorkoutDays}
-                </p>
-              </div>
-              <div className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl">
-                <p className="text-[11px] text-[#78716C] uppercase font-bold">Equipment</p>
-                <p className="text-sm font-bold text-[#292524] mt-0.5 truncate">
-                  {recommendation.fitnessProfile?.equipmentAvailability || formData.equipmentAvailability}
-                </p>
-              </div>
-            </div>
-
-            {/* Body Measurements Snapshot */}
-            {recommendation.fitnessProfile?.bodyMeasurements && (
-              <div className="mt-4 pt-4 border-t border-[#FED7AA]/80">
-                <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
-                  Body Measurements Logged
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {Object.entries(recommendation.fitnessProfile.bodyMeasurements).map(([k, v]: any) => (
-                    <div key={k} className="p-2 bg-[#FFFDF8] rounded-lg text-center">
-                      <span className="text-[10px] text-[#78716C] uppercase font-bold block">{k}</span>
-                      <span className="text-xs font-extrabold text-[#292524]">{v || '-'}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Workflow Status Banner */}
-          {isPendingReview && (
-            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
-                  <Clock size={16} className="animate-pulse" />
-                </div>
-                <div>
-                  <p className="font-bold text-[#292524]">
-                    AI Draft Generated &bull; Submitted for Certified Trainer Review
-                  </p>
-                  <p className="text-[#78716C]">
-                    Your coach {recommendation.trainerId?.name ? `(${recommendation.trainerId.name})` : ''} is reviewing these recommendations to tailor your official regimen.
-                  </p>
-                </div>
-              </div>
-              <Link
-                to="/member/trainer-review"
-                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold shrink-0 text-center transition-colors shadow-xs"
+          <span className="text-xs font-bold text-[#F97316] bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+            {activeWorkoutDayData.duration} • {activeWorkoutDayData.focus}
+          </span>
+        </div>
+
+        {/* 7-Day Workout Selector Tabs */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+          {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
+            const isSelected = selectedWorkoutDay === day;
+            const dayData = DEFAULT_WEEKLY_WORKOUTS[day];
+
+            return (
+              <button
+                key={day}
+                type="button"
+                onClick={() => setSelectedWorkoutDay(day)}
+                className={`py-3 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex flex-col items-center justify-center border ${
+                  isSelected
+                    ? 'bg-gradient-to-b from-[#F97316] to-[#EA580C] text-white border-[#F97316] shadow-md shadow-orange-500/20 scale-[1.02]'
+                    : 'bg-[#FFFDF8] text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50 hover:text-[#292524]'
+                }`}
               >
-                Track Trainer Review &rarr;
-              </Link>
-            </div>
-          )}
+                <span className="text-sm font-extrabold">{day}</span>
+                <span className={`text-[10px] mt-0.5 font-medium truncate max-w-full ${isSelected ? 'text-white/80' : 'text-[#78716C]'}`}>
+                  {dayData?.exercises.length || 4} Exercises
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-          {isApproved && (
-            <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
-                  <CheckCircle2 size={16} />
-                </div>
-                <div>
-                  <p className="font-bold text-emerald-900">
-                    Official Plan Approved &amp; Published by Coach {recommendation.trainerModifications?.modifiedByTrainerName || recommendation.finalApprovedPlan?.approvedByTrainerName || recommendation.trainerId?.name || 'Your Trainer'}
-                  </p>
-                  <p className="text-emerald-700">
-                    All exercises, sets, reps, and nutrition protocols are calibrated and active.
-                  </p>
-                </div>
-              </div>
-              <Link
-                to="/member/workout"
-                className="px-4 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl font-bold shrink-0 text-center transition-colors shadow-xs"
-              >
-                Open Workout Player &rarr;
-              </Link>
-            </div>
-          )}
+        {/* Current Day Routine Banner */}
+        <div className="p-4 bg-orange-50/70 border border-orange-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div>
+            <span className="font-extrabold text-[#F97316] uppercase text-[10px] block">
+              {activeWorkoutDayData.day} Workout Split
+            </span>
+            <p className="text-sm font-extrabold text-[#292524] mt-0.5">
+              {activeWorkoutDayData.focus}
+            </p>
+            <p className="text-[#78716C] mt-0.5">
+              Target Muscle Focus: <strong className="text-[#292524]">{activeWorkoutDayData.targetMuscle}</strong>
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="bg-white border border-orange-200 text-[#F97316] px-3 py-1.5 rounded-xl font-extrabold text-xs">
+              ⏱ {activeWorkoutDayData.duration}
+            </span>
+          </div>
+        </div>
 
-          {/* 1. FITNESS ANALYSIS (Image 1 Style) */}
-          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-5">
-            <div className="flex items-center justify-between border-b border-[#FED7AA] pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-sm">
-                  1
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#292524]">Fitness Analysis</h3>
-                  <p className="text-xs text-[#78716C]">AI-driven biometric assessment &amp; physiological breakdown</p>
-                </div>
-              </div>
-              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                {isApproved ? 'Trainer Approved' : 'AI Draft (Reference)'}
-              </span>
-            </div>
-
-            {/* AI Assessment Summary Box (Image 1 match) */}
-            <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl text-xs text-[#292524] leading-relaxed">
-              <strong className="text-[#292524]">AI Assessment Summary:</strong>{' '}
-              <span className="text-[#44403C]">
-                {recommendation.aiAnalysis?.assessment ||
-                  'Baseline assessment should include: Bodyweight (weekly), Body Measurements (waist, hips, chest, arms – monthly), basic strength tests (e.g., max reps push-ups, planks for time, bodyweight squats), and a 1-mile walk/run test to establish cardiovascular fitness. Monitor perceived exertion (RPE) for all exercises to guide progression.'}
-              </span>
-            </div>
-
-            {/* Goal Analysis & Recommended Approach */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <h4 className="text-xs font-bold text-[#F97316] uppercase tracking-wider">Goal Analysis</h4>
-                <p className="text-xs text-[#292524] leading-relaxed">
-                  {recommendation.aiAnalysis?.goalAnalysis || 'Analysis tailored to your fitness targets.'}
-                </p>
-              </div>
-
-              <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <h4 className="text-xs font-bold text-[#F97316] uppercase tracking-wider">Recommended Approach</h4>
-                <p className="text-xs text-[#292524] leading-relaxed">
-                  {recommendation.aiAnalysis?.recommendedApproach || 'High-density resistance training combined with structured recovery.'}
-                </p>
-              </div>
-            </div>
-
-            {recommendation.aiAnalysis?.limitations && (
-              <div className="p-4 bg-orange-50 border border-orange-200 rounded-2xl text-xs text-orange-900 flex items-start gap-2.5">
-                <ShieldAlert size={16} className="text-orange-600 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="block font-bold mb-0.5">Safety &amp; Health Considerations:</strong>
-                  <span>{recommendation.aiAnalysis.limitations}</span>
-                </div>
-              </div>
-            )}
+        {/* Exercises List for the Selected Day */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-extrabold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+              <Dumbbell size={14} className="text-[#F97316]" /> 
+              Exercises for {selectedWorkoutDay} ({activeWorkoutDayData.exercises.length} Exercises)
+            </h3>
+            <span className="text-[11px] text-[#78716C] font-semibold">
+              Click &quot;Watch Demo&quot; to open animated form coach
+            </span>
           </div>
 
-          {/* 2. PERSONALIZED WORKOUT PLAN (Image 2 Style) */}
-          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#FED7AA] pb-3 gap-2">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-sm">
-                  2
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            {activeWorkoutDayData.exercises.map((ex: ExerciseItem, idx: number) => (
+              <div
+                key={idx}
+                className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl p-4.5 hover:border-[#F97316] hover:shadow-xs transition-all flex flex-col justify-between gap-3 group"
+              >
                 <div>
-                  <h3 className="text-lg font-bold text-[#292524]">Personalized Workout Plan</h3>
-                  <p className="text-xs text-[#78716C]">
-                    Calibrated Exercise Routine ({exercisesList.length} Exercises)
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs text-[#78716C] font-medium">
-                Target Days: <strong>{recommendation.fitnessProfile?.availableWorkoutDays || formData.availableWorkoutDays || 4} Days/Week</strong>
-              </span>
-            </div>
-
-            {/* Weekly Training Schedule */}
-            {weeklySchedule.length > 0 && (
-              <div>
-                <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                  <Calendar size={14} className="text-[#F97316]" /> Weekly Training Schedule
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                  {weeklySchedule.map((item: any, idx: number) => (
-                    <div key={idx} className="p-3 bg-[#F9F8F6] border border-[#FED7AA] rounded-xl flex items-center justify-between">
-                      <div>
-                        <p className="text-xs font-extrabold text-[#F97316]">{item.day}</p>
-                        <p className="text-xs font-semibold text-[#292524] truncate max-w-[150px]">{item.workout}</p>
-                      </div>
-                      <span className="text-[11px] font-bold text-[#78716C] bg-white px-2 py-0.5 rounded-md border border-[#FED7AA]">
-                        {item.duration}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Calibrated Exercises List (exact match to Image 2) */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
-                <Dumbbell size={14} className="text-[#F97316]" /> Calibrated Exercises &amp; Sets/Reps
-              </h4>
-
-              <div className="space-y-2.5">
-                {exercisesList.map((ex: any, idx: number) => (
-                  <div
-                    key={idx}
-                    className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 hover:border-[#F97316] transition-all"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="w-7 h-7 rounded-lg bg-[#F97316] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-6 h-6 rounded-lg bg-orange-100 text-[#F97316] font-black text-xs flex items-center justify-center shrink-0">
                         {idx + 1}
                       </span>
-                      <div>
-                        <p className="text-sm font-bold text-[#292524]">{ex.name}</p>
-                        <span className="text-xs text-[#78716C] font-medium">
-                          Target Muscle: <strong className="text-[#292524]">{ex.targetMuscleGroup || 'General'}</strong>
-                        </span>
-                      </div>
+                      <h4 className="font-extrabold text-[#292524] text-base group-hover:text-[#F97316] transition-colors">
+                        {ex.name}
+                      </h4>
                     </div>
-
-                    <div className="flex items-center gap-3 text-xs font-semibold self-end md:self-center">
-                      <span className="bg-white border border-[#E7E5E4] px-2.5 py-1 rounded-lg">
-                        SETS: <strong className="text-[#F97316] ml-1">{ex.sets}</strong>
-                      </span>
-                      <span className="bg-white border border-[#E7E5E4] px-2.5 py-1 rounded-lg">
-                        REPS: <strong className="text-[#292524] ml-1">{ex.reps}</strong>
-                      </span>
-                      <span className="bg-white border border-[#E7E5E4] px-2.5 py-1 rounded-lg">
-                        REST: <strong className="text-[#78716C] ml-1">{ex.rest || '60s'}</strong>
-                      </span>
-                      <span className="bg-white border border-[#E7E5E4] px-2.5 py-1 rounded-lg text-[11px] text-[#78716C]">
-                        {ex.difficulty || 'Beginner'}
-                      </span>
-                    </div>
+                    <span className="text-[10px] font-extrabold bg-stone-100 text-stone-700 px-2 py-0.5 rounded-md uppercase">
+                      {ex.difficulty || 'All Levels'}
+                    </span>
                   </div>
-                ))}
+
+                  <p className="text-xs text-[#78716C] font-medium mb-3">
+                    Target Muscle: <strong className="text-[#292524]">{ex.targetMuscleGroup}</strong>
+                  </p>
+
+                  {/* Sets / Reps / Rest Badges */}
+                  <div className="flex items-center gap-2 flex-wrap text-xs font-bold">
+                    <span className="bg-orange-50 text-[#F97316] border border-orange-200 px-2.5 py-1 rounded-lg">
+                      SETS: {ex.sets}
+                    </span>
+                    <span className="bg-white border border-[#E7E5E4] text-[#292524] px-2.5 py-1 rounded-lg">
+                      REPS: {ex.reps}
+                    </span>
+                    <span className="bg-white border border-[#E7E5E4] text-[#78716C] px-2.5 py-1 rounded-lg">
+                      REST: {ex.rest || '60s'}
+                    </span>
+                  </div>
+
+                  {ex.instructions && (
+                    <p className="text-[11px] text-[#78716C] mt-2.5 line-clamp-2 italic">
+                      &quot;{ex.instructions}&quot;
+                    </p>
+                  )}
+                </div>
+
+                {/* Animated Video Guide Button */}
+                <button
+                  type="button"
+                  onClick={() => setActiveDemoExercise(ex)}
+                  className="w-full mt-2 py-2.5 px-3 bg-white border border-[#FED7AA] hover:border-[#F97316] text-[#F97316] hover:bg-orange-50 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs group-hover:bg-[#F97316] group-hover:text-white"
+                >
+                  <Play size={13} className="fill-current" />
+                  <span>Watch Animated Video Guide</span>
+                </button>
               </div>
-            </div>
+            ))}
           </div>
-
-          {/* 3. DIET AND NUTRITION SUGGESTIONS (Image 3 Style) */}
-          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-5">
-            <div className="flex items-center justify-between border-b border-[#FED7AA] pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-sm">
-                  3
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#292524]">Diet and Nutrition Suggestions</h3>
-                  <p className="text-xs text-[#78716C]">Precision macro &amp; meal schedule tailored to your goal</p>
-                </div>
-              </div>
-              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                {recommendation.fitnessProfile?.dietaryPreferences || formData.dietaryPreferences || 'Balanced Nutrition'}
-              </span>
-            </div>
-
-            {/* 6 Meal Cards Grid (Image 3) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 text-xs">
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Morning Hydration</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {dietPlan.morning || 'Warm water with pinch of pink Himalayan salt. Pre-workout (5:30 AM): 1 small banana or 2 rice cakes with peanut butter.'}
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Breakfast</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {dietPlan.breakfast || 'Post-workout (7:30 AM): 3-4 whole eggs scrambled with spinach and mushrooms, 2 slices of whole-wheat toast, and fresh fruit / shake.'}
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Lunch</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {dietPlan.lunch || '150-180g grilled chicken breast or fish/paneer with a large serving (1.5 cups) of mixed green salad with olive oil and brown rice/quinoa.'}
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Evening Snack</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {dietPlan.evening || 'Late Afternoon Snack (4:00 PM): 1 cup Greek yogurt with berries or a handful (30g) of almonds/walnuts. Pre-dinner (6:30 PM): Green tea.'}
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Dinner</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {dietPlan.dinner || 'Grilled fish / chicken tikka (or paneer/tofu), minimal complex carbs (e.g., small sweet potato or lentils), large bowl of mixed vegetable soup.'}
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Daily Hydration Target</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {dietPlan.hydration || 'Target 3.5-4 liters of water daily, spread throughout the day. Consider adding electrolyte tablets to water during/after workouts.'}
-                </p>
-              </div>
-            </div>
-
-            {dietPlan.note && (
-              <p className="text-[11px] text-[#78716C] italic bg-[#FFFDF8] p-2.5 rounded-xl border border-[#E7E5E4]">
-                Note: {dietPlan.note}
-              </p>
-            )}
-          </div>
-
-          {/* 4. FITNESS PROGRESS PLAN (Image 3 Style) */}
-          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-5">
-            <div className="flex items-center justify-between border-b border-[#FED7AA] pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-sm">
-                  4
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#292524]">Fitness Progress Plan &amp; Recovery</h3>
-                  <p className="text-xs text-[#78716C]">Progressive overload tracking, recovery regimen, and milestones</p>
-                </div>
-              </div>
-              <span className="text-xs font-bold text-[#F97316]">
-                Starting Weight: {progressPlan.startingWeight || recommendation.fitnessProfile?.weight || formData.weight} kg
-              </span>
-            </div>
-
-            {/* 3 Recovery Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Sleep Target</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {recoveryPlan.sleep || 'Aim for 7-9 hours of consistent, high-quality sleep per night for optimal nervous system recovery and myofibrillar repair.'}
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Active Recovery</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {recoveryPlan.activeRecovery || 'On designated active recovery days (Tuesday, Thursday, or Sunday), perform 20-30 mins of low-intensity Zone 2 walking, mobility flow, or light swimming.'}
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#78716C] uppercase text-[10px] block">Stretching &amp; Mobility</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {recoveryPlan.stretchingMobility || 'Dynamic stretching (arm circles, leg swings, torso twists) 8-10 mins pre-workout; static stretching (hamstrings, hip flexors, lats) 8-10 mins post-workout.'}
-                </p>
-              </div>
-            </div>
-
-            {/* Progress Tracking & Overload Guidance */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
-              <div className="p-3.5 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#F97316] uppercase text-[10px] block">Baseline Strength &amp; Cardio Tests</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {progressPlan.progressTracking || 'Baseline assessment: Push-ups test, bodyweight squats max reps, 60s plank, 1-mile walk/run. Monitor perceived exertion (RPE) to calibrate weight load.'}
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl space-y-1">
-                <span className="font-extrabold text-[#F97316] uppercase text-[10px] block">Progressive Overload &amp; Focus Areas</span>
-                <p className="text-[#292524] leading-relaxed">
-                  {progressPlan.improvementSuggestions || 'Gradually increase load by 2.5kg or reps by 1-2 every 7–10 days while maintaining strict biomechanical form.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
         </div>
-      ) : (
-        /* Step 1: Customer Details & Fitness Profile */
-        <form onSubmit={handleSubmitAssessment} className="space-y-6">
-          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+      </div>
+
+      {/* ===================== 3. MONDAY TO SUNDAY DIET PLAN (NON-REPEATING MEALS) ===================== */}
+      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-base shrink-0">
+              <Utensils size={20} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-bold text-[#292524]">Diet &amp; Nutrition Plan (Monday – Sunday)</h2>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  7 Days Varied
+                </span>
+              </div>
+              <p className="text-xs text-[#78716C]">
+                Non-repeating daily meal schedules from Monday to Sunday tailored to your caloric and macronutrient targets.
+              </p>
+            </div>
+          </div>
+
+          <span className="text-xs font-extrabold text-[#F97316] bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+            {activeDietDayData.calories} kcal • P: {activeDietDayData.macros.protein} | C: {activeDietDayData.macros.carbs} | F: {activeDietDayData.macros.fats}
+          </span>
+        </div>
+
+        {/* 7-Day Diet Selector Tabs */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+          {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
+            const isSelected = selectedDietDay === day;
+            const dietData = DEFAULT_WEEKLY_DIET[day];
+
+            return (
+              <button
+                key={day}
+                type="button"
+                onClick={() => setSelectedDietDay(day)}
+                className={`py-3 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex flex-col items-center justify-center border ${
+                  isSelected
+                    ? 'bg-gradient-to-b from-[#F97316] to-[#EA580C] text-white border-[#F97316] shadow-md shadow-orange-500/20 scale-[1.02]'
+                    : 'bg-[#FFFDF8] text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50 hover:text-[#292524]'
+                }`}
+              >
+                <span className="text-sm font-extrabold">{day}</span>
+                <span className={`text-[10px] mt-0.5 font-medium ${isSelected ? 'text-white/80' : 'text-[#78716C]'}`}>
+                  {dietData?.calories} kcal
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 6 Meals Grid for Selected Day */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 text-xs">
+          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+            <div className="flex items-center gap-1.5 text-amber-600 font-extrabold text-[10px] uppercase">
+              <Sun size={13} /> Morning Hydration &amp; Pre-Workout
+            </div>
+            <p className="text-[#292524] leading-relaxed font-medium">
+              {activeDietDayData.morning}
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+            <div className="flex items-center gap-1.5 text-orange-600 font-extrabold text-[10px] uppercase">
+              <Coffee size={13} /> Breakfast
+            </div>
+            <p className="text-[#292524] leading-relaxed font-medium">
+              {activeDietDayData.breakfast}
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+            <div className="flex items-center gap-1.5 text-emerald-600 font-extrabold text-[10px] uppercase">
+              <Apple size={13} /> Mid-Morning Snack
+            </div>
+            <p className="text-[#292524] leading-relaxed font-medium">
+              {activeDietDayData.midMorning}
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+            <div className="flex items-center gap-1.5 text-blue-600 font-extrabold text-[10px] uppercase">
+              <Utensils size={13} /> High-Protein Lunch
+            </div>
+            <p className="text-[#292524] leading-relaxed font-medium">
+              {activeDietDayData.lunch}
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+            <div className="flex items-center gap-1.5 text-purple-600 font-extrabold text-[10px] uppercase">
+              <Apple size={13} /> Evening Snack / Post-Workout
+            </div>
+            <p className="text-[#292524] leading-relaxed font-medium">
+              {activeDietDayData.evening}
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+            <div className="flex items-center gap-1.5 text-indigo-600 font-extrabold text-[10px] uppercase">
+              <Moon size={13} /> Recovery Dinner
+            </div>
+            <p className="text-[#292524] leading-relaxed font-medium">
+              {activeDietDayData.dinner}
+            </p>
+          </div>
+        </div>
+
+        {/* Daily Hydration Banner */}
+        <div className="p-3.5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl text-xs text-blue-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Droplets size={18} className="text-blue-500 shrink-0" />
+            <span><strong>Hydration Protocol:</strong> 3.5 - 4 Liters of clean water daily, spread evenly before and after workout blocks.</span>
+          </div>
+          <span className="font-extrabold text-blue-800 shrink-0">Optimal Electrolyte Balance</span>
+        </div>
+      </div>
+
+      {/* ===================== 4. INTERACTIVE PREFERENCES & AI GENERATOR FORM ===================== */}
+      <form onSubmit={handleSubmitAssessment} className="space-y-6">
+        <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+            <div>
+              <h3 className="text-lg font-bold text-[#292524]">Calibrate AI Fitness Preferences</h3>
+              <p className="text-xs text-[#78716C] mt-0.5">
+                Modify your goals or training environment and click &quot;Generate with AI&quot; to re-calculate your plan.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Primary Fitness Goal</label>
+              <select
+                value={formData.fitnessGoal}
+                onChange={e => setFormData({ ...formData, fitnessGoal: e.target.value })}
+                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+              >
+                <option value="Weight Loss">Weight Loss</option>
+                <option value="Muscle Building">Muscle Building / Hypertrophy</option>
+                <option value="Strength Training">Strength &amp; Conditioning</option>
+                <option value="Endurance">Endurance &amp; Stamina</option>
+                <option value="Flexibility">Flexibility &amp; Mobility</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Current Fitness Level</label>
+              <select
+                value={formData.currentFitnessLevel}
+                onChange={e => setFormData({ ...formData, currentFitnessLevel: e.target.value })}
+                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+              >
+                <option value="Beginner (New to training)">Beginner (New to training)</option>
+                <option value="Intermediate (1-3 yrs)">Intermediate (1-3 yrs experience)</option>
+                <option value="Advanced (3+ yrs)">Advanced (3+ yrs consistent lifting)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Training Mode</label>
+              <select
+                value={formData.preferredTraining}
+                onChange={e => setFormData({ ...formData, preferredTraining: e.target.value })}
+                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+              >
+                <option value="Offline (In-Gym Training)">Offline (In-Gym Training)</option>
+                <option value="Online / Home Workout">Online / Home Workout</option>
+                <option value="Hybrid (Gym + Home)">Hybrid (Gym + Home)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Workout Days / Week</label>
+              <select
+                value={formData.availableWorkoutDays}
+                onChange={e => setFormData({ ...formData, availableWorkoutDays: e.target.value })}
+                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+              >
+                <option value="3 Days / Week">3 Days / Week</option>
+                <option value="4 Days / Week">4 Days / Week</option>
+                <option value="5 Days / Week">5 Days / Week</option>
+                <option value="6 Days / Week">6 Days / Week</option>
+                <option value="Every day (7 Days)">Every day (7 Days)</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Equipment Access</label>
+              <select
+                value={formData.equipmentAvailability}
+                onChange={e => setFormData({ ...formData, equipmentAvailability: e.target.value })}
+                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+              >
+                <option value="Full Commercial Gym (Weights &amp; Machines)">Full Commercial Gym (Weights &amp; Machines)</option>
+                <option value="Home Gym (Dumbbells &amp; Bands)">Home Gym (Dumbbells &amp; Bands)</option>
+                <option value="Bodyweight Only (No Equipment)">Bodyweight Only (No Equipment)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Dietary Preference</label>
+              <select
+                value={formData.dietaryPreferences}
+                onChange={e => setFormData({ ...formData, dietaryPreferences: e.target.value })}
+                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+              >
+                <option value="Vegetarian">Vegetarian</option>
+                <option value="Non-Vegetarian">Non-Vegetarian</option>
+                <option value="Vegan">Vegan</option>
+                <option value="Eggetarian">Eggetarian</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Medical Notes / Considerations</label>
+              <input
+                type="text"
+                value={formData.healthConsiderations}
+                onChange={e => setFormData({ ...formData, healthConsiderations: e.target.value })}
+                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                placeholder="None (Healthy)"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#E7E5E4]">
+            <p className="text-xs text-[#78716C]">
+              Clicking generate triggers the Gemini AI engine to personalize your 7-day Monday–Sunday schedules.
+            </p>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-8 py-3.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-extrabold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-md shadow-[#F97316]/20 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Generating with AI...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles size={16} />
+                  <span>Generate with AI</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {/* ===================== ANIMATED VIDEO DEMONSTRATION MODAL ===================== */}
+      {activeDemoExercise && (
+        <div 
+          className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-y-auto animate-in fade-in"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setActiveDemoExercise(null);
+          }}
+        >
+          <div className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-[#FED7AA] my-auto max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 bg-gradient-to-r from-stone-900 to-[#292524] text-white flex items-center justify-between shrink-0 border-b border-stone-800">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F97316] text-white">
-                    Step 1
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#F97316] text-white shadow-xs">
+                    Animated Video Guide
                   </span>
-                  <h3 className="text-xl font-bold text-[#292524]">Customer Details &amp; Fitness Profile</h3>
+                  <span className="text-xs text-white/70">
+                    Target: <strong className="text-white">{activeDemoExercise.targetMuscleGroup}</strong>
+                  </span>
                 </div>
-                <p className="text-sm text-[#78716C] mt-1">
-                  Your registered profile details are displayed below. AI uses these details to generate an initial draft for your certified trainer.
-                </p>
+                <h3 className="text-lg sm:text-xl font-black mt-1 text-white">{activeDemoExercise.name}</h3>
               </div>
-              <span className="text-xs font-bold text-[#F97316] bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
-                Verified Customer Details
-              </span>
-            </div>
 
-            {/* 1. Personal & Contact Information */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
-                <User size={15} className="text-[#F97316]" /> Personal &amp; Contact Details
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Full Name</label>
-                  <input
-                    type="text"
-                    value={formData.fullName}
-                    onChange={e => setFormData({ ...formData, fullName: e.target.value })}
-                    placeholder="Enter your name"
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5 flex items-center gap-1">
-                    <Mail size={12} className="text-[#F97316]" /> Email Address
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={e => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="email@example.com"
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5 flex items-center gap-1">
-                    <Phone size={12} className="text-[#F97316]" /> Mobile Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.mobile}
-                    onChange={e => setFormData({ ...formData, mobile: e.target.value })}
-                    placeholder="Mobile number"
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Gender</label>
-                  <select
-                    value={formData.gender}
-                    onChange={e => setFormData({ ...formData, gender: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                  >
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                    <option value="Prefer not to say">Prefer not to say</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Age</label>
-                  <input
-                    type="number"
-                    value={formData.age}
-                    onChange={e => setFormData({ ...formData, age: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* 2. Physical Biometrics */}
-            <div className="space-y-3 pt-2">
-              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
-                <HeartPulse size={15} className="text-[#F97316]" /> Physical Biometrics
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Height (cm)</label>
-                  <input
-                    type="number"
-                    value={formData.height}
-                    onChange={e => setFormData({ ...formData, height: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Current Weight (kg)</label>
-                  <input
-                    type="number"
-                    value={formData.weight}
-                    onChange={e => setFormData({ ...formData, weight: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Estimated BMI</label>
-                  <div className="w-full px-4 py-2.5 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm font-bold text-[#F97316] flex items-center justify-between">
-                    <span>
-                      {Number(formData.height) > 0 ? (Number(formData.weight) / ((Number(formData.height)/100) * (Number(formData.height)/100))).toFixed(1) : '22.0'}
-                    </span>
-                    <span className="text-[11px] font-semibold text-gray-500 bg-white px-2 py-0.5 rounded border">
-                      Calculated
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. Fitness Goals & Training Preferences */}
-            <div className="space-y-3 pt-2">
-              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
-                <Dumbbell size={15} className="text-[#F97316]" /> Fitness Goals &amp; Training Preferences
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Primary Fitness Goal</label>
-                  <select
-                    value={formData.fitnessGoal}
-                    onChange={e => setFormData({ ...formData, fitnessGoal: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                  >
-                    <option value="Weight Loss">Weight Loss</option>
-                    <option value="Muscle Building">Muscle Building</option>
-                    <option value="Strength Training">Strength Training</option>
-                    <option value="General Fitness">General Fitness</option>
-                    <option value="Bodybuilding">Bodybuilding</option>
-                    <option value="Yoga">Yoga</option>
-                    <option value="CrossFit">CrossFit</option>
-                    <option value="Flexibility & Mobility">Flexibility &amp; Mobility</option>
-                    <option value="Endurance">Endurance</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Current Fitness Level</label>
-                  <select
-                    value={formData.currentFitnessLevel}
-                    onChange={e => setFormData({ ...formData, currentFitnessLevel: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                  >
-                    <option value="Beginner">Beginner (New to training)</option>
-                    <option value="Intermediate">Intermediate (1-2 yrs experience)</option>
-                    <option value="Advanced">Advanced (3+ yrs consistent training)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Training Mode</label>
-                  <select
-                    value={formData.preferredTraining}
-                    onChange={e => setFormData({ ...formData, preferredTraining: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                  >
-                    <option value="Offline">Offline (In-Gym Training)</option>
-                    <option value="Online">Online (Virtual Training)</option>
-                    <option value="Hybrid">Hybrid (In-Gym + Online)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Workout Days</label>
-                  <select
-                    value={formData.availableWorkoutDays}
-                    onChange={e => setFormData({ ...formData, availableWorkoutDays: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                  >
-                    <option value="1-2 days">1-2 Days / Week</option>
-                    <option value="3-4 days">3-4 Days / Week (Recommended)</option>
-                    <option value="4 Days">4 Days / Week</option>
-                    <option value="5-6 days">5-6 Days / Week</option>
-                    <option value="Everyday">Everyday</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Preferred Workout Time</label>
-                  <select
-                    value={formData.preferredWorkoutTime}
-                    onChange={e => setFormData({ ...formData, preferredWorkoutTime: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                  >
-                    <option value="Early Morning (5-7am)">Early Morning (05:00 AM - 07:00 AM)</option>
-                    <option value="Morning (7-9am)">Morning (07:00 AM - 09:00 AM)</option>
-                    <option value="Mid Morning (9-11am)">Mid Morning (09:00 AM - 11:00 AM)</option>
-                    <option value="Afternoon (12-3pm)">Afternoon (12:00 PM - 03:00 PM)</option>
-                    <option value="Evening (5-8pm)">Evening (05:00 PM - 08:00 PM)</option>
-                    <option value="Night (8-11pm)">Night (08:00 PM - 11:00 PM)</option>
-                    <option value="Flexible">Flexible</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Equipment Access</label>
-                  <select
-                    value={formData.equipmentAvailability}
-                    onChange={e => setFormData({ ...formData, equipmentAvailability: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                  >
-                    <option value="Full Commercial Gym">Full Commercial Gym (Barbells, Cables, Machines)</option>
-                    <option value="Home Gym / Dumbbells">Home Gym (Dumbbells, Bench)</option>
-                    <option value="Bodyweight / Calisthenics">Bodyweight Only / Calisthenics</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Dietary Preference</label>
-                  <select
-                    value={formData.dietaryPreferences}
-                    onChange={e => setFormData({ ...formData, dietaryPreferences: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none font-semibold text-[#292524]"
-                  >
-                    <option value="Non-Vegetarian">Non-Vegetarian</option>
-                    <option value="Vegetarian">Vegetarian</option>
-                    <option value="Eggetarian">Eggetarian</option>
-                    <option value="Vegan">Vegan</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* 4. Health & Medical Notes */}
-            <div className="space-y-3 pt-2">
-              <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-2">
-                <ShieldAlert size={15} className="text-[#F97316]" /> Health Considerations &amp; Medical Notes
-              </h4>
-              <div>
-                <input
-                  type="text"
-                  value={formData.injuries === 'None reported' ? '' : formData.injuries}
-                  onChange={e => setFormData({ ...formData, injuries: e.target.value || 'None' })}
-                  placeholder="Any injuries, past surgeries, or physical limitations? (e.g., lower back stiffness, knee pain, or 'None')"
-                  className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none text-[#292524]"
-                />
-              </div>
-            </div>
-
-            {/* Submit Action */}
-            <div className="pt-6 border-t border-[#E7E5E4] flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-xs text-[#78716C]">
-                Clicking generate will trigger the AI engine and automatically dispatch the draft to your certified trainer.
-              </p>
               <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white rounded-xl font-bold text-sm hover:opacity-95 transition-all shadow-lg shadow-orange-200 flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer shrink-0"
+                type="button"
+                onClick={() => setActiveDemoExercise(null)}
+                className="p-2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+                title="Close Guide"
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 size={18} className="animate-spin" />
-                    Generating AI Draft for Trainer...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={18} />
-                    Generate AI Plan for Trainer Review
-                  </>
-                )}
+                <X size={20} />
               </button>
             </div>
+
+            {/* Scrollable Modal Content */}
+            <div className="overflow-y-auto flex-1 divide-y divide-[#E7E5E4]/60">
+              {/* Video / Animated Simulation Canvas */}
+              <div className="p-3 sm:p-4 bg-stone-950 flex justify-center items-center">
+                <ExerciseVideoPlayer
+                  exerciseName={activeDemoExercise.name}
+                  targetMuscle={activeDemoExercise.targetMuscleGroup}
+                  duration={60}
+                  autoPlay={true}
+                  className="w-full max-h-[250px] sm:max-h-[280px] rounded-2xl overflow-hidden shadow-md"
+                />
+              </div>
+
+              {/* Prescribed Sets & Reps Details */}
+              <div className="p-4 sm:p-5 bg-white space-y-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-bold text-center">
+                  <div className="bg-orange-50 text-[#F97316] px-3 py-2 rounded-xl border border-orange-200">
+                    <span className="text-[10px] uppercase block text-[#EA580C] font-semibold">Prescribed Sets</span>
+                    <strong className="text-sm">{activeDemoExercise.sets} Sets</strong>
+                  </div>
+                  <div className="bg-stone-50 text-stone-800 px-3 py-2 rounded-xl border border-stone-200">
+                    <span className="text-[10px] uppercase block text-[#78716C] font-semibold">Rep Range</span>
+                    <strong className="text-sm">{activeDemoExercise.reps} Reps</strong>
+                  </div>
+                  <div className="bg-stone-50 text-stone-800 px-3 py-2 rounded-xl border border-stone-200">
+                    <span className="text-[10px] uppercase block text-[#78716C] font-semibold">Rest Between Sets</span>
+                    <strong className="text-sm">{activeDemoExercise.rest || '60s'}</strong>
+                  </div>
+                </div>
+
+                {activeDemoExercise.instructions && (
+                  <div>
+                    <h4 className="text-xs font-extrabold text-[#78716C] uppercase mb-1 flex items-center gap-1.5">
+                      <Sparkles size={13} className="text-[#F97316]" />
+                      Biomechanical Form Cues:
+                    </h4>
+                    <p className="text-xs text-[#292524] leading-relaxed bg-[#FFFDF8] p-3.5 rounded-xl border border-[#E7E5E4] font-medium">
+                      {activeDemoExercise.instructions}
+                    </p>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setActiveDemoExercise(null)}
+                  className="w-full py-3 bg-[#F97316] text-white font-extrabold rounded-xl text-xs hover:bg-[#EA580C] transition-colors cursor-pointer shadow-xs active:scale-[0.99]"
+                >
+                  Got It, Return to Plan
+                </button>
+              </div>
+            </div>
           </div>
-        </form>
+        </div>
       )}
+
     </div>
   );
 };

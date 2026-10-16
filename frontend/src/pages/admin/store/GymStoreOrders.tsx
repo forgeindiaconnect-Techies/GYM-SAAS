@@ -170,7 +170,7 @@ const GymStoreOrders = () => {
                             <option key={st} value={st} disabled={st === o.status}>{st}</option>
                           ))}
                         </select>
-                        <button onClick={() => setSelected(o)} className="px-3 py-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold inline-flex items-center gap-1 shrink-0">
+                        <button onClick={() => setSelected(o)} className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold inline-flex items-center gap-1 shrink-0">
                           <Eye size={13} /> View
                         </button>
                       </div>
@@ -256,7 +256,7 @@ const GymStoreOrders = () => {
               </div>
 
               {selected.cancellationReason && (
-                <p className="text-sm text-[#FED7AA] bg-red-50 rounded-xl px-4 py-3">Cancellation reason: {selected.cancellationReason}</p>
+                <p className="text-sm text-[#292524] bg-red-50 rounded-xl px-4 py-3">Cancellation reason: {selected.cancellationReason}</p>
               )}
 
               {/* ── Status Timeline (zigzag) ── */}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   CheckCircle2, Search, Calendar, ChevronRight, X, Clock,
-  Dumbbell, Filter, Flame, RefreshCw, UserCheck, Activity, ChevronDown
+  Dumbbell, Filter, Flame, UserCheck, Activity, ChevronDown
 } from 'lucide-react';
 import api from '../../utils/api';
 
@@ -135,14 +135,6 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
             Track day-wise workout plan completed details for all your assigned clients. Inspect completed animated sets, repetition adherence, and training streak.
           </p>
         </div>
-
-        <button
-          onClick={fetchClientsOverview}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#FFFDF8] hover:bg-[#FED7AA]/40 text-[#292524] font-bold rounded-xl text-xs border border-[#E7E5E4] shadow-xs transition-colors shrink-0 cursor-pointer"
-        >
-          <RefreshCw size={14} className={loading ? 'animate-spin text-[#F97316]' : ''} />
-          <span>Refresh Records</span>
-        </button>
       </div>
 
       {/* ── 4 Key Overview Metrics Cards ── */}
@@ -296,7 +288,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
         </div>
       ) : filteredClients.length === 0 ? (
         <div className="bg-white border border-dashed border-[#E7E5E4] rounded-2xl p-12 text-center text-[#78716C]">
-          <Dumbbell size={36} className="mx-auto text-stone-300 mb-2" />
+          <Dumbbell size={36} className="mx-auto text-stone-600 mb-2" />
           <h4 className="font-bold text-stone-800 text-base">No Customer Workplan Records Found</h4>
           <p className="text-xs text-stone-500 mt-1">Try adjusting your search query or day filter.</p>
         </div>

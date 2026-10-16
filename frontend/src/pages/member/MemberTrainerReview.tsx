@@ -98,7 +98,7 @@ const MemberTrainerReview = () => {
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center md:items-start justify-between">
           <div className="flex-1">
             <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-              <FileText size={24} className="text-[#FED7AA]" /> Plan Status
+              <FileText size={24} className="text-[#EA580C]" /> Plan Status
             </h2>
             <p className="text-[#E7E5E4]">
               {isApproved
@@ -160,7 +160,7 @@ const MemberTrainerReview = () => {
       {hasFeedbackOrChat && (
         <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-sm">
           <h2 className="text-xl font-bold text-[#292524] mb-1 flex items-center gap-2">
-            <MessageSquare size={20} className="text-[#FED7AA]" /> Chat &amp; Feedback Discussion
+            <MessageSquare size={20} className="text-[#EA580C]" /> Chat &amp; Feedback Discussion
           </h2>
           <p className="text-sm text-[#78716C] mb-4">
             {alreadyReplied

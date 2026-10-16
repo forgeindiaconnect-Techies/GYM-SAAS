@@ -44,6 +44,10 @@ interface ChatMessage {
 
 const PAGE_NAMES: Record<string, string> = {
   '/': 'Home / Landing Page',
+  '/register/gym-owner': 'Gym Owner Registration Form',
+  '/gym-owner-introduction': 'Gym Owner Introduction',
+  '/register/customer': 'Customer Registration Form',
+  '/subscription-plans': 'SaaS Subscription Plans & Pricing',
   '/gyms': 'Gym Marketplace',
   '/member/dashboard': 'Member Dashboard',
   '/member/my-gym': 'My Gym Profile',
@@ -52,12 +56,13 @@ const PAGE_NAMES: Record<string, string> = {
   '/member/book-session': 'Book Session',
   '/member/bookings': 'My Bookings',
   '/member/online-sessions': 'Online Sessions',
-  '/member/workout': 'Workout Plan',
+  '/member/workout': 'My Workout Plan',
   '/member/workout-videos': 'Workout Videos',
-  '/member/diet': 'Diet & Nutrition Plan',
-  '/member/ai-assistant': 'Fitness Assessment',
-  '/member/ai-results': 'AI Recommendations',
-  '/member/progress': 'Customer Progress',
+  '/member/diet': 'My Diet Plan',
+  '/member/ai-assistant': 'AI Fitness Assistant',
+  '/member/trainer-review': 'Trainer Feedback',
+  '/member/session-review': 'Reviews & Ratings',
+  '/member/progress': 'Progress Tracking',
   '/member/attendance': 'Attendance',
   '/member/subscription': 'Membership Subscription',
   '/member/upgrade': 'Upgrade Membership',
@@ -239,6 +244,11 @@ const GymSmartAssistant = () => {
     }
   };
 
+  // Hide floating assistant trigger when user is already on the dedicated full-page AI Assistant
+  if (location.pathname.startsWith('/member/ai-assistant')) {
+    return null;
+  }
+
   return (
     <>
       {/* ── Floating Action Trigger Button ── */}
@@ -248,14 +258,14 @@ const GymSmartAssistant = () => {
             setIsOpen(true);
             setIsMinimized(false);
           }}
-          className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-[#F97316] via-[#EA580C] to-[#C2410C] text-white p-3.5 sm:p-4 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-2.5 border-2 border-white/50 ring-4 ring-[#F97316]/20 group cursor-pointer"
+          className="fixed bottom-2 right-4 sm:bottom-2.5 sm:right-6 z-40 bg-gradient-to-r from-[#F97316] via-[#EA580C] to-[#C2410C] text-white py-2 px-3 sm:py-2.5 sm:px-4 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-2 border-2 border-white/50 ring-4 ring-[#F97316]/20 group cursor-pointer"
           title="Open Gym Smart Assistant"
         >
           <div className="relative">
-            <Bot size={24} className="group-hover:rotate-12 transition-transform duration-300" />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
+            <Bot size={20} className="group-hover:rotate-12 transition-transform duration-300" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
           </div>
-          <span className="font-bold text-sm hidden sm:inline-block pr-1 tracking-tight">Smart Assistant</span>
+          <span className="font-bold text-xs sm:text-sm hidden sm:inline-block pr-1 tracking-tight">Smart Assistant</span>
         </button>
       )}
 
@@ -264,8 +274,8 @@ const GymSmartAssistant = () => {
         <div
           className={`fixed right-3 sm:right-6 z-50 bg-white rounded-3xl border border-[#E7E5E4] shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
             isMinimized
-              ? 'bottom-6 w-72 sm:w-80 h-14'
-              : 'bottom-4 sm:bottom-6 w-[94vw] sm:w-[440px] h-[580px] max-h-[88vh]'
+              ? 'bottom-2 sm:bottom-2.5 w-72 sm:w-80 h-14'
+              : 'bottom-2 sm:bottom-4 w-[94vw] sm:w-[440px] h-[580px] max-h-[88vh]'
           }`}
         >
           {/* Header Bar */}

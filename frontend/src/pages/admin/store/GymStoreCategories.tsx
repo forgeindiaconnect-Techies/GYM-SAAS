@@ -94,9 +94,9 @@ const GymStoreCategories = () => {
               </div>
               <h3 className="font-bold text-[#292524] text-lg mt-3">{c.name}</h3>
               {c.description && <p className="text-sm text-[#78716C] mt-1 line-clamp-2">{c.description}</p>}
-              <p className="text-xs text-[#FED7AA] font-bold mt-2">{c.productCount || 0} active product(s)</p>
+              <p className="text-xs text-[#292524] font-medium font-bold mt-2">{c.productCount || 0} active product(s)</p>
               <div className="mt-4 flex gap-2 pt-3 border-t border-[#F1F5F9]">
-                <button onClick={() => openEdit(c)} className="flex-1 px-3 py-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
+                <button onClick={() => openEdit(c)} className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
                   <Pencil size={13} /> Edit
                 </button>
                 <button onClick={() => remove(c)} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">

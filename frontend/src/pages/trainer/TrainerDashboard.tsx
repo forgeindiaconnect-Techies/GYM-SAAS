@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { 
   Users, IndianRupee, Calendar, 
   Loader2, Bot, CheckCircle2, Eye,
-  Activity, Dumbbell, TrendingUp
+  Activity, Dumbbell, TrendingUp,
+  MessageSquare, Check, X, Clock, FileText
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -14,6 +15,9 @@ const TrainerDashboard = () => {
   const [aiCustomers, setAiCustomers] = useState<any[]>([]);
   const [clientProgress, setClientProgress] = useState<any[]>([]);
   const [recentCompletedExercises, setRecentCompletedExercises] = useState<any[]>([]);
+  const [planRequests, setPlanRequests] = useState<any[]>([]);
+  const [approvingId, setApprovingId] = useState<string | null>(null);
+  const [approvalFeedback, setApprovalFeedback] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,10 +27,11 @@ const TrainerDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [sessionsRes, aiRes, progressRes] = await Promise.allSettled([
+      const [sessionsRes, aiRes, progressRes, planRequestsRes] = await Promise.allSettled([
         api.get('/trainer-sessions/trainer'),
         api.get('/ai/trainer/customers'),
-        api.get('/workout-progress/trainer/clients-overview')
+        api.get('/workout-progress/trainer/clients-overview'),
+        api.get('/trainer-plans/trainer-requests')
       ]);
 
       if (sessionsRes.status === 'fulfilled' && sessionsRes.value.data?.success) {
@@ -41,10 +46,48 @@ const TrainerDashboard = () => {
         setClientProgress(progressRes.value.data.clients || []);
         setRecentCompletedExercises(progressRes.value.data.recentActivity || []);
       }
+
+      if (planRequestsRes.status === 'fulfilled' && planRequestsRes.value.data?.success) {
+        setPlanRequests(planRequestsRes.value.data.requests || []);
+      }
     } catch (err) {
       console.error('Failed to load trainer dashboard:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleApprovePlan = async (requestId: string) => {
+    try {
+      setApprovingId(requestId);
+      const feedback = approvalFeedback[requestId] || 'Approved by your trainer! Great customized routine.';
+      const res = await api.patch(`/trainer-plans/requests/${requestId}/approve`, {
+        trainerFeedback: feedback
+      });
+      if (res.data.success) {
+        setPlanRequests(prev => prev.map(r => r._id === requestId ? { ...r, status: 'Approved', trainerFeedback: feedback } : r));
+      }
+    } catch (err) {
+      console.error('Failed to approve plan:', err);
+    } finally {
+      setApprovingId(null);
+    }
+  };
+
+  const handleRejectPlan = async (requestId: string) => {
+    try {
+      setApprovingId(requestId);
+      const feedback = approvalFeedback[requestId] || 'Modifications needed. Please contact trainer.';
+      const res = await api.patch(`/trainer-plans/requests/${requestId}/reject`, {
+        trainerFeedback: feedback
+      });
+      if (res.data.success) {
+        setPlanRequests(prev => prev.map(r => r._id === requestId ? { ...r, status: 'Rejected', trainerFeedback: feedback } : r));
+      }
+    } catch (err) {
+      console.error('Failed to decline plan:', err);
+    } finally {
+      setApprovingId(null);
     }
   };
 
@@ -111,6 +154,183 @@ const TrainerDashboard = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* DEDICATED SECTION: Member Plan Requests & Messages (User Request) */}
+          <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#FED7AA] pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold">
+                  <MessageSquare size={22} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-[#292524] flex items-center gap-2">
+                    Member Plan Requests &amp; Messages
+                    {planRequests.filter(r => r.status === 'Pending').length > 0 && (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+                        {planRequests.filter(r => r.status === 'Pending').length} Awaiting Approval
+                      </span>
+                    )}
+                  </h2>
+                  <p className="text-xs text-[#78716C] mt-0.5">
+                    Members can manually submit their workout and diet plans with messages. Review and give approval to directly publish to their dashboard.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {planRequests.length === 0 ? (
+              <div className="text-center py-10 text-[#78716C] bg-[#F9F8F6] border border-dashed border-[#FED7AA] rounded-2xl p-6">
+                <CheckCircle2 size={32} className="text-emerald-600 mx-auto mb-2" />
+                <h4 className="font-bold text-sm text-[#292524]">No Member Plan Requests</h4>
+                <p className="text-xs text-[#78716C] mt-1">
+                  When members create manual workout or diet plans and message you for review, their submissions will appear here for approval.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {planRequests.map((req) => {
+                  const custName = req.customerId
+                    ? `${req.customerId.firstName || ''} ${req.customerId.lastName || ''}`.trim() || 'Member'
+                    : 'Member';
+                  const isPending = req.status === 'Pending';
+                  const isApproved = req.status === 'Approved';
+
+                  return (
+                    <div
+                      key={req._id}
+                      className={`border rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 shadow-xs ${
+                        isApproved
+                          ? 'border-emerald-200 bg-emerald-50/20'
+                          : isPending
+                            ? 'border-amber-300 bg-amber-50/10 hover:border-[#F97316]'
+                            : 'border-stone-200 bg-stone-50'
+                      }`}
+                    >
+                      <div>
+                        {/* Customer Header */}
+                        <div className="flex items-start justify-between gap-2 mb-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-10 h-10 rounded-full bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-black text-sm shrink-0 border border-[#FED7AA]">
+                              {req.customerId?.profilePhoto ? (
+                                <img src={req.customerId.profilePhoto} alt="profile" className="w-full h-full object-cover rounded-full" />
+                              ) : (
+                                custName[0] || 'M'
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="font-extrabold text-sm text-[#292524] truncate">
+                                {custName}
+                              </h4>
+                              <p className="text-xs text-[#78716C] truncate">{req.customerId?.email}</p>
+                            </div>
+                          </div>
+
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border shrink-0 mt-0.5 ${
+                              isApproved
+                                ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                                : isPending
+                                  ? 'bg-amber-100 text-amber-800 border-amber-300'
+                                  : 'bg-stone-100 text-stone-700 border-stone-300'
+                            }`}
+                          >
+                            {req.status}
+                          </span>
+                        </div>
+
+                        {/* Plan Details Card */}
+                        <div className="bg-white p-3.5 rounded-xl border border-stone-200/80 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#F97316] bg-orange-50 px-2 py-0.5 rounded">
+                              {req.planType}
+                            </span>
+                            <span className="text-[11px] text-stone-500 font-medium">
+                              {new Date(req.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-sm text-[#292524]">{req.title}</h4>
+                          {req.goal && (
+                            <p className="text-xs text-[#78716C]">
+                              <strong className="text-stone-700">Goal:</strong> {req.goal}
+                            </p>
+                          )}
+
+                          {/* Customer Message */}
+                          <div className="bg-orange-50/60 border border-orange-200/70 p-2.5 rounded-lg mt-2">
+                            <div className="flex items-center gap-1 text-[10px] font-bold text-[#EA580C] uppercase tracking-wider mb-0.5">
+                              <MessageSquare size={11} />
+                              <span>Customer Message:</span>
+                            </div>
+                            <p className="text-xs text-stone-800 italic">
+                              &ldquo;{req.customerMessage}&rdquo;
+                            </p>
+                          </div>
+
+                          {/* Preview Details */}
+                          {req.planType === 'Workout Plan' && req.workoutDetails?.days && (
+                            <div className="text-[11px] text-stone-600 bg-stone-50 p-2 rounded border border-stone-100">
+                              <strong>Routine:</strong> {req.workoutDetails.days.map((d: any) => `${d.dayName} (${d.exercises?.length || 0} exercises)`).join(', ')}
+                            </div>
+                          )}
+
+                          {req.planType === 'Diet Plan' && req.dietDetails && (
+                            <div className="text-[11px] text-stone-600 bg-stone-50 p-2 rounded border border-stone-100">
+                              <strong>Target:</strong> {req.dietDetails.dailyCalories} &bull; {req.dietDetails.protein} Protein &bull; {req.dietDetails.meals?.length || 0} Meals
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Action Area */}
+                      {isPending ? (
+                        <div className="pt-2 border-t border-stone-200 space-y-2">
+                          <input
+                            type="text"
+                            placeholder="Add coach advice / note (optional)..."
+                            value={approvalFeedback[req._id] || ''}
+                            onChange={e => setApprovalFeedback({ ...approvalFeedback, [req._id]: e.target.value })}
+                            className="w-full text-xs px-3 py-1.5 bg-white border border-stone-200 rounded-lg focus:outline-none focus:border-[#F97316]"
+                          />
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleApprovePlan(req._id)}
+                              disabled={approvingId === req._id}
+                              className="flex-1 py-2 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-xs cursor-pointer disabled:opacity-50"
+                            >
+                              {approvingId === req._id ? (
+                                <Loader2 size={13} className="animate-spin" />
+                              ) : (
+                                <Check size={14} />
+                              )}
+                              <span>Approve &amp; Publish to Member</span>
+                            </button>
+                            <button
+                              onClick={() => handleRejectPlan(req._id)}
+                              disabled={approvingId === req._id}
+                              className="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                            >
+                              Decline
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="pt-2 border-t border-stone-200 flex items-center justify-between text-xs">
+                          <span className="font-bold text-emerald-700 flex items-center gap-1">
+                            <CheckCircle2 size={13} /> Active on Customer Dashboard
+                          </span>
+                          {req.trainerFeedback && (
+                            <span className="text-[11px] text-[#78716C] italic truncate max-w-[200px]">
+                              &ldquo;{req.trainerFeedback}&rdquo;
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* DEDICATED SECTION: AI Analysis Review (Requirement 3) */}

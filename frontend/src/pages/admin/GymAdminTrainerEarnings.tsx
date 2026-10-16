@@ -74,7 +74,7 @@ const GymAdminTrainerEarnings = () => {
         <div className="bg-white border border-[#FED7AA] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users size={16} className="text-[#FED7AA]" />
+              <Users size={16} className="text-[#EA580C]" />
             </div>
             <p className="text-xs font-semibold text-[#78716C] uppercase tracking-wide">Active Trainers</p>
           </div>

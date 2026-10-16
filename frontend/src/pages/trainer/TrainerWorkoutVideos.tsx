@@ -253,7 +253,7 @@ const TrainerWorkoutVideos = () => {
                         video.difficultyLevel === 'Beginner'
                           ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/30'
                           : video.difficultyLevel === 'Intermediate'
-                          ? 'bg-amber-500/20 text-amber-200 border border-amber-400/30'
+                          ? 'bg-amber-500/20 text-amber-600 border border-amber-400/30'
                           : 'bg-rose-500/20 text-rose-200 border border-rose-400/30'
                       }`}
                     >

@@ -276,7 +276,7 @@ const GymAdminTrainerFees = () => {
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white border border-[#FED7AA] rounded-xl p-4 flex items-center gap-3 shadow-sm">
             <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-              <IndianRupee size={18} className="text-[#FED7AA]" />
+              <IndianRupee size={18} className="text-[#EA580C]" />
             </div>
             <div>
               <p className="text-xl font-bold text-[#292524]">{trainers.length}</p>

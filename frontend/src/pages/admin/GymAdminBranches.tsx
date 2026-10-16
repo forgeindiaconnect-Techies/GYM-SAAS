@@ -83,7 +83,7 @@ const GymAdminBranches = () => {
         <div className="flex items-center gap-4">
           <div className="bg-white border border-[#E7E5E4] rounded-xl p-3 flex flex-col shadow-sm">
             <span className="text-xs text-[#78716C] font-bold uppercase tracking-wider">{currentPlan} Plan</span>
-            <span className="text-sm text-[#292524] font-bold">Branches: <span className={currentBranchesCount >= branchLimit ? 'text-[#FED7AA]' : 'text-[#F97316]'}>{currentBranchesCount} / {branchLimit}</span> used</span>
+            <span className="text-sm text-[#292524] font-bold">Branches: <span className={currentBranchesCount >= branchLimit ? 'text-[#EA580C]' : 'text-[#F97316]'}>{currentBranchesCount} / {branchLimit}</span> used</span>
           </div>
           <button 
             onClick={handleAddBranch}

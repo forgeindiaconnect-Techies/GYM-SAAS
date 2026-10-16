@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   Search, Dumbbell, Video, Eye,
-  Check, Plus, Info, ShieldAlert
+  Check, Plus, Info, ShieldAlert,
+  CheckCircle2, X, Loader2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
@@ -42,9 +43,49 @@ const TrainerExerciseLibrary: React.FC = () => {
   const [previewExercise, setPreviewExercise] = useState<ExerciseItem | null>(null);
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<string[]>([]);
 
+  // Approval to Customer Dashboard states
+  const [clients, setClients] = useState<any[]>([]);
+  const [pendingLibraryRequests, setPendingLibraryRequests] = useState<any[]>([]);
+  const [approvingRequestId, setApprovingRequestId] = useState<string | null>(null);
+
+  const [approveModalExercise, setApproveModalExercise] = useState<ExerciseItem | null>(null);
+  const [selectedClientId, setSelectedClientId] = useState('');
+  const [customSets, setCustomSets] = useState(3);
+  const [customReps, setCustomReps] = useState(12);
+  const [coachNotes, setCoachNotes] = useState('');
+  const [isSubmittingApproval, setIsSubmittingApproval] = useState(false);
+  const [approvalSuccess, setApprovalSuccess] = useState('');
+
   useEffect(() => {
     fetchExercises();
+    fetchClients();
+    fetchPendingRequests();
   }, []);
+
+  const fetchClients = async () => {
+    try {
+      const res = await api.get('/trainer-plans/clients');
+      if (res.data?.success && res.data.clients) {
+        setClients(res.data.clients);
+      }
+    } catch (err) {
+      console.error('Failed to load clients:', err);
+    }
+  };
+
+  const fetchPendingRequests = async () => {
+    try {
+      const res = await api.get('/trainer-plans/trainer-requests');
+      if (res.data?.success && res.data.requests) {
+        const libReqs = res.data.requests.filter(
+          (r: any) => r.planType === 'Exercise Library' && r.status === 'Pending'
+        );
+        setPendingLibraryRequests(libReqs);
+      }
+    } catch (err) {
+      console.error('Failed to load pending library requests:', err);
+    }
+  };
 
   const fetchExercises = async () => {
     try {
@@ -70,6 +111,81 @@ const TrainerExerciseLibrary: React.FC = () => {
     const selectedObjs = exercises.filter(e => selectedExerciseIds.includes(e._id));
     sessionStorage.setItem('preselected_workout_exercises', JSON.stringify(selectedObjs));
     navigate('/trainer/workout-plans?action=create');
+  };
+
+  // Quick Approval of Pending Customer Request
+  const handleQuickApproveRequest = async (reqId: string) => {
+    try {
+      setApprovingRequestId(reqId);
+      const res = await api.patch(`/trainer-plans/requests/${reqId}/approve`, {
+        trainerFeedback: 'Approved by your trainer! This exercise has been added to your training program.'
+      });
+      if (res.data?.success) {
+        alert('Exercise plan approved! It is now directly visible on the customer dashboard.');
+        fetchPendingRequests();
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to approve exercise request');
+    } finally {
+      setApprovingRequestId(null);
+    }
+  };
+
+  const openApprovalModal = (ex: ExerciseItem) => {
+    setApproveModalExercise(ex);
+    setCustomSets(ex.defaultSets || 3);
+    setCustomReps(ex.defaultRepetitions || 12);
+    setCoachNotes(ex.instructions || 'Perform with controlled form and full range of motion.');
+    setApprovalSuccess('');
+  };
+
+  const handleApproveExerciseToClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedClientId || !approveModalExercise) return;
+
+    try {
+      setIsSubmittingApproval(true);
+      const res = await api.post('/trainer-plans/trainer/approve-and-assign', {
+        customerId: selectedClientId,
+        planType: 'Exercise Library',
+        title: approveModalExercise.name,
+        goal: `Mastery of ${approveModalExercise.targetMuscle} (${approveModalExercise.category})`,
+        trainerFeedback: coachNotes || 'Approved by your trainer! Practice this exercise for optimal strength.',
+        workoutDetails: {
+          days: [
+            {
+              dayName: `${approveModalExercise.category} Focus`,
+              focus: approveModalExercise.targetMuscle,
+              exercises: [
+                {
+                  name: approveModalExercise.name,
+                  sets: Number(customSets) || 3,
+                  reps: String(customReps || 12),
+                  duration: approveModalExercise.defaultDuration || 60,
+                  notes: coachNotes
+                }
+              ]
+            }
+          ]
+        }
+      });
+
+      if (res.data?.success) {
+        const client = clients.find(c => c._id === selectedClientId);
+        const clientName = client ? `${client.firstName} ${client.lastName}` : 'Client';
+        setApprovalSuccess(`Exercise "${approveModalExercise.name}" has been Approved and is now LIVE on ${clientName}'s customer dashboard!`);
+        setTimeout(() => {
+          setApprovalSuccess('');
+          setApproveModalExercise(null);
+          setCoachNotes('');
+        }, 2500);
+      }
+    } catch (err: any) {
+      console.error('Error approving exercise:', err);
+      alert(err.response?.data?.message || 'Failed to approve exercise to customer');
+    } finally {
+      setIsSubmittingApproval(false);
+    }
   };
 
   const filtered = exercises.filter(ex => {
@@ -98,7 +214,7 @@ const TrainerExerciseLibrary: React.FC = () => {
             Exercise & Animation Library
           </h1>
           <p className="text-sm text-[#78716C] mt-1 max-w-2xl">
-            Browse verified gym exercises, watch form demonstration videos, and select exercises to build custom workout plans for your clients.
+            Browse verified gym exercises, approve exercises for client dashboards, or select exercises to build custom routines.
           </p>
         </div>
 
@@ -122,6 +238,61 @@ const TrainerExerciseLibrary: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Pending Customer Exercise Requests Banner */}
+      {pendingLibraryRequests.length > 0 && (
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-[#F97316] text-white flex items-center justify-center font-bold text-xs">
+                {pendingLibraryRequests.length}
+              </span>
+              <div>
+                <h3 className="text-sm font-bold text-stone-900">Pending Customer Exercise Requests</h3>
+                <p className="text-xs text-stone-600">Members requested approval for custom exercises. Click Approve to publish directly to their dashboard.</p>
+              </div>
+            </div>
+            <span className="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full border border-amber-300">
+              Needs Approval
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+            {pendingLibraryRequests.map((req) => (
+              <div key={req._id} className="bg-white rounded-xl p-4 border border-orange-100 shadow-2xs flex flex-col justify-between space-y-3">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-sm text-stone-900">
+                      {req.customerId?.firstName} {req.customerId?.lastName}
+                    </span>
+                    <span className="text-[11px] text-stone-400">
+                      {new Date(req.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-xs font-semibold text-[#F97316] mt-0.5">{req.title}</p>
+                  <p className="text-xs text-stone-600 mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
+                </div>
+
+                <button
+                  onClick={() => handleQuickApproveRequest(req._id)}
+                  disabled={approvingRequestId === req._id}
+                  className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                >
+                  {approvingRequestId === req._id ? (
+                    <>
+                      <Loader2 size={13} className="animate-spin" /> Approving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={14} /> Approve & Publish to Customer Dashboard
+                    </>
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Info Banner */}
       <div className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl p-4 flex items-start gap-3 text-xs text-[#78716C]">
@@ -273,19 +444,26 @@ const TrainerExerciseLibrary: React.FC = () => {
                   <div className="flex items-center gap-2 pt-2 border-t border-[#E7E5E4]/60">
                     <button
                       onClick={() => setPreviewExercise(ex)}
-                      className="flex-1 py-2 px-3 bg-[#FFFDF8] hover:bg-[#FED7AA] text-[#292524] text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                      className="flex-1 py-2 px-2.5 bg-[#FFFDF8] hover:bg-orange-50 text-[#292524] text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1 border border-[#E7E5E4]"
                     >
-                      <Eye size={13} /> View Form & Video
+                      <Eye size={13} /> View
+                    </button>
+                    <button
+                      onClick={() => openApprovalModal(ex)}
+                      className="flex-1 py-2 px-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1 shadow-sm active:scale-95 shadow-emerald-600/20"
+                      title="Approve and publish this exercise to customer dashboard"
+                    >
+                      <CheckCircle2 size={13} /> Approval
                     </button>
                     <button
                       onClick={() => toggleSelect(ex._id)}
-                      className={`py-2 px-3 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 ${
+                      className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1 ${
                         isSelected
                           ? 'bg-[#F97316] text-white hover:bg-[#0f3434]'
                           : 'border border-[#F97316] text-[#F97316] hover:bg-[#F97316]/10'
                       }`}
                     >
-                      {isSelected ? <Check size={14} /> : <Plus size={14} />}
+                      {isSelected ? <Check size={13} /> : <Plus size={13} />}
                       {isSelected ? 'Selected' : 'Select'}
                     </button>
                   </div>
@@ -419,6 +597,120 @@ const TrainerExerciseLibrary: React.FC = () => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================== APPROVE EXERCISE FOR CLIENT MODAL ===================== */}
+      {approveModalExercise && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#E7E5E4] overflow-hidden">
+            <div className="p-5 border-b border-[#E7E5E4] flex justify-between items-center bg-[#FFFDF8]">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={20} className="text-emerald-600" />
+                <h3 className="font-bold text-[#292524] text-base">Approve & Send Exercise</h3>
+              </div>
+              <button 
+                onClick={() => setApproveModalExercise(null)}
+                className="p-1.5 text-[#78716C] hover:text-[#292524] hover:bg-gray-100 rounded-lg"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleApproveExerciseToClient} className="p-5 space-y-4">
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900">
+                Approving <strong>{approveModalExercise.name}</strong> ({approveModalExercise.category} • {approveModalExercise.targetMuscle}) to customer dashboard.
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
+                  Select Customer / Gym Member *
+                </label>
+                <select
+                  value={selectedClientId}
+                  onChange={(e) => setSelectedClientId(e.target.value)}
+                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#F97316]"
+                  required
+                >
+                  <option value="">-- Choose a customer --</option>
+                  {clients.map(client => (
+                    <option key={client._id} value={client._id}>
+                      {client.firstName} {client.lastName} ({client.email}) {client.fitnessGoal ? `• Goal: ${client.fitnessGoal}` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1">Target Sets</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={customSets}
+                    onChange={(e) => setCustomSets(Number(e.target.value))}
+                    className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#F97316]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1">Target Reps</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={100}
+                    value={customReps}
+                    onChange={(e) => setCustomReps(Number(e.target.value))}
+                    className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#F97316]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
+                  Coach Guidance & Instructions
+                </label>
+                <textarea
+                  rows={3}
+                  value={coachNotes}
+                  onChange={(e) => setCoachNotes(e.target.value)}
+                  placeholder="e.g. Keep spine neutral, squeeze core at peak, avoid momentum..."
+                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-3 text-xs outline-none focus:border-[#F97316] resize-none"
+                />
+              </div>
+
+              {approvalSuccess && (
+                <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-xl text-xs font-semibold flex items-center gap-2">
+                  <CheckCircle2 size={16} /> {approvalSuccess}
+                </div>
+              )}
+
+              <div className="pt-3 flex justify-end gap-2 border-t border-[#E7E5E4]">
+                <button
+                  type="button"
+                  onClick={() => setApproveModalExercise(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#78716C] hover:bg-[#FED7AA]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!selectedClientId || isSubmittingApproval}
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 shadow-emerald-600/20"
+                >
+                  {isSubmittingApproval ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" /> Approving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={15} /> Approve & Send to Customer Dashboard
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

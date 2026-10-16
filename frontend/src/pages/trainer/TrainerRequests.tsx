@@ -33,7 +33,7 @@ const TrainerRequests = () => {
               <button className="flex-1 md:flex-none px-6 py-2.5 bg-[#F97316] text-[#292524] font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-[#EA580C] transition-colors">
                 <Check size={18} /> Accept
               </button>
-              <button className="flex-1 md:flex-none px-6 py-2.5 bg-[#FED7AA] hover:bg-[#FED7AA]/20 hover:text-[#FED7AA] font-bold rounded-xl flex items-center justify-center gap-2 transition-colors">
+              <button className="flex-1 md:flex-none px-6 py-2.5 bg-[#FED7AA] hover:bg-[#FED7AA]/20 hover:text-[#EA580C] font-bold rounded-xl flex items-center justify-center gap-2 transition-colors">
                 <X size={18} /> Decline
               </button>
             </div>

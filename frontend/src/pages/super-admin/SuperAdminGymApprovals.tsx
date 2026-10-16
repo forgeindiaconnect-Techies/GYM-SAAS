@@ -138,7 +138,7 @@ const SuperAdminGymApprovals = () => {
             <p>Loading gyms...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#FED7AA]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#EA580C]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
@@ -222,7 +222,7 @@ const SuperAdminGymApprovals = () => {
                             <button 
                               onClick={() => setActionModal({ id: owner._id, status: 'REJECTED' })}
                               disabled={statusUpdating === owner._id}
-                              className="p-1.5 text-[#FED7AA] hover:bg-[#FED7AA]/10 rounded-md transition-colors disabled:opacity-50"
+                              className="p-1.5 text-[#EA580C] hover:bg-[#FED7AA]/10 rounded-md transition-colors disabled:opacity-50"
                               title="Reject"
                             >
                               <XCircle size={18} />

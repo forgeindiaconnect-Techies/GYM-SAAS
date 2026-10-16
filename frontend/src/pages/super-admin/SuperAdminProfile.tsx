@@ -70,12 +70,12 @@ const SuperAdminProfile = () => {
       </div>
 
       <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8 flex items-center space-x-6">
-        <div className="w-24 h-24 bg-[#FFFFFF] border-2 border-[#FED7AA] rounded-full flex items-center justify-center text-[#FED7AA] text-3xl font-bold relative overflow-hidden group">
+        <div className="w-24 h-24 bg-[#FFFFFF] border-2 border-[#FED7AA] rounded-full flex items-center justify-center text-[#EA580C] text-3xl font-bold relative overflow-hidden group">
           <span>{form.firstName?.[0] || 'S'}</span>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-[#292524]">{form.firstName} {form.lastName}</h2>
-          <p className="text-[#FED7AA] font-semibold">{user?.role || 'SUPER ADMIN'}</p>
+          <p className="text-[#EA580C] font-semibold">{user?.role || 'SUPER ADMIN'}</p>
         </div>
       </div>
 

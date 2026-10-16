@@ -19,8 +19,8 @@ const getStatusBadge = (status: string) => {
 };
 
 const getMethodIcon = (method: string) => {
-  if (method === 'UPI' || method === 'Cash at Gym') return <Banknote size={16} className="text-[#FED7AA]" />;
-  return <CreditCard size={16} className="text-[#FED7AA]" />;
+  if (method === 'UPI' || method === 'Cash at Gym') return <Banknote size={16} className="text-[#EA580C]" />;
+  return <CreditCard size={16} className="text-[#EA580C]" />;
 };
 
 /* ── Download PDF Receipt ─────────────────────────────────── */

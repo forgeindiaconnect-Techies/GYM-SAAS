@@ -30,7 +30,7 @@ const getPlanBadge = (planName: string, isSmall = false) => {
     label = 'Starter';
   } else if (p.includes('professional') || p.includes('pro')) {
     bgClass = 'bg-orange-600 text-white border border-orange-500 shadow-xs';
-    iconColor = 'text-orange-200';
+    iconColor = 'text-orange-600';
     label = 'Professional';
   } else if (p.includes('enterprise')) {
     bgClass = 'bg-purple-700 text-purple-50 border border-purple-600 shadow-xs';
@@ -42,11 +42,11 @@ const getPlanBadge = (planName: string, isSmall = false) => {
     label = 'Free Trial';
   } else if (p.includes('silver')) {
     bgClass = 'bg-slate-800 text-slate-100 border border-slate-600 shadow-xs';
-    iconColor = 'text-slate-300';
+    iconColor = 'text-stone-600';
     label = 'Silver';
   } else if (p.includes('gold')) {
     bgClass = 'bg-amber-600 text-white border border-amber-500 shadow-xs';
-    iconColor = 'text-amber-200';
+    iconColor = 'text-amber-600';
     label = 'Gold';
   } else if (p.includes('platinum') || p.includes('premium')) {
     bgClass = 'bg-purple-700 text-purple-50 border border-purple-600 shadow-xs';
@@ -711,10 +711,10 @@ const GymAdminMembers = () => {
                 <div>
                   <h3 className="text-2xl font-bold text-[#292524] mb-1 capitalize">{selectedMember.name}</h3>
                   <div className="flex gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.status === 'Active' ? 'bg-[#F97316]/10 text-[#F97316]' : 'bg-[#FED7AA]/10 text-[#FED7AA]'}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.status === 'Active' ? 'bg-[#F97316]/10 text-[#F97316]' : 'bg-[#FED7AA]/10 text-[#EA580C]'}`}>
                       {selectedMember.status}
                     </span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.customerType === 'NEW_CUSTOMER' ? 'bg-blue-500/10 text-[#FED7AA]' : 'bg-gray-500/10 text-gray-600'}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.customerType === 'NEW_CUSTOMER' ? 'bg-blue-50 text-blue-600' : 'bg-gray-500/10 text-gray-600'}`}>
                       {selectedMember.customerType === 'NEW_CUSTOMER' ? 'New Customer' : 'Existing Customer'}
                     </span>
                   </div>
@@ -867,13 +867,13 @@ const GymAdminMembers = () => {
                                   <Clock size={12} className="text-[#899794]" />
                                   Duration: <strong className="text-[#292524]">{item.duration || (isTrialPlan ? '1 Day' : '1 Month')}</strong>
                                 </span>
-                                <span className="text-gray-300">•</span>
+                                <span className="text-stone-600">•</span>
                                 <span className="font-medium">
                                   Method: <strong className="text-[#292524]">{item.paymentMethod || (isTrialPlan ? 'Free Trial' : 'Membership')}</strong>
                                 </span>
                                 {item.finalAmount !== undefined && (
                                   <>
-                                    <span className="text-gray-300">•</span>
+                                    <span className="text-stone-600">•</span>
                                     <span className="font-medium">
                                       Amount: <strong className="text-[#F97316]">₹{Number(item.finalAmount).toFixed(2).replace(/\.00$/, '')}</strong>
                                     </span>

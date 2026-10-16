@@ -50,7 +50,7 @@ const GymApprovals = () => {
                     <button className="p-2 bg-green-500/10 text-green-500 hover:bg-green-500/20 rounded-lg transition-colors border border-green-500/20" title="Approve">
                       <Check size={18} />
                     </button>
-                    <button className="p-2 bg-[#FED7AA]/10 text-[#FED7AA] hover:bg-[#FED7AA]/20 rounded-lg transition-colors border border-[#FED7AA]/20" title="Reject">
+                    <button className="p-2 bg-[#FED7AA]/10 text-[#EA580C] hover:bg-[#FED7AA]/20 rounded-lg transition-colors border border-[#FED7AA]/20" title="Reject">
                       <X size={18} />
                     </button>
                     <button className="px-4 py-2 bg-[#FED7AA] hover:bg-[#FED7AA] text-white rounded-lg transition-colors text-sm font-medium">

@@ -22,7 +22,7 @@ const AdminSupport = () => {
           <div key={i} className="bg-[#FFFFFF] border border-[#E7E5E4] p-5 rounded-2xl flex justify-between items-start">
              <div>
                <div className="flex items-center gap-3 mb-2">
-                 <span className="px-2 py-0.5 bg-[#FED7AA]/10 text-[#FED7AA] rounded text-xs uppercase font-bold">High Priority</span>
+                 <span className="px-2 py-0.5 bg-[#FED7AA]/10 text-[#EA580C] rounded text-xs uppercase font-bold">High Priority</span>
                  <span className="text-[#78716C] text-sm">Ticket #{1000 + i}</span>
                </div>
                <h3 className="font-bold text-lg">App crashing on workout start</h3>

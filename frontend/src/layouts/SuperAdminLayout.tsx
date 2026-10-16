@@ -55,7 +55,7 @@ const SuperAdminLayout = () => {
             <ShieldCheck className="text-[#292524]" size={20} />
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-sm font-bold tracking-tight text-[#FED7AA]">SYSTEM</span>
+            <span className="text-sm font-bold tracking-tight text-[#EA580C]">SYSTEM</span>
             <span className="text-sm font-bold tracking-tight text-[#F97316]">ADMIN</span>
           </div>
         </Link>
@@ -65,7 +65,7 @@ const SuperAdminLayout = () => {
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="font-semibold text-sm text-[#292524] truncate">{user?.firstName || 'Super'} {user?.lastName || 'Admin'}</p>
-            <p className="text-xs text-[#FED7AA] font-medium truncate">Root Access</p>
+            <p className="text-xs text-[#292524] font-medium font-medium truncate">Root Access</p>
           </div>
         </div>
       </div>
@@ -151,13 +151,13 @@ const SuperAdminLayout = () => {
         <header className="h-16 border-b border-[#E7E5E4] flex items-center px-4 md:px-8 justify-between bg-white/90 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm">
           <div className="flex items-center space-x-3">
             <button
-              className="lg:hidden text-[#78716C] hover:text-[#FED7AA] transition-colors p-1 rounded-lg hover:bg-[#FFFDF8]"
+              className="lg:hidden text-[#78716C] hover:text-[#EA580C] transition-colors p-1 rounded-lg hover:bg-[#FFFDF8]"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#FED7AA] hidden sm:block" />}
+            {currentNav && <currentNav.icon size={20} className="text-[#EA580C] hidden sm:block" />}
             <h2 className="text-base md:text-lg font-bold tracking-tight text-[#292524]">
               {currentNav?.label || 'Super Admin Portal'}
             </h2>
@@ -167,7 +167,7 @@ const SuperAdminLayout = () => {
             <Link to="/super-admin/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-semibold text-[#292524] leading-none mb-0.5">{user?.firstName || 'Super'} {user?.lastName || 'Admin'}</p>
-                <p className="text-xs text-[#FED7AA] font-medium leading-none">Root Access</p>
+                <p className="text-xs text-[#292524] font-medium font-medium leading-none">Root Access</p>
               </div>
               <div className="w-9 h-9 bg-gradient-to-br from-[#FED7AA] to-[#FED7AA] rounded-full flex items-center justify-center text-[#292524] font-bold text-sm shadow">
                 {user?.firstName?.[0] || 'S'}

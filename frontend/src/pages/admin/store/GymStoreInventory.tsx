@@ -289,14 +289,14 @@ const GymStoreInventory = () => {
                         {t.type.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className={`px-6 py-4 text-center font-black flex items-center justify-center gap-1 ${t.quantityChange > 0 ? 'text-[#F97316]' : 'text-[#FED7AA]'}`}>
+                    <td className={`px-6 py-4 text-center font-black flex items-center justify-center gap-1 ${t.quantityChange > 0 ? 'text-[#F97316]' : 'text-[#EA580C]'}`}>
                       {t.quantityChange > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                       {t.quantityChange > 0 ? '+' : ''}{t.quantityChange}
                     </td>
                     <td className="px-6 py-4 text-center font-bold text-[#292524]">{t.stockAfter}</td>
                     <td className="px-6 py-4 text-xs">{t.note || '—'}</td>
                     <td className="px-6 py-4 text-center">
-                      <button onClick={() => setViewingTx(t)} className="p-1.5 bg-blue-50 text-[#FED7AA] rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center justify-center">
+                      <button onClick={() => setViewingTx(t)} className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center justify-center">
                         <Eye size={16} />
                       </button>
                     </td>
@@ -379,7 +379,7 @@ const GymStoreInventory = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs font-bold text-[#78716C] uppercase">Quantity Change</p>
-                  <div className={`mt-1 text-lg font-black flex items-center gap-1 ${viewingTx.quantityChange > 0 ? 'text-[#F97316]' : 'text-[#FED7AA]'}`}>
+                  <div className={`mt-1 text-lg font-black flex items-center gap-1 ${viewingTx.quantityChange > 0 ? 'text-[#F97316]' : 'text-[#EA580C]'}`}>
                     {viewingTx.quantityChange > 0 ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
                     {viewingTx.quantityChange > 0 ? '+' : ''}{viewingTx.quantityChange}
                   </div>
@@ -474,7 +474,7 @@ const GymStoreInventory = () => {
 
             {/* Footer */}
             <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-              <p className="text-xs text-[#FED7AA] font-medium">
+              <p className="text-xs text-[#292524] font-medium font-medium">
                 💡 Set custom alert thresholds per product in Products settings.
               </p>
               <div className="flex items-center gap-2">

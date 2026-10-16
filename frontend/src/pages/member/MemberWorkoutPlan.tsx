@@ -7,12 +7,19 @@ import {
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 import MemberExercisePlayer, { type PlayerExercise } from '../../components/workout/MemberExercisePlayer';
+import { getUnifiedWeeklyWorkouts } from '../../utils/aiFitnessPlans';
 
 const MemberWorkoutPlan: React.FC = () => {
   const [activePlan, setActivePlan] = useState<any>(null);
   const [aiRec, setAiRec] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeDayIndex, setActiveDayIndex] = useState(0);
+  const getInitialDayIndex = () => {
+    // Map current weekday (0=Sun, 1=Mon... 5=Fri) to 0-indexed Monday-Sunday array
+    const day = new Date().getDay();
+    const map: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 0: 6 };
+    return map[day] ?? 0;
+  };
+  const [activeDayIndex, setActiveDayIndex] = useState(getInitialDayIndex());
   const [activeSection, setActiveSection] = useState<'workout' | 'nutrition' | 'recovery' | 'coach-notes' | 'summary'>('workout');
 
   // Completed exercise IDs in recent/current session
@@ -77,13 +84,47 @@ const MemberWorkoutPlan: React.FC = () => {
     fetchProgressLogs();
   };
 
-  const currentWorkoutDays = activePlan?.workoutDays || [];
-  const currentDay = currentWorkoutDays[activeDayIndex];
+  // Unified Monday-Sunday weekly workout schedule synchronized directly from AI Fitness Assessment
+  const currentWorkoutDays = React.useMemo(() => {
+    const unified = getUnifiedWeeklyWorkouts(aiRec);
+    return Object.values(unified).map(day => ({
+      dayName: day.day,
+      focus: day.focus,
+      duration: day.duration,
+      targetMuscle: day.targetMuscle,
+      exercises: day.exercises.map((ex: any, idx: number) => ({
+        _id: `ex-${day.day.toLowerCase()}-${idx}`,
+        exerciseId: {
+          _id: `ex-${day.day.toLowerCase()}-${idx}`,
+          name: ex.name,
+          category: ex.difficulty || 'Strength & Conditioning',
+          targetMuscle: ex.targetMuscleGroup,
+          difficulty: ex.difficulty,
+          instructions: ex.instructions,
+          safetyInstructions: ex.instructions,
+          videoUrl: ex.videoUrl,
+          defaultRest: parseInt(ex.rest) || 60,
+          defaultDuration: (parseInt(ex.duration) || 10) * 60
+        },
+        name: ex.name,
+        sets: Number(ex.sets) || 3,
+        repetitions: String(ex.reps || '12'),
+        duration: (parseInt(ex.duration) || 10) * 60,
+        restTime: parseInt(ex.rest) || 60,
+        trainerNotes: ex.instructions,
+        targetMuscle: ex.targetMuscleGroup,
+        difficulty: ex.difficulty,
+        videoUrl: ex.videoUrl
+      }))
+    }));
+  }, [aiRec]);
+
+  const currentDay = currentWorkoutDays[activeDayIndex] || currentWorkoutDays[0];
   const dayExercises: any[] = currentDay?.exercises || [];
 
   // Convert day exercises to Player format
   const playerExercises: PlayerExercise[] = dayExercises.map((item: any) => ({
-    exerciseId: item.exerciseId || {},
+    exerciseId: item.exerciseId || { name: item.name },
     sets: item.sets || 3,
     repetitions: String(item.repetitions || '12'),
     duration: item.duration || 60,
@@ -181,74 +222,44 @@ const MemberWorkoutPlan: React.FC = () => {
           <div className="w-10 h-10 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="font-semibold text-sm">Loading your official fitness plan...</p>
         </div>
-      ) : isUnderReview ? (
-        /* Status 1: Pending / Under Trainer Review State (Requirement 6: Do NOT show internal AI draft as final plan) */
-        <div className="bg-white border border-[#E7E5E4] rounded-3xl p-8 md:p-12 text-center max-w-3xl mx-auto shadow-sm space-y-6">
-          <div className="w-20 h-20 bg-amber-500/10 text-amber-600 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
-            <Clock size={38} className="animate-pulse" />
-          </div>
-
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
-              <Clock size={12} /> Pending Trainer Review
-            </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#292524]">
-              Your Plan is Under Trainer Review
-            </h2>
-            <p className="text-sm text-[#78716C] max-w-lg mx-auto leading-relaxed">
-              Your assessment has been analyzed by AI and sent to your certified trainer. 
-              To ensure safety and optimal progression, your final customer plan will become active only after your trainer approves it.
-            </p>
-          </div>
-
-          {aiRec?.trainerId && (
-            <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl max-w-md mx-auto text-left flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold text-sm shrink-0">
-                {aiRec.trainerId.name?.[0] || 'T'}
+      ) : (
+        <div className="space-y-6">
+          {/* Informative Status Banner for Under Review */}
+          {isUnderReview && (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-900 text-xs shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/20 flex items-center justify-center text-amber-700 shrink-0">
+                  <Clock size={20} className="animate-pulse" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 font-extrabold text-amber-800 text-sm">
+                    <span>AI Workout Plan Synchronized</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-200 text-amber-900">
+                      Supervised by Coach {trainerName}
+                    </span>
+                  </div>
+                  <p className="text-[#78716C] mt-0.5 text-xs">
+                    Your 7-day Monday–Sunday workout routine is synchronized directly from your AI assessment output.
+                  </p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-[#78716C] font-bold uppercase">Reviewing Coach</p>
-                <p className="text-sm font-extrabold text-[#292524] truncate">{aiRec.trainerId.name}</p>
-                <p className="text-[11px] text-[#F97316] font-semibold">{aiRec.trainerId.specialization || 'Certified Personal Trainer'}</p>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <Link
+                  to="/member/ai-assistant"
+                  className="px-3.5 py-2 bg-[#F97316] text-white font-bold rounded-xl text-xs hover:bg-[#EA580C] transition-colors shadow-xs"
+                >
+                  AI Fitness Assistant
+                </Link>
+                <Link
+                  to="/member/chat"
+                  className="px-3.5 py-2 bg-white border border-[#E7E5E4] text-[#292524] font-bold rounded-xl text-xs hover:bg-[#F9F8F6] transition-colors"
+                >
+                  Message Coach
+                </Link>
               </div>
             </div>
           )}
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <Link
-              to="/member/ai-assistant"
-              className="px-6 py-3 bg-[#F97316] text-white font-bold rounded-xl text-xs hover:bg-[#EA580C] transition-colors shadow-sm"
-            >
-              View Assessment & Draft Status
-            </Link>
-            <Link
-              to="/member/trainer-review"
-              className="px-6 py-3 bg-white border border-[#E7E5E4] text-[#292524] font-bold rounded-xl text-xs hover:bg-[#F9F8F6] transition-colors"
-            >
-              Message Your Trainer
-            </Link>
-          </div>
-        </div>
-      ) : !activePlan && !isTrainerApproved ? (
-        /* Status 2: No plan at all */
-        <div className="bg-white border border-[#E7E5E4] rounded-3xl p-12 text-center shadow-sm max-w-xl mx-auto space-y-4">
-          <Dumbbell size={52} className="mx-auto text-[#78716C]" />
-          <h2 className="text-2xl font-bold text-[#292524]">No Fitness Plan Found</h2>
-          <p className="text-sm text-[#78716C]">
-            Complete your quick AI Fitness Assessment so our intelligence engine and certified trainers can build your personalized workout and diet routine.
-          </p>
-          <div className="pt-2">
-            <Link
-              to="/member/ai-assistant"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#F97316] text-white text-xs font-bold rounded-xl hover:bg-[#EA580C] transition-colors shadow-md"
-            >
-              <Sparkles size={16} /> Complete Fitness Assessment
-            </Link>
-          </div>
-        </div>
-      ) : (
-        /* Status 3: Official Trainer Approved Plan (Requirement 6) */
-        <div className="space-y-6">
           {/* Main Plan Banner */}
           <div className="bg-gradient-to-br from-[#F97316] via-[#103838] to-[#292524] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
@@ -292,11 +303,38 @@ const MemberWorkoutPlan: React.FC = () => {
           {/* Section 1: Workout Plan */}
           {activeSection === 'workout' && (
             <div className="space-y-6">
-              {/* Day Tabs */}
+              {/* Day Tabs & Progress Summary */}
               {currentWorkoutDays.length > 0 && (
-                <div className="bg-white border border-[#FED7AA] rounded-2xl p-3 shadow-sm">
-                  <div className="flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
-                    <div className="flex items-center gap-2">
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
+                    <div>
+                      <h3 className="text-base font-extrabold text-[#292524] flex items-center gap-2">
+                        <span>Workout Plan (Monday – Sunday)</span>
+                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+                          7 Days Active
+                        </span>
+                      </h3>
+                      <p className="text-xs text-[#78716C]">
+                        Select any day from Monday to Sunday. Click &quot;Watch Exercise&quot; for animated demos & interactive timers.
+                      </p>
+                    </div>
+
+                    {stats && (
+                      <div className="flex items-center gap-3 text-xs font-bold text-[#78716C] bg-white border border-[#FED7AA] px-4 py-2 rounded-xl shadow-xs shrink-0 self-start sm:self-auto">
+                        <span className="flex items-center gap-1.5">
+                          Streak: <strong className="text-emerald-700">🔥 {stats.workoutStreak || 0} Days</strong>
+                        </span>
+                        <span className="text-stone-300">|</span>
+                        <span className="flex items-center gap-1.5">
+                          Completed: <strong className="text-[#F97316]">{stats.completionPercentage || 0}%</strong>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Day Tabs Buttons */}
+                  <div className="bg-white border border-[#FED7AA] rounded-2xl p-2.5 shadow-sm">
+                    <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-0.5">
                       {currentWorkoutDays.map((day: any, idx: number) => {
                         const isActive = activeDayIndex === idx;
                         const exCount = day.exercises?.length || 0;
@@ -304,29 +342,20 @@ const MemberWorkoutPlan: React.FC = () => {
                           <button
                             key={idx}
                             onClick={() => setActiveDayIndex(idx)}
-                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all shrink-0 text-xs font-bold ${
+                            className={`flex flex-col items-center justify-center min-w-[110px] sm:min-w-[130px] px-4 py-2.5 rounded-xl transition-all shrink-0 text-center cursor-pointer ${
                               isActive
-                                ? 'bg-[#F97316] text-white shadow-md'
-                                : 'bg-[#FFFDF8] text-[#78716C] hover:bg-[#FED7AA]'
+                                ? 'bg-[#F97316] text-white shadow-md shadow-[#F97316]/20 font-bold scale-[1.02]'
+                                : 'bg-[#FFFDF8] text-[#78716C] hover:bg-[#FFF7ED] hover:text-[#EA580C] border border-[#FED7AA]/60 font-semibold'
                             }`}
                           >
-                            <span>{day.dayName}</span>
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                              isActive ? 'bg-white/20 text-white' : 'bg-black/10 text-[#78716C]'
-                            }`}>
-                              {exCount}
+                            <span className="text-sm font-extrabold">{day.dayName}</span>
+                            <span className={`text-[11px] font-medium mt-0.5 ${isActive ? 'text-white/90' : 'text-[#A8A29E]'}`}>
+                              {exCount} Exercises
                             </span>
                           </button>
                         );
                       })}
                     </div>
-
-                    {stats && (
-                      <div className="hidden lg:flex items-center gap-4 text-xs font-bold text-[#78716C] pr-2">
-                        <span>Streak: <strong className="text-emerald-700">🔥 {stats.workoutStreak || 0} Days</strong></span>
-                        <span>Completed: <strong className="text-[#F97316]">{stats.completionPercentage || 0}%</strong></span>
-                      </div>
-                    )}
                   </div>
                 </div>
               )}
@@ -340,10 +369,18 @@ const MemberWorkoutPlan: React.FC = () => {
                       <Activity size={14} /> TARGET FOCUS
                     </div>
 
-                    <h3 className="text-2xl font-black mb-1">{currentDay?.dayName || 'Day Workout'}</h3>
-                    <p className="text-xs text-white/70 mb-6">
+                    <h3 className="text-2xl font-black mb-1">
+                      {currentDay?.dayName} {currentDay?.focus ? `– ${currentDay.focus}` : ''}
+                    </h3>
+                    <p className="text-xs text-white/70 mb-4">
                       {dayExercises.length} Exercises approved by {trainerName} for target muscular development.
                     </p>
+
+                    {currentDay?.targetMuscle && (
+                      <div className="text-xs bg-white/10 rounded-xl p-3 mb-4 text-emerald-200 border border-white/10">
+                        <strong className="text-white">Target Muscle Focus:</strong> {currentDay.targetMuscle}
+                      </div>
+                    )}
 
                     <div className="space-y-3">
                       <div className="flex items-center space-x-3 bg-white/5 rounded-2xl p-3.5 border border-white/10">
@@ -353,7 +390,7 @@ const MemberWorkoutPlan: React.FC = () => {
                           <p className="font-extrabold text-sm text-white">
                             {dayExercises.reduce((acc, curr) => acc + (curr.duration || 60), 0) / 60 > 1
                               ? `${Math.round(dayExercises.reduce((acc, curr) => acc + (curr.duration || 60), 0) / 60)} Minutes`
-                              : '45 Minutes'}
+                              : (currentDay?.duration || '45 Minutes')}
                           </p>
                         </div>
                       </div>
@@ -395,7 +432,7 @@ const MemberWorkoutPlan: React.FC = () => {
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex justify-between items-center mb-1">
                     <h3 className="text-lg font-extrabold text-[#292524]">
-                      Exercises in {currentDay?.dayName || 'Routine'} ({dayExercises.length})
+                      Exercises in {currentDay?.dayName} {currentDay?.focus ? `– ${currentDay.focus}` : ''} ({dayExercises.length})
                     </h3>
                     <span className="text-xs text-[#78716C]">
                       Click <strong>Watch Exercise</strong> for interactive form & timer
@@ -450,8 +487,9 @@ const MemberWorkoutPlan: React.FC = () => {
                                   <span className="text-[#F97316] font-extrabold">
                                     {item.sets || 3} Sets × {item.repetitions || 12} Reps
                                   </span>
-                                  <span>•</span>
-                                  <span>{item.duration || 60}s Duration</span>
+                                  <span>
+                                    {item.duration >= 60 ? `${Math.round(item.duration / 60)}m` : `${item.duration || 60}s`} Duration
+                                  </span>
                                   <span>•</span>
                                   <span>{item.restTime || ex.defaultRest || 30}s Rest</span>
                                   {ex.targetMuscle && (

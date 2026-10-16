@@ -82,21 +82,67 @@ export const tokenize = (text: string): string[] => {
 
 /* ── 3. Synonyms Dictionary ────────────────────────────────────────── */
 export const SYNONYM_MAP: Record<string, string[]> = {
-  membership: ['membership', 'memberships', 'plan', 'plans', 'subscription', 'subscriptions', 'subscribe', 'pricing', 'fee', 'fees', 'cost', 'rates', 'premium', 'gold', 'silver', 'starter', 'professional', 'enterprise', 'trial', 'free trial', 'renew', 'renewal', 'upgrade'],
-  gym: ['gym', 'gyms', 'facility', 'facilities', 'club', 'fitness center', 'branch', 'branches', 'timing', 'timings', 'hours', 'open', 'opening', 'location', 'address', 'area', 'amenity', 'amenities', 'ac'],
+  membership: ['membership', 'memberships', 'plan', 'plans', 'subscription', 'subscriptions', 'subscribe', 'pricing', 'princing', 'pricing details', 'princing details', 'fee', 'fees', 'cost', 'rates', 'premium', 'gold', 'silver', 'starter', 'professional', 'enterprise', 'trial', 'free trial', 'renew', 'renewal', 'upgrade'],
+  gym: ['gym', 'gyms', 'facility', 'facilities', 'club', 'fitness center', 'branch', 'branches', 'timing', 'timings', 'hours', 'open', 'opening', 'location', 'address', 'area', 'amenity', 'amenities', 'ac', 'gym registration', 'gym register', 'register gym', 'register my gym', 'gym registration form'],
   trainer: ['trainer', 'trainers', 'coach', 'coaches', 'instructor', 'instructors', 'personal trainer', 'pt', 'specialization', 'hire trainer', 'session', 'sessions', 'book session', 'booking', 'bookings', 'online session', 'assigned trainer'],
-  member: ['member', 'members', 'customer', 'customers', 'join', 'joining', 'register', 'registration', 'attendance', 'checkin', 'check-in'],
+  member: ['member', 'members', 'customer', 'customers', 'join', 'joining', 'register', 'registration', 'customer registration form', 'member registration form', 'attendance', 'checkin', 'check-in'],
   workout: ['workout', 'workouts', 'exercise', 'exercises', 'routine', 'routines', 'training', 'chest', 'back', 'legs', 'leg', 'arms', 'biceps', 'triceps', 'shoulders', 'abs', 'core', 'cardio', 'hiit', 'strength', 'muscle', 'hypertrophy', 'build muscle', 'lose weight', 'fat loss', 'bulk', 'cut', 'beginner'],
   diet: ['diet', 'diets', 'nutrition', 'meal', 'meals', 'food', 'calorie', 'calories', 'macro', 'macros', 'protein', 'carbs', 'fats', 'weight loss diet', 'muscle building diet', 'nutrition guidance', 'weight gain diet'],
   equipment: ['equipment', 'equipments', 'machine', 'machines', 'dumbbell', 'dumbbells', 'barbell', 'barbells', 'treadmill', 'treadmills', 'cable', 'squat rack', 'bench', 'kettlebell', 'weights'],
   store: ['store', 'shop', 'product', 'products', 'supplement', 'supplements', 'protein powder', 'whey', 'creatine', 'bcaa', 'gear', 'merch', 'apparel', 'cart', 'order', 'orders', 'buy', 'purchase', 'checkout'],
   payment: ['payment', 'payments', 'pay', 'paid', 'bill', 'billing', 'invoice', 'invoices', 'receipt', 'receipts', 'due', 'dues', 'transaction', 'transactions', 'payout', 'payouts'],
   admin: ['admin', 'super admin', 'approvals', 'pending approvals', 'approval', 'gym approval', 'gym approvals', 'reports', 'analytics', 'revenue', 'leads', 'import', 'management', 'payouts'],
-  help: ['how to', 'how do i', 'how can i', 'where can i', 'help', 'guide', 'steps', 'workflow', 'what is']
+  help: ['how to', 'how do i', 'how can i', 'where can i', 'help', 'guide', 'steps', 'workflow', 'what is', 'features', 'show me the features', 'capabilities', 'modules']
 };
 
 /* ── 4. Comprehensive Route & Feature Registry ─────────────────────── */
 export const FEATURE_REGISTRY: AssistantRouteItem[] = [
+  // ── 0. REGISTRATION & ONBOARDING ──
+  {
+    id: 'reg-gym-owner',
+    title: 'Gym Owner Registration Form',
+    description: 'Register a new gym or franchise: complete 8-step onboarding wizard covering business details, branches, amenities, trainers & pricing.',
+    category: 'ADMIN',
+    route: '/register/gym-owner',
+    actionLabel: 'Gym Registration Form',
+    keywords: ['gym registration form', 'gym register form', 'register gym', 'register my gym', 'gym owner registration', 'gym registration', 'gym signup', 'franchise register', 'add gym form', 'new gym form', 'i want to gym registration form'],
+    allowedRoles: ['*'],
+    badge: '8-Step Form'
+  },
+  {
+    id: 'reg-customer',
+    title: 'Customer / Member Registration Form',
+    description: 'Join gym and activate fitness account: basic contact info, gym selection, fitness preferences, and initial membership tier.',
+    category: 'MEMBERS',
+    route: '/register/customer',
+    actionLabel: 'Customer Registration',
+    keywords: ['customer registration form', 'customer register form', 'member registration form', 'customer registration', 'member registration', 'register customer', 'register member', 'customer signup', 'member signup', 'join gym form', 'new customer form', 'new member form'],
+    allowedRoles: ['*'],
+    badge: 'Member Signup'
+  },
+  {
+    id: 'saas-pricing-plans',
+    title: 'SaaS Platform Pricing & Subscription Plans',
+    description: 'Gym Owner & Franchise SaaS plans: Starter (₹499/mo), Silver (₹999/mo), Gold (₹1,499/mo), Platinum (₹2,499/mo).',
+    category: 'MEMBERSHIP',
+    route: '/subscription-plans',
+    actionLabel: 'View Pricing Details',
+    keywords: ['pricing details', 'princing details', 'pricing', 'princing', 'price details', 'prices', 'saas pricing', 'subscription plans', 'cost', 'rates', 'platform pricing'],
+    allowedRoles: ['*'],
+    badge: 'Pricing'
+  },
+  {
+    id: 'platform-features',
+    title: 'All Platform Features & Capabilities',
+    description: 'Complete breakdown of Customer AI regimens, Trainer coaching hub, Gym Owner operations, and Super Admin oversight.',
+    category: 'HELP',
+    route: '/#features',
+    actionLabel: 'Explore Features',
+    keywords: ['show me the features', 'features', 'what are the features', 'show features', 'all features', 'platform features', 'gym features', 'software features', 'system features'],
+    allowedRoles: ['*'],
+    badge: 'All Features'
+  },
+
   // ── A. MEMBERSHIP & SUBSCRIPTIONS ──
   {
     id: 'mem-plans',
@@ -105,7 +151,7 @@ export const FEATURE_REGISTRY: AssistantRouteItem[] = [
     category: 'MEMBERSHIP',
     route: '/member/subscription',
     actionLabel: 'View Plans',
-    keywords: ['membership', 'plan', 'plans', 'subscription', 'pricing', 'fees', 'cost', 'rates', 'sub', 'join plan', 'packages'],
+    keywords: ['membership', 'plan', 'plans', 'subscription', 'pricing', 'princing', 'fees', 'cost', 'rates', 'sub', 'join plan', 'packages'],
     allowedRoles: ['MEMBER', 'GUEST', 'ALL'],
     badge: 'Popular'
   },
@@ -716,6 +762,365 @@ export const searchGymFeatures = (
   const tokens = tokenize(q);
   const normalizedRole = (userRole || 'MEMBER').toUpperCase();
 
+  // ── 0A. Gym Registration Form ──
+  if (
+    q.includes('gym registration') ||
+    q.includes('gym register') ||
+    q.includes('gym owner register') ||
+    q.includes('gym owner registration') ||
+    q.includes('register gym') ||
+    q.includes('register my gym') ||
+    q.includes('franchise register') ||
+    q.includes('register franchise') ||
+    q.includes('gym signup') ||
+    q.includes('add gym form') ||
+    q.includes('new gym form') ||
+    (q.includes('gym') && q.includes('form')) ||
+    (q.includes('gym') && (q.includes('register') || q.includes('registration') || q.includes('signup') || q.includes('enroll') || q.includes('onboard')))
+  ) {
+    const gymRegItems: AssistantRouteItem[] = [
+      {
+        id: 'feat-gym-reg-form',
+        title: 'Gym Owner Registration Form (8 Steps)',
+        description: 'Complete 8-step registration wizard: basic gym info, franchise branches, amenities, trainers, pricing, and proof documents.',
+        category: 'ADMIN',
+        route: '/register/gym-owner',
+        actionLabel: 'Open Registration Form',
+        keywords: ['gym registration form', 'gym register form'],
+        allowedRoles: ['*'],
+        badge: '8-Step Form'
+      },
+      {
+        id: 'feat-gym-intro',
+        title: 'Gym Owner Introduction & Benefits',
+        description: 'Explore SaaS benefits, automated revenue management, and platform scaling tools before onboarding.',
+        category: 'HELP',
+        route: '/gym-owner-introduction',
+        actionLabel: 'Gym Introduction',
+        keywords: ['gym introduction'],
+        allowedRoles: ['*']
+      },
+      {
+        id: 'feat-saas-pricing-reg',
+        title: 'SaaS Subscription Plans',
+        description: 'Starter (₹499/mo), Silver (₹999/mo), Gold (₹1,499/mo), Platinum (₹2,499/mo) franchise plans.',
+        category: 'MEMBERSHIP',
+        route: '/subscription-plans',
+        actionLabel: 'View Pricing',
+        keywords: ['pricing details'],
+        allowedRoles: ['*'],
+        badge: 'Pricing'
+      }
+    ];
+
+    return {
+      category: 'ADMIN',
+      reply: `🏢 **Gym Owner Registration Form** (\`/register/gym-owner\`):
+Here is our comprehensive **8-Step Gym Onboarding Wizard**:
+
+• **Step 1: Basic Information** — Gym franchise name, business type & contact person.
+• **Step 2: Owner Credentials** — Email, mobile phone, login password & contact details.
+• **Step 3: Location & Branches** — Full gym street address, city, pin code & multi-branch locations.
+• **Step 4: Facilities & Amenities** — AC, parking, showers, lockers, Wi-Fi & available gym equipment.
+• **Step 5: Trainer Staff & Hours** — Operational timings, certified coach roster & specializations.
+• **Step 6: Pricing Tiers & Banking** — Membership rates, bank account for direct payouts & GSTIN.
+• **Step 7: Verification Documents** — Gym registration certificate, owner ID proof & gym photos.
+• **Step 8: Review & Submit** — Final check before instant submission for Super Admin verification.
+
+Click **Open Gym Registration Form** below to launch the registration wizard!`,
+      matchedItems: gymRegItems,
+      actions: [
+        { label: 'Open Gym Registration Form', route: '/register/gym-owner', variant: 'primary' },
+        { label: 'Gym Owner Introduction', route: '/gym-owner-introduction' },
+        { label: 'View Pricing Plans', route: '/subscription-plans' },
+        { label: 'Pending Gym Approvals', route: '/super-admin/gym-approvals' }
+      ],
+      followUps: [
+        'Pricing details',
+        'Customer registration form',
+        'Show me the features',
+        'Gym Owner Dashboard'
+      ]
+    };
+  }
+
+  // ── 0B. Pricing Details & Subscription Plans ──
+  if (
+    q.includes('princing') ||
+    q.includes('pricing') ||
+    q.includes('price') ||
+    q.includes('prices') ||
+    q.includes('cost') ||
+    q.includes('rates') ||
+    q.includes('how much') ||
+    q.includes('subscription plan') ||
+    q.includes('subscription plans') ||
+    q.includes('membership fee') ||
+    q.includes('membership fees') ||
+    q.includes('membership cost') ||
+    q.includes('membership plan') ||
+    q.includes('membership plans') ||
+    q.includes('plan price') ||
+    q.includes('plan pricing') ||
+    q === 'pricing details' ||
+    q === 'princing details'
+  ) {
+    const pricingItems: AssistantRouteItem[] = [
+      {
+        id: 'feat-saas-pricing-main',
+        title: 'SaaS Platform Plans (Gym Owners)',
+        description: 'Starter (₹499/mo), Silver (₹999/mo), Gold (₹1,499/mo), Platinum (₹2,499/mo).',
+        category: 'MEMBERSHIP',
+        route: '/subscription-plans',
+        actionLabel: 'SaaS Pricing',
+        keywords: ['pricing details', 'princing details', 'pricing'],
+        allowedRoles: ['*'],
+        badge: 'SaaS Plans'
+      },
+      {
+        id: 'feat-member-pricing-main',
+        title: 'Customer Membership Plans',
+        description: 'Starter, Silver, Gold and Annual passes for gym members with AI workouts and trainer access.',
+        category: 'MEMBERSHIP',
+        route: '/member/subscription',
+        actionLabel: 'Customer Plans',
+        keywords: ['membership pricing'],
+        allowedRoles: ['*'],
+        badge: 'Member Plans'
+      },
+      {
+        id: 'feat-admin-plans-manager',
+        title: 'Manage Membership Tiers (Admin)',
+        description: 'Configure gym membership packages, admission fees, renewal rules, and discounts.',
+        category: 'ADMIN',
+        route: '/admin/membership-plans',
+        actionLabel: 'Manage Tiers',
+        keywords: ['admin plans'],
+        allowedRoles: ['*']
+      }
+    ];
+
+    return {
+      category: 'MEMBERSHIP',
+      reply: `💰 **Pricing Details & Subscription Plans**:
+
+🏢 **1. Gym Owner & Franchise SaaS Plans** (\`/subscription-plans\`):
+• **Starter Plan — ₹499/month**: Single branch, up to 100 members, member check-ins, attendance tracking & invoice billing.
+• **Silver Plan — ₹999/month**: Multi-branch support, up to 300 members, trainer scheduling, equipment inventory & revenue reports.
+• **Gold Plan — ₹1,499/month**: Unlimited branches, up to 1,000 members, full AI Fitness regimen engine, POS Gym Store & video library. *(Recommended)*
+• **Platinum / Enterprise — ₹2,499/month**: Custom multi-franchise branding, unlimited members, dedicated server support & automated commission payouts.
+
+🏋️‍♂️ **2. Customer / Member Membership Plans** (\`/member/subscription\`):
+• **Starter**: Basic gym floor access, standard workout routines & QR attendance check-ins.
+• **Silver**: Full floor access, group fitness sessions, body progress tracking & trainer chat.
+• **Gold / VIP**: Unlimited gym hours, dedicated 1-on-1 personal trainer sessions, custom AI nutrition plans & 15% Gym Store discount.
+
+Click below to open the dedicated pricing page!`,
+      matchedItems: pricingItems,
+      actions: [
+        { label: 'View SaaS Pricing Plans', route: '/subscription-plans', variant: 'primary' },
+        { label: 'Customer Membership Plans', route: '/member/subscription' },
+        { label: 'Upgrade Membership', route: '/member/upgrade' },
+        { label: 'Manage Plans (Admin)', route: '/admin/membership-plans' }
+      ],
+      followUps: [
+        'Gym registration form',
+        'Customer registration form',
+        'Show me the features',
+        'Three dashboards'
+      ]
+    };
+  }
+
+  // ── 0C. Customer / Member Registration Form ──
+  if (
+    q.includes('customer registration') ||
+    q.includes('customer register') ||
+    q.includes('member registration') ||
+    q.includes('member register') ||
+    q.includes('customer signup') ||
+    q.includes('member signup') ||
+    q.includes('new customer form') ||
+    q.includes('new member form') ||
+    q.includes('join gym form') ||
+    (q.includes('customer') && (q.includes('register') || q.includes('registration') || q.includes('signup') || q.includes('form') || q.includes('onboard'))) ||
+    (q.includes('member') && (q.includes('register') || q.includes('registration') || q.includes('signup') || q.includes('form') || q.includes('join')))
+  ) {
+    const custRegItems: AssistantRouteItem[] = [
+      {
+        id: 'feat-cust-reg-form',
+        title: 'Customer Registration Form',
+        description: 'New member signup: personal contact details, preferred gym branch, fitness goals, and initial plan.',
+        category: 'MEMBERS',
+        route: '/register/customer',
+        actionLabel: 'Open Registration Form',
+        keywords: ['customer registration form', 'customer register form'],
+        allowedRoles: ['*'],
+        badge: 'Member Signup'
+      },
+      {
+        id: 'feat-admin-members-reg',
+        title: 'Manage Members & Walk-in Enrollment',
+        description: 'Admin view to register walk-in customers, view membership status, and renew plans.',
+        category: 'MEMBERS',
+        route: '/admin/members',
+        actionLabel: 'Manage Members',
+        keywords: ['manage members'],
+        allowedRoles: ['*'],
+        badge: 'Admin'
+      },
+      {
+        id: 'feat-import-customers',
+        title: 'Bulk Customer Import (Excel / CSV)',
+        description: 'Import existing customer database, contact lists, and subscription history in one click.',
+        category: 'ADMIN',
+        route: '/admin/import-customers',
+        actionLabel: 'Import Customers',
+        keywords: ['import customers'],
+        allowedRoles: ['*']
+      }
+    ];
+
+    return {
+      category: 'MEMBERS',
+      reply: `🏋️‍♂️ **Customer Registration Form** (\`/register/customer\`):
+Here is how new gym members can register and get onboarded:
+
+• **Customer Self-Registration** (\`/register/customer\`):
+  1. Personal Profile (Full name, email, mobile phone, gender & date of birth).
+  2. Gym Selection (Choose your nearest gym or franchise branch).
+  3. Fitness Preferences (Primary goal: Weight Loss, Muscle Building, or Endurance).
+  4. Initial Plan Selection & Instant Account Activation.
+
+• **Admin / Walk-in Registration** (\`/admin/members\`):
+  • Gym owners and staff can instantly register walk-in members directly from the Admin Dashboard or import existing member lists in bulk via CSV.
+
+Click **Open Customer Registration Form** below to start!`,
+      matchedItems: custRegItems,
+      actions: [
+        { label: 'Open Customer Registration Form', route: '/register/customer', variant: 'primary' },
+        { label: 'Customer Dashboard', route: '/member/dashboard' },
+        { label: 'Manage Members (Admin)', route: '/admin/members' },
+        { label: 'Import Customers (CSV)', route: '/admin/import-customers' }
+      ],
+      followUps: [
+        'Gym registration form',
+        'Pricing details',
+        'Show me the features',
+        'Customer Dashboard'
+      ]
+    };
+  }
+
+  // ── 0D. Platform Features & Capabilities Overview ──
+  if (
+    q.includes('feature') ||
+    q.includes('features') ||
+    q === 'features' ||
+    q.includes('show me the features') ||
+    q.includes('what are the features') ||
+    q.includes('all features') ||
+    q.includes('platform features') ||
+    q.includes('gym features') ||
+    q.includes('software features') ||
+    q.includes('system features') ||
+    q.includes('capabilities') ||
+    q.includes('what can this do')
+  ) {
+    const featItems: AssistantRouteItem[] = [
+      {
+        id: 'feat-overview-ai',
+        title: 'AI Fitness Regimens & Assessment',
+        description: 'Automated health intake, custom workout split generator, and certified trainer approval review.',
+        category: 'WORKOUT',
+        route: '/member/ai-assistant',
+        actionLabel: 'AI Fitness',
+        keywords: ['ai fitness', 'features'],
+        allowedRoles: ['*'],
+        badge: 'AI Engine'
+      },
+      {
+        id: 'feat-overview-trainer',
+        title: 'Trainer Coaching Hub & Scheduling',
+        description: '1-on-1 session scheduling, client workout builders, exercise video library, and commission tracking.',
+        category: 'TRAINERS',
+        route: '/trainer/dashboard',
+        actionLabel: 'Trainer Hub',
+        keywords: ['trainer features'],
+        allowedRoles: ['*'],
+        badge: 'Coaching'
+      },
+      {
+        id: 'feat-overview-admin',
+        title: 'Franchise & Gym Operations Control',
+        description: 'Multi-branch management, member approvals, equipment maintenance, and financial revenue reports.',
+        category: 'ADMIN',
+        route: '/admin/dashboard',
+        actionLabel: 'Gym Operations',
+        keywords: ['admin features'],
+        allowedRoles: ['*'],
+        badge: 'Operations'
+      },
+      {
+        id: 'feat-overview-store',
+        title: 'Gym Store & Inventory POS',
+        description: 'Integrated storefront for protein supplements, gym apparel, order tracking, and cart checkout.',
+        category: 'STORE',
+        route: '/member/store',
+        actionLabel: 'Gym Store',
+        keywords: ['store features'],
+        allowedRoles: ['*'],
+        badge: 'Store POS'
+      }
+    ];
+
+    return {
+      category: 'HELP',
+      reply: `⚡ **AI GYM Platform Features & Capabilities**:
+Our comprehensive all-in-one Gym Management & Fitness ecosystem includes:
+
+🏋️‍♂️ **1. Customer / Member Features**:
+• **AI Fitness Regimens**: Complete biometric assessment generating custom workout splits, sets, reps & nutrition protocols.
+• **Animated Video Library & YouTube Guides**: 3D biomechanical animated exercise models and guided video tutorials.
+• **Trainer Bookings**: Schedule 1-on-1 personal training sessions with certified gym coaches.
+• **Progress Comparison**: Track body circumference measurements (chest, waist, hips, arms, thighs) and weight changes with AI.
+• **Gym Store**: Purchase verified whey protein, creatine, supplements & gym gear with instant cart checkout.
+• **Attendance & QR Check-in**: Live gym floor attendance logging and streak tracking.
+
+🥊 **2. Trainer & Coach Features**:
+• **Client Assignment Roster**: View assigned gym members and review their health intake profiles.
+• **Live Coaching Schedule**: Manage session slots, confirm booking requests, and mark attendance.
+• **Exercise Video Library**: Upload exercise video guides and review gym equipment.
+• **Monthly Earnings**: Automatic commission calculations per completed personal training session.
+
+🏢 **3. Gym Owner & Franchise Features**:
+• **Multi-Branch Operations**: Seamlessly oversee multiple gym franchise branches from a single dashboard.
+• **Member & Staff Management**: Member approvals, renewals, walk-in registration & staff access controls.
+• **Equipment Inventory**: Register machines, log maintenance schedules, and track active equipment.
+• **Financial Reports & Analytics**: Live revenue charts, membership renewal trends, and POS offline sales.
+
+👑 **4. Super Admin Features**:
+• **Gym Approval Verification**: Review new franchise applications, legal documents, and gym photos before activation.
+• **Global Directory**: Complete directory of verified gym owners, active subscriptions, and platform payouts.
+
+Click any action below to explore the modules directly!`,
+      matchedItems: featItems,
+      actions: [
+        { label: 'Customer Dashboard', route: '/member/dashboard', variant: 'primary' },
+        { label: 'Trainer Dashboard', route: '/trainer/dashboard' },
+        { label: 'Gym Owner Dashboard', route: '/admin/dashboard' },
+        { label: 'Explore Gym Marketplace', route: '/gyms' },
+        { label: 'SaaS Pricing Plans', route: '/subscription-plans' }
+      ],
+      followUps: [
+        'Gym registration form',
+        'Pricing details',
+        'Customer registration form',
+        'Three dashboards'
+      ]
+    };
+  }
+
   // ── A. Dedicated Dashboards (Customer, Trainer, Gym Owner, Three Dashboards) ──
   if (
     q.includes('dashboard') || 
@@ -746,7 +1151,7 @@ export const searchGymFeatures = (
         {
           id: 'feat-owner-details-sub',
           title: 'Gym Owner Details & Directory',
-          description: 'View registered gym owner profiles: AGILA G (Fitness Psycho), Arun FIC (Fitness Space), Renugopal (Perfect).',
+          description: 'View registered gym owner profiles: AGILA G (Fitness Psycho), Arun FIC (Perfect Fitness Studio), Renugopal (Perfect).',
           category: 'ADMIN',
           route: '/super-admin/gym-owners',
           actionLabel: 'Gym Owner Details',
@@ -921,7 +1326,7 @@ export const searchGymFeatures = (
       {
         id: 'feat-owner-details',
         title: 'Gym Owner Details & Directory',
-        description: 'View verified approved gym owners: Arun FIC (Fitness Space), Renugopal (Perfect).',
+        description: 'View verified approved gym owners: Arun FIC (Perfect Fitness Studio), Renugopal (Perfect).',
         category: 'ADMIN',
         route: '/super-admin/gym-owners',
         actionLabel: 'Gym Owner Details',
@@ -962,7 +1367,7 @@ export const searchGymFeatures = (
 Click **Review Approvals** below to verify and activate this gym.`
       : `Here are the **Approved & Verified Gym Owner Details**:
 
-1. 🏢 **Arun FIC** — **Fitness Space** (Krishnagiri)
+1. 🏢 **Arun FIC** — **Perfect Fitness Studio** (Krishnagiri)
    • 📞 **Contact / Phone**: **9876556789**
    • ✉️ **Email**: \`forgeindiaconnectfic@gmail.com\`
    • 📋 **Plan**: **SILVER** | 🟢 **Status**: **APPROVED**
@@ -1020,7 +1425,7 @@ Click **Review Approvals** below to verify and activate this gym.`
       {
         id: 'cust-renugopal-item',
         title: 'Renugopal Y (Member)',
-        description: 'Gym: Fitness Space • Phone: 9877899877 • Plan: Starter (Active)',
+        description: 'Gym: Perfect Fitness Studio • Phone: 9877899877 • Plan: Starter (Active)',
         category: 'MEMBERS',
         route: '/admin/members',
         actionLabel: 'Manage Member',
@@ -1057,7 +1462,7 @@ Click **Review Approvals** below to verify and activate this gym.`
       reply: `Here are the registered **Customer / Member Details & Names**:
 
 1. 🏋️‍♂️ **Renugopal Y**
-   • 🏢 **Gym**: **Fitness Space**
+   • 🏢 **Gym**: **Perfect Fitness Studio**
    • 📞 **Contact / Phone**: **9877899877**
    • ✉️ **Email**: \`renugopal5457@gmail.com\`
    • 📋 **Membership Plan**: **Starter** (Active)

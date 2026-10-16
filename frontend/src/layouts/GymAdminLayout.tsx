@@ -9,7 +9,7 @@ import {
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
   Video,
-  Store, Package, Boxes, ShoppingCart, Bot, TrendingUp
+  Store, Package, Boxes, ShoppingCart, Bot, TrendingUp, Star
 } from 'lucide-react';
 
 const getNotificationLink = (notif: any) => {
@@ -172,6 +172,7 @@ const GymAdminLayout = () => {
         items: isBranchUser
           ? [
               { label: 'Reports', path: '/admin/reports', icon: BarChart },
+              { label: 'Review & Rating', path: '/admin/reviews', icon: Star },
               { label: 'Notifications', path: '/admin/notifications', icon: Bell },
               { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 }
             ]
@@ -180,6 +181,7 @@ const GymAdminLayout = () => {
               { label: 'Branches', path: '/admin/branches', icon: MapPin },
               { label: 'Subscription', path: '/admin/subscription', icon: CreditCard },
               { label: 'Reports', path: '/admin/reports', icon: BarChart },
+              { label: 'Review & Rating', path: '/admin/reviews', icon: Star },
               { label: 'Notifications', path: '/admin/notifications', icon: Bell },
               { label: 'Deleted Details', path: '/admin/deleted-details', icon: Trash2 }
             ]
@@ -276,7 +278,7 @@ const GymAdminLayout = () => {
             </div>
             <div className="flex-1 overflow-hidden">
               <p className="font-semibold text-sm text-[#292524] truncate">{getOwnerDisplayName()}</p>
-              <p className="text-xs text-[#FED7AA] font-medium truncate">{roleSubtitle}</p>
+              <p className="text-xs text-[#292524] font-medium font-medium truncate">{roleSubtitle}</p>
             </div>
           </div>
         </div>

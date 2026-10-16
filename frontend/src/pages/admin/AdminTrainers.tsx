@@ -133,7 +133,7 @@ const AdminTrainers = () => {
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
                         trainer.approvalStatus === 'PENDING' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
                         trainer.isActive ? 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20' :
-                        'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/20'
+                        'bg-[#FED7AA]/10 text-[#EA580C] border-[#FED7AA]/20'
                       }`}>
                         {trainer.approvalStatus === 'PENDING' ? 'Pending' : (trainer.isActive ? 'Active' : 'Inactive')}
                       </span>
@@ -156,7 +156,7 @@ const AdminTrainers = () => {
                         <button 
                           onClick={() => handleDelete(trainer._id)}
                           title="Delete Trainer" 
-                          className="text-[#78716C] hover:text-[#FED7AA] transition-colors"
+                          className="text-[#78716C] hover:text-[#EA580C] transition-colors"
                         >
                           <Trash2 size={18} />
                         </button>

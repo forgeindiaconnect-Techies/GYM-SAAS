@@ -28,7 +28,7 @@ const initialForm = {
   images: [] as string[],
   subscriptionPlans: [] as any[],
   offers: [] as any[],
-  rating: '', logo: '',
+  rating: '', description: '', logo: '',
   acceptTerms: false, acceptPrivacy: false,
 };
 
@@ -255,6 +255,7 @@ const GymOwnerRegisterPage = () => {
         facilities: form.facilities,
         offers: form.offers,
         rating: form.rating ? Number(form.rating) : undefined,
+        description: form.description || undefined,
         logo: form.logo || undefined,
         images: form.images,
       });

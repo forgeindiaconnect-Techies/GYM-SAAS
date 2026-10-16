@@ -235,7 +235,7 @@ const MemberOrders = () => {
                       onClick={() => { setSelected(o); setCancelPrompt(false); setCancelReason(''); }}
                       className="px-4 py-2 bg-white border border-[#E7E5E4] text-[#292524] rounded-xl hover:bg-[#FFFDF8] hover:border-[#F97316] transition-all text-xs font-bold inline-flex items-center gap-1.5 shadow-sm group"
                     >
-                      <Eye size={14} className="text-[#FED7AA] group-hover:text-[#F97316] transition-colors" />
+                      <Eye size={14} className="text-[#EA580C] group-hover:text-[#F97316] transition-colors" />
                       View Details
                     </button>
 
@@ -312,7 +312,7 @@ const MemberOrders = () => {
               {selected.paymentMethod === 'Net Banking' && selected.bankName && (
                 <p className="text-sm text-[#78716C] mt-0.5">Bank: <span className="font-semibold">{selected.bankName}</span></p>
               )}
-              <p className="text-xs text-[#FED7AA] mt-1 font-semibold">{selected.paymentStatus}</p>
+              <p className="text-xs text-[#292524] font-medium mt-1 font-semibold">{selected.paymentStatus}</p>
             </div>
 
             {/* Delivery Address */}

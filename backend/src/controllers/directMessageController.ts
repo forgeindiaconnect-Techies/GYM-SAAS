@@ -1,10 +1,45 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth';
-import DirectMessage from '../models/DirectMessage';
+import DirectMessage, { IAttachment, MessageType, AttachmentCategory } from '../models/DirectMessage';
 import User from '../models/User';
 import TrainerSession from '../models/TrainerSession';
 import { notify } from '../utils/notificationUtils';
 import mongoose from 'mongoose';
+import multer from 'multer';
+import { uploadBufferToCloudinary } from '../config/cloudinary';
+
+// Configure multer memory storage for message uploads (Max 50MB)
+export const messageUploadMiddleware = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 50 * 1024 * 1024 // 50MB
+  }
+});
+
+export const getAttachmentCategory = (mimeType: string, filename: string): AttachmentCategory => {
+  const ext = filename.split('.').pop()?.toLowerCase() || '';
+  if (mimeType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext)) {
+    return 'image';
+  }
+  if (mimeType.startsWith('video/') || ['mp4', 'webm', 'mov', 'avi', 'mkv'].includes(ext)) {
+    return 'video';
+  }
+  if (mimeType.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'weba'].includes(ext)) {
+    return 'audio';
+  }
+  if (
+    mimeType.includes('pdf') ||
+    mimeType.includes('msword') ||
+    mimeType.includes('wordprocessingml') ||
+    mimeType.includes('spreadsheetml') ||
+    mimeType.includes('excel') ||
+    mimeType.startsWith('text/') ||
+    ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'csv'].includes(ext)
+  ) {
+    return 'document';
+  }
+  return 'other';
+};
 
 export const getContacts = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -101,6 +136,25 @@ export const getContacts = async (req: AuthRequest, res: Response): Promise<void
           read: false
         });
 
+        let snippet = 'Tap to start conversation';
+        if (lastMsg) {
+          if (lastMsg.message && lastMsg.message.trim()) {
+            snippet = lastMsg.message;
+          } else if (lastMsg.messageType === 'voice') {
+            snippet = '🎤 Voice message';
+          } else if (lastMsg.messageType === 'image') {
+            snippet = '📷 Photo attachment';
+          } else if (lastMsg.messageType === 'video') {
+            snippet = '🎥 Video attachment';
+          } else if (lastMsg.attachments && lastMsg.attachments.length > 0) {
+            snippet = `📎 ${lastMsg.attachments[0].fileName || 'Attachment'}`;
+          } else if (lastMsg.fileName) {
+            snippet = `📎 ${lastMsg.fileName}`;
+          } else {
+            snippet = '📎 Sent an attachment';
+          }
+        }
+
         return {
           id: u._id.toString(),
           _id: u._id.toString(),
@@ -112,7 +166,7 @@ export const getContacts = async (req: AuthRequest, res: Response): Promise<void
           role: u.role,
           specialization: u.specialization || '',
           isActive: u.isActive !== false,
-          lastMsg: lastMsg ? lastMsg.message : 'Tap to start conversation',
+          lastMsg: snippet,
           lastMsgTime: lastMsg ? lastMsg.createdAt : null,
           unreadCount
         };
@@ -169,18 +223,103 @@ export const getHistory = async (req: AuthRequest, res: Response): Promise<void>
   }
 };
 
+export const uploadAttachment = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const currentUserId = req.user?.id;
+    if (!currentUserId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const file = req.file;
+    if (!file) {
+      res.status(400).json({ success: false, message: 'No file uploaded' });
+      return;
+    }
+
+    // 50MB limit validation
+    const MAX_FILE_SIZE = 50 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'File size exceeds maximum allowed limit (50MB).' 
+      });
+      return;
+    }
+
+    const fileName = file.originalname || `upload-${Date.now()}`;
+    const mimeType = file.mimetype || 'application/octet-stream';
+    const isVoice = req.body.isVoice === 'true' || req.body.isVoice === true;
+    const fileCategory = isVoice ? 'audio' : getAttachmentCategory(mimeType, fileName);
+
+    // Upload buffer to Cloudinary with automatic fallback
+    const uploadResult = await uploadBufferToCloudinary(
+      file.buffer,
+      fileName,
+      mimeType,
+      'gym_saas/messages'
+    );
+
+    const duration = req.body.duration ? parseFloat(req.body.duration) : uploadResult.duration;
+
+    const attachment: IAttachment = {
+      url: uploadResult.secure_url || uploadResult.url,
+      fileName,
+      fileType: fileCategory,
+      mimeType,
+      fileSize: file.size,
+      duration: duration || undefined,
+      publicId: uploadResult.public_id
+    };
+
+    res.status(200).json({
+      success: true,
+      attachment
+    });
+  } catch (error: any) {
+    console.error('Error uploading message attachment:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to upload attachment.'
+    });
+  }
+};
+
 export const sendMessage = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const currentUserId = req.user?.id;
-    const { receiverId, message } = req.body;
+    const { 
+      receiverId, 
+      message = '', 
+      messageType = 'text', 
+      attachments = [], 
+      duration, 
+      attachmentUrl, 
+      fileName, 
+      fileType, 
+      fileSize 
+    } = req.body;
 
     if (!currentUserId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });
       return;
     }
 
-    if (!receiverId || !message || !message.trim()) {
-      res.status(400).json({ success: false, message: 'receiverId and message are required' });
+    if (!receiverId) {
+      res.status(400).json({ success: false, message: 'receiverId is required' });
+      return;
+    }
+
+    // Validate that either message text or attachments exist
+    const hasText = message && typeof message === 'string' && message.trim().length > 0;
+    const hasAttachments = Array.isArray(attachments) && attachments.length > 0;
+    const hasSingleAttachment = Boolean(attachmentUrl);
+
+    if (!hasText && !hasAttachments && !hasSingleAttachment && messageType !== 'voice') {
+      res.status(400).json({ 
+        success: false, 
+        message: 'Message cannot be empty. Please provide text, a voice recording, or file attachment.' 
+      });
       return;
     }
 
@@ -192,22 +331,73 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
       return;
     }
 
+    // Normalize attachments
+    let normalizedAttachments: IAttachment[] = [];
+    if (hasAttachments) {
+      normalizedAttachments = attachments;
+    } else if (hasSingleAttachment) {
+      normalizedAttachments = [{
+        url: attachmentUrl,
+        fileName: fileName || (messageType === 'voice' ? 'voice-message.webm' : 'attachment'),
+        fileType: (fileType as AttachmentCategory) || (messageType === 'voice' ? 'audio' : 'other'),
+        mimeType: messageType === 'voice' ? 'audio/webm' : 'application/octet-stream',
+        fileSize: fileSize || 0,
+        duration: duration ? parseFloat(duration) : undefined
+      }];
+    }
+
+    // Determine primary messageType
+    let resolvedMessageType: MessageType = messageType;
+    if (messageType === 'text' && normalizedAttachments.length > 0) {
+      const firstType = normalizedAttachments[0].fileType;
+      if (firstType === 'image') resolvedMessageType = 'image';
+      else if (firstType === 'video') resolvedMessageType = 'video';
+      else if (firstType === 'audio') resolvedMessageType = 'voice';
+      else resolvedMessageType = 'file';
+    }
+
+    const primaryAttachment = normalizedAttachments[0];
+
     const newMsg = await DirectMessage.create({
       senderId: currentUserId,
       receiverId,
       gymId: sender?.gymId || receiver.gymId,
-      message: message.trim(),
+      message: message ? message.trim() : '',
+      messageType: resolvedMessageType,
+      attachments: normalizedAttachments,
+      attachmentUrl: primaryAttachment ? primaryAttachment.url : attachmentUrl,
+      fileName: primaryAttachment ? primaryAttachment.fileName : fileName,
+      fileType: primaryAttachment ? primaryAttachment.fileType : fileType,
+      fileSize: primaryAttachment ? primaryAttachment.fileSize : fileSize,
+      duration: duration || (primaryAttachment ? primaryAttachment.duration : undefined),
       read: false
     });
 
     // Notify receiver
     const senderName = sender ? `${sender.firstName} ${sender.lastName}`.trim() : 'Someone';
+    let notifyTitle = `New Message from ${senderName}`;
+    let notifySnippet = message ? message.trim().slice(0, 60) : 'Sent an attachment';
+
+    if (resolvedMessageType === 'voice') {
+      notifyTitle = `🎤 Voice Message from ${senderName}`;
+      notifySnippet = 'Sent a voice recording';
+    } else if (resolvedMessageType === 'image') {
+      notifyTitle = `📷 New Photo from ${senderName}`;
+      notifySnippet = message ? `Photo: ${message.slice(0, 40)}` : 'Sent a photo';
+    } else if (resolvedMessageType === 'video') {
+      notifyTitle = `🎥 New Video from ${senderName}`;
+      notifySnippet = message ? `Video: ${message.slice(0, 40)}` : 'Sent a video';
+    } else if (resolvedMessageType === 'file') {
+      notifyTitle = `📎 New Attachment from ${senderName}`;
+      notifySnippet = primaryAttachment?.fileName || 'Sent a file';
+    }
+
     await notify({
       recipientId: receiver._id,
       recipientRole: receiver.role,
       gymId: receiver.gymId || sender?.gymId || new mongoose.Types.ObjectId(),
-      title: `New Message from ${senderName}`,
-      message: message.trim().slice(0, 60),
+      title: notifyTitle,
+      message: notifySnippet,
       type: 'info',
       link: receiver.role === 'TRAINER' ? '/trainer/messages' : '/member/chat'
     });

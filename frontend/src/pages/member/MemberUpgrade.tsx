@@ -248,7 +248,7 @@ const MemberUpgrade = () => {
                 <h3 className="font-bold text-[#292524] mb-4 text-lg">Enter Payment Details</h3>
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#78716C] mb-2">Payment Date <span className="text-[#FED7AA]">*</span></label>
+                    <label className="block text-sm font-medium text-[#78716C] mb-2">Payment Date <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="date" 
                       value={paymentDate}
@@ -257,7 +257,7 @@ const MemberUpgrade = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#78716C] mb-2">Bank Name <span className="text-[#FED7AA]">*</span></label>
+                    <label className="block text-sm font-medium text-[#78716C] mb-2">Bank Name <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="text" 
                       value={customerBankName}
@@ -267,7 +267,7 @@ const MemberUpgrade = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#78716C] mb-2">Account Number <span className="text-[#FED7AA]">*</span></label>
+                    <label className="block text-sm font-medium text-[#78716C] mb-2">Account Number <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="text" 
                       value={customerAccountNumber}
@@ -281,7 +281,7 @@ const MemberUpgrade = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#78716C] mb-2">IFSC Code <span className="text-[#FED7AA]">*</span></label>
+                    <label className="block text-sm font-medium text-[#78716C] mb-2">IFSC Code <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="text" 
                       value={customerIfscCode}
@@ -342,13 +342,13 @@ const MemberUpgrade = () => {
                 </div>
                 <div className="flex gap-4 mb-2 w-full justify-center">
                   <button onClick={() => setQrApp('GPay')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#292524] ${qrApp === 'GPay' ? 'bg-[#F97316]/10 border-[#F97316]' : 'bg-white border-gray-200 hover:border-[#F97316]'}`}>
-                    <Smartphone size={16} className="text-[#FED7AA]" /> GPay
+                    <Smartphone size={16} className="text-[#EA580C]" /> GPay
                   </button>
                   <button onClick={() => setQrApp('PhonePe')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#292524] ${qrApp === 'PhonePe' ? 'bg-[#F97316]/10 border-[#F97316]' : 'bg-white border-gray-200 hover:border-[#F97316]'}`}>
-                    <Smartphone size={16} className="text-[#FED7AA]" /> PhonePe
+                    <Smartphone size={16} className="text-[#EA580C]" /> PhonePe
                   </button>
                   <button onClick={() => setQrApp('Paytm')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#292524] ${qrApp === 'Paytm' ? 'bg-[#F97316]/10 border-[#F97316]' : 'bg-white border-gray-200 hover:border-[#F97316]'}`}>
-                    <Smartphone size={16} className="text-[#FED7AA]" /> Paytm
+                    <Smartphone size={16} className="text-[#EA580C]" /> Paytm
                   </button>
                 </div>
               </div>
@@ -357,7 +357,7 @@ const MemberUpgrade = () => {
                 <h3 className="font-bold text-[#292524] mb-4 text-lg">Enter Payment Details</h3>
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#78716C] mb-2">Transaction ID / UTR Number <span className="text-[#FED7AA]">*</span></label>
+                    <label className="block text-sm font-medium text-[#78716C] mb-2">Transaction ID / UTR Number <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="text" 
                       value={paymentReference}
@@ -371,7 +371,7 @@ const MemberUpgrade = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#78716C] mb-2">Payment Date <span className="text-[#FED7AA]">*</span></label>
+                    <label className="block text-sm font-medium text-[#78716C] mb-2">Payment Date <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="date" 
                       value={paymentDate}

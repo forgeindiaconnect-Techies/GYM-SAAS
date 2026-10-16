@@ -6,7 +6,7 @@ const SuperAdminGymsTrainers = () => {
       <div className="flex justify-between items-end mb-8 border-b border-[#E7E5E4] pb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Building2 className="text-[#FED7AA]" size={32} />
+            <Building2 className="text-[#EA580C]" size={32} />
             Gym Trainers
           </h1>
           <p className="text-[#78716C] mt-2 font-mono text-sm">Directory of trainers mapped to specific gyms.</p>

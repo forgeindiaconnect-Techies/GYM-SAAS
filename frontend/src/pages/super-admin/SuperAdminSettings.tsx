@@ -56,7 +56,7 @@ const SuperAdminSettings = () => {
         {/* Notifications */}
         <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8">
           <div className="flex items-center gap-2 text-[#292524] mb-6 border-b border-[#E7E5E4] pb-2">
-            <Bell size={20} className="text-[#FED7AA]"/>
+            <Bell size={20} className="text-[#EA580C]"/>
             <h2 className="text-xl font-bold">Notification Settings</h2>
           </div>
           <div className="space-y-4">
@@ -68,7 +68,7 @@ const SuperAdminSettings = () => {
         {/* Security & Workflow */}
         <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8">
           <div className="flex items-center gap-2 text-[#292524] mb-6 border-b border-[#E7E5E4] pb-2">
-            <Shield size={20} className="text-[#FED7AA]"/>
+            <Shield size={20} className="text-[#EA580C]"/>
             <h2 className="text-xl font-bold">Security & Onboarding Workflow</h2>
           </div>
           <div className="space-y-4">

@@ -35,7 +35,7 @@ const SuperAdminGymsDetails = () => {
 
   if (error || !gym) {
     return (
-      <div className="bg-[#FED7AA]/10 text-[#FED7AA] p-4 rounded-xl text-center">
+      <div className="bg-[#FED7AA]/10 text-[#EA580C] p-4 rounded-xl text-center">
         {error || 'Gym not found'}
         <div className="mt-4">
           <Link to="/super-admin/gyms/all" className="text-[#F97316] hover:underline">Return to All Gyms</Link>
@@ -55,7 +55,7 @@ const SuperAdminGymsDetails = () => {
             {gym.logo ? (
               <img src={gym.logo} alt={gym.name} className="w-10 h-10 rounded-xl object-cover" />
             ) : (
-              <Building2 className="text-[#FED7AA]" size={32} />
+              <Building2 className="text-[#EA580C]" size={32} />
             )}
             {gym.name}
           </h1>
@@ -84,7 +84,7 @@ const SuperAdminGymsDetails = () => {
         </div>
         <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7E5E4]">
           <p className="text-xs text-[#78716C] mb-1 flex items-center gap-1">Status</p>
-          <p className={`text-xl font-bold ${gym.status === 'ACTIVE' ? 'text-green-500' : gym.status === 'PENDING' ? 'text-orange-500' : 'text-[#FED7AA]'}`}>
+          <p className={`text-xl font-bold ${gym.status === 'ACTIVE' ? 'text-green-500' : gym.status === 'PENDING' ? 'text-orange-500' : 'text-[#EA580C]'}`}>
             {gym.status}
           </p>
         </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Plus, Search, Dumbbell, X, Edit, Trash2,
   Calendar, ArrowUp, ArrowDown, Send, Save,
-  Play, Video, FileText
+  Play, Video, FileText, CheckCircle2, Loader2
 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../../utils/api';
@@ -67,6 +67,10 @@ const TrainerWorkoutPlans: React.FC = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Draft' | 'Published'>('All');
 
+  // Pending Requests State
+  const [pendingWorkoutRequests, setPendingWorkoutRequests] = useState<any[]>([]);
+  const [approvingRequestId, setApprovingRequestId] = useState<string | null>(null);
+
   // Clients & Exercise library for the builder
   const [clients, setClients] = useState<any[]>([]);
   const [exerciseLibrary, setExerciseLibrary] = useState<ExerciseDetail[]>([]);
@@ -97,7 +101,40 @@ const TrainerWorkoutPlans: React.FC = () => {
     fetchPlans();
     fetchClients();
     fetchExerciseLibrary();
+    fetchPendingRequests();
   }, []);
+
+  const fetchPendingRequests = async () => {
+    try {
+      const res = await api.get('/trainer-plans/trainer-requests');
+      if (res.data?.success && res.data.requests) {
+        const workoutReqs = res.data.requests.filter(
+          (r: any) => r.planType === 'Workout Plan' && r.status === 'Pending'
+        );
+        setPendingWorkoutRequests(workoutReqs);
+      }
+    } catch (err) {
+      console.error('Failed to load pending workout requests:', err);
+    }
+  };
+
+  const handleQuickApproveRequest = async (reqId: string) => {
+    try {
+      setApprovingRequestId(reqId);
+      const res = await api.patch(`/trainer-plans/requests/${reqId}/approve`, {
+        trainerFeedback: 'Approved by your trainer! Your workout plan is now active on your dashboard.'
+      });
+      if (res.data?.success) {
+        alert('Workout plan approved! It is now directly live on the customer dashboard.');
+        fetchPendingRequests();
+        fetchPlans();
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to approve workout plan request');
+    } finally {
+      setApprovingRequestId(null);
+    }
+  };
 
   // Check if routed with action=create or preselected exercises
   useEffect(() => {
@@ -361,13 +398,25 @@ const TrainerWorkoutPlans: React.FC = () => {
     }
   };
 
-  const handlePublishExisting = async (planId: string) => {
+  const handlePublishExisting = async (plan: WorkoutPlanItem) => {
     try {
-      await api.patch(`/workout-plans/${planId}/publish`);
-      alert('Workout plan is now Published and live on the client dashboard!');
+      await api.patch(`/workout-plans/${plan._id}/publish`);
+      if (plan.customerId?._id) {
+        try {
+          await api.post('/trainer-plans/trainer/approve-and-assign', {
+            customerId: plan.customerId._id,
+            planType: 'Workout Plan',
+            title: plan.planName,
+            goal: plan.customerId.fitnessGoal || 'Workout Conditioning',
+            trainerFeedback: plan.description || 'Workout plan approved by your trainer and active on your dashboard.'
+          });
+        } catch (_) {}
+      }
+      alert('Workout plan is Approved and live on the customer dashboard!');
       await fetchPlans();
+      await fetchPendingRequests();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to publish plan');
+      alert(err.response?.data?.message || 'Failed to approve workout plan');
     }
   };
 
@@ -416,6 +465,61 @@ const TrainerWorkoutPlans: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Pending Customer Workout Requests Banner */}
+      {pendingWorkoutRequests.length > 0 && (
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-200 rounded-2xl p-5 shadow-xs space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-3 w-3 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-500"></span>
+              </span>
+              <h3 className="font-extrabold text-stone-900 text-sm">
+                Pending Customer Workout Requests ({pendingWorkoutRequests.length})
+              </h3>
+            </div>
+            <span className="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full border border-amber-300">
+              Needs Approval
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+            {pendingWorkoutRequests.map((req) => (
+              <div key={req._id} className="bg-white rounded-xl p-4 border border-orange-100 shadow-2xs flex flex-col justify-between space-y-3">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-sm text-stone-900">
+                      {req.customerId?.firstName} {req.customerId?.lastName}
+                    </span>
+                    <span className="text-[11px] text-stone-400">
+                      {new Date(req.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-xs font-semibold text-[#F97316] mt-0.5">{req.title}</p>
+                  <p className="text-xs text-stone-600 mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
+                </div>
+
+                <button
+                  onClick={() => handleQuickApproveRequest(req._id)}
+                  disabled={approvingRequestId === req._id}
+                  className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                >
+                  {approvingRequestId === req._id ? (
+                    <>
+                      <Loader2 size={13} className="animate-spin" /> Approving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={14} /> Approve & Publish to Customer Dashboard
+                    </>
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Filter and Search Bar */}
       <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
@@ -538,19 +642,27 @@ const TrainerWorkoutPlans: React.FC = () => {
 
                 {/* Card Actions */}
                 <div className="flex items-center gap-2 pt-3 border-t border-[#E7E5E4]">
-                  {plan.status === 'Draft' && (
+                  {plan.status === 'Draft' ? (
                     <button
-                      onClick={() => handlePublishExisting(plan._id)}
-                      className="flex-1 py-2 px-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                      onClick={() => handlePublishExisting(plan)}
+                      className="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
                     >
-                      <Send size={13} /> Publish
+                      <CheckCircle2 size={13} /> Approve for Customer
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handlePublishExisting(plan)}
+                      title="Click to re-confirm approval to customer dashboard"
+                      className="flex-1 py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <CheckCircle2 size={13} className="text-emerald-600" /> Approved for Customer
                     </button>
                   )}
                   <button
                     onClick={() => openEditModal(plan)}
-                    className="flex-1 py-2 px-3 bg-[#FFFDF8] hover:bg-[#FED7AA] text-[#292524] rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+                    className="py-2 px-3 bg-[#FFFDF8] hover:bg-[#FED7AA] text-[#292524] rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
                   >
-                    <Edit size={13} /> Edit Plan
+                    <Edit size={13} /> Edit
                   </button>
                   <button
                     onClick={() => handleDeletePlan(plan._id)}

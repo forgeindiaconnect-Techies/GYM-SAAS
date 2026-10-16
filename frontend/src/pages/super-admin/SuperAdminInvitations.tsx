@@ -485,7 +485,7 @@ const SuperAdminInvitations = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-[#292524] font-semibold">{invite.owner || 'N/A'}</div>
-                    <div className="text-xs text-[#FED7AA]">{invite.email}</div>
+                    <div className="text-xs text-[#292524] font-semibold">{invite.email}</div>
                   </td>
                   <td className="px-6 py-4 text-[#292524] font-medium">{formatDate(invite.date)}</td>
                   <td className="px-6 py-4 text-[#78716C]">
@@ -522,10 +522,10 @@ const SuperAdminInvitations = () => {
                       {/* View Details Button */}
                       <button
                         onClick={() => setViewInvite(invite)}
-                        className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#FED7AA]/15 text-[#F97316] hover:bg-[#FED7AA]/25 font-semibold text-xs transition-colors shadow-sm"
+                        className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-orange-50 text-[#EA580C] hover:bg-orange-100 border border-orange-200 font-bold text-xs transition-colors shadow-xs"
                         title="View Details"
                       >
-                        <Eye size={14} />
+                        <Eye size={14} className="text-[#EA580C]" />
                         <span>View Details</span>
                       </button>
 
@@ -577,7 +577,7 @@ const SuperAdminInvitations = () => {
                 <tr>
                   <td colSpan={6} className="text-center py-12 text-[#78716C]">
                     <div className="flex flex-col items-center justify-center space-y-2">
-                      <Send size={32} className="text-slate-300" />
+                      <Send size={32} className="text-stone-600" />
                       <p className="font-semibold text-slate-600">No invitations found</p>
                       <p className="text-xs text-slate-400">
                         {statusFilter !== 'ALL'

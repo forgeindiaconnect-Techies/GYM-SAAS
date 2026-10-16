@@ -161,7 +161,7 @@ export const SuperAdminEnquiries = () => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin text-[#FED7AA]" size={40} />
+          <Loader2 className="animate-spin text-[#EA580C]" size={40} />
         </div>
       ) : (
         <div className="bg-white border border-[#FED7AA] rounded-2xl overflow-hidden shadow-sm">
@@ -225,7 +225,7 @@ export const SuperAdminEnquiries = () => {
                 {filteredEnquiries.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-6 py-12 text-center text-[#78716C]">
-                      <MessageSquare size={40} className="mx-auto text-[#FED7AA] mb-3" />
+                      <MessageSquare size={40} className="mx-auto text-[#EA580C] mb-3" />
                       No enquiries found.
                     </td>
                   </tr>

@@ -190,7 +190,7 @@ const SuperAdminGymsAll = ({
                           gym.status === 'ACTIVE' ? 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20' :
                           gym.status === 'PENDING' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
                           gym.status === 'INACTIVE' ? 'bg-gray-500/10 text-gray-400 border-gray-500/20' :
-                          'bg-[#FED7AA]/10 text-[#FED7AA] border-[#FED7AA]/20'
+                          'bg-[#FED7AA]/10 text-[#EA580C] border-[#FED7AA]/20'
                         }`}
                       >
                         <option value="ACTIVE" className="bg-[#FFFFFF] text-[#292524]">Active</option>
@@ -216,7 +216,7 @@ const SuperAdminGymsAll = ({
                         <button 
                           onClick={(e) => handleDelete(e, gym._id)}
                           title="Delete Gym" 
-                          className="text-[#78716C] hover:text-[#FED7AA] transition-colors"
+                          className="text-[#78716C] hover:text-[#EA580C] transition-colors"
                         >
                           <Trash2 size={18} />
                         </button>

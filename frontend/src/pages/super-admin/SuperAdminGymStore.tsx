@@ -91,7 +91,7 @@ const SuperAdminGymStore = () => {
                     <p className="text-[10px] font-bold text-[#78716C] uppercase">Revenue</p>
                   </div>
                   <div className="bg-[#FFFDF8] rounded-xl p-3 text-center">
-                    <ShoppingBag className="mx-auto text-[#FED7AA] mb-1" size={18} />
+                    <ShoppingBag className="mx-auto text-[#EA580C] mb-1" size={18} />
                     <p className="text-lg font-black text-[#292524]">{st.totalOrders || 0}</p>
                     <p className="text-[10px] font-bold text-[#78716C] uppercase">Orders</p>
                   </div>
@@ -101,7 +101,7 @@ const SuperAdminGymStore = () => {
                     <p className="text-[10px] font-bold text-[#78716C] uppercase">Products</p>
                   </div>
                   <div className="bg-[#FFFDF8] rounded-xl p-3 text-center">
-                    <TrendingUp className="mx-auto text-[#FED7AA] mb-1" size={18} />
+                    <TrendingUp className="mx-auto text-[#EA580C] mb-1" size={18} />
                     <p className="text-lg font-black text-[#292524]">{st.completedOrders || 0}</p>
                     <p className="text-[10px] font-bold text-[#78716C] uppercase">Completed</p>
                   </div>

@@ -358,7 +358,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
   // Export Members Revenue PDF
   const handleExportMembersPDF = () => {
     const doc = new jsPDF();
-    const gymName = user?.gymName || 'Fitness Space';
+    const gymName = user?.gymName || 'Perfect Fitness Studio';
 
     doc.setFontSize(16);
     doc.setTextColor(249, 115, 22);
@@ -405,7 +405,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
   // Export Trainers Revenue PDF
   const handleExportTrainersPDF = () => {
     const doc = new jsPDF();
-    const gymName = user?.gymName || 'Fitness Space';
+    const gymName = user?.gymName || 'Perfect Fitness Studio';
 
     doc.setFontSize(16);
     doc.setTextColor(37, 99, 235);
@@ -453,7 +453,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
   // Export Online Orders PDF
   const handleExportOnlineOrdersPDF = () => {
     const doc = new jsPDF();
-    const gymName = user?.gymName || 'Fitness Space';
+    const gymName = user?.gymName || 'Perfect Fitness Studio';
 
     doc.setFontSize(16);
     doc.setTextColor(16, 185, 129);
@@ -501,7 +501,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
   // Export Offline Orders PDF
   const handleExportOfflineOrdersPDF = () => {
     const doc = new jsPDF();
-    const gymName = user?.gymName || 'Fitness Space';
+    const gymName = user?.gymName || 'Perfect Fitness Studio';
 
     doc.setFontSize(16);
     doc.setTextColor(217, 119, 6);
@@ -662,7 +662,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               </div>
               <p className="text-[11px] text-stone-400 mt-2 flex items-center justify-between border-t border-stone-800/80 pt-2">
                 <span>Filter: {timeframe.toUpperCase()}</span>
-                <span className="font-semibold text-stone-300">
+                <span className="font-semibold text-stone-600">
                   {timeframe === 'annual'
                     ? 'Annualized SaaS Run-rate'
                     : timeframe === 'weekly'
@@ -1063,7 +1063,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               </div>
               <p className="text-[11px] text-stone-400 mt-2 flex items-center justify-between border-t border-stone-800/80 pt-2">
                 <span>Filter: {timeframe.toUpperCase()}</span>
-                <span className="font-semibold text-stone-300">All 4 Channels</span>
+                <span className="font-semibold text-stone-600">All 4 Channels</span>
               </p>
             </div>
 

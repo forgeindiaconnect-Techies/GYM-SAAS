@@ -249,10 +249,10 @@ const GymAdminOnlineSessions = () => {
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-black tracking-wider uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
                   Featured Masterclass
                 </span>
-                <span className="text-xs text-gray-300 font-medium">· {sessions[0].category}</span>
+                <span className="text-xs text-stone-600 font-medium">· {sessions[0].category}</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black tracking-tight">{sessions[0].title}</h2>
-              <p className="text-sm text-gray-300 line-clamp-2">{sessions[0].description}</p>
+              <p className="text-sm text-stone-600 line-clamp-2">{sessions[0].description}</p>
               <div className="flex flex-wrap items-center gap-4 text-xs text-gray-200">
                 <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
                   <Calendar size={14} /> {sessions[0].date} at {sessions[0].time}

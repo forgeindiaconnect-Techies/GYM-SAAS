@@ -109,7 +109,7 @@ const MemberCheckout = () => {
   return (
     <div className="space-y-6">
       <div>
-        <button onClick={() => navigate('/member/store/cart')} className="flex items-center gap-1 text-sm font-bold text-[#FED7AA] hover:underline mb-2">
+        <button onClick={() => navigate('/member/store/cart')} className="flex items-center gap-1 text-sm font-bold text-[#EA580C] hover:underline mb-2">
           <ArrowLeft size={15} /> Back to cart
         </button>
         <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Checkout</h1>
@@ -215,7 +215,7 @@ const MemberCheckout = () => {
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="h-px bg-[#E7E5E4] flex-1"></div>
-                        <span className="text-[10px] font-black text-[#FED7AA] uppercase tracking-wider">OR</span>
+                        <span className="text-[10px] font-black text-[#EA580C] uppercase tracking-wider">OR</span>
                         <div className="h-px bg-[#E7E5E4] flex-1"></div>
                       </div>
                       <div>
@@ -233,7 +233,7 @@ const MemberCheckout = () => {
                         <QRCode value={`upi://pay?pa=aigymstore@ybl&pn=AI%20Gym%20Store&am=${finalTotal}&cu=INR`} size={80} bgColor="transparent" fgColor="#292524" level="L" />
                       </div>
                       <p className="text-sm font-bold text-[#292524]">Scan QR to Pay</p>
-                      <p className="text-[10px] font-semibold text-[#FED7AA] uppercase tracking-wider mt-0.5">Any UPI App</p>
+                      <p className="text-[10px] font-semibold text-[#EA580C] uppercase tracking-wider mt-0.5">Any UPI App</p>
                     </div>
                   </div>
                 </div>

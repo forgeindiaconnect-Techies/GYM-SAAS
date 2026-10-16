@@ -132,20 +132,20 @@ const SuperAdminLeads = () => {
                     className={`px-2 py-1 rounded-xl text-xs font-semibold outline-none cursor-pointer border border-[#E7E5E4] ${
                       lead.status === 'New' ? 'bg-blue-500/10 text-blue-500' : 
                       lead.status === 'Active' ? 'bg-green-500/10 text-green-500' : 
-                      lead.status === 'Inactive' ? 'bg-[#FED7AA]/10 text-[#FED7AA]' :
+                      lead.status === 'Inactive' ? 'bg-[#FED7AA]/10 text-[#EA580C]' :
                       'bg-yellow-500/10 text-yellow-500'
                     }`}
                   >
                     <option value="New" className="bg-[#FFFFFF] text-blue-500">New</option>
                     <option value="Contacted" className="bg-[#FFFFFF] text-yellow-500">Contacted</option>
                     <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                    <option value="Inactive" className="bg-[#FFFFFF] text-[#FED7AA]">Inactive</option>
+                    <option value="Inactive" className="bg-[#FFFFFF] text-stone-600 font-bold">Inactive</option>
                   </select>
                 </td>
                 <td className="px-6 py-4 flex space-x-3">
                   <button onClick={() => { setSelectedLead(lead); setShowViewModal(true); }} className="text-[#78716C] hover:text-[#292524]" title="View"><Eye size={18} /></button>
-                  <button onClick={() => { setSelectedLead(lead); setInviteSuccess(false); setShowInviteModal(true); }} className="text-[#FED7AA] hover:text-teal-400" title="Send Invite"><Send size={18} /></button>
-                  <button onClick={() => { deleteItem('gymLeads', lead.id); setLeads(leads.filter(l => l.id !== lead.id)); }} className="text-[#78716C] hover:text-[#FED7AA]" title="Delete"><Trash2 size={18} /></button>
+                  <button onClick={() => { setSelectedLead(lead); setInviteSuccess(false); setShowInviteModal(true); }} className="text-[#EA580C] hover:text-teal-400" title="Send Invite"><Send size={18} /></button>
+                  <button onClick={() => { deleteItem('gymLeads', lead.id); setLeads(leads.filter(l => l.id !== lead.id)); }} className="text-[#78716C] hover:text-[#EA580C]" title="Delete"><Trash2 size={18} /></button>
                 </td>
               </tr>
             ))}
@@ -158,7 +158,7 @@ const SuperAdminLeads = () => {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
             <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#E7E5E4] flex items-center space-x-3">
-              <Send className="text-[#FED7AA]" size={24} />
+              <Send className="text-[#EA580C]" size={24} />
               <h2 className="text-xl font-bold text-[#292524]">Send Invitation</h2>
             </div>
             {!inviteSuccess ? (
@@ -166,7 +166,7 @@ const SuperAdminLeads = () => {
                 <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E7E5E4] mb-2">
                   <p className="text-sm text-[#78716C]">Sending to:</p>
                   <p className="text-[#292524] font-semibold text-lg">{selectedLead.gymName}</p>
-                  <p className="text-sm text-[#FED7AA]">{selectedLead.email}</p>
+                  <p className="text-sm text-[#292524]">{selectedLead.email}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-[#78716C] mb-2">Personal Message</label>
@@ -221,7 +221,7 @@ const SuperAdminLeads = () => {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
             <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#E7E5E4] flex items-center space-x-3">
-              <Sparkles className="text-[#FED7AA]" size={24} />
+              <Sparkles className="text-[#EA580C]" size={24} />
               <h2 className="text-xl font-bold text-[#292524]">Add New Gym Lead</h2>
             </div>
             <form onSubmit={handleAddLead} className="p-6 space-y-4">
@@ -261,13 +261,13 @@ const SuperAdminLeads = () => {
           <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#E7E5E4]">
               <h2 className="text-xl font-bold text-[#292524] flex items-center space-x-2">
-                <Sparkles className="text-[#FED7AA]" size={20} />
+                <Sparkles className="text-[#EA580C]" size={20} />
                 <span>Lead Details</span>
               </h2>
             </div>
             <div className="p-6 space-y-6">
               <div className="flex items-start space-x-4">
-                <div className="p-2 bg-[#FED7AA]/10 rounded-xl text-[#FED7AA] mt-1">
+                <div className="p-2 bg-[#FED7AA]/10 rounded-xl text-[#EA580C] mt-1">
                   <Building2 size={20} />
                 </div>
                 <div>

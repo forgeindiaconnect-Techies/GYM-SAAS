@@ -110,7 +110,7 @@ const MemberMyTrainer = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
               <div className="bg-[#FFFDF8] p-4 rounded-2xl flex items-center space-x-4 border border-[#FED7AA]">
-                <div className="bg-blue-100 text-[#FED7AA] p-3 rounded-xl">
+                <div className="bg-blue-100 text-blue-600 p-3 rounded-xl">
                   <Award size={24} />
                 </div>
                 <div>
@@ -180,11 +180,11 @@ const MemberMyTrainer = () => {
           <div className="bg-gradient-to-r from-[#292524] to-[#334155] rounded-3xl p-6 text-white shadow-lg flex items-center justify-between">
             <div>
               <h3 className="font-bold text-lg mb-1">Personal Training Plan</h3>
-              <p className="text-gray-300 text-sm">3 sessions remaining this week</p>
+              <p className="text-stone-600 text-sm">3 sessions remaining this week</p>
             </div>
             <div className="bg-white/10 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/20 text-center">
               <span className="block text-2xl font-bold">3</span>
-              <span className="text-xs uppercase tracking-wider text-gray-300">Left</span>
+              <span className="text-xs uppercase tracking-wider text-stone-600">Left</span>
             </div>
           </div>
         </div>

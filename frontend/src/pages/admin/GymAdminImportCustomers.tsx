@@ -461,7 +461,7 @@ const GymAdminImportCustomers: React.FC = () => {
           {/* Existing customers bulk action */}
           {summary.existing > 0 && (
             <div className="flex flex-wrap items-center gap-3 bg-blue-50 border border-blue-200 rounded-2xl p-4">
-              <Info size={18} className="text-[#FED7AA] shrink-0" />
+              <Info size={18} className="text-[#EA580C] shrink-0" />
               <span className="text-blue-800 font-semibold text-sm flex-1">
                 {summary.existing} existing customer(s) found. Choose default action:
               </span>
@@ -656,7 +656,7 @@ const GymAdminImportCustomers: React.FC = () => {
                                 <div className="p-4 border-b border-[#FED7AA] space-y-2 bg-[#FAFAFA]">
                                   {row.errors.map((e, i) => (
                                     <div key={i} className="flex items-start gap-2 text-red-700 text-xs bg-red-50 p-2.5 rounded-lg border border-red-100 font-medium">
-                                      <XCircle size={14} className="shrink-0 mt-0.5 text-[#FED7AA]" /> {e}
+                                      <XCircle size={14} className="shrink-0 mt-0.5 text-rose-600" /> {e}
                                     </div>
                                   ))}
                                   {row.warnings.map((w, i) => (
@@ -717,7 +717,7 @@ const GymAdminImportCustomers: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <ReadySummaryCard label="Total Records" value={summary.total} />
               <ReadySummaryCard label="New Customers" value={readyToImport} color="text-[#F97316]" />
-              <ReadySummaryCard label="Will Update" value={toUpdate} color="text-[#FED7AA]" />
+              <ReadySummaryCard label="Will Update" value={toUpdate} color="text-[#EA580C]" />
               <ReadySummaryCard label="Will Skip" value={toSkip} color="text-[#78716C]" />
             </div>
             <div className="flex flex-col gap-3">
@@ -799,7 +799,7 @@ const GymAdminImportCustomers: React.FC = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <ResultCard label="New Customers" value={importResult.newCustomers} icon={<UserCheck size={20} />} color="text-emerald-600" bg="bg-emerald-50" border="border-emerald-200" />
-            <ResultCard label="Updated" value={importResult.updatedCustomers} icon={<Edit3 size={20} />} color="text-[#FED7AA]" bg="bg-blue-50" border="border-blue-200" />
+            <ResultCard label="Updated" value={importResult.updatedCustomers} icon={<Edit3 size={20} />} color="text-[#EA580C]" bg="bg-blue-50" border="border-blue-200" />
             <ResultCard label="Skipped" value={importResult.skippedCustomers} icon={<SkipForward size={20} />} color="text-amber-600" bg="bg-amber-50" border="border-amber-200" />
             <ResultCard label="Failed" value={importResult.failedRecords} icon={<UserX size={20} />} color="text-red-600" bg="bg-red-50" border="border-red-200" />
           </div>
@@ -882,9 +882,9 @@ const GymAdminImportCustomers: React.FC = () => {
                         <td className="px-4 py-3 text-[#78716C] text-xs">{h.importedBy?.firstName} {h.importedBy?.lastName}</td>
                         <td className="px-4 py-3 text-center font-bold text-[#292524]">{h.totalRecords}</td>
                         <td className="px-4 py-3 text-center font-bold text-emerald-600">{h.newCustomers}</td>
-                        <td className="px-4 py-3 text-center font-bold text-[#FED7AA]">{h.updatedCustomers}</td>
+                        <td className="px-4 py-3 text-center font-bold text-[#EA580C]">{h.updatedCustomers}</td>
                         <td className="px-4 py-3 text-center font-bold text-amber-600">{h.skippedCustomers}</td>
-                        <td className="px-4 py-3 text-center font-bold text-[#FED7AA]">{h.failedRecords}</td>
+                        <td className="px-4 py-3 text-center font-bold text-[#EA580C]">{h.failedRecords}</td>
                         <td className="px-4 py-3"><ImportStatusBadge status={h.status} /></td>
                         <td className="px-4 py-3">
                           <div className="flex gap-2">
@@ -990,7 +990,7 @@ const GymAdminImportCustomers: React.FC = () => {
             <div className="p-5 overflow-y-auto">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
                 <MiniStatCard label="New" value={historyDetail.newCustomers} color="text-[#F97316]" />
-                <MiniStatCard label="Updated" value={historyDetail.updatedCustomers} color="text-[#FED7AA]" />
+                <MiniStatCard label="Updated" value={historyDetail.updatedCustomers} color="text-[#EA580C]" />
                 <MiniStatCard label="Skipped" value={historyDetail.skippedCustomers} color="text-orange-500" />
                 <MiniStatCard label="Failed" value={historyDetail.failedRecords} color="text-red-600" />
               </div>
@@ -1008,7 +1008,7 @@ const GymAdminImportCustomers: React.FC = () => {
               {historyDetail.failedRows && historyDetail.failedRows.length > 0 && (
                 <div>
                   <h3 className="font-bold text-[#292524] mb-3 flex items-center gap-2 text-sm">
-                    <AlertCircle size={15} className="text-[#FED7AA]" /> Failed Rows ({historyDetail.failedRows.length})
+                    <AlertCircle size={15} className="text-rose-600" /> Failed Rows ({historyDetail.failedRows.length})
                   </h3>
                   <div className="space-y-2">
                     {historyDetail.failedRows.map((fr: any, i: number) => (
