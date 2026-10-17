@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
   Search, MessageSquare, RefreshCw, Brain, CheckCircle2, Clock,
-  ChevronDown, ChevronUp, Dumbbell, Salad, User, X, Filter, Send
+  ChevronDown, ChevronUp, Dumbbell, Salad, User, X, Filter, Send,
+  Calendar
 } from 'lucide-react';
 import api from '../../utils/api';
 
@@ -13,11 +14,59 @@ const statusConfig: Record<string, { label: string; cls: string }> = {
   'Pending':            { label: 'Pending',            cls: 'bg-gray-100 text-gray-600' },
 };
 
+// ── Date & Timing formatting helpers ─────────────────────────────────────────
+const formatDateTime = (dateStr?: string | Date) => {
+  if (!dateStr) return { date: '—', time: '—', full: '—' };
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return { date: '—', time: '—', full: '—' };
+
+  const date = d.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  const time = d.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  return {
+    date,
+    time,
+    full: `${date} at ${time}`,
+  };
+};
+
+const getDateGroupKey = (dateStr?: string | Date) => {
+  if (!dateStr) return 'Other Dates';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return 'Other Dates';
+
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  if (d.toDateString() === today.toDateString()) return 'Today';
+  if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+
+  return d.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
 const TrainerAIFeedback = () => {
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [dateFilter, setDateFilter] = useState('');
+  const [sortByDate, setSortByDate] = useState<'desc' | 'asc'>('desc');
+  const [groupByDate, setGroupByDate] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [detail, setDetail] = useState<any>(null);
 
@@ -152,15 +201,174 @@ const TrainerAIFeedback = () => {
     return 'Member';
   };
 
-  const filtered = feedbacks.filter(f => {
-    const nameMatch = clientName(f).toLowerCase().includes(search.toLowerCase());
-    const statusMatch = statusFilter === 'All' || f.status === statusFilter;
-    return nameMatch && statusMatch;
-  });
+  const filtered = feedbacks
+    .filter(f => {
+      const nameMatch = clientName(f).toLowerCase().includes(search.toLowerCase());
+      const statusMatch = statusFilter === 'All' || f.status === statusFilter;
+      const dateMatch = !dateFilter || (f.createdAt && new Date(f.createdAt).toISOString().slice(0, 10) === dateFilter);
+      return nameMatch && statusMatch && dateMatch;
+    })
+    .sort((a, b) => {
+      const timeA = new Date(a.createdAt || 0).getTime();
+      const timeB = new Date(b.createdAt || 0).getTime();
+      return sortByDate === 'desc' ? timeB - timeA : timeA - timeB;
+    });
+
+  // Group items date-wise
+  const dateGroups = filtered.reduce((acc: { key: string; items: any[] }[], f: any) => {
+    const key = getDateGroupKey(f.createdAt);
+    const existing = acc.find(g => g.key === key);
+    if (existing) {
+      existing.items.push(f);
+    } else {
+      acc.push({ key, items: [f] });
+    }
+    return acc;
+  }, []);
 
   const statuses = ['All', ...Array.from(new Set(feedbacks.map(f => f.status))).filter(Boolean)];
 
   const toggleExpand = (id: string) => setExpanded(prev => (prev === id ? null : id));
+
+  const renderPlanCard = (f: any) => {
+    const id = f._id;
+    const isOpen = expanded === id;
+    const sc = statusConfig[f.status] || { label: f.status, cls: 'bg-gray-100 text-gray-600' };
+    const goal = f.fitnessProfile?.goal || f.fitnessProfile?.primaryGoal || '—';
+    const summary = f.aiAnalysis?.profileSummary || f.aiAnalysis?.assessment || '';
+    const workoutDays = f.workoutRecommendation?.weeklySchedule?.length || f.routine?.length || 0;
+    const dietMeals = f.dietRecommendation?.mealPlan?.length || 0;
+    const dt = formatDateTime(f.createdAt);
+
+    return (
+      <div key={id} className="transition-all">
+        {/* Row */}
+        <div
+          className="p-5 hover:bg-[#F8FAFA] transition-colors cursor-pointer"
+          onClick={() => toggleExpand(id)}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4">
+              {/* Avatar */}
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F97316]/10 to-[#FED7AA]/20 flex items-center justify-center shrink-0">
+                <User size={22} className="text-[#F97316]" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap mb-1">
+                  <h3 className="font-bold text-[#292524] text-base">{clientName(f)}</h3>
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${sc.cls}`}>{sc.label}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2.5 text-xs text-[#78716C]">
+                  {goal !== '—' && (
+                    <span className="inline-flex items-center gap-1 font-semibold text-[#78716C]">
+                      <Dumbbell size={12} className="text-[#EA580C]" /> Goal: {goal}
+                    </span>
+                  )}
+                  {workoutDays > 0 && (
+                    <span className="inline-flex items-center gap-1">
+                      <Dumbbell size={11} /> {workoutDays} workout day{workoutDays > 1 ? 's' : ''}
+                    </span>
+                  )}
+                  {dietMeals > 0 && (
+                    <span className="inline-flex items-center gap-1">
+                      <Salad size={11} /> {dietMeals} meal{dietMeals > 1 ? 's' : ''}
+                    </span>
+                  )}
+
+                  {/* Date & Timing Badge */}
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-orange-50/80 border border-orange-200/60 text-[#292524] font-medium">
+                    <Calendar size={12} className="text-[#F97316]" />
+                    <span className="font-semibold text-[#EA580C]">{dt.date}</span>
+                    <span className="text-stone-300">·</span>
+                    <Clock size={12} className="text-[#F97316]" />
+                    <span className="font-bold text-[#292524]">{dt.time}</span>
+                  </span>
+                </div>
+                {summary && (
+                  <p className="text-xs text-[#78716C] mt-1.5 line-clamp-2 max-w-xl">{summary}</p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={(e) => { e.stopPropagation(); setDetail(f); }}
+                className="px-3 py-1.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity shadow-sm"
+              >
+                Full View
+              </button>
+              {isOpen ? <ChevronUp size={18} className="text-[#78716C]" /> : <ChevronDown size={18} className="text-[#78716C]" />}
+            </div>
+          </div>
+        </div>
+
+        {/* Expanded Preview */}
+        {isOpen && (
+          <div className="bg-[#F8FAFA] border-t border-[#E7E5E4] px-5 pb-5 pt-4 space-y-4">
+            {/* AI Assessment */}
+            {f.aiAnalysis?.assessment && (
+              <div className="bg-white rounded-xl border border-[#E7E5E4] p-4">
+                <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">AI Assessment</p>
+                <p className="text-sm text-[#78716C] leading-relaxed">{f.aiAnalysis.assessment}</p>
+              </div>
+            )}
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              {/* Workout Plan Preview */}
+              {f.workoutRecommendation?.weeklySchedule?.length > 0 && (
+                <div className="bg-white rounded-xl border border-[#E7E5E4] p-4">
+                  <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <Dumbbell size={13} className="text-[#EA580C]" /> Workout Plan
+                  </p>
+                  <div className="space-y-2">
+                    {f.workoutRecommendation.weeklySchedule.slice(0, 4).map((day: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between text-sm">
+                        <span className="font-semibold text-[#292524]">{day.day}</span>
+                        <span className="text-xs text-[#78716C]">{day.focus || (day.isRest ? 'Rest Day' : 'Workout')}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Diet Plan Preview */}
+              {f.dietRecommendation?.mealPlan?.length > 0 && (
+                <div className="bg-white rounded-xl border border-[#E7E5E4] p-4">
+                  <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <Salad size={13} className="text-[#EA580C]" /> Diet Plan
+                  </p>
+                  <div className="space-y-2">
+                    {f.dietRecommendation.mealPlan.slice(0, 4).map((meal: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between text-sm">
+                        <span className="font-semibold text-[#292524]">{meal.meal || meal.mealType}</span>
+                        <span className="text-xs text-[#78716C]">{meal.time || `${meal.calories || ''} kcal`}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Revision Notes */}
+            {f.revisionDetails?.reason && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                <p className="text-xs font-bold text-yellow-800 uppercase tracking-wider mb-1">Revision Requested</p>
+                <p className="text-sm text-yellow-900">{f.revisionDetails.reason}</p>
+              </div>
+            )}
+            {f.trainerNotes && (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                <p className="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">Trainer Notes</p>
+                <p className="text-sm text-green-900">{f.trainerNotes}</p>
+              </div>
+            )}
+
+            {/* Chat / Discussion Section */}
+            {renderChatSection(f)}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -214,17 +422,68 @@ const TrainerAIFeedback = () => {
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E7E5E4] bg-white focus:outline-none focus:border-[#F97316] text-sm"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <Filter size={16} className="text-[#78716C]" />
-            <select
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-              className="px-3 py-2.5 rounded-xl border border-[#E7E5E4] bg-white text-sm font-semibold text-[#78716C] focus:outline-none focus:border-[#F97316]"
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Status Filter */}
+            <div className="flex items-center gap-1.5 bg-white border border-[#E7E5E4] rounded-xl px-2.5 py-1.5">
+              <Filter size={15} className="text-[#78716C]" />
+              <select
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+                className="bg-transparent text-xs font-semibold text-[#78716C] focus:outline-none cursor-pointer"
+              >
+                {statuses.map(s => (
+                  <option key={s} value={s}>{s === 'All' ? 'All Statuses' : (statusConfig[s]?.label || s)}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Specific Date Filter */}
+            <div className="flex items-center gap-1.5 bg-white border border-[#E7E5E4] rounded-xl px-2.5 py-1.5">
+              <Calendar size={15} className="text-[#F97316]" />
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={e => setDateFilter(e.target.value)}
+                title="Filter by specific date"
+                className="bg-transparent text-xs font-semibold text-[#78716C] focus:outline-none cursor-pointer"
+              />
+              {dateFilter && (
+                <button
+                  onClick={() => setDateFilter('')}
+                  className="text-stone-400 hover:text-[#292524] p-0.5"
+                  title="Clear date filter"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+
+            {/* Date Sorting */}
+            <div className="flex items-center gap-1.5 bg-white border border-[#E7E5E4] rounded-xl px-2.5 py-1.5">
+              <Clock size={15} className="text-[#78716C]" />
+              <select
+                value={sortByDate}
+                onChange={e => setSortByDate(e.target.value as 'desc' | 'asc')}
+                className="bg-transparent text-xs font-semibold text-[#78716C] focus:outline-none cursor-pointer"
+              >
+                <option value="desc">Newest First</option>
+                <option value="asc">Oldest First</option>
+              </select>
+            </div>
+
+            {/* Group by Date Toggle */}
+            <button
+              onClick={() => setGroupByDate(g => !g)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 ${
+                groupByDate
+                  ? 'bg-[#F97316] text-white border-[#F97316] shadow-sm'
+                  : 'bg-white text-[#78716C] border-[#E7E5E4] hover:bg-stone-50'
+              }`}
+              title="Toggle Date-Wise Grouping"
             >
-              {statuses.map(s => (
-                <option key={s} value={s}>{s === 'All' ? 'All Statuses' : (statusConfig[s]?.label || s)}</option>
-              ))}
-            </select>
+              <Calendar size={14} />
+              <span>{groupByDate ? 'Date-Wise: ON' : 'Date-Wise: OFF'}</span>
+            </button>
           </div>
         </div>
 
@@ -241,148 +500,29 @@ const TrainerAIFeedback = () => {
               <p className="text-[#78716C] font-medium text-lg">No feedback records found.</p>
               <p className="text-sm text-gray-400 mt-1">AI-generated plans for your clients will appear here.</p>
             </div>
-          ) : (
-            filtered.map((f: any) => {
-              const id = f._id;
-              const isOpen = expanded === id;
-              const sc = statusConfig[f.status] || { label: f.status, cls: 'bg-gray-100 text-gray-600' };
-              const goal = f.fitnessProfile?.goal || f.fitnessProfile?.primaryGoal || '—';
-              const summary = f.aiAnalysis?.profileSummary || f.aiAnalysis?.assessment || '';
-              const workoutDays = f.workoutRecommendation?.weeklySchedule?.length || f.routine?.length || 0;
-              const dietMeals = f.dietRecommendation?.mealPlan?.length || 0;
-
-              return (
-                <div key={id} className="transition-all">
-                  {/* Row */}
-                  <div
-                    className="p-5 hover:bg-[#F8FAFA] transition-colors cursor-pointer"
-                    onClick={() => toggleExpand(id)}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-4">
-                        {/* Avatar */}
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F97316]/10 to-[#FED7AA]/20 flex items-center justify-center shrink-0">
-                          <User size={22} className="text-[#F97316]" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap mb-1">
-                            <h3 className="font-bold text-[#292524] text-base">{clientName(f)}</h3>
-                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${sc.cls}`}>{sc.label}</span>
-                          </div>
-                          <div className="flex flex-wrap gap-3 text-xs text-[#78716C]">
-                            {goal !== '—' && (
-                              <span className="inline-flex items-center gap-1 font-semibold text-[#78716C]">
-                                <Dumbbell size={12} className="text-[#EA580C]" /> Goal: {goal}
-                              </span>
-                            )}
-                            {workoutDays > 0 && (
-                              <span className="inline-flex items-center gap-1">
-                                <Dumbbell size={11} /> {workoutDays} workout day{workoutDays > 1 ? 's' : ''}
-                              </span>
-                            )}
-                            {dietMeals > 0 && (
-                              <span className="inline-flex items-center gap-1">
-                                <Salad size={11} /> {dietMeals} meal{dietMeals > 1 ? 's' : ''}
-                              </span>
-                            )}
-                            <span className="inline-flex items-center gap-1">
-                              <Clock size={11} /> {new Date(f.createdAt).toLocaleDateString()}
-                            </span>
-                          </div>
-                          {summary && (
-                            <p className="text-xs text-[#78716C] mt-1.5 line-clamp-2 max-w-xl">{summary}</p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setDetail(f); }}
-                          className="px-3 py-1.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity"
-                        >
-                          Full View
-                        </button>
-                        {isOpen ? <ChevronUp size={18} className="text-[#78716C]" /> : <ChevronDown size={18} className="text-[#78716C]" />}
-                      </div>
-                    </div>
+          ) : groupByDate ? (
+            /* ── Date-Wise Grouped View ── */
+            dateGroups.map(group => (
+              <div key={group.key} className="border-b border-[#E7E5E4] last:border-b-0">
+                <div className="bg-[#FFFDF8] border-y border-[#FED7AA]/60 px-5 py-2.5 flex items-center justify-between sticky top-0 z-10 backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                    <Calendar size={14} className="text-[#F97316]" />
+                    <span className="text-xs font-black text-[#292524] uppercase tracking-wider">{group.key}</span>
                   </div>
-
-                  {/* Expanded Preview */}
-                  {isOpen && (
-                    <div className="bg-[#F8FAFA] border-t border-[#E7E5E4] px-5 pb-5 pt-4 space-y-4">
-                      {/* AI Assessment */}
-                      {f.aiAnalysis?.assessment && (
-                        <div className="bg-white rounded-xl border border-[#E7E5E4] p-4">
-                          <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">AI Assessment</p>
-                          <p className="text-sm text-[#78716C] leading-relaxed">{f.aiAnalysis.assessment}</p>
-                        </div>
-                      )}
-
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        {/* Workout Plan Preview */}
-                        {f.workoutRecommendation?.weeklySchedule?.length > 0 && (
-                          <div className="bg-white rounded-xl border border-[#E7E5E4] p-4">
-                            <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                              <Dumbbell size={13} className="text-[#EA580C]" /> Workout Plan
-                            </p>
-                            <div className="space-y-2">
-                              {f.workoutRecommendation.weeklySchedule.slice(0, 4).map((day: any, i: number) => (
-                                <div key={i} className="flex items-center justify-between text-sm">
-                                  <span className="font-semibold text-[#292524]">{day.day}</span>
-                                  <span className="text-[#78716C] text-xs truncate max-w-[140px]">
-                                    {day.isRest ? 'Rest Day' : (day.focus || (day.exercises?.length ? `${day.exercises.length} exercises` : '—'))}
-                                  </span>
-                                </div>
-                              ))}
-                              {f.workoutRecommendation.weeklySchedule.length > 4 && (
-                                <p className="text-xs text-[#292524] font-medium font-semibold">+{f.workoutRecommendation.weeklySchedule.length - 4} more days</p>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Diet Plan Preview */}
-                        {f.dietRecommendation?.mealPlan?.length > 0 && (
-                          <div className="bg-white rounded-xl border border-[#E7E5E4] p-4">
-                            <p className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                              <Salad size={13} className="text-[#EA580C]" /> Diet Plan
-                            </p>
-                            <div className="space-y-2">
-                              {f.dietRecommendation.mealPlan.slice(0, 4).map((meal: any, i: number) => (
-                                <div key={i} className="flex items-center justify-between text-sm">
-                                  <span className="font-semibold text-[#292524]">{meal.meal || meal.mealType}</span>
-                                  <span className="text-[#78716C] text-xs">{meal.calories ? `${meal.calories} kcal` : meal.time || ''}</span>
-                                </div>
-                              ))}
-                              {f.dietRecommendation.mealPlan.length > 4 && (
-                                <p className="text-xs text-[#292524] font-medium font-semibold">+{f.dietRecommendation.mealPlan.length - 4} more meals</p>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Revision Notes */}
-                      {f.revisionDetails?.reason && (
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                          <p className="text-xs font-bold text-yellow-800 uppercase tracking-wider mb-1">Revision Requested</p>
-                          <p className="text-sm text-yellow-900">{f.revisionDetails.reason}</p>
-                        </div>
-                      )}
-                      {f.trainerNotes && (
-                        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                          <p className="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">Trainer Notes</p>
-                          <p className="text-sm text-green-900">{f.trainerNotes}</p>
-                        </div>
-                      )}
-
-                      {/* Chat / Discussion Section */}
-                      {renderChatSection(f)}
-
-                    </div>
-                  )}
+                  <span className="text-[11px] font-bold text-[#F97316] bg-orange-100/70 px-2.5 py-0.5 rounded-full border border-orange-200/50">
+                    {group.items.length} {group.items.length === 1 ? 'plan' : 'plans'}
+                  </span>
                 </div>
-              );
-            })
+                <div className="divide-y divide-[#F1F5F9]">
+                  {group.items.map(renderPlanCard)}
+                </div>
+              </div>
+            ))
+          ) : (
+            /* ── Flat List View ── */
+            <div className="divide-y divide-[#F1F5F9]">
+              {filtered.map(renderPlanCard)}
+            </div>
           )}
         </div>
       </div>
@@ -399,10 +539,16 @@ const TrainerAIFeedback = () => {
                   <span className="text-white/80 text-sm font-semibold">AI Feedback Report</span>
                 </div>
                 <h2 className="text-2xl font-bold text-white">{clientName(detail)}</h2>
-                <p className="text-white/70 text-sm mt-0.5">
-                  {detail.fitnessProfile?.goal || detail.fitnessProfile?.primaryGoal || ''} ·{' '}
-                  {new Date(detail.createdAt).toLocaleDateString()}
-                </p>
+                <div className="text-white/80 text-sm mt-1 flex items-center gap-2 flex-wrap">
+                  <span>{detail.fitnessProfile?.goal || detail.fitnessProfile?.primaryGoal || 'General Fitness'}</span>
+                  <span>·</span>
+                  <span className="inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-md text-xs font-semibold text-white">
+                    <Calendar size={12} /> {formatDateTime(detail.createdAt).date}
+                  </span>
+                  <span className="inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-md text-xs font-semibold text-white">
+                    <Clock size={12} /> {formatDateTime(detail.createdAt).time}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center gap-3">
                 <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusConfig[detail.status]?.cls || 'bg-white/20 text-white'}`}>

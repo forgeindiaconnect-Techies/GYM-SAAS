@@ -195,7 +195,7 @@ const RegisterPage = () => {
         <div className="w-9 h-9 bg-[#F97316] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+        <span className="text-2xl font-bold tracking-tight text-[#F97316]">Gymora</span>
       </Link>
 
       <div className="w-full max-w-2xl bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl shadow-2xl overflow-hidden">
@@ -454,7 +454,7 @@ const RegisterPage = () => {
               <p className="text-[#78716C] text-sm">Please read and accept the following before creating your account.</p>
               <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 text-sm text-[#78716C] max-h-40 overflow-y-auto leading-relaxed">
                 <strong className="text-[#292524] block mb-2">Terms & Conditions</strong>
-                By creating an account on AI GYM, you agree to use the platform in compliance with all applicable laws. Your personal data will be used to provide fitness coaching and gym management services. AI-generated plans are for guidance only and not a substitute for professional medical advice. Subscriptions are billed according to your chosen plan. You may cancel at any time.
+                By creating an account on Gymora, you agree to use the platform in compliance with all applicable laws. Your personal data will be used to provide fitness coaching and gym management services. AI-generated plans are for guidance only and not a substitute for professional medical advice. Subscriptions are billed according to your chosen plan. You may cancel at any time.
               </div>
               <div className="space-y-4">
                 <label className="flex items-start space-x-3 cursor-pointer">

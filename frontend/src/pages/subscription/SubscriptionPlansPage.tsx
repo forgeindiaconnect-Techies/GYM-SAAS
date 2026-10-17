@@ -12,7 +12,7 @@ const SAAS_PLANS = [
   {
     key: 'FREE_TRIAL',
     name: 'Free Trial',
-    tagline: 'Try AI GYM risk-free',
+    tagline: 'Try Gymora risk-free',
     badge: '1 DAY',
     icon: Zap,
     iconColor: 'text-[#FED7AA]',
@@ -282,7 +282,7 @@ const SubscriptionPlansPage = () => {
             <div className="w-10 h-10 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
               <Activity className="text-white" size={22} />
             </div>
-            <span className="text-2xl font-bold text-[#F97316]">AI GYM</span>
+            <span className="text-2xl font-bold text-[#F97316]">Gymora</span>
           </div>
 
           {(user?.subscriptionStatus?.toUpperCase() === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date()) || (location.state as any)?.message) && (
@@ -293,7 +293,7 @@ const SubscriptionPlansPage = () => {
                 </div>
                 <div>
                   <p className="font-bold text-lg text-red-950">Your subscription plan is completed</p>
-                  <p className="text-sm text-red-700 font-medium">Please upgrade your plan below to continue accessing AI GYM platform services.</p>
+                  <p className="text-sm text-red-700 font-medium">Please upgrade your plan below to continue accessing Gymora platform services.</p>
                 </div>
               </div>
             </div>
@@ -304,7 +304,7 @@ const SubscriptionPlansPage = () => {
             <span>SaaS Platform Subscriptions</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-[#292524]">
-            Power Your Gym with <span className="text-[#F97316]">AI GYM</span>
+            Power Your Gym with <span className="text-[#F97316]">Gymora</span>
           </h1>
           <p className="text-[#78716C] text-lg mb-3 max-w-2xl mx-auto">
             Choose a plan that fits your gym's size and ambitions. All plans include our core AI management platform.
@@ -944,7 +944,7 @@ const SubscriptionPlansPage = () => {
             <h3 className="text-[#292524] font-bold">How Access Control Works</h3>
           </div>
           <p className="text-[#78716C] text-sm max-w-2xl mx-auto">
-            Your subscription plan controls what features your gym can access on the AI GYM platform.
+            Your subscription plan controls what features your gym can access on the Gymora platform.
             Adding members beyond your plan's limit, accessing Advanced Analytics on Silver, or using 1-on-1 Coaching
             on Gold will show an upgrade prompt. After payment, features unlock instantly.
           </p>

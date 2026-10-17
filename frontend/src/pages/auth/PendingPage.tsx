@@ -43,7 +43,7 @@ const PendingPage = () => {
 
       <h1 className="text-3xl font-bold text-[#292524] mb-3">Application Pending Review</h1>
       <p className="text-[#78716C] max-w-md mb-6 leading-relaxed">
-        Hi <strong className="text-[#292524]">{user?.firstName}</strong>, your AI GYM account has been created. Our team is reviewing your application and will notify you once approved.
+        Hi <strong className="text-[#292524]">{user?.firstName}</strong>, your Gymora account has been created. Our team is reviewing your application and will notify you once approved.
       </p>
 
       <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 max-w-sm w-full mb-8 space-y-4 text-left">

@@ -25,7 +25,7 @@ dotenv.config();
 
 const seedDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ai-gym');
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/Gymora');
     console.log('MongoDB Connected for Complete Seeding...');
 
     // Clear existing collections

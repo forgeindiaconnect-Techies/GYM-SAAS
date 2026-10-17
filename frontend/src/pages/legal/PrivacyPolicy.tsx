@@ -24,7 +24,7 @@ const PrivacyPolicy = () => {
             <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+            <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
           </Link>
           <button onClick={handleBack} className="text-sm font-medium text-[#78716C] hover:text-[#F97316] flex items-center space-x-2">
             <ArrowLeft size={16} /> <span>Back</span>
@@ -40,7 +40,7 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-[#292524] mb-4">1. Information We Collect</h2>
             <p className="mb-4">
-              When you use AI GYM, we collect information you provide directly to us, such as when you create an account, update your profile, or communicate with us. This includes:
+              When you use Gymora, we collect information you provide directly to us, such as when you create an account, update your profile, or communicate with us. This includes:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Name, email address, and contact information.</li>

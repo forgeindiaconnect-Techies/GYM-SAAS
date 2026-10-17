@@ -58,9 +58,9 @@ const Step7Documents: React.FC<StepProps> = ({ form, set, errors }) => {
               <div className="ml-8 mt-3 p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-lg text-xs text-[#78716C] space-y-2">
                 <p><strong>1. Agreement to Terms:</strong> By accessing our platform, you agree to these terms.</p>
                 <p><strong>2. User Responsibilities:</strong> You must provide accurate and verifiable information about your gym facility.</p>
-                <p><strong>3. Platform Fees:</strong> AI GYM charges a standard platform fee for transactions processed through the system.</p>
+                <p><strong>3. Platform Fees:</strong> Gymora charges a standard platform fee for transactions processed through the system.</p>
                 <p><strong>4. Termination:</strong> We reserve the right to suspend or terminate gym profiles that violate our community standards.</p>
-                <p><strong>5. Liability:</strong> AI GYM is not liable for disputes between gym owners and their members.</p>
+                <p><strong>5. Liability:</strong> Gymora is not liable for disputes between gym owners and their members.</p>
               </div>
             )}
           </div>

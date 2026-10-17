@@ -470,7 +470,7 @@ export const TourSlide = ({ journey, step, setJourney }: { journey: 'select' | '
   if (journey === 'owner') {
     const ownerSteps = [
       {
-        id: 1, title: 'Gym Owner Registration', desc: 'Claim your facility on the AI GYM platform',
+        id: 1, title: 'Gym Owner Registration', desc: 'Claim your facility on the Gymora platform',
         render: () => (
           <div className="w-full max-w-lg bg-white rounded-2xl p-6 shadow-2xl animate-in fade-in slide-in-from-bottom-10">
             <h4 className="text-xl font-bold text-[#292524] mb-4">Register as Partner</h4>
@@ -589,7 +589,7 @@ export const TourSlide = ({ journey, step, setJourney }: { journey: 'select' | '
                   <ShieldCheck size={32}/>
                 </div>
                 <h4 className="text-xl font-bold text-[#292524] mb-2">Payment Successful!</h4>
-                <p className="text-sm text-[#78716C]">Your gym is now live on the AI GYM platform.</p>
+                <p className="text-sm text-[#78716C]">Your gym is now live on the Gymora platform.</p>
               </div>
             </div>
             

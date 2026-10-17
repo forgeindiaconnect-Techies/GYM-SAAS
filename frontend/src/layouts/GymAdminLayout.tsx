@@ -241,7 +241,7 @@ const GymAdminLayout = () => {
     b.email?.toLowerCase() === user?.email?.toLowerCase()
   );
   const currentBranchName = activeBranch?.branchName || user?.branchName;
-  const sidebarBrandTitle = isBranchUser ? (currentBranchName || 'Branch Dashboard') : (gym?.name || 'AI GYM');
+  const sidebarBrandTitle = isBranchUser ? (currentBranchName || 'Branch Dashboard') : (gym?.name || 'Gymora');
   const roleSubtitle = isBranchUser ? 'Branch Admin' : 'Gym Owner';
 
   return (

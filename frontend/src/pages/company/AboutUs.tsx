@@ -10,7 +10,7 @@ const AboutUs = () => {
             <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+            <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
           </Link>
           <Link to="/" className="text-sm font-medium text-[#78716C] hover:text-[#F97316] flex items-center space-x-2">
             <ArrowLeft size={16} /> <span>Back to Home</span>
@@ -20,13 +20,13 @@ const AboutUs = () => {
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <span className="text-[#F97316] text-sm font-bold uppercase tracking-wider mb-4 block">Our Story</span>
-        <h1 className="text-4xl md:text-5xl font-bold mb-8">About AI GYM</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-8">About Gymora</h1>
         <div className="space-y-6 text-[#78716C] text-lg leading-relaxed">
           <p>
-            Welcome to AI GYM, where the future of fitness meets human expertise. Founded in 2026, our mission is to democratize elite-level fitness coaching by combining cutting-edge artificial intelligence with the personalized touch of human trainers.
+            Welcome to Gymora, where the future of fitness meets human expertise. Founded in 2026, our mission is to democratize elite-level fitness coaching by combining cutting-edge artificial intelligence with the personalized touch of human trainers.
           </p>
           <p>
-            We realized that most gym-goers struggle with consistency, nutrition, and programming because hiring a full-time personal trainer is expensive, and generic workout plans rarely work. That's why we built the AI GYM ecosystem.
+            We realized that most gym-goers struggle with consistency, nutrition, and programming because hiring a full-time personal trainer is expensive, and generic workout plans rarely work. That's why we built the Gymora ecosystem.
           </p>
           <p>
             Our proprietary AI analyzes your body type, goals, schedule, and progress to generate dynamic workout and meal plans that evolve with you. But we didn't stop there. We built a platform that connects you with human professionals and top-tier local gyms, creating a seamless, all-in-one fitness experience.

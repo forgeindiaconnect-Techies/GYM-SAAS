@@ -186,7 +186,7 @@ const GymOwnerSubscriptionPage = () => {
             <div className="w-10 h-10 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
               <Activity className="text-white" size={22} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+            <span className="text-2xl font-bold tracking-tight text-[#F97316]">Gymora</span>
           </Link>
           <div className="flex items-center space-x-4">
             <span className="text-[#78716C] text-sm">Welcome, <strong className="text-[#292524]">{user?.firstName}</strong></span>
@@ -220,7 +220,7 @@ const GymOwnerSubscriptionPage = () => {
             <Sparkles size={12} /> Choose Your Plan
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-[#292524] mb-4 tracking-tight">
-            Power Your Gym with <span className="text-[#F97316]">AI GYM</span>
+            Power Your Gym with <span className="text-[#F97316]">Gymora</span>
           </h1>
           <p className="text-[#78716C] max-w-2xl mx-auto text-lg mb-8">
             Your gym registration is approved! Select a subscription plan to access the Gym Dashboard and start managing your gym with AI.

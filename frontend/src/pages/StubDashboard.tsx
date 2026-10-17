@@ -7,7 +7,7 @@ const stub = (role: string) => () => {
       <nav className="bg-[#FFFFFF] border-b border-[#E7E5E4] px-6 h-16 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-7 h-7 bg-[#F97316] rounded-sm flex items-center justify-center"><Activity className="text-black" size={16} /></div>
-          <span className="font-bold text-[#F97316]">AI GYM</span>
+          <span className="font-bold text-[#F97316]">Gymora</span>
           <span className="text-[#555] text-sm ml-2">/ {role}</span>
         </div>
         <div className="flex items-center space-x-4">

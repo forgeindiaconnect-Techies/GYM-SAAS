@@ -1,7 +1,7 @@
 {
-  "name": "ai-gym-platform",
+  "name": "Gymora-platform",
   "version": "1.0.0",
-  "description": "AI GYM - AI-Powered Fitness, Trainer & Gym Management SaaS",
+  "description": "Gymora - AI-Powered Fitness, Trainer & Gym Management SaaS",
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",

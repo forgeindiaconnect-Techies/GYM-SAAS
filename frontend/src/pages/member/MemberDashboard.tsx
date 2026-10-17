@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import {
   Bot, Dumbbell, TrendingUp, Calendar, MapPin, AlertCircle,
   Loader2, Play, Sparkles, Clock, Flame, User,
-  ArrowRight, ShieldCheck, Activity, Award
+  ArrowRight, ShieldCheck, Activity, Award, Utensils
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../../utils/api';
@@ -93,7 +93,8 @@ const MemberDashboard = () => {
   const quickLinks = [
     { icon: Bot, label: 'AI Coach', desc: 'Chat with your AI trainer', path: '/member/ai-assistant', color: 'text-[#F97316] bg-[#F97316]/10 border-[#F97316]' },
     { icon: Dumbbell, label: 'Today\'s Workout', desc: 'Interactive exercise tracker', path: '/member/workout', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-    { icon: TrendingUp, label: 'My Progress', desc: 'View body & lifting metrics', path: '/member/progress', color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+    { icon: Utensils, label: 'My Diet Plan', desc: 'Track daily meals & macros', path: '/member/diet', color: 'text-teal-600 bg-teal-50 border-teal-200' },
+    { icon: TrendingUp, label: 'My Progress', desc: 'View workout & diet logs', path: '/member/progress', color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
     { icon: Calendar, label: 'Book Session', desc: '1-on-1 Trainer coaching', path: '/member/bookings', color: 'text-amber-600 bg-amber-50 border-amber-200' },
   ];
 
@@ -135,7 +136,7 @@ const MemberDashboard = () => {
             <div>
               <p className="text-[10px] text-[#78716C] font-bold uppercase tracking-wider mb-0.5">Active Gym</p>
               <p className="font-bold text-sm text-[#292524] leading-tight">
-                {activeMembership?.gymId?.name || user?.gymName || 'AI GYM Network'}
+                {activeMembership?.gymId?.name || user?.gymName || 'Gymora Network'}
               </p>
             </div>
           </div>
@@ -233,7 +234,7 @@ const MemberDashboard = () => {
           </div>
 
           {/* Quick Links Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {quickLinks.map((item, i) => (
               <Link key={i} to={item.path} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-4 flex items-center space-x-3.5 shadow-sm hover:shadow-md transition-shadow group">
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${item.color}`}>
@@ -304,6 +305,12 @@ const MemberDashboard = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <Link
+                      to="/member/diet"
+                      className="flex-1 sm:flex-none px-4 py-2.5 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <Utensils size={13} className="text-[#F97316]" /> Diet Plan
+                    </Link>
                     <Link
                       to="/member/workout"
                       className="flex-1 sm:flex-none px-5 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"

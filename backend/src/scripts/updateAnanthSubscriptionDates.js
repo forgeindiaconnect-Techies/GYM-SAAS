@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 async function run() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/ai-gym');
+  await mongoose.connect('mongodb://127.0.0.1:27017/Gymora');
   const now = new Date('2026-09-29T15:00:00+05:30');
   const nextMonth = new Date('2026-10-29T15:00:00+05:30');
   

@@ -397,7 +397,7 @@ const GymOwnerRegisterPage = () => {
         <div className="w-9 h-9 bg-[#F97316] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+        <span className="text-2xl font-bold tracking-tight text-[#F97316]">Gymora</span>
       </Link>
 
       <div className="w-full max-w-3xl bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[85vh]">

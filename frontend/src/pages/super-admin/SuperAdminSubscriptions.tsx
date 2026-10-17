@@ -15,7 +15,7 @@ const SAAS_PLANS = [
   {
     key: 'FREE_TRIAL',
     name: 'Free Trial',
-    tagline: 'Try AI GYM risk-free',
+    tagline: 'Try Gymora risk-free',
     badge: '1 DAY',
     icon: Zap,
     iconColor: 'text-[#EA580C]',
@@ -461,7 +461,7 @@ const SubscriptionInvoiceModal = ({
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
-    doc.text('AI GYM SAAS PLATFORM — TAX INVOICE', 14, 16);
+    doc.text('Gymora SAAS PLATFORM — TAX INVOICE', 14, 16);
 
     // Invoice Meta Header
     doc.setTextColor(41, 37, 36);
@@ -478,7 +478,7 @@ const SubscriptionInvoiceModal = ({
     // Platform Info (Right Side)
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(41, 37, 36);
-    doc.text('Issuer: AI Gym SaaS Headquarters', 130, 34);
+    doc.text('Issuer: Gymora SaaS Headquarters', 130, 34);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(120, 113, 108);
     doc.text('Cloud Gym Management Platform', 130, 40);
@@ -493,7 +493,7 @@ const SubscriptionInvoiceModal = ({
     doc.text('BILLED TO (GYM SUBSCRIBER):', 18, 63);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(41, 37, 36);
-    doc.text(`${invoice.gymName || 'AI Gym'} — ${invoice.owner || 'Gym Owner'}`, 18, 70);
+    doc.text(`${invoice.gymName || 'Gymora'} — ${invoice.owner || 'Gym Owner'}`, 18, 70);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(120, 113, 108);
     doc.text(`Payment Method: ${invoice.paymentMethod || 'UPI / Online'} | Renewal: ${renewalDate}`, 18, 75);
@@ -504,7 +504,7 @@ const SubscriptionInvoiceModal = ({
       head: [['Item & Plan Description', 'Billing Cycle', 'Taxable Value', 'GST (18%)', 'Total (INR)']],
       body: [
         [
-          `AI GYM Software SaaS License — ${invoice.plan} Plan\n(Access to Gym ERP, Member App, AI Trainer & Analytics)`,
+          `Gymora Software SaaS License — ${invoice.plan} Plan\n(Access to Gym ERP, Member App, AI Trainer & Analytics)`,
           invoice.billing || 'monthly',
           `Rs. ${baseAmount.toLocaleString('en-IN')}`,
           `Rs. ${totalGst.toLocaleString('en-IN')}`,
@@ -524,7 +524,7 @@ const SubscriptionInvoiceModal = ({
     doc.setFontSize(8);
     doc.setTextColor(150, 150, 150);
     doc.text('This is a computer-generated tax invoice. No physical signature required.', 14, finalY + 12);
-    doc.text('Thank you for choosing AI GYM SaaS to power your fitness business!', 14, finalY + 17);
+    doc.text('Thank you for choosing Gymora SaaS to power your fitness business!', 14, finalY + 17);
 
     doc.save(`${invoiceNumber}_${(invoice.gymName || 'Gym').replace(/\s+/g, '_')}.pdf`);
   };
@@ -583,7 +583,7 @@ const SubscriptionInvoiceModal = ({
             {/* Issuer */}
             <div className="space-y-1">
               <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Issued By:</span>
-              <strong className="text-sm font-extrabold text-stone-900 block">AI GYM SaaS Platform Inc.</strong>
+              <strong className="text-sm font-extrabold text-stone-900 block">Gymora SaaS Platform Inc.</strong>
               <p className="text-stone-600">Enterprise Cloud Fitness Software</p>
               <p className="text-stone-500">Email: billing@aigym.platform</p>
               <p className="text-stone-500 font-mono text-[11px]">GSTIN: 33AAACG0123M1Z9</p>
@@ -630,7 +630,7 @@ const SubscriptionInvoiceModal = ({
               <tbody className="divide-y divide-stone-100">
                 <tr>
                   <td className="px-4 py-3.5">
-                    <strong className="text-stone-900 block">AI GYM SaaS — {invoice.plan} Plan</strong>
+                    <strong className="text-stone-900 block">Gymora SaaS — {invoice.plan} Plan</strong>
                     <span className="text-stone-500 text-[11px]">Gym ERP, Member & Trainer Management, AI Workout/Diet, Analytics</span>
                   </td>
                   <td className="px-4 py-3.5 text-center capitalize text-stone-600">{invoice.billing || 'monthly'}</td>

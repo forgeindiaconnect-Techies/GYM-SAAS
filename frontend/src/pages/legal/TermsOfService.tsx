@@ -24,7 +24,7 @@ const TermsOfService = () => {
             <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+            <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
           </Link>
           <button onClick={handleBack} className="text-sm font-medium text-[#78716C] hover:text-[#F97316] flex items-center space-x-2">
             <ArrowLeft size={16} /> <span>Back</span>
@@ -40,21 +40,21 @@ const TermsOfService = () => {
           <section>
             <h2 className="text-2xl font-semibold text-[#292524] mb-4">1. Agreement to Terms</h2>
             <p>
-              By accessing or using AI GYM, you agree to be bound by these Terms. If you disagree with any part of the terms, then you may not access the Service.
+              By accessing or using Gymora, you agree to be bound by these Terms. If you disagree with any part of the terms, then you may not access the Service.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold text-[#292524] mb-4">2. Intellectual Property</h2>
             <p>
-              The Service and its original content, features, and functionality are and will remain the exclusive property of AI GYM and its licensors. Our AI-generated plans are for personal use only and may not be distributed commercially.
+              The Service and its original content, features, and functionality are and will remain the exclusive property of Gymora and its licensors. Our AI-generated plans are for personal use only and may not be distributed commercially.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold text-[#292524] mb-4">3. Medical Disclaimer</h2>
             <p>
-              AI GYM provides fitness and nutritional information for educational purposes only. You should not rely on this information as a substitute for, nor does it replace, professional medical advice, diagnosis, or treatment. If you have any concerns or questions about your health, you should always consult with a physician or other health-care professional.
+              Gymora provides fitness and nutritional information for educational purposes only. You should not rely on this information as a substitute for, nor does it replace, professional medical advice, diagnosis, or treatment. If you have any concerns or questions about your health, you should always consult with a physician or other health-care professional.
             </p>
           </section>
 

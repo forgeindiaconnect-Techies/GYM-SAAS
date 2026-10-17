@@ -487,9 +487,10 @@ const TrainerDashboard = () => {
                   </h3>
                   <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                     {recentCompletedExercises.slice(0, 8).map((log: any) => {
-                      const clientName = log.customerId 
+                      const clientName = log.customerName || (log.customerId 
                         ? `${log.customerId.firstName || ''} ${log.customerId.lastName || ''}`.trim() || 'Client'
-                        : 'Client';
+                        : 'Client');
+                      const exTitle = log.exerciseName || log.exerciseId?.name || 'Exercise';
                       return (
                         <div
                           key={log._id}
@@ -497,8 +498,8 @@ const TrainerDashboard = () => {
                         >
                           <div className="flex items-center gap-3.5">
                             <div className="w-10 h-10 rounded-full bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
-                              {log.customerId?.profilePhoto ? (
-                                <img src={log.customerId.profilePhoto} alt="client" className="w-full h-full object-cover" />
+                              {log.profilePhoto || log.customerId?.profilePhoto ? (
+                                <img src={log.profilePhoto || log.customerId?.profilePhoto} alt="client" className="w-full h-full object-cover" />
                               ) : (
                                 clientName[0] || 'C'
                               )}
@@ -513,7 +514,7 @@ const TrainerDashboard = () => {
                                 </span>
                               </div>
                               <h4 className="font-bold text-sm text-[#F97316] mt-0.5">
-                                {log.exerciseId?.name || 'Exercise'}
+                                {exTitle}
                               </h4>
                               <p className="text-[11px] text-[#78716C] mt-0.5">
                                 {log.dayName && log.dayName !== 'General' ? `${log.dayName} • ` : ''}

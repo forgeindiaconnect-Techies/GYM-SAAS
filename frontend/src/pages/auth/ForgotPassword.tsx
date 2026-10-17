@@ -98,7 +98,7 @@ const ForgotPassword = () => {
         <div className="w-9 h-9 bg-[#F97316] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+        <span className="text-2xl font-bold tracking-tight text-[#F97316]">Gymora</span>
       </Link>
 
       <div className="w-full max-w-md bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-8 shadow-2xl relative z-10">
@@ -244,7 +244,7 @@ const ForgotPassword = () => {
         )}
       </div>
 
-      <p className="mt-8 text-xs text-[#555] relative z-10">&copy; {new Date().getFullYear()} AI GYM Technologies. All rights reserved.</p>
+      <p className="mt-8 text-xs text-[#555] relative z-10">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
     </div>
   );
 };

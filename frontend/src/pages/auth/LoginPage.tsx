@@ -113,12 +113,12 @@ const LoginPage = () => {
         <div className="w-9 h-9 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
           <Activity className="text-[#292524]" size={20} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+        <span className="text-2xl font-bold tracking-tight text-[#F97316]">Gymora</span>
       </Link>
 
       <div className="w-full max-w-md bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-8 shadow-2xl">
         <h1 className="text-2xl font-bold text-[#292524] mb-1">Welcome back</h1>
-        <p className="text-[#78716C] text-sm mb-8">Log in to your AI GYM account</p>
+        <p className="text-[#78716C] text-sm mb-8">Log in to your Gymora account</p>
 
         {error && (
           <div className="flex items-center space-x-3 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-6 text-sm">
@@ -198,7 +198,7 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <p className="mt-8 text-xs text-[#78716C]">&copy; {new Date().getFullYear()} AI GYM Technologies. All rights reserved.</p>
+      <p className="mt-8 text-xs text-[#78716C]">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
     </div>
   );
 };

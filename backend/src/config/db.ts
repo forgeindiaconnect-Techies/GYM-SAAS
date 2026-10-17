@@ -17,7 +17,7 @@ dotenv.config();
 dotenv.config({ path: path.join(__dirname, '../.env') });
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
-const FALLBACK_MONGO_URI = 'mongodb+srv://forgeindiaconnectfic_db_user:Renugopal@cluster0.tnlxx1f.mongodb.net/ai-gym?retryWrites=true&w=majority&appName=Cluster0';
+const FALLBACK_MONGO_URI = 'mongodb+srv://forgeindiaconnectfic_db_user:Renugopal@cluster0.tnlxx1f.mongodb.net/Gymora?retryWrites=true&w=majority&appName=Cluster0';
 
 // Helper to check if a port is open
 const isPortOpen = (port: number, host = '127.0.0.1', timeout = 1500): Promise<boolean> => {

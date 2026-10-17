@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, AlertCircle, Phone, Mail, Building2, Eye, Edit2, X, Check, Users, Clock, CheckCircle, XCircle, ShieldAlert, Trash2, Download, FileText, Table as TableIcon, Star, Plus, MapPin, CreditCard } from 'lucide-react';
+import { Search, Loader2, AlertCircle, Phone, Mail, Building2, Eye, Edit2, X, Check, Users, Clock, CheckCircle, XCircle, ShieldAlert, Trash2, Download, FileText, Table as TableIcon, Star, Plus, MapPin, CreditCard, Dumbbell, Zap, Crown, Leaf, TrendingUp, Cpu, Activity, Target } from 'lucide-react';
 import api from '../../utils/api';
 import { exportToPDF, exportToExcel, exportToWord } from '../../utils/export';
+
+const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = {
+  'Weight Loss':       { icon: Target,    accent: '#EF4444', bg: 'rgba(239,68,68,0.1)'   },
+  'Muscle Gain':       { icon: Dumbbell,  accent: '#F97316', bg: 'rgba(249,115,22,0.1)'  },
+  'Strength':          { icon: Zap,       accent: '#6366F1', bg: 'rgba(99,102,241,0.1)'  },
+  'General Fitness':   { icon: Activity,  accent: '#22C55E', bg: 'rgba(34,197,94,0.1)'   },
+  'Bodybuilding':      { icon: Crown,     accent: '#EA580C', bg: 'rgba(234,88,12,0.12)'  },
+  'Yoga':              { icon: Leaf,      accent: '#10B981', bg: 'rgba(16,185,129,0.1)'  },
+  'CrossFit':          { icon: TrendingUp,accent: '#F59E0B', bg: 'rgba(245,158,11,0.1)'  },
+  'Personal Training': { icon: Users,     accent: '#8B5CF6', bg: 'rgba(139,92,246,0.1)'  },
+  'Online Coaching':   { icon: Cpu,       accent: '#0EA5E9', bg: 'rgba(14,165,233,0.1)'  },
+};
 
 interface GymOwner {
   _id: string;
@@ -190,6 +202,25 @@ const SuperAdminGymOwners = () => {
   const [newServiceInput, setNewServiceInput] = useState('');
   const [newFacilityInput, setNewFacilityInput] = useState('');
   const [newImageInput, setNewImageInput] = useState('');
+
+  // Gym Package Plans state (replacing subscription plans in gym edit modal)
+  const [ownerPackages, setOwnerPackages] = useState<any[]>([]);
+  const [loadingPackages, setLoadingPackages] = useState(false);
+  const [packageModalOpen, setPackageModalOpen] = useState(false);
+  const [editingPackage, setEditingPackage] = useState<any | null>(null);
+  const [packageForm, setPackageForm] = useState<any>({
+    name: '',
+    fitnessGoal: 'Strength',
+    description: '',
+    features: [''],
+    trainingType: 'Offline',
+    duration: '1 Month',
+    monthlyPrice: '',
+    annualPrice: '',
+    availablePlans: 'both',
+    isPopular: false,
+    status: 'Active'
+  });
 
   useEffect(() => {
     fetchOwners();
@@ -399,6 +430,139 @@ const SuperAdminGymOwners = () => {
     });
   };
 
+  const fetchOwnerPackages = async (gymId: string) => {
+    try {
+      setLoadingPackages(true);
+      const res = await api.get('/gym-packages', { params: { gymId } });
+      if (res.data?.success && Array.isArray(res.data.packages)) {
+        setOwnerPackages(res.data.packages);
+      } else {
+        const pubRes = await api.get('/gym-packages/public', { params: { gymId } });
+        if (pubRes.data?.success && Array.isArray(pubRes.data.packages)) {
+          setOwnerPackages(pubRes.data.packages);
+        } else {
+          setOwnerPackages([]);
+        }
+      }
+    } catch (err) {
+      try {
+        const pubRes = await api.get('/gym-packages/public', { params: { gymId } });
+        if (pubRes.data?.success && Array.isArray(pubRes.data.packages)) {
+          setOwnerPackages(pubRes.data.packages);
+        } else {
+          setOwnerPackages([]);
+        }
+      } catch (e) {
+        setOwnerPackages([]);
+      }
+    } finally {
+      setLoadingPackages(false);
+    }
+  };
+
+  const handleOpenAddPackage = () => {
+    setEditingPackage(null);
+    setPackageForm({
+      name: '',
+      fitnessGoal: 'Strength',
+      description: '',
+      features: [''],
+      trainingType: 'Offline',
+      duration: '1 Month',
+      monthlyPrice: '',
+      annualPrice: '',
+      availablePlans: 'both',
+      isPopular: false,
+      status: 'Active'
+    });
+    setPackageModalOpen(true);
+  };
+
+  const handleOpenEditPackage = (pkg: any) => {
+    setEditingPackage(pkg);
+    setPackageForm({
+      name: pkg.name || '',
+      fitnessGoal: pkg.fitnessGoal || 'Strength',
+      description: pkg.description || '',
+      features: (pkg.features && pkg.features.length > 0) ? [...pkg.features] : [''],
+      trainingType: pkg.trainingType || 'Offline',
+      duration: pkg.duration || '1 Month',
+      monthlyPrice: pkg.monthlyPrice ?? '',
+      annualPrice: pkg.annualPrice ?? '',
+      availablePlans: pkg.availablePlans || 'both',
+      isPopular: !!pkg.isPopular,
+      status: pkg.status || 'Active'
+    });
+    setPackageModalOpen(true);
+  };
+
+  const handleSavePackage = async () => {
+    const gymId = editOwner?.gymId?._id || editOwner?.gymId;
+    if (!gymId) {
+      alert('This gym owner does not have an associated gym profile yet.');
+      return;
+    }
+
+    if (!packageForm.name.trim()) {
+      alert('Package name is required.');
+      return;
+    }
+    if (packageForm.monthlyPrice === '' || isNaN(Number(packageForm.monthlyPrice))) {
+      alert('Valid monthly price is required.');
+      return;
+    }
+
+    try {
+      const payload = {
+        gymId: String(gymId),
+        name: packageForm.name.trim(),
+        fitnessGoal: packageForm.fitnessGoal,
+        description: packageForm.description.trim(),
+        features: packageForm.features.filter((f: string) => f.trim()),
+        trainingType: packageForm.trainingType,
+        duration: packageForm.duration,
+        monthlyPrice: Number(packageForm.monthlyPrice),
+        annualPrice: Number(packageForm.annualPrice) || 0,
+        availablePlans: packageForm.availablePlans,
+        isPopular: packageForm.isPopular,
+        status: packageForm.status
+      };
+
+      if (editingPackage?._id) {
+        await api.put(`/gym-packages/${editingPackage._id}`, payload);
+      } else {
+        await api.post('/gym-packages', payload);
+      }
+
+      setPackageModalOpen(false);
+      await fetchOwnerPackages(String(gymId));
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to save package plan');
+    }
+  };
+
+  const handleTogglePackageStatus = async (pkg: any) => {
+    try {
+      const newStatus = pkg.status === 'Active' ? 'Inactive' : 'Active';
+      await api.patch(`/gym-packages/${pkg._id}/status`, { status: newStatus });
+      const gymId = editOwner?.gymId?._id || editOwner?.gymId;
+      if (gymId) await fetchOwnerPackages(String(gymId));
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to update package status');
+    }
+  };
+
+  const handleDeletePackage = async (pkg: any) => {
+    if (!window.confirm(`Delete package "${pkg.name}"? This action cannot be undone.`)) return;
+    try {
+      await api.delete(`/gym-packages/${pkg._id}`);
+      const gymId = editOwner?.gymId?._id || editOwner?.gymId;
+      if (gymId) await fetchOwnerPackages(String(gymId));
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to delete package plan');
+    }
+  };
+
   const handlePlanChange = (index: number, field: string, value: any) => {
     const current = [...(editForm.gymData?.subscriptionPlans || [])];
     current[index] = { ...current[index], [field]: value };
@@ -439,6 +603,13 @@ const SuperAdminGymOwners = () => {
     setNewServiceInput('');
     setNewFacilityInput('');
     setNewImageInput('');
+
+    const gymId = owner.gymId?._id || owner.gymId;
+    if (gymId) {
+      fetchOwnerPackages(String(gymId));
+    } else {
+      setOwnerPackages([]);
+    }
     setEditForm({
       firstName: owner.firstName || '',
       lastName: owner.lastName || '',
@@ -792,8 +963,13 @@ const SuperAdminGymOwners = () => {
                         {/* View, Edit, Delete buttons */}
                         <div className="flex items-center gap-1">
                           <button 
-                            onClick={() => setViewOwner(owner)}
-                            className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors" title="View Details"
+                            onClick={() => {
+                              setViewOwner(owner);
+                              const gymId = owner.gymId?._id || owner.gymId;
+                              if (gymId) fetchOwnerPackages(String(gymId));
+                              else setOwnerPackages([]);
+                            }}
+                            className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer" title="View Details"
                           >
                             <Eye size={16} />
                           </button>
@@ -1135,41 +1311,74 @@ const SuperAdminGymOwners = () => {
                 )}
               </div>
 
-              {/* Member Subscription Plans */}
+              {/* Package Plans */}
               <div className="bg-[#F8FAF9] border border-[#E7E5E4] rounded-xl p-5">
                 <div className="flex items-center justify-between mb-4 border-b border-[#E7E5E4] pb-2">
-                  <h3 className="text-[#F97316] font-semibold">Member Subscription Plans</h3>
-                  {viewOwner.gymId?.subscriptionPlans && viewOwner.gymId.subscriptionPlans.length > 0 && (
+                  <h3 className="text-[#F97316] font-semibold flex items-center gap-2">
+                    <CreditCard size={18} />
+                    <span>Package Plans</span>
+                  </h3>
+                  {ownerPackages && ownerPackages.length > 0 && (
                     <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#F97316]/10 text-[#F97316]">
-                      {viewOwner.gymId.subscriptionPlans.length} {viewOwner.gymId.subscriptionPlans.length === 1 ? 'Plan' : 'Plans'}
+                      {ownerPackages.length} {ownerPackages.length === 1 ? 'Plan' : 'Plans'}
                     </span>
                   )}
                 </div>
-                {viewOwner.gymId?.subscriptionPlans && viewOwner.gymId.subscriptionPlans.length > 0 ? (
+                {ownerPackages && ownerPackages.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {viewOwner.gymId.subscriptionPlans.map((plan: any, idx: number) => (
-                      <div key={idx} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 flex flex-col justify-between shadow-sm hover:border-[#F97316]/40 transition-colors">
-                        <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-bold text-[#292524] text-base">{plan.name}</h4>
-                            <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-md font-bold text-sm">
-                              {Number(plan.price) === 0 ? 'FREE' : `₹${plan.price}`}
-                            </span>
+                    {ownerPackages.map((pkg: any) => {
+                      const badge = BADGE_CONFIG[pkg.fitnessGoal] || BADGE_CONFIG['General Fitness'] || { icon: Dumbbell, accent: '#F97316', bg: 'rgba(249,115,22,0.1)' };
+                      const Icon = badge.icon;
+                      return (
+                        <div key={pkg._id} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 flex flex-col justify-between shadow-xs">
+                          <div>
+                            <div className="flex items-center justify-between gap-2 mb-2">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: badge.bg }}>
+                                  <Icon size={16} style={{ color: badge.accent }} />
+                                </div>
+                                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ color: badge.accent, backgroundColor: badge.bg }}>
+                                  {pkg.fitnessGoal || 'General Fitness'}
+                                </span>
+                              </div>
+                              {pkg.isPopular && (
+                                <span className="text-[9px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-full uppercase">
+                                  Popular
+                                </span>
+                              )}
+                            </div>
+                            <h4 className="font-bold text-[#292524] text-sm mb-1">{pkg.name}</h4>
+                            <div className="flex items-baseline mb-2">
+                              <span className="text-xl font-extrabold text-[#292524]">₹{pkg.monthlyPrice}</span>
+                              <span className="text-xs text-[#78716C] ml-1">/ month</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 mb-2.5">
+                              <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-700 text-[10px] font-bold">
+                                {pkg.trainingType || 'Offline'}
+                              </span>
+                              <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-700 text-[10px] font-bold">
+                                {pkg.duration || '1 Month'}
+                              </span>
+                            </div>
+                            {pkg.features && pkg.features.length > 0 && (
+                              <div className="mt-2 pt-2 border-t border-[#E7E5E4]">
+                                <ul className="space-y-1">
+                                  {pkg.features.slice(0, 3).map((f: string, i: number) => (
+                                    <li key={i} className="text-[11px] text-[#78716C] flex items-center gap-1.5">
+                                      <Check size={11} className="text-emerald-500 shrink-0" strokeWidth={3} />
+                                      <span className="line-clamp-1">{f}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
                           </div>
-                          <p className="text-xs font-semibold text-[#F97316] bg-[#F97316]/5 px-2 py-1 rounded inline-block mb-3">
-                            ⏱ {plan.duration}
-                          </p>
                         </div>
-                        {plan.features && (
-                          <div className="mt-2 pt-2 border-t border-[#FED7AA]">
-                            <p className="text-xs text-[#78716C] leading-relaxed whitespace-pre-wrap">{plan.features}</p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
-                  <p className="text-sm text-[#78716C]">No subscription plans defined for this gym.</p>
+                  <p className="text-sm text-[#78716C]">No package plans configured for this gym.</p>
                 )}
               </div>
 
@@ -1854,91 +2063,149 @@ const SuperAdminGymOwners = () => {
                 </div>
               </div>
 
-              {/* Member Subscription Plans */}
+              {/* Package Plans */}
               <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-4 border-b border-[#E7E5E4] pb-2">
                   <div>
-                    <h3 className="text-[#F97316] font-semibold text-base">Member Subscription Plans</h3>
-                    <p className="text-xs text-[#78716C]">Configure plans offered to gym members.</p>
+                    <h3 className="text-[#F97316] font-semibold text-base flex items-center gap-2">
+                      <CreditCard size={18} />
+                      <span>Package Plans</span>
+                      <span className="text-xs bg-orange-100 text-[#EA580C] px-2 py-0.5 rounded-full font-bold">
+                        {ownerPackages.length} Plans
+                      </span>
+                    </h3>
+                    <p className="text-xs text-[#78716C]">Membership package plans offered to gym members for enrollment.</p>
                   </div>
                   <button
                     type="button"
-                    onClick={handleAddPlan}
-                    className="px-3 py-1.5 bg-[#F97316] text-white rounded-lg hover:bg-[#F97316]/90 text-xs font-semibold flex items-center gap-1.5 shadow-sm"
+                    onClick={handleOpenAddPackage}
+                    className="px-3.5 py-1.5 bg-[#F97316] text-white rounded-lg hover:bg-[#EA580C] text-xs font-semibold flex items-center gap-1.5 shadow-sm cursor-pointer"
                   >
-                    <Plus size={14} /> Add Plan
+                    <Plus size={14} /> Add Package Plan
                   </button>
                 </div>
 
-                {editForm.gymData?.subscriptionPlans && editForm.gymData.subscriptionPlans.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {editForm.gymData.subscriptionPlans.map((plan: any, idx: number) => (
-                      <div key={idx} className="bg-[#F8FAF9] border border-[#E7E5E4] rounded-xl p-4 relative flex flex-col justify-between">
-                        <button
-                          type="button"
-                          onClick={() => handleDeletePlan(idx)}
-                          className="absolute top-3 right-3 text-red-500 hover:text-red-700 p-1 rounded-md hover:bg-red-50 transition-colors"
-                          title="Delete Plan"
-                        >
-                          <Trash2 size={15} />
-                        </button>
-                        <div className="space-y-3">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#F97316] bg-[#F97316]/10 px-2 py-0.5 rounded">
-                            Plan #{idx + 1}
-                          </span>
-                          <div>
-                            <label className="block text-[11px] font-semibold text-[#78716C] mb-1">Plan Name</label>
-                            <input
-                              value={plan.name || ''}
-                              onChange={e => handlePlanChange(idx, 'name', e.target.value)}
-                              placeholder="e.g. Gold"
-                              className="w-full bg-white border border-[#E7E5E4] text-[#292524] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#F97316]"
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <div>
-                              <label className="block text-[11px] font-semibold text-[#78716C] mb-1">Price (₹)</label>
-                              <input
-                                value={plan.price ?? ''}
-                                onChange={e => handlePlanChange(idx, 'price', e.target.value)}
-                                placeholder="e.g. 999"
-                                className="w-full bg-white border border-[#E7E5E4] text-[#292524] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#F97316]"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[11px] font-semibold text-[#78716C] mb-1">Duration</label>
-                              <input
-                                value={plan.duration || ''}
-                                onChange={e => handlePlanChange(idx, 'duration', e.target.value)}
-                                placeholder="e.g. 1 Month"
-                                className="w-full bg-white border border-[#E7E5E4] text-[#292524] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#F97316]"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label className="block text-[11px] font-semibold text-[#78716C] mb-1">Features Description</label>
-                            <textarea
-                              rows={3}
-                              value={plan.features || ''}
-                              onChange={e => handlePlanChange(idx, 'features', e.target.value)}
-                              placeholder="Enter plan features..."
-                              className="w-full bg-white border border-[#E7E5E4] text-[#292524] rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-[#F97316] resize-none"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                {loadingPackages ? (
+                  <div className="py-8 text-center text-stone-500">
+                    <Loader2 size={24} className="animate-spin mx-auto text-[#F97316] mb-2" />
+                    <p className="text-xs">Loading gym package plans...</p>
                   </div>
-                ) : (
-                  <div className="text-center py-6 border border-dashed border-[#E7E5E4] rounded-lg bg-[#F8FAF9]">
-                    <p className="text-xs text-[#78716C] mb-2">No subscription plans configured yet.</p>
+                ) : ownerPackages.length === 0 ? (
+                  <div className="text-center py-8 border border-dashed border-[#E7E5E4] rounded-xl bg-[#F8FAF9]">
+                    <Dumbbell className="mx-auto text-stone-400 mb-2" size={32} />
+                    <p className="text-xs font-bold text-stone-700">No package plans configured yet</p>
+                    <p className="text-[11px] text-stone-500 mb-3">Add member enrollment package plans for this gym.</p>
                     <button
                       type="button"
-                      onClick={handleAddPlan}
-                      className="px-3 py-1.5 bg-[#F97316]/10 text-[#F97316] hover:bg-[#F97316]/20 text-xs font-semibold rounded-md border border-[#F97316]/30 inline-flex items-center gap-1"
+                      onClick={handleOpenAddPackage}
+                      className="px-3 py-1.5 bg-[#F97316]/10 text-[#F97316] hover:bg-[#F97316]/20 text-xs font-semibold rounded-lg border border-[#F97316]/30 inline-flex items-center gap-1 cursor-pointer"
                     >
-                      <Plus size={13} /> Add First Plan
+                      <Plus size={13} /> Add First Package Plan
                     </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+                    {ownerPackages.map((pkg) => {
+                      const badge = BADGE_CONFIG[pkg.fitnessGoal] || BADGE_CONFIG['General Fitness'] || { icon: Dumbbell, accent: '#F97316', bg: 'rgba(249,115,22,0.1)' };
+                      const Icon = badge.icon;
+                      return (
+                        <div
+                          key={pkg._id}
+                          className="h-full bg-white border border-[#E7E5E4] hover:border-orange-300 rounded-2xl p-4 shadow-xs flex flex-col justify-between"
+                        >
+                          <div className="flex-1 flex flex-col">
+                            {/* Card Header with category badge & popular tag */}
+                            <div className="flex items-center justify-between gap-2 mb-3">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: badge.bg }}>
+                                  <Icon size={16} style={{ color: badge.accent }} />
+                                </div>
+                                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ color: badge.accent, backgroundColor: badge.bg }}>
+                                  {pkg.fitnessGoal || 'General Fitness'}
+                                </span>
+                              </div>
+                              {pkg.isPopular && (
+                                <span className="text-[9px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-full uppercase">
+                                  Popular
+                                </span>
+                              )}
+                            </div>
+
+                            <h4 className="font-extrabold text-sm text-stone-900 mb-1 leading-snug">{pkg.name}</h4>
+                            {pkg.description ? (
+                              <p className="text-[11px] text-stone-500 line-clamp-2 mb-2 leading-relaxed">{pkg.description}</p>
+                            ) : (
+                              <div className="mb-2" />
+                            )}
+
+                            <div className="flex items-baseline mb-2">
+                              <span className="text-2xl font-black text-stone-900">₹{pkg.monthlyPrice}</span>
+                              <span className="text-[11px] text-stone-500 ml-1">/ month</span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 mb-3">
+                              <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-700 text-[10px] font-bold">
+                                {pkg.trainingType || 'Offline'}
+                              </span>
+                              <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-700 text-[10px] font-bold">
+                                {pkg.duration || '1 Month'}
+                              </span>
+                            </div>
+
+                            {/* Features List */}
+                            <div className="border-t border-stone-100 pt-2.5 mb-3 flex-1 flex flex-col">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-400 block mb-1.5">
+                                FEATURES INCLUDED:
+                              </span>
+                              <ul className="space-y-1 flex-1">
+                                {(pkg.features || []).slice(0, 3).map((f: string, i: number) => (
+                                  <li key={i} className="text-[11px] text-stone-600 flex items-start gap-1.5 leading-snug">
+                                    <Check size={11} className="text-emerald-500 shrink-0 mt-0.5" strokeWidth={3} />
+                                    <span className="line-clamp-1">{f}</span>
+                                  </li>
+                                ))}
+                                {(pkg.features || []).length > 3 && (
+                                  <li className="text-[10px] text-orange-600 font-bold">
+                                    +{pkg.features.length - 3} more features
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+                          </div>
+
+                          {/* Actions footer */}
+                          <div className="pt-3 mt-auto border-t border-stone-100 flex items-center gap-2 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => handleTogglePackageStatus(pkg)}
+                              className={`flex-1 h-9 px-2 rounded-lg text-xs font-bold border transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap ${
+                                pkg.status === 'Active'
+                                  ? 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                                  : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                              }`}
+                            >
+                              {pkg.status === 'Active' ? 'Active' : 'Inactive'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditPackage(pkg)}
+                              className="flex-1 h-9 px-2 rounded-lg text-xs font-bold text-white transition-opacity hover:opacity-90 cursor-pointer whitespace-nowrap"
+                              style={{ backgroundColor: badge.accent }}
+                            >
+                              Edit Plan
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeletePackage(pkg)}
+                              className="h-9 px-2.5 rounded-lg text-rose-500 hover:bg-rose-50 border border-rose-200 transition-colors cursor-pointer shrink-0"
+                              title="Delete Plan"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -2103,6 +2370,211 @@ const SuperAdminGymOwners = () => {
                 )}
               </div>
               
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add / Edit Package Plan Modal */}
+      {packageModalOpen && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-xl rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E7E5E4] my-auto">
+            <div className="flex justify-between items-center mb-5 pb-3 border-b border-[#E7E5E4]">
+              <div>
+                <h3 className="text-xl font-bold text-stone-900">
+                  {editingPackage ? 'Edit Package Plan' : 'Add New Package Plan'}
+                </h3>
+                <p className="text-xs text-stone-500">
+                  Configure gym membership package plan for {editOwner?.gymId?.name || 'this gym'}.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPackageModalOpen(false)}
+                className="p-1.5 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-lg transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-4 max-h-[72vh] overflow-y-auto pr-1">
+              <div>
+                <label className="block text-xs font-bold text-stone-700 mb-1">Fitness Goal / Category *</label>
+                <select
+                  value={packageForm.fitnessGoal}
+                  onChange={e => setPackageForm({ ...packageForm, fitnessGoal: e.target.value })}
+                  className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-semibold text-stone-800 outline-none focus:border-[#F97316]"
+                >
+                  {Object.keys(BADGE_CONFIG).map(goal => (
+                    <option key={goal} value={goal}>{goal}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-stone-700 mb-1">Package Name *</label>
+                <input
+                  value={packageForm.name}
+                  onChange={e => setPackageForm({ ...packageForm, name: e.target.value })}
+                  placeholder="e.g. Strength Pro, Muscle Builder, Weight Loss Basic"
+                  className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-semibold text-stone-800 outline-none focus:border-[#F97316]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1">Training Type</label>
+                  <select
+                    value={packageForm.trainingType}
+                    onChange={e => setPackageForm({ ...packageForm, trainingType: e.target.value })}
+                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-semibold text-stone-800 outline-none focus:border-[#F97316]"
+                  >
+                    <option value="Offline">Offline</option>
+                    <option value="Online">Online</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1">Duration</label>
+                  <select
+                    value={packageForm.duration}
+                    onChange={e => setPackageForm({ ...packageForm, duration: e.target.value })}
+                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-semibold text-stone-800 outline-none focus:border-[#F97316]"
+                  >
+                    <option value="1 Month">1 Month</option>
+                    <option value="3 Months">3 Months</option>
+                    <option value="6 Months">6 Months</option>
+                    <option value="1 Year">1 Year</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1">Monthly Price (₹) *</label>
+                  <input
+                    type="number"
+                    value={packageForm.monthlyPrice}
+                    onChange={e => setPackageForm({ ...packageForm, monthlyPrice: e.target.value })}
+                    placeholder="e.g. 599"
+                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-semibold text-stone-800 outline-none focus:border-[#F97316]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1">Annual Price (₹)</label>
+                  <input
+                    type="number"
+                    value={packageForm.annualPrice}
+                    onChange={e => setPackageForm({ ...packageForm, annualPrice: e.target.value })}
+                    placeholder="e.g. 5999"
+                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-semibold text-stone-800 outline-none focus:border-[#F97316]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-stone-700 mb-1">Description (Optional)</label>
+                <textarea
+                  rows={2}
+                  value={packageForm.description}
+                  onChange={e => setPackageForm({ ...packageForm, description: e.target.value })}
+                  placeholder="Short description of this package..."
+                  className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-semibold text-stone-800 outline-none focus:border-[#F97316] resize-none"
+                />
+              </div>
+
+              {/* Features list */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-stone-700">Features Included</label>
+                  <button
+                    type="button"
+                    onClick={() => setPackageForm({ ...packageForm, features: [...packageForm.features, ''] })}
+                    className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus size={13} /> Add Feature
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {packageForm.features.map((feat: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <input
+                        value={feat}
+                        onChange={e => {
+                          const updated = [...packageForm.features];
+                          updated[idx] = e.target.value;
+                          setPackageForm({ ...packageForm, features: updated });
+                        }}
+                        placeholder={`Feature #${idx + 1}...`}
+                        className="flex-1 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-1.5 text-xs font-medium text-stone-800 outline-none focus:border-[#F97316]"
+                      />
+                      {packageForm.features.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = packageForm.features.filter((_: any, i: number) => i !== idx);
+                            setPackageForm({ ...packageForm, features: updated });
+                          }}
+                          className="p-1.5 text-stone-400 hover:text-red-500 rounded-lg hover:bg-red-50 cursor-pointer"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Toggles */}
+              <div className="flex items-center justify-between pt-2 border-t border-stone-100">
+                <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-stone-700">
+                  <input
+                    type="checkbox"
+                    checked={packageForm.isPopular}
+                    onChange={e => setPackageForm({ ...packageForm, isPopular: e.target.checked })}
+                    className="rounded text-[#F97316] focus:ring-[#F97316]"
+                  />
+                  <span>Mark as Popular Package</span>
+                </label>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-stone-500">Status:</span>
+                  <button
+                    type="button"
+                    onClick={() => setPackageForm({
+                      ...packageForm,
+                      status: packageForm.status === 'Active' ? 'Inactive' : 'Active'
+                    })}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                      packageForm.status === 'Active'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-stone-200 text-stone-700'
+                    }`}
+                  >
+                    {packageForm.status}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="mt-6 pt-4 border-t border-stone-200 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setPackageModalOpen(false)}
+                className="px-4 py-2 border border-stone-200 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSavePackage}
+                className="px-5 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
+              >
+                {editingPackage ? 'Update Package' : 'Create Package'}
+              </button>
             </div>
           </div>
         </div>

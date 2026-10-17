@@ -22,8 +22,9 @@ const MemberWorkoutPlan: React.FC = () => {
   const [activeDayIndex, setActiveDayIndex] = useState(getInitialDayIndex());
   const [activeSection, setActiveSection] = useState<'workout' | 'nutrition' | 'recovery' | 'coach-notes' | 'summary'>('workout');
 
-  // Completed exercise IDs in recent/current session
+  // Completed exercise IDs and logs in recent/current session
   const [completedExerciseIds, setCompletedExerciseIds] = useState<string[]>([]);
+  const [workoutLogs, setWorkoutLogs] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
 
   // Active Exercise Player state
@@ -63,9 +64,11 @@ const MemberWorkoutPlan: React.FC = () => {
       if (res.data.success) {
         setStats(res.data.stats);
         if (res.data.history) {
-          const completedIds = res.data.history
-            .filter((h: any) => h.status === 'Completed')
-            .map((h: any) => (h.exerciseId?._id || h.exerciseId)?.toString());
+          const completedLogs = res.data.history.filter((h: any) => h.status === 'Completed');
+          setWorkoutLogs(completedLogs);
+          const completedIds = completedLogs
+            .map((h: any) => (h.exerciseCustomId || h.exerciseId?._id || h.exerciseId)?.toString())
+            .filter(Boolean);
           setCompletedExerciseIds(completedIds);
         }
       }
@@ -439,6 +442,71 @@ const MemberWorkoutPlan: React.FC = () => {
                     </span>
                   </div>
 
+                  {/* Day Completion Summary Progress Bar */}
+                  {(() => {
+                    const currDayName = (currentDay?.dayName || '').toLowerCase().trim();
+                    const completedCountInDay = dayExercises.filter((item: any) => {
+                      const ex = item.exerciseId || {};
+                      const exId = ex._id?.toString();
+                      const exName = (ex.name || item.name || '').toLowerCase().trim();
+
+                      const matchLog = workoutLogs.find((h: any) => {
+                        const hId = (h.exerciseCustomId || h.exerciseId?._id || h.exerciseId)?.toString();
+                        const hName = (h.exerciseName || h.exerciseId?.name || '').toLowerCase().trim();
+                        const hDay = (h.dayName || '').toLowerCase().trim();
+                        const dayMatch = !hDay || hDay === 'general' || hDay.includes(currDayName) || currDayName.includes(hDay);
+                        const idMatch = (hId && exId && hId === exId) || (exId && completedExerciseIds.includes(exId));
+                        const nameMatch = hName && exName && (hName === exName || hName.includes(exName) || exName.includes(hName));
+                        return idMatch || (nameMatch && dayMatch);
+                      });
+
+                      return !!matchLog || (exId ? completedExerciseIds.includes(exId) : false);
+                    }).length;
+
+                    const pct = dayExercises.length > 0 ? Math.round((completedCountInDay / dayExercises.length) * 100) : 0;
+
+                    return dayExercises.length > 0 ? (
+                      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 ${
+                            completedCountInDay === dayExercises.length
+                              ? 'bg-emerald-500 text-white shadow-xs'
+                              : 'bg-orange-50 text-[#F97316] border border-orange-200'
+                          }`}>
+                            {completedCountInDay === dayExercises.length ? '✓' : `${completedCountInDay}/${dayExercises.length}`}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-extrabold text-[#292524]">
+                                {completedCountInDay === dayExercises.length
+                                  ? `All ${dayExercises.length} Exercises Completed for ${currentDay?.dayName}! 🎉`
+                                  : `${completedCountInDay} of ${dayExercises.length} Exercises Completed`}
+                              </span>
+                              <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                                completedCountInDay === dayExercises.length
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'bg-orange-100 text-orange-800'
+                              }`}>
+                                {pct}% Done
+                              </span>
+                            </div>
+                            <p className="text-xs text-[#78716C] mt-0.5">
+                              {completedCountInDay === dayExercises.length
+                                ? 'Awesome workout! Your completed routine is logged and synchronized with your trainer.'
+                                : 'Complete sets in the exercise player to track completion and sync with your coach.'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="w-full sm:w-36 bg-stone-100 rounded-full h-2.5 overflow-hidden border border-stone-200 shrink-0">
+                          <div
+                            className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+
                   {dayExercises.length === 0 ? (
                     <div className="p-8 text-center bg-white border border-dashed border-[#E7E5E4] rounded-3xl">
                       <p className="text-sm font-semibold text-[#78716C]">No exercises assigned for this session.</p>
@@ -446,7 +514,21 @@ const MemberWorkoutPlan: React.FC = () => {
                   ) : (
                     dayExercises.map((item: any, idx: number) => {
                       const ex = item.exerciseId || {};
-                      const isCompleted = completedExerciseIds.includes(ex._id?.toString());
+                      const exId = ex._id?.toString();
+                      const exName = (ex.name || item.name || '').toLowerCase().trim();
+                      const currDayName = (currentDay?.dayName || '').toLowerCase().trim();
+
+                      const matchLog = workoutLogs.find((h: any) => {
+                        const hId = (h.exerciseCustomId || h.exerciseId?._id || h.exerciseId)?.toString();
+                        const hName = (h.exerciseName || h.exerciseId?.name || '').toLowerCase().trim();
+                        const hDay = (h.dayName || '').toLowerCase().trim();
+                        const dayMatch = !hDay || hDay === 'general' || hDay.includes(currDayName) || currDayName.includes(hDay);
+                        const idMatch = (hId && exId && hId === exId) || (exId && completedExerciseIds.includes(exId));
+                        const nameMatch = hName && exName && (hName === exName || hName.includes(exName) || exName.includes(hName));
+                        return idMatch || (nameMatch && dayMatch);
+                      });
+
+                      const isCompleted = !!matchLog || (exId ? completedExerciseIds.includes(exId) : false);
                       const hasVideo = !!ex.videoUrl;
 
                       return (
@@ -473,6 +555,11 @@ const MemberWorkoutPlan: React.FC = () => {
                                   <h4 className="font-extrabold text-base text-[#292524]">
                                     {ex.name || 'Exercise'}
                                   </h4>
+                                  {isCompleted && (
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 inline-flex items-center gap-1 shadow-2xs">
+                                      <CheckCircle2 size={11} className="text-emerald-700" /> Completed
+                                    </span>
+                                  )}
                                   <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFFDF8] text-[#78716C]">
                                     {ex.category || 'Resistance'}
                                   </span>
@@ -500,6 +587,14 @@ const MemberWorkoutPlan: React.FC = () => {
                                   )}
                                 </div>
 
+                                {isCompleted && (
+                                  <div className="pt-0.5">
+                                    <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200/80 inline-flex items-center gap-1.5 shadow-2xs">
+                                      ✓ {matchLog?.completedSets || item.sets || 3} Sets Completed {matchLog?.duration ? `• ${Math.round(matchLog.duration)}s logged` : ''}
+                                    </span>
+                                  </div>
+                                )}
+
                                 {item.trainerNotes && (
                                   <p className="text-xs text-emerald-800 bg-emerald-50/80 border border-emerald-100 px-3 py-1 rounded-xl mt-1.5 font-medium">
                                     <strong>Coach Tip:</strong> {item.trainerNotes}
@@ -510,10 +605,14 @@ const MemberWorkoutPlan: React.FC = () => {
 
                             <button
                               onClick={() => handleLaunchPlayer(idx)}
-                              className="px-5 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer shrink-0 sm:self-center"
+                              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer shrink-0 sm:self-center ${
+                                isCompleted
+                                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
+                                  : 'bg-[#F97316] hover:bg-[#EA580C] text-white shadow-[#F97316]/20'
+                              }`}
                             >
-                              <Play size={14} className="fill-current" />
-                              <span>Watch Exercise</span>
+                              {isCompleted ? <CheckCircle2 size={14} /> : <Play size={14} className="fill-current" />}
+                              <span>{isCompleted ? 'Completed – Replay' : 'Watch Exercise'}</span>
                             </button>
                           </div>
                         </div>
@@ -691,7 +790,7 @@ const MemberWorkoutPlan: React.FC = () => {
       {/* Exercise Player Modal */}
       {isPlayerOpen && (
         <MemberExercisePlayer
-          planId={activePlan?._id || ''}
+          planId={activePlan?._id || aiRec?._id || 'standard-workout-plan'}
           dayName={currentDay?.dayName || 'Workout'}
           exercises={playerExercises}
           initialIndex={playerInitialIndex}

@@ -2,9 +2,11 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IWorkoutProgress extends Document {
   customerId: mongoose.Types.ObjectId;
-  workoutPlanId: mongoose.Types.ObjectId;
-  exerciseId: mongoose.Types.ObjectId;
-  gymId: mongoose.Types.ObjectId;
+  workoutPlanId?: mongoose.Types.ObjectId | string;
+  exerciseId?: mongoose.Types.ObjectId | string;
+  exerciseCustomId?: string;
+  exerciseName?: string;
+  gymId?: mongoose.Types.ObjectId;
   trainerId?: mongoose.Types.ObjectId;
   dayName: string;
   completedSets: number;
@@ -22,9 +24,11 @@ export interface IWorkoutProgress extends Document {
 const workoutProgressSchema = new Schema<IWorkoutProgress>(
   {
     customerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    workoutPlanId: { type: Schema.Types.ObjectId, ref: 'WorkoutPlan', required: true, index: true },
-    exerciseId: { type: Schema.Types.ObjectId, ref: 'Exercise', required: true, index: true },
-    gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true, index: true },
+    workoutPlanId: { type: Schema.Types.Mixed, required: false, index: true },
+    exerciseId: { type: Schema.Types.Mixed, required: false, index: true },
+    exerciseCustomId: { type: String, default: '' },
+    exerciseName: { type: String, default: '' },
+    gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: false, index: true },
     trainerId: { type: Schema.Types.ObjectId, ref: 'User' },
     dayName: { type: String, default: 'General' },
     completedSets: { type: Number, default: 0 },

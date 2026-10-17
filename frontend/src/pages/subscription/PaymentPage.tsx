@@ -64,7 +64,7 @@ const PaymentPage = () => {
             <div className="w-10 h-10 bg-[#F97316] rounded-md flex items-center justify-center">
               <Activity className="text-black" size={24} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-[#F97316]">AI GYM Payment</span>
+            <span className="text-2xl font-bold tracking-tight text-[#F97316]">Gymora Payment</span>
           </div>
 
           <h2 className="text-xl font-bold text-[#292524] mb-6">Select Payment Method</h2>

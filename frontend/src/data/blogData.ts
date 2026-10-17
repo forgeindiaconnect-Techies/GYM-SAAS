@@ -43,7 +43,7 @@ export const BLOG_POSTS: BlogPostItem[] = [
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop'
     },
     content: {
-      intro: 'Traditional fitness programming has long relied on static templates—spreadsheets and one-size-fits-all routines copied from magazines or fitness influencers. However, human physiology is inherently non-linear. Muscle recovery, sleep quality, daily stress, and metabolic rates fluctuate day by day. AI GYM bridges this gap by utilizing state-of-the-art algorithmic programming that recalibrates your training schedule after every single repetition.',
+      intro: 'Traditional fitness programming has long relied on static templates—spreadsheets and one-size-fits-all routines copied from magazines or fitness influencers. However, human physiology is inherently non-linear. Muscle recovery, sleep quality, daily stress, and metabolic rates fluctuate day by day. Gymora bridges this gap by utilizing state-of-the-art algorithmic programming that recalibrates your training schedule after every single repetition.',
       sections: [
         {
           heading: '1. The Paradigm Shift: Dynamic vs. Static Load',

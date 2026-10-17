@@ -134,7 +134,7 @@ const LandingPage = () => {
             <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+            <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
           </button>
 
           <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-[#78716C]">
@@ -253,7 +253,7 @@ const LandingPage = () => {
               <div className="lg:w-1/2">
                 <h2 className="text-3xl md:text-5xl font-bold mb-6">See the <span className="text-[#F97316]">Platform</span> in Action</h2>
                 <p className="text-lg text-[#78716C] mb-8">
-                  Watch our quick tour to see how AI GYM seamlessly integrates AI planning, human coaching, and gym access all in one sleek app.
+                  Watch our quick tour to see how Gymora seamlessly integrates AI planning, human coaching, and gym access all in one sleek app.
                 </p>
                 <div className="flex space-x-4">
                   <div className="flex items-center space-x-2 text-[#F97316]">
@@ -358,7 +358,7 @@ const LandingPage = () => {
             <div className="flex flex-col md:flex-row justify-between items-end mb-12">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">Discover Premium <span className="text-[#F97316]">Gyms</span></h2>
-                <p className="text-[#78716C] max-w-xl">Find and join the best fitness centers in your area. Use your AI GYM membership to access state-of-the-art facilities.</p>
+                <p className="text-[#78716C] max-w-xl">Find and join the best fitness centers in your area. Use your Gymora membership to access state-of-the-art facilities.</p>
               </div>
               <Link
                 to="/gyms"
@@ -500,7 +500,7 @@ const LandingPage = () => {
                 <span>SaaS Platform Pricing for Gyms</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Power Your Gym. Choose Your Plan.</h2>
-              <p className="text-[#78716C] mb-8 max-w-xl mx-auto">All plans give your gym access to the AI GYM platform. Scale as your gym grows.</p>
+              <p className="text-[#78716C] mb-8 max-w-xl mx-auto">All plans give your gym access to the Gymora platform. Scale as your gym grows.</p>
 
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#292524]' : 'text-[#78716C]'}`}>Monthly</span>
@@ -684,7 +684,7 @@ const LandingPage = () => {
             <div className="text-center mb-10">
               <span className="text-[#F97316] text-xs font-bold uppercase tracking-widest mb-2 block">Real Community Feedback</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Don't Just Take Our Word For It</h2>
-              <p className="text-[#78716C] max-w-2xl mx-auto">See what our real gym owners, certified trainers, and active members are saying about AI GYM.</p>
+              <p className="text-[#78716C] max-w-2xl mx-auto">See what our real gym owners, certified trainers, and active members are saying about Gymora.</p>
             </div>
 
             {/* Role Filter Tabs */}
@@ -738,7 +738,7 @@ const LandingPage = () => {
                   ? (communityReviews.length > 0 ? communityReviews : [
                     { name: 'Alex Johnson', role: 'Premium Member', text: 'The AI workout plans adjusted exactly to my home equipment. I lost 15lbs in two months without feeling overworked.' },
                     { name: 'Sarah Miller', role: 'Certified Trainer', text: 'As a trainer, this platform helps me manage all my clients efficiently. The AI handles the basics while I focus on form and motivation.' },
-                    { name: 'Arun FIC', role: 'GYM OWNER • PERFECT FITNESS STUDIO', text: 'Since listing Perfect Fitness Studio on AI GYM, our member acquisition has tripled. The management dashboard and branch analytics are incredibly intuitive.' }
+                    { name: 'Arun FIC', role: 'GYM OWNER • PERFECT FITNESS STUDIO', text: 'Since listing Perfect Fitness Studio on Gymora, our member acquisition has tripled. The management dashboard and branch analytics are incredibly intuitive.' }
                   ])
                   : communityFilter === 'member'
                     ? communityGrouped.members
@@ -837,7 +837,7 @@ const LandingPage = () => {
                 <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center">
                   <Activity className="text-black" size={20} />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+                <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
               </button>
               <p className="text-[#78716C] text-sm leading-relaxed mb-6">
                 The ultimate fitness ecosystem combining AI intelligence with human expertise for unmatched results.
@@ -881,7 +881,7 @@ const LandingPage = () => {
           </div>
 
           <div className="border-t border-[#E7E5E4] pt-8 text-center text-sm text-[#78716C]">
-            <p>&copy; {new Date().getFullYear()} AI GYM Technologies Inc. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
           </div>
         </div>
       </footer>

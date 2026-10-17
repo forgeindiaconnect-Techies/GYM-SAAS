@@ -108,8 +108,8 @@ const TrainerLayout = () => {
           <div className="w-9 h-9 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-200 shrink-0">
             <Activity className="text-[#292524]" size={20} />
           </div>
-          <span className="text-xl font-bold tracking-tight text-[#F97316] truncate max-w-[160px]" title={gym?.name || 'AI GYM'}>
-            {gym?.name || 'AI GYM'}
+          <span className="text-xl font-bold tracking-tight text-[#F97316] truncate max-w-[160px]" title={gym?.name || 'Gymora'}>
+            {gym?.name || 'Gymora'}
           </span>
         </Link>
         <div className="mt-4 flex items-center space-x-3">

@@ -19,6 +19,7 @@ const router = express.Router();
 // Member Routes
 router.post('/member/generate', authenticate, authorize(['MEMBER']), generateRecommendation);
 router.get('/member/latest', authenticate, authorize(['MEMBER']), getLatestRecommendation);
+router.post('/member/reply', authenticate, authorize(['MEMBER']), memberReplyToTrainer);
 router.post('/member/chat', optionalAuthenticate, memberChatbotQuery);
 router.post('/assistant/search', optionalAuthenticate, memberChatbotQuery);
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  CalendarCheck, Dumbbell, Video, Loader2, ArrowRight, LogIn, LogOut, Activity, CheckCircle2
+  CalendarCheck, Dumbbell, Video, Loader2, LogIn, LogOut, Activity, CheckCircle2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
@@ -249,10 +249,6 @@ const MemberAttendance = () => {
       <div className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden shadow-sm">
         <div className="p-4 border-b border-[#E7E5E4] flex justify-between items-center bg-[#F8FAFB]">
           <h2 className="text-sm font-bold text-[#292524]">Session Attendance History</h2>
-          <Link to="/member/online-sessions" className="text-xs text-[#F97316] font-bold hover:underline flex items-center gap-1">
-            <span>Online Sessions</span>
-            <ArrowRight size={13} />
-          </Link>
         </div>
 
         {loading ? (

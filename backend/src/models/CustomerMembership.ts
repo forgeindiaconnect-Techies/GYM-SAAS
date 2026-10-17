@@ -14,6 +14,9 @@ export interface ICustomerMembership extends Document {
   userId: mongoose.Types.ObjectId;
   gymId: mongoose.Types.ObjectId;
   branchId?: mongoose.Types.ObjectId;
+  packageId?: mongoose.Types.ObjectId;
+  fitnessGoal?: string;
+  billingPlan?: 'monthly' | 'annual';
   planName: string;
   duration: string;
   price: number;
@@ -34,6 +37,9 @@ const customerMembershipSchema = new Schema<ICustomerMembership>(
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true },
     branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
+    packageId: { type: Schema.Types.ObjectId, ref: 'GymPackage' },
+    fitnessGoal: { type: String },
+    billingPlan: { type: String, enum: ['monthly', 'annual'] },
     planName: { type: String, required: true },
     duration: { type: String, required: true },
     price: { type: Number, required: true },

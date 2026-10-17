@@ -3,12 +3,24 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
   MapPin, Star, Activity, CheckCircle, Phone, Mail, Globe, ArrowLeft, 
   Loader2, ShieldCheck, Dumbbell, Navigation, ExternalLink, MessageSquare, 
-  ThumbsUp, X, Sparkles, MessageCircle 
+  ThumbsUp, X, Sparkles, MessageCircle, Target, Zap, Crown, Leaf, TrendingUp, Users, Cpu
 } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
 import { isSubscriptionActive } from '../../utils/routeHelpers';
+
+const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = {
+  'Weight Loss':       { icon: Target,    accent: '#EF4444', bg: 'rgba(239,68,68,0.1)'   },
+  'Muscle Gain':       { icon: Dumbbell,  accent: '#F97316', bg: 'rgba(249,115,22,0.1)'  },
+  'Strength':          { icon: Zap,       accent: '#6366F1', bg: 'rgba(99,102,241,0.1)'  },
+  'General Fitness':   { icon: Activity,  accent: '#22C55E', bg: 'rgba(34,197,94,0.1)'   },
+  'Bodybuilding':      { icon: Crown,     accent: '#EA580C', bg: 'rgba(234,88,12,0.12)'  },
+  'Yoga':              { icon: Leaf,      accent: '#10B981', bg: 'rgba(16,185,129,0.1)'  },
+  'CrossFit':          { icon: TrendingUp,accent: '#F59E0B', bg: 'rgba(245,158,11,0.1)'  },
+  'Personal Training': { icon: Users,     accent: '#8B5CF6', bg: 'rgba(139,92,246,0.1)'  },
+  'Online Coaching':   { icon: Cpu,       accent: '#0EA5E9', bg: 'rgba(14,165,233,0.1)'  },
+};
 
 const GymDetails = () => {
   const { id } = useParams();
@@ -19,6 +31,7 @@ const GymDetails = () => {
   const [trainers, setTrainers] = useState<any[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<any>(null);
+  const [packages, setPackages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showEnquiry, setShowEnquiry] = useState(false);
 
@@ -71,6 +84,16 @@ const GymDetails = () => {
         setTrainers([]);
         setBranches([]);
         setReviews([]);
+      }
+
+      // Fetch Gym Package Plans (matching user requirement)
+      try {
+        const pkgRes = await api.get('/gym-packages/public', { params: { gymId: id } });
+        if (pkgRes.data?.success && Array.isArray(pkgRes.data.packages)) {
+          setPackages(pkgRes.data.packages);
+        }
+      } catch (pkgErr) {
+        console.warn('Could not load gym packages:', pkgErr);
       }
     } catch (err) {
       console.error('Error fetching gym details:', err);
@@ -589,7 +612,88 @@ const GymDetails = () => {
             <h2 className="text-3xl font-bold text-[#292524] mb-2">Membership Plans</h2>
             <p className="text-[#78716C] mb-8">Choose the perfect plan that fits your goals and budget.</p>
 
-            {(!gym.subscriptionPlans || gym.subscriptionPlans.length === 0) ? (
+            {packages.length > 0 ? (
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {packages.map((pkg: any) => {
+                  const badge = BADGE_CONFIG[pkg.fitnessGoal] || BADGE_CONFIG['General Fitness'] || { icon: Dumbbell, accent: '#F97316', bg: 'rgba(249,115,22,0.1)' };
+                  const Icon = badge.icon;
+                  const price = pkg.monthlyPrice ?? pkg.price ?? 0;
+                  const duration = pkg.duration || '1 Month';
+                  const featuresList: string[] = Array.isArray(pkg.features)
+                    ? pkg.features
+                    : (typeof pkg.features === 'string' ? pkg.features.split(',') : []);
+
+                  return (
+                    <div key={pkg._id} className="bg-[#FFFFFF] border border-[#E7E5E4] p-6 rounded-2xl relative flex flex-col hover:border-[#F97316] transition-all hover:shadow-md">
+                      {pkg.isPopular && (
+                        <div className="absolute top-0 right-6 -translate-y-1/2 bg-[#F97316] text-white px-3 py-1 rounded-full text-[10px] font-black shadow-lg uppercase tracking-wider">
+                          POPULAR
+                        </div>
+                      )}
+                      
+                      {/* Fitness Goal Badge & Icon */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: badge.bg }}>
+                          <Icon size={20} style={{ color: badge.accent }} />
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full" style={{ color: badge.accent, backgroundColor: badge.bg }}>
+                            {pkg.fitnessGoal || 'General Fitness'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <h3 className="text-xl font-bold text-[#292524] mb-1.5 leading-snug">{pkg.name}</h3>
+                      {pkg.description && (
+                        <p className="text-xs text-[#78716C] mb-3 line-clamp-2 leading-relaxed">{pkg.description}</p>
+                      )}
+
+                      <div className="flex items-baseline mb-3">
+                        <span className="text-3xl font-extrabold text-[#292524]">₹{price}</span>
+                        <span className="text-xs font-semibold text-[#78716C] ml-1.5">/ {duration.toLowerCase().includes('month') ? 'month' : duration}</span>
+                      </div>
+
+                      {/* Training type and duration pills */}
+                      <div className="flex flex-wrap items-center gap-2 mb-4">
+                        <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-stone-100 text-stone-700">
+                          {pkg.trainingType || 'Offline'}
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-stone-100 text-stone-700">
+                          {duration}
+                        </span>
+                      </div>
+
+                      {/* Features list */}
+                      <div className="flex-1 mt-2 border-t border-stone-100 pt-3">
+                        <p className="text-xs font-bold text-[#292524] uppercase tracking-wider mb-2.5">Features Included:</p>
+                        <ul className="space-y-2">
+                          {featuresList.map((f: string, i: number) => (
+                            <li key={i} className="flex items-start text-xs text-[#78716C] leading-snug">
+                              <CheckCircle size={14} className="text-[#F97316] mr-2 shrink-0 mt-0.5" />
+                              <span>{f.trim()}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <button 
+                        onClick={() => handleJoin({
+                          ...pkg,
+                          price: pkg.monthlyPrice ?? pkg.price,
+                          name: pkg.name
+                        })}
+                        className="w-full mt-6 py-3 rounded-xl font-bold transition-all text-white shadow-sm hover:opacity-95 active:scale-95 cursor-pointer"
+                        style={{ backgroundColor: badge.accent }}
+                      >
+                        {Number(price) === 0 || pkg.name?.toLowerCase().includes('trial')
+                          ? 'Start Free Trial'
+                          : `Choose ${pkg.name} • Pay Now`}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (!gym.subscriptionPlans || gym.subscriptionPlans.length === 0) ? (
               <div className="bg-[#FFFFFF] border border-[#E7E5E4] p-8 rounded-2xl text-center">
                 <Dumbbell className="mx-auto text-[#FED7AA] mb-4" size={48} />
                 <p className="text-[#292524] font-bold text-lg">No plans available online.</p>
@@ -712,7 +816,7 @@ const GymDetails = () => {
                         </span>
                       )}
                     </span>
-                    This gym is an officially approved partner of the AI GYM network.
+                    This gym is an officially approved partner of the Gymora network.
                   </div>
                 </div>
               </div>

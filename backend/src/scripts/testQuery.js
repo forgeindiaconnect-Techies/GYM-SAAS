@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 async function test() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/ai-gym');
+  await mongoose.connect('mongodb://127.0.0.1:27017/Gymora');
   const Trainer = mongoose.connection.collection('trainers');
   const gymId = new mongoose.Types.ObjectId('6aba379edcdc91b24d17e868');
   

@@ -381,7 +381,7 @@ export const FeaturePreview = ({ slideIndex, items }: { tabId?: string, slideInd
              </div>
            </div>
            <div className="px-5 space-y-4">
-             <p className="text-base text-[#78716C]">Book certified trainers at your local AI Gym facility for hands-on spotting and motivation.</p>
+             <p className="text-base text-[#78716C]">Book certified trainers at your local Gymora facility for hands-on spotting and motivation.</p>
              <button className="w-full py-3 bg-[#F97316] text-white rounded-xl text-base font-bold flex justify-center items-center gap-2">
                <MapPin size={20}/> Find Nearby Trainers
              </button>

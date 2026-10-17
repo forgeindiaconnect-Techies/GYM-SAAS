@@ -40,11 +40,15 @@ const MemberTrainerReview = () => {
     try {
       setReplySending(true);
       setReplyError('');
-      await api.post('/ai/member/reply', { message: replyText.trim() });
+      await api.post('/ai/member/reply', {
+        message: replyText.trim(),
+        recommendationId: recommendation?._id
+      });
       setReplySuccess(true);
+      setReplyText('');
       fetchRecommendation(); // refresh to show saved reply
     } catch (err: any) {
-      setReplyError(err.response?.data?.message || 'Failed to send reply.');
+      setReplyError(err.response?.data?.message || err.response?.data?.error || 'Failed to send reply.');
     } finally {
       setReplySending(false);
     }

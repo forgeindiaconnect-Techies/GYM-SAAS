@@ -44,7 +44,7 @@ const BlogPost = () => {
               <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center">
                 <Activity className="text-black" size={20} />
               </div>
-              <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+              <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
             </Link>
             <Link to="/blog" className="text-sm font-medium text-[#78716C] hover:text-[#F97316] flex items-center space-x-2">
               <ArrowLeft size={16} /> <span>Back to Blog</span>
@@ -69,7 +69,7 @@ const BlogPost = () => {
         </main>
 
         <footer className="border-t border-[#E7E5E4] py-8 text-center text-sm text-[#78716C]">
-          <p>&copy; {new Date().getFullYear()} AI GYM Technologies Inc. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
         </footer>
       </div>
     );
@@ -87,7 +87,7 @@ const BlogPost = () => {
             <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+            <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
           </Link>
           <div className="flex items-center space-x-6">
             <Link
@@ -268,7 +268,7 @@ const BlogPost = () => {
             <h3 className="text-xl font-bold text-[#292524] mt-1">{post.author.name}</h3>
             <p className="text-sm text-[#78716C] mb-3">{post.author.role}</p>
             <p className="text-sm text-[#57534E] leading-relaxed">
-              Contributing fitness scientist and lead author for AI GYM. Passionate about evidence-based biomechanics, progressive overload protocols, and nutrition optimization.
+              Contributing fitness scientist and lead author for Gymora. Passionate about evidence-based biomechanics, progressive overload protocols, and nutrition optimization.
             </p>
           </div>
         </div>
@@ -338,9 +338,9 @@ const BlogPost = () => {
             <div className="w-6 h-6 bg-[#F97316] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={16} />
             </div>
-            <span className="font-bold text-[#F97316]">AI GYM</span>
+            <span className="font-bold text-[#F97316]">Gymora</span>
           </div>
-          <p>&copy; {new Date().getFullYear()} AI GYM Technologies Inc. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
           <div className="flex items-center space-x-6 text-xs">
             <Link to="/about" className="hover:text-[#F97316]">About</Link>
             <Link to="/blog" className="hover:text-[#F97316]">Blog</Link>

@@ -23,7 +23,7 @@ const SuperAdminAllGyms = () => {
             {[1, 2, 3].map(row => (
               <tr key={row} className="hover:bg-[#FFFFFF]">
                 <td className="p-4 text-[#78716C]">ORG_00${row}</td>
-                <td className="p-4 font-bold text-[#292524]">AI Gym Branch ${row}</td>
+                <td className="p-4 font-bold text-[#292524]">Gymora Branch ${row}</td>
                 <td className="p-4"><span className="text-green-500">Active</span></td>
                 <td className="p-4 text-right"><button className="text-[#EA580C]">Edit</button></td>
               </tr>

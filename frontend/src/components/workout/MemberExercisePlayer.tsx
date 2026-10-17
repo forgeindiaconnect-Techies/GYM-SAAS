@@ -151,38 +151,44 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
   };
 
   const handleFinishExercise = async () => {
+    // 1. Immediately transition UI state so exercise finishes and next exercise/countdown appears without delay
+    const resolvedExerciseId = ex?._id || currentItem?.exerciseId?._id || `ex-${currentIdx}`;
+    setCompletedExerciseIdxs(prev => Array.from(new Set([...prev, currentIdx])));
+    setExerciseCompleted(true);
+    setIsResting(false);
+
+    if (onCompleteExercise) {
+      try {
+        onCompleteExercise(resolvedExerciseId);
+      } catch (cbErr) {
+        console.warn('onCompleteExercise callback error:', cbErr);
+      }
+    }
+
+    // 2. Set auto-advance countdown (3s) or trigger workout completion modal
+    if (currentIdx === exercises.length - 1) {
+      setWorkoutFinished(true);
+    } else {
+      setAutoAdvanceCountdown(3);
+    }
+
+    // 3. Persist exercise completion log to backend asynchronously
     setSavingProgress(true);
     try {
-      if (planId && ex?._id) {
-        await api.post('/workout-progress/log', {
-          workoutPlanId: planId,
-          exerciseId: ex._id,
-          dayName: dayName,
-          completedSets: totalSets,
-          totalSets: totalSets,
-          completedRepetitions: repCount,
-          targetRepetitions: targetReps,
-          duration: workoutElapsed || 60,
-          status: 'Completed'
-        });
-      }
-
-      setCompletedExerciseIdxs(prev => Array.from(new Set([...prev, currentIdx])));
-      setExerciseCompleted(true);
-
-      if (onCompleteExercise && ex?._id) {
-        onCompleteExercise(ex._id);
-      }
-
-      // If last exercise in this day
-      if (currentIdx === exercises.length - 1) {
-        setWorkoutFinished(true);
-      } else {
-        // Auto-advance countdown (3 seconds) to next exercise
-        setAutoAdvanceCountdown(3);
-      }
+      await api.post('/workout-progress/log', {
+        workoutPlanId: planId || 'standard-workout-plan',
+        exerciseId: resolvedExerciseId,
+        exerciseName: ex?.name || currentItem?.exerciseId?.name || 'Exercise',
+        dayName: dayName || 'Workout',
+        completedSets: totalSets,
+        totalSets: totalSets,
+        completedRepetitions: repCount,
+        targetRepetitions: targetReps,
+        duration: workoutElapsed || 60,
+        status: 'Completed'
+      });
     } catch (err) {
-      console.error('Failed to log exercise progress:', err);
+      console.warn('Exercise progress logging sync notice (UI updated locally):', err);
     } finally {
       setSavingProgress(false);
     }

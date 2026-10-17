@@ -5,7 +5,7 @@ export const sendOtpEmail = async (toEmail: string, otp: string): Promise<boolea
   // Sanitize string to prevent "Invalid character in header content" errors
   const apiKey = rawKey.trim().replace(/[\r\n\t\f\v"']/g, '');
   const senderEmail = (process.env.BREVO_SENDER_EMAIL || 'renugopal603@gmail.com').trim().replace(/[\r\n\t\f\v"']/g, '');
-  const senderName = (process.env.BREVO_SENDER_NAME || 'AI GYM').trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderName = (process.env.BREVO_SENDER_NAME || 'Gymora').trim().replace(/[\r\n\t\f\v"']/g, '');
 
   if (!apiKey) {
     console.error('[EmailService] BREVO_API_KEY is not set in environment variables');
@@ -15,7 +15,7 @@ export const sendOtpEmail = async (toEmail: string, otp: string): Promise<boolea
   const htmlContent = `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #E2E8F0; border-radius: 16px; background-color: #FFFFFF;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">AI GYM</h1>
+        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
         <p style="color: #64748B; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
       </div>
 
@@ -30,7 +30,7 @@ export const sendOtpEmail = async (toEmail: string, otp: string): Promise<boolea
 
       <div style="color: #94A3B8; font-size: 12px; text-align: center; border-top: 1px solid #F1F5F9; padding-top: 16px;">
         If you did not request this code, please ignore this email.<br/>
-        &copy; ${new Date().getFullYear()} AI GYM Platform. All rights reserved.
+        &copy; ${new Date().getFullYear()} Gymora Platform. All rights reserved.
       </div>
     </div>
   `;
@@ -38,7 +38,7 @@ export const sendOtpEmail = async (toEmail: string, otp: string): Promise<boolea
   const payload = JSON.stringify({
     sender: { name: senderName, email: senderEmail },
     to: [{ email: toEmail }],
-    subject: `${otp} is your AI GYM verification code`,
+    subject: `${otp} is your Gymora verification code`,
     htmlContent: htmlContent
   });
 
@@ -93,7 +93,7 @@ export const sendGymOwnerInvitationEmail = async (
   const rawKey = process.env.BREVO_API_KEY || '';
   const apiKey = rawKey.trim().replace(/[\r\n\t\f\v"']/g, '');
   const senderEmail = (process.env.BREVO_SENDER_EMAIL || 'renugopal603@gmail.com').trim().replace(/[\r\n\t\f\v"']/g, '');
-  const senderName = (process.env.BREVO_SENDER_NAME || 'AI GYM').trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderName = (process.env.BREVO_SENDER_NAME || 'Gymora').trim().replace(/[\r\n\t\f\v"']/g, '');
 
   if (!apiKey) {
     console.error('[EmailService] BREVO_API_KEY is not set in environment variables');
@@ -103,7 +103,7 @@ export const sendGymOwnerInvitationEmail = async (
   const htmlContent = `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 28px; border: 1px solid #E2E8F0; border-radius: 16px; background-color: #FFFFFF;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">AI GYM</h1>
+        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
         <p style="color: #64748B; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
       </div>
 
@@ -130,7 +130,7 @@ export const sendGymOwnerInvitationEmail = async (
 
       <div style="color: #94A3B8; font-size: 12px; text-align: center; border-top: 1px solid #F1F5F9; padding-top: 16px;">
         If you did not expect this invitation, you can safely ignore this email.<br/>
-        &copy; ${new Date().getFullYear()} AI GYM Platform. All rights reserved.
+        &copy; ${new Date().getFullYear()} Gymora Platform. All rights reserved.
       </div>
     </div>
   `;
@@ -138,7 +138,7 @@ export const sendGymOwnerInvitationEmail = async (
   const payload = JSON.stringify({
     sender: { name: senderName, email: senderEmail },
     to: [{ email: toEmail, name: ownerName || undefined }],
-    subject: `Invitation to Register Your Gym on AI GYM Platform`,
+    subject: `Invitation to Register Your Gym on Gymora Platform`,
     htmlContent: htmlContent
   });
 
@@ -198,7 +198,7 @@ export const sendGymOwnerExpiryWarningEmail = async (
   const rawKey = process.env.BREVO_API_KEY || '';
   const apiKey = rawKey.trim().replace(/[\r\n\t\f\v"']/g, '');
   const senderEmail = (process.env.BREVO_SENDER_EMAIL || 'renugopal603@gmail.com').trim().replace(/[\r\n\t\f\v"']/g, '');
-  const senderName = (process.env.BREVO_SENDER_NAME || 'AI GYM').trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderName = (process.env.BREVO_SENDER_NAME || 'Gymora').trim().replace(/[\r\n\t\f\v"']/g, '');
 
   if (!apiKey) {
     console.error('[EmailService] BREVO_API_KEY is not set in environment variables');
@@ -208,7 +208,7 @@ export const sendGymOwnerExpiryWarningEmail = async (
   const htmlContent = `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 28px; border: 1px solid #E2E8F0; border-radius: 16px; background-color: #FFFFFF;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">AI GYM</h1>
+        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
         <p style="color: #64748B; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
       </div>
 
@@ -234,7 +234,7 @@ export const sendGymOwnerExpiryWarningEmail = async (
       </div>
 
       <div style="color: #94A3B8; font-size: 12px; text-align: center; border-top: 1px solid #F1F5F9; padding-top: 16px;">
-        &copy; ${new Date().getFullYear()} AI GYM Platform. All rights reserved.
+        &copy; ${new Date().getFullYear()} Gymora Platform. All rights reserved.
       </div>
     </div>
   `;
@@ -242,7 +242,7 @@ export const sendGymOwnerExpiryWarningEmail = async (
   const payload = JSON.stringify({
     sender: { name: senderName, email: senderEmail },
     to: [{ email: toEmail, name: ownerName || undefined }],
-    subject: `⚠️ URGENT: Your AI GYM Registration Link Will Expire Soon (${timeLeftText} left)`,
+    subject: `⚠️ URGENT: Your Gymora Registration Link Will Expire Soon (${timeLeftText} left)`,
     htmlContent: htmlContent
   });
 

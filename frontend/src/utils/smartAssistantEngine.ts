@@ -1076,7 +1076,7 @@ Click **Open Customer Registration Form** below to start!`,
 
     return {
       category: 'HELP',
-      reply: `⚡ **AI GYM Platform Features & Capabilities**:
+      reply: `⚡ **Gymora Platform Features & Capabilities**:
 Our comprehensive all-in-one Gym Management & Fitness ecosystem includes:
 
 🏋️‍♂️ **1. Customer / Member Features**:
@@ -1283,7 +1283,7 @@ Click any action below to explore the modules directly!`,
 
     return {
       category: 'GENERAL',
-      reply: `AI GYM includes **3 Dedicated Dashboards** tailored for every role:
+      reply: `Gymora includes **3 Dedicated Dashboards** tailored for every role:
 
 1. 🏋️‍♂️ **Customer Dashboard** (\`/member/dashboard\`)
    • Manage workout routines, diet meal plans, gym attendance check-ins, coach sessions, and store orders.

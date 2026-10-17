@@ -61,7 +61,7 @@ const GymOwnerIntroduction = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-lg flex items-center justify-center">
                 <Activity className="text-white" size={20} />
               </div>
-              <span className="text-xl font-bold tracking-tight text-[#292524]">AI GYM</span>
+              <span className="text-xl font-bold tracking-tight text-[#292524]">Gymora</span>
             </Link>
             <Link 
               to="/register/gym-owner"

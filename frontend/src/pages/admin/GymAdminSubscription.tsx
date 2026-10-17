@@ -162,7 +162,7 @@ const GymAdminSubscription = () => {
         <body>
           <div class="header">
             <div>
-              <div class="title">AI GYM SAAS</div>
+              <div class="title">Gymora SAAS</div>
               <p style="margin: 5px 0 0 0; color: #78716C;">Subscription Invoice</p>
             </div>
             <div style="text-align: right;">
@@ -201,7 +201,7 @@ const GymAdminSubscription = () => {
           
           <div class="footer">
             Thank you for your business!<br/>
-            AI GYM SAAS Platform
+            Gymora SAAS Platform
           </div>
           <script>
             window.onload = () => { window.print(); window.setTimeout(() => window.close(), 500); }
@@ -369,7 +369,7 @@ const GymAdminSubscription = () => {
     <div className="space-y-6 max-w-6xl mx-auto">
       <div>
         <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Subscription Management</h1>
-        <p className="text-[#78716C] mt-1">Manage your AI GYM SaaS platform subscription and usage.</p>
+        <p className="text-[#78716C] mt-1">Manage your Gymora SaaS platform subscription and usage.</p>
       </div>
 
       {/* Payment Success Banner */}

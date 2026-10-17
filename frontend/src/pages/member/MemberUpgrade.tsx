@@ -32,10 +32,54 @@ const MemberUpgrade = () => {
     if (!user?.gymId) return;
     try {
       setLoading(true);
-      const res = await api.get(`/gyms/${user.gymId}`);
-      const fetchedGym = res.data.gym;
+      const [gymRes, pkgRes] = await Promise.allSettled([
+        api.get(`/gyms/${user.gymId}`),
+        api.get('/gym-packages/public', { params: { gymId: user.gymId } })
+      ]);
+      const fetchedGym = gymRes.status === 'fulfilled' ? gymRes.value.data?.gym : null;
       setGym(fetchedGym);
-      setPlans(fetchedGym.subscriptionPlans || []);
+
+      if (pkgRes.status === 'fulfilled' && Array.isArray(pkgRes.value.data?.packages) && pkgRes.value.data.packages.length > 0) {
+        setPlans(pkgRes.value.data.packages.map((pkg: any) => ({
+          _id: pkg._id,
+          name: pkg.name,
+          price: pkg.monthlyPrice ?? pkg.price ?? 0,
+          duration: pkg.duration || '1 Month',
+          features: Array.isArray(pkg.features) ? pkg.features.join(', ') : pkg.features,
+          fitnessGoal: pkg.fitnessGoal,
+          trainingType: pkg.trainingType
+        })));
+      } else {
+        setPlans([
+          {
+            _id: 'default-pkg-strength',
+            name: 'Strength',
+            price: 399,
+            duration: '1 Month',
+            trainingType: 'Offline',
+            fitnessGoal: 'Strength',
+            features: 'Strength-focused workout programs, Progressive resistance training, Strength performance tracking'
+          },
+          {
+            _id: 'default-pkg-muscle',
+            name: 'Muscle Gain',
+            price: 599,
+            duration: '1 Month',
+            trainingType: 'Online',
+            fitnessGoal: 'Muscle Gain',
+            features: 'Muscle-building workout programs, Strength training, Progressive overload training, Muscle development progress tracking'
+          },
+          {
+            _id: 'default-pkg-weightloss',
+            name: 'weight Loss',
+            price: 499,
+            duration: '1 Month',
+            trainingType: 'Hybrid',
+            fitnessGoal: 'Weight Loss',
+            features: 'Fat-loss workout programs, Cardio training, Strength training, Weight and progress tracking'
+          }
+        ]);
+      }
     } catch (err) {
       console.error('Error fetching gym plans:', err);
     } finally {

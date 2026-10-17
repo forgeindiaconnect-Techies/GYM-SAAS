@@ -614,7 +614,7 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
     });
 
     const ownerQuotes = [
-      'Since listing our gym on AI GYM, our member acquisition has tripled. The management dashboard and branch analytics are incredibly intuitive.',
+      'Since listing our gym on Gymora, our member acquisition has tripled. The management dashboard and branch analytics are incredibly intuitive.',
       'The automated billing and digital check-ins freed up hours of administrative time every single day. The best gym management platform we have used.',
       'Managing trainer schedules, equipment maintenance, and member subscriptions has become effortless. Revenue grew by 45% in our first quarter.'
     ];
@@ -820,7 +820,7 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
       'Having access to certified trainers combined with personalized AI routines on my phone completely changed my fitness journey.',
       'The nutrition guidance and dynamic calorie goals helped me gain clean muscle while keeping my energy high throughout the workday.',
       'No more guessing in the gym. Every set, rep, and recovery rest is calculated for maximum results.',
-      'From QR code attendance to real-time progress charts, AI GYM makes showing up at the gym an exciting daily habit.'
+      'From QR code attendance to real-time progress charts, Gymora makes showing up at the gym an exciting daily habit.'
     ];
 
     const fallbackMemberTestimonials: any[] = [];

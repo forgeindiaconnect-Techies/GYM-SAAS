@@ -108,10 +108,10 @@ const downloadReceipt = (p: any) => {
       </div>` : ''}
 
       <div class="footer">
-        Thank you for your purchase at AI Gym Store!<br />
+        Thank you for your purchase at Gymora Store!<br />
         For support, contact your gym admin.
       </div>
-      <div class="watermark">AI Gym · Official Receipt</div>
+      <div class="watermark">Gymora · Official Receipt</div>
     </body>
     </html>
   `;

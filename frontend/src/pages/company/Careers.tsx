@@ -17,7 +17,7 @@ const Careers = () => {
             <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+            <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
           </Link>
           <Link to="/" className="text-sm font-medium text-[#78716C] hover:text-[#F97316] flex items-center space-x-2">
             <ArrowLeft size={16} /> <span>Back to Home</span>

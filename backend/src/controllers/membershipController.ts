@@ -47,7 +47,51 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       return;
     }
 
-    const { gymId, branchId, planName, duration, price, discount, paymentMethod, paymentReference, paymentProofUrl } = req.body;
+    const {
+      gymId, branchId, planName, duration, price, discount,
+      paymentMethod, paymentReference, paymentProofUrl,
+      packageId, billingPlan, fitnessGoal
+    } = req.body;
+
+    // ── Server-side price verification ──────────────────────────────────────
+    // If a packageId is supplied, look up the real price from the DB.
+    // Never trust the price the client sends when a package is selected.
+    let verifiedPrice: number | null = null;
+    let verifiedDuration: string | null = null;
+    let verifiedFitnessGoal: string | null = fitnessGoal || null;
+
+    if (packageId) {
+      const GymPackage = require('../models/GymPackage').default;
+      const pkg = await GymPackage.findById(packageId);
+      if (!pkg) {
+        res.status(404).json({ success: false, message: 'Selected package not found' });
+        return;
+      }
+      if (pkg.status !== 'Active') {
+        res.status(400).json({ success: false, message: 'Selected package is no longer active' });
+        return;
+      }
+      if (pkg.gymId.toString() !== gymId) {
+        res.status(400).json({ success: false, message: 'Package does not belong to this gym' });
+        return;
+      }
+
+      const plan = billingPlan === 'annual' ? 'annual' : 'monthly';
+      if (pkg.availablePlans === 'monthly' && plan === 'annual') {
+        res.status(400).json({ success: false, message: 'This package does not offer an annual plan' });
+        return;
+      }
+      if (pkg.availablePlans === 'annual' && plan === 'monthly') {
+        res.status(400).json({ success: false, message: 'This package does not offer a monthly plan' });
+        return;
+      }
+
+      verifiedPrice = plan === 'annual' ? pkg.annualPrice : pkg.monthlyPrice;
+      verifiedDuration = plan === 'annual' ? '1 Year' : '1 Month';
+      verifiedFitnessGoal = pkg.fitnessGoal;
+    }
+
+
     
     const gym = await Gym.findById(gymId);
     if (!gym) {
@@ -55,15 +99,16 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       return;
     }
 
-    const numPrice = Number(price) || 0;
+    // Use server-verified price if a package was selected; otherwise fall back to client-submitted price
+    const numPrice = verifiedPrice !== null ? verifiedPrice : (Number(price) || 0);
+    const memDuration = verifiedDuration || duration || (numPrice === 0 ? '1 Week' : '1 Month');
     const isFreeTrial = numPrice === 0 || (planName && planName.toLowerCase().includes('trial'));
     const finalAmount = Math.max(0, numPrice - (Number(discount) || 0));
 
     let endDate = new Date();
-    let memDuration = duration || (isFreeTrial ? '1 Week' : '1 Month');
 
     if (isFreeTrial) {
-      endDate.setDate(endDate.getDate() + 7); // 7-Day Free Trial
+      endDate.setDate(endDate.getDate() + 7);
     } else {
       const durLower = (memDuration || '').toLowerCase();
       if (durLower.includes('year')) {
@@ -83,6 +128,9 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       userId,
       gymId,
       branchId,
+      packageId: packageId || undefined,
+      fitnessGoal: verifiedFitnessGoal || undefined,
+      billingPlan: packageId ? (billingPlan === 'annual' ? 'annual' : 'monthly') : undefined,
       planName: planName || (isFreeTrial ? 'Free Trial' : 'Standard'),
       duration: memDuration,
       price: numPrice,
@@ -95,6 +143,7 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     });
 
     await membership.save();
+
 
     const userDoc = await User.findByIdAndUpdate(userId, {
       $set: {

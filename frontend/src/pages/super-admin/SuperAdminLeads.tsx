@@ -9,7 +9,7 @@ const SuperAdminLeads = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedLead, setSelectedLead] = useState<any>(null);
-  const [inviteForm, setInviteForm] = useState({ message: 'Join AI GYM to revolutionize your management.', expiry: '7 Days' });
+  const [inviteForm, setInviteForm] = useState({ message: 'Join Gymora to revolutionize your management.', expiry: '7 Days' });
   const [newLeadForm, setNewLeadForm] = useState({ gymName: '', owner: '', email: '', phone: '', location: '' });
   const [inviteSuccess, setInviteSuccess] = useState(false);
   const [generatedLink, setGeneratedLink] = useState('');

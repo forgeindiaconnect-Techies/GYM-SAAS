@@ -637,9 +637,10 @@ const MemberDietPlan = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [trainerRes, aiRes] = await Promise.allSettled([
+        const [trainerRes, aiRes, dietProgressRes] = await Promise.allSettled([
           api.get('/trainer-plans/customer'),
-          api.get('/ai/member/latest')
+          api.get('/ai/member/latest'),
+          api.get('/diet-progress/my-progress')
         ]);
 
         if (trainerRes.status === 'fulfilled' && trainerRes.value.data?.success && trainerRes.value.data.requests) {
@@ -651,6 +652,13 @@ const MemberDietPlan = () => {
 
         if (aiRes.status === 'fulfilled' && aiRes.value.data?.success && aiRes.value.data.recommendation) {
           setAiRecommendation(aiRes.value.data.recommendation);
+        }
+
+        if (dietProgressRes.status === 'fulfilled' && dietProgressRes.value.data?.success && dietProgressRes.value.data.completedMap) {
+          setCompletedMap(prev => ({
+            ...prev,
+            ...dietProgressRes.value.data.completedMap
+          }));
         }
       } catch (err) {
         console.error('Failed to load diet plans:', err);
@@ -751,25 +759,55 @@ const MemberDietPlan = () => {
   }, [selectedDay, aiRecommendation, completedMap]);
 
   // Toggle single meal completed
-  const toggleMeal = (id: number) => {
-    setCompletedMap(prev => {
-      const currentList = prev[selectedDay] || [];
-      const updated = currentList.includes(id)
-        ? currentList.filter(item => item !== id)
-        : [...currentList, id];
-      return { ...prev, [selectedDay]: updated };
-    });
+  const toggleMeal = async (id: number) => {
+    const currentList = completedMap[selectedDay] || [];
+    const isCurrentlyCompleted = currentList.includes(id);
+    const updated = isCurrentlyCompleted
+      ? currentList.filter(item => item !== id)
+      : [...currentList, id];
+
+    setCompletedMap(prev => ({ ...prev, [selectedDay]: updated }));
+
+    const targetMeal = currentDayPlan.meals.find(m => m.id === id);
+    try {
+      await api.post('/diet-progress/toggle-meal', {
+        dayName: selectedDay,
+        mealId: id,
+        mealType: targetMeal?.type || 'Meal',
+        items: targetMeal?.items || [],
+        calories: targetMeal?.calories || 0,
+        protein: targetMeal?.protein || 0,
+        carbs: targetMeal?.carbs || 0,
+        fats: targetMeal?.fats || 0,
+        completed: !isCurrentlyCompleted
+      });
+    } catch (err) {
+      console.error('Failed to sync meal completion with server:', err);
+    }
   };
 
   // Mark all completed for selected day
-  const markAllCompleted = () => {
+  const markAllCompleted = async () => {
     const allIds = currentDayPlan.meals.map(m => m.id);
     setCompletedMap(prev => ({ ...prev, [selectedDay]: allIds }));
+    try {
+      await api.post('/diet-progress/batch-log', {
+        dayName: selectedDay,
+        meals: currentDayPlan.meals
+      });
+    } catch (err) {
+      console.error('Failed to batch log meals with server:', err);
+    }
   };
 
   // Reset selected day
-  const resetDay = () => {
+  const resetDay = async () => {
     setCompletedMap(prev => ({ ...prev, [selectedDay]: [] }));
+    try {
+      await api.post('/diet-progress/reset-day', { dayName: selectedDay });
+    } catch (err) {
+      console.error('Failed to reset day diet with server:', err);
+    }
   };
 
   // Calculate macros for selected day

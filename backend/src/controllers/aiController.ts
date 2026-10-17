@@ -680,16 +680,24 @@ export const memberReplyToTrainer = async (req: ExpressRequest, res: ExpressResp
   try {
     const userId = (req as any).user?.id;
     const gymId  = (req as any).user?.gymId;
-    const { message } = req.body;
+    const { message, recommendationId } = req.body;
 
     if (!message || !message.trim()) {
       return res.status(400).json({ message: 'Reply message is required.' });
     }
 
-    const recommendation = await AIRecommendation.findOne({
-      customerId: userId,
-      gymId,
-    }).sort({ createdAt: -1 });
+    let recommendation;
+    if (recommendationId) {
+      recommendation = await AIRecommendation.findOne({ _id: recommendationId, customerId: userId });
+    }
+    if (!recommendation) {
+      if (gymId) {
+        recommendation = await AIRecommendation.findOne({ customerId: userId, gymId }).sort({ createdAt: -1 });
+      }
+      if (!recommendation) {
+        recommendation = await AIRecommendation.findOne({ customerId: userId }).sort({ createdAt: -1 });
+      }
+    }
 
     if (!recommendation) {
       return res.status(404).json({ message: 'No AI plan found to reply to.' });

@@ -249,24 +249,24 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
       let timeframeRevenue = displayTotalRevenue;
 
       if (timeframe === 'all') {
-        reportScopeTitle = 'AI GYM SAAS — Master Subscriptions Statement (ALL DATA)';
+        reportScopeTitle = 'Gymora SAAS — Master Subscriptions Statement (ALL DATA)';
         exportSubs = [...allSubs];
       } else if (timeframe === 'monthly') {
-        reportScopeTitle = 'AI GYM SAAS — Monthly Subscription Revenue Statement';
+        reportScopeTitle = 'Gymora SAAS — Monthly Subscription Revenue Statement';
         exportSubs = allSubs.filter((s: any) => (s.billingCycle || 'monthly').toLowerCase() === 'monthly');
         if (exportSubs.length === 0) exportSubs = allSubs.filter((s: any) => (s.status || '').toUpperCase() === 'ACTIVE');
       } else if (timeframe === 'annual') {
-        reportScopeTitle = 'AI GYM SAAS — Annual Subscription Revenue Statement';
+        reportScopeTitle = 'Gymora SAAS — Annual Subscription Revenue Statement';
         exportSubs = allSubs.filter((s: any) => (s.billingCycle || '').toLowerCase() === 'annual');
         if (exportSubs.length === 0) exportSubs = allSubs.filter((s: any) => (s.status || '').toUpperCase() === 'ACTIVE');
       } else if (timeframe === 'weekly') {
-        reportScopeTitle = 'AI GYM SAAS — Weekly Subscription Revenue Statement';
+        reportScopeTitle = 'Gymora SAAS — Weekly Subscription Revenue Statement';
         exportSubs = allSubs.filter((s: any) => (s.status || '').toUpperCase() === 'ACTIVE');
       } else if (timeframe === 'today') {
-        reportScopeTitle = "AI GYM SAAS — Today's Subscription Revenue Statement";
+        reportScopeTitle = "Gymora SAAS — Today's Subscription Revenue Statement";
         exportSubs = allSubs.filter((s: any) => (s.status || '').toUpperCase() === 'ACTIVE');
       } else {
-        reportScopeTitle = 'AI GYM SAAS — Subscription Statement';
+        reportScopeTitle = 'Gymora SAAS — Subscription Statement';
         exportSubs = [...allSubs];
       }
 
@@ -299,7 +299,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
             rowAmount = planUpper.includes('PLATINUM') ? 22490 : planUpper.includes('SILVER') ? 7190 : 13490;
           }
           return [
-            s.gymName || 'AI Gym Partner',
+            s.gymName || 'Gymora Partner',
             s.ownerName || 'Gym Owner',
             s.plan || 'Gold',
             timeframe === 'monthly' ? 'monthly' : timeframe === 'annual' ? 'annual' : (s.billingCycle || 'monthly'),
@@ -329,7 +329,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
     }
 
     // Gym Owner PDF
-    const title = `${user?.gymName || 'AI Gym'} — Revenue & Analytics Statement`;
+    const title = `${user?.gymName || 'Gymora'} — Revenue & Analytics Statement`;
     doc.setFontSize(16);
     doc.setTextColor(249, 115, 22);
     doc.text(title, 14, 18);

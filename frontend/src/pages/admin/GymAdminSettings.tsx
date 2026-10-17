@@ -94,7 +94,7 @@ const GymAdminSettings = () => {
                 </div>
                 <div>
                   <h4 className="text-[#292524] font-semibold">Marketing Emails</h4>
-                  <p className="text-[#78716C] text-sm mt-1">Receive AI GYM platform updates, tips, and promotional offers.</p>
+                  <p className="text-[#78716C] text-sm mt-1">Receive Gymora platform updates, tips, and promotional offers.</p>
                 </div>
               </div>
               <button 

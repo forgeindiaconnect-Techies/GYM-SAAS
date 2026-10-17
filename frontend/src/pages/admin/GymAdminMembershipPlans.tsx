@@ -1,361 +1,269 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Check, 
-  Edit2, 
-  Users, 
-  X, 
-  Zap, 
-  TrendingUp, 
-  Crown, 
-  Plus, 
-  CheckCircle2, 
-  Sparkles, 
-  Star,
-  Trash2,
-  ExternalLink
+import { useState, useEffect, useCallback } from 'react';
+import {
+  Check, Edit2, Users, X, Zap, TrendingUp, Crown, Plus, CheckCircle2, Sparkles, Star,
+  Trash2, Target, Dumbbell, Leaf, Activity, Cpu, ChevronDown, ChevronUp, ToggleLeft, ToggleRight, Info
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
-export interface PlanItem {
-  id: string;
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+const FITNESS_GOALS = [
+  'Weight Loss', 'Muscle Gain', 'Strength', 'General Fitness',
+  'Bodybuilding', 'Yoga', 'CrossFit', 'Personal Training', 'Online Coaching',
+] as const;
+type FitnessGoal = typeof FITNESS_GOALS[number];
+
+const TRAINING_TYPES = ['Offline', 'Online', 'Hybrid'] as const;
+const BILLING_PLANS = ['monthly', 'annual', 'both'] as const;
+
+// Suggested features per goal (editable by owner)
+const SUGGESTED_FEATURES: Record<FitnessGoal, string[]> = {
+  'Weight Loss': ['Fat-loss workout programs', 'Cardio training', 'Strength training', 'Weight and progress tracking'],
+  'Muscle Gain': ['Muscle-building workout programs', 'Strength training', 'Progressive overload training', 'Muscle development progress tracking'],
+  'Strength': ['Strength-focused workout programs', 'Progressive resistance training', 'Strength performance tracking'],
+  'General Fitness': ['Full-body workout programs', 'Cardio training', 'Basic strength training', 'Flexibility and mobility exercises', 'General fitness progress tracking'],
+  'Bodybuilding': ['Bodybuilding workout programs', 'Muscle development training', 'Body composition progress tracking'],
+  'Yoga': ['Yoga sessions', 'Flexibility and mobility exercises', 'Breathing techniques'],
+  'CrossFit': ['Functional fitness workouts', 'Strength and conditioning', 'Endurance training', 'Workout performance tracking'],
+  'Personal Training': ['One-to-one training sessions', 'Personalized workout plans', 'Trainer progress reviews', 'Individual fitness assessments'],
+  'Online Coaching': ['Online workout plans', 'Remote coaching sessions', 'Digital progress tracking', 'Online trainer support'],
+};
+
+interface GymPackage {
+  _id: string;
   name: string;
-  badge: 'starter' | 'growth' | 'pro' | 'custom';
-  isPopular: boolean;
+  fitnessGoal: FitnessGoal;
+  description?: string;
+  features: string[];
+  benefits: string[];
+  trainingType: string;
+  duration: string;
   monthlyPrice: number;
   annualPrice: number;
-  subscribers: number;
-  features: string[];
+  availablePlans: string;
+  isPopular: boolean;
+  status: 'Active' | 'Inactive';
+  createdAt: string;
 }
 
-const DEFAULT_PLANS: PlanItem[] = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    badge: 'starter',
-    isPopular: false,
-    monthlyPrice: 999,
-    annualPrice: 9990,
-    subscribers: 145,
-    features: [
-      'Limited Customers',
-      'Limited Trainers',
-      'Limited AI Suggestions',
-      'Basic Gym Management',
-      'Gym Setup & Profile',
-      'Member Management',
-      'Trainer Management',
-      'Membership Plans',
-      'Basic Exercise Plans',
-      'Basic Diet Plans',
-      'Attendance Tracking',
-      'Basic Reports',
-    ],
-  },
-  {
-    id: 'growth',
-    name: 'Growth',
-    badge: 'growth',
-    isPopular: true,
-    monthlyPrice: 2499,
-    annualPrice: 24990,
-    subscribers: 312,
-    features: [
-      'More Customers',
-      'More Trainers',
-      'AI Analysis',
-      'Personal Trainer Booking',
-      'Personal Training Packages',
-      'Online Sessions',
-      'Chat',
-      'Workout Videos',
-      'Advanced Member Management',
-      'Advanced Trainer Management',
-      'Payment Tracking',
-      'Invoice Generation',
-      'Advanced Reports & Analytics',
-    ],
-  },
-  {
-    id: 'pro',
-    name: 'Pro',
-    badge: 'pro',
-    isPopular: false,
-    monthlyPrice: 4999,
-    annualPrice: 49990,
-    subscribers: 84,
-    features: [
-      'Unlimited Customers',
-      'Unlimited Trainers',
-      'Advanced AI',
-      'Personal Training',
-      'Multiple Branches',
-      'Advanced Reports',
-      'AI Chatbot',
-      'Analytics Dashboard',
-      'Full Management Suite',
-      'Priority Support',
-      'Custom Branding',
-      'API Access',
-      'Dedicated Account Manager',
-    ],
-  },
-];
-
-const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string; label: string }> = {
-  starter: { icon: Zap,        accent: '#6366F1', bg: 'rgba(99,102,241,0.1)',  label: 'Starter' },
-  growth:  { icon: TrendingUp, accent: '#F97316', bg: 'rgba(249,115,22,0.1)',  label: 'Growth'  },
-  pro:     { icon: Crown,      accent: '#EA580C', bg: 'rgba(234,88,12,0.12)',  label: 'Pro'     },
-  custom:  { icon: Sparkles,   accent: '#22C55E', bg: 'rgba(34,197,94,0.12)',  label: 'Custom'  },
+const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = {
+  'Weight Loss':       { icon: Target,    accent: '#EF4444', bg: 'rgba(239,68,68,0.1)'   },
+  'Muscle Gain':       { icon: Dumbbell,  accent: '#F97316', bg: 'rgba(249,115,22,0.1)'  },
+  'Strength':          { icon: Zap,       accent: '#6366F1', bg: 'rgba(99,102,241,0.1)'  },
+  'General Fitness':   { icon: Activity,  accent: '#22C55E', bg: 'rgba(34,197,94,0.1)'   },
+  'Bodybuilding':      { icon: Crown,     accent: '#EA580C', bg: 'rgba(234,88,12,0.12)'  },
+  'Yoga':              { icon: Leaf,      accent: '#10B981', bg: 'rgba(16,185,129,0.1)'  },
+  'CrossFit':          { icon: TrendingUp,accent: '#F59E0B', bg: 'rgba(245,158,11,0.1)'  },
+  'Personal Training': { icon: Users,     accent: '#8B5CF6', bg: 'rgba(139,92,246,0.1)'  },
+  'Online Coaching':   { icon: Cpu,       accent: '#0EA5E9', bg: 'rgba(14,165,233,0.1)'  },
 };
 
-type FormData = {
-  id?: string;
-  name: string;
-  badge: 'starter' | 'growth' | 'pro' | 'custom';
-  monthlyPrice: string;
-  annualPrice: string;
-  subscribers: string;
-  isPopular: boolean;
-  features: string;
-};
+// ── Empty form state ──────────────────────────────────────────────────────────
+const emptyForm = () => ({
+  name: '',
+  fitnessGoal: '' as FitnessGoal | '',
+  description: '',
+  features: [''],
+  benefits: [''],
+  trainingType: 'Offline' as string,
+  duration: '1 Month',
+  monthlyPrice: '',
+  annualPrice: '',
+  availablePlans: 'both' as string,
+  isPopular: false,
+  status: 'Active' as 'Active' | 'Inactive',
+});
 
+// ── Main Component ─────────────────────────────────────────────────────────────
 const GymAdminMembershipPlans = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
-  const storageKey = `gym_membership_plans_${user?.branchId || user?.gymId || 'default'}`;
 
-  // Load plans from localStorage or defaults
-  const [plans, setPlans] = useState<PlanItem[]>(() => {
+  const [packages, setPackages] = useState<GymPackage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+
+  const [filterGoal, setFilterGoal] = useState<FitnessGoal | ''>('');
+  const [filterStatus, setFilterStatus] = useState<'Active' | 'Inactive' | ''>('');
+  const [billingView, setBillingView] = useState<'monthly' | 'annually'>('monthly');
+
+  const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const [form, setForm] = useState(emptyForm());
+  const [showSuggestBanner, setShowSuggestBanner] = useState(false);
+
+  // ── Fetch packages ─────────────────────────────────────────────────────────
+  const fetchPackages = useCallback(async () => {
+    setLoading(true);
+    setError('');
     try {
-      const saved = localStorage.getItem(`gym_membership_plans_${user?.branchId || user?.gymId || 'default'}`);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {
-      console.error('Failed to load plans from storage', e);
+      const params: any = {};
+      if (filterGoal) params.fitnessGoal = filterGoal;
+      if (filterStatus) params.status = filterStatus;
+      const res = await api.get('/gym-packages', { params });
+      setPackages(res.data.packages || []);
+    } catch (e: any) {
+      setError(e.response?.data?.message || 'Failed to load packages');
+    } finally {
+      setLoading(false);
     }
-    return DEFAULT_PLANS;
-  });
+  }, [filterGoal, filterStatus]);
 
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly');
-  const [selectedPlan, setSelectedPlan] = useState<PlanItem | null>(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [isCreatingNew, setIsCreatingNew] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  useEffect(() => { fetchPackages(); }, [fetchPackages]);
 
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    badge: 'growth',
-    monthlyPrice: '',
-    annualPrice: '',
-    subscribers: '',
-    isPopular: false,
-    features: '',
-  });
-
-  // Try to load any synced plans from Branch or Gym database if available
-  useEffect(() => {
-    if (user?.branchId) {
-      api.get(`/branches/${user.branchId}`)
-        .then(res => {
-          const bPlans = res.data?.branch?.subscriptionPlans;
-          if (Array.isArray(bPlans) && bPlans.length > 0) {
-            const mapped: PlanItem[] = bPlans.map((p: any, idx: number) => ({
-              id: p._id || `branch-plan-${idx}`,
-              name: p.name,
-              badge: (p.name.toLowerCase().includes('starter') || p.name.toLowerCase().includes('trial')) ? 'starter' : p.name.toLowerCase().includes('pro') || p.name.toLowerCase().includes('premium') ? 'pro' : 'growth',
-              isPopular: idx === 1,
-              monthlyPrice: Number(String(p.price).replace(/[^0-9]/g, '')) || 999,
-              annualPrice: (Number(String(p.price).replace(/[^0-9]/g, '')) || 999) * 10,
-              subscribers: 0,
-              features: typeof p.features === 'string' ? p.features.split('\n').filter(Boolean) : (Array.isArray(p.features) ? p.features : [])
-            }));
-            if (mapped.length > 0) {
-              setPlans(mapped);
-            }
-          }
-        })
-        .catch(() => {});
-    } else if (user?.gymId) {
-      api.get(`/gyms/${user.gymId}`)
-        .then(res => {
-          const gymPlans = res.data?.gym?.subscriptionPlans;
-          if (Array.isArray(gymPlans) && gymPlans.length > 0) {
-            // preserved
-          }
-        })
-        .catch(() => {});
-    }
-  }, [user?.gymId, user?.branchId]);
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+  const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
   };
 
-  const savePlansToStorage = (updatedPlans: PlanItem[]) => {
-    setPlans(updatedPlans);
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(updatedPlans));
-    } catch (e) {
-      console.error('Failed to save to localStorage', e);
-    }
-
-    // Sync to Branch or Gym DB if backend available
-    if (user?.branchId) {
-      api.put(`/branches/${user.branchId}`, {
-        subscriptionPlans: updatedPlans.map(p => ({
-          name: p.name,
-          price: p.monthlyPrice,
-          duration: 'monthly',
-          features: p.features.join('\n')
-        }))
-      }).catch(() => {});
-    } else if (user?.gymId) {
-      api.put(`/gyms/${user.gymId}`, {
-        subscriptionPlans: updatedPlans.map(p => ({
-          name: p.name,
-          price: p.monthlyPrice,
-          duration: 'monthly',
-          features: p.features.join(', ')
-        }))
-      }).catch(() => {});
-    }
+  // ── Open create modal ──────────────────────────────────────────────────────
+  const openCreate = () => {
+    setIsEditing(false);
+    setEditingId(null);
+    setForm(emptyForm());
+    setShowSuggestBanner(false);
+    setShowModal(true);
   };
 
-  // Open modal for editing
-  const handleOpenEditModal = (plan: PlanItem, e?: React.MouseEvent) => {
+  // ── Open edit modal ────────────────────────────────────────────────────────
+  const openEdit = (pkg: GymPackage, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    setIsCreatingNew(false);
-    setFormData({
-      id: plan.id,
-      name: plan.name,
-      badge: plan.badge,
-      monthlyPrice: String(plan.monthlyPrice),
-      annualPrice: String(plan.annualPrice),
-      subscribers: String(plan.subscribers),
-      isPopular: plan.isPopular,
-      features: plan.features.join('\n'),
+    setIsEditing(true);
+    setEditingId(pkg._id);
+    setForm({
+      name: pkg.name,
+      fitnessGoal: pkg.fitnessGoal,
+      description: pkg.description || '',
+      features: pkg.features.length ? pkg.features : [''],
+      benefits: pkg.benefits.length ? pkg.benefits : [''],
+      trainingType: pkg.trainingType,
+      duration: pkg.duration,
+      monthlyPrice: String(pkg.monthlyPrice),
+      annualPrice: String(pkg.annualPrice),
+      availablePlans: pkg.availablePlans,
+      isPopular: pkg.isPopular,
+      status: pkg.status,
     });
-    setShowEditModal(true);
+    setShowSuggestBanner(false);
+    setShowModal(true);
   };
 
-  // Open modal for new plan creation
-  const handleOpenCreateModal = () => {
-    setIsCreatingNew(true);
-    setFormData({
-      name: '',
-      badge: 'custom',
-      monthlyPrice: '1499',
-      annualPrice: '14990',
-      subscribers: '0',
-      isPopular: false,
-      features: 'Full Gym Access\nLocker Room Access\nStandard Equipment\nMobile App Access',
+  // ── Handle package name / goal change → show suggestion banner ───────────
+  const handleGoalChange = (goal: FitnessGoal | '') => {
+    setForm(f => ({
+      ...f,
+      fitnessGoal: goal,
+      name: goal || '',
+    }));
+    if (goal && !isEditing) setShowSuggestBanner(true);
+  };
+
+  const applySuggestions = () => {
+    if (!form.fitnessGoal) return;
+    const suggested = SUGGESTED_FEATURES[form.fitnessGoal as FitnessGoal] || [];
+    setForm(f => ({ ...f, features: suggested.length ? suggested : [''] }));
+    setShowSuggestBanner(false);
+  };
+
+  // ── Feature / Benefit list helpers ────────────────────────────────────────
+  const updateListItem = (field: 'features' | 'benefits', idx: number, val: string) => {
+    setForm(f => {
+      const list = [...f[field]];
+      list[idx] = val;
+      return { ...f, [field]: list };
     });
-    setShowEditModal(true);
+  };
+  const addListItem = (field: 'features' | 'benefits') => {
+    setForm(f => ({ ...f, [field]: [...f[field], ''] }));
+  };
+  const removeListItem = (field: 'features' | 'benefits', idx: number) => {
+    setForm(f => {
+      const list = f[field].filter((_, i) => i !== idx);
+      return { ...f, [field]: list.length ? list : [''] };
+    });
   };
 
-  // Click card handler: selects plan and opens comprehensive details
-  const handleCardClick = (plan: PlanItem) => {
-    setSelectedPlan(plan);
-  };
-
-  // Save changes
-  const handleSave = (e: React.FormEvent) => {
+  // ── Save (create or update) ────────────────────────────────────────────────
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    const monthly = Math.max(0, parseInt(formData.monthlyPrice) || 0);
-    const annual = Math.max(0, parseInt(formData.annualPrice) || monthly * 10);
-    const subscribers = Math.max(0, parseInt(formData.subscribers) || 0);
-    const featureList = formData.features
-      .split('\n')
-      .map(f => f.trim())
-      .filter(f => f.length > 0);
+    const finalName = form.name.trim() || form.fitnessGoal;
+    const finalGoal = form.fitnessGoal || (FITNESS_GOALS.includes(finalName as any) ? finalName : '');
+    if (!finalGoal) { showToast('Please select a Package Name', 'error'); return; }
+    if (!finalName) { showToast('Package name is required', 'error'); return; }
+    const monthly = Number(form.monthlyPrice);
+    const annual = Number(form.annualPrice);
+    if (isNaN(monthly) || monthly < 0) { showToast('Monthly price must be a non-negative number', 'error'); return; }
+    if (isNaN(annual) || annual < 0) { showToast('Annual price must be a non-negative number', 'error'); return; }
 
-    if (isCreatingNew) {
-      const newPlan: PlanItem = {
-        id: `plan_${Date.now()}`,
-        name: formData.name.trim() || 'New Package',
-        badge: formData.badge,
-        isPopular: formData.isPopular,
+    setSaving(true);
+    try {
+      const payload = {
+        ...form,
+        name: finalName,
+        fitnessGoal: finalGoal,
+        features: form.features.filter(f => f.trim()),
+        benefits: form.benefits.filter(b => b.trim()),
         monthlyPrice: monthly,
         annualPrice: annual,
-        subscribers,
-        features: featureList.length > 0 ? featureList : ['Standard Gym Access'],
       };
 
-      const updated = formData.isPopular
-        ? plans.map(p => ({ ...p, isPopular: false })).concat(newPlan)
-        : [...plans, newPlan];
-
-      savePlansToStorage(updated);
-      showToast(`Package "${newPlan.name}" created successfully!`);
-    } else {
-      const updated = plans.map(p => {
-        if (p.id === formData.id) {
-          return {
-            ...p,
-            name: formData.name.trim() || p.name,
-            badge: formData.badge,
-            isPopular: formData.isPopular,
-            monthlyPrice: monthly,
-            annualPrice: annual,
-            subscribers,
-            features: featureList.length > 0 ? featureList : p.features,
-          };
-        }
-        if (formData.isPopular && p.id !== formData.id) {
-          return { ...p, isPopular: false };
-        }
-        return p;
-      });
-
-      savePlansToStorage(updated);
-      showToast(`Package "${formData.name}" updated successfully!`);
-      if (selectedPlan && selectedPlan.id === formData.id) {
-        const refreshed = updated.find(p => p.id === formData.id);
-        if (refreshed) setSelectedPlan(refreshed);
+      if (isEditing && editingId) {
+        await api.put(`/gym-packages/${editingId}`, payload);
+        showToast('Package updated successfully!');
+      } else {
+        await api.post('/gym-packages', payload);
+        showToast('Package created successfully!');
       }
-    }
-
-    setShowEditModal(false);
-  };
-
-  // Delete plan
-  const handleDeletePlan = (planId: string) => {
-    if (plans.length <= 1) {
-      alert('You must have at least one subscription package.');
-      return;
-    }
-    if (window.confirm('Are you sure you want to delete this subscription plan?')) {
-      const updated = plans.filter(p => p.id !== planId);
-      savePlansToStorage(updated);
-      setSelectedPlan(null);
-      showToast('Plan deleted successfully.');
+      setShowModal(false);
+      await fetchPackages();
+    } catch (err: any) {
+      showToast(err.response?.data?.message || 'Failed to save package', 'error');
+    } finally {
+      setSaving(false);
     }
   };
 
-  // Toggle most popular
-  const handleSetMostPopular = (planId: string) => {
-    const updated = plans.map(p => ({
-      ...p,
-      isPopular: p.id === planId,
-    }));
-    savePlansToStorage(updated);
-    const selected = updated.find(p => p.id === planId);
-    if (selected) setSelectedPlan(selected);
-    showToast('Updated most popular plan!');
+  // ── Toggle status ──────────────────────────────────────────────────────────
+  const handleToggleStatus = async (pkg: GymPackage, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newStatus = pkg.status === 'Active' ? 'Inactive' : 'Active';
+    try {
+      await api.patch(`/gym-packages/${pkg._id}/status`, { status: newStatus });
+      showToast(`Package ${newStatus === 'Active' ? 'activated' : 'deactivated'}`);
+      await fetchPackages();
+    } catch (err: any) {
+      showToast(err.response?.data?.message || 'Failed to update status', 'error');
+    }
   };
 
+  // ── Delete ─────────────────────────────────────────────────────────────────
+  const handleDelete = async (pkg: GymPackage, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (!window.confirm(`Delete package "${pkg.name}"? This action cannot be undone.`)) return;
+    try {
+      await api.delete(`/gym-packages/${pkg._id}`);
+      showToast('Package deleted');
+      await fetchPackages();
+    } catch (err: any) {
+      showToast(err.response?.data?.message || 'Failed to delete package', 'error');
+    }
+  };
+
+  // ── Filtered display list ─────────────────────────────────────────────────
+  const displayed = packages;
+
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-8 pb-16 max-w-7xl mx-auto">
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed top-6 right-6 z-[110] bg-[#292524] text-white px-5 py-3 rounded-2xl shadow-2xl border border-stone-700 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200">
-          <CheckCircle2 size={18} className="text-[#22C55E]" />
-          <span className="text-sm font-semibold">{toastMessage}</span>
+      {/* Toast */}
+      {toast && (
+        <div className={`fixed top-6 right-6 z-[110] px-5 py-3 rounded-2xl shadow-2xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200 ${toast.type === 'error' ? 'bg-red-900 border-red-700 text-white' : 'bg-[#292524] text-white border-stone-700'}`}>
+          {toast.type === 'error' ? <X size={18} className="text-red-400" /> : <CheckCircle2 size={18} className="text-[#22C55E]" />}
+          <span className="text-sm font-semibold">{toast.msg}</span>
         </div>
       )}
 
@@ -363,455 +271,357 @@ const GymAdminMembershipPlans = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-[#292524] tracking-tight">Package Plans</h1>
-          <p className="text-sm text-[#78716C] mt-1">Configure your gym's subscription packages, member tiers, and pricing.</p>
+          <p className="text-sm text-[#78716C] mt-1">Create and manage fitness packages for your gym members.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleOpenCreateModal}
-            className="px-4 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-xl flex items-center gap-2 shadow-md shadow-[#F97316]/20 transition-all active:scale-95 text-sm"
-          >
-            <Plus size={18} /> Add Package Plan
-          </button>
-        </div>
+        <button onClick={openCreate}
+          className="px-4 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-xl flex items-center gap-2 shadow-md shadow-[#F97316]/20 transition-all active:scale-95 text-sm">
+          <Plus size={18} /> Add Package Plan
+        </button>
       </div>
 
-      {/* Billing Cycle Toggle */}
-      <div className="flex justify-center">
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 items-center">
+        {/* Billing toggle */}
         <div className="bg-white p-1.5 rounded-2xl border border-[#E7E5E4] inline-flex shadow-xs">
-          <button 
-            onClick={() => setBillingCycle('monthly')} 
-            className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
-              billingCycle === 'monthly' 
-                ? 'bg-[#F97316] text-white shadow-md shadow-[#F97316]/20' 
-                : 'text-[#78716C] hover:text-[#292524] hover:bg-stone-50'
-            }`}
-          >
-            Monthly
-          </button>
-          <button 
-            onClick={() => setBillingCycle('annually')} 
-            className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
-              billingCycle === 'annually' 
-                ? 'bg-[#F97316] text-white shadow-md shadow-[#F97316]/20' 
-                : 'text-[#78716C] hover:text-[#292524] hover:bg-stone-50'
-            }`}
-          >
-            Annually 
-            <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
-              Save 2 months
-            </span>
-          </button>
+          {(['monthly', 'annually'] as const).map(c => (
+            <button key={c} onClick={() => setBillingView(c)}
+              className={`px-5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer ${billingView === c ? 'bg-[#F97316] text-white shadow-md' : 'text-[#78716C] hover:text-[#292524]'}`}>
+              {c === 'monthly' ? 'Monthly' : 'Annually'}
+              {c === 'annually' && <span className="ml-2 text-xs bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full">Save 2 mo</span>}
+            </button>
+          ))}
         </div>
+
+        {/* Goal filter */}
+        <select value={filterGoal} onChange={e => setFilterGoal(e.target.value as any)}
+          className="border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] outline-none focus:border-[#F97316] bg-white">
+          <option value="">All Goals</option>
+          {FITNESS_GOALS.map(g => <option key={g}>{g}</option>)}
+        </select>
+
+        {/* Status filter */}
+        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value as any)}
+          className="border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm text-[#292524] outline-none focus:border-[#F97316] bg-white">
+          <option value="">All Statuses</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
       </div>
 
-      {/* Plan Cards Grid — Fully Interactive */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-        {plans.map((plan) => {
-          const badge = BADGE_CONFIG[plan.badge] || BADGE_CONFIG.starter;
-          const IconComp = badge.icon;
-          const price = billingCycle === 'monthly' ? plan.monthlyPrice : plan.annualPrice;
-          const durationLabel = billingCycle === 'monthly' ? '1 month' : '1 year';
-          const isSelected = selectedPlan?.id === plan.id;
+      {/* Content */}
+      {loading ? (
+        <div className="flex justify-center py-24">
+          <div className="w-10 h-10 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : error ? (
+        <div className="text-center py-12 text-red-500">{error}</div>
+      ) : displayed.length === 0 ? (
+        <div className="text-center py-20 space-y-4">
+          <div className="w-20 h-20 mx-auto bg-orange-50 rounded-3xl flex items-center justify-center">
+            <Sparkles size={36} className="text-[#F97316]" />
+          </div>
+          <h3 className="text-xl font-bold text-[#292524]">No packages yet</h3>
+          <p className="text-[#78716C] text-sm">Create your first fitness package for members to discover.</p>
+          <button onClick={openCreate}
+            className="px-6 py-3 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-all">
+            <Plus size={16} className="inline mr-2" />Add Package Plan
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          {displayed.map(pkg => {
+            const badge = BADGE_CONFIG[pkg.fitnessGoal] || BADGE_CONFIG['General Fitness'];
+            const IconComp = badge.icon;
+            const price = billingView === 'monthly' ? pkg.monthlyPrice : pkg.annualPrice;
+            const durLabel = billingView === 'monthly' ? '/ month' : '/ year';
 
-          return (
-            <div 
-              key={plan.id}
-              onClick={() => handleCardClick(plan)}
-              className={`rounded-3xl p-7 sm:p-8 relative flex flex-col justify-between transition-all duration-200 bg-white cursor-pointer group ${
-                isSelected
-                  ? 'ring-4 ring-[#F97316]/30 border-2 border-[#F97316] shadow-xl -translate-y-1'
-                  : plan.isPopular
-                  ? 'border-2 border-[#F97316] shadow-xl md:-translate-y-2 hover:-translate-y-3'
-                  : 'border border-[#E7E5E4] hover:border-[#F97316]/50 hover:shadow-lg hover:-translate-y-1'
-              }`}
-            >
-              {/* Most Popular Ribbon */}
-              {plan.isPopular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <span className="bg-[#F97316] text-white text-xs font-black uppercase tracking-wider py-1.5 px-5 rounded-full shadow-md flex items-center gap-1.5">
-                    <Star size={12} className="fill-white" /> Most Popular
-                  </span>
-                </div>
-              )}
+            return (
+              <div key={pkg._id}
+                className={`h-full rounded-3xl p-7 relative flex flex-col justify-between bg-white ${
+                  pkg.status === 'Inactive' ? 'opacity-60' : ''
+                } ${pkg.isPopular ? 'border-2 border-[#F97316] shadow-md' : 'border border-[#E7E5E4] shadow-sm'}`}>
 
-              <div>
-                {/* Header */}
-                <div className="flex justify-between items-start mb-5 pt-1">
-                  <div className="flex items-center gap-3">
-                    <div 
-                      className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" 
-                      style={{ backgroundColor: badge.bg }}
-                    >
-                      <IconComp size={22} style={{ color: badge.accent }} />
+                {pkg.isPopular && (
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <span className="bg-[#F97316] text-white text-xs font-black uppercase tracking-wider py-1.5 px-5 rounded-full shadow-md flex items-center gap-1.5">
+                      <Star size={12} className="fill-white" /> Most Popular
+                    </span>
+                  </div>
+                )}
+
+                {pkg.status === 'Inactive' && (
+                  <div className="absolute top-3 right-14 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">Inactive</div>
+                )}
+
+                <div className="flex-1 flex flex-col">
+                  {/* Card Header */}
+                  <div className="flex justify-between items-start mb-4 pt-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: badge.bg }}>
+                        <IconComp size={22} style={{ color: badge.accent }} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-extrabold text-[#292524] leading-tight">{pkg.name}</h3>
+                        {pkg.name.trim().toLowerCase() !== pkg.fitnessGoal.trim().toLowerCase() && (
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md mt-1" style={{ color: badge.accent, backgroundColor: badge.bg }}>
+                            {pkg.fitnessGoal}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-extrabold text-[#292524] leading-tight group-hover:text-[#F97316] transition-colors">
-                        {plan.name}
-                      </h3>
-                      <span className="text-xs font-bold uppercase tracking-wider" style={{ color: badge.accent }}>
-                        {badge.label} Plan
-                      </span>
-                    </div>
+                    <button onClick={e => openEdit(pkg, e)} className="p-2 text-[#78716C] hover:text-[#F97316] hover:bg-[#F97316]/10 rounded-xl transition-colors cursor-pointer" title="Edit">
+                      <Edit2 size={16} />
+                    </button>
                   </div>
 
-                  {/* Edit Pencil Button */}
-                  <button 
-                    onClick={(e) => handleOpenEditModal(plan, e)}
-                    className="p-2 text-[#78716C] hover:text-[#F97316] hover:bg-[#F97316]/10 rounded-xl transition-colors cursor-pointer"
-                    title="Edit Plan Pricing & Details"
-                  >
-                    <Edit2 size={18} />
+                  {pkg.description ? (
+                    <p className="text-xs text-[#78716C] mb-4 leading-relaxed line-clamp-3">{pkg.description}</p>
+                  ) : (
+                    <div className="mb-4" />
+                  )}
+
+                  <div className="mb-4 flex items-baseline">
+                    <span className="text-3xl font-black text-[#292524]">₹{price.toLocaleString('en-IN')}</span>
+                    <span className="text-[#78716C] ml-2 font-medium text-sm">{durLabel}</span>
+                  </div>
+
+                  {/* Training type & duration badges */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-xs bg-stone-100 text-[#78716C] font-semibold px-2.5 py-1 rounded-full">{pkg.trainingType}</span>
+                    <span className="text-xs bg-stone-100 text-[#78716C] font-semibold px-2.5 py-1 rounded-full">{pkg.duration}</span>
+                  </div>
+
+                  {/* Features List */}
+                  {pkg.features.length > 0 && (
+                    <div className="flex-1 flex flex-col mb-4">
+                      <p className="text-xs font-bold text-[#292524] mb-2.5 uppercase tracking-wider">Features Included:</p>
+                      <ul className="space-y-2 flex-1">
+                        {pkg.features.slice(0, 4).map((f, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span className="mt-0.5 shrink-0 w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: badge.bg }}>
+                              <Check size={10} style={{ color: badge.accent }} strokeWidth={3} />
+                            </span>
+                            <span className="text-xs text-[#78716C] leading-snug">{f}</span>
+                          </li>
+                        ))}
+                        {pkg.features.length > 4 && (
+                          <li className="text-xs text-[#F97316] font-semibold">+{pkg.features.length - 4} more features</li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer Buttons - pinned to bottom */}
+                <div className="pt-5 mt-auto border-t border-[#E7E5E4] flex items-center gap-2 shrink-0">
+                  <button onClick={e => handleToggleStatus(pkg, e)}
+                    className={`flex-1 h-10 px-3 rounded-xl font-bold text-xs transition-colors border flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${pkg.status === 'Active' ? 'border-emerald-200 text-emerald-700 hover:bg-emerald-50' : 'border-[#E7E5E4] text-[#78716C] hover:bg-stone-50'}`}>
+                    {pkg.status === 'Active' ? <ToggleRight size={14} className="shrink-0" /> : <ToggleLeft size={14} className="shrink-0" />}
+                    <span>{pkg.status === 'Active' ? 'Active' : 'Inactive'}</span>
+                  </button>
+                  <button onClick={e => openEdit(pkg, e)}
+                    className="flex-1 h-10 px-3 rounded-xl font-bold text-xs transition-colors text-white shadow-sm hover:opacity-90 flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
+                    style={{ backgroundColor: badge.accent }}>
+                    <span>Edit Plan</span>
+                  </button>
+                  <button onClick={e => handleDelete(pkg, e)}
+                    className="h-10 px-3.5 rounded-xl font-bold text-xs transition-colors border border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 flex items-center justify-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap"
+                    title="Delete Plan">
+                    <Trash2 size={13} className="shrink-0" />
+                    <span>Delete</span>
                   </button>
                 </div>
-
-                {/* Price Display */}
-                <div className="mb-6 flex items-baseline">
-                  <span className="text-4xl font-black text-[#292524]">
-                    &#8377;{price.toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-[#78716C] ml-2 font-medium text-sm">
-                    / {durationLabel}
-                  </span>
-                </div>
-
-                {/* Subscribers Box */}
-                <div className="flex items-center space-x-2 mb-6 bg-stone-50 p-3 rounded-2xl border border-[#E7E5E4]">
-                  <Users size={18} className="text-[#F97316]" />
-                  <span className="text-sm font-bold text-[#292524]">{plan.subscribers}</span>
-                  <span className="text-sm text-[#78716C]">Active Subscribers</span>
-                </div>
-
-                {/* Features List */}
-                <div className="mb-6">
-                  <p className="text-xs font-bold text-[#292524] mb-3.5 uppercase tracking-wider">
-                    Features Included:
-                  </p>
-                  <ul className="space-y-2.5">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5">
-                        <span 
-                          className="mt-0.5 shrink-0 w-5 h-5 rounded-full flex items-center justify-center" 
-                          style={{ backgroundColor: badge.bg }}
-                        >
-                          <Check size={12} style={{ color: badge.accent }} strokeWidth={3} />
-                        </span>
-                        <span className="text-xs sm:text-sm text-[#78716C] leading-snug">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
               </div>
+            );
+          })}
+        </div>
+      )}
 
-              {/* Card Footer Actions */}
-              <div className="pt-5 border-t border-[#E7E5E4] flex gap-2">
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCardClick(plan);
-                  }}
-                  className="flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all border border-[#E7E5E4] hover:border-[#F97316] hover:bg-stone-50 text-[#292524]"
-                >
-                  View Details
-                </button>
-                <button 
-                  onClick={(e) => handleOpenEditModal(plan, e)}
-                  className="flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all text-white shadow-md hover:opacity-90 active:scale-95" 
-                  style={{ backgroundColor: badge.accent }}
-                >
-                  Edit Plan
-                </button>
+      {/* ── CREATE / EDIT MODAL ── */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-150">
+          <div className="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#E7E5E4] my-auto">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center mb-6 border-b border-[#E7E5E4] pb-4">
+              <div>
+                <h2 className="text-2xl font-extrabold text-[#292524]">{isEditing ? 'Edit Package Plan' : 'Create New Package Plan'}</h2>
+                <p className="text-xs text-[#78716C] mt-0.5">Configure fitness goal, pricing, features, and availability.</p>
               </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* ===================== VIEW PLAN DETAILS MODAL ===================== */}
-      {selectedPlan && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#E7E5E4] my-auto flex flex-col max-h-[90vh] overflow-hidden">
-            {/* Header */}
-            <div className="flex justify-between items-start border-b border-[#E7E5E4] pb-4 mb-5 shrink-0">
-              <div className="flex items-center gap-3">
-                <div 
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                  style={{ backgroundColor: BADGE_CONFIG[selectedPlan.badge]?.bg }}
-                >
-                  {(() => {
-                    const Icon = BADGE_CONFIG[selectedPlan.badge]?.icon || Zap;
-                    return <Icon size={24} style={{ color: BADGE_CONFIG[selectedPlan.badge]?.accent }} />;
-                  })()}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-2xl font-extrabold text-[#292524]">{selectedPlan.name}</h2>
-                    {selectedPlan.isPopular && (
-                      <span className="bg-[#F97316] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                        Popular
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-[#78716C] uppercase tracking-wider font-semibold">
-                    {BADGE_CONFIG[selectedPlan.badge]?.label} Package Tier
-                  </p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedPlan(null)} 
-                className="p-1.5 text-[#78716C] hover:text-[#292524] rounded-lg hover:bg-stone-100 transition-colors"
-              >
+              <button onClick={() => setShowModal(false)} className="p-1.5 text-[#78716C] hover:text-[#292524] rounded-lg hover:bg-stone-100 transition-colors">
                 <X size={20} />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="overflow-y-auto flex-1 space-y-5 pr-1">
-              {/* Pricing Cards */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-4 bg-orange-50/60 border border-orange-200 rounded-2xl text-center">
-                  <span className="text-xs text-orange-800 font-semibold block">Monthly Price</span>
-                  <span className="text-2xl font-black text-[#F97316]">
-                    ₹{selectedPlan.monthlyPrice.toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-[10px] text-orange-700 block">per month</span>
+            <form onSubmit={handleSave} className="space-y-5 max-h-[70vh] overflow-y-auto pr-2">
+              {/* Package Name (Goal / Category) Dropdown */}
+              <div>
+                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                  <span>Package Name *</span>
+                  {form.fitnessGoal && (
+                    <span className="text-[10px] font-semibold text-[#F97316]">Selected</span>
+                  )}
+                </label>
+                <div className="relative">
+                  <select
+                    required
+                    value={form.fitnessGoal}
+                    onChange={e => handleGoalChange(e.target.value as FitnessGoal)}
+                    className="w-full border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#F97316] text-[#292524] font-semibold bg-white cursor-pointer appearance-none pr-9 transition-colors shadow-sm"
+                  >
+                    <option value="">-- Select Package Name --</option>
+                    {FITNESS_GOALS.map(g => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C] pointer-events-none" />
                 </div>
-                <div className="p-4 bg-stone-50 border border-[#E7E5E4] rounded-2xl text-center">
-                  <span className="text-xs text-[#78716C] font-semibold block">Annual Price</span>
-                  <span className="text-2xl font-black text-[#292524]">
-                    ₹{selectedPlan.annualPrice.toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-[10px] text-emerald-700 font-bold block">Save ~2 months</span>
-                </div>
+                {!form.fitnessGoal && (
+                  <p className="text-[10px] text-red-500 mt-1">Required – select a package</p>
+                )}
               </div>
 
-              {/* Subscriber Overview */}
-              <div className="p-4 bg-white border border-[#E7E5E4] rounded-2xl flex items-center justify-between shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-[#F97316]">
-                    <Users size={20} />
+              {/* Suggestion banner */}
+              {showSuggestBanner && form.fitnessGoal && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+                  <Info size={16} className="text-amber-600 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-amber-800">Suggested features available for "{form.fitnessGoal}"</p>
+                    <p className="text-xs text-amber-700 mt-0.5">You can apply the suggested features or customize your own.</p>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-[#292524]">Active Subscribers</h4>
-                    <p className="text-xs text-[#78716C]">Current gym members enrolled</p>
+                  <div className="flex gap-2 shrink-0">
+                    <button type="button" onClick={applySuggestions} className="text-xs font-bold text-amber-800 hover:underline">Apply</button>
+                    <button type="button" onClick={() => setShowSuggestBanner(false)} className="text-xs text-amber-600 hover:underline">Dismiss</button>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-2xl font-black text-[#F97316]">{selectedPlan.subscribers}</span>
-                  <button 
-                    onClick={() => {
-                      setSelectedPlan(null);
-                      navigate('/admin/members');
-                    }}
-                    className="text-[11px] text-[#F97316] hover:underline font-semibold flex items-center gap-1 justify-end mt-0.5"
-                  >
-                    View Members <ExternalLink size={10} />
+              )}
+
+              {/* Description */}
+              <div>
+                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">Description</label>
+                <textarea rows={2} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                  placeholder="Brief description of this package..."
+                  className="w-full border border-[#E7E5E4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] text-[#292524] leading-relaxed resize-none" />
+              </div>
+
+              {/* Features */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider">Package Features</label>
+                  <button type="button" onClick={() => addListItem('features')} className="text-xs text-[#F97316] font-bold hover:underline flex items-center gap-1">
+                    <Plus size={12} /> Add
                   </button>
                 </div>
-              </div>
-
-              {/* Features List */}
-              <div>
-                <h4 className="text-xs font-bold text-[#292524] uppercase tracking-wider mb-3">
-                  Included Features ({selectedPlan.features.length})
-                </h4>
-                <div className="space-y-2 bg-stone-50/70 p-4 rounded-2xl border border-[#E7E5E4]">
-                  {selectedPlan.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-2.5 text-xs text-[#292524]">
-                      <CheckCircle2 size={15} className="text-[#22C55E] shrink-0" />
-                      <span>{feature}</span>
+                <div className="space-y-2">
+                  {form.features.map((f, i) => (
+                    <div key={i} className="flex gap-2">
+                      <input value={f} onChange={e => updateListItem('features', i, e.target.value)}
+                        placeholder={`Feature ${i + 1}`}
+                        className="flex-1 border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#F97316] text-[#292524]" />
+                      {form.features.length > 1 && (
+                        <button type="button" onClick={() => removeListItem('features', i)} className="p-2 text-red-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+                          <X size={14} />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
 
-            {/* Footer Actions */}
-            <div className="pt-4 mt-4 border-t border-[#E7E5E4] flex flex-wrap gap-2 justify-between items-center shrink-0">
-              <div className="flex items-center gap-2">
-                {!selectedPlan.isPopular && (
-                  <button
-                    onClick={() => handleSetMostPopular(selectedPlan.id)}
-                    className="px-3 py-2 text-xs font-bold text-[#F97316] hover:bg-orange-50 border border-orange-200 rounded-xl transition-colors"
-                  >
-                    Set as Most Popular
+              {/* Benefits */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider">Package Benefits</label>
+                  <button type="button" onClick={() => addListItem('benefits')} className="text-xs text-[#F97316] font-bold hover:underline flex items-center gap-1">
+                    <Plus size={12} /> Add
                   </button>
-                )}
-                <button
-                  onClick={() => handleDeletePlan(selectedPlan.id)}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                  title="Delete Plan"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setSelectedPlan(null)}
-                  className="px-4 py-2 text-xs font-bold text-[#78716C] hover:bg-stone-100 rounded-xl transition-colors"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={() => {
-                    const planToEdit = selectedPlan;
-                    setSelectedPlan(null);
-                    handleOpenEditModal(planToEdit);
-                  }}
-                  className="px-5 py-2 text-xs font-bold bg-[#F97316] text-white hover:bg-[#EA580C] rounded-xl transition-colors shadow-sm"
-                >
-                  Edit This Plan
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ===================== EDIT / CREATE PLAN MODAL ===================== */}
-      {showEditModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-150">
-          <div className="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#E7E5E4] my-auto">
-            <div className="flex justify-between items-center mb-6 border-b border-[#E7E5E4] pb-4">
-              <div>
-                <h2 className="text-2xl font-extrabold text-[#292524]">
-                  {isCreatingNew ? 'Create New Package Plan' : 'Edit Package Plan'}
-                </h2>
-                <p className="text-xs text-[#78716C] mt-0.5">
-                  Set prices, subscriber capacity, and features for this package tier.
-                </p>
-              </div>
-              <button 
-                onClick={() => setShowEditModal(false)} 
-                className="p-1.5 text-[#78716C] hover:text-[#292524] rounded-lg hover:bg-stone-100 transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSave} className="space-y-4">
-              {/* Plan Name */}
-              <div>
-                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">
-                  Plan Name *
-                </label>
-                <input 
-                  required
-                  type="text"
-                  value={formData.name} 
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Starter, Growth, Elite, Pro"
-                  className="w-full border border-[#E7E5E4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] font-semibold text-[#292524]" 
-                />
-              </div>
-
-              {/* Price Fields */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">
-                    Monthly Price (₹) *
-                  </label>
-                  <input 
-                    required 
-                    type="number" 
-                    value={formData.monthlyPrice} 
-                    onChange={(e) => setFormData({ ...formData, monthlyPrice: e.target.value })} 
-                    className="w-full border border-[#E7E5E4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] font-semibold text-[#292524]" 
-                    placeholder="999" 
-                  />
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">
-                    Annual Price (₹) *
-                  </label>
-                  <input 
-                    required 
-                    type="number" 
-                    value={formData.annualPrice} 
-                    onChange={(e) => setFormData({ ...formData, annualPrice: e.target.value })} 
-                    className="w-full border border-[#E7E5E4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] font-semibold text-[#292524]" 
-                    placeholder="9990" 
-                  />
+                <div className="space-y-2">
+                  {form.benefits.map((b, i) => (
+                    <div key={i} className="flex gap-2">
+                      <input value={b} onChange={e => updateListItem('benefits', i, e.target.value)}
+                        placeholder={`Benefit ${i + 1}`}
+                        className="flex-1 border border-[#E7E5E4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#F97316] text-[#292524]" />
+                      {form.benefits.length > 1 && (
+                        <button type="button" onClick={() => removeListItem('benefits', i)} className="p-2 text-red-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Subscribers count & Badge */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Training Type, Duration, Available Plans */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">
-                    Active Subscribers
-                  </label>
-                  <input 
-                    type="number" 
-                    value={formData.subscribers} 
-                    onChange={(e) => setFormData({ ...formData, subscribers: e.target.value })} 
-                    className="w-full border border-[#E7E5E4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] font-semibold text-[#292524]" 
-                    placeholder="100" 
-                  />
+                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">Training Type</label>
+                  <select value={form.trainingType} onChange={e => setForm(f => ({ ...f, trainingType: e.target.value }))}
+                    className="w-full border border-[#E7E5E4] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#F97316] text-[#292524]">
+                    {TRAINING_TYPES.map(t => <option key={t}>{t}</option>)}
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">
-                    Plan Badge Style
-                  </label>
-                  <select
-                    value={formData.badge}
-                    onChange={(e) => setFormData({ ...formData, badge: e.target.value as any })}
-                    className="w-full border border-[#E7E5E4] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#F97316] font-semibold text-[#292524]"
-                  >
-                    <option value="starter">Starter (Indigo)</option>
-                    <option value="growth">Growth (Orange)</option>
-                    <option value="pro">Pro (Deep Orange)</option>
-                    <option value="custom">Custom (Green)</option>
+                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">Duration</label>
+                  <select value={form.duration} onChange={e => setForm(f => ({ ...f, duration: e.target.value }))}
+                    className="w-full border border-[#E7E5E4] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#F97316] text-[#292524]">
+                    {['1 Month', '3 Months', '6 Months', '1 Year'].map(d => <option key={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">Available Plans</label>
+                  <select value={form.availablePlans} onChange={e => setForm(f => ({ ...f, availablePlans: e.target.value }))}
+                    className="w-full border border-[#E7E5E4] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#F97316] text-[#292524]">
+                    <option value="both">Monthly &amp; Annual</option>
+                    <option value="monthly">Monthly Only</option>
+                    <option value="annual">Annual Only</option>
                   </select>
                 </div>
               </div>
 
-              {/* Checkbox: Most Popular */}
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="isPopular"
-                  checked={formData.isPopular}
-                  onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
-                  className="w-4 h-4 text-[#F97316] rounded border-[#E7E5E4] focus:ring-[#F97316]"
-                />
-                <label htmlFor="isPopular" className="text-xs font-bold text-[#292524] cursor-pointer">
-                  Mark as "Most Popular" Plan
+              {/* Pricing */}
+              <div className="grid grid-cols-2 gap-4">
+                {(form.availablePlans === 'monthly' || form.availablePlans === 'both') && (
+                  <div>
+                    <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">Monthly Price (₹) *</label>
+                    <input required type="number" min="0" value={form.monthlyPrice}
+                      onChange={e => setForm(f => ({ ...f, monthlyPrice: e.target.value }))}
+                      placeholder="e.g. 999" className="w-full border border-[#E7E5E4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] text-[#292524] font-semibold" />
+                  </div>
+                )}
+                {(form.availablePlans === 'annual' || form.availablePlans === 'both') && (
+                  <div>
+                    <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5">Annual Price (₹) *</label>
+                    <input required type="number" min="0" value={form.annualPrice}
+                      onChange={e => setForm(f => ({ ...f, annualPrice: e.target.value }))}
+                      placeholder="e.g. 9990" className="w-full border border-[#E7E5E4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] text-[#292524] font-semibold" />
+                  </div>
+                )}
+              </div>
+
+              {/* Controls */}
+              <div className="flex flex-wrap gap-4 items-center">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={form.isPopular} onChange={e => setForm(f => ({ ...f, isPopular: e.target.checked }))}
+                    className="w-4 h-4 text-[#F97316] rounded border-[#E7E5E4] focus:ring-[#F97316]" />
+                  <span className="text-xs font-bold text-[#292524]">Mark as "Most Popular"</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <span className="text-xs font-bold text-[#78716C]">Status:</span>
+                  <button type="button" onClick={() => setForm(f => ({ ...f, status: f.status === 'Active' ? 'Inactive' : 'Active' }))}
+                    className={`text-xs font-bold px-3 py-1 rounded-full transition-colors ${form.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}`}>
+                    {form.status}
+                  </button>
                 </label>
               </div>
 
-              {/* Features List (one per line) */}
-              <div>
-                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-1.5 flex justify-between">
-                  <span>Features Included (one per line) *</span>
-                  <span className="text-[11px] normal-case text-[#78716C]">Press Enter for new feature</span>
-                </label>
-                <textarea 
-                  required 
-                  rows={6} 
-                  value={formData.features} 
-                  onChange={(e) => setFormData({ ...formData, features: e.target.value })} 
-                  className="w-full border border-[#E7E5E4] rounded-xl p-3 text-xs sm:text-sm outline-none focus:border-[#F97316] text-[#292524] leading-relaxed" 
-                  placeholder="Unlimited Customers&#10;Unlimited Trainers&#10;AI Workout Suggestions&#10;Personal Training"
-                />
-              </div>
-
-              {/* Buttons */}
+              {/* Submit */}
               <div className="pt-4 border-t border-[#E7E5E4] flex justify-end gap-3">
-                <button 
-                  type="button" 
-                  onClick={() => setShowEditModal(false)} 
-                  className="px-5 py-2.5 text-[#78716C] hover:bg-stone-100 rounded-xl font-bold text-xs transition-colors"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  className="px-6 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95"
-                >
-                  Save Package Plan
+                <button type="button" onClick={() => setShowModal(false)}
+                  className="px-5 py-2.5 text-[#78716C] hover:bg-stone-100 rounded-xl font-bold text-xs transition-colors">Cancel</button>
+                <button type="submit" disabled={saving}
+                  className="px-6 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 disabled:opacity-60 flex items-center gap-2">
+                  {saving && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                  {isEditing ? 'Update Package' : 'Create Package'}
                 </button>
               </div>
             </form>

@@ -27,6 +27,8 @@ import workoutProgressRoutes from './routes/workoutProgressRoutes';
 import directMessageRoutes from './routes/directMessageRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
 import trainerPlanRoutes from './routes/trainerPlanRoutes';
+import gymPackageRoutes from './routes/gymPackageRoutes';
+import dietProgressRoutes from './routes/dietProgressRoutes';
 
 dotenv.config();
 
@@ -66,6 +68,8 @@ app.use('/api/workout-progress', workoutProgressRoutes);
 app.use('/api/direct-messages', directMessageRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/trainer-plans', trainerPlanRoutes);
+app.use('/api/gym-packages', gymPackageRoutes);
+app.use('/api/diet-progress', dietProgressRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running' });

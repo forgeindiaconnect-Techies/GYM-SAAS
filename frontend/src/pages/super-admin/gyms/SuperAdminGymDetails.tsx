@@ -17,7 +17,7 @@ const SuperAdminGymDetails = () => {
       </div>
       
       <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6">
-        <h2 className="text-xl font-bold mb-6 text-[#292524]">AI Gym Core Branch</h2>
+        <h2 className="text-xl font-bold mb-6 text-[#292524]">Gymora Core Branch</h2>
         <div className="grid grid-cols-2 gap-6 font-mono text-sm">
           <div><p className="text-[#555] mb-1">LOCATION</p><p>New York, NY 10001</p></div>
           <div><p className="text-[#555] mb-1">OWNER</p><p>owner@aigym.com</p></div>

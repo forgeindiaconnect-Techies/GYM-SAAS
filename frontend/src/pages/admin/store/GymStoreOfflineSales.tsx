@@ -148,7 +148,7 @@ const GymStoreOfflineSales = () => {
   const isUpiMethod = ['UPI', 'Google Pay', 'PhonePe', 'Paytm'].includes(paymentMethod);
 
   // Dynamic UPI URI string for the QR code
-  const upiPayUri = `upi://pay?pa=${encodeURIComponent(upiId || 'gym@paytm')}&pn=${encodeURIComponent(gym?.name || 'AI Gym Store')}&am=${encodeURIComponent(total)}&cu=INR&tn=${encodeURIComponent(`Store Sale ${paymentMethod}`)}`;
+  const upiPayUri = `upi://pay?pa=${encodeURIComponent(upiId || 'gym@paytm')}&pn=${encodeURIComponent(gym?.name || 'Gymora Store')}&am=${encodeURIComponent(total)}&cu=INR&tn=${encodeURIComponent(`Store Sale ${paymentMethod}`)}`;
 
   const save = async () => {
     const items = lines.filter((l) => l.productId);

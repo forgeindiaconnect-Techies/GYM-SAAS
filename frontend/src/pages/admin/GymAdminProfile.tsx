@@ -190,7 +190,7 @@ const GymAdminProfile = () => {
           {gym?.logo ? <img src={gym.logo} alt="Logo" className="w-full h-full object-cover" /> : <Building2 size={36} className="text-[#F97316]" />}
         </div>
         <div className="z-10">
-          <h2 className="text-2xl font-bold text-[#292524]">{formData.gymName || (isBranchUser ? 'Branch' : 'AI GYM')}</h2>
+          <h2 className="text-2xl font-bold text-[#292524]">{formData.gymName || (isBranchUser ? 'Branch' : 'Gymora')}</h2>
           <p className="text-sm text-[#78716C] mt-1 flex items-center">
             <MapPin size={14} className="mr-1 text-[#F97316]" /> {formData.city ? `${formData.city}, ${formData.state}` : (isBranchUser ? 'Branch Location' : 'Gym Location')}
           </p>

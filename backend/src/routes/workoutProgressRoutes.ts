@@ -16,6 +16,7 @@ router.get('/my-progress', authenticate, getMyProgress);
 
 // Trainer
 router.get('/trainer/clients-overview', authenticate, getTrainerClientsOverview);
+router.get('/clients-overview', authenticate, getTrainerClientsOverview);
 router.get('/trainer/recent-activity', authenticate, getTrainerRecentActivity);
 router.get('/customer/:customerId', authenticate, getCustomerProgress);
 

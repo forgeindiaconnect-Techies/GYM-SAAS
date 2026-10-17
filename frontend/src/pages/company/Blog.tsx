@@ -29,7 +29,7 @@ const Blog = () => {
             <div className="w-8 h-8 bg-[#F97316] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316]">AI GYM</span>
+            <span className="text-xl font-bold tracking-tight text-[#F97316]">Gymora</span>
           </Link>
           <Link
             to="/"
@@ -46,7 +46,7 @@ const Blog = () => {
           <span className="text-[#F97316] text-sm font-bold uppercase tracking-wider mb-3 block">
             Knowledge Base & Insights
           </span>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">The AI GYM Blog</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">The Gymora Blog</h1>
           <p className="text-lg text-[#78716C] leading-relaxed">
             Evidence-based fitness training, cutting-edge AI workout algorithms, and sports nutrition strategies designed to help you reach peak performance.
           </p>
@@ -181,9 +181,9 @@ const Blog = () => {
             <div className="w-6 h-6 bg-[#F97316] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={16} />
             </div>
-            <span className="font-bold text-[#F97316]">AI GYM</span>
+            <span className="font-bold text-[#F97316]">Gymora</span>
           </div>
-          <p>&copy; {new Date().getFullYear()} AI GYM Technologies Inc. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
           <div className="flex items-center space-x-6 text-xs">
             <Link to="/about" className="hover:text-[#F97316]">About</Link>
             <Link to="/blog" className="hover:text-[#F97316]">Blog</Link>

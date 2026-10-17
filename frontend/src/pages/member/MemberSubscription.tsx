@@ -8,6 +8,7 @@ const MemberSubscription = () => {
   const [memberships, setMemberships] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   const [gym, setGym] = useState<any>(null);
+  const [gymPackages, setGymPackages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<any>(null);
 
@@ -30,8 +31,14 @@ const MemberSubscription = () => {
 
       const targetGymId = userData?.gymId?._id || userData?.gymId || memList[0]?.gymId?._id || memList[0]?.gymId;
       if (targetGymId) {
-        const gymRes = await api.get(`/gyms/${targetGymId}`).catch(() => ({ data: { gym: null } }));
-        setGym(gymRes.data?.gym || null);
+        const [gymRes, pkgRes] = await Promise.allSettled([
+          api.get(`/gyms/${targetGymId}`),
+          api.get('/gym-packages/public', { params: { gymId: targetGymId } })
+        ]);
+        if (gymRes.status === 'fulfilled') setGym(gymRes.value.data?.gym || null);
+        if (pkgRes.status === 'fulfilled' && Array.isArray(pkgRes.value.data?.packages) && pkgRes.value.data.packages.length > 0) {
+          setGymPackages(pkgRes.value.data.packages);
+        }
       }
     } catch (err) {
       console.error('Error fetching subscription data', err);
@@ -95,21 +102,62 @@ const MemberSubscription = () => {
     });
   }
 
-  // Available plans from Gym
-  let rawPlans = (gym?.subscriptionPlans && gym.subscriptionPlans.length > 0)
-    ? [...gym.subscriptionPlans]
-    : [
-        { name: 'Free Trial', price: 0, duration: '1 Day', features: '1 Day Gym Access, AI Fitness Assistant, Locker Room Access, Diet Plan Generator' },
-        { name: 'Starter', price: 999, duration: '1 Month', features: 'Gym Access, Workout Tracking, AI Fitness Plan' },
-        { name: 'Professional', price: 2499, duration: '1 Month', features: 'All Starter features, Trainer Allocation, Diet Plan Generator, Priority Support' },
-        { name: 'Enterprise', price: 5999, duration: '3 Months', features: 'All Professional features, Unlimited AI Consultations, Locker Access' }
-      ];
+  // Available Package Plans from Gym (Strength, Muscle Gain, Weight Loss, etc.)
+  let rawPlans: any[] = [];
+  if (gymPackages && gymPackages.length > 0) {
+    rawPlans = gymPackages.map((pkg: any) => ({
+      _id: pkg._id,
+      name: pkg.name,
+      price: pkg.monthlyPrice ?? pkg.price ?? 0,
+      duration: pkg.duration || '1 Month',
+      features: pkg.features,
+      fitnessGoal: pkg.fitnessGoal,
+      trainingType: pkg.trainingType,
+      description: pkg.description,
+      isPopular: pkg.isPopular
+    }));
+  } else {
+    rawPlans = [
+      {
+        _id: 'default-pkg-strength',
+        name: 'Strength',
+        price: 399,
+        duration: '1 Month',
+        trainingType: 'Offline',
+        fitnessGoal: 'Strength',
+        features: ['Strength-focused workout programs', 'Progressive resistance training', 'Strength performance tracking']
+      },
+      {
+        _id: 'default-pkg-muscle',
+        name: 'Muscle Gain',
+        price: 599,
+        duration: '1 Month',
+        trainingType: 'Online',
+        fitnessGoal: 'Muscle Gain',
+        features: ['Muscle-building workout programs', 'Strength training', 'Progressive overload training', 'Muscle development progress tracking']
+      },
+      {
+        _id: 'default-pkg-weightloss',
+        name: 'weight Loss',
+        price: 499,
+        duration: '1 Month',
+        trainingType: 'Hybrid',
+        fitnessGoal: 'Weight Loss',
+        features: ['Fat-loss workout programs', 'Cardio training', 'Strength training', 'Weight and progress tracking']
+      }
+    ];
+  }
 
   // Ensure Free Trial is included as the first plan option
   const hasTrialInRaw = rawPlans.some((p: any) => p.name?.toLowerCase().includes('trial') || Number(p.price) === 0);
   if (!hasTrialInRaw) {
     rawPlans = [
-      { name: 'Free Trial', price: 0, duration: '1 Day', features: '1 Day Gym Access, AI Fitness Assistant, Locker Room Access, Diet Plan Generator' },
+      {
+        name: 'Free Trial',
+        price: 0,
+        duration: '1 Day',
+        features: ['1 Day Gym Access', 'AI Fitness Assistant', 'Locker Room Access', 'Diet Plan Generator']
+      },
       ...rawPlans
     ];
   }
