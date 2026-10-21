@@ -242,37 +242,37 @@ const SuperAdminGymsAdd = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Link to="/super-admin/gyms/all" className="p-2 bg-[#FFFFFF] hover:bg-[#FED7AA] rounded-xl transition-colors">
+          <Link to="/super-admin/gyms/all" className="p-2 bg-[#FFFFFF] hover:bg-[#E9DFF4] rounded-xl transition-colors">
             <ArrowLeft size={20} />
           </Link>
           <div>
             <h1 className="text-2xl font-bold">Gym Setup Wizard</h1>
-            <p className="text-[#78716C] text-sm">Step {currentStep} of 10</p>
+            <p className="text-[#6B5E78] text-sm">Step {currentStep} of 10</p>
           </div>
         </div>
-        <button onClick={() => alert('Draft Saved!')} className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] hover:bg-[#FED7AA] rounded-xl transition-colors text-sm font-medium text-[#78716C]">
+        <button onClick={() => alert('Draft Saved!')} className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] hover:bg-[#E9DFF4] rounded-xl transition-colors text-sm font-medium text-[#6B5E78]">
           <Save size={16} />
           <span>Save Draft</span>
         </button>
       </div>
 
       {/* Progress Bar */}
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6">
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6">
         <div className="relative pt-1">
           <div className="flex mb-2 items-center justify-between">
             <div>
-              <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-[#F97316] bg-[#F97316]/10">
+              <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-[#A991D4] bg-[#A991D4]/10">
                 Setup Progress
               </span>
             </div>
             <div className="text-right">
-              <span className="text-xs font-semibold inline-block text-[#F97316]">
+              <span className="text-xs font-semibold inline-block text-[#A991D4]">
                 {Math.round(progressPercentage)}%
               </span>
             </div>
           </div>
           <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[#FFFFFF]">
-            <div style={{ width: `${progressPercentage}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-[#292524] justify-center bg-[#F97316] transition-all duration-500"></div>
+            <div style={{ width: `${progressPercentage}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-[#292431] justify-center bg-[#A991D4] transition-all duration-500"></div>
           </div>
         </div>
         
@@ -281,12 +281,12 @@ const SuperAdminGymsAdd = () => {
           {STEPS.map((step) => (
             <div 
               key={step.id} 
-              className={`flex flex-col items-center cursor-pointer ${currentStep === step.id ? 'text-[#F97316]' : step.id < currentStep ? 'text-green-500' : 'text-[#78716C]'}`}
+              className={`flex flex-col items-center cursor-pointer ${currentStep === step.id ? 'text-[#A991D4]' : step.id < currentStep ? 'text-green-500' : 'text-[#6B5E78]'}`}
               onClick={() => step.id < currentStep && setCurrentStep(step.id)}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 mb-2 transition-colors
-                ${currentStep === step.id ? 'border-[#F97316] bg-[#F97316]/10' : 
-                  step.id < currentStep ? 'border-green-500 bg-green-500/10' : 'border-[#E7E5E4] bg-[#FFFFFF]'}`}
+                ${currentStep === step.id ? 'border-[#A991D4] bg-[#A991D4]/10' : 
+                  step.id < currentStep ? 'border-green-500 bg-green-500/10' : 'border-[#E5DDEB] bg-[#FFFFFF]'}`}
               >
                 {step.id < currentStep ? <CheckCircle2 size={16} /> : step.id}
               </div>
@@ -297,16 +297,16 @@ const SuperAdminGymsAdd = () => {
       </div>
 
       {/* Form Content */}
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8 min-h-[400px]">
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8 min-h-[400px]">
         {renderStep()}
       </div>
 
       {/* Navigation Footer */}
-      <div className="flex justify-between items-center bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-4">
+      <div className="flex justify-between items-center bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-4">
         <button
           onClick={prevStep}
           disabled={currentStep === 1}
-          className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-bold transition-all ${currentStep === 1 ? 'opacity-50 cursor-not-allowed bg-[#FFFFFF] text-[#78716C]' : 'bg-[#FFFFFF] text-[#292524] hover:bg-[#FED7AA]'}`}
+          className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-bold transition-all ${currentStep === 1 ? 'opacity-50 cursor-not-allowed bg-[#FFFFFF] text-[#6B5E78]' : 'bg-[#FFFFFF] text-[#292431] hover:bg-[#E9DFF4]'}`}
         >
           <ChevronLeft size={18} />
           <span>Previous</span>
@@ -315,7 +315,7 @@ const SuperAdminGymsAdd = () => {
         {currentStep < 10 ? (
           <button
             onClick={nextStep}
-            className="flex items-center space-x-2 px-6 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-all shadow-lg shadow-[#F97316]/20"
+            className="flex items-center space-x-2 px-6 py-3 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-all shadow-lg shadow-[#A991D4]/20"
           >
             <span>Next Step</span>
             <ChevronRight size={18} />
@@ -324,7 +324,7 @@ const SuperAdminGymsAdd = () => {
           <button
             onClick={submitGym}
             disabled={isSubmitting}
-            className="flex items-center space-x-2 px-8 py-3 bg-green-500 text-black rounded-xl font-bold hover:bg-green-600 transition-all shadow-lg shadow-orange-500/20"
+            className="flex items-center space-x-2 px-8 py-3 bg-green-500 text-black rounded-xl font-bold hover:bg-green-600 transition-all shadow-lg shadow-slate-1000/20"
           >
             {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <CheckCircle2 size={18} />}
             <span>{isSubmitting ? 'Creating Gym...' : 'Confirm & Create Gym'}</span>

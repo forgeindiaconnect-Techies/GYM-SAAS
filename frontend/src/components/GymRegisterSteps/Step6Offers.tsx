@@ -44,29 +44,29 @@ const Step6Offers: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#E7E5E4] pb-2 flex justify-between items-center">
+      <div className="border-b border-[#E5DDEB] pb-2 flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold text-[#292524]">Promotional Offers</h2>
-          <p className="text-sm text-[#78716C]">Create special deals and discounts for customers.</p>
+          <h2 className="text-lg font-semibold text-[#292431]">Promotional Offers</h2>
+          <p className="text-sm text-[#6B5E78]">Create special deals and discounts for customers.</p>
         </div>
         {!showAddOffer && (
-          <button type="button" onClick={() => setShowAddOffer(true)} className="px-3 py-1.5 bg-[#22C55E]/10 text-[#22C55E] text-sm font-medium rounded-lg hover:bg-[#22C55E]/20 transition-colors flex items-center space-x-1">
+          <button type="button" onClick={() => setShowAddOffer(true)} className="px-3 py-1.5 bg-[#27845A]/10 text-[#27845A] text-sm font-medium rounded-lg hover:bg-[#27845A]/20 transition-colors flex items-center space-x-1">
             <Plus size={16} /><span>Add Offer</span>
           </button>
         )}
       </div>
 
       {showAddOffer && (
-        <div className="bg-[#FFFFFF] border border-[#22C55E]/30 rounded-xl p-5 space-y-4">
-          <h3 className="font-medium text-[#292524] text-sm">New Offer Details</h3>
+        <div className="bg-[#FFFFFF] border border-[#27845A]/30 rounded-xl p-5 space-y-4">
+          <h3 className="font-medium text-[#292431] text-sm">New Offer Details</h3>
           
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Offer Name *</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Offer Name *</label>
               <input value={newOffer.name} onChange={e => setNewOffer({...newOffer, name: e.target.value})} placeholder="e.g. New Year Special" className={inputCls('offerName')} />
             </div>
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Offer Type *</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Offer Type *</label>
               <select value={newOffer.type} onChange={e => setNewOffer({...newOffer, type: e.target.value})} className={inputCls('offerType')}>
                 <option value="">Select Type</option>
                 {OFFER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -75,39 +75,39 @@ const Step6Offers: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
           </div>
 
           <div>
-            <label className="block text-xs text-[#78716C] mb-1">Description</label>
+            <label className="block text-xs text-[#6B5E78] mb-1">Description</label>
             <textarea value={newOffer.description} onChange={e => setNewOffer({...newOffer, description: e.target.value})} placeholder="Brief details about the offer..." className={inputCls('offerDesc')} rows={2}></textarea>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Original Price</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Original Price</label>
               <input type="number" value={newOffer.originalPrice} onChange={e => setNewOffer({...newOffer, originalPrice: e.target.value})} placeholder="0" className={inputCls('originalPrice')} />
             </div>
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Offer Price</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Offer Price</label>
               <input type="number" value={newOffer.offerPrice} onChange={e => setNewOffer({...newOffer, offerPrice: e.target.value})} placeholder="0" className={inputCls('offerPrice')} />
             </div>
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Discount %</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Discount %</label>
               <input type="number" value={newOffer.discountPercentage} onChange={e => setNewOffer({...newOffer, discountPercentage: e.target.value})} placeholder="e.g. 20" className={inputCls('discount')} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Valid From *</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Valid From *</label>
               <input type="date" value={newOffer.validFrom} onChange={e => setNewOffer({...newOffer, validFrom: e.target.value})} className={inputCls('validFrom')} />
             </div>
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Valid Until *</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Valid Until *</label>
               <input type="date" value={newOffer.validUntil} onChange={e => setNewOffer({...newOffer, validUntil: e.target.value})} className={inputCls('validUntil')} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Applicable Plan</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Applicable Plan</label>
               <select value={newOffer.applicablePlan} onChange={e => setNewOffer({...newOffer, applicablePlan: e.target.value})} className={inputCls('applicablePlan')}>
                 <option value="">Any Plan</option>
                 {form.subscriptionPlans?.map((p: any, i: number) => (
@@ -116,7 +116,7 @@ const Step6Offers: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
               </select>
             </div>
             <div>
-              <label className="block text-xs text-[#78716C] mb-1">Status</label>
+              <label className="block text-xs text-[#6B5E78] mb-1">Status</label>
               <select value={newOffer.status} onChange={e => setNewOffer({...newOffer, status: e.target.value})} className={inputCls('status')}>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -125,13 +125,13 @@ const Step6Offers: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
           </div>
 
           <div>
-            <label className="block text-xs text-[#78716C] mb-1">Terms & Conditions *</label>
+            <label className="block text-xs text-[#6B5E78] mb-1">Terms & Conditions *</label>
             <input value={newOffer.terms} onChange={e => setNewOffer({...newOffer, terms: e.target.value})} placeholder="e.g. Only valid for new members" className={inputCls('terms')} />
           </div>
 
           <div className="flex justify-end space-x-3 pt-2">
-            <button type="button" onClick={() => setShowAddOffer(false)} className="px-4 py-2 text-sm text-[#78716C] hover:text-[#F97316] transition-colors">Cancel</button>
-            <button type="button" onClick={addOffer} className="px-4 py-2 bg-[#22C55E] text-white text-sm font-semibold rounded-lg hover:bg-green-600 transition-colors">Save Offer</button>
+            <button type="button" onClick={() => setShowAddOffer(false)} className="px-4 py-2 text-sm text-[#6B5E78] hover:text-[#A991D4] transition-colors">Cancel</button>
+            <button type="button" onClick={addOffer} className="px-4 py-2 bg-[#27845A] text-white text-sm font-semibold rounded-lg hover:bg-green-600 transition-colors">Save Offer</button>
           </div>
         </div>
       )}
@@ -139,39 +139,39 @@ const Step6Offers: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
       {errors.offers && <p className="text-teal-400 text-xs">{errors.offers}</p>}
 
       {offers.length === 0 && !showAddOffer ? (
-        <div className="text-center py-8 bg-[#FFFFFF] border border-[#E7E5E4] border-dashed rounded-xl">
-          <p className="text-[#78716C] text-sm mb-3">No promotional offers active.</p>
-          <button type="button" onClick={() => setShowAddOffer(true)} className="px-4 py-2 bg-[#FFFFFF] text-[#292524] text-sm border border-[#E7E5E4] rounded-lg hover:border-[#22C55E]/50 transition-colors">
+        <div className="text-center py-8 bg-[#FFFFFF] border border-[#E5DDEB] border-dashed rounded-xl">
+          <p className="text-[#6B5E78] text-sm mb-3">No promotional offers active.</p>
+          <button type="button" onClick={() => setShowAddOffer(true)} className="px-4 py-2 bg-[#FFFFFF] text-[#292431] text-sm border border-[#E5DDEB] rounded-lg hover:border-[#27845A]/50 transition-colors">
             Create an Offer
           </button>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 gap-4">
           {offers.map((offer: any, i: number) => (
-            <div key={i} className="bg-[#FFFFFF] border border-[#E7E5E4] p-5 rounded-xl relative group">
-              <button type="button" onClick={() => removeOffer(i)} className="absolute top-3 right-3 text-[#78716C] hover:text-[#FED7AA] opacity-0 group-hover:opacity-100 transition-opacity">
+            <div key={i} className="bg-[#FFFFFF] border border-[#E5DDEB] p-5 rounded-xl relative group">
+              <button type="button" onClick={() => removeOffer(i)} className="absolute top-3 right-3 text-[#6B5E78] hover:text-[#E9DFF4] opacity-0 group-hover:opacity-100 transition-opacity">
                 <Trash2 size={16} />
               </button>
               <div className="flex items-center space-x-2 mb-2">
-                <Tag size={16} className="text-[#22C55E]" />
-                <h3 className="text-sm font-bold text-[#292524]">{offer.name}</h3>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full ${offer.status === 'Active' ? 'bg-[#22C55E]/20 text-[#22C55E]' : 'bg-[#555]/20 text-[#78716C]'}`}>
+                <Tag size={16} className="text-[#27845A]" />
+                <h3 className="text-sm font-bold text-[#292431]">{offer.name}</h3>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full ${offer.status === 'Active' ? 'bg-[#27845A]/20 text-[#27845A]' : 'bg-[#555]/20 text-[#6B5E78]'}`}>
                   {offer.status}
                 </span>
               </div>
-              <p className="text-xs text-[#78716C] mb-3">{offer.type}</p>
+              <p className="text-xs text-[#6B5E78] mb-3">{offer.type}</p>
               
               <div className="grid grid-cols-2 gap-2 text-xs mb-3 bg-[#FFFFFF] p-2 rounded-lg">
                 <div>
-                  <span className="text-[#78716C] block">Valid From</span>
-                  <span className="text-[#292524]">{offer.validFrom}</span>
+                  <span className="text-[#6B5E78] block">Valid From</span>
+                  <span className="text-[#292431]">{offer.validFrom}</span>
                 </div>
                 <div>
-                  <span className="text-[#78716C] block">Valid Until</span>
-                  <span className="text-[#292524]">{offer.validUntil}</span>
+                  <span className="text-[#6B5E78] block">Valid Until</span>
+                  <span className="text-[#292431]">{offer.validUntil}</span>
                 </div>
               </div>
-              <p className="text-[10px] text-[#78716C]">T&C: {offer.terms}</p>
+              <p className="text-[10px] text-[#6B5E78]">T&C: {offer.terms}</p>
             </div>
           ))}
         </div>

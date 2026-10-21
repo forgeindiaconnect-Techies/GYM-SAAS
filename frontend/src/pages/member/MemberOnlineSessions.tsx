@@ -107,7 +107,7 @@ const MemberOnlineSessions = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center py-32">
-      <Loader2 className="animate-spin text-[#F97316]" size={40} />
+      <Loader2 className="animate-spin text-[#A991D4]" size={40} />
     </div>
   );
 
@@ -117,17 +117,17 @@ const MemberOnlineSessions = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="w-11 h-11 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-11 h-11 bg-gradient-to-br from-[#A991D4] to-[#967CC5] rounded-xl flex items-center justify-center shadow-lg">
             <Video size={22} className="text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#292524]">Online Sessions</h1>
-            <p className="text-sm text-[#78716C]">Join, check-in and manage your online training sessions</p>
+            <h1 className="text-2xl font-bold text-[#292431]">Online Sessions</h1>
+            <p className="text-sm text-[#6B5E78]">Join, check-in and manage your online training sessions</p>
           </div>
         </div>
         <button
           onClick={() => navigate('/member/find-trainers')}
-          className="flex items-center space-x-2 px-4 py-2 bg-[#F97316] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition-colors shadow"
+          className="flex items-center space-x-2 px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition-colors shadow"
         >
           <span>Book Session</span>
           <ChevronRight size={16} />
@@ -158,17 +158,17 @@ const MemberOnlineSessions = () => {
 
       {/* Sessions List */}
       {allSessions.length === 0 ? (
-        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-12 text-center">
-          <div className="w-16 h-16 bg-[#FFFDF8] rounded-full flex items-center justify-center mx-auto mb-4">
-            <Calendar size={28} className="text-[#78716C]" />
+        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-12 text-center">
+          <div className="w-16 h-16 bg-[#F7F4FA] rounded-full flex items-center justify-center mx-auto mb-4">
+            <Calendar size={28} className="text-[#6B5E78]" />
           </div>
-          <h3 className="text-lg font-bold text-[#292524] mb-2">No Online Sessions</h3>
-          <p className="text-[#78716C] text-sm mb-5">
+          <h3 className="text-lg font-bold text-[#292431] mb-2">No Online Sessions</h3>
+          <p className="text-[#6B5E78] text-sm mb-5">
             Book an online trainer to get started with live video training sessions.
           </p>
           <button
             onClick={() => navigate('/member/find-trainers')}
-            className="px-6 py-2.5 bg-[#F97316] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition-colors"
+            className="px-6 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition-colors"
           >
             Find Trainers
           </button>
@@ -185,16 +185,16 @@ const MemberOnlineSessions = () => {
             const alreadyRated = !!session.customerRating;
 
             return (
-              <div key={session._id} className={`bg-white border rounded-2xl p-5 shadow-sm ${isLive ? 'border-green-400 shadow-orange-100' : 'border-[#E7E5E4]'}`}>
+              <div key={session._id} className={`bg-white border rounded-2xl p-5 shadow-sm ${isLive ? 'border-green-400 shadow-purple-900/10' : 'border-[#E5DDEB]'}`}>
                 <div className="flex items-start justify-between flex-wrap gap-3">
                   {/* Trainer info */}
                   <div className="flex items-center space-x-3">
-                    <div className="w-11 h-11 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-full flex items-center justify-center text-white font-bold text-sm shadow">
+                    <div className="w-11 h-11 bg-gradient-to-br from-[#A991D4] to-[#967CC5] rounded-full flex items-center justify-center text-white font-bold text-sm shadow">
                       {trainer?.name?.[0] || <User size={18} />}
                     </div>
                     <div>
-                      <p className="font-semibold text-[#292524]">{trainer?.name || 'Trainer'}</p>
-                      <p className="text-xs text-[#78716C]">{trainer?.specialization || 'Fitness Trainer'}</p>
+                      <p className="font-semibold text-[#292431]">{trainer?.name || 'Trainer'}</p>
+                      <p className="text-xs text-[#6B5E78]">{trainer?.specialization || 'Fitness Trainer'}</p>
                     </div>
                   </div>
                   {/* Status badge */}
@@ -205,16 +205,16 @@ const MemberOnlineSessions = () => {
 
                 {/* Session Details */}
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="flex items-center space-x-2 text-sm text-[#78716C]">
-                    <Calendar size={14} className="text-[#F97316]" />
+                  <div className="flex items-center space-x-2 text-sm text-[#6B5E78]">
+                    <Calendar size={14} className="text-[#A991D4]" />
                     <span>{session.date}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-[#78716C]">
-                    <Clock size={14} className="text-[#F97316]" />
+                  <div className="flex items-center space-x-2 text-sm text-[#6B5E78]">
+                    <Clock size={14} className="text-[#A991D4]" />
                     <span>{session.startTime} – {session.endTime}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-[#78716C]">
-                    <Video size={14} className="text-[#F97316]" />
+                  <div className="flex items-center space-x-2 text-sm text-[#6B5E78]">
+                    <Video size={14} className="text-[#A991D4]" />
                     <span>{session.duration} min</span>
                   </div>
                   {session.attendanceStatus && (
@@ -231,21 +231,21 @@ const MemberOnlineSessions = () => {
 
                 {/* Check-in / Checkout timeline for attended sessions */}
                 {(checkedIn || checkedOut) && (
-                  <div className="mt-4 flex items-center space-x-4 text-xs text-[#78716C] bg-[#F7FAF8] rounded-xl p-3">
+                  <div className="mt-4 flex items-center space-x-4 text-xs text-[#6B5E78] bg-[#F7FAF8] rounded-xl p-3">
                     <div className="flex items-center space-x-1.5">
                       <LogIn size={13} className="text-green-600" />
-                      <span>Check-in: <strong className="text-[#292524]">{session.checkInTime ? new Date(session.checkInTime).toLocaleTimeString() : '—'}</strong></span>
+                      <span>Check-in: <strong className="text-[#292431]">{session.checkInTime ? new Date(session.checkInTime).toLocaleTimeString() : '—'}</strong></span>
                     </div>
                     {checkedOut && (
                       <div className="flex items-center space-x-1.5">
                         <LogOut size={13} className="text-blue-600" />
-                        <span>Check-out: <strong className="text-[#292524]">{new Date(session.checkOutTime).toLocaleTimeString()}</strong></span>
+                        <span>Check-out: <strong className="text-[#292431]">{new Date(session.checkOutTime).toLocaleTimeString()}</strong></span>
                       </div>
                     )}
                     {session.actualDuration && (
                       <div className="flex items-center space-x-1.5">
                         <Clock size={13} className="text-purple-600" />
-                        <span>Duration: <strong className="text-[#292524]">{session.actualDuration} min</strong></span>
+                        <span>Duration: <strong className="text-[#292431]">{session.actualDuration} min</strong></span>
                       </div>
                     )}
                   </div>
@@ -289,7 +289,7 @@ const MemberOnlineSessions = () => {
                       <button
                         onClick={() => handleCheckOut(session._id)}
                         disabled={actionLoading === session._id + '-checkout'}
-                        className="flex items-center space-x-2 px-4 py-2 bg-white border border-[#E7E5E4] text-[#78716C] rounded-xl font-semibold text-sm hover:bg-[#FFFDF8] transition-colors disabled:opacity-50"
+                        className="flex items-center space-x-2 px-4 py-2 bg-white border border-[#E5DDEB] text-[#6B5E78] rounded-xl font-semibold text-sm hover:bg-[#F7F4FA] transition-colors disabled:opacity-50"
                       >
                         {actionLoading === session._id + '-checkout' ? <Loader2 size={14} className="animate-spin" /> : <LogOut size={14} />}
                         <span>Check Out</span>
@@ -329,7 +329,7 @@ const MemberOnlineSessions = () => {
                   {(session.status === 'Confirmed' || session.status === 'Upcoming') && (
                     <button
                       onClick={() => navigate('/member/trainer-review')}
-                      className="flex items-center space-x-2 px-4 py-2 bg-white border border-[#E7E5E4] text-[#78716C] rounded-xl font-semibold text-sm hover:bg-[#FFFDF8] transition-colors"
+                      className="flex items-center space-x-2 px-4 py-2 bg-white border border-[#E5DDEB] text-[#6B5E78] rounded-xl font-semibold text-sm hover:bg-[#F7F4FA] transition-colors"
                     >
                       <BookOpen size={14} />
                       <span>View Plan</span>
@@ -351,11 +351,11 @@ const MemberOnlineSessions = () => {
                 <AlertTriangle size={20} className="text-orange-600" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-[#292524]">Missed Session</h3>
-                <p className="text-sm text-[#78716C]">What would you like to do?</p>
+                <h3 className="text-lg font-bold text-[#292431]">Missed Session</h3>
+                <p className="text-sm text-[#6B5E78]">What would you like to do?</p>
               </div>
             </div>
-            <p className="text-sm text-[#78716C] mb-5 bg-orange-50 border border-orange-100 rounded-xl p-3">
+            <p className="text-sm text-[#6B5E78] mb-5 bg-orange-50 border border-orange-100 rounded-xl p-3">
               Your session on <strong>{missedModal.date}</strong> at <strong>{missedModal.startTime}</strong> was missed. Choose an option below.
             </p>
             <div className="grid grid-cols-1 gap-3">
@@ -384,7 +384,7 @@ const MemberOnlineSessions = () => {
                 </div>
               </button>
             </div>
-            <button onClick={() => setMissedModal(null)} className="mt-4 w-full py-2.5 text-sm text-[#78716C] hover:text-[#292524] transition-colors">
+            <button onClick={() => setMissedModal(null)} className="mt-4 w-full py-2.5 text-sm text-[#6B5E78] hover:text-[#292431] transition-colors">
               Cancel
             </button>
           </div>
@@ -395,8 +395,8 @@ const MemberOnlineSessions = () => {
       {ratingModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <h3 className="text-xl font-bold text-[#292524] mb-1">Rate Your Session</h3>
-            <p className="text-sm text-[#78716C] mb-5">How was your session with <strong>{ratingModal.trainerId?.name || 'your trainer'}</strong>?</p>
+            <h3 className="text-xl font-bold text-[#292431] mb-1">Rate Your Session</h3>
+            <p className="text-sm text-[#6B5E78] mb-5">How was your session with <strong>{ratingModal.trainerId?.name || 'your trainer'}</strong>?</p>
             {/* Star rating */}
             <div className="flex items-center justify-center space-x-2 mb-5">
               {[1,2,3,4,5].map(n => (
@@ -410,16 +410,16 @@ const MemberOnlineSessions = () => {
               onChange={e => setReview(e.target.value)}
               placeholder="Write a review (optional)..."
               rows={3}
-              className="w-full border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/30 resize-none mb-4"
+              className="w-full border border-[#E5DDEB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#A991D4]/30 resize-none mb-4"
             />
             <div className="flex gap-3">
-              <button onClick={() => setRatingModal(null)} className="flex-1 py-2.5 border border-[#E7E5E4] rounded-xl text-[#78716C] font-semibold text-sm hover:bg-[#FFFDF8] transition-colors">
+              <button onClick={() => setRatingModal(null)} className="flex-1 py-2.5 border border-[#E5DDEB] rounded-xl text-[#6B5E78] font-semibold text-sm hover:bg-[#F7F4FA] transition-colors">
                 Skip
               </button>
               <button
                 onClick={handleRateSession}
                 disabled={ratingSubmitting}
-                className="flex-1 py-2.5 bg-[#F97316] text-white rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition-colors disabled:opacity-50 flex items-center justify-center"
+                className="flex-1 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl font-semibold text-sm hover:bg-[#0d3535] transition-colors disabled:opacity-50 flex items-center justify-center"
               >
                 {ratingSubmitting ? <Loader2 size={16} className="animate-spin" /> : 'Submit Rating'}
               </button>

@@ -7,13 +7,13 @@ export const Step8Success = ({ navigate }: any) => {
         <CheckCircle2 size={48} className="text-green-500" />
       </div>
       
-      <h1 className="text-4xl font-black text-[#292524] tracking-tight mb-2">Gym Created Successfully!</h1>
-      <p className="text-[#78716C] text-lg text-center max-w-lg mb-8">
+      <h1 className="text-4xl font-black text-[#292431] tracking-tight mb-2">Gym Created Successfully!</h1>
+      <p className="text-[#6B5E78] text-lg text-center max-w-lg mb-8">
         The gym profile has been established, operating hours configured, and the admin account is ready for use.
       </p>
 
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 w-full max-w-md mb-8">
-        <h3 className="text-sm font-bold text-[#292524] uppercase tracking-wider mb-4 border-b border-[#E7E5E4] pb-2">What happened?</h3>
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 w-full max-w-md mb-8">
+        <h3 className="text-sm font-bold text-[#292431] uppercase tracking-wider mb-4 border-b border-[#E5DDEB] pb-2">What happened?</h3>
         <ul className="space-y-3">
           {[
             'Gym information & location saved',
@@ -22,7 +22,7 @@ export const Step8Success = ({ navigate }: any) => {
             'Operating hours & sessions scheduled',
             'Subscription plans activated'
           ].map((item, i) => (
-            <li key={i} className="flex items-center text-sm text-[#78716C]">
+            <li key={i} className="flex items-center text-sm text-[#6B5E78]">
               <CheckCircle2 size={16} className="text-green-500 mr-3 shrink-0" />
               <span>{item}</span>
             </li>
@@ -33,13 +33,13 @@ export const Step8Success = ({ navigate }: any) => {
       <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
         <button 
           onClick={() => navigate('/super-admin/dashboard')}
-          className="flex-1 px-6 py-4 bg-[#F97316] text-[#292524] font-bold rounded-xl hover:bg-[#EA580C] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#F97316]/20"
+          className="flex-1 px-6 py-4 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#A991D4]/20"
         >
           Go to Dashboard <ChevronRight size={18} />
         </button>
         <button 
           onClick={() => navigate('/super-admin/approved')}
-          className="flex-1 px-6 py-4 bg-[#FFFFFF] hover:bg-[#FED7AA] text-[#292524] font-bold rounded-xl border border-[#E7E5E4] transition-all flex items-center justify-center gap-2"
+          className="flex-1 px-6 py-4 bg-[#FFFFFF] hover:bg-[#E9DFF4] text-[#292431] font-bold rounded-xl border border-[#E5DDEB] transition-all flex items-center justify-center gap-2"
         >
           <LayoutDashboard size={18} /> Approved Gyms
         </button>

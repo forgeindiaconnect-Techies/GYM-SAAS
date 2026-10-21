@@ -491,16 +491,16 @@ export const GymExerciseVideos = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-[#292524] via-[#332e2b] to-[#1c1917] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[#F97316]/20 to-transparent pointer-events-none" />
+      <div className="bg-gradient-to-r from-[#292431] via-[#332e2b] to-[#1c1917] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[#A991D4]/20 to-transparent pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F97316]/20 text-[#F97316] text-xs font-bold mb-3 border border-[#F97316]/30">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#A991D4]/20 text-[#A991D4] text-xs font-bold mb-3 border border-[#A991D4]/30">
               <Sparkles size={14} /> Tamil & English Fitness Training Videos
             </div>
             <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">Gym Exercise Videos</h1>
             <p className="text-stone-300 text-sm md:text-base mt-2 leading-relaxed">
-              Watch instructional gym workout videos with step-by-step technique tips in both <span className="text-[#F97316] font-bold">Tamil (தமிழ்)</span> and <span className="text-teal-400 font-bold">English</span>.
+              Watch instructional gym workout videos with step-by-step technique tips in both <span className="text-[#A991D4] font-bold">Tamil (தமிழ்)</span> and <span className="text-teal-400 font-bold">English</span>.
             </p>
           </div>
 
@@ -508,7 +508,7 @@ export const GymExerciseVideos = () => {
           <div className="shrink-0 flex items-center">
             <button
               onClick={handleOpenModal}
-              className="px-5 py-3 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white font-bold rounded-2xl shadow-lg hover:shadow-orange-500/30 transition-all flex items-center gap-2 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+              className="px-5 py-3 bg-gradient-to-r from-[#A991D4] to-[#967CC5] hover:from-[#967CC5] hover:to-[#C2410C] text-white font-bold rounded-2xl shadow-lg hover:shadow-slate-1000/30 transition-all flex items-center gap-2 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
             >
               <Plus size={18} className="stroke-[2.5]" />
               <span>Add Exercise Manually</span>
@@ -518,20 +518,20 @@ export const GymExerciseVideos = () => {
       </div>
 
       {/* Language Filter & Search Bar Header */}
-      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 md:p-5 shadow-sm space-y-4">
+      <div className="bg-white border border-[#E5DDEB] rounded-2xl p-4 md:p-5 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           {/* Language Selector Tabs */}
-          <div className="flex items-center gap-2 bg-[#FFFDF8] p-1.5 rounded-xl border border-[#E7E5E4]">
-            <Globe size={16} className="text-[#F97316] ml-2 shrink-0" />
+          <div className="flex items-center gap-2 bg-[#F7F4FA] p-1.5 rounded-xl border border-[#E5DDEB]">
+            <Globe size={16} className="text-[#A991D4] ml-2 shrink-0" />
             {(['All', 'Tamil', 'English'] as const).map((lang) => (
               <button
                 key={lang}
                 onClick={() => setSelectedLanguage(lang)}
                 className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   selectedLanguage === lang
-                    ? 'bg-[#F97316] text-white shadow-sm'
-                    : 'text-[#78716C] hover:text-[#292524] hover:bg-stone-100'
+                    ? 'bg-[#A991D4] text-[#292431] shadow-sm'
+                    : 'text-[#6B5E78] hover:text-[#292431] hover:bg-stone-100'
                 }`}
               >
                 {lang === 'Tamil' ? 'Tamil (தமிழ்)' : lang}
@@ -542,18 +542,18 @@ export const GymExerciseVideos = () => {
           {/* Search Box & Quick Add Button */}
           <div className="flex items-center gap-3 flex-1 max-w-xl">
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" size={16} />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B5E78]" size={16} />
               <input
                 type="text"
                 placeholder="Search by workout, muscle, Tamil or English name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#292524] outline-none focus:border-[#F97316] transition-colors"
+                className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#292431] outline-none focus:border-[#A991D4] transition-colors"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C] hover:text-[#292524]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B5E78] hover:text-[#292431]"
                 >
                   <X size={14} />
                 </button>
@@ -562,7 +562,7 @@ export const GymExerciseVideos = () => {
 
             <button
               onClick={handleOpenModal}
-              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2.5 bg-[#FFFDF8] border border-[#F97316]/50 text-[#F97316] hover:bg-[#F97316] hover:text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2.5 bg-[#F7F4FA] border border-[#A991D4]/50 text-[#A991D4] hover:bg-[#A991D4] hover:text-[#292431] rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
               title="Add exercise manually"
             >
               <Plus size={15} />
@@ -572,17 +572,17 @@ export const GymExerciseVideos = () => {
         </div>
 
         {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pt-2 border-t border-[#E7E5E4]/60">
-          <Filter size={14} className="text-[#78716C] shrink-0" />
-          <span className="text-xs font-bold text-[#78716C] uppercase mr-1 shrink-0">Category:</span>
+        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pt-2 border-t border-[#E5DDEB]/60">
+          <Filter size={14} className="text-[#6B5E78] shrink-0" />
+          <span className="text-xs font-bold text-[#6B5E78] uppercase mr-1 shrink-0">Category:</span>
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                 selectedCategory === cat
-                  ? 'bg-[#292524] text-white shadow-xs'
-                  : 'bg-[#FFFDF8] border border-[#E7E5E4] text-[#78716C] hover:border-[#F97316]/40 hover:text-[#F97316]'
+                  ? 'bg-[#292431] text-white shadow-xs'
+                  : 'bg-[#F7F4FA] border border-[#E5DDEB] text-[#6B5E78] hover:border-[#A991D4]/40 hover:text-[#A991D4]'
               }`}
             >
               {cat}
@@ -596,7 +596,7 @@ export const GymExerciseVideos = () => {
         <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-5 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-[#F97316] text-white flex items-center justify-center font-bold text-xs">
+              <span className="w-8 h-8 rounded-lg bg-[#A991D4] text-[#292431] flex items-center justify-center font-bold text-xs">
                 {pendingVideoRequests.length}
               </span>
               <div>
@@ -621,7 +621,7 @@ export const GymExerciseVideos = () => {
                       {new Date(req.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-xs font-semibold text-[#F97316] mt-0.5">{req.title}</p>
+                  <p className="text-xs font-semibold text-[#A991D4] mt-0.5">{req.title}</p>
                   <p className="text-xs text-stone-600 mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
                 </div>
 
@@ -648,13 +648,13 @@ export const GymExerciseVideos = () => {
 
       {/* Videos Grid */}
       {filteredVideos.length === 0 ? (
-        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-12 text-center text-[#78716C] space-y-3">
+        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-12 text-center text-[#6B5E78] space-y-3">
           <Video size={44} className="mx-auto text-amber-500/70" />
-          <h3 className="text-lg font-bold text-[#292524]">No videos found</h3>
+          <h3 className="text-lg font-bold text-[#292431]">No videos found</h3>
           <p className="text-xs max-w-sm mx-auto">Try adjusting your language, category, or search filters, or click the button below to add your own exercise manually.</p>
           <button
             onClick={handleOpenModal}
-            className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-[#F97316] text-white text-xs font-bold rounded-xl hover:bg-[#EA580C] transition-colors"
+            className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-[#A991D4] text-[#292431] text-xs font-bold rounded-xl hover:bg-[#967CC5] transition-colors"
           >
             <Plus size={15} /> Add Custom Exercise
           </button>
@@ -670,7 +670,7 @@ export const GymExerciseVideos = () => {
             return (
               <div
                 key={video.id}
-                className="bg-white border border-[#E7E5E4] rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#F97316]/40 transition-all flex flex-col group relative"
+                className="bg-white border border-[#E5DDEB] rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#A991D4]/40 transition-all flex flex-col group relative"
               >
                 {/* Thumbnail Container */}
                 <div className="relative bg-stone-900 aspect-video overflow-hidden group cursor-pointer" onClick={() => setActiveVideo(video)}>
@@ -684,7 +684,7 @@ export const GymExerciseVideos = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100"
                   />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                    <div className="w-14 h-14 rounded-full bg-[#F97316] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 rounded-full bg-[#A991D4] text-[#292431] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                       <Play size={24} className="ml-1 fill-white" />
                     </div>
                   </div>
@@ -704,7 +704,7 @@ export const GymExerciseVideos = () => {
                       {video.language === 'Tamil' ? 'தமிழ் (Tamil)' : 'English'}
                     </span>
                     {video.isCustom && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F97316] text-white shadow-xs border border-orange-300">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#A991D4] text-[#292431] shadow-xs border border-orange-300">
                         Manual
                       </span>
                     )}
@@ -726,7 +726,7 @@ export const GymExerciseVideos = () => {
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-stone-100 text-[#78716C] border border-stone-200">
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-stone-100 text-[#6B5E78] border border-stone-200">
                         {video.category}
                       </span>
                       <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200">
@@ -734,27 +734,27 @@ export const GymExerciseVideos = () => {
                       </span>
                     </div>
 
-                    <h3 className="font-bold text-[#292524] text-base leading-snug group-hover:text-[#F97316] transition-colors">
+                    <h3 className="font-bold text-[#292431] text-base leading-snug group-hover:text-[#A991D4] transition-colors">
                       {video.title}
                     </h3>
                     {video.titleTamil && (
-                      <p className="text-xs font-semibold text-[#F97316] mt-1 font-sans">
+                      <p className="text-xs font-semibold text-[#A991D4] mt-1 font-sans">
                         {video.titleTamil}
                       </p>
                     )}
 
-                    <p className="text-xs text-[#78716C] mt-2 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-[#6B5E78] mt-2 line-clamp-2 leading-relaxed">
                       {video.language === 'Tamil' && video.descriptionTamil ? video.descriptionTamil : video.description}
                     </p>
                   </div>
 
                   {/* Footer specs */}
-                  <div className="pt-3 border-t border-[#E7E5E4]/60 space-y-2">
-                    <div className="flex items-center justify-between text-xs text-[#78716C]">
+                  <div className="pt-3 border-t border-[#E5DDEB]/60 space-y-2">
+                    <div className="flex items-center justify-between text-xs text-[#6B5E78]">
                       <span className="flex items-center gap-1.5 font-medium truncate max-w-[140px]" title={video.equipment}>
-                        <Dumbbell size={13} className="text-[#F97316] shrink-0" /> {video.equipment}
+                        <Dumbbell size={13} className="text-[#A991D4] shrink-0" /> {video.equipment}
                       </span>
-                      <span className="font-bold text-[#292524] truncate max-w-[130px]" title={video.targetMuscle}>
+                      <span className="font-bold text-[#292431] truncate max-w-[130px]" title={video.targetMuscle}>
                         {video.targetMuscle.split(',')[0]}
                       </span>
                     </div>
@@ -762,7 +762,7 @@ export const GymExerciseVideos = () => {
                     <div className="flex items-center gap-2 mt-2">
                       <button
                         onClick={() => setActiveVideo(video)}
-                        className="flex-1 py-2 bg-[#FFFDF8] border border-[#E7E5E4] text-[#F97316] font-bold rounded-xl hover:bg-orange-50 transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-2xs"
+                        className="flex-1 py-2 bg-[#F7F4FA] border border-[#E5DDEB] text-[#A991D4] font-bold rounded-xl hover:bg-orange-50 transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-2xs"
                       >
                         <Play size={13} className="fill-current" /> Watch Video
                       </button>
@@ -787,23 +787,23 @@ export const GymExerciseVideos = () => {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
           <div className="bg-[#FFFFFF] rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl border border-stone-200 my-auto animate-in zoom-in-95 duration-150">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7E5E4] bg-[#FFFDF8]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5DDEB] bg-[#F7F4FA]">
               <div className="flex items-center gap-3">
                 <span className={`text-xs font-bold px-2.5 py-1 rounded-full text-white ${activeVideo.language === 'Tamil' ? 'bg-emerald-600' : 'bg-blue-600'}`}>
                   {activeVideo.language === 'Tamil' ? 'தமிழ்' : 'English'}
                 </span>
                 <div>
-                  <h2 className="font-bold text-[#292524] text-base md:text-lg leading-tight">
+                  <h2 className="font-bold text-[#292431] text-base md:text-lg leading-tight">
                     {activeVideo.title}
                   </h2>
                   {activeVideo.titleTamil && (
-                    <p className="text-xs text-[#F97316] font-semibold">{activeVideo.titleTamil}</p>
+                    <p className="text-xs text-[#A991D4] font-semibold">{activeVideo.titleTamil}</p>
                   )}
                 </div>
               </div>
               <button
                 onClick={() => setActiveVideo(null)}
-                className="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 text-[#78716C] hover:text-[#292524] flex items-center justify-center transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 text-[#6B5E78] hover:text-[#292431] flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -835,7 +835,7 @@ export const GymExerciseVideos = () => {
                 />
               ) : (
                 <div className="text-white text-center p-8">
-                  <Play size={40} className="mx-auto mb-2 text-[#F97316]" />
+                  <Play size={40} className="mx-auto mb-2 text-[#A991D4]" />
                   <p className="text-sm font-semibold">Video preview not available</p>
                 </div>
               )}
@@ -843,29 +843,29 @@ export const GymExerciseVideos = () => {
 
             {/* Modal Content / Form Tips */}
             <div className="p-6 space-y-4 max-h-[40vh] overflow-y-auto custom-scrollbar">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-3 bg-[#FFFDF8] rounded-xl border border-[#E7E5E4] text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-3 bg-[#F7F4FA] rounded-xl border border-[#E5DDEB] text-xs">
                 <div>
-                  <span className="text-[#78716C] block font-medium">Category</span>
-                  <span className="font-bold text-[#292524]">{activeVideo.category}</span>
+                  <span className="text-[#6B5E78] block font-medium">Category</span>
+                  <span className="font-bold text-[#292431]">{activeVideo.category}</span>
                 </div>
                 <div>
-                  <span className="text-[#78716C] block font-medium">Target Muscle</span>
-                  <span className="font-bold text-[#292524]">{activeVideo.targetMuscle}</span>
+                  <span className="text-[#6B5E78] block font-medium">Target Muscle</span>
+                  <span className="font-bold text-[#292431]">{activeVideo.targetMuscle}</span>
                 </div>
                 <div>
-                  <span className="text-[#78716C] block font-medium">Equipment</span>
-                  <span className="font-bold text-[#292524]">{activeVideo.equipment}</span>
+                  <span className="text-[#6B5E78] block font-medium">Equipment</span>
+                  <span className="font-bold text-[#292431]">{activeVideo.equipment}</span>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-bold text-[#292524] text-sm mb-2 flex items-center gap-1.5">
-                  <CheckCircle2 size={16} className="text-[#F97316]" /> Technique & Execution Tips
+                <h4 className="font-bold text-[#292431] text-sm mb-2 flex items-center gap-1.5">
+                  <CheckCircle2 size={16} className="text-[#A991D4]" /> Technique & Execution Tips
                 </h4>
-                <ul className="space-y-1.5 text-xs text-[#78716C]">
+                <ul className="space-y-1.5 text-xs text-[#6B5E78]">
                   {activeVideo.tips.map((tip, idx) => (
                     <li key={idx} className="flex items-start gap-2 bg-stone-50 p-2 rounded-lg border border-stone-100">
-                      <span className="w-4 h-4 rounded-full bg-[#F97316]/10 text-[#F97316] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="w-4 h-4 rounded-full bg-[#A991D4]/10 text-[#A991D4] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                         {idx + 1}
                       </span>
                       <span>{tip}</span>
@@ -883,9 +883,9 @@ export const GymExerciseVideos = () => {
         <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-stone-200 my-auto animate-in zoom-in-95 duration-150">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7E5E4] bg-gradient-to-r from-stone-900 to-stone-800 text-white">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5DDEB] bg-gradient-to-r from-stone-900 to-stone-800 text-white">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-[#F97316] flex items-center justify-center text-white shadow-md">
+                <div className="w-9 h-9 rounded-xl bg-[#A991D4] flex items-center justify-center text-[#292431] shadow-md">
                   <Dumbbell size={20} />
                 </div>
                 <div>
@@ -920,8 +920,8 @@ export const GymExerciseVideos = () => {
 
               {/* Row 1: Exercise Name */}
               <div>
-                <label className="block text-xs font-bold text-[#292524] mb-1">
-                  Exercise Name <span className="text-[#F97316]">*</span>
+                <label className="block text-xs font-bold text-[#292431] mb-1">
+                  Exercise Name <span className="text-[#A991D4]">*</span>
                 </label>
                 <input
                   type="text"
@@ -929,20 +929,20 @@ export const GymExerciseVideos = () => {
                   placeholder="e.g. Incline Dumbbell Fly"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                  className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3.5 py-2.5 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                 />
               </div>
 
               {/* Row 2: Category, Language, Difficulty */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
-                    Category <span className="text-[#F97316]">*</span>
+                  <label className="block text-xs font-bold text-[#292431] mb-1">
+                    Category <span className="text-[#A991D4]">*</span>
                   </label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value as any)}
-                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                    className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3 py-2.5 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                   >
                     <option value="Chest">Chest</option>
                     <option value="Back">Back</option>
@@ -953,26 +953,26 @@ export const GymExerciseVideos = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
-                    Language <span className="text-[#F97316]">*</span>
+                  <label className="block text-xs font-bold text-[#292431] mb-1">
+                    Language <span className="text-[#A991D4]">*</span>
                   </label>
                   <select
                     value={formLanguage}
                     onChange={(e) => setFormLanguage(e.target.value as any)}
-                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                    className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3 py-2.5 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                   >
                     <option value="Tamil">Tamil (தமிழ்)</option>
                     <option value="English">English</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
+                  <label className="block text-xs font-bold text-[#292431] mb-1">
                     Difficulty Level
                   </label>
                   <select
                     value={formLevel}
                     onChange={(e) => setFormLevel(e.target.value as any)}
-                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                    className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3 py-2.5 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                   >
                     <option value="Beginner">Beginner</option>
                     <option value="Intermediate">Intermediate</option>
@@ -984,44 +984,44 @@ export const GymExerciseVideos = () => {
               {/* Row 3: Duration & Video Link */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
-                    Duration <span className="text-[#F97316]">*</span>
+                  <label className="block text-xs font-bold text-[#292431] mb-1">
+                    Duration <span className="text-[#A991D4]">*</span>
                   </label>
                   <div className="relative">
-                    <Clock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
+                    <Clock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. 8:30"
                       value={formDuration}
                       onChange={(e) => setFormDuration(e.target.value)}
-                      className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                      className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
-                    Video Link / YouTube URL <span className="text-[#F97316]">*</span>
+                  <label className="block text-xs font-bold text-[#292431] mb-1">
+                    Video Link / YouTube URL <span className="text-[#A991D4]">*</span>
                   </label>
                   <div className="relative">
-                    <Video size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
+                    <Video size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. https://www.youtube.com/watch?v=... or ID"
                       value={formVideoLink}
                       onChange={(e) => setFormVideoLink(e.target.value)}
-                      className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                      className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                     />
                   </div>
-                  <p className="text-[11px] text-[#78716C] mt-1">Supports full YouTube link, share link (youtu.be), embed link, or MP4 URL.</p>
+                  <p className="text-[11px] text-[#6B5E78] mt-1">Supports full YouTube link, share link (youtu.be), embed link, or MP4 URL.</p>
                 </div>
               </div>
 
               {/* Row 4: Target Muscle & Equipment */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
+                  <label className="block text-xs font-bold text-[#292431] mb-1">
                     Target Muscle(s)
                   </label>
                   <input
@@ -1029,11 +1029,11 @@ export const GymExerciseVideos = () => {
                     placeholder="e.g. Pectoralis Major, Front Deltoids"
                     value={formTargetMuscle}
                     onChange={(e) => setFormTargetMuscle(e.target.value)}
-                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                    className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3.5 py-2.5 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
+                  <label className="block text-xs font-bold text-[#292431] mb-1">
                     Equipment Required
                   </label>
                   <input
@@ -1041,14 +1041,14 @@ export const GymExerciseVideos = () => {
                     placeholder="e.g. Dumbbells & Incline Bench"
                     value={formEquipment}
                     onChange={(e) => setFormEquipment(e.target.value)}
-                    className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                    className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3.5 py-2.5 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                   />
                 </div>
               </div>
 
               {/* Row 5: Description */}
               <div>
-                <label className="block text-xs font-bold text-[#292524] mb-1">
+                <label className="block text-xs font-bold text-[#292431] mb-1">
                   Description / Instructions
                 </label>
                 <textarea
@@ -1056,25 +1056,25 @@ export const GymExerciseVideos = () => {
                   placeholder="Brief overview of the exercise and proper execution form..."
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
-                  className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl p-3 text-xs text-[#292524] outline-none focus:border-[#F97316] resize-none"
+                  className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl p-3 text-xs text-[#292431] outline-none focus:border-[#A991D4] resize-none"
                 />
               </div>
 
               {/* Row 7: Technique Tips */}
               <div>
-                <label className="block text-xs font-bold text-[#292524] mb-1.5 flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#292431] mb-1.5 flex items-center justify-between">
                   <span>Step-by-Step Technique Tips</span>
-                  <span className="text-[11px] text-[#78716C] font-normal">{formTips.length} tips added</span>
+                  <span className="text-[11px] text-[#6B5E78] font-normal">{formTips.length} tips added</span>
                 </label>
 
                 <div className="space-y-1.5 mb-2">
                   {formTips.map((tip, idx) => (
-                    <div key={idx} className="flex items-center justify-between gap-2 p-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-lg text-xs">
+                    <div key={idx} className="flex items-center justify-between gap-2 p-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-lg text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="w-4 h-4 rounded-full bg-[#F97316]/20 text-[#F97316] font-bold text-[10px] flex items-center justify-center shrink-0">
+                        <span className="w-4 h-4 rounded-full bg-[#A991D4]/20 text-[#A991D4] font-bold text-[10px] flex items-center justify-center shrink-0">
                           {idx + 1}
                         </span>
-                        <span className="text-[#292524]">{tip}</span>
+                        <span className="text-[#292431]">{tip}</span>
                       </div>
                       <button
                         type="button"
@@ -1099,12 +1099,12 @@ export const GymExerciseVideos = () => {
                         handleAddTip();
                       }
                     }}
-                    className="flex-1 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl px-3 py-2 text-xs text-[#292524] outline-none focus:border-[#F97316]"
+                    className="flex-1 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3 py-2 text-xs text-[#292431] outline-none focus:border-[#A991D4]"
                   />
                   <button
                     type="button"
                     onClick={handleAddTip}
-                    className="px-3.5 py-2 bg-stone-100 hover:bg-[#F97316] hover:text-white text-[#292524] font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                    className="px-3.5 py-2 bg-stone-100 hover:bg-[#A991D4] hover:text-[#292431] text-[#292431] font-bold rounded-xl text-xs transition-colors cursor-pointer"
                   >
                     + Add Tip
                   </button>
@@ -1112,7 +1112,7 @@ export const GymExerciseVideos = () => {
               </div>
 
               {/* Modal Footer Actions */}
-              <div className="pt-4 border-t border-[#E7E5E4] flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-[#E5DDEB] flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
@@ -1122,7 +1122,7 @@ export const GymExerciseVideos = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#A991D4] to-[#967CC5] hover:from-[#967CC5] hover:to-[#C2410C] text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <Plus size={15} /> Save & Add Exercise
                 </button>
@@ -1135,15 +1135,15 @@ export const GymExerciseVideos = () => {
       {/* ===================== APPROVE VIDEO FOR CLIENT MODAL ===================== */}
       {approveModalVideo && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#E7E5E4] overflow-hidden">
-            <div className="p-5 border-b border-[#E7E5E4] flex justify-between items-center bg-[#FFFDF8]">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#E5DDEB] overflow-hidden">
+            <div className="p-5 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={20} className="text-emerald-600" />
-                <h3 className="font-bold text-[#292524] text-base">Approve Video Access</h3>
+                <h3 className="font-bold text-[#292431] text-base">Approve Video Access</h3>
               </div>
               <button 
                 onClick={() => setApproveModalVideo(null)}
-                className="p-1.5 text-[#78716C] hover:text-[#292524] hover:bg-gray-100 rounded-lg"
+                className="p-1.5 text-[#6B5E78] hover:text-[#292431] hover:bg-gray-100 rounded-lg"
               >
                 <X size={18} />
               </button>
@@ -1155,13 +1155,13 @@ export const GymExerciseVideos = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-2">
                   Select Customer / Gym Member *
                 </label>
                 <select
                   value={selectedClientId}
                   onChange={(e) => setSelectedClientId(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#F97316]"
+                  className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#A991D4]"
                   required
                 >
                   <option value="">-- Choose a customer --</option>
@@ -1174,7 +1174,7 @@ export const GymExerciseVideos = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#78716C] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-2">
                   Coach Guidance & Training Focus
                 </label>
                 <textarea
@@ -1182,7 +1182,7 @@ export const GymExerciseVideos = () => {
                   value={coachNotes}
                   onChange={(e) => setCoachNotes(e.target.value)}
                   placeholder="e.g. Focus on keeping elbows tucked and pause at bottom for 1 second..."
-                  className="w-full bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-3 text-xs outline-none focus:border-[#F97316] resize-none"
+                  className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl p-3 text-xs outline-none focus:border-[#A991D4] resize-none"
                 />
               </div>
 
@@ -1192,11 +1192,11 @@ export const GymExerciseVideos = () => {
                 </div>
               )}
 
-              <div className="pt-3 flex justify-end gap-2 border-t border-[#E7E5E4]">
+              <div className="pt-3 flex justify-end gap-2 border-t border-[#E5DDEB]">
                 <button
                   type="button"
                   onClick={() => setApproveModalVideo(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#78716C] hover:bg-[#FED7AA]"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#6B5E78] hover:bg-[#E9DFF4]"
                 >
                   Cancel
                 </button>

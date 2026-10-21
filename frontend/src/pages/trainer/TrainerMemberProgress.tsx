@@ -85,55 +85,55 @@ const TrainerMemberProgress: React.FC = () => {
     <div className="max-w-7xl mx-auto space-y-6 pb-16">
       <TrainerClientsTabs />
       {/* Header */}
-      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="bg-white border border-[#E5DDEB] rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F97316]/10 text-[#F97316] flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#A991D4]/10 text-[#A991D4] flex items-center gap-1">
               <TrendingUp size={13} /> Real-Time Analytics
             </span>
-            <span className="text-xs text-[#78716C]">• Workout Plan Compliance</span>
+            <span className="text-xs text-[#6B5E78]">• Workout Plan Compliance</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#292524] tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[#292431] tracking-tight">
             Client Workout Progress
           </h1>
-          <p className="text-sm text-[#78716C] mt-1">
+          <p className="text-sm text-[#6B5E78] mt-1">
             Monitor client adherence to assigned workout routines, completed sets, workout streak, and exercise completion rate.
           </p>
         </div>
 
         <button
           onClick={fetchClientsOverview}
-          className="px-4 py-2 bg-[#FFFDF8] hover:bg-[#FED7AA] text-[#292524] rounded-xl text-xs font-bold transition-colors flex items-center gap-2"
+          className="px-4 py-2 bg-[#F7F4FA] hover:bg-[#E9DFF4] text-[#292431] rounded-xl text-xs font-bold transition-colors flex items-center gap-2"
         >
           <RefreshCw size={14} /> Refresh Progress
         </button>
       </div>
 
       {/* Search & Filter */}
-      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm flex items-center gap-3">
+      <div className="bg-white border border-[#E5DDEB] rounded-2xl p-4 shadow-sm flex items-center gap-3">
         <div className="relative flex-1">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
           <input
             type="text"
             placeholder="Search client by name, email, or assigned workout plan..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm outline-none focus:border-[#F97316] text-[#292524]"
+            className="w-full pl-10 pr-4 py-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm outline-none focus:border-[#A991D4] text-[#292431]"
           />
         </div>
       </div>
 
       {/* Grid of Clients */}
       {loading ? (
-        <div className="text-center py-20 text-[#78716C]">
-          <div className="w-10 h-10 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <div className="text-center py-20 text-[#6B5E78]">
+          <div className="w-10 h-10 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="font-semibold text-sm">Loading client workout metrics...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-12 text-center">
-          <Activity size={48} className="mx-auto text-[#78716C] mb-3" />
-          <h3 className="text-base font-bold text-[#292524]">No client workout activity found</h3>
-          <p className="text-xs text-[#78716C] mt-1">
+        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-12 text-center">
+          <Activity size={48} className="mx-auto text-[#6B5E78] mb-3" />
+          <h3 className="text-base font-bold text-[#292431]">No client workout activity found</h3>
+          <p className="text-xs text-[#6B5E78] mt-1">
             When you create and publish workout plans for clients, their progress, sets completed, and streaks will appear here.
           </p>
         </div>
@@ -146,13 +146,13 @@ const TrainerMemberProgress: React.FC = () => {
             return (
               <div
                 key={item.customer.id}
-                className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
               >
                 <div>
                   {/* Top Customer Info */}
                   <div className="flex items-center justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-full bg-[#F97316] text-white font-bold flex items-center justify-center text-sm overflow-hidden shrink-0">
+                      <div className="w-11 h-11 rounded-full bg-[#A991D4] text-[#292431] font-bold flex items-center justify-center text-sm overflow-hidden shrink-0">
                         {item.customer.profilePhoto ? (
                           <img src={item.customer.profilePhoto} alt="" className="w-full h-full object-cover" />
                         ) : (
@@ -160,8 +160,8 @@ const TrainerMemberProgress: React.FC = () => {
                         )}
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-bold text-base text-[#292524] truncate">{item.customer.name}</h3>
-                        <p className="text-xs text-[#78716C] truncate">{item.customer.fitnessGoal || item.customer.email}</p>
+                        <h3 className="font-bold text-base text-[#292431] truncate">{item.customer.name}</h3>
+                        <p className="text-xs text-[#6B5E78] truncate">{item.customer.fitnessGoal || item.customer.email}</p>
                       </div>
                     </div>
 
@@ -175,9 +175,9 @@ const TrainerMemberProgress: React.FC = () => {
                   </div>
 
                   {/* Assigned Workout Plan Banner */}
-                  <div className="bg-[#F9F8F6] p-3 rounded-xl border border-[#E7E5E4] mb-4">
-                    <span className="text-[10px] uppercase font-bold text-[#78716C] block">Assigned Workout Plan</span>
-                    <p className="text-xs font-extrabold text-[#292524] truncate mt-0.5">
+                  <div className="bg-[#F7F4FA] p-3 rounded-xl border border-[#E5DDEB] mb-4">
+                    <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Assigned Workout Plan</span>
+                    <p className="text-xs font-extrabold text-[#292431] truncate mt-0.5">
                       {hasPlan ? item.plan?.name : 'No active workout plan assigned'}
                     </p>
                   </div>
@@ -185,12 +185,12 @@ const TrainerMemberProgress: React.FC = () => {
                   {/* Progress Bar */}
                   <div className="space-y-1.5 mb-4">
                     <div className="flex justify-between text-xs font-bold">
-                      <span className="text-[#78716C]">Plan Completion Rate</span>
-                      <span className="text-[#F97316]">{completionPct}%</span>
+                      <span className="text-[#6B5E78]">Plan Completion Rate</span>
+                      <span className="text-[#A991D4]">{completionPct}%</span>
                     </div>
-                    <div className="w-full h-2.5 bg-[#FED7AA] rounded-full overflow-hidden">
+                    <div className="w-full h-2.5 bg-[#E9DFF4] rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-[#F97316] to-emerald-500 rounded-full transition-all duration-500"
+                        className="h-full bg-gradient-to-r from-[#A991D4] to-emerald-500 rounded-full transition-all duration-500"
                         style={{ width: `${completionPct}%` }}
                       ></div>
                     </div>
@@ -198,29 +198,29 @@ const TrainerMemberProgress: React.FC = () => {
 
                   {/* 4 Stats Grid */}
                   <div className="grid grid-cols-2 gap-2 text-center mb-4">
-                    <div className="bg-[#FFFDF8]/70 p-2.5 rounded-xl border border-[#E7E5E4]">
-                      <span className="text-[10px] uppercase font-bold text-[#78716C] block">Exercises Done</span>
-                      <span className="text-sm font-extrabold text-[#292524]">
+                    <div className="bg-[#F7F4FA]/70 p-2.5 rounded-xl border border-[#E5DDEB]">
+                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Exercises Done</span>
+                      <span className="text-sm font-extrabold text-[#292431]">
                         {item.stats.totalExercisesCompleted} / {item.plan?.totalExercises || 0}
                       </span>
                     </div>
 
-                    <div className="bg-[#FFFDF8]/70 p-2.5 rounded-xl border border-[#E7E5E4]">
-                      <span className="text-[10px] uppercase font-bold text-[#78716C] block">Pending Exercises</span>
+                    <div className="bg-[#F7F4FA]/70 p-2.5 rounded-xl border border-[#E5DDEB]">
+                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Pending Exercises</span>
                       <span className="text-sm font-extrabold text-amber-700">
                         {item.stats.pendingExercises}
                       </span>
                     </div>
 
-                    <div className="bg-[#FFFDF8]/70 p-2.5 rounded-xl border border-[#E7E5E4]">
-                      <span className="text-[10px] uppercase font-bold text-[#78716C] block">Completed Sets</span>
-                      <span className="text-sm font-extrabold text-[#292524]">
+                    <div className="bg-[#F7F4FA]/70 p-2.5 rounded-xl border border-[#E5DDEB]">
+                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Completed Sets</span>
+                      <span className="text-sm font-extrabold text-[#292431]">
                         {item.stats.completedSets} Sets
                       </span>
                     </div>
 
-                    <div className="bg-[#FFFDF8]/70 p-2.5 rounded-xl border border-[#E7E5E4]">
-                      <span className="text-[10px] uppercase font-bold text-[#78716C] block">Weekly Frequency</span>
+                    <div className="bg-[#F7F4FA]/70 p-2.5 rounded-xl border border-[#E5DDEB]">
+                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Weekly Frequency</span>
                       <span className="text-sm font-extrabold text-emerald-700">
                         {item.stats.weeklyWorkoutCount} / wk
                       </span>
@@ -228,7 +228,7 @@ const TrainerMemberProgress: React.FC = () => {
                   </div>
 
                   {/* Total Workout Time & Last Active */}
-                  <div className="flex items-center justify-between text-[11px] text-[#78716C] mb-1">
+                  <div className="flex items-center justify-between text-[11px] text-[#6B5E78] mb-1">
                     <span className="flex items-center gap-1">
                       <Clock size={12} /> Total Time: <strong>{item.stats.totalMinutes} mins</strong>
                     </span>
@@ -239,10 +239,10 @@ const TrainerMemberProgress: React.FC = () => {
                 </div>
 
                 {/* Action button */}
-                <div className="pt-3 border-t border-[#E7E5E4] mt-2">
+                <div className="pt-3 border-t border-[#E5DDEB] mt-2">
                   <button
                     onClick={() => handleOpenDetail(item.customer.id)}
-                    className="w-full py-2 bg-[#FFFDF8] hover:bg-[#FED7AA] text-[#292524] text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-[#F7F4FA] hover:bg-[#E9DFF4] text-[#292431] text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
                   >
                     <span>Inspect Exercise Logs & Form</span>
                     <ChevronRight size={14} />
@@ -257,17 +257,17 @@ const TrainerMemberProgress: React.FC = () => {
       {/* Detailed Modal */}
       {selectedCustomerId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#E7E5E4] overflow-hidden">
-            <div className="p-5 border-b border-[#E7E5E4] flex justify-between items-center bg-[#F9F8F6]">
+          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#E5DDEB] overflow-hidden">
+            <div className="p-5 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA]">
               <div>
-                <h3 className="font-extrabold text-xl text-[#292524]">Client Workout History</h3>
-                <p className="text-xs text-[#78716C]">
+                <h3 className="font-extrabold text-xl text-[#292431]">Client Workout History</h3>
+                <p className="text-xs text-[#6B5E78]">
                   Detailed log of completed animated exercises, sets, repetitions, and timestamps
                 </p>
               </div>
               <button
                 onClick={() => setSelectedCustomerId(null)}
-                className="p-1.5 text-[#78716C] hover:text-[#292524] rounded-lg"
+                className="p-1.5 text-[#6B5E78] hover:text-[#292431] rounded-lg"
               >
                 <X size={20} />
               </button>
@@ -275,8 +275,8 @@ const TrainerMemberProgress: React.FC = () => {
 
             <div className="p-6 overflow-y-auto space-y-6 flex-1">
               {loadingDetail ? (
-                <div className="text-center py-12 text-[#78716C]">
-                  <div className="w-8 h-8 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <div className="text-center py-12 text-[#6B5E78]">
+                  <div className="w-8 h-8 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                   <p className="text-xs font-semibold">Loading exercise completion logs...</p>
                 </div>
               ) : !customerDetail ? (
@@ -285,27 +285,27 @@ const TrainerMemberProgress: React.FC = () => {
                 <>
                   {/* Summary Bar */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="bg-[#F9F8F6] p-3 rounded-xl border border-[#E7E5E4] text-center">
-                      <span className="text-[10px] uppercase font-bold text-[#78716C] block">Total Workouts</span>
-                      <span className="text-lg font-extrabold text-[#292524]">
+                    <div className="bg-[#F7F4FA] p-3 rounded-xl border border-[#E5DDEB] text-center">
+                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Total Workouts</span>
+                      <span className="text-lg font-extrabold text-[#292431]">
                         {customerDetail.stats?.totalWorkouts || 0}
                       </span>
                     </div>
-                    <div className="bg-[#F9F8F6] p-3 rounded-xl border border-[#E7E5E4] text-center">
-                      <span className="text-[10px] uppercase font-bold text-[#78716C] block">Exercises Finished</span>
-                      <span className="text-lg font-extrabold text-[#292524]">
+                    <div className="bg-[#F7F4FA] p-3 rounded-xl border border-[#E5DDEB] text-center">
+                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Exercises Finished</span>
+                      <span className="text-lg font-extrabold text-[#292431]">
                         {customerDetail.stats?.totalExercisesCompleted || 0}
                       </span>
                     </div>
-                    <div className="bg-[#F9F8F6] p-3 rounded-xl border border-[#E7E5E4] text-center">
-                      <span className="text-[10px] uppercase font-bold text-[#78716C] block">Completion %</span>
+                    <div className="bg-[#F7F4FA] p-3 rounded-xl border border-[#E5DDEB] text-center">
+                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Completion %</span>
                       <span className="text-lg font-extrabold text-emerald-700">
                         {customerDetail.stats?.completionPercentage || 0}%
                       </span>
                     </div>
-                    <div className="bg-[#F9F8F6] p-3 rounded-xl border border-[#E7E5E4] text-center">
-                      <span className="text-[10px] uppercase font-bold text-[#78716C] block">Time Spent</span>
-                      <span className="text-lg font-extrabold text-[#F97316]">
+                    <div className="bg-[#F7F4FA] p-3 rounded-xl border border-[#E5DDEB] text-center">
+                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Time Spent</span>
+                      <span className="text-lg font-extrabold text-[#A991D4]">
                         {customerDetail.stats?.totalWorkoutMinutes || 0} min
                       </span>
                     </div>
@@ -314,7 +314,7 @@ const TrainerMemberProgress: React.FC = () => {
                   {/* Active Plan Days */}
                   {customerDetail.activePlan && (
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#78716C] mb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#6B5E78] mb-2">
                         Assigned Plan: {customerDetail.activePlan.planName}
                       </h4>
                       <div className="space-y-2">
@@ -324,17 +324,17 @@ const TrainerMemberProgress: React.FC = () => {
                             className={`p-3 rounded-xl flex items-center justify-between text-xs border transition-colors ${
                               pe.isCompleted
                                 ? 'bg-emerald-50/70 border-emerald-300 text-emerald-950'
-                                : 'bg-[#F9F8F6] border-[#E7E5E4]'
+                                : 'bg-[#F7F4FA] border-[#E5DDEB]'
                             }`}
                           >
                             <div className="flex items-center gap-2">
                               <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                                pe.isCompleted ? 'bg-emerald-600 text-white' : 'bg-[#F97316] text-white'
+                                pe.isCompleted ? 'bg-emerald-600 text-white' : 'bg-[#A991D4] text-[#292431]'
                               }`}>
                                 {pe.isCompleted ? '✓' : idx + 1}
                               </span>
-                              <span className="font-bold text-[#292524]">{pe.name}</span>
-                              <span className="text-[#78716C]">({pe.day})</span>
+                              <span className="font-bold text-[#292431]">{pe.name}</span>
+                              <span className="text-[#6B5E78]">({pe.day})</span>
                             </div>
                             <div className="flex items-center gap-2">
                               {pe.isCompleted ? (
@@ -346,7 +346,7 @@ const TrainerMemberProgress: React.FC = () => {
                                   Pending
                                 </span>
                               )}
-                              <span className="text-[#78716C] font-semibold">
+                              <span className="text-[#6B5E78] font-semibold">
                                 Target: {pe.sets} Sets × {pe.reps} Reps
                               </span>
                             </div>
@@ -358,30 +358,30 @@ const TrainerMemberProgress: React.FC = () => {
 
                   {/* Activity History Logs */}
                   <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#78716C] mb-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#6B5E78] mb-2">
                       Recent Activity Logs
                     </h4>
                     {(!customerDetail.history || customerDetail.history.length === 0) ? (
-                      <p className="text-xs text-[#78716C] italic">No exercise completion records logged yet.</p>
+                      <p className="text-xs text-[#6B5E78] italic">No exercise completion records logged yet.</p>
                     ) : (
                       <div className="space-y-2">
                         {customerDetail.history.map((log: any) => (
                           <div
                             key={log._id}
-                            className="p-3 bg-white border border-[#E7E5E4] rounded-xl flex items-center justify-between text-xs shadow-sm"
+                            className="p-3 bg-white border border-[#E5DDEB] rounded-xl flex items-center justify-between text-xs shadow-sm"
                           >
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
                                 <CheckCircle2 size={16} />
                               </div>
                               <div>
-                                <p className="font-bold text-[#292524]">{log.exerciseId?.name || 'Exercise'}</p>
-                                <p className="text-[10px] text-[#78716C]">
+                                <p className="font-bold text-[#292431]">{log.exerciseId?.name || 'Exercise'}</p>
+                                <p className="text-[10px] text-[#6B5E78]">
                                   {log.completedSets} Sets completed • {Math.round(log.duration || 0)}s duration
                                 </p>
                               </div>
                             </div>
-                            <span className="text-[11px] text-[#78716C]">
+                            <span className="text-[11px] text-[#6B5E78]">
                               {new Date(log.completedAt).toLocaleString([], {
                                 month: 'short',
                                 day: 'numeric',
@@ -398,10 +398,10 @@ const TrainerMemberProgress: React.FC = () => {
               )}
             </div>
 
-            <div className="p-4 border-t border-[#E7E5E4] bg-[#F9F8F6] flex justify-end">
+            <div className="p-4 border-t border-[#E5DDEB] bg-[#F7F4FA] flex justify-end">
               <button
                 onClick={() => setSelectedCustomerId(null)}
-                className="px-4 py-2 bg-[#F97316] text-white text-xs font-bold rounded-xl hover:bg-[#EA580C]"
+                className="px-4 py-2 bg-[#A991D4] text-[#292431] text-xs font-bold rounded-xl hover:bg-[#967CC5]"
               >
                 Close
               </button>

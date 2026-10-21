@@ -131,8 +131,8 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       // Studio Radial lighting gradient
       const bgGrad = ctx.createRadialGradient(width / 2, height / 2 - 20, 30, width / 2, height / 2, width / 1.3);
-      bgGrad.addColorStop(0, '#292524');
-      bgGrad.addColorStop(0.5, '#0F172A');
+      bgGrad.addColorStop(0, '#292431');
+      bgGrad.addColorStop(0.5, '#292431');
       bgGrad.addColorStop(1, '#090D16');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
@@ -186,9 +186,9 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       }
 
       // Biomechanical Style Configuration
-      const mannequinColor = '#E2E8F0';
+      const mannequinColor = '#E5DDEB';
       const jointColor = '#38BDF8';
-      const highlightColor = '#10B981'; // Emerald neon glow for active target muscles
+      const highlightColor = '#27845A'; // Emerald neon glow for active target muscles
       const accentGlow = '#06B6D4';
 
       ctx.lineCap = 'round';
@@ -251,7 +251,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         ctx.rotate(rot);
 
         // Bar handle
-        ctx.strokeStyle = '#CBD5E1';
+        ctx.strokeStyle = '#E5DDEB';
         ctx.lineWidth = 3.5;
         ctx.beginPath();
         ctx.moveTo(-13, 0);
@@ -273,14 +273,14 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       };
 
       const drawBarbell = (bx: number, by: number, widthPx: number = 210) => {
-        ctx.strokeStyle = '#CBD5E1';
+        ctx.strokeStyle = '#E5DDEB';
         ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(bx - widthPx / 2, by);
         ctx.lineTo(bx + widthPx / 2, by);
         ctx.stroke();
 
-        ctx.fillStyle = '#EF4444';
+        ctx.fillStyle = '#C43D4D';
         ctx.strokeStyle = '#FCA5A5';
         ctx.lineWidth = 2;
 
@@ -577,7 +577,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         if (isBenchPress) {
           ctx.fillStyle = '#334155';
           ctx.fillRect(centerX - 105, baseFloor + 12, 210, 16);
-          ctx.fillStyle = '#0F172A';
+          ctx.fillStyle = '#292431';
           ctx.fillRect(centerX - 85, baseFloor + 28, 14, 22);
           ctx.fillRect(centerX + 70, baseFloor + 28, 14, 22);
         }
@@ -616,7 +616,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const barY = 38;
         const barX = centerX;
 
-        ctx.strokeStyle = '#64748B';
+        ctx.strokeStyle = '#6B5E78';
         ctx.lineWidth = 7;
         ctx.beginPath();
         ctx.moveTo(barX - 110, barY);
@@ -820,7 +820,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       ctx.font = 'bold 9px monospace';
       ctx.fillText(`1-MIN AI FORM VIDEO • ${formatTime(currentVideoTime)} / ${formatTime(totalDuration)}`, 22, 28);
 
-      ctx.fillStyle = '#F8FAFC';
+      ctx.fillStyle = '#F7F4FA';
       ctx.font = 'bold 12px sans-serif';
       ctx.fillText(phaseLabel, 22, 48);
 
@@ -875,7 +875,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
   };
 
   return (
-    <div className={`relative rounded-2xl overflow-hidden bg-[#0F172A] border border-white/10 flex flex-col ${className}`}>
+    <div className={`relative rounded-2xl overflow-hidden bg-[#292431] border border-white/10 flex flex-col ${className}`}>
       {/* 60fps Canvas Display */}
       <div className={`relative w-full bg-[#090D16] flex items-center justify-center overflow-hidden ${
         compact ? 'h-full' : 'aspect-video min-h-[220px] max-h-[360px]'
@@ -953,7 +953,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       {/* 1-Minute Video Scrubber & Playback HUD (Full Mode Only) */}
       {!compact && (
-        <div className="bg-[#292524]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
+        <div className="bg-[#292431]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
           {/* Row 1: Interactive 1-Minute Scrubber Bar */}
           <div className="flex items-center gap-3">
             <div

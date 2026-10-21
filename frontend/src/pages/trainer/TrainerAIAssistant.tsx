@@ -84,12 +84,12 @@ const TrainerAIAssistant = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#F97316] to-teal-700 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-900/20 text-white">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#A991D4] to-teal-700 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-900/20 text-white">
             <Bot size={26} />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#292524] tracking-tight">AI Analysis Review Hub</h1>
-            <p className="text-[#78716C] mt-1 text-sm">
+            <h1 className="text-3xl font-bold text-[#292431] tracking-tight">AI Analysis Review Hub</h1>
+            <p className="text-[#6B5E78] mt-1 text-sm">
               Review customer assessments, adjust exercises, calibrate sets & reps, and approve final customer plans.
             </p>
           </div>
@@ -97,19 +97,19 @@ const TrainerAIAssistant = () => {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[#78716C]" size={18} />
+          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[#6B5E78]" size={18} />
           <input
             type="text"
             placeholder="Search clients by name or goal..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full md:w-72 pl-10 pr-4 py-2.5 bg-white border border-[#FED7AA] rounded-xl focus:border-[#F97316] transition-all outline-none text-sm text-[#292524]"
+            className="w-full md:w-72 pl-10 pr-4 py-2.5 bg-white border border-[#E9DFF4] rounded-xl focus:border-[#A991D4] transition-all outline-none text-sm text-[#292431]"
           />
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#FED7AA] pb-2 overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2 border-b border-[#E9DFF4] pb-2 overflow-x-auto no-scrollbar">
         {[
           { key: 'All', label: 'All Clients' },
           { key: 'Pending', label: 'Pending Trainer Review' },
@@ -120,8 +120,8 @@ const TrainerAIAssistant = () => {
             onClick={() => setStatusFilter(tab.key)}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
               statusFilter === tab.key
-                ? 'bg-[#F97316] text-white shadow-sm'
-                : 'bg-white text-[#78716C] hover:bg-[#F9F8F6] border border-[#FED7AA]'
+                ? 'bg-[#A991D4] text-[#292431] shadow-sm'
+                : 'bg-white text-[#6B5E78] hover:bg-[#F7F4FA] border border-[#E9DFF4]'
             }`}
           >
             {tab.label}
@@ -130,11 +130,11 @@ const TrainerAIAssistant = () => {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white border border-[#E7E5E4] rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-[#E5DDEB] rounded-3xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-[#FFFDF8] border-b border-[#FED7AA] text-xs font-bold text-[#78716C] uppercase tracking-wider">
+              <tr className="bg-[#F7F4FA] border-b border-[#E9DFF4] text-xs font-bold text-[#6B5E78] uppercase tracking-wider">
                 <th className="px-6 py-4">Client Name</th>
                 <th className="px-6 py-4">Fitness Goal</th>
                 <th className="px-6 py-4">Fitness Level</th>
@@ -143,28 +143,28 @@ const TrainerAIAssistant = () => {
                 <th className="px-6 py-4 text-right">Review Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#FED7AA]">
+            <tbody className="divide-y divide-[#E9DFF4]">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-16 text-center text-[#78716C]">
-                    <div className="w-8 h-8 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                    <p className="font-semibold text-xs text-[#78716C]">Loading clients...</p>
+                  <td colSpan={6} className="px-6 py-16 text-center text-[#6B5E78]">
+                    <div className="w-8 h-8 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    <p className="font-semibold text-xs text-[#6B5E78]">Loading clients...</p>
                   </td>
                 </tr>
               ) : filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-16 text-center text-[#78716C]">
-                    <Bot size={36} className="mx-auto text-[#E7E5E4] mb-2" />
-                    <p className="font-bold text-sm text-[#292524]">No clients found</p>
-                    <p className="text-xs text-[#78716C] mt-1">No customer assessment records matching this filter.</p>
+                  <td colSpan={6} className="px-6 py-16 text-center text-[#6B5E78]">
+                    <Bot size={36} className="mx-auto text-[#E5DDEB] mb-2" />
+                    <p className="font-bold text-sm text-[#292431]">No clients found</p>
+                    <p className="text-xs text-[#6B5E78] mt-1">No customer assessment records matching this filter.</p>
                   </td>
                 </tr>
               ) : (
                 filteredCustomers.map((customer) => (
-                  <tr key={customer._id} className="hover:bg-[#F9F8F6] transition-colors">
+                  <tr key={customer._id} className="hover:bg-[#F7F4FA] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-[#F97316]/10 text-[#F97316] rounded-full flex items-center justify-center font-bold text-sm shrink-0">
+                        <div className="w-10 h-10 bg-[#A991D4]/10 text-[#A991D4] rounded-full flex items-center justify-center font-bold text-sm shrink-0">
                           {customer.profilePhoto ? (
                             <img src={customer.profilePhoto} alt="profile" className="w-full h-full object-cover rounded-full" />
                           ) : (
@@ -172,16 +172,16 @@ const TrainerAIAssistant = () => {
                           )}
                         </div>
                         <div>
-                          <p className="font-bold text-sm text-[#292524]">{customer.firstName} {customer.lastName}</p>
-                          <p className="text-xs text-[#78716C]">{customer.email}</p>
+                          <p className="font-bold text-sm text-[#292431]">{customer.firstName} {customer.lastName}</p>
+                          <p className="text-xs text-[#6B5E78]">{customer.email}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm font-semibold text-[#F97316]">{customer.goal}</span>
+                      <span className="text-sm font-semibold text-[#A991D4]">{customer.goal}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xs font-semibold text-[#78716C] bg-[#FFFDF8] px-2.5 py-1 rounded-lg">
+                      <span className="text-xs font-semibold text-[#6B5E78] bg-[#F7F4FA] px-2.5 py-1 rounded-lg">
                         {customer.level}
                       </span>
                     </td>
@@ -189,7 +189,7 @@ const TrainerAIAssistant = () => {
                       {getStatusBadge(customer.aiStatus)}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xs text-[#78716C]">
+                      <span className="text-xs text-[#6B5E78]">
                         {customer.lastUpdated ? new Date(customer.lastUpdated).toLocaleDateString() : '-'}
                       </span>
                     </td>
@@ -200,8 +200,8 @@ const TrainerAIAssistant = () => {
                           customer.aiStatus === 'No Data' 
                             ? 'bg-gray-100 text-gray-400 pointer-events-none'
                             : customer.aiStatus === 'Trainer Approved' || customer.aiStatus === 'Published to Customer'
-                            ? 'bg-white border border-[#E7E5E4] text-[#F97316] hover:bg-[#F9F8F6]'
-                            : 'bg-[#F97316] text-white hover:bg-[#EA580C]'
+                            ? 'bg-white border border-[#E5DDEB] text-[#A991D4] hover:bg-[#F7F4FA]'
+                            : 'bg-[#A991D4] text-[#292431] hover:bg-[#967CC5]'
                         }`}
                       >
                         <FileEdit size={14} /> 

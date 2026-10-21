@@ -140,23 +140,23 @@ const MemberProgress: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 pb-20 animate-fade-in">
       {/* ── Top Header Banner with Mode Switcher (Workout Plan vs Diet Plan) ── */}
-      <div className="bg-white border border-[#E7E5E4] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-[#E5DDEB] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1.5 ${
-              activePlanType === 'workout' ? 'bg-orange-100 text-[#EA580C]' : 'bg-emerald-100 text-emerald-800'
+              activePlanType === 'workout' ? 'bg-orange-100 text-[#967CC5]' : 'bg-emerald-100 text-emerald-800'
             }`}>
               <CheckCircle2 size={13} />
               <span>{activePlanType === 'workout' ? 'Personal Workout Progress' : 'Nutrition & Diet Progress'}</span>
             </span>
-            <span className="text-xs text-[#78716C] font-semibold">
+            <span className="text-xs text-[#6B5E78] font-semibold">
               • {activePlanType === 'workout' ? 'Live Training Tracker' : 'Live Meal Adherence'}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#292524] tracking-tight mb-1">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#292431] tracking-tight mb-1">
             {activePlanType === 'workout' ? 'Workout Progress' : 'Diet Work Plan Progress'}
           </h1>
-          <p className="text-[#78716C] text-xs sm:text-sm max-w-2xl">
+          <p className="text-[#6B5E78] text-xs sm:text-sm max-w-2xl">
             {activePlanType === 'workout'
               ? 'Track your workout streak, completed animated exercises, sets, and training adherence.'
               : 'Track your daily nutrition goals, completed meals, calorie intake, and macronutrient balance.'}
@@ -201,73 +201,73 @@ const MemberProgress: React.FC = () => {
         <div className="space-y-6 animate-in fade-in">
           {/* Top 4 Workout Progress Metric Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-xs hover:border-[#F97316]/40 transition-all">
+            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs hover:border-[#A991D4]/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Total Workouts</span>
-                <Dumbbell size={18} className="text-[#F97316]" />
+                <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Total Workouts</span>
+                <Dumbbell size={18} className="text-[#A991D4]" />
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl sm:text-3xl font-black text-[#292524]">
+                <span className="text-2xl sm:text-3xl font-black text-[#292431]">
                   {workoutStats?.totalWorkouts || 0}
                 </span>
-                <span className="text-xs text-[#78716C] font-bold">sessions</span>
+                <span className="text-xs text-[#6B5E78] font-bold">sessions</span>
               </div>
               <span className="text-[11px] text-emerald-600 font-semibold mt-1 block">
                 {workoutStats?.weeklyWorkoutCount || 0} workouts this week
               </span>
             </div>
 
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-xs hover:border-[#F97316]/40 transition-all">
+            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs hover:border-[#A991D4]/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Exercises Done</span>
+                <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Exercises Done</span>
                 <CheckCircle2 size={18} className="text-emerald-600" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-emerald-700">
                   {workoutStats?.totalExercisesCompleted || 0}
                 </span>
-                <span className="text-xs text-[#78716C] font-bold">completed</span>
+                <span className="text-xs text-[#6B5E78] font-bold">completed</span>
               </div>
-              <span className="text-[11px] text-[#78716C] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#6B5E78] font-semibold mt-1 block">
                 Across all plan routines
               </span>
             </div>
 
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-xs hover:border-[#F97316]/40 transition-all">
+            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs hover:border-[#A991D4]/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Workout Streak</span>
+                <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Workout Streak</span>
                 <Flame size={18} className="text-amber-500 fill-amber-500" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-amber-600">
                   {workoutStats?.workoutStreak || 0}
                 </span>
-                <span className="text-xs text-[#78716C] font-bold">days streak</span>
+                <span className="text-xs text-[#6B5E78] font-bold">days streak</span>
               </div>
               <span className="text-[11px] text-amber-700 font-semibold mt-1 block">
                 🔥 Keep consistency alive!
               </span>
             </div>
 
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-xs hover:border-[#F97316]/40 transition-all">
+            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs hover:border-[#A991D4]/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Total Time</span>
+                <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Total Time</span>
                 <Clock size={18} className="text-teal-600" />
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl sm:text-3xl font-black text-[#292524]">
+                <span className="text-2xl sm:text-3xl font-black text-[#292431]">
                   {workoutStats?.totalWorkoutMinutes || 0}
                 </span>
-                <span className="text-xs text-[#78716C] font-bold">minutes</span>
+                <span className="text-xs text-[#6B5E78] font-bold">minutes</span>
               </div>
-              <span className="text-[11px] text-[#78716C] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#6B5E78] font-semibold mt-1 block">
                 Logged training time
               </span>
             </div>
           </div>
 
           {/* Completion Percentage Banner */}
-          <div className="bg-gradient-to-r from-[#292524] to-[#121A1A] text-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="bg-gradient-to-r from-[#292431] to-[#121A1A] text-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2 max-w-xl">
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-extrabold uppercase tracking-wider text-emerald-300">
@@ -287,7 +287,7 @@ const MemberProgress: React.FC = () => {
               </p>
               <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden mt-3">
                 <div
-                  className="h-full bg-gradient-to-r from-[#F97316] to-emerald-400 rounded-full transition-all duration-700"
+                  className="h-full bg-gradient-to-r from-[#A991D4] to-emerald-400 rounded-full transition-all duration-700"
                   style={{ width: `${workoutStats?.completionPercentage || 0}%` }}
                 ></div>
               </div>
@@ -295,26 +295,26 @@ const MemberProgress: React.FC = () => {
 
             <Link
               to="/member/workout"
-              className="px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-xl text-sm font-black transition-all shadow-sm flex items-center gap-2 shrink-0 cursor-pointer"
+              className="px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#292431] rounded-xl text-sm font-black transition-all shadow-sm flex items-center gap-2 shrink-0 cursor-pointer"
             >
               <PlayCircle size={18} /> Continue Workout
             </Link>
           </div>
 
           {/* ===================== DAY-WISE WORKPLAN COMPLETED DETAILS ===================== */}
-          <div className="bg-white border border-[#E7E5E4] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+          <div className="bg-white border border-[#E5DDEB] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
             {/* ── Dropdown Controls Header ── */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[#F5F5F4]">
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-orange-50 text-[#F97316] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-orange-50 text-[#A991D4] flex items-center justify-center">
                     <Calendar size={18} />
                   </div>
-                  <h3 className="text-xl font-extrabold text-[#292524] tracking-tight">
+                  <h3 className="text-xl font-extrabold text-[#292431] tracking-tight">
                     Day-Wise Workplan Completed Details
                   </h3>
                 </div>
-                <p className="text-xs text-[#78716C] mt-1">
+                <p className="text-xs text-[#6B5E78] mt-1">
                   Choose any day from Monday to Sunday to inspect completed animated exercises, logged sets, and adherence.
                 </p>
               </div>
@@ -324,7 +324,7 @@ const MemberProgress: React.FC = () => {
                 <select
                   value={selectedDay}
                   onChange={(e) => setSelectedDay(e.target.value)}
-                  className="w-full bg-[#FFFDF8] border-2 border-orange-200 hover:border-[#F97316] text-[#292524] text-xs sm:text-sm font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#F97316]/30 shadow-xs cursor-pointer appearance-none pr-10 transition-colors"
+                  className="w-full bg-[#F7F4FA] border-2 border-orange-200 hover:border-[#A991D4] text-[#292431] text-xs sm:text-sm font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#A991D4]/30 shadow-xs cursor-pointer appearance-none pr-10 transition-colors"
                 >
                   <option value="all">📅 All Days - Weekly Workplan Overview</option>
                   <option value="Monday">💪 Monday Workplan Completed Details</option>
@@ -347,7 +347,7 @@ const MemberProgress: React.FC = () => {
                 onClick={() => setSelectedDay('all')}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   selectedDay === 'all'
-                    ? 'bg-[#292524] text-white shadow-xs'
+                    ? 'bg-[#292431] text-white shadow-xs'
                     : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                 }`}
               >
@@ -362,14 +362,14 @@ const MemberProgress: React.FC = () => {
                     onClick={() => setSelectedDay(d)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                       isSelected
-                        ? 'bg-[#F97316] text-white shadow-xs scale-102 ring-2 ring-orange-300/60'
+                        ? 'bg-[#A991D4] text-[#292431] shadow-xs scale-102 ring-2 ring-orange-300/60'
                         : 'bg-stone-100 text-stone-700 hover:bg-stone-200 hover:text-stone-900'
                     }`}
                   >
                     <span>{d.slice(0, 3)}</span>
                     {dInfo && dInfo.completedCount > 0 && (
                       <span className={`w-4 h-4 rounded-full text-[9px] font-black flex items-center justify-center ${
-                        isSelected ? 'bg-white text-[#F97316]' : 'bg-emerald-100 text-emerald-800'
+                        isSelected ? 'bg-white text-[#A991D4]' : 'bg-emerald-100 text-emerald-800'
                       }`}>
                         ✓
                       </span>
@@ -383,19 +383,19 @@ const MemberProgress: React.FC = () => {
             {selectedDay !== 'all' ? (
               <div className="space-y-4 animate-in fade-in">
                 {/* Day Highlights Banner */}
-                <div className="bg-gradient-to-br from-[#FFFDF8] to-[#FFF7ED] border border-orange-200/90 rounded-2xl p-5 sm:p-6 shadow-xs">
+                <div className="bg-gradient-to-br from-[#F7F4FA] to-[#FFF7ED] border border-orange-200/90 rounded-2xl p-5 sm:p-6 shadow-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-orange-100 text-[#EA580C]">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-orange-100 text-[#967CC5]">
                           {activeDayWorkout.dayName} WORKPLAN
                         </span>
                         <span className="text-xs text-stone-500 font-semibold">• Assigned Routine</span>
                       </div>
-                      <h4 className="text-lg sm:text-xl font-black text-[#292524]">
+                      <h4 className="text-lg sm:text-xl font-black text-[#292431]">
                         {activeDayWorkout.focusArea}
                       </h4>
-                      <p className="text-xs text-[#78716C] mt-0.5">
+                      <p className="text-xs text-[#6B5E78] mt-0.5">
                         {activeDayWorkout.completedCount} of {activeDayWorkout.totalCount} exercises completed ({activeDayWorkout.completionPct}% adherence)
                       </p>
                     </div>
@@ -427,7 +427,7 @@ const MemberProgress: React.FC = () => {
                   {/* Day Completion Bar */}
                   <div className="w-full h-2.5 bg-stone-200/80 rounded-full overflow-hidden mt-4">
                     <div
-                      className="h-full bg-gradient-to-r from-[#F97316] to-emerald-500 rounded-full transition-all duration-700"
+                      className="h-full bg-gradient-to-r from-[#A991D4] to-emerald-500 rounded-full transition-all duration-700"
                       style={{ width: `${activeDayWorkout.completionPct}%` }}
                     />
                   </div>
@@ -446,20 +446,20 @@ const MemberProgress: React.FC = () => {
                       className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                         ex.isCompleted
                           ? 'bg-emerald-50/30 border-emerald-200 hover:border-emerald-300 shadow-xs'
-                          : 'bg-[#FFFDF8] border-[#E7E5E4] hover:border-orange-200'
+                          : 'bg-[#F7F4FA] border-[#E5DDEB] hover:border-orange-200'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-sm ${
                           ex.isCompleted
                             ? 'bg-emerald-100 text-emerald-700'
-                            : 'bg-orange-100 text-[#F97316]'
+                            : 'bg-orange-100 text-[#A991D4]'
                         }`}>
                           {ex.isCompleted ? <CheckCircle2 size={20} /> : idx + 1}
                         </div>
                         <div>
-                          <h5 className="font-extrabold text-sm text-[#292524]">{ex.name}</h5>
-                          <p className="text-xs text-[#78716C] mt-0.5">
+                          <h5 className="font-extrabold text-sm text-[#292431]">{ex.name}</h5>
+                          <p className="text-xs text-[#6B5E78] mt-0.5">
                             Target Muscle: <strong className="text-stone-700">{ex.muscle}</strong> • Target: {ex.sets} Sets × {ex.reps} Reps
                           </p>
                         </div>
@@ -482,7 +482,7 @@ const MemberProgress: React.FC = () => {
                             </span>
                             <Link
                               to="/member/workout"
-                              className="px-3 py-1 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                              className="px-3 py-1 bg-[#A991D4] hover:bg-[#967CC5] text-[#292431] rounded-lg text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
                             >
                               <span>Start</span>
                               <PlayCircle size={12} />
@@ -501,11 +501,11 @@ const MemberProgress: React.FC = () => {
                   <div
                     key={d.dayName}
                     onClick={() => setSelectedDay(d.dayName)}
-                    className="p-5 rounded-2xl border border-[#E7E5E4] bg-[#FFFDF8] hover:border-orange-300 hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
+                    className="p-5 rounded-2xl border border-[#E5DDEB] bg-[#F7F4FA] hover:border-orange-300 hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-extrabold text-sm text-[#292524] group-hover:text-[#F97316] transition-colors">
+                        <span className="font-extrabold text-sm text-[#292431] group-hover:text-[#A991D4] transition-colors">
                           {d.dayName}
                         </span>
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
@@ -518,21 +518,21 @@ const MemberProgress: React.FC = () => {
                           {d.completionPct}% Done
                         </span>
                       </div>
-                      <p className="text-xs text-[#78716C] font-semibold mb-3 truncate">
+                      <p className="text-xs text-[#6B5E78] font-semibold mb-3 truncate">
                         {d.focusArea}
                       </p>
 
                       <div className="w-full h-2 bg-stone-200 rounded-full overflow-hidden mb-3">
                         <div
-                          className="h-full bg-gradient-to-r from-[#F97316] to-emerald-500 rounded-full transition-all duration-500"
+                          className="h-full bg-gradient-to-r from-[#A991D4] to-emerald-500 rounded-full transition-all duration-500"
                           style={{ width: `${d.completionPct}%` }}
                         />
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-[#78716C] pt-3 border-t border-[#F5F5F4]">
+                    <div className="flex items-center justify-between text-xs text-[#6B5E78] pt-3 border-t border-[#F5F5F4]">
                       <span>{d.completedCount} / {d.totalCount} Exercises</span>
-                      <span className="font-bold text-[#F97316] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                      <span className="font-bold text-[#A991D4] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
                         <span>Inspect</span> &rarr;
                       </span>
                     </div>
@@ -543,15 +543,15 @@ const MemberProgress: React.FC = () => {
           </div>
 
           {/* Exercise Completion Activity Log */}
-          <div className="bg-white border border-[#E7E5E4] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+          <div className="bg-white border border-[#E5DDEB] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-bold text-[#292524]">Completed Exercise Logs</h3>
-                <p className="text-xs text-[#78716C]">Chronological history of completed exercise animations and sets</p>
+                <h3 className="text-xl font-bold text-[#292431]">Completed Exercise Logs</h3>
+                <p className="text-xs text-[#6B5E78]">Chronological history of completed exercise animations and sets</p>
               </div>
               <button
                 onClick={fetchWorkoutProgress}
-                className="p-2 text-[#78716C] hover:text-[#292524] hover:bg-[#FFFDF8] rounded-xl transition-colors cursor-pointer"
+                className="p-2 text-[#6B5E78] hover:text-[#292431] hover:bg-[#F7F4FA] rounded-xl transition-colors cursor-pointer"
                 title="Refresh logs"
               >
                 <RefreshCw size={16} />
@@ -559,20 +559,20 @@ const MemberProgress: React.FC = () => {
             </div>
 
             {loadingWorkoutProgress ? (
-              <div className="text-center py-12 text-[#78716C]">
-                <Loader2 className="animate-spin mx-auto mb-2 text-[#F97316]" size={28} />
+              <div className="text-center py-12 text-[#6B5E78]">
+                <Loader2 className="animate-spin mx-auto mb-2 text-[#A991D4]" size={28} />
                 <p className="text-xs font-semibold">Loading workout records...</p>
               </div>
             ) : workoutHistory.length === 0 ? (
-              <div className="p-8 text-center bg-[#FFFDF8] border border-dashed border-[#E7E5E4] rounded-2xl">
+              <div className="p-8 text-center bg-[#F7F4FA] border border-dashed border-[#E5DDEB] rounded-2xl">
                 <Dumbbell size={36} className="mx-auto text-gray-400 mb-2" />
-                <p className="font-bold text-[#292524] text-sm">No exercises completed yet</p>
-                <p className="text-xs text-[#78716C] mt-1 mb-4">
+                <p className="font-bold text-[#292431] text-sm">No exercises completed yet</p>
+                <p className="text-xs text-[#6B5E78] mt-1 mb-4">
                   Go to &quot;My Workout Plan&quot;, tap &quot;Start Workout&quot;, and log your first completed exercise!
                 </p>
                 <Link
                   to="/member/workout"
-                  className="px-4 py-2 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#EA580C] transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl text-xs font-bold hover:bg-[#967CC5] transition-colors cursor-pointer"
                 >
                   Go to Workout Plan
                 </Link>
@@ -582,15 +582,15 @@ const MemberProgress: React.FC = () => {
                 {workoutHistory.map((item: any) => (
                   <div
                     key={item._id}
-                    className="p-4 bg-[#FFFDF8] hover:bg-orange-50/20 border border-[#E7E5E4] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors"
+                    className="p-4 bg-[#F7F4FA] hover:bg-orange-50/20 border border-[#E5DDEB] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                         <CheckCircle2 size={20} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-[#292524]">{item.exerciseId?.name || item.exerciseName || 'Exercise'}</h4>
-                        <p className="text-xs text-[#78716C]">
+                        <h4 className="font-bold text-sm text-[#292431]">{item.exerciseId?.name || item.exerciseName || 'Exercise'}</h4>
+                        <p className="text-xs text-[#6B5E78]">
                           {item.dayName || 'Workout'} • {item.completedSets || 3} Sets completed • {Math.round(item.duration || 60)}s elapsed
                         </p>
                       </div>
@@ -600,7 +600,7 @@ const MemberProgress: React.FC = () => {
                       <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800">
                         {item.status || 'Completed'}
                       </span>
-                      <span className="text-[#78716C] font-medium">
+                      <span className="text-[#6B5E78] font-medium">
                         {new Date(item.completedAt).toLocaleString([], {
                           month: 'short',
                           day: 'numeric',
@@ -622,66 +622,66 @@ const MemberProgress: React.FC = () => {
         <div className="space-y-6 animate-in fade-in">
           {/* Top 4 Diet Progress Metric Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-xs hover:border-emerald-500/40 transition-all">
+            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs hover:border-emerald-500/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Meals Completed</span>
+                <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Meals Completed</span>
                 <CheckCircle2 size={18} className="text-emerald-600" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-emerald-800">
                   {dietOverview?.stats?.totalMealsCompleted || 0}
                 </span>
-                <span className="text-xs text-[#78716C] font-bold">/ {dietOverview?.stats?.totalMealsPlanned || 42}</span>
+                <span className="text-xs text-[#6B5E78] font-bold">/ {dietOverview?.stats?.totalMealsPlanned || 42}</span>
               </div>
               <span className="text-[11px] text-emerald-600 font-semibold mt-1 block">
                 {dietOverview?.stats?.completionPercentage || 0}% adherence
               </span>
             </div>
 
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-xs hover:border-emerald-500/40 transition-all">
+            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs hover:border-emerald-500/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Pending Meals</span>
+                <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Pending Meals</span>
                 <Clock size={18} className="text-amber-600" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-amber-700">
                   {dietOverview?.stats?.pendingMeals !== undefined ? dietOverview.stats.pendingMeals : 42}
                 </span>
-                <span className="text-xs text-[#78716C] font-bold">meals</span>
+                <span className="text-xs text-[#6B5E78] font-bold">meals</span>
               </div>
-              <span className="text-[11px] text-[#78716C] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#6B5E78] font-semibold mt-1 block">
                 Across 7-day nutrition cycle
               </span>
             </div>
 
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-xs hover:border-emerald-500/40 transition-all">
+            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs hover:border-emerald-500/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Calories Logged</span>
+                <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Calories Logged</span>
                 <Flame size={18} className="text-orange-600" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-orange-700">
                   {(dietOverview?.stats?.totalCaloriesLogged || 0).toLocaleString()}
                 </span>
-                <span className="text-xs text-[#78716C] font-bold">kcal</span>
+                <span className="text-xs text-[#6B5E78] font-bold">kcal</span>
               </div>
               <span className="text-[11px] text-orange-600 font-semibold mt-1 block">
                 Total energy logged
               </span>
             </div>
 
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-xs hover:border-emerald-500/40 transition-all">
+            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs hover:border-emerald-500/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Protein Intake</span>
+                <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Protein Intake</span>
                 <Apple size={18} className="text-indigo-600" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-indigo-700">
                   {dietOverview?.stats?.totalProteinLogged || 0}
                 </span>
-                <span className="text-xs text-[#78716C] font-bold">grams</span>
+                <span className="text-xs text-[#6B5E78] font-bold">grams</span>
               </div>
-              <span className="text-[11px] text-[#78716C] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#6B5E78] font-semibold mt-1 block">
                 Muscle recovery macros
               </span>
             </div>
@@ -721,7 +721,7 @@ const MemberProgress: React.FC = () => {
           </div>
 
           {/* ===================== DAY-WISE DIET PLAN COMPLETED DETAILS ===================== */}
-          <div className="bg-white border border-[#E7E5E4] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+          <div className="bg-white border border-[#E5DDEB] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
             {/* ── Dropdown Controls Header ── */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[#F5F5F4]">
               <div>
@@ -729,11 +729,11 @@ const MemberProgress: React.FC = () => {
                   <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
                     <Utensils size={18} />
                   </div>
-                  <h3 className="text-xl font-extrabold text-[#292524] tracking-tight">
+                  <h3 className="text-xl font-extrabold text-[#292431] tracking-tight">
                     Day-Wise Diet Plan Completed Details
                   </h3>
                 </div>
-                <p className="text-xs text-[#78716C] mt-1">
+                <p className="text-xs text-[#6B5E78] mt-1">
                   Choose any day to inspect completed meals, consumed calories, target macros, and nutritional adherence.
                 </p>
               </div>
@@ -743,7 +743,7 @@ const MemberProgress: React.FC = () => {
                 <select
                   value={selectedDay}
                   onChange={(e) => setSelectedDay(e.target.value)}
-                  className="w-full bg-[#FFFDF8] border-2 border-emerald-200 hover:border-emerald-600 text-[#292524] text-xs sm:text-sm font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 shadow-xs cursor-pointer appearance-none pr-10 transition-colors"
+                  className="w-full bg-[#F7F4FA] border-2 border-emerald-200 hover:border-emerald-600 text-[#292431] text-xs sm:text-sm font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 shadow-xs cursor-pointer appearance-none pr-10 transition-colors"
                 >
                   <option value="all">🥗 All Days - Weekly Diet Overview</option>
                   <option value="Monday">🥑 Monday Diet Completed Details</option>
@@ -766,7 +766,7 @@ const MemberProgress: React.FC = () => {
                 onClick={() => setSelectedDay('all')}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   selectedDay === 'all'
-                    ? 'bg-[#292524] text-white shadow-xs'
+                    ? 'bg-[#292431] text-white shadow-xs'
                     : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                 }`}
               >
@@ -811,10 +811,10 @@ const MemberProgress: React.FC = () => {
                         </span>
                         <span className="text-xs text-stone-500 font-semibold">• Macro Plan</span>
                       </div>
-                      <h4 className="text-lg sm:text-xl font-black text-[#292524]">
+                      <h4 className="text-lg sm:text-xl font-black text-[#292431]">
                         {activeDayDiet.focus}
                       </h4>
-                      <p className="text-xs text-[#78716C] mt-0.5">
+                      <p className="text-xs text-[#6B5E78] mt-0.5">
                         {activeDayDiet.completedMeals} of {activeDayDiet.totalMeals} meals completed ({activeDayDiet.completionPercentage}% adherence)
                       </p>
                     </div>
@@ -903,11 +903,11 @@ const MemberProgress: React.FC = () => {
                     <div
                       key={d}
                       onClick={() => setSelectedDay(d)}
-                      className="p-5 rounded-2xl border border-[#E7E5E4] bg-[#FFFDF8] hover:border-emerald-400 hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
+                      className="p-5 rounded-2xl border border-[#E5DDEB] bg-[#F7F4FA] hover:border-emerald-400 hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-extrabold text-sm text-[#292524] group-hover:text-emerald-700 transition-colors">
+                          <span className="font-extrabold text-sm text-[#292431] group-hover:text-emerald-700 transition-colors">
                             {d}
                           </span>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
@@ -920,7 +920,7 @@ const MemberProgress: React.FC = () => {
                             {dData.completionPercentage}% Done
                           </span>
                         </div>
-                        <p className="text-xs text-[#78716C] font-semibold mb-3 truncate">
+                        <p className="text-xs text-[#6B5E78] font-semibold mb-3 truncate">
                           {dData.focus}
                         </p>
 
@@ -932,7 +932,7 @@ const MemberProgress: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs text-[#78716C] pt-3 border-t border-[#F5F5F4]">
+                      <div className="flex items-center justify-between text-xs text-[#6B5E78] pt-3 border-t border-[#F5F5F4]">
                         <span>{dData.completedMeals} / {dData.totalMeals} Meals</span>
                         <span className="font-bold text-emerald-700 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
                           <span>Inspect</span> &rarr;
@@ -946,19 +946,19 @@ const MemberProgress: React.FC = () => {
           </div>
 
           {/* Meal Completion Activity Log */}
-          <div className="bg-white border border-[#E7E5E4] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+          <div className="bg-white border border-[#E5DDEB] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-bold text-[#292524]">
+                <h3 className="text-xl font-bold text-[#292431]">
                   {selectedDay !== 'all' ? `${selectedDay} Completed Meal Logs` : 'Completed Meal Logs'}
                 </h3>
-                <p className="text-xs text-[#78716C]">
+                <p className="text-xs text-[#6B5E78]">
                   {selectedDay !== 'all' ? `Logged nutrition entries for ${selectedDay}` : 'Chronological history of completed nutrition and meal intakes'}
                 </p>
               </div>
               <button
                 onClick={fetchDietProgress}
-                className="p-2 text-[#78716C] hover:text-[#292524] hover:bg-[#FFFDF8] rounded-xl transition-colors cursor-pointer"
+                className="p-2 text-[#6B5E78] hover:text-[#292431] hover:bg-[#F7F4FA] rounded-xl transition-colors cursor-pointer"
                 title="Refresh logs"
               >
                 <RefreshCw size={16} />
@@ -966,15 +966,15 @@ const MemberProgress: React.FC = () => {
             </div>
 
             {loadingDietProgress ? (
-              <div className="text-center py-12 text-[#78716C]">
+              <div className="text-center py-12 text-[#6B5E78]">
                 <Loader2 className="animate-spin mx-auto mb-2 text-emerald-600" size={28} />
                 <p className="text-xs font-semibold">Loading meal records...</p>
               </div>
             ) : dietHistory.length === 0 ? (
-              <div className="p-8 text-center bg-[#FFFDF8] border border-dashed border-[#E7E5E4] rounded-2xl">
+              <div className="p-8 text-center bg-[#F7F4FA] border border-dashed border-[#E5DDEB] rounded-2xl">
                 <Utensils size={36} className="mx-auto text-gray-400 mb-2" />
-                <p className="font-bold text-[#292524] text-sm">No meals logged yet</p>
-                <p className="text-xs text-[#78716C] mt-1 mb-4">
+                <p className="font-bold text-[#292431] text-sm">No meals logged yet</p>
+                <p className="text-xs text-[#6B5E78] mt-1 mb-4">
                   Go to &quot;My Diet Plan&quot;, check off your completed meals, and track your nutrition streak!
                 </p>
                 <Link
@@ -992,17 +992,17 @@ const MemberProgress: React.FC = () => {
                 ).map((item: any) => (
                   <div
                     key={item._id}
-                    className="p-4 bg-[#FFFDF8] hover:bg-emerald-50/20 border border-[#E7E5E4] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors"
+                    className="p-4 bg-[#F7F4FA] hover:bg-emerald-50/20 border border-[#E5DDEB] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
                         {getMealIcon(item.mealType)}
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-[#292524]">
+                        <h4 className="font-bold text-sm text-[#292431]">
                           {item.dayName} • {item.mealType}
                         </h4>
-                        <p className="text-xs text-[#78716C]">
+                        <p className="text-xs text-[#6B5E78]">
                           {item.calories} kcal • {item.protein}g Protein • {Array.isArray(item.items) ? item.items.join(', ') : item.items}
                         </p>
                       </div>
@@ -1012,7 +1012,7 @@ const MemberProgress: React.FC = () => {
                       <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800">
                         Completed
                       </span>
-                      <span className="text-[#78716C] font-medium">
+                      <span className="text-[#6B5E78] font-medium">
                         {item.completedAt
                           ? new Date(item.completedAt).toLocaleString([], {
                               month: 'short',

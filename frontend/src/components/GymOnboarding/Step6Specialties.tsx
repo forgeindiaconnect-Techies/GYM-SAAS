@@ -31,12 +31,12 @@ export const Step6Specialties = ({ data, updateData }: any) => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
-        <Target className="text-[#F97316]" size={24} />
+      <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E5DDEB]">
+        <Target className="text-[#A991D4]" size={24} />
         <h2 className="text-xl font-bold">Gym Specialties</h2>
       </div>
 
-      <p className="text-sm text-[#78716C] mb-6">Select the primary fitness areas and specialties your gym focuses on.</p>
+      <p className="text-sm text-[#6B5E78] mb-6">Select the primary fitness areas and specialties your gym focuses on.</p>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         {PREDEFINED_SPECIALTIES.map(spec => (
@@ -45,8 +45,8 @@ export const Step6Specialties = ({ data, updateData }: any) => {
             onClick={() => toggleSpecialty(spec)}
             className={`p-4 rounded-xl border cursor-pointer text-center transition-all duration-200 ${
               data.specialties.includes(spec)
-                ? 'bg-gradient-to-br from-[#F97316] to-[#b81d44] border-transparent text-white shadow-lg shadow-[#F97316]/20'
-                : 'bg-[#FFFFFF] border-[#E7E5E4] text-[#78716C] hover:bg-[#202020] hover:text-[#292524] hover:border-[#444]'
+                ? 'bg-gradient-to-br from-[#A991D4] to-[#b81d44] border-transparent text-white shadow-lg shadow-[#A991D4]/20'
+                : 'bg-[#FFFFFF] border-[#E5DDEB] text-[#6B5E78] hover:bg-[#202020] hover:text-[#292431] hover:border-[#444]'
             }`}
           >
             <span className="font-semibold text-sm">{spec}</span>
@@ -54,21 +54,21 @@ export const Step6Specialties = ({ data, updateData }: any) => {
         ))}
       </div>
 
-      <div className="pt-6 border-t border-[#E7E5E4]">
-        <h3 className="text-sm font-bold text-[#292524] mb-4">Add Custom Specialty</h3>
+      <div className="pt-6 border-t border-[#E5DDEB]">
+        <h3 className="text-sm font-bold text-[#292431] mb-4">Add Custom Specialty</h3>
         <div className="flex space-x-3 max-w-md">
           <input
             type="text"
             value={customName}
             onChange={(e) => setCustomName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustom())}
-            className="flex-1 bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl px-4 py-3 text-sm text-[#292524] outline-none focus:border-[#F97316]"
+            className="flex-1 bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-4 py-3 text-sm text-[#292431] outline-none focus:border-[#A991D4]"
             placeholder="E.g. Calisthenics"
           />
           <button
             type="button"
             onClick={addCustom}
-            className="px-6 py-3 bg-[#FED7AA] hover:bg-[#333] text-white rounded-xl font-semibold transition-colors flex items-center space-x-2"
+            className="px-6 py-3 bg-[#E9DFF4] hover:bg-[#333] text-white rounded-xl font-semibold transition-colors flex items-center space-x-2"
           >
             <Plus size={18} />
             <span>Add</span>
@@ -79,9 +79,9 @@ export const Step6Specialties = ({ data, updateData }: any) => {
       {data.specialties.filter((s: string) => !PREDEFINED_SPECIALTIES.includes(s)).length > 0 && (
         <div className="mt-6 flex flex-wrap gap-2">
           {data.specialties.filter((s: string) => !PREDEFINED_SPECIALTIES.includes(s)).map((custom: string) => (
-            <div key={custom} className="flex items-center space-x-2 bg-[#F97316]/10 text-[#F97316] px-4 py-2 rounded-full text-sm font-semibold border border-[#F97316]/30">
+            <div key={custom} className="flex items-center space-x-2 bg-[#A991D4]/10 text-[#A991D4] px-4 py-2 rounded-full text-sm font-semibold border border-[#A991D4]/30">
               <span>{custom}</span>
-              <button onClick={() => toggleSpecialty(custom)} className="hover:text-[#F97316] transition-colors">
+              <button onClick={() => toggleSpecialty(custom)} className="hover:text-[#A991D4] transition-colors">
                 <X size={14} />
               </button>
             </div>

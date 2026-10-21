@@ -245,7 +245,7 @@ const GymAdminLayout = () => {
   const roleSubtitle = isBranchUser ? 'Branch Admin' : 'Gym Owner';
 
   return (
-    <div className="flex h-screen bg-[#FFFDF8] text-[#292524] overflow-hidden">
+    <div className="flex h-screen bg-[#F7F4FA] text-[#292431] overflow-hidden">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -258,27 +258,27 @@ const GymAdminLayout = () => {
       {/* Sidebar — desktop always visible, mobile slide-in */}
       <aside
         className={clsx(
-          'fixed lg:static top-0 left-0 h-full w-64 bg-white border-r border-[#E7E5E4] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-lg lg:shadow-none',
+          'fixed lg:static top-0 left-0 h-full w-64 bg-[#4C315E] text-white border-r border-[#4C315E] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
-        <div className="p-5 border-b border-[#E7E5E4]">
+        <div className="p-5 border-b border-white/10">
           <Link to="/" className="flex items-center space-x-2" onClick={() => setSidebarOpen(false)}>
-            <div className="w-9 h-9 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-200 shrink-0">
-              <Activity className="text-[#292524]" size={20} />
+            <div className="w-9 h-9 bg-gradient-to-br from-[#A991D4] to-[#E9DFF4] rounded-xl flex items-center justify-center shadow-lg shadow-purple-950/40 shrink-0">
+              <Activity className="text-[#292431]" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#F97316] truncate max-w-[160px]" title={sidebarBrandTitle}>
+            <span className="text-xl font-bold tracking-tight text-white truncate max-w-[160px]" title={sidebarBrandTitle}>
               {sidebarBrandTitle}
             </span>
           </Link>
           <div className="mt-4 flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-full flex items-center justify-center text-[#292524] font-bold text-base shadow">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#A991D4] to-[#E9DFF4] rounded-full flex items-center justify-center text-[#292431] font-bold text-base shadow">
               {getOwnerDisplayName()?.[0] || 'A'}
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="font-semibold text-sm text-[#292524] truncate">{getOwnerDisplayName()}</p>
-              <p className="text-xs text-[#292524] font-medium font-medium truncate">{roleSubtitle}</p>
+              <p className="font-semibold text-sm text-white truncate">{getOwnerDisplayName()}</p>
+              <p className="text-xs text-[#E9DFF4]/80 font-medium truncate">{roleSubtitle}</p>
             </div>
           </div>
         </div>
@@ -290,7 +290,7 @@ const GymAdminLayout = () => {
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
           {navGroups.map((group, idx) => (
             <div key={idx}>
-              <h3 className="px-3 text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-2">{group.title}</h3>
+              <h3 className="px-3 text-[11px] font-bold text-[#E9DFF4]/70 uppercase tracking-wider mb-2">{group.title}</h3>
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const isActive = item.path === '/admin/trainers'
@@ -305,15 +305,15 @@ const GymAdminLayout = () => {
                       className={clsx(
                         'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
                         isActive
-                          ? 'bg-[#F97316] text-white shadow-md shadow-orange-200'
-                          : 'text-[#78716C] hover:bg-[#FFFDF8] hover:text-[#F97316]'
+                          ? 'bg-[#A991D4] text-[#292431] font-semibold shadow-md shadow-purple-950/30'
+                          : 'text-white/85 hover:bg-white/10 hover:text-white'
                       )}
                     >
                       <Icon
                         size={18}
                         className={clsx(
                           'shrink-0 transition-colors',
-                          isActive ? 'text-white' : 'text-[#78716C] group-hover:text-[#F97316]'
+                          isActive ? 'text-[#292431]' : 'text-white/85 group-hover:text-white'
                         )}
                       />
                       <span className="truncate">{item.label}</span>
@@ -326,10 +326,10 @@ const GymAdminLayout = () => {
         </nav>
 
         {/* Logout */}
-        <div className="p-3 border-t border-[#E7E5E4]">
+        <div className="p-3 border-t border-white/10">
           <button
             onClick={logout}
-            className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-center text-[#EF4444] hover:bg-red-50 rounded-xl transition-colors font-semibold text-sm"
+            className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-center text-red-300 hover:bg-white/10 hover:text-red-200 rounded-xl transition-colors font-semibold text-sm"
           >
             <LogOut size={16} />
             <span>Logout</span>
@@ -343,18 +343,18 @@ const GymAdminLayout = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(22,163,74,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
         {/* Header */}
-        <header className="h-16 border-b border-[#E7E5E4] flex items-center px-4 md:px-8 justify-between bg-white/90 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm">
+        <header className="h-16 border-b border-[#E5DDEB] flex items-center px-4 md:px-8 justify-between bg-white/90 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm">
           <div className="flex items-center space-x-3">
             {/* Hamburger — mobile only */}
             <button
-              className="lg:hidden text-[#78716C] hover:text-[#F97316] transition-colors p-1 rounded-lg hover:bg-[#FFFDF8]"
+              className="lg:hidden text-[#6B5E78] hover:text-[#A991D4] transition-colors p-1 rounded-lg hover:bg-[#F7F4FA]"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#F97316] hidden sm:block" />}
-            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#292524]">
+            {currentNav && <currentNav.icon size={20} className="text-[#A991D4] hidden sm:block" />}
+            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#292431]">
               {currentNav?.label || 'Gym Owner Dashboard'}
             </h2>
           </div>
@@ -373,7 +373,7 @@ const GymAdminLayout = () => {
                     navigate(`/admin/branches/${val}`);
                   }
                 }}
-                className="bg-[#FFFDF8] border border-[#E7E5E4] text-[#292524] text-sm rounded-lg focus:ring-[#F97316] focus:border-[#F97316] block p-2 outline-none font-semibold"
+                className="bg-[#F7F4FA] border border-[#E5DDEB] text-[#292431] text-sm rounded-lg focus:ring-[#A991D4] focus:border-[#A991D4] block p-2 outline-none font-semibold"
               >
                 {!isBranchUser && <option value="main">Main Branch</option>}
                 {branches.map(branch => (
@@ -386,24 +386,24 @@ const GymAdminLayout = () => {
             <div className="relative" ref={notifRef}>
               <button
                 onClick={() => setNotifOpen(prev => !prev)}
-                className="relative text-[#78716C] hover:text-[#F97316] transition-colors p-1 block"
+                className="relative text-[#6B5E78] hover:text-[#A991D4] transition-colors p-1 block"
               >
                 <Bell size={20} />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#F97316] text-white rounded-full text-[10px] font-bold flex items-center justify-center shadow shadow-orange-300">
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#A991D4] text-[#292431] rounded-full text-[10px] font-bold flex items-center justify-center shadow shadow-purple-900/15">
                     {unreadCount}
                   </span>
                 )}
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 top-10 w-80 bg-white border border-[#E7E5E4] rounded-2xl shadow-2xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-10 w-80 bg-white border border-[#E5DDEB] rounded-2xl shadow-2xl z-50 overflow-hidden">
                   {/* Header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9]">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#F7F4FA]">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-[#292524] text-sm">Notifications</h3>
+                      <h3 className="font-bold text-[#292431] text-sm">Notifications</h3>
                       {unreadCount > 0 && (
-                        <span className="bg-[#F97316]/10 text-[#F97316] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                        <span className="bg-[#A991D4]/10 text-[#A991D4] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
                       )}
                     </div>
                     {unreadCount > 0 && (
@@ -418,7 +418,7 @@ const GymAdminLayout = () => {
                             console.error(err);
                           }
                         }}
-                        className="text-[11px] font-semibold text-[#F97316] hover:underline"
+                        className="text-[11px] font-semibold text-[#A991D4] hover:underline"
                       >
                         Mark all read
                       </button>
@@ -426,9 +426,9 @@ const GymAdminLayout = () => {
                   </div>
 
                   {/* Notification list */}
-                  <div className="divide-y divide-[#F1F5F9] max-h-72 overflow-y-auto">
+                  <div className="divide-y divide-[#F7F4FA] max-h-72 overflow-y-auto">
                     {notifications.length === 0 ? (
-                      <div className="p-4 text-center text-sm text-[#78716C]">No notifications</div>
+                      <div className="p-4 text-center text-sm text-[#6B5E78]">No notifications</div>
                     ) : (
                       notifications.slice(0, 5).map(notif => (
                         <div
@@ -439,7 +439,7 @@ const GymAdminLayout = () => {
                             const targetLink = getNotificationLink(notif);
                             if (targetLink) navigate(targetLink);
                           }}
-                          className={`flex items-start gap-3 px-4 py-3 hover:bg-[#FFFDF8] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[#FFFDF8]' : ''}`}
+                          className={`flex items-start gap-3 px-4 py-3 hover:bg-[#F7F4FA] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[#F7F4FA]' : ''}`}
                         >
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                             notif.type === 'alert' ? 'bg-orange-100 text-orange-500' :
@@ -452,21 +452,21 @@ const GymAdminLayout = () => {
                              notif.type === 'message' ? '💬' : 'ℹ️'}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-semibold text-[#292524] ${!notif.isRead ? 'font-bold' : ''}`}>{notif.title}</p>
-                            <p className="text-xs text-[#78716C] mt-0.5 leading-snug">{notif.message}</p>
-                            <p className="text-xs text-[#78716C] mt-1">{new Date(notif.createdAt).toLocaleDateString()}</p>
+                            <p className={`text-sm font-semibold text-[#292431] ${!notif.isRead ? 'font-bold' : ''}`}>{notif.title}</p>
+                            <p className="text-xs text-[#6B5E78] mt-0.5 leading-snug">{notif.message}</p>
+                            <p className="text-xs text-[#6B5E78] mt-1">{new Date(notif.createdAt).toLocaleDateString()}</p>
                           </div>
-                          {!notif.isRead && <div className="w-2 h-2 bg-[#F97316] rounded-full mt-2 shrink-0" />}
+                          {!notif.isRead && <div className="w-2 h-2 bg-[#A991D4] rounded-full mt-2 shrink-0" />}
                         </div>
                       ))
                     )}
                   </div>
 
                   {/* View All button */}
-                  <div className="border-t border-[#F1F5F9]">
+                  <div className="border-t border-[#F7F4FA]">
                     <button
                       onClick={() => { setNotifOpen(false); navigate('/admin/notifications'); }}
-                      className="w-full py-3 text-sm font-bold text-[#F97316] hover:bg-[#FFFDF8] transition-colors"
+                      className="w-full py-3 text-sm font-bold text-[#A991D4] hover:bg-[#F7F4FA] transition-colors"
                     >
                       View All Notifications →
                     </button>
@@ -476,10 +476,10 @@ const GymAdminLayout = () => {
             </div>
             <Link to={isBranchUser && user?.branchId ? `/admin/branches/${user.branchId}` : "/admin/gym-profile"} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
-                <p className="text-sm font-semibold text-[#292524] leading-none mb-0.5">{getOwnerDisplayName()}</p>
-                <p className="text-xs text-[#78716C] leading-none">{roleSubtitle}</p>
+                <p className="text-sm font-semibold text-[#292431] leading-none mb-0.5">{getOwnerDisplayName()}</p>
+                <p className="text-xs text-[#6B5E78] leading-none">{roleSubtitle}</p>
               </div>
-              <div className="w-9 h-9 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-full flex items-center justify-center text-[#292524] font-bold text-sm shadow">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#A991D4] to-[#967CC5] rounded-full flex items-center justify-center text-[#292431] font-bold text-sm shadow">
                 {getOwnerDisplayName()?.[0] || 'A'}
               </div>
             </Link>

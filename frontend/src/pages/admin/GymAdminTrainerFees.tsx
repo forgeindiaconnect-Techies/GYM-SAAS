@@ -30,7 +30,7 @@ const cycleBadge = (cycle: string) => {
   const map: Record<string, string> = {
     'Per Session': 'bg-purple-100 text-purple-700',
     'Weekly': 'bg-blue-100 text-blue-700',
-    'Monthly': 'bg-[#FED7AA]/10 text-[#F97316]',
+    'Monthly': 'bg-[#E9DFF4]/10 text-[#A991D4]',
     'Custom': 'bg-orange-100 text-orange-700',
   };
   return map[cycle] || 'bg-gray-100 text-gray-700';
@@ -259,12 +259,12 @@ const GymAdminTrainerFees = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524]">Trainer Fee Settings</h1>
-          <p className="text-[#78716C] text-sm mt-1">Configure and manage fees for your trainers</p>
+          <h1 className="text-2xl font-bold text-[#292431]">Trainer Fee Settings</h1>
+          <p className="text-[#6B5E78] text-sm mt-1">Configure and manage fees for your trainers</p>
         </div>
         <button
           onClick={openAddNew}
-          className="flex items-center gap-2 px-5 py-2.5 bg-[#F97316] text-white rounded-xl font-semibold hover:bg-[#EA580C] transition-colors shadow-lg shadow-orange-200 text-sm"
+          className="flex items-center gap-2 px-5 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl font-semibold hover:bg-[#967CC5] transition-colors shadow-lg shadow-purple-900/15 text-sm"
         >
           <Plus size={16} />
           Set New Fee
@@ -274,31 +274,31 @@ const GymAdminTrainerFees = () => {
       {/* Summary Cards */}
       {!loading && (
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white border border-[#FED7AA] rounded-xl p-4 flex items-center gap-3 shadow-sm">
+          <div className="bg-white border border-[#E9DFF4] rounded-xl p-4 flex items-center gap-3 shadow-sm">
             <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-              <IndianRupee size={18} className="text-[#EA580C]" />
+              <IndianRupee size={18} className="text-[#967CC5]" />
             </div>
             <div>
-              <p className="text-xl font-bold text-[#292524]">{trainers.length}</p>
-              <p className="text-xs text-[#78716C]">Total Trainers</p>
+              <p className="text-xl font-bold text-[#292431]">{trainers.length}</p>
+              <p className="text-xs text-[#6B5E78]">Total Trainers</p>
             </div>
           </div>
-          <div className="bg-white border border-[#FED7AA] rounded-xl p-4 flex items-center gap-3 shadow-sm">
+          <div className="bg-white border border-[#E9DFF4] rounded-xl p-4 flex items-center gap-3 shadow-sm">
             <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
-              <CheckCircle size={18} className="text-[#F97316]" />
+              <CheckCircle size={18} className="text-[#A991D4]" />
             </div>
             <div>
-              <p className="text-xl font-bold text-[#292524]">{configuredCount}</p>
-              <p className="text-xs text-[#78716C]">Fee Configured</p>
+              <p className="text-xl font-bold text-[#292431]">{configuredCount}</p>
+              <p className="text-xs text-[#6B5E78]">Fee Configured</p>
             </div>
           </div>
-          <div className="bg-white border border-[#FED7AA] rounded-xl p-4 flex items-center gap-3 shadow-sm">
+          <div className="bg-white border border-[#E9DFF4] rounded-xl p-4 flex items-center gap-3 shadow-sm">
             <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
               <AlertCircle size={18} className="text-amber-600" />
             </div>
             <div>
-              <p className="text-xl font-bold text-[#292524]">{notConfiguredCount}</p>
-              <p className="text-xs text-[#78716C]">Pending Setup</p>
+              <p className="text-xl font-bold text-[#292431]">{notConfiguredCount}</p>
+              <p className="text-xs text-[#6B5E78]">Pending Setup</p>
             </div>
           </div>
         </div>
@@ -306,69 +306,69 @@ const GymAdminTrainerFees = () => {
 
       {/* Search */}
       <div className="relative max-w-sm">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
         <input
           type="text"
           placeholder="Search trainer..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 border border-[#FED7AA] rounded-xl text-sm outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30 transition bg-white"
+          className="w-full pl-9 pr-4 py-2.5 border border-[#E9DFF4] rounded-xl text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/30 transition bg-white"
         />
       </div>
 
       {/* Table — ALL trainers */}
-      <div className="bg-white border border-[#FED7AA] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#E9DFF4] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <div className="w-8 h-8 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : allRows.length === 0 ? (
           <div className="text-center py-20">
-            <IndianRupee size={40} className="mx-auto text-[#CBD5E1] mb-3" />
-            <p className="text-[#78716C] font-semibold">No trainers found</p>
-            <p className="text-[#78716C] text-sm mt-1">Add trainers to your gym first, then configure fees here</p>
+            <IndianRupee size={40} className="mx-auto text-[#E5DDEB] mb-3" />
+            <p className="text-[#6B5E78] font-semibold">No trainers found</p>
+            <p className="text-[#6B5E78] text-sm mt-1">Add trainers to your gym first, then configure fees here</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#FFFDF8] border-b border-[#FED7AA]">
-                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Trainer</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Training Type</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#78716C] text-right">Fee (Salary)</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Billing Cycle</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Effective From</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Status</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#78716C]">Action</th>
+                <tr className="bg-[#F7F4FA] border-b border-[#E9DFF4]">
+                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Trainer</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Training Type</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78] text-right">Fee (Salary)</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Billing Cycle</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Effective From</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Status</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F1F5F9]">
+              <tbody className="divide-y divide-[#F7F4FA]">
                 {allRows.map(({ trainer, fee }) => (
-                  <tr key={trainer._id} className="hover:bg-[#FFFDF8] transition-colors">
+                  <tr key={trainer._id} className="hover:bg-[#F7F4FA] transition-colors">
                     {/* Trainer */}
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#A991D4] to-[#967CC5] flex items-center justify-center text-white font-bold text-sm shrink-0">
                           {trainer.name?.[0]?.toUpperCase() || 'T'}
                         </div>
                         <div>
-                          <p className="font-semibold text-[#292524]">{trainer.name}</p>
-                          <p className="text-xs text-[#78716C]">{trainer.email}</p>
+                          <p className="font-semibold text-[#292431]">{trainer.name}</p>
+                          <p className="text-xs text-[#6B5E78]">{trainer.email}</p>
                         </div>
                       </div>
                     </td>
 
                     {/* Training Type */}
-                    <td className="px-5 py-4 text-[#78716C]">
-                      {fee ? fee.trainingType : <span className="text-[#CBD5E1] italic text-xs">Not set</span>}
+                    <td className="px-5 py-4 text-[#6B5E78]">
+                      {fee ? fee.trainingType : <span className="text-[#E5DDEB] italic text-xs">Not set</span>}
                     </td>
 
                     {/* Fee */}
                     <td className="px-5 py-4 text-right">
                       {fee ? (
-                        <span className="font-bold text-[#292524]">₹{Number(fee.feeAmount).toLocaleString('en-IN')}</span>
+                        <span className="font-bold text-[#292431]">₹{Number(fee.feeAmount).toLocaleString('en-IN')}</span>
                       ) : (
-                        <span className="text-[#CBD5E1] italic text-xs">—</span>
+                        <span className="text-[#E5DDEB] italic text-xs">—</span>
                       )}
                     </td>
 
@@ -379,22 +379,22 @@ const GymAdminTrainerFees = () => {
                           {fee.billingCycle}
                         </span>
                       ) : (
-                        <span className="text-[#CBD5E1] italic text-xs">—</span>
+                        <span className="text-[#E5DDEB] italic text-xs">—</span>
                       )}
                     </td>
 
                     {/* Effective From */}
-                    <td className="px-5 py-4 text-[#78716C]">
+                    <td className="px-5 py-4 text-[#6B5E78]">
                       {fee?.effectiveFrom
                         ? new Date(fee.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-                        : <span className="text-[#CBD5E1] italic text-xs">—</span>}
+                        : <span className="text-[#E5DDEB] italic text-xs">—</span>}
                     </td>
 
                     {/* Status */}
                     <td className="px-5 py-4">
                       {fee ? (
                         <span className={`px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit ${
-                          fee.status === 'Active' ? 'bg-[#FED7AA]/10 text-[#F97316]' :
+                          fee.status === 'Active' ? 'bg-[#E9DFF4]/10 text-[#A991D4]' :
                           fee.status === 'Pending' ? 'bg-amber-100 text-amber-700' :
                           fee.status === 'Rejected' ? 'bg-red-100 text-red-700' :
                           'bg-gray-100 text-gray-500'
@@ -417,7 +417,7 @@ const GymAdminTrainerFees = () => {
                       {fee ? (
                         <button
                           onClick={() => openEditFee(fee, trainer)}
-                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FFFDF8] text-[#F97316] border border-[#E7E5E4] rounded-lg text-xs font-semibold hover:bg-[#E7E5E4] transition-colors"
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#F7F4FA] text-[#A991D4] border border-[#E5DDEB] rounded-lg text-xs font-semibold hover:bg-[#E5DDEB] transition-colors"
                         >
                           <Edit size={13} />
                           Edit Fee
@@ -425,7 +425,7 @@ const GymAdminTrainerFees = () => {
                       ) : (
                         <button
                           onClick={() => openSetFee(trainer)}
-                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#F97316] text-white rounded-lg text-xs font-bold hover:bg-[#EA580C] transition-colors shadow shadow-orange-200"
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#A991D4] text-[#292431] rounded-lg text-xs font-bold hover:bg-[#967CC5] transition-colors shadow shadow-purple-900/15"
                         >
                           <Plus size={13} />
                           Set Fee
@@ -443,11 +443,11 @@ const GymAdminTrainerFees = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-[#E7E5E4] my-auto max-h-[85vh] flex flex-col">
-            <div className="p-6 border-b border-[#E7E5E4] flex justify-between items-center bg-[#FFFDF8] shrink-0">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-[#E5DDEB] my-auto max-h-[85vh] flex flex-col">
+            <div className="p-6 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA] shrink-0">
               <div>
-                <h2 className="text-xl font-bold text-[#292524]">{editFee ? 'Edit Trainer Fee' : 'Set Trainer Fee'}</h2>
-                <p className="text-sm text-[#78716C] mt-1">Configure fee details for the selected trainer</p>
+                <h2 className="text-xl font-bold text-[#292431]">{editFee ? 'Edit Trainer Fee' : 'Set Trainer Fee'}</h2>
+                <p className="text-sm text-[#6B5E78] mt-1">Configure fee details for the selected trainer</p>
               </div>
               <button onClick={() => setShowModal(false)} className="p-1.5 bg-gray-100 rounded-lg text-gray-500 hover:text-gray-900 transition-colors">
                 <X size={20} />
@@ -460,72 +460,72 @@ const GymAdminTrainerFees = () => {
             <div className="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
               {/* Trainer */}
               <div>
-                <label className="block text-sm font-semibold text-[#78716C] mb-1.5">Trainer <span className="text-red-400">*</span></label>
+                <label className="block text-sm font-semibold text-[#6B5E78] mb-1.5">Trainer <span className="text-red-400">*</span></label>
                 <div className="relative">
                   <select
                     value={form.trainerId}
                     onChange={e => setForm({ ...form, trainerId: e.target.value })}
-                    className="w-full appearance-none border border-[#FED7AA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30 bg-white pr-9"
+                    className="w-full appearance-none border border-[#E9DFF4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/30 bg-white pr-9"
                   >
                     <option value="">Select trainer...</option>
                     {trainers.map(t => (
                       <option key={t._id} value={t._id}>{t.name}</option>
                     ))}
                   </select>
-                  <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C] pointer-events-none" />
+                  <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B5E78] pointer-events-none" />
                 </div>
               </div>
 
               {/* Training Type */}
               <div>
-                <label className="block text-sm font-semibold text-[#78716C] mb-1.5">Training Type <span className="text-red-400">*</span></label>
+                <label className="block text-sm font-semibold text-[#6B5E78] mb-1.5">Training Type <span className="text-red-400">*</span></label>
                 <div className="relative">
                   <select
                     value={form.trainingType}
                     onChange={e => setForm({ ...form, trainingType: e.target.value })}
-                    className="w-full appearance-none border border-[#FED7AA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30 bg-white pr-9"
+                    className="w-full appearance-none border border-[#E9DFF4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/30 bg-white pr-9"
                   >
                     {TRAINING_TYPES.map(t => <option key={t}>{t}</option>)}
                   </select>
-                  <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C] pointer-events-none" />
+                  <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B5E78] pointer-events-none" />
                 </div>
               </div>
 
               {/* Fee + Billing Cycle */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-semibold text-[#78716C] mb-1.5">Fee Amount (₹) <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-semibold text-[#6B5E78] mb-1.5">Fee Amount (₹) <span className="text-red-400">*</span></label>
                   <input
                     type="number"
                     value={form.feeAmount}
                     onChange={e => setForm({ ...form, feeAmount: e.target.value })}
                     placeholder="e.g. 5000"
-                    className="w-full border border-[#FED7AA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30"
+                    className="w-full border border-[#E9DFF4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/30"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#78716C] mb-1.5">Billing Cycle <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-semibold text-[#6B5E78] mb-1.5">Billing Cycle <span className="text-red-400">*</span></label>
                   <div className="relative">
                     <select
                       value={form.billingCycle}
                       onChange={e => setForm({ ...form, billingCycle: e.target.value })}
-                      className="w-full appearance-none border border-[#FED7AA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30 bg-white pr-9"
+                      className="w-full appearance-none border border-[#E9DFF4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/30 bg-white pr-9"
                     >
                       {BILLING_CYCLES.map(c => <option key={c}>{c}</option>)}
                     </select>
-                    <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C] pointer-events-none" />
+                    <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B5E78] pointer-events-none" />
                   </div>
                 </div>
               </div>
 
               {/* Effective From — full width */}
               <div>
-                <label className="block text-sm font-semibold text-[#78716C] mb-1.5">Effective From <span className="text-red-400">*</span></label>
+                <label className="block text-sm font-semibold text-[#6B5E78] mb-1.5">Effective From <span className="text-red-400">*</span></label>
                 <input
                   type="date"
                   value={form.effectiveFrom}
                   onChange={e => setForm({ ...form, effectiveFrom: e.target.value })}
-                  className="w-full border border-[#FED7AA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30"
+                  className="w-full border border-[#E9DFF4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/30"
                 />
               </div>
 
@@ -533,39 +533,39 @@ const GymAdminTrainerFees = () => {
 
               {/* Status */}
               <div>
-                <label className="block text-sm font-semibold text-[#78716C] mb-1.5">Status</label>
+                <label className="block text-sm font-semibold text-[#6B5E78] mb-1.5">Status</label>
                 <div className="relative">
                   <select
                     value={form.status}
                     onChange={e => setForm({ ...form, status: e.target.value })}
-                    className="w-full appearance-none border border-[#FED7AA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30 bg-white pr-9"
+                    className="w-full appearance-none border border-[#E9DFF4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/30 bg-white pr-9"
                   >
                     {['Active', 'Inactive', 'Pending', 'Rejected'].map(s => (
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
-                  <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C] pointer-events-none" />
+                  <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B5E78] pointer-events-none" />
                 </div>
               </div>
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-semibold text-[#78716C] mb-1.5">Notes (Optional)</label>
+                <label className="block text-sm font-semibold text-[#6B5E78] mb-1.5">Notes (Optional)</label>
                 <textarea
                   value={form.notes}
                   onChange={e => setForm({ ...form, notes: e.target.value })}
                   rows={3}
                   placeholder="Any additional notes..."
-                  className="w-full border border-[#FED7AA] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/30 resize-none"
+                  className="w-full border border-[#E9DFF4] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/30 resize-none"
                 />
               </div>
             </div>
 
-            <div className="p-5 border-t border-[#E7E5E4] flex gap-3 bg-[#FFFDF8] shrink-0">
+            <div className="p-5 border-t border-[#E5DDEB] flex gap-3 bg-[#F7F4FA] shrink-0">
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="flex-1 py-2.5 border border-[#E7E5E4] rounded-xl text-sm font-semibold text-[#78716C] hover:bg-slate-100 transition-colors"
+                className="flex-1 py-2.5 border border-[#E5DDEB] rounded-xl text-sm font-semibold text-[#6B5E78] hover:bg-slate-100 transition-colors"
               >
                 Cancel
               </button>
@@ -573,7 +573,7 @@ const GymAdminTrainerFees = () => {
                 type="button"
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 py-2.5 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#F97316]/90 transition-colors disabled:opacity-60 shadow-sm"
+                className="flex-1 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl text-sm font-bold hover:bg-[#A991D4]/90 transition-colors disabled:opacity-60 shadow-sm"
               >
                 {saving ? 'Saving...' : 'Save Trainer Fee'}
               </button>
@@ -584,7 +584,7 @@ const GymAdminTrainerFees = () => {
       )}
       {/* Toast - Moved to end of DOM so it's always on top */}
       {toast && (
-        <div className={`fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl shadow-xl font-semibold text-white text-sm flex items-center gap-2 transition-all ${toast.type === 'success' ? 'bg-[#F97316]' : 'bg-red-500'}`}>
+        <div className={`fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl shadow-xl font-semibold text-white text-sm flex items-center gap-2 transition-all ${toast.type === 'success' ? 'bg-[#A991D4]' : 'bg-red-500'}`}>
           {toast.type === 'success' ? <CheckCircle size={16} /> : <XCircle size={16} />}
           {toast.msg}
         </div>

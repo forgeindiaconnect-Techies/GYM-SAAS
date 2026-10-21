@@ -833,7 +833,7 @@ const MemberDietPlan = () => {
     switch (type) {
       case 'coffee': return <Coffee className="text-orange-500" size={24} />;
       case 'utensils': return <Utensils className="text-green-500" size={24} />;
-      case 'apple': return <Apple className="text-[#EA580C]" size={24} />;
+      case 'apple': return <Apple className="text-[#967CC5]" size={24} />;
       case 'moon': return <Moon className="text-indigo-500" size={24} />;
       case 'sun': return <Sun className="text-amber-500" size={24} />;
       default: return <Utensils size={24} />;
@@ -847,12 +847,12 @@ const MemberDietPlan = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-3xl font-extrabold text-[#292524] tracking-tight">Your Diet Plan</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-[#F97316] border border-orange-200">
+            <h1 className="text-3xl font-extrabold text-[#292431] tracking-tight">Your Diet Plan</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-[#A991D4] border border-orange-200">
               Monday – Sunday
             </span>
           </div>
-          <p className="text-[#78716C] text-sm">
+          <p className="text-[#6B5E78] text-sm">
             Fuel your body with tailored, non-repeating daily meals from Monday to Sunday. Click any meal to mark it completed.
           </p>
         </div>
@@ -868,7 +868,7 @@ const MemberDietPlan = () => {
           </button>
           <button
             onClick={resetDay}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#FFFDF8] text-[#78716C] border border-[#E7E5E4] hover:text-[#292524] transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F7F4FA] text-[#6B5E78] border border-[#E5DDEB] hover:text-[#292431] transition-colors flex items-center gap-1.5 cursor-pointer"
             title="Reset meals for this day"
           >
             <RotateCcw size={14} /> Reset Day
@@ -889,11 +889,11 @@ const MemberDietPlan = () => {
                   <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
                     <CheckCircle2 size={12} className="text-emerald-700" /> Approved by Trainer
                   </span>
-                  <span className="text-xs text-[#78716C]">
+                  <span className="text-xs text-[#6B5E78]">
                     Coach {approvedDietPlan.trainerId?.name || approvedDietPlan.trainerId?.firstName || 'Assigned Trainer'}
                   </span>
                 </div>
-                <h2 className="text-xl font-extrabold text-[#292524] mt-1">
+                <h2 className="text-xl font-extrabold text-[#292431] mt-1">
                   {approvedDietPlan.title}
                 </h2>
               </div>
@@ -916,31 +916,31 @@ const MemberDietPlan = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
               <div className="bg-white p-3 rounded-2xl border border-emerald-100 text-center">
                 <Flame size={16} className="mx-auto text-orange-500 mb-1" />
-                <div className="text-base font-extrabold text-[#292524]">
+                <div className="text-base font-extrabold text-[#292431]">
                   {approvedDietPlan.dietDetails.dailyCalories || targetCals} kcal
                 </div>
-                <div className="text-[10px] font-bold text-[#78716C] uppercase">Daily Target</div>
+                <div className="text-[10px] font-bold text-[#6B5E78] uppercase">Daily Target</div>
               </div>
               <div className="bg-white p-3 rounded-2xl border border-emerald-100 text-center">
                 <Leaf size={16} className="mx-auto text-emerald-600 mb-1" />
-                <div className="text-base font-extrabold text-[#292524]">
+                <div className="text-base font-extrabold text-[#292431]">
                   {approvedDietPlan.dietDetails.protein || targetProtein}g
                 </div>
-                <div className="text-[10px] font-bold text-[#78716C] uppercase">Protein</div>
+                <div className="text-[10px] font-bold text-[#6B5E78] uppercase">Protein</div>
               </div>
               <div className="bg-white p-3 rounded-2xl border border-emerald-100 text-center">
                 <Utensils size={16} className="mx-auto text-amber-500 mb-1" />
-                <div className="text-base font-extrabold text-[#292524]">
+                <div className="text-base font-extrabold text-[#292431]">
                   {approvedDietPlan.dietDetails.carbs || targetCarbs}g
                 </div>
-                <div className="text-[10px] font-bold text-[#78716C] uppercase">Carbohydrates</div>
+                <div className="text-[10px] font-bold text-[#6B5E78] uppercase">Carbohydrates</div>
               </div>
               <div className="bg-white p-3 rounded-2xl border border-emerald-100 text-center">
                 <Droplets size={16} className="mx-auto text-blue-500 mb-1" />
-                <div className="text-base font-extrabold text-[#292524]">
+                <div className="text-base font-extrabold text-[#292431]">
                   {approvedDietPlan.dietDetails.hydration || '3 - 4 Liters'}
                 </div>
-                <div className="text-[10px] font-bold text-[#78716C] uppercase">Hydration</div>
+                <div className="text-[10px] font-bold text-[#6B5E78] uppercase">Hydration</div>
               </div>
             </div>
           )}
@@ -948,19 +948,19 @@ const MemberDietPlan = () => {
       )}
 
       {/* ===================== MONDAY TO SUNDAY SELECTOR TABS ===================== */}
-      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-4 md:p-6 shadow-xs space-y-3">
+      <div className="bg-white border border-[#E5DDEB] rounded-3xl p-4 md:p-6 shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F5F5F4] pb-3">
           <div className="flex items-center gap-2">
-            <Calendar size={18} className="text-[#F97316]" />
-            <h3 className="text-sm font-extrabold text-[#292524] uppercase tracking-wider">
+            <Calendar size={18} className="text-[#A991D4]" />
+            <h3 className="text-sm font-extrabold text-[#292431] uppercase tracking-wider">
               Select Day of the Week
             </h3>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-[#78716C]">
-              Currently Viewing: <strong className="text-[#F97316]">{selectedDay}</strong>
+            <span className="text-xs font-bold text-[#6B5E78]">
+              Currently Viewing: <strong className="text-[#A991D4]">{selectedDay}</strong>
             </span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-orange-50 text-[#F97316] font-extrabold border border-orange-200">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-orange-50 text-[#A991D4] font-extrabold border border-orange-200">
               {currentDayPlan.focus}
             </span>
           </div>
@@ -982,8 +982,8 @@ const MemberDietPlan = () => {
                 onClick={() => setSelectedDay(day)}
                 className={`relative flex flex-col items-center justify-center py-3 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
                   isSelected
-                    ? 'bg-gradient-to-b from-[#F97316] to-[#EA580C] text-white border-[#F97316] shadow-md shadow-orange-500/20 scale-[1.02]'
-                    : 'bg-[#FFFDF8] text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50 hover:text-[#292524]'
+                    ? 'bg-gradient-to-b from-[#A991D4] to-[#967CC5] text-white border-[#A991D4] shadow-md shadow-slate-1000/20 scale-[1.02]'
+                    : 'bg-[#F7F4FA] text-[#6B5E78] border-[#E5DDEB] hover:border-[#A991D4]/50 hover:text-[#292431]'
                 }`}
               >
                 {/* Today Pill */}
@@ -991,8 +991,8 @@ const MemberDietPlan = () => {
                   <span
                     className={`absolute -top-2 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border shadow-2xs ${
                       isSelected
-                        ? 'bg-white text-[#EA580C] border-white'
-                        : 'bg-[#F97316] text-white border-[#F97316]'
+                        ? 'bg-white text-[#967CC5] border-white'
+                        : 'bg-[#A991D4] text-[#292431] border-[#A991D4]'
                     }`}
                   >
                     Today
@@ -1000,7 +1000,7 @@ const MemberDietPlan = () => {
                 )}
 
                 <span className="text-sm font-extrabold">{day}</span>
-                <span className={`text-[10px] mt-0.5 font-medium ${isSelected ? 'text-white/80' : 'text-[#78716C]'}`}>
+                <span className={`text-[10px] mt-0.5 font-medium ${isSelected ? 'text-white/80' : 'text-[#6B5E78]'}`}>
                   {DEFAULT_WEEKLY_DIET[day]?.targetCalories || 2150} kcal
                 </span>
 
@@ -1011,7 +1011,7 @@ const MemberDietPlan = () => {
                       <CheckCircle2 size={12} className="mr-0.5" /> All Done
                     </span>
                   ) : completedCount > 0 ? (
-                    <span className={`text-[10px] font-semibold ${isSelected ? 'text-white/90' : 'text-[#F97316]'}`}>
+                    <span className={`text-[10px] font-semibold ${isSelected ? 'text-white/90' : 'text-[#A991D4]'}`}>
                       {completedCount}/{totalForDay} eaten
                     </span>
                   ) : (
@@ -1031,19 +1031,19 @@ const MemberDietPlan = () => {
         {macros.map((macro, idx) => {
           const percentage = Math.min(100, Math.round((macro.current / macro.target) * 100));
           return (
-            <div key={idx} className="bg-white rounded-2xl p-6 border border-[#FED7AA] shadow-xs flex flex-col items-center justify-center relative overflow-hidden group hover:border-[#F97316] transition-all">
+            <div key={idx} className="bg-white rounded-2xl p-6 border border-[#E9DFF4] shadow-xs flex flex-col items-center justify-center relative overflow-hidden group hover:border-[#A991D4] transition-all">
               <div className="text-center relative z-10">
-                <p className="text-[#78716C] text-sm font-semibold mb-2">{macro.label}</p>
+                <p className="text-[#6B5E78] text-sm font-semibold mb-2">{macro.label}</p>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-3xl font-extrabold text-[#292524]">{macro.current}</span>
-                  <span className="text-[#78716C] font-medium text-sm">/ {macro.target} {macro.unit}</span>
+                  <span className="text-3xl font-extrabold text-[#292431]">{macro.current}</span>
+                  <span className="text-[#6B5E78] font-medium text-sm">/ {macro.target} {macro.unit}</span>
                 </div>
-                <span className="text-[11px] font-bold text-[#F97316] mt-1 block">
+                <span className="text-[11px] font-bold text-[#A991D4] mt-1 block">
                   {percentage}% consumed
                 </span>
               </div>
               {/* Progress Bar Background */}
-              <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[#F1F5F9]">
+              <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[#F7F4FA]">
                 <div 
                   className={`h-full ${macro.color} transition-all duration-700 ease-out rounded-r-full`}
                   style={{ width: `${percentage}%` }}
@@ -1055,23 +1055,23 @@ const MemberDietPlan = () => {
       </div>
 
       {/* Selected Day's Meals Timeline */}
-      <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#FED7AA] shadow-xs">
+      <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#E9DFF4] shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-[#292524]">{selectedDay}&apos;s Meal Schedule</h2>
+              <h2 className="text-xl font-bold text-[#292431]">{selectedDay}&apos;s Meal Schedule</h2>
               {selectedDay === todayDayName && (
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-200">
                   Today
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#78716C] mt-0.5">
+            <p className="text-xs text-[#6B5E78] mt-0.5">
               {currentDayPlan.focus} • Click any meal to mark it eaten
             </p>
           </div>
 
-          <span className="text-xs font-semibold text-[#F97316] bg-[#F97316]/10 px-3 py-1.5 rounded-full self-start sm:self-auto">
+          <span className="text-xs font-semibold text-[#A991D4] bg-[#A991D4]/10 px-3 py-1.5 rounded-full self-start sm:self-auto">
             {completedMeals.length} of {currentDayPlan.meals.length} Completed ({Math.round((completedMeals.length / (currentDayPlan.meals.length || 1)) * 100)}%)
           </span>
         </div>
@@ -1095,12 +1095,12 @@ const MemberDietPlan = () => {
               <div 
                 onClick={() => toggleMeal(meal.id)}
                 className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-5 rounded-2xl border transition-all cursor-pointer select-none ${
-                  meal.completed ? 'bg-green-50/40 border-green-200 shadow-xs' : 'bg-white border-[#FED7AA] hover:border-[#F97316] hover:shadow-md'
+                  meal.completed ? 'bg-green-50/40 border-green-200 shadow-xs' : 'bg-white border-[#E9DFF4] hover:border-[#A991D4] hover:shadow-md'
                 }`}
               >
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className={`font-bold text-lg ${meal.completed ? 'text-green-800 line-through opacity-80' : 'text-[#292524]'}`}>
+                    <h3 className={`font-bold text-lg ${meal.completed ? 'text-green-800 line-through opacity-80' : 'text-[#292431]'}`}>
                       {meal.type}
                     </h3>
                     {meal.completed && (
@@ -1109,17 +1109,17 @@ const MemberDietPlan = () => {
                       </span>
                     )}
                   </div>
-                  <span className="text-xs font-semibold text-[#78716C] bg-[#F1F5F9] px-2.5 py-1 rounded-full">{meal.time}</span>
+                  <span className="text-xs font-semibold text-[#6B5E78] bg-[#F7F4FA] px-2.5 py-1 rounded-full">{meal.time}</span>
                 </div>
                 <ul className="space-y-1.5 mb-3">
                   {meal.items.map((item: string, i: number) => (
-                    <li key={i} className="text-[#78716C] text-sm flex items-start gap-2">
+                    <li key={i} className="text-[#6B5E78] text-sm flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-2 shrink-0"></span>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="flex items-center gap-3 pt-2.5 border-t border-gray-100 text-xs text-[#78716C] font-semibold flex-wrap">
+                <div className="flex items-center gap-3 pt-2.5 border-t border-gray-100 text-xs text-[#6B5E78] font-semibold flex-wrap">
                   <span className="text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">🔥 {meal.calories} kcal</span>
                   <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">🥩 {meal.protein}g protein</span>
                   <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded-md">🍞 {meal.carbs}g carbs</span>

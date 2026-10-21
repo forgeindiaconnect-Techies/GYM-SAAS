@@ -16,7 +16,7 @@ const PLAN_DETAILS: Record<string, any> = {
     priceMonthly: 999, priceAnnual: 9990,
   },
   PROFESSIONAL: {
-    name: 'Professional', color: 'text-[#F97316]', bg: 'bg-[#F97316]/10', border: 'border-[#F97316]/40',
+    name: 'Professional', color: 'text-[#A991D4]', bg: 'bg-[#A991D4]/10', border: 'border-[#A991D4]/40',
     icon: Crown, limits: { members: 500, trainers: 15, staff: 5, branches: 1 },
     priceMonthly: 2499, priceAnnual: 24990,
   },
@@ -31,7 +31,7 @@ const PLAN_DETAILS: Record<string, any> = {
     priceMonthly: 799, priceAnnual: 7990,
   },
   GOLD: {
-    name: 'Gold', color: 'text-[#F97316]', bg: 'bg-[#F97316]/10', border: 'border-[#F97316]/40',
+    name: 'Gold', color: 'text-[#A991D4]', bg: 'bg-[#A991D4]/10', border: 'border-[#A991D4]/40',
     icon: Crown, limits: { members: 500, trainers: 15, staff: 5, branches: 2 },
     priceMonthly: 1499, priceAnnual: 14990,
   },
@@ -50,14 +50,14 @@ const UPGRADE_PLANS = [
   {
     key: 'SILVER', name: 'Silver', tagline: 'Beginner package for growing gyms',
     priceMonthly: 799, priceAnnual: 7190, savingsAnnual: 1598,
-    color: 'text-slate-500', border: 'border-slate-300', ctaStyle: 'bg-white border-2 border-[#E7E5E4] text-[#292524] hover:border-[#F97316] hover:bg-[#FFFDF8]',
+    color: 'text-slate-500', border: 'border-slate-300', ctaStyle: 'bg-white border-2 border-[#E5DDEB] text-[#292431] hover:border-[#A991D4] hover:bg-[#F7F4FA]',
     icon: Star,
     features: ['Gym Profile Management', 'Member Management (up to 100)', 'Trainer & Staff Management', 'AI Fitness Assessment', 'Basic AI Workout & Diet Plans', 'AI Chat Assistant', 'Basic Reports (3 types)', 'Membership Tracking']
   },
   {
     key: 'GOLD', name: 'Gold', tagline: 'Most popular all-in-one powerhouse',
     priceMonthly: 1499, priceAnnual: 13490, savingsAnnual: 4498,
-    color: 'text-[#F97316]', border: 'border-[#F97316]', ctaStyle: 'bg-[#F97316] text-white hover:bg-[#EA580C]',
+    color: 'text-[#A991D4]', border: 'border-[#A991D4]', ctaStyle: 'bg-[#A991D4] text-[#292431] hover:bg-[#967CC5]',
     icon: Crown, popular: true,
     features: ['Everything in Silver', 'Advanced AI Workout & Diet Plans', 'AI Fitness Assistant', 'Goal-Based Workout Recs', 'Trainer Discovery & Booking', 'Trainer Scheduling', 'Detailed Progress Analytics', 'Revenue & Membership Analytics']
   },
@@ -79,16 +79,16 @@ const LimitBar = ({ label, icon: Icon, used, max, color }: any) => {
       <div className="flex items-center justify-between text-sm">
         <div className="flex items-center space-x-2">
           <Icon size={14} className={color} />
-          <span className="text-[#78716C] text-xs">{label}</span>
+          <span className="text-[#6B5E78] text-xs">{label}</span>
         </div>
-        <span className={`text-xs font-bold ${isFull ? 'text-teal-400' : 'text-[#292524]'}`}>
+        <span className={`text-xs font-bold ${isFull ? 'text-teal-400' : 'text-[#292431]'}`}>
           {isUnlimited ? `${used} / ∞` : `${used} / ${max}`}
         </span>
       </div>
       {!isUnlimited && (
         <div className="w-full bg-[#FFFFFF] rounded-full h-1.5 overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${isFull ? 'bg-teal-400' : pct > 80 ? 'bg-[#FED7AA]' : 'bg-[#F97316]'}`}
+            className={`h-full rounded-full transition-all duration-500 ${isFull ? 'bg-teal-400' : pct > 80 ? 'bg-[#E9DFF4]' : 'bg-[#A991D4]'}`}
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -145,29 +145,29 @@ const GymAdminSubscription = () => {
         <head>
           <title>Invoice ${invoice.id}</title>
           <style>
-            body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #292524; max-width: 800px; margin: 0 auto; }
-            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #FED7AA; padding-bottom: 20px; margin-bottom: 40px; }
-            .title { font-size: 28px; font-weight: 900; color: #F97316; }
+            body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #292431; max-width: 800px; margin: 0 auto; }
+            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #E9DFF4; padding-bottom: 20px; margin-bottom: 40px; }
+            .title { font-size: 28px; font-weight: 900; color: #A991D4; }
             .details { margin-bottom: 30px; }
             .details table { width: 100%; border-collapse: collapse; }
-            .details th, .details td { padding: 16px; text-align: left; border-bottom: 1px solid #FED7AA; }
-            .details th { background: #FFFDF8; color: #78716C; font-size: 12px; text-transform: uppercase; font-weight: bold; }
-            .payment-info { background: #FFFDF8; padding: 16px; border-radius: 8px; border: 1px solid #FED7AA; margin-bottom: 20px; }
-            .payment-info h3 { margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #78716C; }
+            .details th, .details td { padding: 16px; text-align: left; border-bottom: 1px solid #E9DFF4; }
+            .details th { background: #F7F4FA; color: #6B5E78; font-size: 12px; text-transform: uppercase; font-weight: bold; }
+            .payment-info { background: #F7F4FA; padding: 16px; border-radius: 8px; border: 1px solid #E9DFF4; margin-bottom: 20px; }
+            .payment-info h3 { margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #6B5E78; }
             .payment-info p { margin: 4px 0; font-size: 14px; font-weight: 500; }
-            .total { font-size: 24px; font-weight: bold; text-align: right; padding: 16px; background: #FFFDF8; border-radius: 8px; border: 1px solid #E7E5E4; }
-            .footer { margin-top: 60px; font-size: 12px; color: #78716C; text-align: center; }
+            .total { font-size: 24px; font-weight: bold; text-align: right; padding: 16px; background: #F7F4FA; border-radius: 8px; border: 1px solid #E5DDEB; }
+            .footer { margin-top: 60px; font-size: 12px; color: #6B5E78; text-align: center; }
           </style>
         </head>
         <body>
           <div class="header">
             <div>
               <div class="title">Gymora SAAS</div>
-              <p style="margin: 5px 0 0 0; color: #78716C;">Subscription Invoice</p>
+              <p style="margin: 5px 0 0 0; color: #6B5E78;">Subscription Invoice</p>
             </div>
             <div style="text-align: right;">
               <h2 style="margin: 0;">${invoice.id}</h2>
-              <p style="margin: 5px 0 0 0; color: #78716C;">Date: ${invoice.date}</p>
+              <p style="margin: 5px 0 0 0; color: #6B5E78;">Date: ${invoice.date}</p>
               <span style="display: inline-block; background: #D1FAE5; color: #047857; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: bold; margin-top: 10px;">
                 STATUS: ${invoice.status.toUpperCase()}
               </span>
@@ -194,10 +194,10 @@ const GymAdminSubscription = () => {
           <div class="payment-info">
             <h3>Payment Information</h3>
             <p><strong>Method:</strong> ${invoice.paymentMethod}</p>
-            <p><strong>Details:</strong> <span style="color: #78716C;">${invoice.paymentDetails}</span></p>
+            <p><strong>Details:</strong> <span style="color: #6B5E78;">${invoice.paymentDetails}</span></p>
           </div>
           
-          <div class="total">Total Paid: <span style="color: #F97316;">${invoice.amount}</span></div>
+          <div class="total">Total Paid: <span style="color: #A991D4;">${invoice.amount}</span></div>
           
           <div class="footer">
             Thank you for your business!<br/>
@@ -368,8 +368,8 @@ const GymAdminSubscription = () => {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Subscription Management</h1>
-        <p className="text-[#78716C] mt-1">Manage your Gymora SaaS platform subscription and usage.</p>
+        <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Subscription Management</h1>
+        <p className="text-[#6B5E78] mt-1">Manage your Gymora SaaS platform subscription and usage.</p>
       </div>
 
       {/* Payment Success Banner */}
@@ -379,25 +379,25 @@ const GymAdminSubscription = () => {
             <CheckCircle size={24} className="text-green-400" />
           </div>
           <div>
-            <h3 className="text-[#292524] font-bold">Payment Successful! Your plan has been upgraded.</h3>
-            <p className="text-[#78716C] text-sm mt-1">Your new features are now active. Refresh if any dashboard items haven't updated yet.</p>
+            <h3 className="text-[#292431] font-bold">Payment Successful! Your plan has been upgraded.</h3>
+            <p className="text-[#6B5E78] text-sm mt-1">Your new features are now active. Refresh if any dashboard items haven't updated yet.</p>
           </div>
         </div>
       )}
 
       {/* Expiry Warning */}
       {(isExpired || isTrial) && !isActive && (
-        <div className={`border rounded-2xl p-5 flex items-center justify-between ${isExpired ? 'bg-[#FED7AA]/10 border-[#FED7AA]/30' : 'bg-[#FFFFFF] border-[#F97316]/30'}`}>
+        <div className={`border rounded-2xl p-5 flex items-center justify-between ${isExpired ? 'bg-[#E9DFF4]/10 border-[#E9DFF4]/30' : 'bg-[#FFFFFF] border-[#A991D4]/30'}`}>
           <div className="flex items-center space-x-4">
-            <AlertTriangle size={24} className={isExpired ? 'text-teal-400' : 'text-[#F97316]'} />
+            <AlertTriangle size={24} className={isExpired ? 'text-teal-400' : 'text-[#A991D4]'} />
             <div>
-              <h3 className="text-[#292524] font-bold">{isExpired ? 'Your free trial has expired!' : 'Free Trial Active — 1 Day Remaining'}</h3>
-              <p className="text-[#78716C] text-sm mt-0.5">{isExpired ? 'Upgrade to a paid plan to restore full access.' : 'Upgrade now to avoid interruption when your trial ends.'}</p>
+              <h3 className="text-[#292431] font-bold">{isExpired ? 'Your free trial has expired!' : 'Free Trial Active — 1 Day Remaining'}</h3>
+              <p className="text-[#6B5E78] text-sm mt-0.5">{isExpired ? 'Upgrade to a paid plan to restore full access.' : 'Upgrade now to avoid interruption when your trial ends.'}</p>
             </div>
           </div>
           <button
             onClick={() => document.getElementById('upgrade-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="shrink-0 flex items-center space-x-2 px-4 py-2.5 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors text-sm"
+            className="shrink-0 flex items-center space-x-2 px-4 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors text-sm"
           >
             <ArrowUpCircle size={16} />
             <span>Upgrade Now</span>
@@ -413,15 +413,15 @@ const GymAdminSubscription = () => {
               <PlanIcon size={26} className={currentPlan.color} />
             </div>
             <div>
-              <p className="text-[#78716C] text-xs uppercase tracking-widest font-bold mb-1">Current Plan</p>
+              <p className="text-[#6B5E78] text-xs uppercase tracking-widest font-bold mb-1">Current Plan</p>
               <h2 className={`text-2xl font-black ${currentPlan.color}`}>{currentPlan.name} Plan</h2>
               <div className="flex items-center space-x-2 mt-1">
                 <span className={`inline-flex items-center space-x-1 text-xs px-2.5 py-0.5 rounded-full font-bold ${
                   isActive ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 
-                  isTrial ? 'bg-[#F97316]/10 text-[#F97316]' : 
+                  isTrial ? 'bg-[#A991D4]/10 text-[#A991D4]' : 
                   'bg-red-500/10 text-red-500'
                 }`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : isTrial ? 'bg-[#F97316]' : 'bg-red-500'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : isTrial ? 'bg-[#A991D4]' : 'bg-red-500'}`} />
                   <span>{isActive ? 'Active' : isTrial ? 'Trial' : 'Expired'}</span>
                 </span>
               </div>
@@ -435,9 +435,9 @@ const GymAdminSubscription = () => {
               { label: 'Renewal Date', value: renewalDateFormatted },
               { label: 'Status', value: isActive ? 'Active' : isTrial ? 'Trial' : 'Expired' },
             ].map((item, i) => (
-              <div key={i} className="bg-[#FFFFFF] rounded-xl p-3 border border-[#E7E5E4]">
+              <div key={i} className="bg-[#FFFFFF] rounded-xl p-3 border border-[#E5DDEB]">
                 <p className="text-[#555] text-[10px] uppercase tracking-wider font-bold">{item.label}</p>
-                <p className="text-[#292524] font-bold text-sm mt-1">{item.value}</p>
+                <p className="text-[#292431] font-bold text-sm mt-1">{item.value}</p>
               </div>
             ))}
           </div>
@@ -445,16 +445,16 @@ const GymAdminSubscription = () => {
       </div>
 
       {/* Usage Overview */}
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6">
-        <h2 className="text-lg font-bold text-[#292524] mb-5 flex items-center space-x-2">
-          <TrendingUp size={20} className="text-[#F97316]" />
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-[#292431] mb-5 flex items-center space-x-2">
+          <TrendingUp size={20} className="text-[#A991D4]" />
           <span>Platform Usage</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <LimitBar label="Members" icon={Users} used={usage.members} max={displayPlan.limits.members} color="text-blue-400" />
           <LimitBar label="Trainers" icon={Dumbbell} used={usage.trainers} max={displayPlan.limits.trainers} color="text-green-400" />
           <LimitBar label="Staff" icon={UserCheck} used={usage.staff} max={displayPlan.limits.staff} color="text-purple-400" />
-          <LimitBar label="Branches" icon={Building2} used={usage.branches} max={displayPlan.limits.branches} color="text-[#F97316]" />
+          <LimitBar label="Branches" icon={Building2} used={usage.branches} max={displayPlan.limits.branches} color="text-[#A991D4]" />
         </div>
         <p className="text-[#555] text-xs mt-4">
           💡 Usage stats update in real-time. When you reach a limit, you'll see an upgrade prompt in the respective section.
@@ -464,24 +464,24 @@ const GymAdminSubscription = () => {
       {/* Upgrade Plans */}
       <div id="upgrade-section" className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h2 className="text-xl font-bold text-[#292524]">Upgrade Your Plan</h2>
+          <h2 className="text-xl font-bold text-[#292431]">Upgrade Your Plan</h2>
           <div className="flex items-center gap-3 flex-wrap">
-            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#292524]' : 'text-[#78716C]'}`}>Monthly</span>
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#292431]' : 'text-[#6B5E78]'}`}>Monthly</span>
             <button
               onClick={() => setIsAnnual(!isAnnual)}
               aria-pressed={isAnnual}
-              className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:ring-offset-1 ${isAnnual ? 'bg-[#F97316]' : 'bg-[#CBD5E1]'}`}
+              className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A991D4] focus:ring-offset-1 ${isAnnual ? 'bg-[#A991D4]' : 'bg-[#E5DDEB]'}`}
             >
               <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-8' : 'translate-x-1'}`} />
             </button>
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#292524]' : 'text-[#78716C]'}`}>Annual</span>
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#292431]' : 'text-[#6B5E78]'}`}>Annual</span>
               {isAnnual ? (
-                <span className="text-xs bg-[#FED7AA]/10 text-[#F97316] px-2 py-0.5 rounded-full font-bold border border-green-200">
+                <span className="text-xs bg-[#E9DFF4]/10 text-[#A991D4] px-2 py-0.5 rounded-full font-bold border border-green-200">
                   2 months FREE!
                 </span>
               ) : (
-                <span className="text-xs bg-[#FFFDF8] text-[#EA580C] px-2 py-0.5 rounded-full border border-[#E7E5E4]">
+                <span className="text-xs bg-[#F7F4FA] text-[#967CC5] px-2 py-0.5 rounded-full border border-[#E5DDEB]">
                   Save up to 25%
                 </span>
               )}
@@ -490,7 +490,7 @@ const GymAdminSubscription = () => {
         </div>
         {isAnnual && (
           <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-2.5 text-sm text-green-700 font-medium">
-            <CheckCircle size={15} className="text-[#F97316] shrink-0" />
+            <CheckCircle size={15} className="text-[#A991D4] shrink-0" />
             Annual billing: prices shown are per month — total charged once per year.
           </div>
         )}
@@ -516,11 +516,11 @@ const GymAdminSubscription = () => {
               <div
                 key={plan.key}
                 onClick={() => setPreviewPlanKey(isSelected ? null : plan.key)}
-                className={`relative flex flex-col bg-white rounded-2xl border-2 cursor-pointer transition-all duration-200 overflow-hidden ${isSelected ? 'border-[#F97316] shadow-2xl -translate-y-2 ring-2 ring-[#F97316] ring-offset-2' : `${plan.borderDefault} hover:-translate-y-1 hover:shadow-lg`}`}
+                className={`relative flex flex-col bg-white rounded-2xl border-2 cursor-pointer transition-all duration-200 overflow-hidden ${isSelected ? 'border-[#A991D4] shadow-2xl -translate-y-2 ring-2 ring-[#A991D4] ring-offset-2' : `${plan.borderDefault} hover:-translate-y-1 hover:shadow-lg`}`}
               >
                 {/* Popular badge */}
                 {plan.popular && (
-                  <div className="bg-[#F97316] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
+                  <div className="bg-[#A991D4] text-[#292431] text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                     ⭐ Most Popular
                   </div>
                 )}
@@ -533,8 +533,8 @@ const GymAdminSubscription = () => {
                         <Icon size={20} className={plan.iconColor} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-[#292524] text-sm">{plan.name}</h3>
-                        <span className="text-[10px] text-[#78716C] font-medium">{plan.badge}</span>
+                        <h3 className="font-bold text-[#292431] text-sm">{plan.name}</h3>
+                        <span className="text-[10px] text-[#6B5E78] font-medium">{plan.badge}</span>
                       </div>
                     </div>
                   </div>
@@ -543,47 +543,47 @@ const GymAdminSubscription = () => {
                   <div className="mb-4">
                     <div className="flex items-baseline gap-1">
                       <span className={`text-4xl font-black tracking-tight ${plan.priceColor}`}>{price.main}</span>
-                      <span className="text-[#78716C] text-sm font-medium">{price.period}</span>
+                      <span className="text-[#6B5E78] text-sm font-medium">{price.period}</span>
                     </div>
                     {price.sub && (
-                      <p className="text-[#78716C] text-xs mt-0.5">{price.sub}</p>
+                      <p className="text-[#6B5E78] text-xs mt-0.5">{price.sub}</p>
                     )}
                     {isAnnual && !plan.trial && plan.savingsAnnual && (
-                      <p className="text-[#F97316] text-xs mt-1 font-bold">
+                      <p className="text-[#A991D4] text-xs mt-1 font-bold">
                         💰 Save ₹{plan.savingsAnnual.toLocaleString('en-IN')} vs monthly
                       </p>
                     )}
                     {!isAnnual && !plan.trial && (
-                      <p className="text-[#78716C] text-xs mt-1">
+                      <p className="text-[#6B5E78] text-xs mt-1">
                         or ₹{plan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo billed annually
                       </p>
                     )}
                   </div>
 
                   {/* Limits */}
-                  <div className="bg-[#FFFDF8] rounded-xl px-3 py-2 mb-4 border border-[#E7E5E4]">
-                    <p className="text-[10px] text-[#78716C] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
-                    <p className="text-xs text-[#292524] font-medium">{plan.limits}</p>
+                  <div className="bg-[#F7F4FA] rounded-xl px-3 py-2 mb-4 border border-[#E5DDEB]">
+                    <p className="text-[10px] text-[#6B5E78] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
+                    <p className="text-xs text-[#292431] font-medium">{plan.limits}</p>
                   </div>
 
                   {/* Features */}
                   <div className="flex-1 mb-4">
                     <button 
                       onClick={(e) => toggleFeatures(e, plan.key)}
-                      className="text-xs font-bold text-[#F97316] hover:text-[#EA580C] underline mb-3 transition-colors"
+                      className="text-xs font-bold text-[#A991D4] hover:text-[#967CC5] underline mb-3 transition-colors"
                     >
                       {expandedPlans[plan.key] ? 'Hide Features' : 'View Features'}
                     </button>
                     {expandedPlans[plan.key] && (
                       <ul className="space-y-2">
                         {plan.features.map((f, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-[#292524]">
+                          <li key={i} className="flex items-start gap-2 text-xs text-[#292431]">
                             <CheckCircle size={13} className={`shrink-0 mt-0.5 ${plan.checkColor}`} />
                             <span>{f}</span>
                           </li>
                         ))}
                         {plan.locked.map((f, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-[#CBD5E1]">
+                          <li key={i} className="flex items-start gap-2 text-xs text-[#E5DDEB]">
                             <XCircle size={13} className="shrink-0 mt-0.5 text-rose-600" />
                             <span className="line-through">{f}</span>
                           </li>
@@ -610,10 +610,10 @@ const GymAdminSubscription = () => {
                     disabled={loading !== null}
                     className={`w-full py-2.5 rounded-xl text-xs font-bold text-center transition-all mt-auto ${
                       plan.key === 'GOLD' 
-                      ? 'bg-[#F97316] text-white hover:bg-[#EA580C]' 
+                      ? 'bg-[#A991D4] text-[#292431] hover:bg-[#967CC5]' 
                       : plan.key === 'PREMIUM'
                       ? 'bg-purple-600/80 text-white hover:bg-purple-600'
-                      : 'bg-white border-2 border-[#E7E5E4] text-[#78716C] hover:border-[#F97316] hover:text-[#F97316]'
+                      : 'bg-white border-2 border-[#E5DDEB] text-[#6B5E78] hover:border-[#A991D4] hover:text-[#A991D4]'
                     }`}
                   >
                     Upgrade to {plan.name}
@@ -626,17 +626,17 @@ const GymAdminSubscription = () => {
       </div>
 
       {/* Payment Details Section */}
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 mb-10 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 border-b border-[#E7E5E4] pb-4">
-          <h2 className="text-lg font-bold text-[#292524] flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold text-base border border-[#F97316]/20">
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 mb-10 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 border-b border-[#E5DDEB] pb-4">
+          <h2 className="text-lg font-bold text-[#292431] flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center font-bold text-base border border-[#A991D4]/20">
               <IndianRupee size={18} />
             </div>
             <span>Gym Owner Subscription Payment Details</span>
           </h2>
           <button
             onClick={() => setSortAsc(!sortAsc)}
-            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[#E7E5E4] bg-[#FFFDF8] text-[#F97316] hover:bg-[#FED7AA] transition-colors self-start sm:self-auto"
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[#E5DDEB] bg-[#F7F4FA] text-[#A991D4] hover:bg-[#E9DFF4] transition-colors self-start sm:self-auto"
             title="Toggle sort order"
           >
             <ArrowUpDown size={13} />
@@ -647,21 +647,21 @@ const GymAdminSubscription = () => {
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left border-collapse min-w-[720px]">
             <thead>
-              <tr className="border-b border-[#E7E5E4] bg-[#FFFDF8]/70">
-                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap text-center w-12">S.No</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Invoice ID</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Date</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Plan</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Amount</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider whitespace-nowrap">Status</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#78716C] uppercase tracking-wider text-right whitespace-nowrap">Action</th>
+              <tr className="border-b border-[#E5DDEB] bg-[#F7F4FA]/70">
+                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap text-center w-12">S.No</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Invoice ID</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Date</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Plan</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Amount</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider text-right whitespace-nowrap">Action</th>
               </tr>
             </thead>
             <tbody>
               {paymentHistory.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-[#78716C] text-sm font-medium">
+                  <td colSpan={8} className="py-8 text-center text-[#6B5E78] text-sm font-medium">
                     No subscription payment history found.
                   </td>
                 </tr>
@@ -669,30 +669,30 @@ const GymAdminSubscription = () => {
                 (sortAsc ? [...paymentHistory] : [...paymentHistory].reverse()).map((invoice, idx) => (
                   <tr 
                     key={invoice.id} 
-                    className={`border-b border-[#F1F5F9] transition-colors last:border-0 ${
-                      invoice.isCurrent ? 'bg-orange-50/40 hover:bg-orange-50/60' : 'hover:bg-[#F9F8F6]'
+                    className={`border-b border-[#F7F4FA] transition-colors last:border-0 ${
+                      invoice.isCurrent ? 'bg-orange-50/40 hover:bg-orange-50/60' : 'hover:bg-[#F7F4FA]'
                     }`}
                   >
-                    <td className="py-3.5 px-3 text-sm font-bold text-[#F97316] text-center whitespace-nowrap">
+                    <td className="py-3.5 px-3 text-sm font-bold text-[#A991D4] text-center whitespace-nowrap">
                       {idx + 1}
                     </td>
-                    <td className="py-3.5 px-3 text-sm font-semibold text-[#292524] whitespace-nowrap">
+                    <td className="py-3.5 px-3 text-sm font-semibold text-[#292431] whitespace-nowrap">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-mono text-xs font-bold">{invoice.id}</span>
                         {invoice.isCurrent && (
-                          <span className="text-[10px] bg-[#F97316] text-white px-2 py-0.5 rounded-full font-bold">
+                          <span className="text-[10px] bg-[#A991D4] text-[#292431] px-2 py-0.5 rounded-full font-bold">
                             Current
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="py-3.5 px-3 text-sm text-[#78716C] whitespace-nowrap">{invoice.date}</td>
-                    <td className="py-3.5 px-3 text-sm font-medium text-[#292524] whitespace-nowrap">{invoice.plan}</td>
-                    <td className="py-3.5 px-3 text-sm font-bold text-[#F97316] whitespace-nowrap">{invoice.amount}</td>
+                    <td className="py-3.5 px-3 text-sm text-[#6B5E78] whitespace-nowrap">{invoice.date}</td>
+                    <td className="py-3.5 px-3 text-sm font-medium text-[#292431] whitespace-nowrap">{invoice.plan}</td>
+                    <td className="py-3.5 px-3 text-sm font-bold text-[#A991D4] whitespace-nowrap">{invoice.amount}</td>
                     <td className="py-4 px-4 whitespace-nowrap">
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-[#292524]">{invoice.paymentMethod}</span>
-                        <span className="text-xs text-[#78716C]">{invoice.paymentDetails}</span>
+                        <span className="text-sm font-bold text-[#292431]">{invoice.paymentMethod}</span>
+                        <span className="text-xs text-[#6B5E78]">{invoice.paymentDetails}</span>
                       </div>
                     </td>
                     <td className="py-4 px-4 whitespace-nowrap">
@@ -707,7 +707,7 @@ const GymAdminSubscription = () => {
                     <td className="py-4 px-4 text-right whitespace-nowrap">
                       <button 
                         onClick={() => handleDownloadInvoice(invoice)}
-                        className="inline-flex items-center space-x-1 text-[#F97316] hover:text-[#EA580C] font-bold text-xs bg-[#FFFDF8] hover:bg-[#D1FAE5] px-3 py-1.5 rounded-lg transition-colors border border-[#E7E5E4]"
+                        className="inline-flex items-center space-x-1 text-[#A991D4] hover:text-[#967CC5] font-bold text-xs bg-[#F7F4FA] hover:bg-[#D1FAE5] px-3 py-1.5 rounded-lg transition-colors border border-[#E5DDEB]"
                       >
                         <Download size={14} />
                         <span>Invoice</span>
@@ -724,28 +724,28 @@ const GymAdminSubscription = () => {
       {/* Payment Modal */}
       {paymentStep && upgradeTarget && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex items-center space-x-3 mb-6">
-              <div className={`w-12 h-12 ${upgradeTarget.key === 'GOLD' ? 'bg-[#F97316]/10' : 'bg-purple-400/10'} rounded-xl flex items-center justify-center`}>
+              <div className={`w-12 h-12 ${upgradeTarget.key === 'GOLD' ? 'bg-[#A991D4]/10' : 'bg-purple-400/10'} rounded-xl flex items-center justify-center`}>
                 <upgradeTarget.icon size={24} className={upgradeTarget.color} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#292524]">Upgrade to {upgradeTarget.name}</h2>
-                <p className="text-[#78716C] text-sm">{upgradeTarget.tagline}</p>
+                <h2 className="text-xl font-bold text-[#292431]">Upgrade to {upgradeTarget.name}</h2>
+                <p className="text-[#6B5E78] text-sm">{upgradeTarget.tagline}</p>
               </div>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 mb-6 space-y-3">
+            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl p-4 mb-6 space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-[#78716C]">Plan</span>
-                <span className="text-[#292524] font-semibold">{upgradeTarget.name}</span>
+                <span className="text-[#6B5E78]">Plan</span>
+                <span className="text-[#292431] font-semibold">{upgradeTarget.name}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#78716C]">Billing</span>
-                <span className="text-[#292524] font-semibold">{isAnnual ? 'Annual' : 'Monthly'}</span>
+                <span className="text-[#6B5E78]">Billing</span>
+                <span className="text-[#292431] font-semibold">{isAnnual ? 'Annual' : 'Monthly'}</span>
               </div>
-              <div className="flex justify-between text-sm border-t border-[#E7E5E4] pt-3">
-                <span className="text-[#78716C] font-bold">Total</span>
+              <div className="flex justify-between text-sm border-t border-[#E5DDEB] pt-3">
+                <span className="text-[#6B5E78] font-bold">Total</span>
                 <span className={`font-bold text-lg ${upgradeTarget.color}`}>
                   ₹{(isAnnual ? upgradeTarget.priceAnnual : upgradeTarget.priceMonthly).toLocaleString('en-IN')}{isAnnual ? '/year' : '/month'}
                 </span>
@@ -758,20 +758,20 @@ const GymAdminSubscription = () => {
             </div>
 
             <div className="space-y-3 mb-6">
-              <input type="text" placeholder="Card Number" className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316]" maxLength={19} />
+              <input type="text" placeholder="Card Number" className="w-full bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4]" maxLength={19} />
               <div className="grid grid-cols-2 gap-3">
-                <input type="text" placeholder="MM / YY" className="bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316]" maxLength={7} />
-                <input type="text" placeholder="CVV" className="bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316]" maxLength={3} />
+                <input type="text" placeholder="MM / YY" className="bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4]" maxLength={7} />
+                <input type="text" placeholder="CVV" className="bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4]" maxLength={3} />
               </div>
-              <input type="text" placeholder="Cardholder Name" className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316]" />
+              <input type="text" placeholder="Cardholder Name" className="w-full bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4]" />
             </div>
 
             <div className="flex space-x-3">
-              <button onClick={() => setPaymentStep(null)} className="flex-1 py-3 bg-[#FFFFFF] text-[#292524] rounded-xl font-bold hover:bg-[#FED7AA] transition-colors text-sm">Cancel</button>
+              <button onClick={() => setPaymentStep(null)} className="flex-1 py-3 bg-[#FFFFFF] text-[#292431] rounded-xl font-bold hover:bg-[#E9DFF4] transition-colors text-sm">Cancel</button>
               <button
                 onClick={handlePayment}
                 disabled={loading !== null}
-                className="flex-1 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors disabled:opacity-60 text-sm flex items-center justify-center space-x-2"
+                className="flex-1 py-3 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors disabled:opacity-60 text-sm flex items-center justify-center space-x-2"
               >
                 {loading ? <><Loader2 size={16} className="animate-spin" /><span>Processing...</span></> : <span>Pay Now</span>}
               </button>

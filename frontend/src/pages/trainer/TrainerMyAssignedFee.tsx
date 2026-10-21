@@ -8,7 +8,7 @@ const cycleBadge = (cycle: string) => {
   const map: Record<string, string> = {
     'Per Session': 'bg-purple-100 text-purple-700',
     'Weekly': 'bg-blue-100 text-blue-700',
-    'Monthly': 'bg-[#FED7AA]/10 text-[#F97316]',
+    'Monthly': 'bg-[#E9DFF4]/10 text-[#A991D4]',
     'Custom': 'bg-orange-100 text-orange-700',
   };
   return map[cycle] || 'bg-gray-100 text-gray-700';
@@ -16,7 +16,7 @@ const cycleBadge = (cycle: string) => {
 
 const statusBadge = (status: string) => {
   const map: Record<string, string> = {
-    'Active': 'bg-[#FED7AA]/10 text-[#F97316]',
+    'Active': 'bg-[#E9DFF4]/10 text-[#A991D4]',
     'Pending': 'bg-amber-100 text-amber-700',
     'Rejected': 'bg-red-100 text-red-700',
     'Inactive': 'bg-gray-100 text-gray-500',
@@ -83,7 +83,7 @@ const TrainerMyAssignedFee = () => {
         </div>
         <Link
           to="/trainer/payments-received"
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#F97316] text-white text-sm font-bold rounded-xl hover:bg-[#EA580C] transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#A991D4] text-[#292431] text-sm font-bold rounded-xl hover:bg-[#967CC5] transition-colors shadow-sm"
         >
           <Clock size={16} />
           View Payments Received
@@ -117,8 +117,8 @@ const TrainerMyAssignedFee = () => {
               <div className="p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Net Payable Amount</p>
-                  <p className="text-2xl font-black text-[#F97316] flex items-center mt-1">
-                    <IndianRupee className="w-5 h-5 mr-0.5 text-[#F97316]" />
+                  <p className="text-2xl font-black text-[#A991D4] flex items-center mt-1">
+                    <IndianRupee className="w-5 h-5 mr-0.5 text-[#A991D4]" />
                     {getNetPayable(activeFee).toLocaleString('en-IN')}
                   </p>
                   <span className="text-[11px] text-gray-400">Exact disbursement</span>
@@ -176,7 +176,7 @@ const TrainerMyAssignedFee = () => {
                   <div className="flex items-center gap-4">
                     {/* Order Number */}
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                      f.status === 'Active' ? 'bg-[#F97316] text-white' :
+                      f.status === 'Active' ? 'bg-[#A991D4] text-[#292431]' :
                       f.status === 'Pending' ? 'bg-amber-500 text-white' :
                       'bg-gray-200 text-gray-500'
                     }`}>
@@ -185,9 +185,9 @@ const TrainerMyAssignedFee = () => {
 
                     {/* Icon */}
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      f.status === 'Active' ? 'bg-[#F97316]/10 border border-[#F97316]/20' : 'bg-gray-50 border border-gray-200'
+                      f.status === 'Active' ? 'bg-[#A991D4]/10 border border-[#A991D4]/20' : 'bg-gray-50 border border-gray-200'
                     }`}>
-                      <IndianRupee className={`w-5 h-5 ${f.status === 'Active' ? 'text-[#F97316]' : 'text-gray-400'}`} />
+                      <IndianRupee className={`w-5 h-5 ${f.status === 'Active' ? 'text-[#A991D4]' : 'text-gray-400'}`} />
                     </div>
 
                     {/* Info */}
@@ -207,7 +207,7 @@ const TrainerMyAssignedFee = () => {
 
                   <div className="flex items-center gap-2 ml-auto flex-wrap justify-end">
                     <div className="text-right">
-                      <span className="text-base font-black text-[#F97316] block">
+                      <span className="text-base font-black text-[#A991D4] block">
                         ₹{getNetPayable(f).toLocaleString('en-IN')}
                       </span>
                       <span className="text-[11px] text-gray-400 font-medium block">
@@ -222,7 +222,7 @@ const TrainerMyAssignedFee = () => {
                     </span>
                     <button
                       onClick={() => setSelectedFee(f)}
-                      className="px-3 py-1.5 text-xs font-semibold bg-white border border-[#E7E5E4] text-[#F97316] hover:bg-[#F97316] hover:text-white rounded-lg transition-colors whitespace-nowrap shadow-sm"
+                      className="px-3 py-1.5 text-xs font-semibold bg-white border border-[#E5DDEB] text-[#A991D4] hover:bg-[#A991D4] hover:text-[#292431] rounded-lg transition-colors whitespace-nowrap shadow-sm"
                     >
                       View Details
                     </button>
@@ -237,12 +237,12 @@ const TrainerMyAssignedFee = () => {
       {/* Fee Details Modal */}
       {selectedFee && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden my-auto max-h-[85vh] flex flex-col border border-[#E7E5E4]">
-            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#E7E5E4] bg-[#FFFDF8] shrink-0">
-              <h3 className="font-bold text-[#292524] text-base">Assigned Fee Details</h3>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden my-auto max-h-[85vh] flex flex-col border border-[#E5DDEB]">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#E5DDEB] bg-[#F7F4FA] shrink-0">
+              <h3 className="font-bold text-[#292431] text-base">Assigned Fee Details</h3>
               <button
                 onClick={() => setSelectedFee(null)}
-                className="text-[#78716C] hover:text-[#292524] p-1.5 rounded-lg hover:bg-slate-200 transition-colors"
+                className="text-[#6B5E78] hover:text-[#292431] p-1.5 rounded-lg hover:bg-slate-200 transition-colors"
               >
                 <XCircle size={20} />
               </button>
@@ -252,7 +252,7 @@ const TrainerMyAssignedFee = () => {
               <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
                 <div className="flex justify-between items-center">
                   <span className="text-emerald-900 text-sm font-semibold">Exact Net Payable</span>
-                  <span className="text-2xl font-black text-[#F97316]">₹{getNetPayable(selectedFee).toLocaleString('en-IN')}</span>
+                  <span className="text-2xl font-black text-[#A991D4]">₹{getNetPayable(selectedFee).toLocaleString('en-IN')}</span>
                 </div>
                 {selectedFee.commissionValue !== undefined && Number(selectedFee.commissionValue) > 0 && (
                   <div className="mt-2 pt-2 border-t border-emerald-200/60 flex justify-between text-xs text-emerald-800 font-medium">
@@ -265,21 +265,21 @@ const TrainerMyAssignedFee = () => {
               </div>
 
               {/* Contiguous details grid touching one by one */}
-              <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm">
-                <div className="grid grid-cols-2 divide-x divide-[#E7E5E4]">
+              <div className="border border-[#E5DDEB] rounded-xl overflow-hidden divide-y divide-[#E5DDEB] bg-white shadow-sm">
+                <div className="grid grid-cols-2 divide-x divide-[#E5DDEB]">
                   <div className="p-3 bg-white">
-                    <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-0.5">Training Type</p>
+                    <p className="text-[#6B5E78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Training Type</p>
                     <p className="font-semibold text-sm text-gray-900">{selectedFee.trainingType || '-'}</p>
                   </div>
                   <div className="p-3 bg-white">
-                    <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-0.5">Billing Cycle</p>
+                    <p className="text-[#6B5E78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Billing Cycle</p>
                     <p className="font-semibold text-sm text-gray-900">{selectedFee.billingCycle || '-'}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 divide-x divide-[#E7E5E4]">
+                <div className="grid grid-cols-2 divide-x divide-[#E5DDEB]">
                   <div className="p-3 bg-white">
-                    <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission</p>
+                    <p className="text-[#6B5E78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission</p>
                     <p className="font-semibold text-sm text-gray-900">
                       {selectedFee.commissionValue !== undefined && Number(selectedFee.commissionValue) > 0
                         ? selectedFee.commissionType === 'Percentage'
@@ -289,20 +289,20 @@ const TrainerMyAssignedFee = () => {
                     </p>
                   </div>
                   <div className="p-3 bg-white">
-                    <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission Type</p>
+                    <p className="text-[#6B5E78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission Type</p>
                     <p className="font-semibold text-sm text-gray-900">{selectedFee.commissionType || 'Percentage'}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 divide-x divide-[#E7E5E4]">
+                <div className="grid grid-cols-2 divide-x divide-[#E5DDEB]">
                   <div className="p-3 bg-white">
-                    <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-0.5">Status</p>
+                    <p className="text-[#6B5E78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Status</p>
                     <span className={`inline-flex px-2 py-0.5 rounded-lg text-xs font-semibold ${statusBadge(selectedFee.status)}`}>
                       {selectedFee.status}
                     </span>
                   </div>
                   <div className="p-3 bg-white">
-                    <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective From</p>
+                    <p className="text-[#6B5E78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective From</p>
                     <p className="font-semibold text-sm text-gray-900">
                       {selectedFee.effectiveFrom ? new Date(selectedFee.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
                     </p>
@@ -311,7 +311,7 @@ const TrainerMyAssignedFee = () => {
 
                 {selectedFee.effectiveUntil && (
                   <div className="p-3 bg-white">
-                    <p className="text-[#78716C] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective Until</p>
+                    <p className="text-[#6B5E78] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective Until</p>
                     <p className="font-semibold text-sm text-gray-900">
                       {new Date(selectedFee.effectiveUntil).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </p>
@@ -321,16 +321,16 @@ const TrainerMyAssignedFee = () => {
 
               {selectedFee.notes && (
                 <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl">
-                  <p className="text-[#78716C] text-xs font-semibold mb-1">Notes from Gym Owner</p>
+                  <p className="text-[#6B5E78] text-xs font-semibold mb-1">Notes from Gym Owner</p>
                   <p className="text-xs text-gray-700 italic">{selectedFee.notes}</p>
                 </div>
               )}
             </div>
 
-            <div className="p-4 border-t border-[#E7E5E4] bg-[#FFFDF8] flex justify-end shrink-0">
+            <div className="p-4 border-t border-[#E5DDEB] bg-[#F7F4FA] flex justify-end shrink-0">
               <button
                 onClick={() => setSelectedFee(null)}
-                className="px-5 py-2 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#F97316]/90 transition-colors shadow-sm"
+                className="px-5 py-2 bg-[#A991D4] text-[#292431] rounded-xl text-xs font-bold hover:bg-[#A991D4]/90 transition-colors shadow-sm"
               >
                 Close
               </button>

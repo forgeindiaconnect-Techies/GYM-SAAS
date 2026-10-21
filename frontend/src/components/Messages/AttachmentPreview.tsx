@@ -35,11 +35,11 @@ export const AttachmentPreview: React.FC<AttachmentPreviewProps> = ({ attachment
   };
 
   return (
-    <div className="flex items-center gap-2.5 p-2.5 bg-[#FFFDF8] border-b border-[#E7E5E4] overflow-x-auto">
+    <div className="flex items-center gap-2.5 p-2.5 bg-[#F7F4FA] border-b border-[#E5DDEB] overflow-x-auto">
       {attachments.map((item, idx) => (
         <div
           key={idx}
-          className="relative flex items-center gap-2.5 bg-white border border-[#E7E5E4] rounded-xl p-2 pr-3 shrink-0 shadow-2xs group hover:border-[#F97316]/50 transition-all"
+          className="relative flex items-center gap-2.5 bg-white border border-[#E5DDEB] rounded-xl p-2 pr-3 shrink-0 shadow-2xs group hover:border-[#A991D4]/50 transition-all"
         >
           {/* Thumbnail / Icon */}
           <div className="w-10 h-10 rounded-lg overflow-hidden bg-stone-100 flex items-center justify-center shrink-0 border border-stone-200/60">
@@ -52,10 +52,10 @@ export const AttachmentPreview: React.FC<AttachmentPreviewProps> = ({ attachment
 
           {/* Details */}
           <div className="flex flex-col max-w-[140px] sm:max-w-[180px]">
-            <span className="text-xs font-bold text-[#292524] truncate" title={item.file.name}>
+            <span className="text-xs font-bold text-[#292431] truncate" title={item.file.name}>
               {item.file.name}
             </span>
-            <span className="text-[10px] text-[#78716C] font-semibold">
+            <span className="text-[10px] text-[#6B5E78] font-semibold">
               {item.sizeFormatted}
             </span>
           </div>

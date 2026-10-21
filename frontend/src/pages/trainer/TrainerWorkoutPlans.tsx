@@ -440,18 +440,18 @@ const TrainerWorkoutPlans: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-16">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F97316]/10 text-[#F97316] flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#A991D4]/10 text-[#A991D4] flex items-center gap-1">
               <FileText size={13} /> Client Workout Management
             </span>
-            <span className="text-xs text-[#78716C]">• Video Animated Demonstrations</span>
+            <span className="text-xs text-[#6B5E78]">• Video Animated Demonstrations</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#292524] tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[#292431] tracking-tight">
             Customer Workout Plans
           </h1>
-          <p className="text-sm text-[#78716C] mt-1">
+          <p className="text-sm text-[#6B5E78] mt-1">
             Build custom daily workout routines for your clients by selecting animated exercises from the gym library.
           </p>
         </div>
@@ -459,7 +459,7 @@ const TrainerWorkoutPlans: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={openCreateModal}
-            className="px-5 py-2.5 bg-[#F97316] text-white rounded-xl text-sm font-bold hover:bg-[#EA580C] transition-colors flex items-center gap-2 shadow-sm"
+            className="px-5 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl text-sm font-bold hover:bg-[#967CC5] transition-colors flex items-center gap-2 shadow-sm"
           >
             <Plus size={18} /> Create Workout Plan
           </button>
@@ -496,7 +496,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                       {new Date(req.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-xs font-semibold text-[#F97316] mt-0.5">{req.title}</p>
+                  <p className="text-xs font-semibold text-[#A991D4] mt-0.5">{req.title}</p>
                   <p className="text-xs text-stone-600 mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
                 </div>
 
@@ -522,28 +522,28 @@ const TrainerWorkoutPlans: React.FC = () => {
       )}
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
+      <div className="bg-white border border-[#E5DDEB] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
         <div className="relative flex-1 w-full md:w-auto">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
           <input
             type="text"
             placeholder="Search by plan name or client name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-sm outline-none focus:border-[#F97316] text-[#292524]"
+            className="w-full pl-10 pr-4 py-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm outline-none focus:border-[#A991D4] text-[#292431]"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full md:w-auto justify-end">
-          <span className="text-xs font-bold text-[#78716C] uppercase">Status:</span>
+          <span className="text-xs font-bold text-[#6B5E78] uppercase">Status:</span>
           {(['All', 'Published', 'Draft'] as const).map(st => (
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
                 statusFilter === st
-                  ? 'bg-[#F97316] text-white'
-                  : 'bg-[#FFFDF8] text-[#78716C] hover:bg-[#FED7AA]'
+                  ? 'bg-[#A991D4] text-[#292431]'
+                  : 'bg-[#F7F4FA] text-[#6B5E78] hover:bg-[#E9DFF4]'
               }`}
             >
               {st}
@@ -554,20 +554,20 @@ const TrainerWorkoutPlans: React.FC = () => {
 
       {/* Plans List */}
       {loading ? (
-        <div className="text-center py-20 text-[#78716C]">
-          <div className="w-10 h-10 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <div className="text-center py-20 text-[#6B5E78]">
+          <div className="w-10 h-10 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="font-semibold text-sm">Loading customer workout plans...</p>
         </div>
       ) : filteredPlans.length === 0 ? (
-        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-12 text-center">
-          <Dumbbell size={48} className="mx-auto text-[#78716C] mb-3" />
-          <h3 className="text-base font-bold text-[#292524]">No workout plans found</h3>
-          <p className="text-xs text-[#78716C] mt-1 mb-4">
+        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-12 text-center">
+          <Dumbbell size={48} className="mx-auto text-[#6B5E78] mb-3" />
+          <h3 className="text-base font-bold text-[#292431]">No workout plans found</h3>
+          <p className="text-xs text-[#6B5E78] mt-1 mb-4">
             Create a personalized workout plan for your clients or select exercises from the library.
           </p>
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#EA580C]"
+            className="px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl text-xs font-bold hover:bg-[#967CC5]"
           >
             Create New Plan
           </button>
@@ -579,7 +579,7 @@ const TrainerWorkoutPlans: React.FC = () => {
             return (
               <div
                 key={plan._id}
-                className="bg-white border border-[#E7E5E4] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex justify-between items-start gap-2 mb-3">
@@ -590,19 +590,19 @@ const TrainerWorkoutPlans: React.FC = () => {
                     }`}>
                       {plan.status}
                     </span>
-                    <span className="text-[11px] text-[#78716C]">
+                    <span className="text-[11px] text-[#6B5E78]">
                       {new Date(plan.updatedAt || plan.createdAt).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-lg text-[#292524] mb-1">{plan.planName}</h3>
+                  <h3 className="font-bold text-lg text-[#292431] mb-1">{plan.planName}</h3>
                   {plan.description && (
-                    <p className="text-xs text-[#78716C] line-clamp-2 mb-3">{plan.description}</p>
+                    <p className="text-xs text-[#6B5E78] line-clamp-2 mb-3">{plan.description}</p>
                   )}
 
                   {/* Assigned Customer Card */}
-                  <div className="bg-[#F9F8F6] p-3 rounded-xl border border-[#E7E5E4] flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-[#F97316] text-white font-bold flex items-center justify-center text-sm overflow-hidden">
+                  <div className="bg-[#F7F4FA] p-3 rounded-xl border border-[#E5DDEB] flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-[#A991D4] text-[#292431] font-bold flex items-center justify-center text-sm overflow-hidden">
                       {plan.customerId?.profilePhoto ? (
                         <img src={plan.customerId.profilePhoto} alt="" className="w-full h-full object-cover" />
                       ) : (
@@ -610,10 +610,10 @@ const TrainerWorkoutPlans: React.FC = () => {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-[#292524] truncate">
+                      <p className="text-xs font-bold text-[#292431] truncate">
                         {plan.customerId ? `${plan.customerId.firstName} ${plan.customerId.lastName}` : 'Unassigned'}
                       </p>
-                      <p className="text-[10px] text-[#78716C] truncate">
+                      <p className="text-[10px] text-[#6B5E78] truncate">
                         {plan.customerId?.fitnessGoal || plan.customerId?.email}
                       </p>
                     </div>
@@ -621,27 +621,27 @@ const TrainerWorkoutPlans: React.FC = () => {
 
                   {/* Days & Exercises Preview */}
                   <div className="space-y-2 mb-4">
-                    <div className="flex justify-between text-xs font-medium text-[#78716C]">
+                    <div className="flex justify-between text-xs font-medium text-[#6B5E78]">
                       <span>Workout Days: <strong>{plan.workoutDays?.length || 0} Days</strong></span>
                       <span>Total Exercises: <strong>{totalExercises}</strong></span>
                     </div>
 
                     <div className="space-y-1">
                       {plan.workoutDays?.slice(0, 3).map((day, idx) => (
-                        <div key={idx} className="text-xs bg-[#FFFDF8] px-2.5 py-1 rounded-lg flex justify-between text-[#292524]">
+                        <div key={idx} className="text-xs bg-[#F7F4FA] px-2.5 py-1 rounded-lg flex justify-between text-[#292431]">
                           <span className="font-medium truncate">{day.dayName}</span>
-                          <span className="text-[#78716C] text-[11px] shrink-0 font-semibold">{day.exercises?.length || 0} exercises</span>
+                          <span className="text-[#6B5E78] text-[11px] shrink-0 font-semibold">{day.exercises?.length || 0} exercises</span>
                         </div>
                       ))}
                       {plan.workoutDays && plan.workoutDays.length > 3 && (
-                        <p className="text-[10px] text-[#78716C] text-center">+{plan.workoutDays.length - 3} more days</p>
+                        <p className="text-[10px] text-[#6B5E78] text-center">+{plan.workoutDays.length - 3} more days</p>
                       )}
                     </div>
                   </div>
                 </div>
 
                 {/* Card Actions */}
-                <div className="flex items-center gap-2 pt-3 border-t border-[#E7E5E4]">
+                <div className="flex items-center gap-2 pt-3 border-t border-[#E5DDEB]">
                   {plan.status === 'Draft' ? (
                     <button
                       onClick={() => handlePublishExisting(plan)}
@@ -660,7 +660,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                   )}
                   <button
                     onClick={() => openEditModal(plan)}
-                    className="py-2 px-3 bg-[#FFFDF8] hover:bg-[#FED7AA] text-[#292524] rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+                    className="py-2 px-3 bg-[#F7F4FA] hover:bg-[#E9DFF4] text-[#292431] rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
                   >
                     <Edit size={13} /> Edit
                   </button>
@@ -681,20 +681,20 @@ const TrainerWorkoutPlans: React.FC = () => {
       {/* WORKOUT PLAN BUILDER MODAL */}
       {isBuilderOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/75 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-[#E7E5E4] overflow-hidden">
+          <div className="bg-white rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-[#E5DDEB] overflow-hidden">
             {/* Modal Header */}
-            <div className="p-5 md:p-6 border-b border-[#E7E5E4] flex justify-between items-center bg-[#F9F8F6]">
+            <div className="p-5 md:p-6 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA]">
               <div>
-                <h2 className="text-xl md:text-2xl font-extrabold text-[#292524]">
+                <h2 className="text-xl md:text-2xl font-extrabold text-[#292431]">
                   {editingPlanId ? 'Edit Workout Plan' : 'Create Customer Workout Plan'}
                 </h2>
-                <p className="text-xs text-[#78716C] mt-0.5">
+                <p className="text-xs text-[#6B5E78] mt-0.5">
                   Select exercises from Gym Owner library, customize sets/reps/rest, and assign to client.
                 </p>
               </div>
               <button
                 onClick={() => setIsBuilderOpen(false)}
-                className="p-2 text-[#78716C] hover:text-[#292524] hover:bg-gray-100 rounded-xl transition-colors"
+                className="p-2 text-[#6B5E78] hover:text-[#292431] hover:bg-gray-100 rounded-xl transition-colors"
               >
                 <X size={20} />
               </button>
@@ -705,14 +705,14 @@ const TrainerWorkoutPlans: React.FC = () => {
               {/* Client & Plan Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#78716C] mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#6B5E78] mb-1.5">
                     Assign To Client *
                   </label>
                   {clients.length > 0 ? (
                     <select
                       value={selectedCustomerId}
                       onChange={(e) => setSelectedCustomerId(e.target.value)}
-                      className="w-full bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-semibold text-[#292524] outline-none focus:border-[#F97316]"
+                      className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3.5 py-2.5 text-sm font-semibold text-[#292431] outline-none focus:border-[#A991D4]"
                     >
                       <option value="">-- Select Client --</option>
                       {clients.map(c => (
@@ -729,7 +729,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#78716C] mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#6B5E78] mb-1.5">
                     Plan Name *
                   </label>
                   <input
@@ -737,13 +737,13 @@ const TrainerWorkoutPlans: React.FC = () => {
                     placeholder="e.g. 4-Week Hypertrophy & Fat Loss"
                     value={planName}
                     onChange={(e) => setPlanName(e.target.value)}
-                    className="w-full bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-semibold text-[#292524] outline-none focus:border-[#F97316]"
+                    className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3.5 py-2.5 text-sm font-semibold text-[#292431] outline-none focus:border-[#A991D4]"
                     required
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#78716C] mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#6B5E78] mb-1.5">
                     Plan Instructions / Goal Description
                   </label>
                   <input
@@ -751,20 +751,20 @@ const TrainerWorkoutPlans: React.FC = () => {
                     placeholder="e.g. Perform 3-4 days a week with proper warm-up. Drink at least 3L water daily."
                     value={planDescription}
                     onChange={(e) => setPlanDescription(e.target.value)}
-                    className="w-full bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl px-3.5 py-2 text-sm text-[#292524] outline-none focus:border-[#F97316]"
+                    className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3.5 py-2 text-sm text-[#292431] outline-none focus:border-[#A991D4]"
                   />
                 </div>
               </div>
 
               {/* Day Tabs */}
-              <div className="border-t border-[#E7E5E4] pt-5">
+              <div className="border-t border-[#E5DDEB] pt-5">
                 <div className="flex items-center justify-between gap-3 mb-3">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-[#292524] flex items-center gap-2">
-                    <Calendar size={16} className="text-[#F97316]" /> Workout Schedule Days
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-[#292431] flex items-center gap-2">
+                    <Calendar size={16} className="text-[#A991D4]" /> Workout Schedule Days
                   </h3>
                   <button
                     onClick={addDay}
-                    className="px-3 py-1.5 bg-[#FFFDF8] hover:bg-[#FED7AA] text-[#292524] text-xs font-bold rounded-xl transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 bg-[#F7F4FA] hover:bg-[#E9DFF4] text-[#292431] text-xs font-bold rounded-xl transition-colors flex items-center gap-1"
                   >
                     <Plus size={14} /> Add Another Day
                   </button>
@@ -777,13 +777,13 @@ const TrainerWorkoutPlans: React.FC = () => {
                       onClick={() => setActiveDayIndex(idx)}
                       className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 ${
                         activeDayIndex === idx
-                          ? 'bg-[#F97316] text-white shadow-sm'
-                          : 'bg-[#FFFDF8] text-[#78716C] hover:bg-[#FED7AA]'
+                          ? 'bg-[#A991D4] text-[#292431] shadow-sm'
+                          : 'bg-[#F7F4FA] text-[#6B5E78] hover:bg-[#E9DFF4]'
                       }`}
                     >
                       <span>{day.dayName}</span>
                       <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                        activeDayIndex === idx ? 'bg-white/20 text-white' : 'bg-black/10 text-[#78716C]'
+                        activeDayIndex === idx ? 'bg-white/20 text-white' : 'bg-black/10 text-[#6B5E78]'
                       }`}>
                         {day.exercises.length}
                       </span>
@@ -794,22 +794,22 @@ const TrainerWorkoutPlans: React.FC = () => {
 
               {/* Active Day Exercises Section */}
               {workoutDays[activeDayIndex] && (
-                <div className="bg-[#F9F8F6] border border-[#E7E5E4] rounded-2xl p-5 space-y-4">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-[#E7E5E4]">
+                <div className="bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl p-5 space-y-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-[#E5DDEB]">
                     <div className="flex items-center gap-2 flex-1">
-                      <span className="text-xs font-bold text-[#78716C] uppercase">Day Title:</span>
+                      <span className="text-xs font-bold text-[#6B5E78] uppercase">Day Title:</span>
                       <input
                         type="text"
                         value={workoutDays[activeDayIndex].dayName}
                         onChange={(e) => updateDayName(activeDayIndex, e.target.value)}
-                        className="bg-white border border-[#E7E5E4] rounded-lg px-3 py-1 text-sm font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                        className="bg-white border border-[#E5DDEB] rounded-lg px-3 py-1 text-sm font-bold text-[#292431] outline-none focus:border-[#A991D4]"
                       />
                     </div>
 
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setIsExercisePickerOpen(true)}
-                        className="px-3.5 py-1.5 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#EA580C] transition-colors flex items-center gap-1.5 shadow-sm"
+                        className="px-3.5 py-1.5 bg-[#A991D4] text-[#292431] rounded-xl text-xs font-bold hover:bg-[#967CC5] transition-colors flex items-center gap-1.5 shadow-sm"
                       >
                         <Plus size={14} /> Add Exercise from Library
                       </button>
@@ -825,15 +825,15 @@ const TrainerWorkoutPlans: React.FC = () => {
                   </div>
 
                   {workoutDays[activeDayIndex].exercises.length === 0 ? (
-                    <div className="text-center py-10 bg-white border border-dashed border-[#E7E5E4] rounded-2xl">
-                      <Dumbbell size={36} className="mx-auto text-[#78716C] mb-2" />
-                      <p className="text-sm font-bold text-[#292524]">No exercises added to this day yet</p>
-                      <p className="text-xs text-[#78716C] mt-1 mb-3">
+                    <div className="text-center py-10 bg-white border border-dashed border-[#E5DDEB] rounded-2xl">
+                      <Dumbbell size={36} className="mx-auto text-[#6B5E78] mb-2" />
+                      <p className="text-sm font-bold text-[#292431]">No exercises added to this day yet</p>
+                      <p className="text-xs text-[#6B5E78] mt-1 mb-3">
                         Choose exercises from the gym owner library with animations and videos.
                       </p>
                       <button
                         onClick={() => setIsExercisePickerOpen(true)}
-                        className="px-4 py-2 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#EA580C] transition-colors"
+                        className="px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl text-xs font-bold hover:bg-[#967CC5] transition-colors"
                       >
                         Browse Exercise Library
                       </button>
@@ -849,18 +849,18 @@ const TrainerWorkoutPlans: React.FC = () => {
                         return (
                           <div
                             key={exIdx}
-                            className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-sm space-y-3 transition-all hover:border-[#F97316]/40"
+                            className="bg-white border border-[#E5DDEB] rounded-2xl p-4 shadow-sm space-y-3 transition-all hover:border-[#A991D4]/40"
                           >
                             {/* Exercise Header Row */}
                             <div className="flex items-center justify-between gap-3">
                               <div className="flex items-center gap-3">
-                                <span className="w-7 h-7 rounded-lg bg-[#F97316] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+                                <span className="w-7 h-7 rounded-lg bg-[#A991D4] text-[#292431] font-extrabold text-xs flex items-center justify-center shrink-0">
                                   {exIdx + 1}
                                 </span>
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <h4 className="font-bold text-sm text-[#292524]">{exName}</h4>
-                                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#FFFDF8] text-[#78716C] font-semibold">
+                                    <h4 className="font-bold text-sm text-[#292431]">{exName}</h4>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#F7F4FA] text-[#6B5E78] font-semibold">
                                       {exCategory}
                                     </span>
                                     {hasVideo && (
@@ -874,7 +874,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                                     )}
                                   </div>
                                   {exObj?.targetMuscle && (
-                                    <p className="text-[11px] text-[#78716C] mt-0.5">
+                                    <p className="text-[11px] text-[#6B5E78] mt-0.5">
                                       Target: {exObj.targetMuscle} • {exObj.difficulty}
                                     </p>
                                   )}
@@ -887,7 +887,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                                   type="button"
                                   onClick={() => moveExercise(exIdx, 'up')}
                                   disabled={exIdx === 0}
-                                  className="p-1.5 text-[#78716C] hover:text-[#292524] hover:bg-[#FFFDF8] rounded-lg disabled:opacity-30"
+                                  className="p-1.5 text-[#6B5E78] hover:text-[#292431] hover:bg-[#F7F4FA] rounded-lg disabled:opacity-30"
                                   title="Move Up"
                                 >
                                   <ArrowUp size={15} />
@@ -896,7 +896,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                                   type="button"
                                   onClick={() => moveExercise(exIdx, 'down')}
                                   disabled={exIdx === workoutDays[activeDayIndex].exercises.length - 1}
-                                  className="p-1.5 text-[#78716C] hover:text-[#292524] hover:bg-[#FFFDF8] rounded-lg disabled:opacity-30"
+                                  className="p-1.5 text-[#6B5E78] hover:text-[#292431] hover:bg-[#F7F4FA] rounded-lg disabled:opacity-30"
                                   title="Move Down"
                                 >
                                   <ArrowDown size={15} />
@@ -913,9 +913,9 @@ const TrainerWorkoutPlans: React.FC = () => {
                             </div>
 
                             {/* Parameter Controls: Sets, Reps, Rest, Duration */}
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F9F8F6] p-3 rounded-xl border border-[#E7E5E4]">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F7F4FA] p-3 rounded-xl border border-[#E5DDEB]">
                               <div>
-                                <label className="block text-[10px] font-bold uppercase text-[#78716C] mb-1">
+                                <label className="block text-[10px] font-bold uppercase text-[#6B5E78] mb-1">
                                   Sets
                                 </label>
                                 <input
@@ -924,12 +924,12 @@ const TrainerWorkoutPlans: React.FC = () => {
                                   max={20}
                                   value={item.sets}
                                   onChange={(e) => updateExerciseParam(exIdx, 'sets', parseInt(e.target.value) || 1)}
-                                  className="w-full bg-white border border-[#E7E5E4] rounded-lg px-2.5 py-1 text-xs font-bold text-[#292524] outline-none"
+                                  className="w-full bg-white border border-[#E5DDEB] rounded-lg px-2.5 py-1 text-xs font-bold text-[#292431] outline-none"
                                 />
                               </div>
 
                               <div>
-                                <label className="block text-[10px] font-bold uppercase text-[#78716C] mb-1">
+                                <label className="block text-[10px] font-bold uppercase text-[#6B5E78] mb-1">
                                   Reps / Target
                                 </label>
                                 <input
@@ -937,12 +937,12 @@ const TrainerWorkoutPlans: React.FC = () => {
                                   placeholder="e.g. 15 or 12-15"
                                   value={item.repetitions}
                                   onChange={(e) => updateExerciseParam(exIdx, 'repetitions', e.target.value)}
-                                  className="w-full bg-white border border-[#E7E5E4] rounded-lg px-2.5 py-1 text-xs font-bold text-[#292524] outline-none"
+                                  className="w-full bg-white border border-[#E5DDEB] rounded-lg px-2.5 py-1 text-xs font-bold text-[#292431] outline-none"
                                 />
                               </div>
 
                               <div>
-                                <label className="block text-[10px] font-bold uppercase text-[#78716C] mb-1">
+                                <label className="block text-[10px] font-bold uppercase text-[#6B5E78] mb-1">
                                   Rest (Seconds)
                                 </label>
                                 <input
@@ -951,12 +951,12 @@ const TrainerWorkoutPlans: React.FC = () => {
                                   step={5}
                                   value={item.restTime}
                                   onChange={(e) => updateExerciseParam(exIdx, 'restTime', parseInt(e.target.value) || 0)}
-                                  className="w-full bg-white border border-[#E7E5E4] rounded-lg px-2.5 py-1 text-xs font-bold text-[#292524] outline-none"
+                                  className="w-full bg-white border border-[#E5DDEB] rounded-lg px-2.5 py-1 text-xs font-bold text-[#292431] outline-none"
                                 />
                               </div>
 
                               <div>
-                                <label className="block text-[10px] font-bold uppercase text-[#78716C] mb-1">
+                                <label className="block text-[10px] font-bold uppercase text-[#6B5E78] mb-1">
                                   Est. Duration (Sec)
                                 </label>
                                 <input
@@ -965,7 +965,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                                   step={5}
                                   value={item.duration || 60}
                                   onChange={(e) => updateExerciseParam(exIdx, 'duration', parseInt(e.target.value) || 60)}
-                                  className="w-full bg-white border border-[#E7E5E4] rounded-lg px-2.5 py-1 text-xs font-bold text-[#292524] outline-none"
+                                  className="w-full bg-white border border-[#E5DDEB] rounded-lg px-2.5 py-1 text-xs font-bold text-[#292431] outline-none"
                                 />
                               </div>
                             </div>
@@ -977,7 +977,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                                 placeholder="Add specific trainer notes (e.g. Keep chest high, 2s negative pause on each rep)"
                                 value={item.trainerNotes || ''}
                                 onChange={(e) => updateExerciseParam(exIdx, 'trainerNotes', e.target.value)}
-                                className="w-full bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl px-3 py-1.5 text-xs text-[#292524] outline-none placeholder:text-[#78716C]"
+                                className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3 py-1.5 text-xs text-[#292431] outline-none placeholder:text-[#6B5E78]"
                               />
                             </div>
                           </div>
@@ -990,8 +990,8 @@ const TrainerWorkoutPlans: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-5 md:p-6 border-t border-[#E7E5E4] bg-[#F9F8F6] flex flex-col sm:flex-row justify-between items-center gap-3">
-              <span className="text-xs text-[#78716C]">
+            <div className="p-5 md:p-6 border-t border-[#E5DDEB] bg-[#F7F4FA] flex flex-col sm:flex-row justify-between items-center gap-3">
+              <span className="text-xs text-[#6B5E78]">
                 {workoutDays.reduce((acc, d) => acc + d.exercises.length, 0)} total exercises configured
               </span>
 
@@ -999,7 +999,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsBuilderOpen(false)}
-                  className="flex-1 sm:flex-initial px-4 py-2.5 border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#78716C] hover:bg-[#FED7AA] transition-colors"
+                  className="flex-1 sm:flex-initial px-4 py-2.5 border border-[#E5DDEB] rounded-xl text-xs font-bold text-[#6B5E78] hover:bg-[#E9DFF4] transition-colors"
                 >
                   Cancel
                 </button>
@@ -1007,7 +1007,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                   type="button"
                   disabled={submitting}
                   onClick={() => handleSubmitPlan(false)}
-                  className="flex-1 sm:flex-initial px-4 py-2.5 bg-[#FFFDF8] hover:bg-[#FED7AA] border border-[#E7E5E4] text-[#292524] rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+                  className="flex-1 sm:flex-initial px-4 py-2.5 bg-[#F7F4FA] hover:bg-[#E9DFF4] border border-[#E5DDEB] text-[#292431] rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
                 >
                   <Save size={14} /> Save as Draft
                 </button>
@@ -1015,7 +1015,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                   type="button"
                   disabled={submitting}
                   onClick={() => handleSubmitPlan(true)}
-                  className="flex-1 sm:flex-initial px-5 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                  className="flex-1 sm:flex-initial px-5 py-2.5 bg-[#A991D4] hover:bg-[#967CC5] text-[#292431] rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
                 >
                   <Send size={14} /> Publish to Client
                 </button>
@@ -1028,29 +1028,29 @@ const TrainerWorkoutPlans: React.FC = () => {
       {/* EXERCISE PICKER MODAL */}
       {isExercisePickerOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#E7E5E4] overflow-hidden">
-            <div className="p-5 border-b border-[#E7E5E4] flex justify-between items-center bg-[#F9F8F6]">
+          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#E5DDEB] overflow-hidden">
+            <div className="p-5 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA]">
               <div>
-                <h3 className="font-extrabold text-lg text-[#292524]">Select Exercise from Gym Library</h3>
-                <p className="text-xs text-[#78716C]">Browse verified gym exercises with form demonstration videos</p>
+                <h3 className="font-extrabold text-lg text-[#292431]">Select Exercise from Gym Library</h3>
+                <p className="text-xs text-[#6B5E78]">Browse verified gym exercises with form demonstration videos</p>
               </div>
               <button
                 onClick={() => setIsExercisePickerOpen(false)}
-                className="p-1.5 text-[#78716C] hover:text-[#292524] rounded-lg"
+                className="p-1.5 text-[#6B5E78] hover:text-[#292431] rounded-lg"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div className="p-4 border-b border-[#E7E5E4] bg-white space-y-3">
+            <div className="p-4 border-b border-[#E5DDEB] bg-white space-y-3">
               <div className="relative">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
                 <input
                   type="text"
                   placeholder="Filter exercises by name, muscle, equipment..."
                   value={pickerSearch}
                   onChange={(e) => setPickerSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-[#F9F8F6] border border-[#E7E5E4] rounded-xl text-xs outline-none focus:border-[#F97316]"
+                  className="w-full pl-9 pr-4 py-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs outline-none focus:border-[#A991D4]"
                 />
               </div>
 
@@ -1061,8 +1061,8 @@ const TrainerWorkoutPlans: React.FC = () => {
                     onClick={() => setPickerCategory(cat)}
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap ${
                       pickerCategory === cat
-                        ? 'bg-[#F97316] text-white'
-                        : 'bg-[#FFFDF8] text-[#78716C] hover:bg-[#FED7AA]'
+                        ? 'bg-[#A991D4] text-[#292431]'
+                        : 'bg-[#F7F4FA] text-[#6B5E78] hover:bg-[#E9DFF4]'
                     }`}
                   >
                     {cat}
@@ -1082,15 +1082,15 @@ const TrainerWorkoutPlans: React.FC = () => {
                 .map(ex => (
                   <div
                     key={ex._id}
-                    className="p-3 bg-[#F9F8F6] hover:bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl flex items-center justify-between gap-3 transition-colors"
+                    className="p-3 bg-[#F7F4FA] hover:bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl flex items-center justify-between gap-3 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#292524] text-white flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-lg bg-[#292431] text-white flex items-center justify-center shrink-0">
                         {ex.videoUrl ? <Video size={18} className="text-emerald-400" /> : <Dumbbell size={18} />}
                       </div>
                       <div>
-                        <h5 className="font-bold text-xs text-[#292524]">{ex.name}</h5>
-                        <p className="text-[10px] text-[#78716C]">
+                        <h5 className="font-bold text-xs text-[#292431]">{ex.name}</h5>
+                        <p className="text-[10px] text-[#6B5E78]">
                           {ex.category} • {ex.targetMuscle} • {ex.difficulty} • {ex.defaultSets} sets × {ex.defaultRepetitions} reps
                         </p>
                       </div>
@@ -1101,7 +1101,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setPreviewVideoExercise(ex)}
-                          className="px-2.5 py-1 bg-white border border-[#E7E5E4] text-[#292524] rounded-lg text-[11px] font-bold hover:bg-[#FED7AA]"
+                          className="px-2.5 py-1 bg-white border border-[#E5DDEB] text-[#292431] rounded-lg text-[11px] font-bold hover:bg-[#E9DFF4]"
                         >
                           Preview
                         </button>
@@ -1109,7 +1109,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => addExerciseToCurrentDay(ex)}
-                        className="px-3 py-1 bg-[#F97316] text-white rounded-lg text-xs font-bold hover:bg-[#EA580C] transition-colors"
+                        className="px-3 py-1 bg-[#A991D4] text-[#292431] rounded-lg text-xs font-bold hover:bg-[#967CC5] transition-colors"
                       >
                         Add to Plan
                       </button>
@@ -1124,15 +1124,15 @@ const TrainerWorkoutPlans: React.FC = () => {
       {/* QUICK VIDEO PREVIEW MODAL */}
       {previewVideoExercise && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-[#E7E5E4] space-y-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-[#E5DDEB] space-y-4">
             <div className="flex justify-between items-center">
               <div>
-                <span className="text-xs font-bold text-[#F97316]">{previewVideoExercise.category}</span>
-                <h3 className="text-xl font-extrabold text-[#292524]">{previewVideoExercise.name}</h3>
+                <span className="text-xs font-bold text-[#A991D4]">{previewVideoExercise.category}</span>
+                <h3 className="text-xl font-extrabold text-[#292431]">{previewVideoExercise.name}</h3>
               </div>
               <button
                 onClick={() => setPreviewVideoExercise(null)}
-                className="p-1.5 text-[#78716C] hover:text-[#292524] rounded-lg"
+                className="p-1.5 text-[#6B5E78] hover:text-[#292431] rounded-lg"
               >
                 <X size={20} />
               </button>
@@ -1145,8 +1145,8 @@ const TrainerWorkoutPlans: React.FC = () => {
             />
 
             {previewVideoExercise.instructions && (
-              <div className="bg-[#F9F8F6] p-3 rounded-xl border border-[#E7E5E4] text-xs text-[#78716C] max-h-32 overflow-y-auto">
-                <span className="font-bold text-[#292524] block mb-1">Form Instructions:</span>
+              <div className="bg-[#F7F4FA] p-3 rounded-xl border border-[#E5DDEB] text-xs text-[#6B5E78] max-h-32 overflow-y-auto">
+                <span className="font-bold text-[#292431] block mb-1">Form Instructions:</span>
                 {previewVideoExercise.instructions}
               </div>
             )}
@@ -1154,7 +1154,7 @@ const TrainerWorkoutPlans: React.FC = () => {
             <div className="flex justify-end">
               <button
                 onClick={() => setPreviewVideoExercise(null)}
-                className="px-4 py-2 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#EA580C]"
+                className="px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl text-xs font-bold hover:bg-[#967CC5]"
               >
                 Close Preview
               </button>

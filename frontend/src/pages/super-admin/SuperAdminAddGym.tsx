@@ -98,50 +98,50 @@ const SuperAdminAddGym = () => {
   if (isSuccess) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4">
-        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-8 md:p-12 text-center shadow-lg">
+        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-8 md:p-12 text-center shadow-lg">
           <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 size={40} className="text-green-500" />
           </div>
-          <h1 className="text-3xl font-bold text-[#292524] mb-3">Invitation Sent!</h1>
-          <p className="text-[#78716C] text-base mb-6 max-w-lg mx-auto">
-            An invitation link has been generated and dispatched to <span className="text-[#292524] font-semibold">{formData.ownerEmail}</span>. 
+          <h1 className="text-3xl font-bold text-[#292431] mb-3">Invitation Sent!</h1>
+          <p className="text-[#6B5E78] text-base mb-6 max-w-lg mx-auto">
+            An invitation link has been generated and dispatched to <span className="text-[#292431] font-semibold">{formData.ownerEmail}</span>. 
             The gym owner can use this link to complete their full gym registration process.
           </p>
 
           {emailDeliveryStatus && (
-            <div className="max-w-md mx-auto mb-6 p-3 bg-orange-50 border border-orange-200 rounded-xl text-xs text-[#EA580C] font-medium flex items-center justify-center gap-2">
+            <div className="max-w-md mx-auto mb-6 p-3 bg-orange-50 border border-orange-200 rounded-xl text-xs text-[#967CC5] font-medium flex items-center justify-center gap-2">
               <Mail size={15} className="shrink-0" />
               <span>{emailDeliveryStatus}</span>
             </div>
           )}
 
           {/* Invitation Details */}
-          <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-5 text-left max-w-md mx-auto mb-6 shadow-sm">
-            <h3 className="text-[#292524] font-bold text-sm mb-3 border-b border-[#E7E5E4] pb-2">Invitation Details</h3>
+          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl p-5 text-left max-w-md mx-auto mb-6 shadow-sm">
+            <h3 className="text-[#292431] font-bold text-sm mb-3 border-b border-[#E5DDEB] pb-2">Invitation Details</h3>
             <div className="space-y-2.5 text-xs">
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Owner:</span>
-                <span className="text-[#292524] font-semibold">{formData.ownerName}</span>
+                <span className="text-[#6B5E78]">Owner:</span>
+                <span className="text-[#292431] font-semibold">{formData.ownerName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Email Address:</span>
-                <span className="text-[#292524] font-semibold">{formData.ownerEmail}</span>
+                <span className="text-[#6B5E78]">Email Address:</span>
+                <span className="text-[#292431] font-semibold">{formData.ownerEmail}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Phone Number:</span>
-                <span className="text-[#292524] font-semibold">{formData.ownerPhone}</span>
+                <span className="text-[#6B5E78]">Phone Number:</span>
+                <span className="text-[#292431] font-semibold">{formData.ownerPhone}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Link Expiry:</span>
-                <span className="text-[#292524] font-semibold">{formData.linkExpiry}</span>
+                <span className="text-[#6B5E78]">Link Expiry:</span>
+                <span className="text-[#292431] font-semibold">{formData.linkExpiry}</span>
               </div>
             </div>
           </div>
 
           {/* Direct Registration Link Card */}
-          <div className="bg-[#FFFDF8] border border-orange-200 rounded-2xl p-4 text-left max-w-md mx-auto mb-8 shadow-sm">
+          <div className="bg-[#F7F4FA] border border-orange-200 rounded-2xl p-4 text-left max-w-md mx-auto mb-8 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-[#292524]">Registration Link for Gym Owner</span>
+              <span className="text-xs font-bold text-[#292431]">Registration Link for Gym Owner</span>
               {copied && (
                 <span className="text-xs font-bold text-green-600 flex items-center gap-1">
                   <Check size={12} /> Copied!
@@ -153,7 +153,7 @@ const SuperAdminAddGym = () => {
                 type="text"
                 readOnly
                 value={generatedLink}
-                className="flex-1 bg-white border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-xs outline-none select-all font-mono"
+                className="flex-1 bg-white border border-[#E5DDEB] text-[#292431] rounded-lg px-3 py-2 text-xs outline-none select-all font-mono"
               />
               <button
                 type="button"
@@ -162,7 +162,7 @@ const SuperAdminAddGym = () => {
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
                 }}
-                className="px-3.5 py-2 bg-[#F97316] text-white hover:bg-[#EA580C] rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0 shadow-sm"
+                className="px-3.5 py-2 bg-[#A991D4] text-[#292431] hover:bg-[#967CC5] rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0 shadow-sm"
               >
                 <Copy size={13} />
                 <span>Copy</span>
@@ -171,13 +171,13 @@ const SuperAdminAddGym = () => {
                 href={generatedLink}
                 target="_blank"
                 rel="noreferrer"
-                className="p-2 bg-white border border-[#E7E5E4] hover:bg-stone-50 text-[#292524] rounded-lg text-xs flex items-center justify-center transition-colors shrink-0"
+                className="p-2 bg-white border border-[#E5DDEB] hover:bg-stone-50 text-[#292431] rounded-lg text-xs flex items-center justify-center transition-colors shrink-0"
                 title="Open registration link"
               >
                 <ExternalLink size={14} />
               </a>
             </div>
-            <p className="text-[11px] text-[#78716C] mt-2">
+            <p className="text-[11px] text-[#6B5E78] mt-2">
               The gym owner will enter their gym name, type, and details directly through this onboarding link.
             </p>
           </div>
@@ -190,13 +190,13 @@ const SuperAdminAddGym = () => {
                 setGeneratedLink('');
                 setEmailDeliveryStatus(null);
               }}
-              className="px-6 py-3 bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl font-bold hover:bg-[#FFFDF8] transition-colors text-sm"
+              className="px-6 py-3 bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl font-bold hover:bg-[#F7F4FA] transition-colors text-sm"
             >
               Send Another Invite
             </button>
             <Link 
               to="/super-admin/dashboard"
-              className="px-6 py-3 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors shadow-lg shadow-[#F97316]/20 text-sm"
+              className="px-6 py-3 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors shadow-lg shadow-[#A991D4]/20 text-sm"
             >
               Back to Dashboard
             </Link>
@@ -210,64 +210,64 @@ const SuperAdminAddGym = () => {
     <div className="max-w-4xl mx-auto space-y-6 pb-12">
       {/* Header */}
       <div className="flex items-center space-x-4">
-        <Link to="/super-admin/dashboard" className="p-2 bg-[#FFFFFF] hover:bg-[#FED7AA] rounded-xl transition-colors">
-          <ArrowLeft size={20} className="text-[#292524]" />
+        <Link to="/super-admin/dashboard" className="p-2 bg-[#FFFFFF] hover:bg-[#E9DFF4] rounded-xl transition-colors">
+          <ArrowLeft size={20} className="text-[#292431]" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#292524]">Add Gym Manually</h1>
-          <p className="text-[#78716C] text-sm mt-1">Send an invitation to a gym owner to complete their gym onboarding.</p>
+          <h1 className="text-2xl font-bold text-[#292431]">Add Gym Manually</h1>
+          <p className="text-[#6B5E78] text-sm mt-1">Send an invitation to a gym owner to complete their gym onboarding.</p>
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8 shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8 shadow-sm">
         <form onSubmit={handleSendInvitation} className="space-y-8">
           
           {/* Owner Details Section */}
           <div>
-            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
-              <div className="w-10 h-10 bg-[#F97316]/10 rounded-xl flex items-center justify-center">
-                <User className="text-[#F97316]" size={20} />
+            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E5DDEB]">
+              <div className="w-10 h-10 bg-[#A991D4]/10 rounded-xl flex items-center justify-center">
+                <User className="text-[#A991D4]" size={20} />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-[#292524]">Owner Information</h2>
-                <p className="text-xs text-[#78716C]">The gym owner will configure their gym name, type, and facilities during registration.</p>
+                <h2 className="text-lg font-bold text-[#292431]">Owner Information</h2>
+                <p className="text-xs text-[#6B5E78]">The gym owner will configure their gym name, type, and facilities during registration.</p>
               </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-[#78716C] mb-2">Owner Full Name *</label>
+                <label className="block text-sm font-medium text-[#6B5E78] mb-2">Owner Full Name *</label>
                 <input
                   type="text"
                   value={formData.ownerName}
                   onChange={(e) => { setFormData({ ...formData, ownerName: e.target.value }); setErrors({ ...errors, ownerName: '' }); }}
                   placeholder="e.g. John Doe"
-                  className={`w-full bg-[#FFFFFF] border ${errors.ownerName ? 'border-red-400' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
+                  className={`w-full bg-[#FFFFFF] border ${errors.ownerName ? 'border-red-400' : 'border-[#E5DDEB]'} text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4] transition-colors`}
                 />
                 {errors.ownerName && <p className="text-red-500 text-xs mt-1">{errors.ownerName}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#78716C] mb-2">Email Address *</label>
+                <label className="block text-sm font-medium text-[#6B5E78] mb-2">Email Address *</label>
                 <input
                   type="email"
                   value={formData.ownerEmail}
                   onChange={(e) => { setFormData({ ...formData, ownerEmail: e.target.value }); setErrors({ ...errors, ownerEmail: '' }); }}
                   placeholder="john@example.com"
-                  className={`w-full bg-[#FFFFFF] border ${errors.ownerEmail ? 'border-red-400' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
+                  className={`w-full bg-[#FFFFFF] border ${errors.ownerEmail ? 'border-red-400' : 'border-[#E5DDEB]'} text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4] transition-colors`}
                 />
                 {errors.ownerEmail && <p className="text-red-500 text-xs mt-1">{errors.ownerEmail}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#78716C] mb-2">Phone Number *</label>
+                <label className="block text-sm font-medium text-[#6B5E78] mb-2">Phone Number *</label>
                 <input
                   type="tel"
                   value={formData.ownerPhone}
                   onChange={(e) => { setFormData({ ...formData, ownerPhone: e.target.value }); setErrors({ ...errors, ownerPhone: '' }); }}
                   placeholder="10-digit mobile number"
                   maxLength={10}
-                  className={`w-full bg-[#FFFFFF] border ${errors.ownerPhone ? 'border-red-400' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
+                  className={`w-full bg-[#FFFFFF] border ${errors.ownerPhone ? 'border-red-400' : 'border-[#E5DDEB]'} text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4] transition-colors`}
                 />
                 {errors.ownerPhone && <p className="text-red-500 text-xs mt-1">{errors.ownerPhone}</p>}
               </div>
@@ -276,21 +276,21 @@ const SuperAdminAddGym = () => {
 
           {/* Invitation Settings Section */}
           <div>
-            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7E5E4]">
-              <div className="w-10 h-10 bg-[#F97316]/10 rounded-xl flex items-center justify-center">
-                <Clock className="text-[#F97316]" size={20} />
+            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E5DDEB]">
+              <div className="w-10 h-10 bg-[#A991D4]/10 rounded-xl flex items-center justify-center">
+                <Clock className="text-[#A991D4]" size={20} />
               </div>
-              <h2 className="text-lg font-bold text-[#292524]">Invitation Settings</h2>
+              <h2 className="text-lg font-bold text-[#292431]">Invitation Settings</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[#78716C] mb-2">Link Expiry Duration</label>
+                <label className="block text-sm font-medium text-[#6B5E78] mb-2">Link Expiry Duration</label>
                 <div className="relative">
                   <select
                     value={formData.linkExpiry}
                     onChange={(e) => setFormData({ ...formData, linkExpiry: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors appearance-none"
+                    className="w-full bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4] transition-colors appearance-none"
                   >
                     <option value="1 Day">1 Day</option>
                     <option value="3 Days">3 Days</option>
@@ -299,20 +299,20 @@ const SuperAdminAddGym = () => {
                     <option value="30 Days">30 Days</option>
                     <option value="Never">Never Expires</option>
                   </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#78716C]">
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#6B5E78]">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                   </div>
                 </div>
-                <p className="text-[#78716C] text-xs mt-2">The gym owner must complete registration before this link expires.</p>
+                <p className="text-[#6B5E78] text-xs mt-2">The gym owner must complete registration before this link expires.</p>
               </div>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-[#E7E5E4] flex justify-end">
+          <div className="pt-6 border-t border-[#E5DDEB] flex justify-end">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center space-x-2 px-8 py-3.5 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-all shadow-lg shadow-[#F97316]/20 disabled:opacity-60"
+              className="flex items-center space-x-2 px-8 py-3.5 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-all shadow-lg shadow-[#A991D4]/20 disabled:opacity-60"
             >
               {isSubmitting ? (
                 <>

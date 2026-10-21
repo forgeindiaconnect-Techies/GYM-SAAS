@@ -125,22 +125,22 @@ const SuperAdminDeletedDetails = () => {
     <div className="p-8 h-full flex flex-col overflow-hidden relative">
       <div className="flex justify-between items-center mb-6 shrink-0 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight flex items-center space-x-3">
-            <Trash2 className="text-[#EA580C]" size={32} />
+          <h1 className="text-3xl font-bold text-[#292431] tracking-tight flex items-center space-x-3">
+            <Trash2 className="text-[#967CC5]" size={32} />
             <span>Deleted Details</span>
           </h1>
-          <p className="text-[#78716C] text-sm mt-1">View all deleted customers, gym owners, and gym invitations.</p>
+          <p className="text-[#6B5E78] text-sm mt-1">View all deleted customers, gym owners, and gym invitations.</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-2 border-b border-[#E7E5E4] pb-2 overflow-x-auto custom-scrollbar shrink-0">
+      <div className="flex space-x-2 border-b border-[#E5DDEB] pb-2 overflow-x-auto custom-scrollbar shrink-0">
         <button
           onClick={() => { setActiveTab('CUSTOMERS'); setSelectedRecord(null); }}
           className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
             activeTab === 'CUSTOMERS'
-              ? 'border-[#F97316] text-[#F97316] bg-[#F97316]/10 font-bold'
-              : 'border-transparent text-[#78716C] hover:text-[#292524] hover:bg-[#FFFFFF]'
+              ? 'border-[#A991D4] text-[#A991D4] bg-[#A991D4]/10 font-bold'
+              : 'border-transparent text-[#6B5E78] hover:text-[#292431] hover:bg-[#FFFFFF]'
           }`}
         >
           <User size={16} />
@@ -150,8 +150,8 @@ const SuperAdminDeletedDetails = () => {
           onClick={() => { setActiveTab('GYM_OWNERS'); setSelectedRecord(null); }}
           className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
             activeTab === 'GYM_OWNERS'
-              ? 'border-[#F97316] text-[#F97316] bg-[#F97316]/10 font-bold'
-              : 'border-transparent text-[#78716C] hover:text-[#292524] hover:bg-[#FFFFFF]'
+              ? 'border-[#A991D4] text-[#A991D4] bg-[#A991D4]/10 font-bold'
+              : 'border-transparent text-[#6B5E78] hover:text-[#292431] hover:bg-[#FFFFFF]'
           }`}
         >
           <Building2 size={16} />
@@ -161,8 +161,8 @@ const SuperAdminDeletedDetails = () => {
           onClick={() => { setActiveTab('GYM_INVITATIONS'); setSelectedRecord(null); }}
           className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
             activeTab === 'GYM_INVITATIONS'
-              ? 'border-[#F97316] text-[#F97316] bg-[#F97316]/10 font-bold'
-              : 'border-transparent text-[#78716C] hover:text-[#292524] hover:bg-[#FFFFFF]'
+              ? 'border-[#A991D4] text-[#A991D4] bg-[#A991D4]/10 font-bold'
+              : 'border-transparent text-[#6B5E78] hover:text-[#292431] hover:bg-[#FFFFFF]'
           }`}
         >
           <Mail size={16} />
@@ -171,35 +171,35 @@ const SuperAdminDeletedDetails = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl p-4 flex flex-wrap gap-4 mt-4 shrink-0">
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl p-4 flex flex-wrap gap-4 mt-4 shrink-0">
         <div className="flex-1 min-w-[250px] relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
           <input 
             type="text" 
             placeholder="Search by name or email..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#A991D4] transition-colors"
           />
         </div>
       </div>
 
       {/* Records Table */}
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl overflow-hidden relative min-h-[400px] mt-4 flex-1">
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl overflow-hidden relative min-h-[400px] mt-4 flex-1">
         {loading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#78716C]">
-            <Loader2 size={32} className="animate-spin mb-4 text-[#F97316]" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#6B5E78]">
+            <Loader2 size={32} className="animate-spin mb-4 text-[#A991D4]" />
             <p>Loading deleted records...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#EA580C]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#967CC5]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
         ) : filteredRecords.length === 0 ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#78716C]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#6B5E78]">
             <Trash2 size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium text-[#292524] mb-1">No deleted records found</p>
+            <p className="text-lg font-medium text-[#292431] mb-1">No deleted records found</p>
             <p className="text-sm text-center max-w-md">
               There are no deleted {activeTab === 'CUSTOMERS' ? 'customers' : activeTab === 'GYM_OWNERS' ? 'gym owners' : 'gym invitations'} matching your search.
             </p>
@@ -207,7 +207,7 @@ const SuperAdminDeletedDetails = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-[#78716C] uppercase bg-[#FFFDF8] border-b border-[#E7E5E4]">
+              <thead className="text-xs text-[#6B5E78] uppercase bg-[#F7F4FA] border-b border-[#E5DDEB]">
                 <tr>
                   {activeTab === 'GYM_INVITATIONS' ? (
                     <>
@@ -237,19 +237,19 @@ const SuperAdminDeletedDetails = () => {
                   )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E7E5E4]">
+              <tbody className="divide-y divide-[#E5DDEB]">
                 {filteredRecords.map((record) => (
-                  <tr key={record._id || record.id} className="hover:bg-[#FFFDF8] transition-colors">
+                  <tr key={record._id || record.id} className="hover:bg-[#F7F4FA] transition-colors">
                     {activeTab === 'GYM_INVITATIONS' ? (
                       <>
-                        <td className="px-6 py-4 font-bold text-[#292524] flex items-center space-x-2">
-                          <div className="w-7 h-7 rounded-lg bg-[#FED7AA]/15 flex items-center justify-center text-[#F97316] shrink-0">
+                        <td className="px-6 py-4 font-bold text-[#292431] flex items-center space-x-2">
+                          <div className="w-7 h-7 rounded-lg bg-[#E9DFF4]/15 flex items-center justify-center text-[#A991D4] shrink-0">
                             <Building2 size={14} />
                           </div>
                           <span>{record.gymName}</span>
                         </td>
-                        <td className="px-6 py-4 text-[#78716C] font-medium">{record.owner}</td>
-                        <td className="px-6 py-4 text-[#78716C]">{record.email}</td>
+                        <td className="px-6 py-4 text-[#6B5E78] font-medium">{record.owner}</td>
+                        <td className="px-6 py-4 text-[#6B5E78]">{record.email}</td>
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${
                             record.status === 'Accepted'
@@ -263,13 +263,13 @@ const SuperAdminDeletedDetails = () => {
                             {record.status || 'Pending'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-[#78716C] font-medium">
+                        <td className="px-6 py-4 text-[#6B5E78] font-medium">
                           {formatDate(record.deletedAt || record.date)}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <button
                             onClick={() => setSelectedRecord(record)}
-                            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#F97316]/10 text-[#F97316] hover:bg-[#F97316]/20 font-semibold text-xs transition-colors shadow-sm"
+                            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#A991D4]/10 text-[#A991D4] hover:bg-[#A991D4]/20 font-semibold text-xs transition-colors shadow-sm"
                             title="View Details"
                           >
                             <Eye size={14} />
@@ -279,10 +279,10 @@ const SuperAdminDeletedDetails = () => {
                       </>
                     ) : (
                       <>
-                        <td className="px-6 py-4 font-bold text-[#292524]">
+                        <td className="px-6 py-4 font-bold text-[#292431]">
                           {record.firstName} {record.lastName}
                         </td>
-                        <td className="px-6 py-4 text-[#78716C]">
+                        <td className="px-6 py-4 text-[#6B5E78]">
                           {record.email}
                         </td>
                         <td className="px-6 py-4">
@@ -290,13 +290,13 @@ const SuperAdminDeletedDetails = () => {
                             {record.role?.replace('_', ' ') || 'GYM OWNER'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-[#78716C] font-medium">
+                        <td className="px-6 py-4 text-[#6B5E78] font-medium">
                           {formatDate(record.deletedAt || record.updatedAt || record.createdAt)}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <button
                             onClick={() => setSelectedRecord(record)}
-                            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#F97316]/10 text-[#F97316] hover:bg-[#F97316]/20 font-semibold text-xs transition-colors shadow-sm"
+                            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#A991D4]/10 text-[#A991D4] hover:bg-[#A991D4]/20 font-semibold text-xs transition-colors shadow-sm"
                             title="View Details"
                           >
                             <Eye size={14} />
@@ -316,11 +316,11 @@ const SuperAdminDeletedDetails = () => {
       {/* ─── View Details Modal ─── */}
       {selectedRecord && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white border border-[#E7E5E4] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto max-h-[85vh] flex flex-col">
+          <div className="bg-white border border-[#E5DDEB] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto max-h-[85vh] flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#E7E5E4] bg-[#FFFDF8] shrink-0">
+            <div className="flex items-center justify-between p-6 border-b border-[#E5DDEB] bg-[#F7F4FA] shrink-0">
               <div className="flex items-center space-x-3">
-                <div className="w-11 h-11 bg-[#F97316]/10 text-[#F97316] rounded-xl flex items-center justify-center">
+                <div className="w-11 h-11 bg-[#A991D4]/10 text-[#A991D4] rounded-xl flex items-center justify-center">
                   {activeTab === 'GYM_INVITATIONS' ? (
                     <Mail size={22} />
                   ) : activeTab === 'GYM_OWNERS' ? (
@@ -330,12 +330,12 @@ const SuperAdminDeletedDetails = () => {
                   )}
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#292524]">
+                  <h2 className="text-xl font-bold text-[#292431]">
                     {activeTab === 'GYM_INVITATIONS'
                       ? selectedRecord.gymName
                       : `${selectedRecord.firstName || ''} ${selectedRecord.lastName || ''}`.trim() || selectedRecord.owner || 'Deleted Record'}
                   </h2>
-                  <p className="text-xs text-[#78716C]">
+                  <p className="text-xs text-[#6B5E78]">
                     {activeTab === 'GYM_INVITATIONS'
                       ? 'Deleted Gym Invitation Details'
                       : activeTab === 'GYM_OWNERS'
@@ -360,14 +360,14 @@ const SuperAdminDeletedDetails = () => {
 
             {/* Modal Body */}
             <div className="p-6 space-y-5 overflow-y-auto flex-1">
-              <div className="border border-[#E7E5E4] rounded-xl overflow-hidden divide-y divide-[#E7E5E4] bg-white shadow-sm">
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
+              <div className="border border-[#E5DDEB] rounded-xl overflow-hidden divide-y divide-[#E5DDEB] bg-white shadow-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
                   {/* Person / Owner Name */}
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <User size={12} /> {activeTab === 'GYM_INVITATIONS' ? 'Recipient Name' : 'Full Name'}
                     </span>
-                    <span className="font-bold text-[#292524] text-sm">
+                    <span className="font-bold text-[#292431] text-sm">
                       {activeTab === 'GYM_INVITATIONS'
                         ? selectedRecord.owner || 'N/A'
                         : `${selectedRecord.firstName || ''} ${selectedRecord.lastName || ''}`.trim() || 'N/A'}
@@ -376,22 +376,22 @@ const SuperAdminDeletedDetails = () => {
 
                   {/* Email Address */}
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Mail size={12} /> Email Address
                     </span>
-                    <span className="font-semibold text-[#292524] text-sm break-all" title={selectedRecord.email}>
+                    <span className="font-semibold text-[#292431] text-sm break-all" title={selectedRecord.email}>
                       {selectedRecord.email || 'N/A'}
                     </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
                   {/* Phone / Mobile */}
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Phone size={12} /> Phone / Mobile
                     </span>
-                    <span className="font-semibold text-[#292524] text-sm">
+                    <span className="font-semibold text-[#292431] text-sm">
                       {selectedRecord.mobile || selectedRecord.phone || 'N/A'}
                     </span>
                   </div>
@@ -399,48 +399,48 @@ const SuperAdminDeletedDetails = () => {
                   {/* Role or Gym Name */}
                   {activeTab === 'GYM_INVITATIONS' ? (
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                         <Building2 size={12} /> Gym Type
                       </span>
-                      <span className="font-bold text-[#292524] text-sm">{selectedRecord.type || 'Standard Gym'}</span>
+                      <span className="font-bold text-[#292431] text-sm">{selectedRecord.type || 'Standard Gym'}</span>
                     </div>
                   ) : activeTab === 'GYM_OWNERS' ? (
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                         <Building2 size={12} /> Associated Gym
                       </span>
-                      <span className="font-bold text-[#292524] text-sm">
+                      <span className="font-bold text-[#292431] text-sm">
                         {selectedRecord.gymId?.name || selectedRecord.gymName || 'Commercial Fitness Hub'}
                       </span>
                     </div>
                   ) : (
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                         <User size={12} /> Account Role
                       </span>
-                      <span className="font-bold text-[#292524] text-sm">{selectedRecord.role?.replace('_', ' ') || 'Customer'}</span>
+                      <span className="font-bold text-[#292431] text-sm">{selectedRecord.role?.replace('_', ' ') || 'Customer'}</span>
                     </div>
                   )}
                 </div>
 
                 {activeTab === 'GYM_OWNERS' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
                     {/* Location / City */}
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                         <MapPin size={12} /> Location
                       </span>
-                      <span className="font-semibold text-[#292524] text-sm">
+                      <span className="font-semibold text-[#292431] text-sm">
                         {selectedRecord.city || selectedRecord.gymId?.location?.city || selectedRecord.gymId?.location?.address || 'Chennai, TN'}
                       </span>
                     </div>
 
                     {/* Plan for Gym Owners */}
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                         <Clock size={12} /> Subscription Plan
                       </span>
-                      <span className="font-bold text-[#F97316] text-sm">
+                      <span className="font-bold text-[#A991D4] text-sm">
                         {selectedRecord.subscriptionPlan || 'Free Trial'}
                       </span>
                     </div>
@@ -448,43 +448,43 @@ const SuperAdminDeletedDetails = () => {
                 )}
 
                 {activeTab === 'GYM_INVITATIONS' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
                     {/* Original Status for Gym Invitations */}
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                         <Clock size={12} /> Prior Status
                       </span>
-                      <span className="font-bold text-[#292524] text-sm">
+                      <span className="font-bold text-[#292431] text-sm">
                         {selectedRecord.status || 'Pending'}
                       </span>
                     </div>
 
                     {/* Expiry for Gym Invitations */}
                     <div className="p-3.5 bg-white flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                         <Clock size={12} /> Link Validity
                       </span>
-                      <span className="font-semibold text-[#292524] text-sm">
+                      <span className="font-semibold text-[#292431] text-sm">
                         {selectedRecord.expiry || '7 Days'}
                       </span>
                     </div>
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7E5E4]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
                   {/* Created / Invite Date */}
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Calendar size={12} /> {activeTab === 'GYM_INVITATIONS' ? 'Invite Sent Date' : 'Registration Date'}
                     </span>
-                    <span className="font-semibold text-[#292524] text-sm">
+                    <span className="font-semibold text-[#292431] text-sm">
                       {formatDate(selectedRecord.date || selectedRecord.createdAt)}
                     </span>
                   </div>
 
                   {/* Deleted Date */}
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Trash2 size={12} /> Deleted Date
                     </span>
                     <span className="font-bold text-rose-600 text-sm">
@@ -496,7 +496,7 @@ const SuperAdminDeletedDetails = () => {
 
               {/* Registration Link Box for Invitations */}
               {activeTab === 'GYM_INVITATIONS' && (
-                <div className="p-4 bg-[#FFFDF8] border border-[#E5EAE7] rounded-xl space-y-2">
+                <div className="p-4 bg-[#F7F4FA] border border-[#E5EAE7] rounded-xl space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700">Invitation Link</span>
                     {copiedLink && (
@@ -510,11 +510,11 @@ const SuperAdminDeletedDetails = () => {
                       type="text"
                       readOnly
                       value={selectedRecord.link || `${window.location.origin}/register/gym-owner?invite=${selectedRecord.id || 'id'}&email=${encodeURIComponent(selectedRecord.email)}`}
-                      className="flex-1 bg-white border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-1.5 text-xs outline-none select-all"
+                      className="flex-1 bg-white border border-[#E5DDEB] text-[#292431] rounded-lg px-3 py-1.5 text-xs outline-none select-all"
                     />
                     <button
                       onClick={() => handleCopyLink(selectedRecord.link || `${window.location.origin}/register/gym-owner?invite=${selectedRecord.id || 'id'}&email=${encodeURIComponent(selectedRecord.email)}`)}
-                      className="px-3 py-1.5 bg-[#F97316] text-white hover:bg-[#F97316]/90 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                      className="px-3 py-1.5 bg-[#A991D4] text-[#292431] hover:bg-[#A991D4]/90 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
                     >
                       <Copy size={13} />
                       <span>Copy</span>
@@ -525,7 +525,7 @@ const SuperAdminDeletedDetails = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex items-center justify-end p-5 border-t border-[#E7E5E4] bg-white">
+            <div className="flex items-center justify-end p-5 border-t border-[#E5DDEB] bg-white">
               <button
                 onClick={() => setSelectedRecord(null)}
                 className="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors"

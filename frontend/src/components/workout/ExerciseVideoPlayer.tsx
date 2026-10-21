@@ -192,7 +192,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
           {!isPlaying && !compact && (
             <button
               onClick={togglePlay}
-              className="absolute inset-0 m-auto w-16 h-16 bg-[#F97316]/90 hover:bg-[#F97316] text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95 z-10 cursor-pointer"
+              className="absolute inset-0 m-auto w-16 h-16 bg-[#A991D4]/90 hover:bg-[#A991D4] text-[#292431] rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95 z-10 cursor-pointer"
               title="Play Video"
             >
               <Play size={28} className="translate-x-0.5 fill-white" />
@@ -210,7 +210,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                 <button
                   onClick={() => setViewMode('video')}
                   className={`px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 cursor-pointer ${
-                    viewMode === 'video' ? 'bg-[#F97316] text-white' : 'text-white/60 hover:text-white'
+                    viewMode === 'video' ? 'bg-[#A991D4] text-[#292431]' : 'text-white/60 hover:text-white'
                   }`}
                 >
                   <Video size={10} /> Video
@@ -249,7 +249,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                   <button
                     type="button"
                     onClick={togglePlay}
-                    className="p-1 hover:text-[#EA580C] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#967CC5] transition-colors cursor-pointer"
                     title={isPlaying ? 'Pause' : 'Play'}
                   >
                     {isPlaying ? <Pause size={18} /> : <Play size={18} />}
@@ -257,7 +257,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                   <button
                     type="button"
                     onClick={handleRestart}
-                    className="p-1 hover:text-[#EA580C] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#967CC5] transition-colors cursor-pointer"
                     title="Restart"
                   >
                     <RotateCcw size={16} />
@@ -271,7 +271,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                   <button
                     type="button"
                     onClick={toggleMute}
-                    className="p-1 hover:text-[#EA580C] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#967CC5] transition-colors cursor-pointer"
                     title={isMuted ? 'Unmute' : 'Mute'}
                   >
                     {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
@@ -279,7 +279,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                   <button
                     type="button"
                     onClick={toggleFullscreen}
-                    className="p-1 hover:text-[#EA580C] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#967CC5] transition-colors cursor-pointer"
                     title="Fullscreen"
                   >
                     <Maximize size={16} />

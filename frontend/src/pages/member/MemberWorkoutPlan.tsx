@@ -157,14 +157,14 @@ const MemberWorkoutPlan: React.FC = () => {
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in relative pb-16">
       {/* Navigation & Section Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#FED7AA] pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E9DFF4] pb-3">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveSection('workout')}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-colors shrink-0 ${
               activeSection === 'workout'
-                ? 'bg-[#F97316] text-white shadow-sm'
-                : 'bg-white text-[#78716C] hover:text-[#F97316] border border-[#FED7AA]'
+                ? 'bg-[#A991D4] text-[#292431] shadow-sm'
+                : 'bg-white text-[#6B5E78] hover:text-[#A991D4] border border-[#E9DFF4]'
             }`}
           >
             <Dumbbell size={15} /> Workout Plan
@@ -173,8 +173,8 @@ const MemberWorkoutPlan: React.FC = () => {
             onClick={() => setActiveSection('nutrition')}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-colors shrink-0 ${
               activeSection === 'nutrition'
-                ? 'bg-[#F97316] text-white shadow-sm'
-                : 'bg-white text-[#78716C] hover:text-[#F97316] border border-[#FED7AA]'
+                ? 'bg-[#A991D4] text-[#292431] shadow-sm'
+                : 'bg-white text-[#6B5E78] hover:text-[#A991D4] border border-[#E9DFF4]'
             }`}
           >
             <Utensils size={15} /> Nutrition & Diet
@@ -183,8 +183,8 @@ const MemberWorkoutPlan: React.FC = () => {
             onClick={() => setActiveSection('recovery')}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-colors shrink-0 ${
               activeSection === 'recovery'
-                ? 'bg-[#F97316] text-white shadow-sm'
-                : 'bg-white text-[#78716C] hover:text-[#F97316] border border-[#FED7AA]'
+                ? 'bg-[#A991D4] text-[#292431] shadow-sm'
+                : 'bg-white text-[#6B5E78] hover:text-[#A991D4] border border-[#E9DFF4]'
             }`}
           >
             <HeartPulse size={15} /> Recovery Plan
@@ -193,8 +193,8 @@ const MemberWorkoutPlan: React.FC = () => {
             onClick={() => setActiveSection('coach-notes')}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-colors shrink-0 ${
               activeSection === 'coach-notes'
-                ? 'bg-[#F97316] text-white shadow-sm'
-                : 'bg-white text-[#78716C] hover:text-[#F97316] border border-[#FED7AA]'
+                ? 'bg-[#A991D4] text-[#292431] shadow-sm'
+                : 'bg-white text-[#6B5E78] hover:text-[#A991D4] border border-[#E9DFF4]'
             }`}
           >
             <FileText size={15} /> Trainer Notes
@@ -203,8 +203,8 @@ const MemberWorkoutPlan: React.FC = () => {
             onClick={() => setActiveSection('summary')}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-colors shrink-0 ${
               activeSection === 'summary'
-                ? 'bg-[#F97316] text-white shadow-sm'
-                : 'bg-white text-[#78716C] hover:text-[#F97316] border border-[#FED7AA]'
+                ? 'bg-[#A991D4] text-[#292431] shadow-sm'
+                : 'bg-white text-[#6B5E78] hover:text-[#A991D4] border border-[#E9DFF4]'
             }`}
           >
             <Activity size={15} /> Analysis Summary
@@ -213,7 +213,7 @@ const MemberWorkoutPlan: React.FC = () => {
 
         <Link
           to="/member/progress"
-          className="text-xs text-[#F97316] font-bold hover:underline flex items-center gap-1 shrink-0 self-end sm:self-center"
+          className="text-xs text-[#A991D4] font-bold hover:underline flex items-center gap-1 shrink-0 self-end sm:self-center"
         >
           Track Body Metrics →
         </Link>
@@ -221,8 +221,8 @@ const MemberWorkoutPlan: React.FC = () => {
 
       {/* Loading state */}
       {loading ? (
-        <div className="text-center py-20 text-[#78716C]">
-          <div className="w-10 h-10 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <div className="text-center py-20 text-[#6B5E78]">
+          <div className="w-10 h-10 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="font-semibold text-sm">Loading your official fitness plan...</p>
         </div>
       ) : (
@@ -241,7 +241,7 @@ const MemberWorkoutPlan: React.FC = () => {
                       Supervised by Coach {trainerName}
                     </span>
                   </div>
-                  <p className="text-[#78716C] mt-0.5 text-xs">
+                  <p className="text-[#6B5E78] mt-0.5 text-xs">
                     Your 7-day Monday–Sunday workout routine is synchronized directly from your AI assessment output.
                   </p>
                 </div>
@@ -250,13 +250,13 @@ const MemberWorkoutPlan: React.FC = () => {
               <div className="flex items-center gap-2 shrink-0">
                 <Link
                   to="/member/ai-assistant"
-                  className="px-3.5 py-2 bg-[#F97316] text-white font-bold rounded-xl text-xs hover:bg-[#EA580C] transition-colors shadow-xs"
+                  className="px-3.5 py-2 bg-[#A991D4] text-[#292431] font-bold rounded-xl text-xs hover:bg-[#967CC5] transition-colors shadow-xs"
                 >
                   AI Fitness Assistant
                 </Link>
                 <Link
                   to="/member/chat"
-                  className="px-3.5 py-2 bg-white border border-[#E7E5E4] text-[#292524] font-bold rounded-xl text-xs hover:bg-[#F9F8F6] transition-colors"
+                  className="px-3.5 py-2 bg-white border border-[#E5DDEB] text-[#292431] font-bold rounded-xl text-xs hover:bg-[#F7F4FA] transition-colors"
                 >
                   Message Coach
                 </Link>
@@ -264,7 +264,7 @@ const MemberWorkoutPlan: React.FC = () => {
             </div>
           )}
           {/* Main Plan Banner */}
-          <div className="bg-gradient-to-br from-[#F97316] via-[#103838] to-[#292524] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-[#A991D4] via-[#103838] to-[#292431] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
 
             <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -311,32 +311,32 @@ const MemberWorkoutPlan: React.FC = () => {
                 <div className="space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
                     <div>
-                      <h3 className="text-base font-extrabold text-[#292524] flex items-center gap-2">
+                      <h3 className="text-base font-extrabold text-[#292431] flex items-center gap-2">
                         <span>Workout Plan (Monday – Sunday)</span>
                         <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
                           7 Days Active
                         </span>
                       </h3>
-                      <p className="text-xs text-[#78716C]">
+                      <p className="text-xs text-[#6B5E78]">
                         Select any day from Monday to Sunday. Click &quot;Watch Exercise&quot; for animated demos & interactive timers.
                       </p>
                     </div>
 
                     {stats && (
-                      <div className="flex items-center gap-3 text-xs font-bold text-[#78716C] bg-white border border-[#FED7AA] px-4 py-2 rounded-xl shadow-xs shrink-0 self-start sm:self-auto">
+                      <div className="flex items-center gap-3 text-xs font-bold text-[#6B5E78] bg-white border border-[#E9DFF4] px-4 py-2 rounded-xl shadow-xs shrink-0 self-start sm:self-auto">
                         <span className="flex items-center gap-1.5">
                           Streak: <strong className="text-emerald-700">🔥 {stats.workoutStreak || 0} Days</strong>
                         </span>
                         <span className="text-stone-300">|</span>
                         <span className="flex items-center gap-1.5">
-                          Completed: <strong className="text-[#F97316]">{stats.completionPercentage || 0}%</strong>
+                          Completed: <strong className="text-[#A991D4]">{stats.completionPercentage || 0}%</strong>
                         </span>
                       </div>
                     )}
                   </div>
 
                   {/* Day Tabs Buttons */}
-                  <div className="bg-white border border-[#FED7AA] rounded-2xl p-2.5 shadow-sm">
+                  <div className="bg-white border border-[#E9DFF4] rounded-2xl p-2.5 shadow-sm">
                     <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-0.5">
                       {currentWorkoutDays.map((day: any, idx: number) => {
                         const isActive = activeDayIndex === idx;
@@ -347,8 +347,8 @@ const MemberWorkoutPlan: React.FC = () => {
                             onClick={() => setActiveDayIndex(idx)}
                             className={`flex flex-col items-center justify-center min-w-[110px] sm:min-w-[130px] px-4 py-2.5 rounded-xl transition-all shrink-0 text-center cursor-pointer ${
                               isActive
-                                ? 'bg-[#F97316] text-white shadow-md shadow-[#F97316]/20 font-bold scale-[1.02]'
-                                : 'bg-[#FFFDF8] text-[#78716C] hover:bg-[#FFF7ED] hover:text-[#EA580C] border border-[#FED7AA]/60 font-semibold'
+                                ? 'bg-[#A991D4] text-[#292431] shadow-md shadow-[#A991D4]/20 font-bold scale-[1.02]'
+                                : 'bg-[#F7F4FA] text-[#6B5E78] hover:bg-[#FFF7ED] hover:text-[#967CC5] border border-[#E9DFF4]/60 font-semibold'
                             }`}
                           >
                             <span className="text-sm font-extrabold">{day.dayName}</span>
@@ -367,7 +367,7 @@ const MemberWorkoutPlan: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Target Focus Card */}
                 <div className="lg:col-span-1 space-y-4">
-                  <div className="bg-gradient-to-br from-[#292524] to-[#121A1A] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+                  <div className="bg-gradient-to-br from-[#292431] to-[#121A1A] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full text-xs font-bold mb-4 text-emerald-300">
                       <Activity size={14} /> TARGET FOCUS
                     </div>
@@ -422,7 +422,7 @@ const MemberWorkoutPlan: React.FC = () => {
                     {dayExercises.length > 0 && (
                       <button
                         onClick={() => handleLaunchPlayer(0)}
-                        className="w-full mt-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                        className="w-full mt-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#292431] rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
                       >
                         <Play size={15} className="fill-current" />
                         <span>Start Interactive Session</span>
@@ -434,10 +434,10 @@ const MemberWorkoutPlan: React.FC = () => {
                 {/* Exercises List */}
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex justify-between items-center mb-1">
-                    <h3 className="text-lg font-extrabold text-[#292524]">
+                    <h3 className="text-lg font-extrabold text-[#292431]">
                       Exercises in {currentDay?.dayName} {currentDay?.focus ? `– ${currentDay.focus}` : ''} ({dayExercises.length})
                     </h3>
-                    <span className="text-xs text-[#78716C]">
+                    <span className="text-xs text-[#6B5E78]">
                       Click <strong>Watch Exercise</strong> for interactive form & timer
                     </span>
                   </div>
@@ -466,18 +466,18 @@ const MemberWorkoutPlan: React.FC = () => {
                     const pct = dayExercises.length > 0 ? Math.round((completedCountInDay / dayExercises.length) * 100) : 0;
 
                     return dayExercises.length > 0 ? (
-                      <div className="bg-white border border-[#E7E5E4] rounded-2xl p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="bg-white border border-[#E5DDEB] rounded-2xl p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 ${
                             completedCountInDay === dayExercises.length
                               ? 'bg-emerald-500 text-white shadow-xs'
-                              : 'bg-orange-50 text-[#F97316] border border-orange-200'
+                              : 'bg-orange-50 text-[#A991D4] border border-orange-200'
                           }`}>
                             {completedCountInDay === dayExercises.length ? '✓' : `${completedCountInDay}/${dayExercises.length}`}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-extrabold text-[#292524]">
+                              <span className="text-sm font-extrabold text-[#292431]">
                                 {completedCountInDay === dayExercises.length
                                   ? `All ${dayExercises.length} Exercises Completed for ${currentDay?.dayName}! 🎉`
                                   : `${completedCountInDay} of ${dayExercises.length} Exercises Completed`}
@@ -490,7 +490,7 @@ const MemberWorkoutPlan: React.FC = () => {
                                 {pct}% Done
                               </span>
                             </div>
-                            <p className="text-xs text-[#78716C] mt-0.5">
+                            <p className="text-xs text-[#6B5E78] mt-0.5">
                               {completedCountInDay === dayExercises.length
                                 ? 'Awesome workout! Your completed routine is logged and synchronized with your trainer.'
                                 : 'Complete sets in the exercise player to track completion and sync with your coach.'}
@@ -508,8 +508,8 @@ const MemberWorkoutPlan: React.FC = () => {
                   })()}
 
                   {dayExercises.length === 0 ? (
-                    <div className="p-8 text-center bg-white border border-dashed border-[#E7E5E4] rounded-3xl">
-                      <p className="text-sm font-semibold text-[#78716C]">No exercises assigned for this session.</p>
+                    <div className="p-8 text-center bg-white border border-dashed border-[#E5DDEB] rounded-3xl">
+                      <p className="text-sm font-semibold text-[#6B5E78]">No exercises assigned for this session.</p>
                     </div>
                   ) : (
                     dayExercises.map((item: any, idx: number) => {
@@ -535,7 +535,7 @@ const MemberWorkoutPlan: React.FC = () => {
                         <div
                           key={idx}
                           className={`bg-white border rounded-3xl p-5 shadow-sm transition-all hover:shadow-md ${
-                            isCompleted ? 'border-emerald-300 bg-emerald-50/20' : 'border-[#FED7AA]'
+                            isCompleted ? 'border-emerald-300 bg-emerald-50/20' : 'border-[#E9DFF4]'
                           }`}
                         >
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -544,7 +544,7 @@ const MemberWorkoutPlan: React.FC = () => {
                                 className={`w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm ${
                                   isCompleted
                                     ? 'bg-emerald-500 text-white'
-                                    : 'bg-[#F97316] text-white'
+                                    : 'bg-[#A991D4] text-[#292431]'
                                 }`}
                               >
                                 {isCompleted ? <CheckCircle2 size={24} /> : idx + 1}
@@ -552,7 +552,7 @@ const MemberWorkoutPlan: React.FC = () => {
 
                               <div className="space-y-1">
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <h4 className="font-extrabold text-base text-[#292524]">
+                                  <h4 className="font-extrabold text-base text-[#292431]">
                                     {ex.name || 'Exercise'}
                                   </h4>
                                   {isCompleted && (
@@ -560,7 +560,7 @@ const MemberWorkoutPlan: React.FC = () => {
                                       <CheckCircle2 size={11} className="text-emerald-700" /> Completed
                                     </span>
                                   )}
-                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFFDF8] text-[#78716C]">
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F7F4FA] text-[#6B5E78]">
                                     {ex.category || 'Resistance'}
                                   </span>
                                   {hasVideo && (
@@ -570,8 +570,8 @@ const MemberWorkoutPlan: React.FC = () => {
                                   )}
                                 </div>
 
-                                <div className="flex flex-wrap items-center gap-3 text-xs text-[#78716C] font-semibold pt-0.5">
-                                  <span className="text-[#F97316] font-extrabold">
+                                <div className="flex flex-wrap items-center gap-3 text-xs text-[#6B5E78] font-semibold pt-0.5">
+                                  <span className="text-[#A991D4] font-extrabold">
                                     {item.sets || 3} Sets × {item.repetitions || 12} Reps
                                   </span>
                                   <span>
@@ -582,7 +582,7 @@ const MemberWorkoutPlan: React.FC = () => {
                                   {ex.targetMuscle && (
                                     <>
                                       <span>•</span>
-                                      <span className="text-[#78716C]">{ex.targetMuscle}</span>
+                                      <span className="text-[#6B5E78]">{ex.targetMuscle}</span>
                                     </>
                                   )}
                                 </div>
@@ -608,7 +608,7 @@ const MemberWorkoutPlan: React.FC = () => {
                               className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer shrink-0 sm:self-center ${
                                 isCompleted
                                   ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
-                                  : 'bg-[#F97316] hover:bg-[#EA580C] text-white shadow-[#F97316]/20'
+                                  : 'bg-[#A991D4] hover:bg-[#967CC5] text-[#292431] shadow-[#A991D4]/20'
                               }`}
                             >
                               {isCompleted ? <CheckCircle2 size={14} /> : <Play size={14} className="fill-current" />}
@@ -626,38 +626,38 @@ const MemberWorkoutPlan: React.FC = () => {
 
           {/* Section 2: Diet & Nutrition Recommendations */}
           {activeSection === 'nutrition' && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div className="flex items-center gap-3 border-b border-[#FED7AA] pb-4">
+            <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div className="flex items-center gap-3 border-b border-[#E9DFF4] pb-4">
                 <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
                   <Utensils size={20} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#292524]">Diet & Nutrition Recommendations</h3>
-                  <p className="text-xs text-[#78716C]">Calibrated by {trainerName} for your fitness targets.</p>
+                  <h3 className="text-xl font-bold text-[#292431]">Diet & Nutrition Recommendations</h3>
+                  <p className="text-xs text-[#6B5E78]">Calibrated by {trainerName} for your fitness targets.</p>
                 </div>
               </div>
 
               {dietData ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#F97316]">Pre-Breakfast / Morning</span>
-                    <p className="text-sm font-semibold text-[#292524] mt-1">{dietData.morning || 'Hydration & light snack'}</p>
+                  <div className="p-4 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#A991D4]">Pre-Breakfast / Morning</span>
+                    <p className="text-sm font-semibold text-[#292431] mt-1">{dietData.morning || 'Hydration & light snack'}</p>
                   </div>
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#F97316]">Breakfast</span>
-                    <p className="text-sm font-semibold text-[#292524] mt-1">{dietData.breakfast || 'Protein & complex carbs'}</p>
+                  <div className="p-4 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#A991D4]">Breakfast</span>
+                    <p className="text-sm font-semibold text-[#292431] mt-1">{dietData.breakfast || 'Protein & complex carbs'}</p>
                   </div>
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#F97316]">Lunch</span>
-                    <p className="text-sm font-semibold text-[#292524] mt-1">{dietData.lunch || 'Balanced macro meal'}</p>
+                  <div className="p-4 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#A991D4]">Lunch</span>
+                    <p className="text-sm font-semibold text-[#292431] mt-1">{dietData.lunch || 'Balanced macro meal'}</p>
                   </div>
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#F97316]">Evening Snack</span>
-                    <p className="text-sm font-semibold text-[#292524] mt-1">{dietData.evening || 'Healthy nuts & recovery drink'}</p>
+                  <div className="p-4 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#A991D4]">Evening Snack</span>
+                    <p className="text-sm font-semibold text-[#292431] mt-1">{dietData.evening || 'Healthy nuts & recovery drink'}</p>
                   </div>
-                  <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#F97316]">Dinner</span>
-                    <p className="text-sm font-semibold text-[#292524] mt-1">{dietData.dinner || 'Lean protein & green vegetables'}</p>
+                  <div className="p-4 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#A991D4]">Dinner</span>
+                    <p className="text-sm font-semibold text-[#292431] mt-1">{dietData.dinner || 'Lean protein & green vegetables'}</p>
                   </div>
                   <div className="p-4 bg-teal-50 border border-teal-200 rounded-2xl">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-teal-800">Hydration Target</span>
@@ -665,11 +665,11 @@ const MemberWorkoutPlan: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-[#78716C]">Nutrition data has not been logged yet.</p>
+                <p className="text-sm text-[#6B5E78]">Nutrition data has not been logged yet.</p>
               )}
 
               {dietData?.note && (
-                <div className="p-4 bg-[#FFFDF8] border border-[#FED7AA] rounded-2xl text-xs text-[#78716C]">
+                <div className="p-4 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl text-xs text-[#6B5E78]">
                   <strong>Nutrition Guidance Note:</strong> {dietData.note}
                 </div>
               )}
@@ -678,35 +678,35 @@ const MemberWorkoutPlan: React.FC = () => {
 
           {/* Section 3: Recovery Recommendations */}
           {activeSection === 'recovery' && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div className="flex items-center gap-3 border-b border-[#FED7AA] pb-4">
+            <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div className="flex items-center gap-3 border-b border-[#E9DFF4] pb-4">
                 <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center">
                   <HeartPulse size={20} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#292524]">Recovery & Regeneration Protocol</h3>
-                  <p className="text-xs text-[#78716C]">Approved muscle repair and fatigue management guidelines.</p>
+                  <h3 className="text-xl font-bold text-[#292431]">Recovery & Regeneration Protocol</h3>
+                  <p className="text-xs text-[#6B5E78]">Approved muscle repair and fatigue management guidelines.</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div className="p-5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-2">
-                  <span className="text-xs font-bold uppercase text-[#F97316] tracking-wider block">Sleep Target</span>
-                  <p className="text-sm text-[#292524] leading-relaxed">
+                <div className="p-5 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl space-y-2">
+                  <span className="text-xs font-bold uppercase text-[#A991D4] tracking-wider block">Sleep Target</span>
+                  <p className="text-sm text-[#292431] leading-relaxed">
                     {recoveryData?.sleep || '7.5 – 8.5 hours of uninterrupted deep sleep.'}
                   </p>
                 </div>
 
-                <div className="p-5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-2">
-                  <span className="text-xs font-bold uppercase text-[#F97316] tracking-wider block">Active Recovery</span>
-                  <p className="text-sm text-[#292524] leading-relaxed">
+                <div className="p-5 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl space-y-2">
+                  <span className="text-xs font-bold uppercase text-[#A991D4] tracking-wider block">Active Recovery</span>
+                  <p className="text-sm text-[#292431] leading-relaxed">
                     {recoveryData?.activeRecovery || '15–20 min light walking or swimming on off-days.'}
                   </p>
                 </div>
 
-                <div className="p-5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl space-y-2">
-                  <span className="text-xs font-bold uppercase text-[#F97316] tracking-wider block">Stretching & Mobility</span>
-                  <p className="text-sm text-[#292524] leading-relaxed">
+                <div className="p-5 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl space-y-2">
+                  <span className="text-xs font-bold uppercase text-[#A991D4] tracking-wider block">Stretching & Mobility</span>
+                  <p className="text-sm text-[#292431] leading-relaxed">
                     {recoveryData?.stretchingMobility || 'Daily dynamic stretching warm-up and post-workout static holds.'}
                   </p>
                 </div>
@@ -716,14 +716,14 @@ const MemberWorkoutPlan: React.FC = () => {
 
           {/* Section 4: Trainer Recommendations & Coach Notes */}
           {activeSection === 'coach-notes' && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div className="flex items-center gap-3 border-b border-[#FED7AA] pb-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-[#F97316] flex items-center justify-center">
+            <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div className="flex items-center gap-3 border-b border-[#E9DFF4] pb-4">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-[#A991D4] flex items-center justify-center">
                   <User size={20} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#292524]">Trainer Recommendations & Notes</h3>
-                  <p className="text-xs text-[#78716C]">Direct guidance from your coach {trainerName}.</p>
+                  <h3 className="text-xl font-bold text-[#292431]">Trainer Recommendations & Notes</h3>
+                  <p className="text-xs text-[#6B5E78]">Direct guidance from your coach {trainerName}.</p>
                 </div>
               </div>
 
@@ -738,11 +738,11 @@ const MemberWorkoutPlan: React.FC = () => {
                 </div>
 
                 {trainerNotes && (
-                  <div className="p-5 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl">
-                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#292524] mb-1">
+                  <div className="p-5 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl">
+                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#292431] mb-1">
                       Personal Notes for Customer
                     </h4>
-                    <p className="text-sm text-[#78716C] leading-relaxed whitespace-pre-wrap">
+                    <p className="text-sm text-[#6B5E78] leading-relaxed whitespace-pre-wrap">
                       {trainerNotes}
                     </p>
                   </div>
@@ -753,31 +753,31 @@ const MemberWorkoutPlan: React.FC = () => {
 
           {/* Section 5: Fitness Analysis Summary */}
           {activeSection === 'summary' && (
-            <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div className="flex items-center gap-3 border-b border-[#FED7AA] pb-4">
+            <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+              <div className="flex items-center gap-3 border-b border-[#E9DFF4] pb-4">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
                   <Activity size={20} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#292524]">Fitness Analysis Summary</h3>
-                  <p className="text-xs text-[#78716C]">Analytical breakdown of your assessment metrics.</p>
+                  <h3 className="text-xl font-bold text-[#292431]">Fitness Analysis Summary</h3>
+                  <p className="text-xs text-[#6B5E78]">Analytical breakdown of your assessment metrics.</p>
                 </div>
               </div>
 
-              <div className="p-4 bg-[#F9F8F6] border border-[#FED7AA] rounded-2xl text-sm text-[#292524] leading-relaxed">
+              <div className="p-4 bg-[#F7F4FA] border border-[#E9DFF4] rounded-2xl text-sm text-[#292431] leading-relaxed">
                 {aiRec?.aiAnalysis?.fitnessSummary || 'Biometric analysis generated for personal transformation.'}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-white border border-[#FED7AA] rounded-2xl">
-                  <h4 className="text-xs font-bold text-[#78716C] uppercase mb-1">Goal Analysis</h4>
-                  <p className="text-xs text-[#292524] leading-relaxed">
+                <div className="p-4 bg-white border border-[#E9DFF4] rounded-2xl">
+                  <h4 className="text-xs font-bold text-[#6B5E78] uppercase mb-1">Goal Analysis</h4>
+                  <p className="text-xs text-[#292431] leading-relaxed">
                     {aiRec?.aiAnalysis?.goalAnalysis || 'Analysis verified by personal trainer.'}
                   </p>
                 </div>
-                <div className="p-4 bg-white border border-[#FED7AA] rounded-2xl">
-                  <h4 className="text-xs font-bold text-[#78716C] uppercase mb-1">Recommended Approach</h4>
-                  <p className="text-xs text-[#292524] leading-relaxed">
+                <div className="p-4 bg-white border border-[#E9DFF4] rounded-2xl">
+                  <h4 className="text-xs font-bold text-[#6B5E78] uppercase mb-1">Recommended Approach</h4>
+                  <p className="text-xs text-[#292431] leading-relaxed">
                     {aiRec?.aiAnalysis?.recommendedApproach || 'Standard resistance split.'}
                   </p>
                 </div>

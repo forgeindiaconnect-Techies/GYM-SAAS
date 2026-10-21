@@ -344,8 +344,8 @@ const MemberMessages = () => {
 
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Trainer Messages</h1>
-          <p className="text-[#78716C] text-sm mt-1">
+          <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Trainer Messages</h1>
+          <p className="text-[#6B5E78] text-sm mt-1">
             Direct 2-way real-time communication with voice notes and file attachments.
           </p>
         </div>
@@ -356,50 +356,50 @@ const MemberMessages = () => {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`h-[calc(100vh-12rem)] bg-white border rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row relative transition-all ${
-          isDragging ? 'border-2 border-dashed border-[#F97316] ring-4 ring-[#F97316]/10' : 'border-[#E7E5E4]'
+          isDragging ? 'border-2 border-dashed border-[#A991D4] ring-4 ring-[#A991D4]/10' : 'border-[#E5DDEB]'
         }`}
       >
         {/* Drag Overlay */}
         {isDragging && (
-          <div className="absolute inset-0 bg-[#F97316]/10 backdrop-blur-xs z-50 flex items-center justify-center pointer-events-none">
-            <div className="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center gap-2 border-2 border-[#F97316]">
-              <FilePlus size={40} className="text-[#F97316] animate-bounce" />
-              <p className="font-extrabold text-[#292524] text-base">Drop files here to attach</p>
-              <p className="text-xs text-[#78716C]">Images, videos, documents up to 50MB</p>
+          <div className="absolute inset-0 bg-[#A991D4]/10 backdrop-blur-xs z-50 flex items-center justify-center pointer-events-none">
+            <div className="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center gap-2 border-2 border-[#A991D4]">
+              <FilePlus size={40} className="text-[#A991D4] animate-bounce" />
+              <p className="font-extrabold text-[#292431] text-base">Drop files here to attach</p>
+              <p className="text-xs text-[#6B5E78]">Images, videos, documents up to 50MB</p>
             </div>
           </div>
         )}
 
         {/* Left Contacts Panel */}
-        <div className="w-full md:w-80 border-r border-[#E7E5E4] flex flex-col bg-white">
-          <div className="p-3.5 border-b border-[#E7E5E4] flex items-center justify-between gap-2">
+        <div className="w-full md:w-80 border-r border-[#E5DDEB] flex flex-col bg-white">
+          <div className="p-3.5 border-b border-[#E5DDEB] flex items-center justify-between gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" size={16} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" size={16} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search trainers..."
-                className="w-full pl-9 pr-3 py-2 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-sm focus:border-[#F97316] outline-none"
+                className="w-full pl-9 pr-3 py-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
               />
             </div>
             <button
               onClick={() => fetchContacts(false)}
               title="Refresh list"
-              className="p-2 text-[#78716C] hover:text-[#F97316] hover:bg-[#FFFDF8] rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-[#6B5E78] hover:text-[#A991D4] hover:bg-[#F7F4FA] rounded-lg transition-colors cursor-pointer"
             >
               <RefreshCw size={16} />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y divide-[#E7E5E4]/60">
+          <div className="flex-1 overflow-y-auto divide-y divide-[#E5DDEB]/60">
             {loadingContacts ? (
-              <div className="flex flex-col items-center justify-center p-8 text-[#78716C] gap-2">
-                <Loader2 size={24} className="animate-spin text-[#F97316]" />
+              <div className="flex flex-col items-center justify-center p-8 text-[#6B5E78] gap-2">
+                <Loader2 size={24} className="animate-spin text-[#A991D4]" />
                 <span className="text-xs">Loading trainers...</span>
               </div>
             ) : filteredContacts.length === 0 ? (
-              <div className="p-8 text-center text-sm text-[#78716C] flex flex-col items-center gap-2">
+              <div className="p-8 text-center text-sm text-[#6B5E78] flex flex-col items-center gap-2">
                 <Dumbbell size={28} className="text-stone-600" />
                 <span>No trainers found</span>
               </div>
@@ -411,7 +411,7 @@ const MemberMessages = () => {
                     key={contact.id}
                     onClick={() => setSelectedContact(contact)}
                     className={`flex items-center p-4 cursor-pointer transition-colors ${
-                      isSelected ? 'bg-[#F97316]/10 border-l-4 border-l-[#F97316]' : 'hover:bg-[#FFFDF8]'
+                      isSelected ? 'bg-[#A991D4]/10 border-l-4 border-l-[#A991D4]' : 'hover:bg-[#F7F4FA]'
                     }`}
                   >
                     <div className="relative shrink-0">
@@ -419,10 +419,10 @@ const MemberMessages = () => {
                         <img
                           src={contact.profilePhoto}
                           alt={contact.name}
-                          className="w-11 h-11 rounded-full object-cover border border-[#E7E5E4]"
+                          className="w-11 h-11 rounded-full object-cover border border-[#E5DDEB]"
                         />
                       ) : (
-                        <div className="w-11 h-11 bg-[#F97316]/15 rounded-full flex items-center justify-center font-bold text-[#F97316] text-base border border-[#E7E5E4]">
+                        <div className="w-11 h-11 bg-[#A991D4]/15 rounded-full flex items-center justify-center font-bold text-[#A991D4] text-base border border-[#E5DDEB]">
                           {contact.name[0] || 'T'}
                         </div>
                       )}
@@ -430,14 +430,14 @@ const MemberMessages = () => {
                     </div>
                     <div className="ml-3 flex-1 overflow-hidden">
                       <div className="flex justify-between items-baseline">
-                        <h4 className="font-bold text-[#292524] text-sm truncate">{contact.name}</h4>
+                        <h4 className="font-bold text-[#292431] text-sm truncate">{contact.name}</h4>
                         {contact.unreadCount && contact.unreadCount > 0 ? (
-                          <span className="bg-[#F97316] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                          <span className="bg-[#A991D4] text-[#292431] text-[10px] font-bold px-1.5 py-0.5 rounded-full">
                             {contact.unreadCount}
                           </span>
                         ) : null}
                       </div>
-                      <p className="text-xs text-[#78716C] truncate mt-0.5">
+                      <p className="text-xs text-[#6B5E78] truncate mt-0.5">
                         {contact.specialization ? `${contact.specialization} · ` : ''}
                         {contact.lastMsg}
                       </p>
@@ -450,13 +450,13 @@ const MemberMessages = () => {
         </div>
 
         {/* Right Chat Area */}
-        <div className="flex-1 flex flex-col bg-[#FFFDF8]">
+        <div className="flex-1 flex flex-col bg-[#F7F4FA]">
           {selectedContact ? (
             <>
               {/* Header */}
-              <div className="p-4 bg-white border-b border-[#E7E5E4] flex justify-between items-center">
+              <div className="p-4 bg-white border-b border-[#E5DDEB] flex justify-between items-center">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-[#F97316]/15 rounded-full flex items-center justify-center font-bold text-[#F97316] border border-[#E7E5E4] shrink-0 overflow-hidden">
+                  <div className="w-10 h-10 bg-[#A991D4]/15 rounded-full flex items-center justify-center font-bold text-[#A991D4] border border-[#E5DDEB] shrink-0 overflow-hidden">
                     {selectedContact.profilePhoto ? (
                       <img src={selectedContact.profilePhoto} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -464,15 +464,15 @@ const MemberMessages = () => {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#292524]">{selectedContact.name}</h3>
-                    <p className="text-xs text-[#F97316] font-medium">
+                    <h3 className="font-bold text-[#292431]">{selectedContact.name}</h3>
+                    <p className="text-xs text-[#A991D4] font-medium">
                       {selectedContact.specialization || 'Personal Trainer'}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-[#78716C] font-semibold bg-stone-100 px-2.5 py-1 rounded-full">
+                  <span className="text-[11px] text-[#6B5E78] font-semibold bg-stone-100 px-2.5 py-1 rounded-full">
                     Max file size: 50MB
                   </span>
                 </div>
@@ -481,15 +481,15 @@ const MemberMessages = () => {
               {/* Chat Messages List */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {loadingMessages ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-[#78716C] gap-2">
-                    <Loader2 size={24} className="animate-spin text-[#F97316]" />
+                  <div className="flex flex-col items-center justify-center py-12 text-[#6B5E78] gap-2">
+                    <Loader2 size={24} className="animate-spin text-[#A991D4]" />
                     <span className="text-xs">Loading chat history...</span>
                   </div>
                 ) : messages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-[#78716C] gap-2 text-center">
+                  <div className="flex flex-col items-center justify-center py-16 text-[#6B5E78] gap-2 text-center">
                     <MessageSquare size={36} className="text-stone-400" />
-                    <p className="text-sm font-semibold text-[#292524]">No messages yet</p>
-                    <p className="text-xs text-[#78716C] max-w-sm">
+                    <p className="text-sm font-semibold text-[#292431]">No messages yet</p>
+                    <p className="text-xs text-[#6B5E78] max-w-sm">
                       Send a message, voice recording, or workout/diet photo to start conversation with {selectedContact.name}.
                     </p>
                   </div>
@@ -530,7 +530,7 @@ const MemberMessages = () => {
               )}
 
               {/* Input Area */}
-              <div className="p-3 bg-white border-t border-[#E7E5E4] flex flex-col gap-2">
+              <div className="p-3 bg-white border-t border-[#E5DDEB] flex flex-col gap-2">
                 {/* Pending attachments preview */}
                 <AttachmentPreview
                   attachments={pendingAttachments}
@@ -561,7 +561,7 @@ const MemberMessages = () => {
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={sending}
-                      className="p-2.5 text-stone-500 hover:text-[#F97316] hover:bg-orange-50 rounded-xl transition-colors cursor-pointer shrink-0"
+                      className="p-2.5 text-stone-500 hover:text-[#A991D4] hover:bg-orange-50 rounded-xl transition-colors cursor-pointer shrink-0"
                       title="Attach file (Images, Videos, Audio, Documents)"
                     >
                       <Paperclip size={18} />
@@ -572,7 +572,7 @@ const MemberMessages = () => {
                       type="button"
                       onClick={() => setIsRecordingVoice(true)}
                       disabled={sending}
-                      className="p-2.5 text-stone-500 hover:text-[#F97316] hover:bg-orange-50 rounded-xl transition-colors cursor-pointer shrink-0"
+                      className="p-2.5 text-stone-500 hover:text-[#A991D4] hover:bg-orange-50 rounded-xl transition-colors cursor-pointer shrink-0"
                       title="Record voice message"
                     >
                       <Mic size={18} />
@@ -586,7 +586,7 @@ const MemberMessages = () => {
                           ? `Add caption for ${pendingAttachments.length} attachment(s)...`
                           : `Message ${selectedContact.name}...`
                       }
-                      className="w-full bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl pl-4 pr-12 py-3 text-sm focus:border-[#F97316] outline-none"
+                      className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl pl-4 pr-12 py-3 text-sm focus:border-[#A991D4] outline-none"
                       value={messageText}
                       onChange={(e) => setMessageText(e.target.value)}
                       disabled={sending}
@@ -596,7 +596,7 @@ const MemberMessages = () => {
                     <button
                       type="submit"
                       disabled={(!messageText.trim() && pendingAttachments.length === 0) || sending}
-                      className="absolute right-2 p-2.5 bg-[#F97316] text-white rounded-lg hover:bg-[#EA580C] transition-colors disabled:opacity-40 cursor-pointer shadow-xs"
+                      className="absolute right-2 p-2.5 bg-[#A991D4] text-[#292431] rounded-lg hover:bg-[#967CC5] transition-colors disabled:opacity-40 cursor-pointer shadow-xs"
                       title="Send message"
                     >
                       {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
@@ -606,9 +606,9 @@ const MemberMessages = () => {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#78716C] gap-3">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#6B5E78] gap-3">
               <MessageSquare size={48} className="text-stone-400" />
-              <h3 className="text-lg font-bold text-[#292524]">Select a trainer to message</h3>
+              <h3 className="text-lg font-bold text-[#292431]">Select a trainer to message</h3>
               <p className="text-sm max-w-xs">
                 Pick a trainer from the list on the left to start a conversation.
               </p>

@@ -147,29 +147,29 @@ const GymAdminProfile = () => {
     }
   };
 
-  const inputCls = `w-full rounded-xl px-4 py-3 text-[#292524] outline-none transition-colors ${
+  const inputCls = `w-full rounded-xl px-4 py-3 text-[#292431] outline-none transition-colors ${
     isEditing 
-      ? 'bg-[#FFFFFF] border border-[#E7E5E4] focus:border-[#F97316]' 
-      : 'bg-[#FFFDF8] border border-transparent cursor-not-allowed text-opacity-80'
+      ? 'bg-[#FFFFFF] border border-[#E5DDEB] focus:border-[#A991D4]' 
+      : 'bg-[#F7F4FA] border border-transparent cursor-not-allowed text-opacity-80'
   }`;
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">
+          <h1 className="text-3xl font-bold text-[#292431] tracking-tight">
             {isBranchUser ? 'Branch Profile' : 'Gym Profile'}
           </h1>
-          <p className="text-[#78716C] mt-1">
+          <p className="text-[#6B5E78] mt-1">
             Manage your {isBranchUser ? 'branch' : 'facility'}'s public information and details.
           </p>
         </div>
         <div className="flex items-center gap-2.5">
-          <Link to={isBranchUser ? `/admin/location?branchId=${user?.branchId || ''}` : "/admin/location"} className="flex items-center gap-2 px-4 py-2.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors shadow-sm text-sm cursor-pointer">
+          <Link to={isBranchUser ? `/admin/location?branchId=${user?.branchId || ''}` : "/admin/location"} className="flex items-center gap-2 px-4 py-2.5 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors shadow-sm text-sm cursor-pointer">
             <MapPin size={16} /> Location Settings
           </Link>
           {!isEditing && (
-            <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2.5 bg-[#292524] text-white font-bold rounded-xl hover:bg-[#0F172A] transition-colors shadow-sm text-sm cursor-pointer">
+            <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2.5 bg-[#292431] text-white font-bold rounded-xl hover:bg-[#292431] transition-colors shadow-sm text-sm cursor-pointer">
               <Edit2 size={16} /> Edit Profile
             </button>
           )}
@@ -184,46 +184,46 @@ const GymAdminProfile = () => {
       )}
 
       {/* Header Banner */}
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8 flex items-center space-x-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#F97316]/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
-        <div className="w-20 h-20 bg-[#F97316]/10 border-2 border-[#F97316]/20 rounded-2xl flex items-center justify-center shrink-0 z-10 overflow-hidden">
-          {gym?.logo ? <img src={gym.logo} alt="Logo" className="w-full h-full object-cover" /> : <Building2 size={36} className="text-[#F97316]" />}
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8 flex items-center space-x-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#A991D4]/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+        <div className="w-20 h-20 bg-[#A991D4]/10 border-2 border-[#A991D4]/20 rounded-2xl flex items-center justify-center shrink-0 z-10 overflow-hidden">
+          {gym?.logo ? <img src={gym.logo} alt="Logo" className="w-full h-full object-cover" /> : <Building2 size={36} className="text-[#A991D4]" />}
         </div>
         <div className="z-10">
-          <h2 className="text-2xl font-bold text-[#292524]">{formData.gymName || (isBranchUser ? 'Branch' : 'Gymora')}</h2>
-          <p className="text-sm text-[#78716C] mt-1 flex items-center">
-            <MapPin size={14} className="mr-1 text-[#F97316]" /> {formData.city ? `${formData.city}, ${formData.state}` : (isBranchUser ? 'Branch Location' : 'Gym Location')}
+          <h2 className="text-2xl font-bold text-[#292431]">{formData.gymName || (isBranchUser ? 'Branch' : 'Gymora')}</h2>
+          <p className="text-sm text-[#6B5E78] mt-1 flex items-center">
+            <MapPin size={14} className="mr-1 text-[#A991D4]" /> {formData.city ? `${formData.city}, ${formData.state}` : (isBranchUser ? 'Branch Location' : 'Gym Location')}
           </p>
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 md:p-8 space-y-8">
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8 space-y-8">
         
         {/* Basic Info */}
         <section>
-          <div className="flex items-center space-x-2 text-[#292524] mb-4 border-b border-[#E7E5E4] pb-2">
-            <Info size={20} className="text-[#F97316]"/>
+          <div className="flex items-center space-x-2 text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
+            <Info size={20} className="text-[#A991D4]"/>
             <h3 className="text-xl font-bold">Basic Information</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">{isBranchUser ? 'Branch Name' : 'Gym Name'}</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">{isBranchUser ? 'Branch Name' : 'Gym Name'}</label>
               <input disabled={!isEditing} value={formData.gymName} onChange={e => setFormData({...formData, gymName: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Facility Type</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Facility Type</label>
               <input disabled={!isEditing} value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Contact Email</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Contact Email</label>
               <input disabled={!isEditing} type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Contact Phone</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Contact Phone</label>
               <input type="tel" disabled={!isEditing} maxLength={10} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} placeholder="10-digit number" className={inputCls} />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm text-[#78716C] mb-2">{isBranchUser ? 'About the Branch' : 'About the Gym'}</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">{isBranchUser ? 'About the Branch' : 'About the Gym'}</label>
               <textarea disabled={!isEditing} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className={`${inputCls} h-24 resize-none`} />
             </div>
           </div>
@@ -231,17 +231,17 @@ const GymAdminProfile = () => {
 
         {/* Owner Information */}
         <section>
-          <div className="flex items-center space-x-2 text-[#292524] mb-4 border-b border-[#E7E5E4] pb-2">
-            <Info size={20} className="text-[#F97316]"/>
+          <div className="flex items-center space-x-2 text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
+            <Info size={20} className="text-[#A991D4]"/>
             <h3 className="text-xl font-bold">Owner Information</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Owner Name</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Owner Name</label>
               <input disabled={!isEditing} value={formData.ownerName} onChange={e => setFormData({...formData, ownerName: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Role</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Role</label>
               <input disabled={!isEditing} value={formData.ownerRole} onChange={e => setFormData({...formData, ownerRole: e.target.value})} className={inputCls} />
             </div>
           </div>
@@ -249,21 +249,21 @@ const GymAdminProfile = () => {
 
         {/* Business Details & Operating Hours */}
         <section>
-          <div className="flex items-center space-x-2 text-[#292524] mb-4 border-b border-[#E7E5E4] pb-2">
-            <Info size={20} className="text-[#F97316]"/>
+          <div className="flex items-center space-x-2 text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
+            <Info size={20} className="text-[#A991D4]"/>
             <h3 className="text-xl font-bold">Business & Operations</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Website</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Website</label>
               <input disabled={!isEditing} value={formData.website} onChange={e => setFormData({...formData, website: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Tax ID / Registration Number</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Tax ID / Registration Number</label>
               <input disabled={!isEditing} value={formData.taxId} onChange={e => setFormData({...formData, taxId: e.target.value})} className={inputCls} />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm text-[#78716C] mb-2">Standard Operating Hours</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Standard Operating Hours</label>
               <input disabled={!isEditing} value={formData.operatingHours} onChange={e => setFormData({...formData, operatingHours: e.target.value})} className={inputCls} placeholder="e.g. Mon-Sun: 05:00 AM - 11:00 PM" />
             </div>
           </div>
@@ -271,21 +271,21 @@ const GymAdminProfile = () => {
 
         {/* Location Details */}
         <section>
-          <div className="flex items-center space-x-2 text-[#292524] mb-4 border-b border-[#E7E5E4] pb-2">
-            <MapPin size={20} className="text-[#F97316]"/>
+          <div className="flex items-center space-x-2 text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
+            <MapPin size={20} className="text-[#A991D4]"/>
             <h3 className="text-xl font-bold">Location</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm text-[#78716C] mb-2">Street Address</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Street Address</label>
               <input disabled={!isEditing} value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">City</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">City</label>
               <input disabled={!isEditing} value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">State / Province</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">State / Province</label>
               <input disabled={!isEditing} value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} className={inputCls} />
             </div>
           </div>
@@ -293,17 +293,17 @@ const GymAdminProfile = () => {
 
         {/* Operating Details */}
         <section>
-          <div className="flex items-center space-x-2 text-[#292524] mb-4 border-b border-[#E7E5E4] pb-2">
-            <Info size={20} className="text-[#F97316]"/>
+          <div className="flex items-center space-x-2 text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
+            <Info size={20} className="text-[#A991D4]"/>
             <h3 className="text-xl font-bold">Operating Details</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Established Year</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Established Year</label>
               <input disabled={!isEditing} type="number" value={formData.establishedYear} onChange={e => setFormData({...formData, establishedYear: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Training Mode</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Training Mode</label>
               <select disabled={!isEditing} value={formData.trainingMode} onChange={e => setFormData({...formData, trainingMode: e.target.value})} className={inputCls + " appearance-none cursor-pointer"}>
                 <option value="offline">Offline</option>
                 <option value="online">Online</option>
@@ -311,11 +311,11 @@ const GymAdminProfile = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Approx Members</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Approx Members</label>
               <input disabled={!isEditing} type="number" value={formData.memberCapacity} onChange={e => setFormData({...formData, memberCapacity: e.target.value})} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm text-[#78716C] mb-2">Total Trainers</label>
+              <label className="block text-sm text-[#6B5E78] mb-2">Total Trainers</label>
               <input disabled={!isEditing} type="number" value={formData.trainerCapacity} onChange={e => setFormData({...formData, trainerCapacity: e.target.value})} className={inputCls} />
             </div>
           </div>
@@ -324,35 +324,35 @@ const GymAdminProfile = () => {
         {/* Additional Features */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <div className="flex items-center space-x-2 text-[#292524] mb-4 border-b border-[#E7E5E4] pb-2">
+            <div className="flex items-center space-x-2 text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
               <h3 className="text-xl font-bold">Services</h3>
             </div>
             {gym?.services && gym.services.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {gym.services.map((service: string, i: number) => (
-                  <span key={i} className="px-3 py-1 bg-[#F97316]/10 text-[#F97316] font-semibold text-sm rounded-lg">
+                  <span key={i} className="px-3 py-1 bg-[#A991D4]/10 text-[#A991D4] font-semibold text-sm rounded-lg">
                     {service}
                   </span>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-[#78716C]">No services listed</p>
+              <p className="text-sm text-[#6B5E78]">No services listed</p>
             )}
           </div>
           <div>
-            <div className="flex items-center space-x-2 text-[#292524] mb-4 border-b border-[#E7E5E4] pb-2">
+            <div className="flex items-center space-x-2 text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
               <h3 className="text-xl font-bold">Facilities</h3>
             </div>
             {gym?.facilities && gym.facilities.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {gym.facilities.map((fac: string, i: number) => (
-                  <span key={i} className="px-3 py-1 bg-[#0F172A]/10 text-[#0F172A] font-semibold text-sm rounded-lg">
+                  <span key={i} className="px-3 py-1 bg-[#292431]/10 text-[#292431] font-semibold text-sm rounded-lg">
                     {fac}
                   </span>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-[#78716C]">No facilities listed</p>
+              <p className="text-sm text-[#6B5E78]">No facilities listed</p>
             )}
           </div>
         </section>
@@ -360,7 +360,7 @@ const GymAdminProfile = () => {
         {/* AC Details */}
         {gym?.acDetails && gym.acDetails.type && (
           <section>
-            <div className="flex items-center space-x-2 text-[#292524] mb-4 border-b border-[#E7E5E4] pb-2">
+            <div className="flex items-center space-x-2 text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
               <h3 className="text-xl font-bold">AC Details</h3>
             </div>
             <div className="space-y-4">
@@ -370,7 +370,7 @@ const GymAdminProfile = () => {
               {gym.acDetails.areas && gym.acDetails.areas.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {gym.acDetails.areas.map((area: string, i: number) => (
-                    <span key={i} className="px-3 py-1 bg-[#FFFDF8] border border-[#FED7AA] text-[#78716C] font-medium text-sm rounded-lg">
+                    <span key={i} className="px-3 py-1 bg-[#F7F4FA] border border-[#E9DFF4] text-[#6B5E78] font-medium text-sm rounded-lg">
                       {area}
                     </span>
                   ))}
@@ -381,25 +381,25 @@ const GymAdminProfile = () => {
         )}
 
         {/* Package Plans Section */}
-        <section className="bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E7E5E4] pb-4">
-            <div className="flex items-center space-x-2 text-[#292524]">
-              <CreditCard size={20} className="text-[#F97316]" />
+        <section className="bg-white border border-[#E5DDEB] rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E5DDEB] pb-4">
+            <div className="flex items-center space-x-2 text-[#292431]">
+              <CreditCard size={20} className="text-[#A991D4]" />
               <div>
                 <h3 className="text-xl font-bold">Package Plans</h3>
-                <p className="text-xs text-[#78716C] mt-0.5">Configured pricing tiers for your gym membership plans.</p>
+                <p className="text-xs text-[#6B5E78] mt-0.5">Configured pricing tiers for your gym membership plans.</p>
               </div>
             </div>
             
             <div className="flex items-center gap-3">
-              <div className="bg-[#F5F5F4] p-1 rounded-xl flex items-center border border-[#E7E5E4]">
+              <div className="bg-[#F5F5F4] p-1 rounded-xl flex items-center border border-[#E5DDEB]">
                 <button
                   type="button"
                   onClick={() => setBillingCycle('monthly')}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
                     billingCycle === 'monthly'
-                      ? 'bg-[#F97316] text-white shadow-xs'
-                      : 'text-[#78716C] hover:text-[#292524]'
+                      ? 'bg-[#A991D4] text-[#292431] shadow-xs'
+                      : 'text-[#6B5E78] hover:text-[#292431]'
                   }`}
                 >
                   Monthly Billed
@@ -409,15 +409,15 @@ const GymAdminProfile = () => {
                   onClick={() => setBillingCycle('annually')}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1 ${
                     billingCycle === 'annually'
-                      ? 'bg-[#F97316] text-white shadow-xs'
-                      : 'text-[#78716C] hover:text-[#292524]'
+                      ? 'bg-[#A991D4] text-[#292431] shadow-xs'
+                      : 'text-[#6B5E78] hover:text-[#292431]'
                   }`}
                 >
                   Annual Billed
-                  <span className="bg-[#292524] text-[#F97316] text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase ml-0.5">Save 20%</span>
+                  <span className="bg-[#292431] text-[#A991D4] text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase ml-0.5">Save 20%</span>
                 </button>
               </div>
-              <Link to="/admin/membership-plans" className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1 shrink-0">
+              <Link to="/admin/membership-plans" className="text-xs font-bold text-[#A991D4] hover:underline flex items-center gap-1 shrink-0">
                 Manage Plans <ArrowRight size={14} />
               </Link>
             </div>
@@ -444,20 +444,20 @@ const GymAdminProfile = () => {
                 : Math.round(rawPrice * 10);
 
               return (
-                <div key={idx} className="border border-[#E7E5E4] rounded-2xl p-5 bg-[#F9F8F6] flex flex-col justify-between hover:border-[#F97316]/40 transition-all shadow-xs relative overflow-hidden">
+                <div key={idx} className="border border-[#E5DDEB] rounded-2xl p-5 bg-[#F7F4FA] flex flex-col justify-between hover:border-[#A991D4]/40 transition-all shadow-xs relative overflow-hidden">
                   {billingCycle === 'annually' && rawPrice > 0 && (
-                    <div className="absolute top-0 right-0 bg-[#F97316] text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                    <div className="absolute top-0 right-0 bg-[#A991D4] text-[#292431] text-[10px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
                       2 Months Free
                     </div>
                   )}
                   <div>
-                    <div className="flex items-start justify-between gap-2 mb-2 pb-2 border-b border-[#E7E5E4]">
+                    <div className="flex items-start justify-between gap-2 mb-2 pb-2 border-b border-[#E5DDEB]">
                       <div>
-                        <h4 className="font-bold text-[#292524] text-base">{formatPlanName(plan.name)}</h4>
+                        <h4 className="font-bold text-[#292431] text-base">{formatPlanName(plan.name)}</h4>
                         {billingCycle === 'annually' ? (
                           <div>
-                            <p className="text-sm font-extrabold text-[#F97316] mt-0.5">
-                              ₹{annualPrice.toLocaleString('en-IN')} <span className="text-xs text-[#78716C] font-normal">/ Annually</span>
+                            <p className="text-sm font-extrabold text-[#A991D4] mt-0.5">
+                              ₹{annualPrice.toLocaleString('en-IN')} <span className="text-xs text-[#6B5E78] font-normal">/ Annually</span>
                             </p>
                             {rawPrice > 0 && (
                               <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">
@@ -467,11 +467,11 @@ const GymAdminProfile = () => {
                           </div>
                         ) : (
                           <div>
-                            <p className="text-sm font-extrabold text-[#F97316] mt-0.5">
-                              ₹{rawPrice.toLocaleString('en-IN')} <span className="text-xs text-[#78716C] font-normal">/ {plan.duration || 'Monthly'}</span>
+                            <p className="text-sm font-extrabold text-[#A991D4] mt-0.5">
+                              ₹{rawPrice.toLocaleString('en-IN')} <span className="text-xs text-[#6B5E78] font-normal">/ {plan.duration || 'Monthly'}</span>
                             </p>
                             {rawPrice > 0 && (
-                              <p className="text-[11px] text-[#78716C] font-medium mt-0.5">
+                              <p className="text-[11px] text-[#6B5E78] font-medium mt-0.5">
                                 Annual: ₹{annualPrice.toLocaleString('en-IN')}/yr <span className="text-emerald-600 font-bold">(Save 20%)</span>
                               </p>
                             )}
@@ -479,7 +479,7 @@ const GymAdminProfile = () => {
                         )}
                       </div>
                     </div>
-                    <p className="text-xs text-[#78716C] mt-2 whitespace-pre-line leading-relaxed">{plan.features}</p>
+                    <p className="text-xs text-[#6B5E78] mt-2 whitespace-pre-line leading-relaxed">{plan.features}</p>
                   </div>
                 </div>
               );
@@ -502,10 +502,10 @@ const GymAdminProfile = () => {
         <div className="pt-4 flex justify-end">
           {isEditing && (
             <div className="flex gap-4">
-              <button onClick={() => setIsEditing(false)} disabled={isSaving} className="px-6 py-3 bg-[#F1F5F9] text-[#78716C] font-bold rounded-xl hover:bg-[#FED7AA] transition-colors disabled:opacity-50">
+              <button onClick={() => setIsEditing(false)} disabled={isSaving} className="px-6 py-3 bg-[#F7F4FA] text-[#6B5E78] font-bold rounded-xl hover:bg-[#E9DFF4] transition-colors disabled:opacity-50">
                 Cancel
               </button>
-              <button onClick={handleSave} disabled={isSaving} className="px-6 py-3 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors flex items-center gap-2 shadow-lg shadow-[#F97316]/20 disabled:opacity-70">
+              <button onClick={handleSave} disabled={isSaving} className="px-6 py-3 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors flex items-center gap-2 shadow-lg shadow-[#A991D4]/20 disabled:opacity-70">
                 <Save size={18} /> {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>

@@ -6,12 +6,12 @@ const AdminTrainerEarnings = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <TrendingUp className="text-[#F97316]" size={32} />
+            <TrendingUp className="text-[#A991D4]" size={32} />
             Trainer Earnings
           </h1>
-          <p className="text-[#78716C] mt-2">Monitor trainer revenues and outstanding balances.</p>
+          <p className="text-[#6B5E78] mt-2">Monitor trainer revenues and outstanding balances.</p>
         </div>
-        <button className="px-6 py-2 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors">
+        <button className="px-6 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors">
           Manage Trainer Earnings
         </button>
       </div>
@@ -19,14 +19,14 @@ const AdminTrainerEarnings = () => {
       
       <div className="grid md:grid-cols-3 gap-6">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-5">
+          <div key={i} className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-5">
             <div className="flex justify-between items-center mb-4">
               <div className="font-bold">Trainer #{i}</div>
-              <div className="text-xs bg-[#FED7AA] px-2 py-1 rounded text-[#78716C]">85% Split</div>
+              <div className="text-xs bg-[#E9DFF4] px-2 py-1 rounded text-[#6B5E78]">85% Split</div>
             </div>
-            <p className="text-sm text-[#78716C]">Pending Payout</p>
-            <p className="text-2xl font-bold text-[#F97316] mb-4">${(i * 450).toFixed(2)}</p>
-            <button className="w-full py-2 bg-[#FED7AA] hover:bg-[#333] rounded-lg text-sm transition-colors">Process Payout</button>
+            <p className="text-sm text-[#6B5E78]">Pending Payout</p>
+            <p className="text-2xl font-bold text-[#A991D4] mb-4">${(i * 450).toFixed(2)}</p>
+            <button className="w-full py-2 bg-[#E9DFF4] hover:bg-[#333] rounded-lg text-sm transition-colors">Process Payout</button>
           </div>
         ))}
       </div>

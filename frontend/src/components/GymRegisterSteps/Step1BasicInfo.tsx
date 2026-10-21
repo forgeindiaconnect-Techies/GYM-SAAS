@@ -92,21 +92,21 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
     <div className="space-y-8">
       {/* Owner Details */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-[#292524] border-b border-[#E7E5E4] pb-2">Owner Details</h2>
+        <h2 className="text-lg font-semibold text-[#292431] border-b border-[#E5DDEB] pb-2">Owner Details</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">First Name *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">First Name *</label>
             <input value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="John" className={inputCls('firstName')} />
             {errors.firstName && <p className="text-teal-400 text-xs mt-1">{errors.firstName}</p>}
           </div>
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">Last Name *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">Last Name *</label>
             <input value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="Doe" className={inputCls('lastName')} />
             {errors.lastName && <p className="text-teal-400 text-xs mt-1">{errors.lastName}</p>}
           </div>
         </div>
         <div>
-          <label className="block text-sm text-[#78716C] mb-2">Email Address *</label>
+          <label className="block text-sm text-[#6B5E78] mb-2">Email Address *</label>
           <div className="flex gap-2">
             <input type="email" value={form.email} onChange={e => {
               set('email', e.target.value);
@@ -114,13 +114,13 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
             }} placeholder="owner@gym.com" className={inputCls('email') + ' flex-1'} disabled={form.emailOtpVerified} />
             
             {!form.emailOtpVerified && (
-              <button type="button" onClick={handleSendOtp} disabled={sendingOtp} className="px-4 py-2 bg-[#F1F5F9] text-[#78716C] text-sm font-medium rounded-xl border border-[#CBD5E1] hover:bg-[#FED7AA] transition-colors whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50">
+              <button type="button" onClick={handleSendOtp} disabled={sendingOtp} className="px-4 py-2 bg-[#F7F4FA] text-[#6B5E78] text-sm font-medium rounded-xl border border-[#E5DDEB] hover:bg-[#E9DFF4] transition-colors whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50">
                 {sendingOtp && <Loader2 size={14} className="animate-spin" />}
                 {sendingOtp ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
               </button>
             )}
             {form.emailOtpVerified && (
-              <span className="px-4 py-2 bg-green-50 text-[#F97316] text-sm font-medium rounded-xl border border-green-200 flex items-center gap-1 whitespace-nowrap">
+              <span className="px-4 py-2 bg-green-50 text-[#A991D4] text-sm font-medium rounded-xl border border-green-200 flex items-center gap-1 whitespace-nowrap">
                 <Check size={16} /> Verified
               </span>
             )}
@@ -136,9 +136,9 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                 value={enteredOtp} 
                 onChange={e => setEnteredOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="Enter 6-digit OTP" 
-                className="w-full px-4 py-2 bg-[#FFFDF8] border border-[#CBD5E1] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316] flex-1"
+                className="w-full px-4 py-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#A991D4] flex-1"
               />
-              <button type="button" onClick={handleVerifyOtp} disabled={verifyingOtp} className="px-4 py-2 bg-[#F97316] text-white text-sm font-medium rounded-xl hover:bg-[#EA580C] transition-colors whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50">
+              <button type="button" onClick={handleVerifyOtp} disabled={verifyingOtp} className="px-4 py-2 bg-[#A991D4] text-[#292431] text-sm font-medium rounded-xl hover:bg-[#967CC5] transition-colors whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50">
                 {verifyingOtp && <Loader2 size={14} className="animate-spin" />}
                 {verifyingOtp ? 'Verifying...' : 'Verify'}
               </button>
@@ -148,7 +148,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
         </div>
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm text-[#78716C]">Mobile Number *</label>
+            <label className="block text-sm text-[#6B5E78]">Mobile Number *</label>
             {!form.emailOtpVerified ? (
               <span className="text-xs text-amber-600 font-medium flex items-center gap-1">
                 <Lock size={12} /> Verify email first to enter mobile
@@ -191,7 +191,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
               }}
               readOnly={!form.emailOtpVerified}
               placeholder={form.emailOtpVerified ? "10-digit number" : "Please verify email first to enter mobile"} 
-              className={inputCls('mobile') + (!form.emailOtpVerified ? ' bg-[#F1F5F9]/70 cursor-not-allowed select-none' : '')} 
+              className={inputCls('mobile') + (!form.emailOtpVerified ? ' bg-[#F7F4FA]/70 cursor-not-allowed select-none' : '')} 
             />
           </div>
           {mobileBlockedNotice && !form.emailOtpVerified && (
@@ -203,20 +203,20 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">Password *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">Password *</label>
             <div className="relative">
               <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => set('password', e.target.value)} placeholder="Min 8 chars" className={inputCls('password') + ' pr-10'} />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C]">
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B5E78]">
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
             {errors.password && <p className="text-teal-400 text-xs mt-1">{errors.password}</p>}
           </div>
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">Confirm Password *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">Confirm Password *</label>
             <div className="relative">
               <input type={showConfirm ? 'text' : 'password'} value={form.confirmPassword} onChange={e => set('confirmPassword', e.target.value)} placeholder="Repeat password" className={inputCls('confirmPassword') + ' pr-10'} />
-              <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#78716C]">
+              <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B5E78]">
                 {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
@@ -227,41 +227,41 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
 
       {/* Gym Information */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-[#292524] border-b border-[#E7E5E4] pb-2">Gym Information</h2>
+        <h2 className="text-lg font-semibold text-[#292431] border-b border-[#E5DDEB] pb-2">Gym Information</h2>
         <div>
-          <label className="block text-sm text-[#78716C] mb-2">Gym Name *</label>
+          <label className="block text-sm text-[#6B5E78] mb-2">Gym Name *</label>
           <input value={form.gymName} onChange={e => set('gymName', e.target.value)} placeholder="AI Fitness Center" className={inputCls('gymName')} />
           {errors.gymName && <p className="text-teal-400 text-xs mt-1">{errors.gymName}</p>}
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">Gym Email</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">Gym Email</label>
             <input type="email" value={form.gymEmail} onChange={e => set('gymEmail', e.target.value)} placeholder="Optional" className={inputCls('gymEmail')} />
           </div>
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">Gym Contact Number *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">Gym Contact Number *</label>
             <input maxLength={10} value={form.gymContactNumber} onChange={e => set('gymContactNumber', e.target.value.replace(/\D/g, ''))} placeholder="10-digit number" className={inputCls('gymContactNumber')} />
             {errors.gymContactNumber && <p className="text-teal-400 text-xs mt-1">{errors.gymContactNumber}</p>}
           </div>
         </div>
         <div>
-          <label className="block text-sm text-[#78716C] mb-2">Address *</label>
+          <label className="block text-sm text-[#6B5E78] mb-2">Address *</label>
           <input value={form.address} onChange={e => set('address', e.target.value)} placeholder="Street address" className={inputCls('address')} />
           {errors.address && <p className="text-teal-400 text-xs mt-1">{errors.address}</p>}
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">City *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">City *</label>
             <input value={form.city} onChange={e => set('city', e.target.value)} placeholder="City" className={inputCls('city')} />
             {errors.city && <p className="text-teal-400 text-xs mt-1">{errors.city}</p>}
           </div>
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">State *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">State *</label>
             <input value={form.state} onChange={e => set('state', e.target.value)} placeholder="State" className={inputCls('state')} />
             {errors.state && <p className="text-teal-400 text-xs mt-1">{errors.state}</p>}
           </div>
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">PIN Code</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">PIN Code</label>
             <input maxLength={6} inputMode="numeric" value={form.pinCode} onChange={e => set('pinCode', e.target.value.replace(/\D/g, ''))} placeholder="PIN" className={inputCls('pinCode')} />
           </div>
         </div>
@@ -269,9 +269,9 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
 
       {/* Operational Details */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-[#292524] border-b border-[#E7E5E4] pb-2">Operational Details</h2>
+        <h2 className="text-lg font-semibold text-[#292431] border-b border-[#E5DDEB] pb-2">Operational Details</h2>
         <div>
-          <label className="block text-sm text-[#78716C] mb-2">Gym Type *</label>
+          <label className="block text-sm text-[#6B5E78] mb-2">Gym Type *</label>
           <div className="flex flex-wrap gap-2">
             {GYM_TYPES.map(t => (
               <button key={t} type="button" onClick={() => set('gymType', t)} className={selBtnCls(form.gymType === t)}>{t}</button>
@@ -281,18 +281,18 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">Approx. Members *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">Approx. Members *</label>
             <input type="number" value={form.approxMembers} onChange={e => set('approxMembers', e.target.value)} placeholder="e.g. 100" className={inputCls('approxMembers')} />
             {errors.approxMembers && <p className="text-teal-400 text-xs mt-1">{errors.approxMembers}</p>}
           </div>
           <div>
-            <label className="block text-sm text-[#78716C] mb-2">Number of Trainers *</label>
+            <label className="block text-sm text-[#6B5E78] mb-2">Number of Trainers *</label>
             <input type="number" value={form.numTrainers} onChange={e => set('numTrainers', e.target.value)} placeholder="e.g. 5" className={inputCls('numTrainers')} />
             {errors.numTrainers && <p className="text-teal-400 text-xs mt-1">{errors.numTrainers}</p>}
           </div>
         </div>
         <div>
-          <label className="block text-sm text-[#78716C] mb-2">Operating Hours *</label>
+          <label className="block text-sm text-[#6B5E78] mb-2">Operating Hours *</label>
           <div className="flex flex-wrap gap-2">
             {OPERATING_HOURS.map(h => (
               <button key={h} type="button" onClick={() => set('operatingHours', h)} className={selBtnCls(form.operatingHours === h)}>{h}</button>
@@ -303,8 +303,8 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
 
         {/* Training Mode */}
         <div>
-          <label className="block text-sm text-[#78716C] mb-1">Training Mode *</label>
-          <p className="text-xs text-[#78716C] mb-2">Select how your gym provides trainer-led fitness services.</p>
+          <label className="block text-sm text-[#6B5E78] mb-1">Training Mode *</label>
+          <p className="text-xs text-[#6B5E78] mb-2">Select how your gym provides trainer-led fitness services.</p>
           <div className="flex flex-wrap gap-2">
             {[
               { value: 'offline', label: '🏋️ Offline Training' },
@@ -326,8 +326,8 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
 
         {/* Services Offered */}
         <div>
-          <label className="block text-sm text-[#78716C] mb-2">Services Offered *</label>
-          <div className="grid grid-cols-2 gap-3 p-4 border border-[#E7E5E4] rounded-xl bg-[#FFFDF8]">
+          <label className="block text-sm text-[#6B5E78] mb-2">Services Offered *</label>
+          <div className="grid grid-cols-2 gap-3 p-4 border border-[#E5DDEB] rounded-xl bg-[#F7F4FA]">
             {(form.trainingMode === 'online' 
               ? [
                   'AI Fitness Coaching', '1-on-1 Virtual Training', 'Live Online Classes', 
@@ -356,16 +356,16 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                     if (e.target.checked) set('services', [...current, service]);
                     else set('services', current.filter((s: string) => s !== service));
                   }}
-                  className="rounded text-[#F97316] focus:ring-[#F97316] border-[#CBD5E1]"
+                  className="rounded text-[#A991D4] focus:ring-[#A991D4] border-[#E5DDEB]"
                 />
-                <span className="text-sm text-[#292524]">{service}</span>
+                <span className="text-sm text-[#292431]">{service}</span>
               </label>
             ))}
           </div>
           {errors.services && <p className="text-teal-400 text-xs mt-1">{errors.services}</p>}
         </div>
         <div>
-          <label className="block text-sm text-[#78716C] mb-2">Rating *</label>
+          <label className="block text-sm text-[#6B5E78] mb-2">Rating *</label>
           <input type="text" inputMode="decimal" value={form.rating || ''} onChange={e => {
             const v = e.target.value.replace(/[^0-9.]/g, '');
             const parts = v.split('.');
@@ -379,18 +379,18 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
         {/* Gym Description Form */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-sm text-[#78716C] font-medium">Gym Description (Optional)</label>
+            <label className="block text-sm text-[#6B5E78] font-medium">Gym Description (Optional)</label>
             {form.description && (
               <button
                 type="button"
                 onClick={() => set('description', '')}
-                className="text-xs text-[#F97316] hover:underline"
+                className="text-xs text-[#A991D4] hover:underline"
               >
                 Clear
               </button>
             )}
           </div>
-          <p className="text-xs text-[#78716C] mb-2">
+          <p className="text-xs text-[#6B5E78] mb-2">
             Click quick template buttons or enter your custom gym description:
           </p>
           <div className="flex flex-wrap gap-2 mb-3">
@@ -418,8 +418,8 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                 onClick={() => set('description', tpl.text)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                   form.description === tpl.text
-                    ? 'bg-[#F97316] text-white border-[#F97316] shadow-xs'
-                    : 'bg-[#FFFDF8] border-[#CBD5E1] text-[#292524] hover:border-[#F97316] hover:bg-orange-50/50'
+                    ? 'bg-[#A991D4] text-[#292431] border-[#A991D4] shadow-xs'
+                    : 'bg-[#F7F4FA] border-[#E5DDEB] text-[#292431] hover:border-[#A991D4] hover:bg-orange-50/50'
                 }`}
               >
                 {tpl.label}
@@ -431,15 +431,15 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
             value={form.description || ''}
             onChange={e => set('description', e.target.value)}
             placeholder="Tell prospective members about your gym atmosphere, specialty equipment, trainer expertise, and facilities..."
-            className="w-full px-4 py-2.5 bg-[#FFFDF8] border border-[#CBD5E1] rounded-xl text-sm text-[#292524] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:border-transparent transition-all"
+            className="w-full px-4 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm text-[#292431] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#A991D4] focus:border-transparent transition-all"
           />
           {errors.description && <p className="text-teal-400 text-xs mt-1">{errors.description}</p>}
         </div>
         <div>
-          <label className="block text-sm text-[#78716C] mb-2">Gym Photo/Logo (Optional)</label>
+          <label className="block text-sm text-[#6B5E78] mb-2">Gym Photo/Logo (Optional)</label>
           <div className="flex items-center gap-4">
             {form.logo && (
-              <img src={form.logo} alt="Gym Logo" className="w-16 h-16 rounded-xl object-cover border border-[#E7E5E4]" />
+              <img src={form.logo} alt="Gym Logo" className="w-16 h-16 rounded-xl object-cover border border-[#E5DDEB]" />
             )}
             <input 
               type="file" 
@@ -452,7 +452,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                   reader.readAsDataURL(file);
                 }
               }}
-              className="text-sm text-[#78716C] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#F97316] file:text-black hover:file:bg-[#DC2626] transition-colors"
+              className="text-sm text-[#6B5E78] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#A991D4] file:text-black hover:file:bg-[#C43D4D] transition-colors"
             />
           </div>
         </div>

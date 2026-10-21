@@ -242,7 +242,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-[#121818] text-white overflow-hidden animate-in fade-in">
+    <div className="fixed inset-0 z-[100] flex flex-col bg-[#292431] text-white overflow-hidden animate-in fade-in">
       {/* Top Navbar */}
       <div className="px-4 py-3 bg-[#1B2323] border-b border-white/10 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">
@@ -255,7 +255,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded bg-[#F97316] text-emerald-300">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded bg-[#A991D4] text-emerald-300">
                 {dayName}
               </span>
               <span className="text-xs text-white/60 font-semibold">
@@ -353,7 +353,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                 <div className="flex gap-3 mt-6">
                   <button
                     onClick={handleSkipRest}
-                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-[#121818] rounded-xl text-xs md:text-sm font-black transition-all shadow-lg shadow-emerald-500/20 cursor-pointer"
+                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-[#292431] rounded-xl text-xs md:text-sm font-black transition-all shadow-lg shadow-emerald-500/20 cursor-pointer"
                   >
                     Skip Rest & Begin Set {currentSet}
                   </button>
@@ -367,7 +367,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               </div>
             ) : exerciseCompleted ? (
               <div className="absolute inset-0 bg-gradient-to-b from-[#132B2B] to-[#0D1F1F] flex flex-col items-center justify-center p-6 text-center z-30 animate-in zoom-in-95">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-300 text-[#121818] flex items-center justify-center mb-3 shadow-xl shadow-emerald-500/30 animate-bounce">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-300 text-[#292431] flex items-center justify-center mb-3 shadow-xl shadow-emerald-500/30 animate-bounce">
                   <CheckCircle2 size={36} />
                 </div>
                 <span className="text-[11px] font-extrabold uppercase tracking-widest text-emerald-400">
@@ -413,7 +413,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                   {currentIdx < exercises.length - 1 ? (
                     <button
                       onClick={handleProceedToNextExercise}
-                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:opacity-95 text-[#121818] rounded-xl text-xs font-black transition-all shadow-xl shadow-emerald-500/20 flex items-center gap-2 cursor-pointer"
+                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:opacity-95 text-[#292431] rounded-xl text-xs font-black transition-all shadow-xl shadow-emerald-500/20 flex items-center gap-2 cursor-pointer"
                     >
                       <span>Start Exercise {currentIdx + 2} Now</span>
                       <ArrowRight size={16} />
@@ -421,7 +421,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                   ) : (
                     <button
                       onClick={() => setWorkoutFinished(true)}
-                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 text-[#121818] rounded-xl text-xs font-black transition-all shadow-lg flex items-center gap-1.5 cursor-pointer"
+                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 text-[#292431] rounded-xl text-xs font-black transition-all shadow-lg flex items-center gap-1.5 cursor-pointer"
                     >
                       <Award size={16} /> Complete Workout
                     </button>
@@ -469,7 +469,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               <button
                 type="button"
                 onClick={handleProceedToNextExercise}
-                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#292431] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>
                   Next Exercise: {exercises[currentIdx + 1]?.exerciseId?.name || 'Exercise ' + (currentIdx + 2)} ({autoAdvanceCountdown ?? 3}s)
@@ -480,7 +480,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               <button
                 type="button"
                 onClick={() => setWorkoutFinished(true)}
-                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#292431] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Award size={20} />
                 <span>Complete Workout</span>
@@ -490,7 +490,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                 type="button"
                 onClick={isResting ? handleSkipRest : handleCompleteSet}
                 disabled={savingProgress}
-                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/20 active:scale-95 disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#292431] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/20 active:scale-95 disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <CheckCircle2 size={20} />
                 <span>
@@ -541,7 +541,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                 onClick={() => setActiveTab('instructions')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
                   activeTab === 'instructions'
-                    ? 'bg-white text-[#121818]'
+                    ? 'bg-white text-[#292431]'
                     : 'text-white/60 hover:text-white'
                 }`}
               >
@@ -600,7 +600,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                     }}
                     className={`w-full text-left p-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
                       isActive
-                        ? 'bg-[#F97316] text-white border border-emerald-400/50 shadow-sm'
+                        ? 'bg-[#A991D4] text-[#292431] border border-emerald-400/50 shadow-sm'
                         : isCompleted
                         ? 'bg-emerald-950/40 text-emerald-300 border border-emerald-500/30'
                         : 'text-white/60 hover:bg-white/5 hover:text-white'
@@ -609,9 +609,9 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                     <div className="flex items-center gap-2 truncate">
                       <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold ${
                         isCompleted
-                          ? 'bg-emerald-500 text-[#121818]'
+                          ? 'bg-emerald-500 text-[#292431]'
                           : isActive
-                          ? 'bg-white text-[#F97316]'
+                          ? 'bg-white text-[#A991D4]'
                           : 'bg-white/10 text-white'
                       }`}>
                         {isCompleted ? '✓' : idx + 1}
@@ -640,7 +640,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
       {workoutFinished && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in zoom-in-95">
           <div className="bg-[#1B2323] border border-white/15 rounded-3xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500 to-emerald-400 text-[#121818] flex items-center justify-center mx-auto shadow-2xl animate-bounce">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500 to-emerald-400 text-[#292431] flex items-center justify-center mx-auto shadow-2xl animate-bounce">
               <Award size={42} />
             </div>
 
@@ -665,7 +665,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
 
             <button
               onClick={onClose}
-              className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#121818] rounded-xl text-sm font-black transition-all shadow-xl shadow-emerald-500/30"
+              className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-[#292431] rounded-xl text-sm font-black transition-all shadow-xl shadow-emerald-500/30"
             >
               Return to My Dashboard
             </button>

@@ -54,7 +54,7 @@ const GymAdminWithdrawalRequests = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="w-10 h-10 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -62,22 +62,22 @@ const GymAdminWithdrawalRequests = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#292524]">Withdrawal Requests</h1>
-        <p className="text-[#78716C] text-sm mt-1">Review and process trainer withdrawal requests</p>
+        <h1 className="text-2xl font-bold text-[#292431]">Withdrawal Requests</h1>
+        <p className="text-[#6B5E78] text-sm mt-1">Review and process trainer withdrawal requests</p>
       </div>
 
-      <div className="bg-white border border-[#FED7AA] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#E9DFF4] rounded-2xl overflow-hidden shadow-sm">
         {requests.length === 0 ? (
           <div className="p-12 text-center">
-            <IndianRupee size={40} className="mx-auto text-[#CBD5E1] mb-4" />
-            <h3 className="text-lg font-semibold text-[#78716C]">No Pending Requests</h3>
-            <p className="text-[#78716C] text-sm mt-2">There are currently no withdrawal requests from trainers.</p>
+            <IndianRupee size={40} className="mx-auto text-[#E5DDEB] mb-4" />
+            <h3 className="text-lg font-semibold text-[#6B5E78]">No Pending Requests</h3>
+            <p className="text-[#6B5E78] text-sm mt-2">There are currently no withdrawal requests from trainers.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#FFFDF8] border-b border-[#FED7AA] text-xs uppercase tracking-wider text-[#78716C]">
+                <tr className="bg-[#F7F4FA] border-b border-[#E9DFF4] text-xs uppercase tracking-wider text-[#6B5E78]">
                   <th className="px-5 py-3 font-semibold">Trainer</th>
                   <th className="px-5 py-3 font-semibold">Date Requested</th>
                   <th className="px-5 py-3 font-semibold text-right">Amount</th>
@@ -85,27 +85,27 @@ const GymAdminWithdrawalRequests = () => {
                   <th className="px-5 py-3 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#FED7AA] text-sm">
+              <tbody className="divide-y divide-[#E9DFF4] text-sm">
                 {requests.map((req) => (
-                  <tr key={req._id} className="hover:bg-[#FFFDF8] transition-colors">
+                  <tr key={req._id} className="hover:bg-[#F7F4FA] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-[#EA580C] font-bold shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-[#967CC5] font-bold shrink-0">
                           {req.trainerId?.name?.[0] || 'T'}
                         </div>
                         <div>
-                          <p className="font-semibold text-[#292524]">{req.trainerId?.name || 'Unknown'}</p>
-                          <p className="text-xs text-[#78716C]">{req.trainerId?.email}</p>
+                          <p className="font-semibold text-[#292431]">{req.trainerId?.name || 'Unknown'}</p>
+                          <p className="text-xs text-[#6B5E78]">{req.trainerId?.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#78716C]">
+                    <td className="px-5 py-4 text-[#6B5E78]">
                       {new Date(req.requestedAt).toLocaleDateString('en-IN', {
                         day: '2-digit', month: 'short', year: 'numeric',
                         hour: '2-digit', minute: '2-digit'
                       })}
                     </td>
-                    <td className="px-5 py-4 text-right font-bold text-[#292524]">
+                    <td className="px-5 py-4 text-right font-bold text-[#292431]">
                       ₹{req.amount?.toLocaleString('en-IN')}
                     </td>
                     <td className="px-5 py-4 text-center">
@@ -116,7 +116,7 @@ const GymAdminWithdrawalRequests = () => {
                         </span>
                       )}
                       {req.status === 'Approved' && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#FED7AA]/10 text-[#F97316]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#E9DFF4]/10 text-[#A991D4]">
                           <CheckCircle size={12} />
                           Approved
                         </span>
@@ -134,7 +134,7 @@ const GymAdminWithdrawalRequests = () => {
                           <button
                             onClick={() => handleApprove(req._id)}
                             disabled={processing === req._id}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F97316] text-white rounded-lg text-xs font-semibold hover:bg-[#EA580C] transition-colors disabled:opacity-50"
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#A991D4] text-[#292431] rounded-lg text-xs font-semibold hover:bg-[#967CC5] transition-colors disabled:opacity-50"
                           >
                             {processing === req._id ? (
                               <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -153,7 +153,7 @@ const GymAdminWithdrawalRequests = () => {
                           </button>
                         </div>
                       ) : (
-                        <span className="text-xs font-medium text-[#78716C]">
+                        <span className="text-xs font-medium text-[#6B5E78]">
                           {new Date(req.processedAt || req.updatedAt).toLocaleDateString('en-IN', {
                             day: '2-digit', month: 'short', year: 'numeric'
                           })}

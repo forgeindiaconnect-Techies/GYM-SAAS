@@ -235,8 +235,8 @@ const GymAdminTrainerSchedule = () => {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Trainer Schedule</h1>
-          <p className="text-[#78716C] mt-1">
+          <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Trainer Schedule</h1>
+          <p className="text-[#6B5E78] mt-1">
             Live schedule showing customer bookings and trainer assignments.
           </p>
         </div>
@@ -244,43 +244,43 @@ const GymAdminTrainerSchedule = () => {
           <button
             onClick={fetchData}
             title="Refresh schedule"
-            className="p-2.5 bg-[#FFFFFF] border border-[#E7E5E4] rounded-xl hover:bg-[#FFFDF8] text-[#292524] transition-colors shadow-sm"
+            className="p-2.5 bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl hover:bg-[#F7F4FA] text-[#292431] transition-colors shadow-sm"
           >
-            <RefreshCw size={18} className={loading ? 'animate-spin text-[#F97316]' : ''} />
+            <RefreshCw size={18} className={loading ? 'animate-spin text-[#A991D4]' : ''} />
           </button>
         </div>
       </div>
 
       {/* Main Grid Card */}
-      <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
         {/* Navigation & Controls */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
           {/* Week Navigation */}
           <div className="flex items-center space-x-3">
-            <div className="flex space-x-1 bg-[#FFFDF8] p-1 rounded-xl border border-[#E7E5E4]">
+            <div className="flex space-x-1 bg-[#F7F4FA] p-1 rounded-xl border border-[#E5DDEB]">
               <button
                 onClick={handlePrevWeek}
                 title="Previous Week"
-                className="p-1.5 hover:bg-[#FFFFFF] rounded-lg transition-colors text-[#292524]"
+                className="p-1.5 hover:bg-[#FFFFFF] rounded-lg transition-colors text-[#292431]"
               >
                 <ChevronLeft size={18} />
               </button>
               <button
                 onClick={handleThisWeek}
-                className="px-2.5 py-1 text-xs font-bold hover:bg-[#FFFFFF] rounded-lg transition-colors text-[#F97316]"
+                className="px-2.5 py-1 text-xs font-bold hover:bg-[#FFFFFF] rounded-lg transition-colors text-[#A991D4]"
               >
                 This Week
               </button>
               <button
                 onClick={handleNextWeek}
                 title="Next Week"
-                className="p-1.5 hover:bg-[#FFFFFF] rounded-lg transition-colors text-[#292524]"
+                className="p-1.5 hover:bg-[#FFFFFF] rounded-lg transition-colors text-[#292431]"
               >
                 <ChevronRight size={18} />
               </button>
             </div>
-            <h2 className="text-lg font-bold text-[#292524] flex items-center">
-              <CalendarIcon size={18} className="mr-2 text-[#F97316]" />
+            <h2 className="text-lg font-bold text-[#292431] flex items-center">
+              <CalendarIcon size={18} className="mr-2 text-[#A991D4]" />
               {weekRangeLabel}
             </h2>
           </div>
@@ -288,12 +288,12 @@ const GymAdminTrainerSchedule = () => {
           {/* Trainer Filter & Legend */}
           <div className="flex flex-wrap items-center gap-3">
             {/* Trainer Filter Dropdown */}
-            <div className="flex items-center space-x-2 bg-[#FFFDF8] px-3 py-1.5 rounded-xl border border-[#E7E5E4]">
-              <Filter size={14} className="text-[#78716C]" />
+            <div className="flex items-center space-x-2 bg-[#F7F4FA] px-3 py-1.5 rounded-xl border border-[#E5DDEB]">
+              <Filter size={14} className="text-[#6B5E78]" />
               <select
                 value={selectedTrainerFilter}
                 onChange={(e) => setSelectedTrainerFilter(e.target.value)}
-                className="bg-transparent text-xs font-bold text-[#292524] outline-none cursor-pointer"
+                className="bg-transparent text-xs font-bold text-[#292431] outline-none cursor-pointer"
               >
                 <option value="ALL">All Trainers ({trainers.length})</option>
                 {trainers.map((t) => (
@@ -313,32 +313,32 @@ const GymAdminTrainerSchedule = () => {
         </div>
 
         {/* Schedule Grid Table */}
-        <div className="overflow-x-auto custom-scrollbar border border-[#E7E5E4] rounded-xl bg-[#FFFFFF]">
+        <div className="overflow-x-auto custom-scrollbar border border-[#E5DDEB] rounded-xl bg-[#FFFFFF]">
           <div className="min-w-[1000px]">
             {/* Header Columns */}
-            <div className="grid grid-cols-8 border-b border-[#E7E5E4] bg-[#FFFDF8]">
-              <div className="p-3.5 border-r border-[#E7E5E4] flex items-center justify-center text-[#78716C] font-bold text-xs uppercase tracking-wider">
+            <div className="grid grid-cols-8 border-b border-[#E5DDEB] bg-[#F7F4FA]">
+              <div className="p-3.5 border-r border-[#E5DDEB] flex items-center justify-center text-[#6B5E78] font-bold text-xs uppercase tracking-wider">
                 Time
               </div>
               {weekDays.map((col) => (
                 <div
                   key={col.dayName}
-                  className={`p-3 border-r border-[#E7E5E4] text-center last:border-0 ${
-                    col.isToday ? 'bg-[#F97316]/10 font-bold' : ''
+                  className={`p-3 border-r border-[#E5DDEB] text-center last:border-0 ${
+                    col.isToday ? 'bg-[#A991D4]/10 font-bold' : ''
                   }`}
                 >
-                  <p className="font-bold text-sm text-[#292524]">{col.dayName}</p>
-                  <p className="text-xs text-[#78716C] font-medium">{col.displayDate}</p>
+                  <p className="font-bold text-sm text-[#292431]">{col.dayName}</p>
+                  <p className="text-xs text-[#6B5E78] font-medium">{col.displayDate}</p>
                 </div>
               ))}
             </div>
 
             {/* Hourly Grid Rows */}
-            <div className="relative divide-y divide-[#E7E5E4]">
+            <div className="relative divide-y divide-[#E5DDEB]">
               {HOURS.map((hour) => (
                 <div key={hour} className="grid grid-cols-8 min-h-[92px]">
                   {/* Time label */}
-                  <div className="p-3 border-r border-[#E7E5E4] text-center text-xs text-[#78716C] font-semibold bg-[#FAFAFA] flex items-start justify-center pt-3">
+                  <div className="p-3 border-r border-[#E5DDEB] text-center text-xs text-[#6B5E78] font-semibold bg-[#FAFAFA] flex items-start justify-center pt-3">
                     {hour}
                   </div>
 
@@ -355,8 +355,8 @@ const GymAdminTrainerSchedule = () => {
                     return (
                       <div
                         key={`${col.dayName}-${hour}`}
-                        className={`p-1.5 border-r border-[#E7E5E4] last:border-0 relative hover:bg-slate-50/50 transition-colors ${
-                          col.isToday ? 'bg-[#F97316]/[0.02]' : ''
+                        className={`p-1.5 border-r border-[#E5DDEB] last:border-0 relative hover:bg-slate-50/50 transition-colors ${
+                          col.isToday ? 'bg-[#A991D4]/[0.02]' : ''
                         }`}
                       >
                         {matchingItems.map((item) => (
@@ -376,14 +376,14 @@ const GymAdminTrainerSchedule = () => {
                             </div>
 
                             {/* Trainer Name */}
-                            <div className="text-xs font-bold text-[#292524] flex items-center truncate">
-                              <User size={12} className="mr-1 text-[#F97316] shrink-0" />
+                            <div className="text-xs font-bold text-[#292431] flex items-center truncate">
+                              <User size={12} className="mr-1 text-[#A991D4] shrink-0" />
                               <span className="truncate">{item.trainerName}</span>
                             </div>
 
                             {/* Customer Name */}
                             {item.customerName && (
-                              <div className="text-[11px] font-semibold text-[#F97316] mt-0.5 flex items-center truncate bg-white/50 px-1 py-0.5 rounded">
+                              <div className="text-[11px] font-semibold text-[#A991D4] mt-0.5 flex items-center truncate bg-white/50 px-1 py-0.5 rounded">
                                 <span className="font-bold mr-1">Client:</span>
                                 <span className="truncate">{item.customerName}</span>
                               </div>
@@ -415,13 +415,13 @@ const GymAdminTrainerSchedule = () => {
 
       {/* Roster of Customer Training Sessions */}
       {filteredScheduleItems.length > 0 && (
-        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-2xl p-6 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-3">
+        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E5DDEB] pb-3">
             <div>
-              <h3 className="text-base font-bold text-[#292524]">Scheduled Customer Bookings</h3>
-              <p className="text-xs text-[#78716C]">All active customer appointments with assigned trainers</p>
+              <h3 className="text-base font-bold text-[#292431]">Scheduled Customer Bookings</h3>
+              <p className="text-xs text-[#6B5E78]">All active customer appointments with assigned trainers</p>
             </div>
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#FFFDF8] border border-[#FED7AA] text-[#F97316]">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#F7F4FA] border border-[#E9DFF4] text-[#A991D4]">
               {filteredScheduleItems.length} Booking{filteredScheduleItems.length === 1 ? '' : 's'}
             </span>
           </div>
@@ -431,16 +431,16 @@ const GymAdminTrainerSchedule = () => {
               <div
                 key={item.id}
                 onClick={() => setSelectedDetail(item)}
-                className="p-4 bg-[#FFFDF8] border border-[#FED7AA] hover:border-[#F97316] rounded-xl cursor-pointer transition-all hover:shadow-xs space-y-2.5"
+                className="p-4 bg-[#F7F4FA] border border-[#E9DFF4] hover:border-[#A991D4] rounded-xl cursor-pointer transition-all hover:shadow-xs space-y-2.5"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold text-xs shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center font-bold text-xs shrink-0">
                       {item.trainerName.charAt(0)}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-[#292524]">{item.trainerName}</p>
-                      <p className="text-[11px] font-semibold text-[#F97316]">Client: {item.customerName || 'Member'}</p>
+                      <p className="text-xs font-bold text-[#292431]">{item.trainerName}</p>
+                      <p className="text-[11px] font-semibold text-[#A991D4]">Client: {item.customerName || 'Member'}</p>
                     </div>
                   </div>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
@@ -450,11 +450,11 @@ const GymAdminTrainerSchedule = () => {
                   </span>
                 </div>
 
-                <div className="text-xs text-[#78716C] flex items-center justify-between pt-1 border-t border-[#FED7AA]/60">
-                  <span className="flex items-center gap-1 font-medium text-[#292524]">
-                    <CalendarIcon size={12} className="text-[#F97316]" /> {item.date}
+                <div className="text-xs text-[#6B5E78] flex items-center justify-between pt-1 border-t border-[#E9DFF4]/60">
+                  <span className="flex items-center gap-1 font-medium text-[#292431]">
+                    <CalendarIcon size={12} className="text-[#A991D4]" /> {item.date}
                   </span>
-                  <span className="font-semibold text-[#292524]">{item.time} ({item.duration}m)</span>
+                  <span className="font-semibold text-[#292431]">{item.time} ({item.duration}m)</span>
                 </div>
               </div>
             ))}
@@ -465,22 +465,22 @@ const GymAdminTrainerSchedule = () => {
       {/* Detail Modal */}
       {selectedDetail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full shadow-2xl border border-[#E7E5E4] overflow-hidden">
-            <div className="p-6 border-b border-[#E7E5E4] flex justify-between items-center bg-[#FFFDF8]">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full shadow-2xl border border-[#E5DDEB] overflow-hidden">
+            <div className="p-6 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA]">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-[#F97316] text-white flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[#A991D4] text-[#292431] flex items-center justify-center">
                   <Dumbbell size={20} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#292524]">{selectedDetail.type}</h2>
-                  <p className="text-xs text-[#78716C]">
+                  <h2 className="text-xl font-bold text-[#292431]">{selectedDetail.type}</h2>
+                  <p className="text-xs text-[#6B5E78]">
                     {selectedDetail.bookingId ? `Booking #${selectedDetail.bookingId}` : 'Customer Session'}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedDetail(null)}
-                className="p-2 text-[#78716C] hover:text-[#292524] hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 text-[#6B5E78] hover:text-[#292431] hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <X size={20} />
               </button>
@@ -488,61 +488,61 @@ const GymAdminTrainerSchedule = () => {
 
             <div className="p-6 space-y-4 text-sm">
               {/* Trainer Info */}
-              <div className="p-3.5 bg-[#FFFDF8] rounded-xl border border-[#E7E5E4] flex items-center justify-between">
+              <div className="p-3.5 bg-[#F7F4FA] rounded-xl border border-[#E5DDEB] flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-[#78716C] uppercase">Assigned Trainer</p>
-                  <p className="text-base font-bold text-[#292524] mt-0.5 flex items-center">
-                    <User size={16} className="mr-1.5 text-[#F97316]" />
+                  <p className="text-xs font-bold text-[#6B5E78] uppercase">Assigned Trainer</p>
+                  <p className="text-base font-bold text-[#292431] mt-0.5 flex items-center">
+                    <User size={16} className="mr-1.5 text-[#A991D4]" />
                     {selectedDetail.trainerName}
                   </p>
                 </div>
-                <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-[#E7E5E4] text-[#F97316]">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-[#E5DDEB] text-[#A991D4]">
                   Trainer Staff
                 </span>
               </div>
 
               {/* Customer Info */}
               {selectedDetail.customerName && (
-                <div className="p-3.5 bg-[#F97316]/5 rounded-xl border border-[#F97316]/20">
-                  <p className="text-xs font-bold text-[#F97316] uppercase">Booked Customer / Member</p>
-                  <p className="text-base font-bold text-[#292524] mt-0.5 flex items-center">
-                    <User size={16} className="mr-1.5 text-[#F97316]" />
+                <div className="p-3.5 bg-[#A991D4]/5 rounded-xl border border-[#A991D4]/20">
+                  <p className="text-xs font-bold text-[#A991D4] uppercase">Booked Customer / Member</p>
+                  <p className="text-base font-bold text-[#292431] mt-0.5 flex items-center">
+                    <User size={16} className="mr-1.5 text-[#A991D4]" />
                     {selectedDetail.customerName}
                   </p>
                   {selectedDetail.customerEmail && (
-                    <p className="text-xs text-[#78716C] mt-1">{selectedDetail.customerEmail}</p>
+                    <p className="text-xs text-[#6B5E78] mt-1">{selectedDetail.customerEmail}</p>
                   )}
                 </div>
               )}
 
               {/* Date, Time & Mode */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-gray-50 rounded-xl border border-[#E7E5E4]">
-                  <p className="text-xs font-bold text-[#78716C] uppercase">Date & Day</p>
-                  <p className="font-semibold text-[#292524] mt-1">
+                <div className="p-3 bg-gray-50 rounded-xl border border-[#E5DDEB]">
+                  <p className="text-xs font-bold text-[#6B5E78] uppercase">Date & Day</p>
+                  <p className="font-semibold text-[#292431] mt-1">
                     {selectedDetail.date || selectedDetail.day}
                   </p>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-xl border border-[#E7E5E4]">
-                  <p className="text-xs font-bold text-[#78716C] uppercase">Time & Duration</p>
-                  <p className="font-semibold text-[#292524] mt-1">
+                <div className="p-3 bg-gray-50 rounded-xl border border-[#E5DDEB]">
+                  <p className="text-xs font-bold text-[#6B5E78] uppercase">Time & Duration</p>
+                  <p className="font-semibold text-[#292431] mt-1">
                     {selectedDetail.time} ({selectedDetail.durationHours} Hrs)
                   </p>
                 </div>
               </div>
 
               {/* Mode & Status */}
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-[#E7E5E4]">
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-[#E5DDEB]">
                 <div>
-                  <p className="text-xs font-bold text-[#78716C] uppercase">Session Mode</p>
-                  <p className="font-semibold text-[#292524] mt-0.5 flex items-center gap-1.5">
+                  <p className="text-xs font-bold text-[#6B5E78] uppercase">Session Mode</p>
+                  <p className="font-semibold text-[#292431] mt-0.5 flex items-center gap-1.5">
                     {selectedDetail.mode === 'Online' ? (
                       <>
                         <Video size={14} className="text-teal-600" /> Virtual Video Coaching
                       </>
                     ) : (
                       <>
-                        <MapPin size={14} className="text-[#F97316]" /> In-Person Gym Floor
+                        <MapPin size={14} className="text-[#A991D4]" /> In-Person Gym Floor
                       </>
                     )}
                   </p>
@@ -571,11 +571,11 @@ const GymAdminTrainerSchedule = () => {
               )}
             </div>
 
-            <div className="p-4 bg-[#FFFDF8] border-t border-[#E7E5E4] flex justify-end">
+            <div className="p-4 bg-[#F7F4FA] border-t border-[#E5DDEB] flex justify-end">
               <button
                 type="button"
                 onClick={() => setSelectedDetail(null)}
-                className="px-6 py-2 bg-[#F97316] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors"
+                className="px-6 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors"
               >
                 Close
               </button>

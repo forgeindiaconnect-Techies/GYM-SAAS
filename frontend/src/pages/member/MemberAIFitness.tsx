@@ -608,7 +608,7 @@ const MemberAIFitness: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-24">
-        <Loader2 className="animate-spin text-[#F97316]" size={40} />
+        <Loader2 className="animate-spin text-[#A991D4]" size={40} />
       </div>
     );
   }
@@ -616,17 +616,17 @@ const MemberAIFitness: React.FC = () => {
   if (!hasAccess) {
     return (
       <div className="max-w-3xl mx-auto mt-10">
-        <div className="bg-[#FFFFFF] border border-[#E7E5E4] rounded-3xl p-12 text-center shadow-xs">
-          <div className="w-20 h-20 bg-[#F1F5F9] border border-[#FED7AA] rounded-full flex items-center justify-center mx-auto mb-6">
-            <Lock size={32} className="text-[#78716C]" />
+        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-3xl p-12 text-center shadow-xs">
+          <div className="w-20 h-20 bg-[#F7F4FA] border border-[#E9DFF4] rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock size={32} className="text-[#6B5E78]" />
           </div>
-          <h2 className="text-3xl font-bold text-[#292524] mb-4">AI Fitness Assessment Locked</h2>
-          <p className="text-[#78716C] text-lg mb-8 max-w-lg mx-auto">
+          <h2 className="text-3xl font-bold text-[#292431] mb-4">AI Fitness Assessment Locked</h2>
+          <p className="text-[#6B5E78] text-lg mb-8 max-w-lg mx-auto">
             You need an active gym membership to access personalized AI fitness analysis.
           </p>
           <Link 
             to="/gyms" 
-            className="inline-flex items-center px-8 py-4 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-all hover:scale-105 shadow-lg shadow-teal-900/20"
+            className="inline-flex items-center px-8 py-4 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-all hover:scale-105 shadow-lg shadow-teal-900/20"
           >
             <Activity className="mr-2" size={20} /> Find a Gym to Unlock
           </Link>
@@ -644,19 +644,19 @@ const MemberAIFitness: React.FC = () => {
     <div className="max-w-6xl mx-auto space-y-8 pb-16 animate-fade-in">
 
       {/* Header Bar */}
-      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-2xl flex items-center justify-center shadow-md shadow-orange-500/20 text-white shrink-0">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#A991D4] to-[#967CC5] rounded-2xl flex items-center justify-center shadow-md shadow-slate-1000/20 text-white shrink-0">
             <Bot size={26} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl sm:text-3xl font-black text-[#292524] tracking-tight">AI Fitness Assistant</h1>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#292431] tracking-tight">AI Fitness Assistant</h1>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#A991D4]/10 text-[#A991D4] border border-[#A991D4]/20">
                 Personalized Plan
               </span>
             </div>
-            <p className="text-[#78716C] mt-1 text-xs sm:text-sm">
+            <p className="text-[#6B5E78] mt-1 text-xs sm:text-sm">
               Comprehensive customer profile, Monday to Sunday workout plan with animated video guides, and 7-day varied diet plan.
             </p>
           </div>
@@ -665,7 +665,7 @@ const MemberAIFitness: React.FC = () => {
         <button
           onClick={handleSubmitAssessment}
           disabled={isSubmitting}
-          className="px-6 py-3.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-extrabold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-[#F97316]/20 transition-all cursor-pointer active:scale-95 disabled:opacity-50 shrink-0"
+          className="px-6 py-3.5 bg-gradient-to-r from-[#A991D4] to-[#967CC5] hover:opacity-95 text-white font-extrabold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-[#A991D4]/20 transition-all cursor-pointer active:scale-95 disabled:opacity-50 shrink-0"
         >
           {isSubmitting ? (
             <>
@@ -682,15 +682,15 @@ const MemberAIFitness: React.FC = () => {
       </div>
 
       {/* ===================== 1. VERIFIED CUSTOMER PROFILE CARD ===================== */}
-      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+      <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E5DDEB] gap-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-base shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#A991D4] flex items-center justify-center font-bold text-base shrink-0">
               <User size={20} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#292524]">Customer Details &amp; Fitness Profile</h2>
-              <p className="text-xs text-[#78716C]">Verified member biometrics &amp; training preferences</p>
+              <h2 className="text-xl font-bold text-[#292431]">Customer Details &amp; Fitness Profile</h2>
+              <p className="text-xs text-[#6B5E78]">Verified member biometrics &amp; training preferences</p>
             </div>
           </div>
           <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200 self-start sm:self-auto">
@@ -700,82 +700,82 @@ const MemberAIFitness: React.FC = () => {
 
         {/* Details Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3.5 text-center">
-          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Customer Name</span>
-            <p className="text-sm font-extrabold text-[#292524] truncate">{formData.fullName}</p>
+          <div className="p-3 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="text-[10px] text-[#6B5E78] uppercase font-bold block mb-1">Customer Name</span>
+            <p className="text-sm font-extrabold text-[#292431] truncate">{formData.fullName}</p>
           </div>
 
-          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Age / Gender</span>
-            <p className="text-sm font-extrabold text-[#292524]">{formData.age} yrs • {formData.gender}</p>
+          <div className="p-3 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="text-[10px] text-[#6B5E78] uppercase font-bold block mb-1">Age / Gender</span>
+            <p className="text-sm font-extrabold text-[#292431]">{formData.age} yrs • {formData.gender}</p>
           </div>
 
-          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Height / Weight</span>
-            <p className="text-sm font-extrabold text-[#292524]">{formData.height} cm • {formData.weight} kg</p>
+          <div className="p-3 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="text-[10px] text-[#6B5E78] uppercase font-bold block mb-1">Height / Weight</span>
+            <p className="text-sm font-extrabold text-[#292431]">{formData.height} cm • {formData.weight} kg</p>
           </div>
 
-          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">BMI (Calculated)</span>
-            <p className="text-sm font-extrabold text-[#F97316]">{bmi} <span className="text-[10px] font-normal text-emerald-600">(Normal)</span></p>
+          <div className="p-3 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="text-[10px] text-[#6B5E78] uppercase font-bold block mb-1">BMI (Calculated)</span>
+            <p className="text-sm font-extrabold text-[#A991D4]">{bmi} <span className="text-[10px] font-normal text-emerald-600">(Normal)</span></p>
           </div>
 
-          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Target Weight</span>
+          <div className="p-3 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="text-[10px] text-[#6B5E78] uppercase font-bold block mb-1">Target Weight</span>
             <p className="text-sm font-extrabold text-emerald-700">{formData.targetWeight} kg</p>
           </div>
 
-          <div className="p-3 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="text-[10px] text-[#78716C] uppercase font-bold block mb-1">Primary Goal</span>
-            <p className="text-sm font-extrabold text-[#F97316] truncate">{formData.fitnessGoal}</p>
+          <div className="p-3 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="text-[10px] text-[#6B5E78] uppercase font-bold block mb-1">Primary Goal</span>
+            <p className="text-sm font-extrabold text-[#A991D4] truncate">{formData.fitnessGoal}</p>
           </div>
         </div>
 
         {/* Secondary Details Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-          <div className="p-3.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="font-bold text-[#78716C] block text-[10px] uppercase mb-1">Training Mode &amp; Frequency</span>
-            <p className="font-semibold text-[#292524]">{formData.preferredTraining} • {formData.availableWorkoutDays}</p>
+          <div className="p-3.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="font-bold text-[#6B5E78] block text-[10px] uppercase mb-1">Training Mode &amp; Frequency</span>
+            <p className="font-semibold text-[#292431]">{formData.preferredTraining} • {formData.availableWorkoutDays}</p>
           </div>
 
-          <div className="p-3.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="font-bold text-[#78716C] block text-[10px] uppercase mb-1">Preferred Time &amp; Gym Access</span>
-            <p className="font-semibold text-[#292524]">{formData.preferredWorkoutTime}</p>
+          <div className="p-3.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="font-bold text-[#6B5E78] block text-[10px] uppercase mb-1">Preferred Time &amp; Gym Access</span>
+            <p className="font-semibold text-[#292431]">{formData.preferredWorkoutTime}</p>
           </div>
 
-          <div className="p-3.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="font-bold text-[#78716C] block text-[10px] uppercase mb-1">Dietary Preference</span>
-            <p className="font-semibold text-[#292524]">{formData.dietaryPreferences}</p>
+          <div className="p-3.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="font-bold text-[#6B5E78] block text-[10px] uppercase mb-1">Dietary Preference</span>
+            <p className="font-semibold text-[#292431]">{formData.dietaryPreferences}</p>
           </div>
 
-          <div className="p-3.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl">
-            <span className="font-bold text-[#78716C] block text-[10px] uppercase mb-1">Emergency Contact</span>
-            <p className="font-semibold text-[#292524]">{formData.emergencyContactName} ({formData.emergencyContactRelation})</p>
+          <div className="p-3.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl">
+            <span className="font-bold text-[#6B5E78] block text-[10px] uppercase mb-1">Emergency Contact</span>
+            <p className="font-semibold text-[#292431]">{formData.emergencyContactName} ({formData.emergencyContactRelation})</p>
           </div>
         </div>
       </div>
 
       {/* ===================== 2. MONDAY TO SUNDAY WORKOUT PLAN (WITH ANIMATED VIDEO DEMOS) ===================== */}
-      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+      <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E5DDEB] gap-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-base shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#A991D4] flex items-center justify-center font-bold text-base shrink-0">
               <Dumbbell size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold text-[#292524]">Workout Plan (Monday – Sunday)</h2>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#F97316] text-white">
+                <h2 className="text-xl font-bold text-[#292431]">Workout Plan (Monday – Sunday)</h2>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#A991D4] text-[#292431]">
                   With Animated Video Guides
                 </span>
               </div>
-              <p className="text-xs text-[#78716C]">
+              <p className="text-xs text-[#6B5E78]">
                 Select any day from Monday to Sunday. Click any workout to watch its animated video demonstration.
               </p>
             </div>
           </div>
 
-          <span className="text-xs font-bold text-[#F97316] bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+          <span className="text-xs font-bold text-[#A991D4] bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
             {activeWorkoutDayData.duration} • {activeWorkoutDayData.focus}
           </span>
         </div>
@@ -793,12 +793,12 @@ const MemberAIFitness: React.FC = () => {
                 onClick={() => setSelectedWorkoutDay(day)}
                 className={`py-3 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex flex-col items-center justify-center border ${
                   isSelected
-                    ? 'bg-gradient-to-b from-[#F97316] to-[#EA580C] text-white border-[#F97316] shadow-md shadow-orange-500/20 scale-[1.02]'
-                    : 'bg-[#FFFDF8] text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50 hover:text-[#292524]'
+                    ? 'bg-gradient-to-b from-[#A991D4] to-[#967CC5] text-white border-[#A991D4] shadow-md shadow-slate-1000/20 scale-[1.02]'
+                    : 'bg-[#F7F4FA] text-[#6B5E78] border-[#E5DDEB] hover:border-[#A991D4]/50 hover:text-[#292431]'
                 }`}
               >
                 <span className="text-sm font-extrabold">{day}</span>
-                <span className={`text-[10px] mt-0.5 font-medium truncate max-w-full ${isSelected ? 'text-white/80' : 'text-[#78716C]'}`}>
+                <span className={`text-[10px] mt-0.5 font-medium truncate max-w-full ${isSelected ? 'text-white/80' : 'text-[#6B5E78]'}`}>
                   {dayData?.exercises.length || 4} Exercises
                 </span>
               </button>
@@ -809,18 +809,18 @@ const MemberAIFitness: React.FC = () => {
         {/* Current Day Routine Banner */}
         <div className="p-4 bg-orange-50/70 border border-orange-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
-            <span className="font-extrabold text-[#F97316] uppercase text-[10px] block">
+            <span className="font-extrabold text-[#A991D4] uppercase text-[10px] block">
               {activeWorkoutDayData.day} Workout Split
             </span>
-            <p className="text-sm font-extrabold text-[#292524] mt-0.5">
+            <p className="text-sm font-extrabold text-[#292431] mt-0.5">
               {activeWorkoutDayData.focus}
             </p>
-            <p className="text-[#78716C] mt-0.5">
-              Target Muscle Focus: <strong className="text-[#292524]">{activeWorkoutDayData.targetMuscle}</strong>
+            <p className="text-[#6B5E78] mt-0.5">
+              Target Muscle Focus: <strong className="text-[#292431]">{activeWorkoutDayData.targetMuscle}</strong>
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="bg-white border border-orange-200 text-[#F97316] px-3 py-1.5 rounded-xl font-extrabold text-xs">
+            <span className="bg-white border border-orange-200 text-[#A991D4] px-3 py-1.5 rounded-xl font-extrabold text-xs">
               ⏱ {activeWorkoutDayData.duration}
             </span>
           </div>
@@ -829,11 +829,11 @@ const MemberAIFitness: React.FC = () => {
         {/* Exercises List for the Selected Day */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-extrabold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
-              <Dumbbell size={14} className="text-[#F97316]" /> 
+            <h3 className="text-xs font-extrabold text-[#6B5E78] uppercase tracking-wider flex items-center gap-1.5">
+              <Dumbbell size={14} className="text-[#A991D4]" /> 
               Exercises for {selectedWorkoutDay} ({activeWorkoutDayData.exercises.length} Exercises)
             </h3>
-            <span className="text-[11px] text-[#78716C] font-semibold">
+            <span className="text-[11px] text-[#6B5E78] font-semibold">
               Click &quot;Watch Demo&quot; to open animated form coach
             </span>
           </div>
@@ -842,15 +842,15 @@ const MemberAIFitness: React.FC = () => {
             {activeWorkoutDayData.exercises.map((ex: ExerciseItem, idx: number) => (
               <div
                 key={idx}
-                className="bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl p-4.5 hover:border-[#F97316] hover:shadow-xs transition-all flex flex-col justify-between gap-3 group"
+                className="bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl p-4.5 hover:border-[#A991D4] hover:shadow-xs transition-all flex flex-col justify-between gap-3 group"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <div className="flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-lg bg-orange-100 text-[#F97316] font-black text-xs flex items-center justify-center shrink-0">
+                      <span className="w-6 h-6 rounded-lg bg-orange-100 text-[#A991D4] font-black text-xs flex items-center justify-center shrink-0">
                         {idx + 1}
                       </span>
-                      <h4 className="font-extrabold text-[#292524] text-base group-hover:text-[#F97316] transition-colors">
+                      <h4 className="font-extrabold text-[#292431] text-base group-hover:text-[#A991D4] transition-colors">
                         {ex.name}
                       </h4>
                     </div>
@@ -859,25 +859,25 @@ const MemberAIFitness: React.FC = () => {
                     </span>
                   </div>
 
-                  <p className="text-xs text-[#78716C] font-medium mb-3">
-                    Target Muscle: <strong className="text-[#292524]">{ex.targetMuscleGroup}</strong>
+                  <p className="text-xs text-[#6B5E78] font-medium mb-3">
+                    Target Muscle: <strong className="text-[#292431]">{ex.targetMuscleGroup}</strong>
                   </p>
 
                   {/* Sets / Reps / Rest Badges */}
                   <div className="flex items-center gap-2 flex-wrap text-xs font-bold">
-                    <span className="bg-orange-50 text-[#F97316] border border-orange-200 px-2.5 py-1 rounded-lg">
+                    <span className="bg-orange-50 text-[#A991D4] border border-orange-200 px-2.5 py-1 rounded-lg">
                       SETS: {ex.sets}
                     </span>
-                    <span className="bg-white border border-[#E7E5E4] text-[#292524] px-2.5 py-1 rounded-lg">
+                    <span className="bg-white border border-[#E5DDEB] text-[#292431] px-2.5 py-1 rounded-lg">
                       REPS: {ex.reps}
                     </span>
-                    <span className="bg-white border border-[#E7E5E4] text-[#78716C] px-2.5 py-1 rounded-lg">
+                    <span className="bg-white border border-[#E5DDEB] text-[#6B5E78] px-2.5 py-1 rounded-lg">
                       REST: {ex.rest || '60s'}
                     </span>
                   </div>
 
                   {ex.instructions && (
-                    <p className="text-[11px] text-[#78716C] mt-2.5 line-clamp-2 italic">
+                    <p className="text-[11px] text-[#6B5E78] mt-2.5 line-clamp-2 italic">
                       &quot;{ex.instructions}&quot;
                     </p>
                   )}
@@ -887,7 +887,7 @@ const MemberAIFitness: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveDemoExercise(ex)}
-                  className="w-full mt-2 py-2.5 px-3 bg-white border border-[#FED7AA] hover:border-[#F97316] text-[#F97316] hover:bg-orange-50 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs group-hover:bg-[#F97316] group-hover:text-white"
+                  className="w-full mt-2 py-2.5 px-3 bg-white border border-[#E9DFF4] hover:border-[#A991D4] text-[#A991D4] hover:bg-orange-50 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs group-hover:bg-[#A991D4] group-hover:text-[#292431]"
                 >
                   <Play size={13} className="fill-current" />
                   <span>Watch Animated Video Guide</span>
@@ -899,26 +899,26 @@ const MemberAIFitness: React.FC = () => {
       </div>
 
       {/* ===================== 3. MONDAY TO SUNDAY DIET PLAN (NON-REPEATING MEALS) ===================== */}
-      <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+      <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E5DDEB] gap-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold text-base shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#A991D4] flex items-center justify-center font-bold text-base shrink-0">
               <Utensils size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold text-[#292524]">Diet &amp; Nutrition Plan (Monday – Sunday)</h2>
+                <h2 className="text-xl font-bold text-[#292431]">Diet &amp; Nutrition Plan (Monday – Sunday)</h2>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
                   7 Days Varied
                 </span>
               </div>
-              <p className="text-xs text-[#78716C]">
+              <p className="text-xs text-[#6B5E78]">
                 Non-repeating daily meal schedules from Monday to Sunday tailored to your caloric and macronutrient targets.
               </p>
             </div>
           </div>
 
-          <span className="text-xs font-extrabold text-[#F97316] bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+          <span className="text-xs font-extrabold text-[#A991D4] bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
             {activeDietDayData.calories} kcal • P: {activeDietDayData.macros.protein} | C: {activeDietDayData.macros.carbs} | F: {activeDietDayData.macros.fats}
           </span>
         </div>
@@ -936,12 +936,12 @@ const MemberAIFitness: React.FC = () => {
                 onClick={() => setSelectedDietDay(day)}
                 className={`py-3 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex flex-col items-center justify-center border ${
                   isSelected
-                    ? 'bg-gradient-to-b from-[#F97316] to-[#EA580C] text-white border-[#F97316] shadow-md shadow-orange-500/20 scale-[1.02]'
-                    : 'bg-[#FFFDF8] text-[#78716C] border-[#E7E5E4] hover:border-[#F97316]/50 hover:text-[#292524]'
+                    ? 'bg-gradient-to-b from-[#A991D4] to-[#967CC5] text-white border-[#A991D4] shadow-md shadow-slate-1000/20 scale-[1.02]'
+                    : 'bg-[#F7F4FA] text-[#6B5E78] border-[#E5DDEB] hover:border-[#A991D4]/50 hover:text-[#292431]'
                 }`}
               >
                 <span className="text-sm font-extrabold">{day}</span>
-                <span className={`text-[10px] mt-0.5 font-medium ${isSelected ? 'text-white/80' : 'text-[#78716C]'}`}>
+                <span className={`text-[10px] mt-0.5 font-medium ${isSelected ? 'text-white/80' : 'text-[#6B5E78]'}`}>
                   {dietData?.calories} kcal
                 </span>
               </button>
@@ -951,56 +951,56 @@ const MemberAIFitness: React.FC = () => {
 
         {/* 6 Meals Grid for Selected Day */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 text-xs">
-          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+          <div className="p-4 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl space-y-1.5 hover:border-[#A991D4]/40 transition-colors">
             <div className="flex items-center gap-1.5 text-amber-600 font-extrabold text-[10px] uppercase">
               <Sun size={13} /> Morning Hydration &amp; Pre-Workout
             </div>
-            <p className="text-[#292524] leading-relaxed font-medium">
+            <p className="text-[#292431] leading-relaxed font-medium">
               {activeDietDayData.morning}
             </p>
           </div>
 
-          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+          <div className="p-4 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl space-y-1.5 hover:border-[#A991D4]/40 transition-colors">
             <div className="flex items-center gap-1.5 text-orange-600 font-extrabold text-[10px] uppercase">
               <Coffee size={13} /> Breakfast
             </div>
-            <p className="text-[#292524] leading-relaxed font-medium">
+            <p className="text-[#292431] leading-relaxed font-medium">
               {activeDietDayData.breakfast}
             </p>
           </div>
 
-          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+          <div className="p-4 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl space-y-1.5 hover:border-[#A991D4]/40 transition-colors">
             <div className="flex items-center gap-1.5 text-emerald-600 font-extrabold text-[10px] uppercase">
               <Apple size={13} /> Mid-Morning Snack
             </div>
-            <p className="text-[#292524] leading-relaxed font-medium">
+            <p className="text-[#292431] leading-relaxed font-medium">
               {activeDietDayData.midMorning}
             </p>
           </div>
 
-          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+          <div className="p-4 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl space-y-1.5 hover:border-[#A991D4]/40 transition-colors">
             <div className="flex items-center gap-1.5 text-blue-600 font-extrabold text-[10px] uppercase">
               <Utensils size={13} /> High-Protein Lunch
             </div>
-            <p className="text-[#292524] leading-relaxed font-medium">
+            <p className="text-[#292431] leading-relaxed font-medium">
               {activeDietDayData.lunch}
             </p>
           </div>
 
-          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+          <div className="p-4 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl space-y-1.5 hover:border-[#A991D4]/40 transition-colors">
             <div className="flex items-center gap-1.5 text-purple-600 font-extrabold text-[10px] uppercase">
               <Apple size={13} /> Evening Snack / Post-Workout
             </div>
-            <p className="text-[#292524] leading-relaxed font-medium">
+            <p className="text-[#292431] leading-relaxed font-medium">
               {activeDietDayData.evening}
             </p>
           </div>
 
-          <div className="p-4 bg-[#FFFDF8] border border-[#E7E5E4] rounded-2xl space-y-1.5 hover:border-[#F97316]/40 transition-colors">
+          <div className="p-4 bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl space-y-1.5 hover:border-[#A991D4]/40 transition-colors">
             <div className="flex items-center gap-1.5 text-indigo-600 font-extrabold text-[10px] uppercase">
               <Moon size={13} /> Recovery Dinner
             </div>
-            <p className="text-[#292524] leading-relaxed font-medium">
+            <p className="text-[#292431] leading-relaxed font-medium">
               {activeDietDayData.dinner}
             </p>
           </div>
@@ -1018,11 +1018,11 @@ const MemberAIFitness: React.FC = () => {
 
       {/* ===================== 4. INTERACTIVE PREFERENCES & AI GENERATOR FORM ===================== */}
       <form onSubmit={handleSubmitAssessment} className="space-y-6">
-        <div className="bg-white border border-[#E7E5E4] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E7E5E4] gap-2">
+        <div className="bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E5DDEB] gap-2">
             <div>
-              <h3 className="text-lg font-bold text-[#292524]">Calibrate AI Fitness Preferences</h3>
-              <p className="text-xs text-[#78716C] mt-0.5">
+              <h3 className="text-lg font-bold text-[#292431]">Calibrate AI Fitness Preferences</h3>
+              <p className="text-xs text-[#6B5E78] mt-0.5">
                 Modify your goals or training environment and click &quot;Generate with AI&quot; to re-calculate your plan.
               </p>
             </div>
@@ -1030,11 +1030,11 @@ const MemberAIFitness: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Primary Fitness Goal</label>
+              <label className="block text-xs font-bold text-[#292431] uppercase mb-1.5">Primary Fitness Goal</label>
               <select
                 value={formData.fitnessGoal}
                 onChange={e => setFormData({ ...formData, fitnessGoal: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-bold text-[#292431] outline-none focus:border-[#A991D4]"
               >
                 <option value="Weight Loss">Weight Loss</option>
                 <option value="Muscle Building">Muscle Building / Hypertrophy</option>
@@ -1045,11 +1045,11 @@ const MemberAIFitness: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Current Fitness Level</label>
+              <label className="block text-xs font-bold text-[#292431] uppercase mb-1.5">Current Fitness Level</label>
               <select
                 value={formData.currentFitnessLevel}
                 onChange={e => setFormData({ ...formData, currentFitnessLevel: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-bold text-[#292431] outline-none focus:border-[#A991D4]"
               >
                 <option value="Beginner (New to training)">Beginner (New to training)</option>
                 <option value="Intermediate (1-3 yrs)">Intermediate (1-3 yrs experience)</option>
@@ -1058,11 +1058,11 @@ const MemberAIFitness: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Training Mode</label>
+              <label className="block text-xs font-bold text-[#292431] uppercase mb-1.5">Training Mode</label>
               <select
                 value={formData.preferredTraining}
                 onChange={e => setFormData({ ...formData, preferredTraining: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-bold text-[#292431] outline-none focus:border-[#A991D4]"
               >
                 <option value="Offline (In-Gym Training)">Offline (In-Gym Training)</option>
                 <option value="Online / Home Workout">Online / Home Workout</option>
@@ -1071,11 +1071,11 @@ const MemberAIFitness: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Workout Days / Week</label>
+              <label className="block text-xs font-bold text-[#292431] uppercase mb-1.5">Workout Days / Week</label>
               <select
                 value={formData.availableWorkoutDays}
                 onChange={e => setFormData({ ...formData, availableWorkoutDays: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-bold text-[#292431] outline-none focus:border-[#A991D4]"
               >
                 <option value="3 Days / Week">3 Days / Week</option>
                 <option value="4 Days / Week">4 Days / Week</option>
@@ -1088,11 +1088,11 @@ const MemberAIFitness: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Equipment Access</label>
+              <label className="block text-xs font-bold text-[#292431] uppercase mb-1.5">Equipment Access</label>
               <select
                 value={formData.equipmentAvailability}
                 onChange={e => setFormData({ ...formData, equipmentAvailability: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-bold text-[#292431] outline-none focus:border-[#A991D4]"
               >
                 <option value="Full Commercial Gym (Weights &amp; Machines)">Full Commercial Gym (Weights &amp; Machines)</option>
                 <option value="Home Gym (Dumbbells &amp; Bands)">Home Gym (Dumbbells &amp; Bands)</option>
@@ -1101,11 +1101,11 @@ const MemberAIFitness: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Dietary Preference</label>
+              <label className="block text-xs font-bold text-[#292431] uppercase mb-1.5">Dietary Preference</label>
               <select
                 value={formData.dietaryPreferences}
                 onChange={e => setFormData({ ...formData, dietaryPreferences: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-bold text-[#292431] outline-none focus:border-[#A991D4]"
               >
                 <option value="Vegetarian">Vegetarian</option>
                 <option value="Non-Vegetarian">Non-Vegetarian</option>
@@ -1115,26 +1115,26 @@ const MemberAIFitness: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] uppercase mb-1.5">Medical Notes / Considerations</label>
+              <label className="block text-xs font-bold text-[#292431] uppercase mb-1.5">Medical Notes / Considerations</label>
               <input
                 type="text"
                 value={formData.healthConsiderations}
                 onChange={e => setFormData({ ...formData, healthConsiderations: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-[#FFFDF8] border border-[#E7E5E4] rounded-xl text-xs font-bold text-[#292524] outline-none focus:border-[#F97316]"
+                className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-bold text-[#292431] outline-none focus:border-[#A991D4]"
                 placeholder="None (Healthy)"
               />
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#E7E5E4]">
-            <p className="text-xs text-[#78716C]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#E5DDEB]">
+            <p className="text-xs text-[#6B5E78]">
               Clicking generate triggers the Gemini AI engine to personalize your 7-day Monday–Sunday schedules.
             </p>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-8 py-3.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:opacity-95 text-white font-extrabold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-md shadow-[#F97316]/20 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              className="px-8 py-3.5 bg-gradient-to-r from-[#A991D4] to-[#967CC5] hover:opacity-95 text-white font-extrabold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-md shadow-[#A991D4]/20 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
@@ -1160,12 +1160,12 @@ const MemberAIFitness: React.FC = () => {
             if (e.target === e.currentTarget) setActiveDemoExercise(null);
           }}
         >
-          <div className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-[#FED7AA] my-auto max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-[#E9DFF4] my-auto max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 bg-gradient-to-r from-stone-900 to-[#292524] text-white flex items-center justify-between shrink-0 border-b border-stone-800">
+            <div className="p-4 sm:p-5 bg-gradient-to-r from-stone-900 to-[#292431] text-white flex items-center justify-between shrink-0 border-b border-stone-800">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#F97316] text-white shadow-xs">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#A991D4] text-[#292431] shadow-xs">
                     Animated Video Guide
                   </span>
                   <span className="text-xs text-white/70">
@@ -1186,7 +1186,7 @@ const MemberAIFitness: React.FC = () => {
             </div>
 
             {/* Scrollable Modal Content */}
-            <div className="overflow-y-auto flex-1 divide-y divide-[#E7E5E4]/60">
+            <div className="overflow-y-auto flex-1 divide-y divide-[#E5DDEB]/60">
               {/* Video / Animated Simulation Canvas */}
               <div className="p-3 sm:p-4 bg-stone-950 flex justify-center items-center">
                 <ExerciseVideoPlayer
@@ -1201,27 +1201,27 @@ const MemberAIFitness: React.FC = () => {
               {/* Prescribed Sets & Reps Details */}
               <div className="p-4 sm:p-5 bg-white space-y-3.5">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-bold text-center">
-                  <div className="bg-orange-50 text-[#F97316] px-3 py-2 rounded-xl border border-orange-200">
-                    <span className="text-[10px] uppercase block text-[#EA580C] font-semibold">Prescribed Sets</span>
+                  <div className="bg-orange-50 text-[#A991D4] px-3 py-2 rounded-xl border border-orange-200">
+                    <span className="text-[10px] uppercase block text-[#967CC5] font-semibold">Prescribed Sets</span>
                     <strong className="text-sm">{activeDemoExercise.sets} Sets</strong>
                   </div>
                   <div className="bg-stone-50 text-stone-800 px-3 py-2 rounded-xl border border-stone-200">
-                    <span className="text-[10px] uppercase block text-[#78716C] font-semibold">Rep Range</span>
+                    <span className="text-[10px] uppercase block text-[#6B5E78] font-semibold">Rep Range</span>
                     <strong className="text-sm">{activeDemoExercise.reps} Reps</strong>
                   </div>
                   <div className="bg-stone-50 text-stone-800 px-3 py-2 rounded-xl border border-stone-200">
-                    <span className="text-[10px] uppercase block text-[#78716C] font-semibold">Rest Between Sets</span>
+                    <span className="text-[10px] uppercase block text-[#6B5E78] font-semibold">Rest Between Sets</span>
                     <strong className="text-sm">{activeDemoExercise.rest || '60s'}</strong>
                   </div>
                 </div>
 
                 {activeDemoExercise.instructions && (
                   <div>
-                    <h4 className="text-xs font-extrabold text-[#78716C] uppercase mb-1 flex items-center gap-1.5">
-                      <Sparkles size={13} className="text-[#F97316]" />
+                    <h4 className="text-xs font-extrabold text-[#6B5E78] uppercase mb-1 flex items-center gap-1.5">
+                      <Sparkles size={13} className="text-[#A991D4]" />
                       Biomechanical Form Cues:
                     </h4>
-                    <p className="text-xs text-[#292524] leading-relaxed bg-[#FFFDF8] p-3.5 rounded-xl border border-[#E7E5E4] font-medium">
+                    <p className="text-xs text-[#292431] leading-relaxed bg-[#F7F4FA] p-3.5 rounded-xl border border-[#E5DDEB] font-medium">
                       {activeDemoExercise.instructions}
                     </p>
                   </div>
@@ -1230,7 +1230,7 @@ const MemberAIFitness: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveDemoExercise(null)}
-                  className="w-full py-3 bg-[#F97316] text-white font-extrabold rounded-xl text-xs hover:bg-[#EA580C] transition-colors cursor-pointer shadow-xs active:scale-[0.99]"
+                  className="w-full py-3 bg-[#A991D4] text-[#292431] font-extrabold rounded-xl text-xs hover:bg-[#967CC5] transition-colors cursor-pointer shadow-xs active:scale-[0.99]"
                 >
                   Got It, Return to Plan
                 </button>
