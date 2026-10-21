@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
@@ -12,18 +12,12 @@ const LoginPage = () => {
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    const savedEmail = localStorage.getItem('rememberedEmail');
-    if (savedEmail) {
-      setForm(prev => ({ ...prev, email: savedEmail }));
-      setRememberMe(true);
-    }
-  }, []);
+
 
   const validate = () => {
     const errors: Record<string, string> = {};
@@ -127,7 +121,7 @@ const LoginPage = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
+        <form onSubmit={handleSubmit} noValidate autoComplete="off" className="space-y-5">
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-[#78716C] mb-2">Email Address</label>
@@ -137,6 +131,7 @@ const LoginPage = () => {
               value={form.email}
               onChange={(e) => { setForm({ ...form, email: e.target.value }); setFieldErrors({ ...fieldErrors, email: '' }); }}
               placeholder="you@example.com"
+              autoComplete="off"
               className={`w-full bg-[#FFFFFF] border ${fieldErrors.email ? 'border-red-400' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#F97316] transition-colors`}
             />
             {fieldErrors.email && <p className="text-[#FED7AA] text-xs mt-1">{fieldErrors.email}</p>}
@@ -155,6 +150,7 @@ const LoginPage = () => {
                 value={form.password}
                 onChange={(e) => { setForm({ ...form, password: e.target.value }); setFieldErrors({ ...fieldErrors, password: '' }); }}
                 placeholder="Enter your password"
+                autoComplete="new-password"
                 className={`w-full bg-[#FFFFFF] border ${fieldErrors.password ? 'border-red-400' : 'border-[#E7E5E4]'} text-[#292524] rounded-xl px-4 py-3 pr-12 text-sm outline-none focus:border-[#F97316] transition-colors`}
               />
               <button

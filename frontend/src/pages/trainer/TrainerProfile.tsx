@@ -320,7 +320,7 @@ const TrainerProfile = () => {
                 <div className="grid grid-cols-1 gap-3">
                   <div>
                     <label className="block text-sm font-semibold text-[#78716C] mb-1">Phone Number</label>
-                    <input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className={inputCls} placeholder="10-digit number" />
+                    <input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} maxLength={10} className={inputCls} placeholder="10-digit number" />
                   </div>
                 </div>
               </div>

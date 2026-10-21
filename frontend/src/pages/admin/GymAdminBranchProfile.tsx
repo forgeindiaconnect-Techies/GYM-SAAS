@@ -212,7 +212,7 @@ const GymAdminBranchProfile = () => {
               <div>
                 <label className="block text-sm text-[#78716C] font-medium mb-1">Phone Number</label>
                 {editMode ? (
-                  <input type="text" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#F97316]" />
+                  <input type="tel" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} placeholder="10-digit number" className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#F97316]" />
                 ) : (
                   <p className="font-semibold text-[#292524]">{branch.phone || 'N/A'}</p>
                 )}

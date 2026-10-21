@@ -184,7 +184,9 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
                   <input
                     type="tel"
                     value={formData.mobile}
-                    onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                    maxLength={10}
+                    placeholder="10-digit number"
                     className="w-full bg-[#FFFDF8] border border-[#FED7AA] rounded-xl px-4 py-3 focus:border-[#F97316] focus:ring-2 focus:ring-[#F97316]/20 outline-none transition-all"
                   />
                 </div>

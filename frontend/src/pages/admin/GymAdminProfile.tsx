@@ -220,7 +220,7 @@ const GymAdminProfile = () => {
             </div>
             <div>
               <label className="block text-sm text-[#78716C] mb-2">Contact Phone</label>
-              <input disabled={!isEditing} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className={inputCls} />
+              <input type="tel" disabled={!isEditing} maxLength={10} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} placeholder="10-digit number" className={inputCls} />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm text-[#78716C] mb-2">{isBranchUser ? 'About the Branch' : 'About the Gym'}</label>

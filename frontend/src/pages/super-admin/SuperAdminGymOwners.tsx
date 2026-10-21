@@ -1737,8 +1737,11 @@ const SuperAdminGymOwners = () => {
                   <div>
                     <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Mobile</label>
                     <input 
+                      type="tel"
                       value={editForm.mobile || ''} 
-                      onChange={e => setEditForm({...editForm, mobile: e.target.value})} 
+                      onChange={e => setEditForm({...editForm, mobile: e.target.value.replace(/\D/g, '').slice(0, 10)})} 
+                      maxLength={10}
+                      placeholder="10-digit number"
                       className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>
@@ -1813,8 +1816,11 @@ const SuperAdminGymOwners = () => {
                   <div>
                     <label className="block text-xs font-semibold text-[#78716C] mb-1.5">Gym Contact Phone</label>
                     <input 
+                      type="tel"
                       value={editForm.gymData?.phone || ''} 
-                      onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, phone: e.target.value}})} 
+                      onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, phone: e.target.value.replace(/\D/g, '').slice(0, 10)}})} 
+                      maxLength={10}
+                      placeholder="10-digit number"
                       className="w-full bg-[#FFFFFF] border border-[#E7E5E4] text-[#292524] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#F97316] transition-colors"
                     />
                   </div>

@@ -99,9 +99,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (authUser.phone && !authUser.mobile) authUser.mobile = authUser.phone;
     if (!authUser.id && (authUser as any)._id) authUser.id = (authUser as any)._id;
 
-    const storage = remember ? localStorage : sessionStorage;
-    storage.setItem('aigym_token', authToken);
-    storage.setItem('aigym_user', JSON.stringify(authUser));
+    // Always clear both storages first to avoid stale token conflicts
+    localStorage.removeItem('aigym_token');
+    localStorage.removeItem('aigym_user');
+    sessionStorage.removeItem('aigym_token');
+    sessionStorage.removeItem('aigym_user');
+
+    // Always use localStorage so token survives navigation (sessionStorage can lose data on navigate)
+    localStorage.setItem('aigym_token', authToken);
+    localStorage.setItem('aigym_user', JSON.stringify(authUser));
     setUser(authUser);
     setToken(authToken);
   };

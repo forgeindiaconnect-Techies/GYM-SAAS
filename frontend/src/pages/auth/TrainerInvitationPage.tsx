@@ -143,7 +143,7 @@ const TrainerInvitationPage = () => {
               </div>
               <div>
                 <label className="block text-sm font-bold text-[#78716C] mb-1">Phone Number</label>
-                <input required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full border border-[#E7E5E4] rounded-lg px-4 py-2 outline-none focus:border-[#F97316]" />
+                <input required type="tel" maxLength={10} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} placeholder="10-digit number" className="w-full border border-[#E7E5E4] rounded-lg px-4 py-2 outline-none focus:border-[#F97316]" />
               </div>
               <div>
                 <label className="block text-sm font-bold text-[#78716C] mb-1">Password</label>

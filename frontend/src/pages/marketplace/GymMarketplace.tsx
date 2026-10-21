@@ -7,19 +7,8 @@ import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
 // Each slide has: a YouTube video ID (gym-specific) and matching title/description text
 const HERO_SLIDES = [
   {
-    videoId: 'cbKkB3POqaY',     // gym workout motivational
-    title: 'Unleash Your',
-    highlight: 'Inner Beast',
-    subtitle: 'Find world-class gyms with elite equipment, certified trainers, and a community that pushes you further.',
-  },
-  {
-    videoId: 'vc1E5CfRfos',     // gym tour / fitness centre
-    title: 'Discover Premium',
-    highlight: 'Fitness Centres',
-    subtitle: 'Explore gyms with cutting-edge facilities, AC-equipped workout zones, and flexible membership plans.',
-  },
-  {
-    videoId: '4wEDDHDpHjE',     // strength training / powerlifting
+    badge: 'Professional Training',
+    videoId: 'auQHRD8MPys',     // strength training / powerlifting
     title: 'Train Harder,',
     highlight: 'Achieve More',
     subtitle: 'Connect with professional trainers, track your progress, and reach your fitness goals faster than ever.',
@@ -55,13 +44,6 @@ const GymMarketplace = () => {
     }
   }, [location.state]);
 
-  // Auto-cycle slides every 12 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSlideIdx(i => (i + 1) % HERO_SLIDES.length);
-    }, 12000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => { fetchGyms(''); }, []);
 
@@ -159,7 +141,7 @@ const GymMarketplace = () => {
       <div className="relative w-full h-screen overflow-hidden">
 
         {/* YouTube Video Background */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-[#111]">
           <iframe
             ref={iframeRef}
             key={`${slideIdx}-${muted}`}
@@ -188,15 +170,17 @@ const GymMarketplace = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.07)_0%,_transparent_65%)] z-[1] pointer-events-none" />
 
         {/* Slide transition indicator dots — bottom left */}
-        <div className="absolute bottom-10 left-8 z-20 flex items-center gap-3">
-          {HERO_SLIDES.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setSlideIdx(i)}
-              className={`rounded-full transition-all duration-500 ${i === slideIdx ? 'w-8 h-2 bg-[#F97316]' : 'w-2 h-2 bg-white/30 hover:bg-white/60'}`}
-            />
-          ))}
-        </div>
+        {HERO_SLIDES.length > 1 && (
+          <div className="absolute bottom-10 left-8 z-20 flex items-center gap-3">
+            {HERO_SLIDES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setSlideIdx(i)}
+                className={`rounded-full transition-all duration-500 ${i === slideIdx ? 'w-8 h-2 bg-[#F97316]' : 'w-2 h-2 bg-white/30 hover:bg-white/60'}`}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Volume Control */}
         <button
@@ -208,7 +192,7 @@ const GymMarketplace = () => {
         </button>
 
         {/* ===== HERO CONTENT ===== */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 pb-28">
 
           {/* Slide label badge */}
           <div
@@ -217,7 +201,7 @@ const GymMarketplace = () => {
             style={{ animation: 'fadeInUp 0.7s ease' }}
           >
             <Star size={12} className="fill-current" />
-            {slideIdx === 0 ? 'Motivation & Drive' : slideIdx === 1 ? 'Premium Facilities' : 'Professional Training'}
+            {currentSlide.badge}
           </div>
 
           {/* Main Headline — changes with slide */}
@@ -296,7 +280,7 @@ const GymMarketplace = () => {
         {/* Scroll Down Arrow */}
         <button
           onClick={scrollToGyms}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-[#78716C] hover:text-[#F97316] transition transition-colors"
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-[#78716C] hover:text-[#F97316] transition transition-colors"
           style={{ animation: 'bounce 2s infinite' }}
         >
           <span className="text-[10px] tracking-[0.2em] uppercase font-semibold">Explore Gyms</span>
