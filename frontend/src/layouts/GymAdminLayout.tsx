@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
-  Video,
+  Video, Trophy, Gift, Award,
   Store, Package, Boxes, ShoppingCart, Bot, TrendingUp, Star
 } from 'lucide-react';
 
@@ -168,6 +168,14 @@ const GymAdminLayout = () => {
         items: [] as any[]
       },
       {
+        title: 'Rewards & Performance',
+        items: [
+          { label: 'Rewards & Performance', path: '/admin/rewards-performance', icon: Award },
+          { label: 'Referrals', path: '/admin/referrals', icon: Gift },
+          { label: 'Fitness Challenges', path: '/admin/challenges', icon: Trophy }
+        ]
+      },
+      {
         title: 'Admin & Settings',
         items: isBranchUser
           ? [
@@ -245,7 +253,7 @@ const GymAdminLayout = () => {
   const roleSubtitle = isBranchUser ? 'Branch Admin' : 'Gym Owner';
 
   return (
-    <div className="flex h-screen bg-[#F7F4FA] text-[#292431] overflow-hidden">
+    <div className="flex h-screen bg-[#E8EFF0] text-[#344B4A] overflow-hidden">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -258,27 +266,27 @@ const GymAdminLayout = () => {
       {/* Sidebar — desktop always visible, mobile slide-in */}
       <aside
         className={clsx(
-          'fixed lg:static top-0 left-0 h-full w-64 bg-[#4C315E] text-white border-r border-[#4C315E] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none',
+          'fixed lg:static top-0 left-0 h-full w-64 bg-white text-[#344B4A] border-r border-[#D9E2E3] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-lg lg:shadow-none',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
-        <div className="p-5 border-b border-white/10">
+        <div className="p-5 border-b border-[#D9E2E3]">
           <Link to="/" className="flex items-center space-x-2" onClick={() => setSidebarOpen(false)}>
-            <div className="w-9 h-9 bg-gradient-to-br from-[#A991D4] to-[#E9DFF4] rounded-xl flex items-center justify-center shadow-lg shadow-purple-950/40 shrink-0">
-              <Activity className="text-[#292431]" size={20} />
+            <div className="w-9 h-9 bg-[#167D78] rounded-xl flex items-center justify-center shadow-md shadow-teal-900/10 shrink-0">
+              <Activity className="text-white" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-white truncate max-w-[160px]" title={sidebarBrandTitle}>
+            <span className="text-xl font-bold tracking-tight text-[#344B4A] truncate max-w-[160px]" title={sidebarBrandTitle}>
               {sidebarBrandTitle}
             </span>
           </Link>
           <div className="mt-4 flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#A991D4] to-[#E9DFF4] rounded-full flex items-center justify-center text-[#292431] font-bold text-base shadow">
+            <div className="w-10 h-10 bg-[#D8EAE7] rounded-full flex items-center justify-center text-[#167D78] font-bold text-base shadow-xs">
               {getOwnerDisplayName()?.[0] || 'A'}
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="font-semibold text-sm text-white truncate">{getOwnerDisplayName()}</p>
-              <p className="text-xs text-[#E9DFF4]/80 font-medium truncate">{roleSubtitle}</p>
+              <p className="font-semibold text-sm text-[#344B4A] truncate">{getOwnerDisplayName()}</p>
+              <p className="text-xs text-[#697778] font-medium truncate">{roleSubtitle}</p>
             </div>
           </div>
         </div>
@@ -290,7 +298,7 @@ const GymAdminLayout = () => {
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
           {navGroups.map((group, idx) => (
             <div key={idx}>
-              <h3 className="px-3 text-[11px] font-bold text-[#E9DFF4]/70 uppercase tracking-wider mb-2">{group.title}</h3>
+              <h3 className="px-3 text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-2">{group.title}</h3>
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const isActive = item.path === '/admin/trainers'
@@ -305,15 +313,15 @@ const GymAdminLayout = () => {
                       className={clsx(
                         'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
                         isActive
-                          ? 'bg-[#A991D4] text-[#292431] font-semibold shadow-md shadow-purple-950/30'
-                          : 'text-white/85 hover:bg-white/10 hover:text-white'
+                          ? 'bg-[#D8EAE7] text-[#167D78] font-semibold shadow-xs'
+                          : 'text-[#697778] hover:bg-[#E8EFF0] hover:text-[#167D78]'
                       )}
                     >
                       <Icon
                         size={18}
                         className={clsx(
                           'shrink-0 transition-colors',
-                          isActive ? 'text-[#292431]' : 'text-white/85 group-hover:text-white'
+                          isActive ? 'text-[#167D78]' : 'text-[#697778] group-hover:text-[#167D78]'
                         )}
                       />
                       <span className="truncate">{item.label}</span>
@@ -326,10 +334,10 @@ const GymAdminLayout = () => {
         </nav>
 
         {/* Logout */}
-        <div className="p-3 border-t border-white/10">
+        <div className="p-3 border-t border-[#D9E2E3]">
           <button
             onClick={logout}
-            className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-center text-red-300 hover:bg-white/10 hover:text-red-200 rounded-xl transition-colors font-semibold text-sm"
+            className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-center text-[#C43D35] hover:bg-red-50 hover:text-[#C43D35] rounded-xl transition-colors font-semibold text-sm cursor-pointer"
           >
             <LogOut size={16} />
             <span>Logout</span>
@@ -340,21 +348,21 @@ const GymAdminLayout = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0">
         {/* Subtle top gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(22,163,74,0.04)_0%,_transparent_60%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(22,125,120,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
         {/* Header */}
-        <header className="h-16 border-b border-[#E5DDEB] flex items-center px-4 md:px-8 justify-between bg-white/90 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm">
+        <header className="h-16 border-b border-[#D9E2E3] flex items-center px-4 md:px-8 justify-between bg-white/90 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm">
           <div className="flex items-center space-x-3">
             {/* Hamburger — mobile only */}
             <button
-              className="lg:hidden text-[#6B5E78] hover:text-[#A991D4] transition-colors p-1 rounded-lg hover:bg-[#F7F4FA]"
+              className="lg:hidden text-[#697778] hover:text-[#167D78] transition-colors p-1 rounded-lg hover:bg-[#E8EFF0]"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#A991D4] hidden sm:block" />}
-            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#292431]">
+            {currentNav && <currentNav.icon size={20} className="text-[#167D78] hidden sm:block" />}
+            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#344B4A]">
               {currentNav?.label || 'Gym Owner Dashboard'}
             </h2>
           </div>
@@ -373,7 +381,7 @@ const GymAdminLayout = () => {
                     navigate(`/admin/branches/${val}`);
                   }
                 }}
-                className="bg-[#F7F4FA] border border-[#E5DDEB] text-[#292431] text-sm rounded-lg focus:ring-[#A991D4] focus:border-[#A991D4] block p-2 outline-none font-semibold"
+                className="bg-[#E8EFF0] border border-[#D9E2E3] text-[#344B4A] text-sm rounded-lg focus:ring-[#167D78] focus:border-[#167D78] block p-2 outline-none font-semibold"
               >
                 {!isBranchUser && <option value="main">Main Branch</option>}
                 {branches.map(branch => (
@@ -386,24 +394,24 @@ const GymAdminLayout = () => {
             <div className="relative" ref={notifRef}>
               <button
                 onClick={() => setNotifOpen(prev => !prev)}
-                className="relative text-[#6B5E78] hover:text-[#A991D4] transition-colors p-1 block"
+                className="relative text-[#697778] hover:text-[#167D78] transition-colors p-1 block"
               >
                 <Bell size={20} />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#A991D4] text-[#292431] rounded-full text-[10px] font-bold flex items-center justify-center shadow shadow-purple-900/15">
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#167D78] text-white rounded-full text-[10px] font-bold flex items-center justify-center shadow shadow-teal-900/10">
                     {unreadCount}
                   </span>
                 )}
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 top-10 w-80 bg-white border border-[#E5DDEB] rounded-2xl shadow-2xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-10 w-80 bg-white border border-[#D9E2E3] rounded-2xl shadow-2xl z-50 overflow-hidden">
                   {/* Header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#F7F4FA]">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#E8EFF0]">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-[#292431] text-sm">Notifications</h3>
+                      <h3 className="font-bold text-[#344B4A] text-sm">Notifications</h3>
                       {unreadCount > 0 && (
-                        <span className="bg-[#A991D4]/10 text-[#A991D4] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                        <span className="bg-[#167D78]/10 text-[#167D78] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
                       )}
                     </div>
                     {unreadCount > 0 && (
@@ -418,7 +426,7 @@ const GymAdminLayout = () => {
                             console.error(err);
                           }
                         }}
-                        className="text-[11px] font-semibold text-[#A991D4] hover:underline"
+                        className="text-[11px] font-semibold text-[#167D78] hover:underline"
                       >
                         Mark all read
                       </button>
@@ -426,9 +434,9 @@ const GymAdminLayout = () => {
                   </div>
 
                   {/* Notification list */}
-                  <div className="divide-y divide-[#F7F4FA] max-h-72 overflow-y-auto">
+                  <div className="divide-y divide-[#E8EFF0] max-h-72 overflow-y-auto">
                     {notifications.length === 0 ? (
-                      <div className="p-4 text-center text-sm text-[#6B5E78]">No notifications</div>
+                      <div className="p-4 text-center text-sm text-[#697778]">No notifications</div>
                     ) : (
                       notifications.slice(0, 5).map(notif => (
                         <div
@@ -439,34 +447,34 @@ const GymAdminLayout = () => {
                             const targetLink = getNotificationLink(notif);
                             if (targetLink) navigate(targetLink);
                           }}
-                          className={`flex items-start gap-3 px-4 py-3 hover:bg-[#F7F4FA] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[#F7F4FA]' : ''}`}
+                          className={`flex items-start gap-3 px-4 py-3 hover:bg-[#E8EFF0] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[#E8EFF0]' : ''}`}
                         >
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                             notif.type === 'alert' ? 'bg-orange-100 text-orange-500' :
                             notif.type === 'success' ? 'bg-green-100 text-green-500' :
-                            notif.type === 'message' ? 'bg-blue-100 text-blue-500' :
-                            'bg-purple-100 text-purple-500'
+                            notif.type === 'message' ? 'bg-blue-100 text-[#167D78]' :
+                            'bg-orange-100 text-orange-600'
                           }`}>
                             {notif.type === 'alert' ? '⚠️' :
                              notif.type === 'success' ? '✅' :
                              notif.type === 'message' ? '💬' : 'ℹ️'}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-semibold text-[#292431] ${!notif.isRead ? 'font-bold' : ''}`}>{notif.title}</p>
-                            <p className="text-xs text-[#6B5E78] mt-0.5 leading-snug">{notif.message}</p>
-                            <p className="text-xs text-[#6B5E78] mt-1">{new Date(notif.createdAt).toLocaleDateString()}</p>
+                            <p className={`text-sm font-semibold text-[#344B4A] ${!notif.isRead ? 'font-bold' : ''}`}>{notif.title}</p>
+                            <p className="text-xs text-[#697778] mt-0.5 leading-snug">{notif.message}</p>
+                            <p className="text-xs text-[#697778] mt-1">{new Date(notif.createdAt).toLocaleDateString()}</p>
                           </div>
-                          {!notif.isRead && <div className="w-2 h-2 bg-[#A991D4] rounded-full mt-2 shrink-0" />}
+                          {!notif.isRead && <div className="w-2 h-2 bg-[#167D78] rounded-full mt-2 shrink-0" />}
                         </div>
                       ))
                     )}
                   </div>
 
                   {/* View All button */}
-                  <div className="border-t border-[#F7F4FA]">
+                  <div className="border-t border-[#E8EFF0]">
                     <button
                       onClick={() => { setNotifOpen(false); navigate('/admin/notifications'); }}
-                      className="w-full py-3 text-sm font-bold text-[#A991D4] hover:bg-[#F7F4FA] transition-colors"
+                      className="w-full py-3 text-sm font-bold text-[#167D78] hover:bg-[#E8EFF0] transition-colors"
                     >
                       View All Notifications →
                     </button>
@@ -476,10 +484,10 @@ const GymAdminLayout = () => {
             </div>
             <Link to={isBranchUser && user?.branchId ? `/admin/branches/${user.branchId}` : "/admin/gym-profile"} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
-                <p className="text-sm font-semibold text-[#292431] leading-none mb-0.5">{getOwnerDisplayName()}</p>
-                <p className="text-xs text-[#6B5E78] leading-none">{roleSubtitle}</p>
+                <p className="text-sm font-semibold text-[#344B4A] leading-none mb-0.5">{getOwnerDisplayName()}</p>
+                <p className="text-xs text-[#697778] leading-none">{roleSubtitle}</p>
               </div>
-              <div className="w-9 h-9 bg-gradient-to-br from-[#A991D4] to-[#967CC5] rounded-full flex items-center justify-center text-[#292431] font-bold text-sm shadow">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#167D78] to-[#116660] rounded-full flex items-center justify-center text-white font-bold text-sm shadow">
                 {getOwnerDisplayName()?.[0] || 'A'}
               </div>
             </Link>

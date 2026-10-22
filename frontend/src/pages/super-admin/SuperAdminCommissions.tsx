@@ -1,17 +1,17 @@
-import { PieChart } from 'lucide-react';
+﻿import { PieChart } from 'lucide-react';
 
 const SuperAdminCommissions = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex justify-between items-end mb-8 border-b border-[#E5DDEB] pb-6">
+      <div className="flex justify-between items-end mb-8 border-b border-[#D9E2E3] pb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <PieChart className="text-[#967CC5]" size={32} />
+            <PieChart className="text-[#167D78]" size={32} />
             Commission Configuration
           </h1>
-          <p className="text-[#6B5E78] mt-2 font-mono text-sm">Set global splits and platform fees.</p>
+          <p className="text-[#697778] mt-2 font-mono text-sm">Set global splits and platform fees.</p>
         </div>
-        <button className="px-6 py-2 bg-[#E9DFF4]/10 text-[#967CC5] border border-[#E9DFF4]/30 rounded-xl font-bold hover:bg-[#E9DFF4] hover:text-[#A991D4] transition-colors">
+        <button className="px-6 py-2 bg-[#D8EAE7]/10 text-[#116660] border border-[#D8EAE7]/30 rounded-xl font-bold hover:bg-[#D8EAE7] hover:text-[#167D78] transition-colors">
           Execute Protocol
         </button>
       </div>
@@ -23,37 +23,37 @@ const SuperAdminCommissions = () => {
           { label: 'Error Rate', val: '0.04%' },
           { label: 'System Load', val: '42%' }
         ].map((stat, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl p-5 relative overflow-hidden group">
-             <div className="absolute top-0 right-0 w-16 h-16 bg-[#E9DFF4]/5 rounded-full blur-xl group-hover:bg-[#E9DFF4]/10 transition-colors"></div>
-             <p className="text-[#6B5E78] text-xs font-mono uppercase mb-1">{stat.label}</p>
-             <p className="text-2xl font-bold text-[#292431] relative z-10">{stat.val}</p>
+          <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-5 relative overflow-hidden group">
+             <div className="absolute top-0 right-0 w-16 h-16 bg-[#D8EAE7]/5 rounded-full blur-xl group-hover:bg-[#D8EAE7]/10 transition-colors"></div>
+             <p className="text-[#697778] text-xs font-mono uppercase mb-1">{stat.label}</p>
+             <p className="text-2xl font-bold text-[#344B4A] relative z-10">{stat.val}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-[#E5DDEB] bg-[#FFFFFF]">
-          <h2 className="text-sm font-bold font-mono text-[#967CC5] uppercase tracking-widest">Global Registry Table</h2>
+      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden">
+        <div className="p-4 border-b border-[#D9E2E3] bg-[#FFFFFF]">
+          <h2 className="text-sm font-bold font-mono text-[#116660] uppercase tracking-widest">Global Registry Table</h2>
         </div>
         <table className="w-full text-left font-mono text-sm">
           <thead>
-            <tr className="bg-[#0a0a0a] text-[#555] border-b border-[#E5DDEB]">
+            <tr className="bg-[#E8EFF0] text-[#344B4A] border-b border-[#D9E2E3]">
               <th className="p-4 font-normal">SYS_ID</th>
               <th className="p-4 font-normal">STATUS</th>
               <th className="p-4 font-normal">TIMESTAMP</th>
               <th className="p-4 font-normal text-right">OVERRIDE</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E5DDEB]">
+          <tbody className="divide-y divide-[#D9E2E3]">
             {[1, 2, 3, 4, 5, 6].map((row) => (
               <tr key={row} className="hover:bg-[#FFFFFF] transition-colors">
-                <td className="p-4 text-[#6B5E78]">0x00A${row}F${9-row}</td>
+                <td className="p-4 text-[#697778]">0x00A${row}F${9-row}</td>
                 <td className="p-4">
                    <span className="px-2 py-0.5 bg-green-500/10 text-green-500 rounded-full text-[10px] uppercase border border-green-500/20">Operational</span>
                 </td>
-                <td className="p-4 text-[#6B5E78]">2026-10-12T14:43:0${row}Z</td>
+                <td className="p-4 text-[#697778]">2026-10-12T14:43:0${row}Z</td>
                 <td className="p-4 text-right">
-                  <button className="text-[#555] hover:text-[#967CC5] transition-colors">Modify</button>
+                  <button className="text-[#697778] hover:text-[#167D78] transition-colors">Modify</button>
                 </td>
               </tr>
             ))}

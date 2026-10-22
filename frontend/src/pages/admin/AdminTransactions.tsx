@@ -1,4 +1,4 @@
-import { Receipt } from 'lucide-react';
+﻿import { Receipt } from 'lucide-react';
 
 const AdminTransactions = () => {
   return (
@@ -6,12 +6,12 @@ const AdminTransactions = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Receipt className="text-[#A991D4]" size={32} />
+            <Receipt className="text-[#167D78]" size={32} />
             Transaction Logs
           </h1>
-          <p className="text-[#6B5E78] mt-2">Detailed ledger of all financial movements.</p>
+          <p className="text-[#697778] mt-2">Detailed ledger of all financial movements.</p>
         </div>
-        <button className="px-6 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors">
+        <button className="px-6 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors">
           Manage Transaction Logs
         </button>
       </div>
@@ -19,10 +19,10 @@ const AdminTransactions = () => {
       
       <div className="space-y-4">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#E5DDEB] p-4 rounded-xl flex justify-between items-center">
+          <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] p-4 rounded-xl flex justify-between items-center">
              <div>
                <p className="font-bold">Subscription Renewal - Pro</p>
-               <p className="text-xs text-[#6B5E78]">Oct {i}, 2026 • Stripe • TXN_00{i}</p>
+               <p className="text-xs text-[#697778]">Oct {i}, 2026 • Stripe • TXN_00{i}</p>
              </div>
              <div className="text-right">
                <p className="font-bold text-green-500">+$29.00</p>

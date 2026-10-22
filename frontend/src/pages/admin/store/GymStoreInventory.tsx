@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import {
   Search, Loader2, Package, AlertTriangle, CheckCircle2,
   TrendingUp, TrendingDown, Plus, Minus, X, ArrowDownUp, Eye
@@ -93,7 +93,7 @@ const GymStoreInventory = () => {
 
   const statCards = [
     { label: 'Total Products', value: summary.totalProducts || 0, tint: 'bg-blue-100 text-blue-700' },
-    { label: 'In Stock', value: summary.inStock || 0, tint: 'bg-[#E9DFF4]/10 text-[#A991D4]' },
+    { label: 'In Stock', value: summary.inStock || 0, tint: 'bg-[#D8EAE7]/10 text-[#167D78]' },
     { label: 'Low Stock', value: summary.lowStockCount || 0, tint: 'bg-amber-100 text-amber-700' },
     { label: 'Out of Stock', value: summary.outOfStock || 0, tint: 'bg-red-100 text-red-700' },
   ];
@@ -101,8 +101,8 @@ const GymStoreInventory = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Inventory</h1>
-        <p className="text-[#6B5E78] mt-1">Track stock levels and adjustments across your store.</p>
+        <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Inventory</h1>
+        <p className="text-[#697778] mt-1">Track stock levels and adjustments across your store.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -124,13 +124,13 @@ const GymStoreInventory = () => {
                   }
                 }
               }}
-              className={`bg-white border border-[#E5DDEB] rounded-2xl p-4 flex items-center justify-between transition-all ${
+              className={`bg-white border border-[#D9E2E3] rounded-2xl p-4 flex items-center justify-between transition-all ${
                 isAlertCard ? 'cursor-pointer hover:shadow-md hover:border-amber-400' : ''
               }`}
             >
               <div>
-                <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">{s.label}</p>
-                <h3 className="text-2xl font-black text-[#292431]">{s.value}</h3>
+                <p className="text-xs font-bold text-[#697778] uppercase tracking-wider">{s.label}</p>
+                <h3 className="text-2xl font-black text-[#344B4A]">{s.value}</h3>
                 {isAlertCard && Number(s.value) > 0 && (
                   <span className="text-[11px] font-bold text-amber-600 hover:underline inline-flex items-center gap-1 mt-0.5">
                     View Alert <AlertTriangle size={10} />
@@ -153,13 +153,13 @@ const GymStoreInventory = () => {
               <AlertTriangle size={20} />
             </div>
             <div>
-              <h4 className="font-black text-[#292431] text-sm flex items-center gap-2">
+              <h4 className="font-black text-[#344B4A] text-sm flex items-center gap-2">
                 Low Stock Alert Triggered!
                 <span className="px-2 py-0.5 rounded text-[10px] font-black bg-amber-200 text-amber-900 uppercase">
                   {(summary.lowStockCount || 0) + (summary.outOfStock || 0)} Items below 5
                 </span>
               </h4>
-              <p className="text-xs text-[#6B5E78] mt-0.5">
+              <p className="text-xs text-[#697778] mt-0.5">
                 Items have reached or fallen below 5 in stock. Restock soon to prevent running out of stock.
               </p>
             </div>
@@ -177,11 +177,11 @@ const GymStoreInventory = () => {
         </div>
       )}
 
-      <div className="flex border-b border-[#E5DDEB] space-x-8">
-        <button onClick={() => setTab('products')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'products' ? 'border-[#A991D4] text-[#A991D4]' : 'border-transparent text-[#6B5E78] hover:text-[#292431]'}`}>
+      <div className="flex border-b border-[#D9E2E3] space-x-8">
+        <button onClick={() => setTab('products')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'products' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}>
           Products
         </button>
-        <button onClick={() => setTab('transactions')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'transactions' ? 'border-[#A991D4] text-[#A991D4]' : 'border-transparent text-[#6B5E78] hover:text-[#292431]'}`}>
+        <button onClick={() => setTab('transactions')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'transactions' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}>
           Stock Transactions
         </button>
       </div>
@@ -190,10 +190,10 @@ const GymStoreInventory = () => {
         <>
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name, brand, SKU..." className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl pl-9 pr-4 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none" />
-              <Search className="absolute left-3 top-2.5 text-[#6B5E78]" size={16} />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name, brand, SKU..." className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl pl-9 pr-4 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" />
+              <Search className="absolute left-3 top-2.5 text-[#697778]" size={16} />
             </div>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none md:w-48">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none md:w-48">
               <option value="all">All Stock</option>
               <option value="inStock">In Stock</option>
               <option value="outOfStock">Out of Stock</option>
@@ -202,12 +202,12 @@ const GymStoreInventory = () => {
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#A991D4]" size={40} /></div>
+            <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#167D78]" size={40} /></div>
           ) : (
-            <div className="bg-white border border-[#E5DDEB] rounded-2xl overflow-hidden">
+            <div className="bg-white border border-[#D9E2E3] rounded-2xl overflow-hidden">
               <div className="overflow-x-auto custom-scrollbar">
-                <table className="w-full text-left text-sm text-[#6B5E78] whitespace-nowrap">
-                  <thead className="bg-[#FFFFFF] border-b border-[#E5DDEB] text-[#292431]">
+                <table className="w-full text-left text-sm text-[#697778] whitespace-nowrap">
+                  <thead className="bg-[#FFFFFF] border-b border-[#D9E2E3] text-[#344B4A]">
                     <tr>
                       <th className="px-6 py-4 font-semibold">Product</th>
                       <th className="px-6 py-4 font-semibold">SKU</th>
@@ -218,7 +218,7 @@ const GymStoreInventory = () => {
                       <th className="px-6 py-4 font-semibold text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5DDEB]">
+                  <tbody className="divide-y divide-[#D9E2E3]">
                     {products.length === 0 ? (
                       <tr><td colSpan={7} className="px-6 py-10 text-center">No products found.</td></tr>
                     ) : products.map((p) => {
@@ -226,24 +226,24 @@ const GymStoreInventory = () => {
                       const thresholdVal = Number(p?.lowStockThreshold) || 5;
                       const level = stockVal <= 0 ? 'out' : stockVal <= thresholdVal ? 'low' : 'ok';
                       return (
-                        <tr key={p._id} className="hover:bg-[#F7F4FA] transition-colors">
+                        <tr key={p._id} className="hover:bg-[#E8EFF0] transition-colors">
                           <td className="px-6 py-4">
-                            <p className="font-bold text-[#292431]">{p.name}</p>
-                            {p.brand && <p className="text-xs text-[#6B5E78]">{p.brand}</p>}
+                            <p className="font-bold text-[#344B4A]">{p.name}</p>
+                            {p.brand && <p className="text-xs text-[#697778]">{p.brand}</p>}
                           </td>
                           <td className="px-6 py-4 font-mono text-xs">{p.sku || '—'}</td>
                           <td className="px-6 py-4">{p.categoryName || 'General'}</td>
-                          <td className="px-6 py-4 text-center font-black text-[#292431]">{stockVal}</td>
+                          <td className="px-6 py-4 text-center font-black text-[#344B4A]">{stockVal}</td>
                           <td className="px-6 py-4 text-center">{thresholdVal}</td>
                           <td className="px-6 py-4">
                             <span className={`px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1 ${
-                              level === 'out' ? 'bg-red-100 text-red-700' : level === 'low' ? 'bg-amber-100 text-amber-700' : 'bg-[#E9DFF4]/20 text-[#967CC5]'
+                              level === 'out' ? 'bg-red-100 text-red-700' : level === 'low' ? 'bg-amber-100 text-amber-700' : 'bg-[#D8EAE7]/20 text-[#116660]'
                             }`}>
                               {level === 'out' ? <><AlertTriangle size={12} /> Out of Stock</> : level === 'low' ? <><AlertTriangle size={12} /> Low Stock</> : <><CheckCircle2 size={12} /> In Stock</>}
                             </span>
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <button onClick={() => { setAdjusting(p); setAdjustQty(''); setAdjustNote(''); }} className="px-3 py-1.5 bg-[#F7F4FA] text-[#A991D4] rounded-lg hover:bg-[#E5DDEB] transition-colors text-xs font-bold">
+                            <button onClick={() => { setAdjusting(p); setAdjustQty(''); setAdjustNote(''); }} className="px-3 py-1.5 bg-[#E8EFF0] text-[#167D78] rounded-lg hover:bg-[#D9E2E3] transition-colors text-xs font-bold">
                               Adjust Stock
                             </button>
                           </td>
@@ -259,10 +259,10 @@ const GymStoreInventory = () => {
       )}
 
       {tab === 'transactions' && (
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl overflow-hidden">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left text-sm text-[#6B5E78] whitespace-nowrap">
-              <thead className="bg-[#FFFFFF] border-b border-[#E5DDEB] text-[#292431]">
+            <table className="w-full text-left text-sm text-[#697778] whitespace-nowrap">
+              <thead className="bg-[#FFFFFF] border-b border-[#D9E2E3] text-[#344B4A]">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Date</th>
                   <th className="px-6 py-4 font-semibold">Product</th>
@@ -273,30 +273,30 @@ const GymStoreInventory = () => {
                   <th className="px-6 py-4 font-semibold text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E5DDEB]">
+              <tbody className="divide-y divide-[#D9E2E3]">
                 {transactions.length === 0 ? (
                   <tr><td colSpan={7} className="px-6 py-10 text-center">No stock transactions yet.</td></tr>
                 ) : transactions.map((t: any) => (
-                  <tr key={t._id} className="hover:bg-[#F7F4FA] transition-colors">
+                  <tr key={t._id} className="hover:bg-[#E8EFF0] transition-colors">
                     <td className="px-6 py-4">{new Date(t.createdAt).toLocaleString()}</td>
-                    <td className="px-6 py-4 font-bold text-[#292431]">{t.productId?.name || '—'}</td>
+                    <td className="px-6 py-4 font-bold text-[#344B4A]">{t.productId?.name || '—'}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                         t.type === 'stock_in' ? 'bg-blue-100 text-blue-700' :
-                        t.type === 'online_sale' ? 'bg-purple-100 text-purple-700' :
+                        t.type === 'online_sale' ? 'bg-[#D8EAE7] text-[#167D78]' :
                         t.type === 'offline_sale' ? 'bg-teal-100 text-teal-700' : 'bg-gray-100 text-gray-600'
                       }`}>
                         {t.type.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className={`px-6 py-4 text-center font-black flex items-center justify-center gap-1 ${t.quantityChange > 0 ? 'text-[#A991D4]' : 'text-[#967CC5]'}`}>
+                    <td className={`px-6 py-4 text-center font-black flex items-center justify-center gap-1 ${t.quantityChange > 0 ? 'text-[#167D78]' : 'text-[#167D78]'}`}>
                       {t.quantityChange > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                       {t.quantityChange > 0 ? '+' : ''}{t.quantityChange}
                     </td>
-                    <td className="px-6 py-4 text-center font-bold text-[#292431]">{t.stockAfter}</td>
+                    <td className="px-6 py-4 text-center font-bold text-[#344B4A]">{t.stockAfter}</td>
                     <td className="px-6 py-4 text-xs">{t.note || '—'}</td>
                     <td className="px-6 py-4 text-center">
-                      <button onClick={() => setViewingTx(t)} className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center justify-center">
+                      <button onClick={() => setViewingTx(t)} className="p-1.5 bg-blue-50 text-[#167D78] rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center justify-center">
                         <Eye size={16} />
                       </button>
                     </td>
@@ -312,15 +312,15 @@ const GymStoreInventory = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
             <button onClick={() => setAdjusting(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={22} /></button>
-            <h2 className="text-xl font-bold text-[#292431] mb-1">Adjust Stock</h2>
-            <p className="text-sm text-[#6B5E78] mb-4">{adjusting.name} · current stock: <span className="font-bold text-[#292431]">{adjusting.stock}</span></p>
+            <h2 className="text-xl font-bold text-[#344B4A] mb-1">Adjust Stock</h2>
+            <p className="text-sm text-[#697778] mb-4">{adjusting.name} · current stock: <span className="font-bold text-[#344B4A]">{adjusting.stock}</span></p>
 
             <div className="flex items-center gap-3 mb-4">
               <input
                 type="number"
                 value={adjustQty}
                 onChange={(e) => setAdjustQty(e.target.value)}
-                className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3 py-3 text-lg font-bold text-center text-[#292431] focus:border-[#A991D4] outline-none"
+                className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-3 py-3 text-lg font-bold text-center text-[#344B4A] focus:border-[#167D78] outline-none"
                 placeholder="0"
               />
             </div>
@@ -333,12 +333,12 @@ const GymStoreInventory = () => {
               </button>
             </div>
 
-            <label className="text-xs font-bold text-[#6B5E78] uppercase mb-1 block">Note (optional)</label>
-            <textarea value={adjustNote} onChange={(e) => setAdjustNote(e.target.value)} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-3 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none resize-none" rows={2} placeholder="e.g., Received new shipment" />
+            <label className="text-xs font-bold text-[#697778] uppercase mb-1 block">Note (optional)</label>
+            <textarea value={adjustNote} onChange={(e) => setAdjustNote(e.target.value)} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none resize-none" rows={2} placeholder="e.g., Received new shipment" />
 
             <div className="mt-5 flex gap-3">
-              <button onClick={() => setAdjusting(null)} className="flex-1 py-3 bg-gray-100 text-[#6B5E78] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
-              <button onClick={saveAdjustment} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#A991D4] to-[#967CC5] text-white font-bold rounded-xl shadow-lg shadow-purple-900/15 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+              <button onClick={() => setAdjusting(null)} className="flex-1 py-3 bg-gray-100 text-[#697778] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
+              <button onClick={saveAdjustment} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#167D78] to-[#116660] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                 {saving ? <Loader2 className="animate-spin" size={18} /> : <ArrowDownUp size={16} />} Apply Change
               </button>
             </div>
@@ -352,46 +352,46 @@ const GymStoreInventory = () => {
             <button onClick={() => setViewingTx(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
               <X size={22} />
             </button>
-            <h2 className="text-xl font-bold text-[#292431] mb-1">Transaction Details</h2>
-            <p className="text-sm text-[#6B5E78] mb-6">{new Date(viewingTx.createdAt).toLocaleString()}</p>
+            <h2 className="text-xl font-bold text-[#344B4A] mb-1">Transaction Details</h2>
+            <p className="text-sm text-[#697778] mb-6">{new Date(viewingTx.createdAt).toLocaleString()}</p>
 
             <div className="space-y-4">
               <div>
-                <p className="text-xs font-bold text-[#6B5E78] uppercase">Product</p>
-                <p className="text-sm font-semibold text-[#292431] mt-1">{viewingTx.productId?.name || 'Unknown Product'}</p>
+                <p className="text-xs font-bold text-[#697778] uppercase">Product</p>
+                <p className="text-sm font-semibold text-[#344B4A] mt-1">{viewingTx.productId?.name || 'Unknown Product'}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase">Type</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase">Type</p>
                   <span className={`inline-block mt-1 px-2.5 py-1 rounded-full text-xs font-bold ${
                     viewingTx.type === 'stock_in' ? 'bg-blue-100 text-blue-700' :
-                    viewingTx.type === 'online_sale' ? 'bg-purple-100 text-purple-700' :
+                    viewingTx.type === 'online_sale' ? 'bg-[#D8EAE7] text-[#167D78]' :
                     viewingTx.type === 'offline_sale' ? 'bg-teal-100 text-teal-700' : 'bg-gray-100 text-gray-600'
                   }`}>
                     {viewingTx.type.replace('_', ' ')}
                   </span>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase">Source</p>
-                  <p className="text-sm font-semibold text-[#292431] mt-1 capitalize">{viewingTx.sourceType}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase">Source</p>
+                  <p className="text-sm font-semibold text-[#344B4A] mt-1 capitalize">{viewingTx.sourceType}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase">Quantity Change</p>
-                  <div className={`mt-1 text-lg font-black flex items-center gap-1 ${viewingTx.quantityChange > 0 ? 'text-[#A991D4]' : 'text-[#967CC5]'}`}>
+                  <p className="text-xs font-bold text-[#697778] uppercase">Quantity Change</p>
+                  <div className={`mt-1 text-lg font-black flex items-center gap-1 ${viewingTx.quantityChange > 0 ? 'text-[#167D78]' : 'text-[#167D78]'}`}>
                     {viewingTx.quantityChange > 0 ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
                     {viewingTx.quantityChange > 0 ? '+' : ''}{viewingTx.quantityChange}
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase">Stock After</p>
-                  <p className="mt-1 text-lg font-black text-[#292431]">{viewingTx.stockAfter}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase">Stock After</p>
+                  <p className="mt-1 text-lg font-black text-[#344B4A]">{viewingTx.stockAfter}</p>
                 </div>
               </div>
               <div>
-                <p className="text-xs font-bold text-[#6B5E78] uppercase">Note</p>
-                <p className="text-sm text-[#6B5E78] mt-1 bg-[#F7F4FA] p-3 rounded-xl">{viewingTx.note || 'No notes attached.'}</p>
+                <p className="text-xs font-bold text-[#697778] uppercase">Note</p>
+                <p className="text-sm text-[#697778] mt-1 bg-[#E8EFF0] p-3 rounded-xl">{viewingTx.note || 'No notes attached.'}</p>
               </div>
             </div>
           </div>
@@ -421,10 +421,10 @@ const GymStoreInventory = () => {
                   </span>
                   <span className="text-xs text-amber-700 font-bold">Store Inventory Alert</span>
                 </div>
-                <h2 className="text-2xl font-black text-[#292431] mt-1 tracking-tight">
+                <h2 className="text-2xl font-black text-[#344B4A] mt-1 tracking-tight">
                   Low Stock Alert!
                 </h2>
-                <p className="text-sm text-[#6B5E78] mt-1 leading-relaxed">
+                <p className="text-sm text-[#697778] mt-1 leading-relaxed">
                   Attention Gym Owner: The following product{lowStockAlertItems.length > 1 ? 's are' : ' is'} below the alert threshold (<strong>5 or fewer items remaining</strong>). Restock soon to prevent missed customer orders.
                 </p>
               </div>
@@ -439,9 +439,9 @@ const GymStoreInventory = () => {
                 return (
                   <div key={item._id} className="bg-white rounded-xl p-3.5 border border-gray-200/80 shadow-sm flex items-center justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="font-bold text-[#292431] text-sm truncate">{item.name}</p>
-                      <p className="text-xs text-[#6B5E78] mt-0.5">
-                        Category: <span className="font-medium text-[#292431]">{item.categoryName || 'General'}</span>
+                      <p className="font-bold text-[#344B4A] text-sm truncate">{item.name}</p>
+                      <p className="text-xs text-[#697778] mt-0.5">
+                        Category: <span className="font-medium text-[#344B4A]">{item.categoryName || 'General'}</span>
                         {item.sku && <> · SKU: <span className="font-mono text-[11px]">{item.sku}</span></>}
                       </p>
                     </div>
@@ -462,7 +462,7 @@ const GymStoreInventory = () => {
                           setAdjustQty('10');
                           setAdjustNote('Low stock restock');
                         }}
-                        className="px-3 py-1.5 bg-[#A991D4] text-[#292431] rounded-lg hover:bg-[#1f5f5f] text-xs font-bold transition-all shadow-sm flex items-center gap-1"
+                        className="px-3 py-1.5 bg-[#167D78] text-white rounded-lg hover:bg-[#167D78] text-xs font-bold transition-all shadow-sm flex items-center gap-1"
                       >
                         <Plus size={14} /> Restock
                       </button>
@@ -474,13 +474,13 @@ const GymStoreInventory = () => {
 
             {/* Footer */}
             <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-              <p className="text-xs text-[#292431] font-medium font-medium">
+              <p className="text-xs text-[#344B4A] font-medium font-medium">
                 💡 Set custom alert thresholds per product in Products settings.
               </p>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowLowStockModal(false)}
-                  className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#6B5E78] text-sm font-bold rounded-xl transition-colors"
+                  className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#697778] text-sm font-bold rounded-xl transition-colors"
                 >
                   I Understand
                 </button>

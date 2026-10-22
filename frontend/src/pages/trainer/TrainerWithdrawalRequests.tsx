@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { CreditCard, Clock, AlertCircle } from 'lucide-react';
 import api from '../../utils/api';
 
 const STATUS_COLORS: Record<string, string> = {
   Pending: 'bg-amber-100 text-amber-700',
-  Approved: 'bg-[#E9DFF4]/10 text-[#A991D4]',
+  Approved: 'bg-[#D8EAE7]/10 text-[#167D78]',
   Rejected: 'bg-red-100 text-red-700',
 };
 
@@ -31,39 +31,39 @@ const TrainerWithdrawalRequests = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292431]">Withdrawal Requests</h1>
-          <p className="text-[#6B5E78] text-sm mt-1">Track your pending payout requests</p>
+          <h1 className="text-2xl font-bold text-[#344B4A]">Withdrawal Requests</h1>
+          <p className="text-[#697778] text-sm mt-1">Track your pending payout requests</p>
         </div>
       </div>
 
-      <div className="bg-white border border-[#E9DFF4] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#D8EAE7] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : requests.length === 0 ? (
           <div className="text-center py-20">
-            <CreditCard size={40} className="mx-auto text-[#E5DDEB] mb-3" />
-            <p className="text-[#6B5E78] font-semibold">No pending requests</p>
-            <p className="text-[#6B5E78] text-sm mt-1">You don't have any pending withdrawal requests</p>
+            <CreditCard size={40} className="mx-auto text-[#D9E2E3] mb-3" />
+            <p className="text-[#697778] font-semibold">No pending requests</p>
+            <p className="text-[#697778] text-sm mt-1">You don't have any pending withdrawal requests</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#F7F4FA] border-b border-[#E9DFF4]">
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Date Requested</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78] text-right">Amount</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78] text-right">Status</th>
+                <tr className="bg-[#E8EFF0] border-b border-[#D8EAE7]">
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Date Requested</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778] text-right">Amount</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778] text-right">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F7F4FA]">
+              <tbody className="divide-y divide-[#E8EFF0]">
                 {requests.map((r, idx) => (
-                  <tr key={idx} className="hover:bg-[#F7F4FA] transition-colors">
-                    <td className="px-5 py-4 text-[#6B5E78] whitespace-nowrap">
+                  <tr key={idx} className="hover:bg-[#E8EFF0] transition-colors">
+                    <td className="px-5 py-4 text-[#697778] whitespace-nowrap">
                       {new Date(r.requestedAt || r.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
                     </td>
-                    <td className="px-5 py-4 text-right font-bold text-[#292431]">₹{r.amount?.toLocaleString('en-IN')}</td>
+                    <td className="px-5 py-4 text-right font-bold text-[#344B4A]">₹{r.amount?.toLocaleString('en-IN')}</td>
                     <td className="px-5 py-4 text-right">
                       <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${STATUS_COLORS[r.status] || 'bg-gray-100 text-gray-500'}`}>
                         <Clock size={12} />

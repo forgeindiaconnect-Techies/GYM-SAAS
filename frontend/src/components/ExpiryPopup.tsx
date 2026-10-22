@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Clock, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -49,7 +49,7 @@ export const ExpiryPopup: React.FC = () => {
         
         <div className="flex items-start gap-3 mt-1">
           <div className="p-2 bg-red-50 rounded-lg shrink-0">
-            <Clock className="text-[#E9DFF4]" size={24} />
+            <Clock className="text-[#D8EAE7]" size={24} />
           </div>
           <div>
             <h3 className="font-bold text-gray-900 text-sm">Plan Expiring Soon</h3>

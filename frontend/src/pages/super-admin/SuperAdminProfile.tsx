@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Save, Loader2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -60,43 +60,43 @@ const SuperAdminProfile = () => {
     }
   };
 
-  const inputCls = "w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#E9DFF4] transition-colors";
+  const inputCls = "w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#D8EAE7] transition-colors";
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Super Admin Profile</h1>
-        <p className="text-[#6B5E78] mt-1">Manage your administrative account details.</p>
+        <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Super Admin Profile</h1>
+        <p className="text-[#697778] mt-1">Manage your administrative account details.</p>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8 flex items-center space-x-6">
-        <div className="w-24 h-24 bg-[#FFFFFF] border-2 border-[#E9DFF4] rounded-full flex items-center justify-center text-[#967CC5] text-3xl font-bold relative overflow-hidden group">
+      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 md:p-8 flex items-center space-x-6">
+        <div className="w-24 h-24 bg-[#FFFFFF] border-2 border-[#D8EAE7] rounded-full flex items-center justify-center text-[#116660] text-3xl font-bold relative overflow-hidden group">
           <span>{form.firstName?.[0] || 'S'}</span>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-[#292431]">{form.firstName} {form.lastName}</h2>
-          <p className="text-[#967CC5] font-semibold">{user?.role || 'SUPER ADMIN'}</p>
+          <h2 className="text-2xl font-bold text-[#344B4A]">{form.firstName} {form.lastName}</h2>
+          <p className="text-[#116660] font-semibold">{user?.role || 'SUPER ADMIN'}</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8 space-y-6">
-        <h2 className="text-xl font-bold text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">Personal Information</h2>
+      <form onSubmit={handleSubmit} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 md:p-8 space-y-6">
+        <h2 className="text-xl font-bold text-[#344B4A] mb-4 border-b border-[#D9E2E3] pb-2">Personal Information</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm text-[#6B5E78] mb-2">First Name</label>
+            <label className="block text-sm text-[#697778] mb-2">First Name</label>
             <input required value={form.firstName} onChange={e => setForm({...form, firstName: e.target.value})} className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm text-[#6B5E78] mb-2">Last Name</label>
+            <label className="block text-sm text-[#697778] mb-2">Last Name</label>
             <input required value={form.lastName} onChange={e => setForm({...form, lastName: e.target.value})} className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm text-[#6B5E78] mb-2">Email Address</label>
+            <label className="block text-sm text-[#697778] mb-2">Email Address</label>
             <input type="email" required value={form.email} onChange={e => setForm({...form, email: e.target.value})} className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm text-[#6B5E78] mb-2">Phone Number</label>
+            <label className="block text-sm text-[#697778] mb-2">Phone Number</label>
             <input required value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} className={inputCls} placeholder="10 digit number" />
           </div>
         </div>
@@ -105,7 +105,7 @@ const SuperAdminProfile = () => {
           <button 
             type="submit" 
             disabled={isSaving}
-            className="px-6 py-3 bg-[#E9DFF4] text-[#292431] font-bold rounded-xl hover:bg-teal-600 flex items-center gap-2 transition-colors disabled:opacity-50"
+            className="px-6 py-3 bg-[#D8EAE7] text-[#344B4A] font-bold rounded-xl hover:bg-teal-600 flex items-center gap-2 transition-colors disabled:opacity-50"
           >
             {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>

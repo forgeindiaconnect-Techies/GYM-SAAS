@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import {
   Video, Users, Calendar, Clock, Plus, Search,
   CheckCircle2, X, Copy, RefreshCw
@@ -170,19 +170,19 @@ const GymAdminOnlineSessions = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-black text-[#292431] tracking-tight">Online Sessions</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#A991D4]/10 text-[#A991D4]">
+            <h1 className="text-3xl font-black text-[#344B4A] tracking-tight">Online Sessions</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#167D78]/10 text-[#167D78]">
               Live & Virtual Classes
             </span>
           </div>
-          <p className="text-[#6B5E78] mt-1 text-sm">
+          <p className="text-[#697778] mt-1 text-sm">
             Host live streaming workouts, virtual masterclasses, and group training sessions.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => fetchSessions()}
-            className="p-2.5 rounded-xl border border-[#E5DDEB] bg-white hover:bg-gray-50 text-[#6B5E78] transition-colors"
+            className="p-2.5 rounded-xl border border-[#D9E2E3] bg-white hover:bg-gray-50 text-[#697778] transition-colors"
             title="Refresh"
           >
             <RefreshCw size={18} />
@@ -193,54 +193,54 @@ const GymAdminOnlineSessions = () => {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Total Classes</span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Total Classes</span>
+            <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#167D78] flex items-center justify-center">
               <Calendar size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#292431] mt-2">{totalSessions}</h3>
-          <p className="text-xs text-[#6B5E78] mt-0.5">Live & recorded classes</p>
+          <h3 className="text-2xl font-black text-[#344B4A] mt-2">{totalSessions}</h3>
+          <p className="text-xs text-[#697778] mt-0.5">Live & recorded classes</p>
         </div>
 
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Scheduled / Upcoming</span>
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Scheduled / Upcoming</span>
             <div className="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
               <Clock size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#292431] mt-2">{upcomingCount}</h3>
+          <h3 className="text-2xl font-black text-[#344B4A] mt-2">{upcomingCount}</h3>
           <p className="text-xs text-green-600 font-medium mt-0.5">Ready for members</p>
         </div>
 
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Total Registrations</span>
-            <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Total Registrations</span>
+            <div className="w-9 h-9 rounded-xl bg-[#E8EFF0] text-[#167D78] flex items-center justify-center">
               <Users size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#292431] mt-2">{totalAttendees}</h3>
-          <p className="text-xs text-[#6B5E78] mt-0.5">Active participants</p>
+          <h3 className="text-2xl font-black text-[#344B4A] mt-2">{totalAttendees}</h3>
+          <p className="text-xs text-[#697778] mt-0.5">Active participants</p>
         </div>
 
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Streaming Mode</span>
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Streaming Mode</span>
             <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <Video size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#292431] mt-2">HD Virtual</h3>
+          <h3 className="text-2xl font-black text-[#344B4A] mt-2">HD Virtual</h3>
           <p className="text-xs text-amber-600 font-medium mt-0.5">WebRTC & Meet ready</p>
         </div>
       </div>
 
       {/* Featured Live / Upcoming Session Banner */}
       {sessions.length > 0 && (
-        <div className="bg-gradient-to-br from-[#A991D4] to-[#0D3030] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#167D78] to-[#116660] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-3 max-w-xl">
@@ -271,7 +271,7 @@ const GymAdminOnlineSessions = () => {
                 href={sessions[0].meetingLink}
                 target="_blank"
                 rel="noreferrer"
-                className="px-6 py-3.5 bg-white text-[#A991D4] hover:bg-gray-100 font-black rounded-xl text-sm transition-all shadow-lg flex items-center justify-center gap-2"
+                className="px-6 py-3.5 bg-white text-[#167D78] hover:bg-gray-100 font-black rounded-xl text-sm transition-all shadow-lg flex items-center justify-center gap-2"
               >
                 <Video size={18} /> Launch Live Studio
               </a>
@@ -290,13 +290,13 @@ const GymAdminOnlineSessions = () => {
       {/* Filters and Search */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-3.5 text-[#6B5E78]" size={18} />
+          <Search className="absolute left-3.5 top-3.5 text-[#697778]" size={18} />
           <input
             type="text"
             placeholder="Search online classes by title, trainer or category..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E5DDEB] rounded-xl text-sm text-[#292431] focus:border-[#A991D4] outline-none transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#D9E2E3] rounded-xl text-sm text-[#344B4A] focus:border-[#167D78] outline-none transition-colors"
           />
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
@@ -306,8 +306,8 @@ const GymAdminOnlineSessions = () => {
               onClick={() => setStatusFilter(tab)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 statusFilter === tab
-                  ? 'bg-[#A991D4] text-[#292431] shadow-sm'
-                  : 'bg-white border border-[#E5DDEB] text-[#6B5E78] hover:bg-gray-50'
+                  ? 'bg-[#167D78] text-white shadow-sm'
+                  : 'bg-white border border-[#D9E2E3] text-[#697778] hover:bg-gray-50'
               }`}
             >
               {tab}
@@ -318,22 +318,22 @@ const GymAdminOnlineSessions = () => {
 
       {/* Sessions Grid */}
       {loading ? (
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-16 text-center">
-          <div className="w-10 h-10 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm text-[#6B5E78] font-medium">Loading online sessions...</p>
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-16 text-center">
+          <div className="w-10 h-10 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-[#697778] font-medium">Loading online sessions...</p>
         </div>
       ) : filteredSessions.length === 0 ? (
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-12 text-center space-y-3">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-12 text-center space-y-3">
           <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mx-auto">
             <Video size={24} />
           </div>
-          <h3 className="font-bold text-[#292431] text-base">No Online Sessions Found</h3>
-          <p className="text-sm text-[#6B5E78] max-w-sm mx-auto">
+          <h3 className="font-bold text-[#344B4A] text-base">No Online Sessions Found</h3>
+          <p className="text-sm text-[#697778] max-w-sm mx-auto">
             No virtual classes match your current search or filter. Schedule a new live session to get started.
           </p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="mt-2 px-4 py-2 bg-[#A991D4] text-[#292431] text-xs font-bold rounded-xl hover:bg-[#1f5f5f] transition-all inline-flex items-center gap-1.5"
+            className="mt-2 px-4 py-2 bg-[#167D78] text-white text-xs font-bold rounded-xl hover:bg-[#167D78] transition-all inline-flex items-center gap-1.5"
           >
             <Plus size={14} /> Schedule Now
           </button>
@@ -345,11 +345,11 @@ const GymAdminOnlineSessions = () => {
             return (
               <div
                 key={session._id}
-                className="bg-white border border-[#E5DDEB] hover:border-[#A991D4]/40 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex flex-col justify-between"
+                className="bg-white border border-[#D9E2E3] hover:border-[#167D78]/40 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#F7F4FA] text-[#A991D4]">
+                    <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#E8EFF0] text-[#167D78]">
                       {session.category}
                     </span>
                     <span
@@ -365,31 +365,31 @@ const GymAdminOnlineSessions = () => {
                     </span>
                   </div>
 
-                  <h3 className="font-black text-lg text-[#292431] line-clamp-1">{session.title}</h3>
-                  <p className="text-xs text-[#6B5E78] mt-1 line-clamp-2 leading-relaxed">
+                  <h3 className="font-black text-lg text-[#344B4A] line-clamp-1">{session.title}</h3>
+                  <p className="text-xs text-[#697778] mt-1 line-clamp-2 leading-relaxed">
                     {session.description || 'Virtual training session.'}
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-gray-100 space-y-2 text-xs text-[#6B5E78]">
+                  <div className="mt-4 pt-3 border-t border-gray-100 space-y-2 text-xs text-[#697778]">
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-[#292431] font-semibold">
-                        <Users size={14} className="text-[#A991D4]" /> {session.trainerName}
+                      <span className="flex items-center gap-1.5 text-[#344B4A] font-semibold">
+                        <Users size={14} className="text-[#167D78]" /> {session.trainerName}
                       </span>
                       <span className="text-gray-400">{session.specialization}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <Calendar size={14} className="text-[#A991D4]" /> {session.date}
+                        <Calendar size={14} className="text-[#167D78]" /> {session.date}
                       </span>
-                      <span className="flex items-center gap-1.5 font-medium text-[#292431]">
-                        <Clock size={14} className="text-[#A991D4]" /> {session.time} ({session.duration}m)
+                      <span className="flex items-center gap-1.5 font-medium text-[#344B4A]">
+                        <Clock size={14} className="text-[#167D78]" /> {session.time} ({session.duration}m)
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <span>Attendees:</span>
-                      <span className="font-bold text-[#A991D4]">
+                      <span className="font-bold text-[#167D78]">
                         {session.attendeesCount} / {session.maxCapacity} Booked
                       </span>
                     </div>
@@ -401,13 +401,13 @@ const GymAdminOnlineSessions = () => {
                     href={session.meetingLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 py-2 bg-[#A991D4] hover:bg-[#1f5f5f] text-[#292431] text-xs font-bold rounded-xl transition-all text-center flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2 bg-[#167D78] hover:bg-[#167D78] text-white text-xs font-bold rounded-xl transition-all text-center flex items-center justify-center gap-1.5"
                   >
                     <Video size={14} /> Join Studio
                   </a>
                   <button
                     onClick={() => handleCopyLink(session.meetingLink, session._id)}
-                    className="p-2 border border-[#E5DDEB] hover:bg-gray-50 text-[#6B5E78] rounded-xl transition-colors shrink-0"
+                    className="p-2 border border-[#D9E2E3] hover:bg-gray-50 text-[#697778] rounded-xl transition-colors shrink-0"
                     title="Copy Meeting Link"
                   >
                     {copiedId === session._id ? (
@@ -435,18 +435,18 @@ const GymAdminOnlineSessions = () => {
             </button>
 
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[#167D78]/10 text-[#167D78] flex items-center justify-center">
                 <Video size={22} />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#292431]">Schedule Online Session</h2>
-                <p className="text-xs text-[#6B5E78]">Create a new live stream or virtual group class</p>
+                <h2 className="text-xl font-black text-[#344B4A]">Schedule Online Session</h2>
+                <p className="text-xs text-[#697778]">Create a new live stream or virtual group class</p>
               </div>
             </div>
 
             <form onSubmit={handleCreateSession} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                   Session Title *
                 </label>
                 <input
@@ -455,19 +455,19 @@ const GymAdminOnlineSessions = () => {
                   placeholder="e.g. Virtual Core & Abs Blast"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                     Assigned Trainer
                   </label>
                   <select
                     value={newTrainer}
                     onChange={(e) => setNewTrainer(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                   >
                     <option value="">Select Trainer</option>
                     {trainers.map((t: any) => (
@@ -479,13 +479,13 @@ const GymAdminOnlineSessions = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                     Category
                   </label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                   >
                     <option value="HIIT">HIIT & Cardio</option>
                     <option value="Yoga & Flexibility">Yoga & Flexibility</option>
@@ -499,7 +499,7 @@ const GymAdminOnlineSessions = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                     Date *
                   </label>
                   <input
@@ -507,11 +507,11 @@ const GymAdminOnlineSessions = () => {
                     required
                     value={newDate}
                     onChange={(e) => setNewDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                     Time *
                   </label>
                   <input
@@ -519,11 +519,11 @@ const GymAdminOnlineSessions = () => {
                     required
                     value={newTime}
                     onChange={(e) => setNewTime(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                     Duration (mins)
                   </label>
                   <input
@@ -532,14 +532,14 @@ const GymAdminOnlineSessions = () => {
                     step="5"
                     value={newDuration}
                     onChange={(e) => setNewDuration(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                     Max Capacity
                   </label>
                   <input
@@ -547,12 +547,12 @@ const GymAdminOnlineSessions = () => {
                     min="1"
                     value={newCapacity}
                     onChange={(e) => setNewCapacity(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                     placeholder="25"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                     Price (₹) - 0 for Free
                   </label>
                   <input
@@ -560,14 +560,14 @@ const GymAdminOnlineSessions = () => {
                     min="0"
                     value={newPrice}
                     onChange={(e) => setNewPrice(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                     placeholder="0"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                   Custom Video/Meeting URL (Optional)
                 </label>
                 <input
@@ -575,12 +575,12 @@ const GymAdminOnlineSessions = () => {
                   placeholder="Auto-generated if left blank (e.g. Google Meet / Zoom link)"
                   value={newLink}
                   onChange={(e) => setNewLink(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">
                   Description
                 </label>
                 <textarea
@@ -588,7 +588,7 @@ const GymAdminOnlineSessions = () => {
                   placeholder="Brief details about the workout, equipment required..."
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm focus:border-[#A991D4] outline-none resize-none"
+                  className="w-full px-3.5 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm focus:border-[#167D78] outline-none resize-none"
                 />
               </div>
 
@@ -596,14 +596,14 @@ const GymAdminOnlineSessions = () => {
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-bold text-[#6B5E78] hover:bg-gray-50"
+                  className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-bold text-[#697778] hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="px-6 py-2.5 bg-[#A991D4] hover:bg-[#1f5f5f] text-[#292431] text-sm font-bold rounded-xl transition-all shadow-md flex items-center gap-2"
+                  className="px-6 py-2.5 bg-[#167D78] hover:bg-[#167D78] text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center gap-2"
                 >
                   <Plus size={16} /> Schedule Session
                 </button>

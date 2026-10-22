@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { Clock, CheckCircle, XCircle, CreditCard, Banknote, Smartphone, ArrowRight, ChevronDown, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -130,7 +130,7 @@ const GymAdminPendingTrainerPayments = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Toast */}
       {toast && (
-        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-xl font-semibold text-white text-sm flex items-center gap-2 ${toast.type === 'success' ? 'bg-[#A991D4]' : 'bg-red-500'}`}>
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-xl font-semibold text-white text-sm flex items-center gap-2 ${toast.type === 'success' ? 'bg-[#167D78]' : 'bg-red-500'}`}>
           {toast.type === 'success' ? <CheckCircle size={16} /> : <XCircle size={16} />}
           {toast.msg}
         </div>
@@ -138,28 +138,28 @@ const GymAdminPendingTrainerPayments = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#292431]">Pending Trainer Payments</h1>
-        <p className="text-[#6B5E78] text-sm mt-1">Review and process outstanding trainer payments</p>
+        <h1 className="text-2xl font-bold text-[#344B4A]">Pending Trainer Payments</h1>
+        <p className="text-[#697778] text-sm mt-1">Review and process outstanding trainer payments</p>
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-[#E9DFF4] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#D8EAE7] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : pending.length === 0 ? (
           <div className="text-center py-16 px-6">
             <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-4">
               <CheckCircle size={28} className="text-green-400" />
             </div>
-            <p className="text-[#292431] font-bold text-lg">No pending payments</p>
-            <p className="text-[#6B5E78] text-sm mt-2 max-w-sm mx-auto">
+            <p className="text-[#344B4A] font-bold text-lg">No pending payments</p>
+            <p className="text-[#697778] text-sm mt-2 max-w-sm mx-auto">
               Pending payments appear here once trainer fees are configured. Go to <strong>Fee Settings</strong> to set fees for your trainers first.
             </p>
             <Link
               to="/admin/trainer-fees/settings"
-              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl text-sm font-bold hover:bg-[#967CC5] transition-colors shadow-lg shadow-purple-900/15"
+              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-[#167D78] text-white rounded-xl text-sm font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-teal-900/10"
             >
               Go to Fee Settings
               <ArrowRight size={15} />
@@ -169,40 +169,40 @@ const GymAdminPendingTrainerPayments = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#F7F4FA] border-b border-[#E9DFF4]">
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Trainer</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78] text-right">Fee</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Billing Cycle</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Due Date</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78] text-right">Amount Due</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Status</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Action</th>
+                <tr className="bg-[#E8EFF0] border-b border-[#D8EAE7]">
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Trainer</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778] text-right">Fee</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Billing Cycle</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Due Date</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778] text-right">Amount Due</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Status</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F7F4FA]">
+              <tbody className="divide-y divide-[#E8EFF0]">
                 {pending.map((item, i) => (
-                  <tr key={i} className="hover:bg-[#F7F4FA] transition-colors">
+                  <tr key={i} className="hover:bg-[#E8EFF0] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#A991D4] to-[#967CC5] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#167D78] to-[#116660] flex items-center justify-center text-white font-bold text-sm shrink-0">
                           {trainerInitial(item.trainer)}
                         </div>
-                        <span className="font-semibold text-[#292431]">{trainerName(item.trainer)}</span>
+                        <span className="font-semibold text-[#344B4A]">{trainerName(item.trainer)}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-right font-bold text-[#292431]">₹{item.feeAmount?.toLocaleString('en-IN')}{cycleSuffix(item.billingCycle)}</td>
+                    <td className="px-5 py-4 text-right font-bold text-[#344B4A]">₹{item.feeAmount?.toLocaleString('en-IN')}{cycleSuffix(item.billingCycle)}</td>
                     <td className="px-5 py-4">
                       <span className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-700 text-xs font-semibold">{item.billingCycle}</span>
                     </td>
-                    <td className="px-5 py-4 text-[#6B5E78]">
+                    <td className="px-5 py-4 text-[#697778]">
                       {item.dueDate ? new Date(item.dueDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
                     </td>
-                    <td className="px-5 py-4 text-right font-bold text-[#292431]">₹{item.amount?.toLocaleString('en-IN')}</td>
+                    <td className="px-5 py-4 text-right font-bold text-[#344B4A]">₹{item.amount?.toLocaleString('en-IN')}</td>
                     <td className="px-5 py-4">
                       {(() => {
                         const currentStatus = statuses[item._id] || item.status || 'Pending';
                         let colors = 'bg-amber-100 text-amber-700 focus:ring-amber-200';
-                        if (currentStatus === 'Active') colors = 'bg-[#E9DFF4]/10 text-[#A991D4] focus:ring-green-200';
+                        if (currentStatus === 'Active') colors = 'bg-[#D8EAE7]/10 text-[#167D78] focus:ring-green-200';
                         if (currentStatus === 'Rejected') colors = 'bg-red-100 text-red-700 focus:ring-red-200';
                         if (currentStatus === 'Inactive') colors = 'bg-gray-100 text-gray-700 focus:ring-gray-200';
                         
@@ -227,7 +227,7 @@ const GymAdminPendingTrainerPayments = () => {
                     <td className="px-5 py-4">
                       <button
                         onClick={() => openProcess(item)}
-                        className="flex items-center gap-1.5 px-4 py-1.5 bg-[#A991D4] text-[#292431] rounded-lg text-xs font-bold hover:bg-[#967CC5] transition-colors shadow shadow-purple-900/15"
+                        className="flex items-center gap-1.5 px-4 py-1.5 bg-[#167D78] text-white rounded-lg text-xs font-bold hover:bg-[#116660] transition-colors shadow shadow-teal-900/10"
                       >
                         <CreditCard size={13} />
                         Process Payment
@@ -244,12 +244,12 @@ const GymAdminPendingTrainerPayments = () => {
       {/* Process Payment Modal */}
       {selectedTrainer && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/50 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-[#E5DDEB] mt-10 mb-10">
-            <div className="p-6 border-b border-[#E5DDEB] flex justify-between items-center bg-gradient-to-r from-[#F7F4FA] to-[#FFFFFF]">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-[#D9E2E3] mt-10 mb-10">
+            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-center bg-gradient-to-r from-[#E8EFF0] to-[#FFFFFF]">
               <div>
-                <h2 className="text-xl font-bold text-[#292431]">Process Payment</h2>
-                <p className="text-sm text-[#6B5E78] mt-1">
-                  Recording payment for <span className="font-semibold text-[#A991D4]">{trainerName(selectedTrainer.trainer)}</span>
+                <h2 className="text-xl font-bold text-[#344B4A]">Process Payment</h2>
+                <p className="text-sm text-[#697778] mt-1">
+                  Recording payment for <span className="font-semibold text-[#167D78]">{trainerName(selectedTrainer.trainer)}</span>
                 </p>
               </div>
               <button onClick={() => setSelectedTrainer(null)} className="p-1.5 bg-gray-100 rounded-lg text-gray-500 hover:text-gray-900 transition-colors">
@@ -258,20 +258,20 @@ const GymAdminPendingTrainerPayments = () => {
             </div>
             <div className="p-6 space-y-4">
               {/* Summary */}
-              <div className="bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl p-4 flex justify-between items-center">
+              <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-4 flex justify-between items-center">
                 <div>
-                  <p className="text-xs text-[#6B5E78] font-semibold">Exact Amount Due</p>
-                  <p className="text-2xl font-bold text-[#A991D4]">₹{Number(selectedTrainer.netAmount ?? selectedTrainer.amount).toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-[#697778] font-semibold">Exact Amount Due</p>
+                  <p className="text-2xl font-bold text-[#167D78]">₹{Number(selectedTrainer.netAmount ?? selectedTrainer.amount).toLocaleString('en-IN')}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-[#6B5E78]">Billing Cycle</p>
-                  <p className="font-semibold text-[#292431]">{selectedTrainer.billingCycle}</p>
+                  <p className="text-xs text-[#697778]">Billing Cycle</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedTrainer.billingCycle}</p>
                 </div>
               </div>
 
               {/* Payment Method */}
               <div>
-                <label className="block text-sm font-semibold text-[#6B5E78] mb-2">Payment Method</label>
+                <label className="block text-sm font-semibold text-[#697778] mb-2">Payment Method</label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { value: 'Bank Transfer', icon: Banknote, label: 'Bank Transfer' },
@@ -280,7 +280,7 @@ const GymAdminPendingTrainerPayments = () => {
                     <button
                       key={m.value}
                       onClick={() => setPayForm({ ...payForm, paymentMethod: m.value })}
-                      className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 text-xs font-semibold transition-all ${payForm.paymentMethod === m.value ? 'border-[#A991D4] bg-[#F7F4FA] text-[#A991D4]' : 'border-[#E9DFF4] text-[#6B5E78] hover:border-[#E5DDEB]'}`}
+                      className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 text-xs font-semibold transition-all ${payForm.paymentMethod === m.value ? 'border-[#167D78] bg-[#E8EFF0] text-[#167D78]' : 'border-[#D8EAE7] text-[#697778] hover:border-[#D9E2E3]'}`}
                     >
                       <m.icon size={18} />
                       {m.label}
@@ -293,20 +293,20 @@ const GymAdminPendingTrainerPayments = () => {
               {payForm.paymentMethod === 'Bank Transfer' && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-[#6B5E78] mb-1">Account Holder</label>
-                    <input type="text" value={payForm.accountHolder} onChange={e => setPayForm({ ...payForm, accountHolder: e.target.value })} className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4]" />
+                    <label className="block text-xs font-semibold text-[#697778] mb-1">Account Holder</label>
+                    <input type="text" value={payForm.accountHolder} onChange={e => setPayForm({ ...payForm, accountHolder: e.target.value })} className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#6B5E78] mb-1">Bank Name</label>
-                    <input type="text" value={payForm.bankName} onChange={e => setPayForm({ ...payForm, bankName: e.target.value })} className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4]" />
+                    <label className="block text-xs font-semibold text-[#697778] mb-1">Bank Name</label>
+                    <input type="text" value={payForm.bankName} onChange={e => setPayForm({ ...payForm, bankName: e.target.value })} className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#6B5E78] mb-1">Account Number</label>
-                    <input type="text" value={payForm.accountNumber} onChange={e => setPayForm({ ...payForm, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 18) })} inputMode="numeric" maxLength={18} placeholder="9-18 digits" className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4] font-mono" />
+                    <label className="block text-xs font-semibold text-[#697778] mb-1">Account Number</label>
+                    <input type="text" value={payForm.accountNumber} onChange={e => setPayForm({ ...payForm, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 18) })} inputMode="numeric" maxLength={18} placeholder="9-18 digits" className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78] font-mono" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#6B5E78] mb-1">IFSC Code</label>
-                    <input type="text" value={payForm.ifscCode} onChange={e => setPayForm({ ...payForm, ifscCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) })} maxLength={11} placeholder="11 chars (e.g. HDFC0001234)" className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4] uppercase font-mono" />
+                    <label className="block text-xs font-semibold text-[#697778] mb-1">IFSC Code</label>
+                    <input type="text" value={payForm.ifscCode} onChange={e => setPayForm({ ...payForm, ifscCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) })} maxLength={11} placeholder="11 chars (e.g. HDFC0001234)" className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78] uppercase font-mono" />
                   </div>
                 </div>
               )}
@@ -315,12 +315,12 @@ const GymAdminPendingTrainerPayments = () => {
               {payForm.paymentMethod === 'UPI' && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-[#6B5E78] mb-1">UPI ID</label>
-                    <input type="text" value={payForm.upiId} onChange={e => setPayForm({ ...payForm, upiId: e.target.value })} placeholder="name@bank" className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4]" />
+                    <label className="block text-xs font-semibold text-[#697778] mb-1">UPI ID</label>
+                    <input type="text" value={payForm.upiId} onChange={e => setPayForm({ ...payForm, upiId: e.target.value })} placeholder="name@bank" className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#6B5E78] mb-1">Payment Name</label>
-                    <input type="text" value={payForm.upiName} onChange={e => setPayForm({ ...payForm, upiName: e.target.value })} className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4]" />
+                    <label className="block text-xs font-semibold text-[#697778] mb-1">Payment Name</label>
+                    <input type="text" value={payForm.upiName} onChange={e => setPayForm({ ...payForm, upiName: e.target.value })} className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]" />
                   </div>
                 </div>
               )}
@@ -328,25 +328,25 @@ const GymAdminPendingTrainerPayments = () => {
               {/* Common fields */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-[#6B5E78] mb-1">Amount (₹) *</label>
-                  <input type="number" value={payForm.amount} onChange={e => setPayForm({ ...payForm, amount: e.target.value })} className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4]" />
+                  <label className="block text-xs font-semibold text-[#697778] mb-1">Amount (₹) *</label>
+                  <input type="number" value={payForm.amount} onChange={e => setPayForm({ ...payForm, amount: e.target.value })} className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#6B5E78] mb-1">Payment Date *</label>
-                  <input type="date" value={payForm.paymentDate} onChange={e => setPayForm({ ...payForm, paymentDate: e.target.value })} className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4]" />
+                  <label className="block text-xs font-semibold text-[#697778] mb-1">Payment Date *</label>
+                  <input type="date" value={payForm.paymentDate} onChange={e => setPayForm({ ...payForm, paymentDate: e.target.value })} className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#6B5E78] mb-1">Notes</label>
-                <textarea value={payForm.notes} onChange={e => setPayForm({ ...payForm, notes: e.target.value })} rows={2} placeholder="Optional notes..." className="w-full border border-[#E9DFF4] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#A991D4] resize-none" />
+                <label className="block text-xs font-semibold text-[#697778] mb-1">Notes</label>
+                <textarea value={payForm.notes} onChange={e => setPayForm({ ...payForm, notes: e.target.value })} rows={2} placeholder="Optional notes..." className="w-full border border-[#D8EAE7] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78] resize-none" />
               </div>
             </div>
-            <div className="p-6 border-t border-[#E9DFF4] flex gap-3">
-              <button onClick={() => setSelectedTrainer(null)} className="flex-1 py-2.5 border border-[#E9DFF4] rounded-xl text-sm font-semibold text-[#6B5E78] hover:bg-[#F7F4FA] transition-colors">
+            <div className="p-6 border-t border-[#D8EAE7] flex gap-3">
+              <button onClick={() => setSelectedTrainer(null)} className="flex-1 py-2.5 border border-[#D8EAE7] rounded-xl text-sm font-semibold text-[#697778] hover:bg-[#E8EFF0] transition-colors">
                 Cancel
               </button>
-              <button onClick={handleProcess} disabled={saving} className="flex-1 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl text-sm font-bold hover:bg-[#967CC5] transition-colors disabled:opacity-60 shadow-lg shadow-purple-900/15">
+              <button onClick={handleProcess} disabled={saving} className="flex-1 py-2.5 bg-[#167D78] text-white rounded-xl text-sm font-bold hover:bg-[#116660] transition-colors disabled:opacity-60 shadow-lg shadow-teal-900/10">
                 {saving ? 'Processing...' : 'Confirm Payment'}
               </button>
             </div>

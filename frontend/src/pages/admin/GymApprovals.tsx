@@ -1,4 +1,4 @@
-import { Check, X, Search } from 'lucide-react';
+﻿import { Check, X, Search } from 'lucide-react';
 
 const GymApprovals = () => {
   return (
@@ -6,42 +6,42 @@ const GymApprovals = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold">Pending Gym Approvals</h2>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#6B5E78]" size={20} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#697778]" size={20} />
           <input 
             type="text" 
             placeholder="Search gyms..." 
-            className="pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E5DDEB] rounded-lg focus:outline-none focus:border-[#A991D4] text-[#292431]"
+            className="pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#D9E2E3] rounded-lg focus:outline-none focus:border-[#167D78] text-[#344B4A]"
           />
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-[#FFFFFF] border-b border-[#E5DDEB]">
-              <th className="px-6 py-4 font-medium text-[#6B5E78]">Gym Name</th>
-              <th className="px-6 py-4 font-medium text-[#6B5E78]">Owner</th>
-              <th className="px-6 py-4 font-medium text-[#6B5E78]">Location</th>
-              <th className="px-6 py-4 font-medium text-[#6B5E78]">Date Submitted</th>
-              <th className="px-6 py-4 font-medium text-[#6B5E78]">Status</th>
-              <th className="px-6 py-4 font-medium text-[#6B5E78]">Actions</th>
+            <tr className="bg-[#FFFFFF] border-b border-[#D9E2E3]">
+              <th className="px-6 py-4 font-medium text-[#697778]">Gym Name</th>
+              <th className="px-6 py-4 font-medium text-[#697778]">Owner</th>
+              <th className="px-6 py-4 font-medium text-[#697778]">Location</th>
+              <th className="px-6 py-4 font-medium text-[#697778]">Date Submitted</th>
+              <th className="px-6 py-4 font-medium text-[#697778]">Status</th>
+              <th className="px-6 py-4 font-medium text-[#697778]">Actions</th>
             </tr>
           </thead>
           <tbody>
             {[1, 2, 3].map((i) => (
-              <tr key={i} className="border-b border-[#E5DDEB] hover:bg-[#FFFFFF] transition-colors">
+              <tr key={i} className="border-b border-[#D9E2E3] hover:bg-[#FFFFFF] transition-colors">
                 <td className="px-6 py-4">
-                  <div className="font-medium text-[#292431]">FitLife Center {i}</div>
-                  <div className="text-sm text-[#6B5E78]">2 branches</div>
+                  <div className="font-medium text-[#344B4A]">FitLife Center {i}</div>
+                  <div className="text-sm text-[#697778]">2 branches</div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-[#292431]">John Doe {i}</div>
-                  <div className="text-sm text-[#6B5E78]">john{i}@example.com</div>
+                  <div className="text-[#344B4A]">John Doe {i}</div>
+                  <div className="text-sm text-[#697778]">john{i}@example.com</div>
                 </td>
-                <td className="px-6 py-4 text-[#6B5E78]">New York, NY</td>
-                <td className="px-6 py-4 text-[#6B5E78]">Sep 1, 2026</td>
+                <td className="px-6 py-4 text-[#697778]">New York, NY</td>
+                <td className="px-6 py-4 text-[#697778]">Sep 1, 2026</td>
                 <td className="px-6 py-4">
-                  <span className="px-3 py-1 bg-yellow-500/10 text-[#B77916] border border-yellow-500/20 rounded-full text-sm">
+                  <span className="px-3 py-1 bg-yellow-500/10 text-[#D99A27] border border-yellow-500/20 rounded-full text-sm">
                     Pending
                   </span>
                 </td>
@@ -50,10 +50,10 @@ const GymApprovals = () => {
                     <button className="p-2 bg-green-500/10 text-green-500 hover:bg-green-500/20 rounded-lg transition-colors border border-green-500/20" title="Approve">
                       <Check size={18} />
                     </button>
-                    <button className="p-2 bg-[#E9DFF4]/10 text-[#967CC5] hover:bg-[#E9DFF4]/20 rounded-lg transition-colors border border-[#E9DFF4]/20" title="Reject">
+                    <button className="p-2 bg-[#D8EAE7]/10 text-[#116660] hover:bg-[#D8EAE7]/20 rounded-lg transition-colors border border-[#D8EAE7]/20" title="Reject">
                       <X size={18} />
                     </button>
-                    <button className="px-4 py-2 bg-[#E9DFF4] hover:bg-[#E9DFF4] text-white rounded-lg transition-colors text-sm font-medium">
+                    <button className="px-4 py-2 bg-[#D8EAE7] hover:bg-[#D8EAE7] text-white rounded-lg transition-colors text-sm font-medium">
                       View
                     </button>
                   </div>

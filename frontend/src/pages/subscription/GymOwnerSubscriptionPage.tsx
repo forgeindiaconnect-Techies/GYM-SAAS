@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   Activity, CheckCircle, XCircle, ChevronRight, Crown, Star,
@@ -13,13 +13,13 @@ export const plans = [
     name: 'Free Trial',
     badge: '1 Day',
     icon: Zap,
-    iconBg: 'bg-[#F7F4FA]',
-    iconColor: 'text-[#E9DFF4]',
-    borderDefault: 'border-[#E5DDEB]',
-    borderSelected: 'border-[#A991D4]',
-    accentBar: 'bg-[#E9DFF4]',
-    priceColor: 'text-[#292431]',
-    checkColor: 'text-[#E9DFF4]',
+    iconBg: 'bg-[#E8EFF0]',
+    iconColor: 'text-[#D8EAE7]',
+    borderDefault: 'border-[#D9E2E3]',
+    borderSelected: 'border-[#167D78]',
+    accentBar: 'bg-[#D8EAE7]',
+    priceColor: 'text-[#344B4A]',
+    checkColor: 'text-[#D8EAE7]',
     trial: true,
     priceMonthly: 0,
     priceAnnual: 0,
@@ -45,10 +45,10 @@ export const plans = [
     icon: Star,
     iconBg: 'bg-slate-100',
     iconColor: 'text-slate-500',
-    borderDefault: 'border-[#E5DDEB]',
-    borderSelected: 'border-[#E9DFF4]',
-    accentBar: 'bg-[#E9DFF4]',
-    priceColor: 'text-[#4C315E]',
+    borderDefault: 'border-[#D9E2E3]',
+    borderSelected: 'border-[#D8EAE7]',
+    accentBar: 'bg-[#D8EAE7]',
+    priceColor: 'text-[#344B4A]',
     checkColor: 'text-[#27845A]',
     trial: false,
     priceMonthly: 799,
@@ -74,12 +74,12 @@ export const plans = [
     name: 'Gold',
     badge: 'Most Popular',
     icon: Crown,
-    iconBg: 'bg-[#E9DFF4]',
-    iconColor: 'text-[#4C315E]',
-    borderDefault: 'border-[#A991D4]',
-    borderSelected: 'border-[#A991D4]',
-    accentBar: 'bg-[#A991D4]',
-    priceColor: 'text-[#4C315E]',
+    iconBg: 'bg-[#D8EAE7]',
+    iconColor: 'text-[#344B4A]',
+    borderDefault: 'border-[#167D78]',
+    borderSelected: 'border-[#167D78]',
+    accentBar: 'bg-[#167D78]',
+    priceColor: 'text-[#344B4A]',
     checkColor: 'text-[#27845A]',
     popular: true,
     trial: false,
@@ -106,12 +106,12 @@ export const plans = [
     name: 'Premium',
     badge: 'Advanced',
     icon: Sparkles,
-    iconBg: 'bg-[#E9DFF4]',
-    iconColor: 'text-[#4C315E]',
-    borderDefault: 'border-[#E5DDEB]',
-    borderSelected: 'border-[#A991D4]',
-    accentBar: 'bg-[#A991D4]',
-    priceColor: 'text-[#4C315E]',
+    iconBg: 'bg-[#D8EAE7]',
+    iconColor: 'text-[#344B4A]',
+    borderDefault: 'border-[#D9E2E3]',
+    borderSelected: 'border-[#167D78]',
+    accentBar: 'bg-[#167D78]',
+    priceColor: 'text-[#344B4A]',
     checkColor: 'text-[#27845A]',
     trial: false,
     priceMonthly: 2499,
@@ -174,25 +174,25 @@ const GymOwnerSubscriptionPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F4FA] flex flex-col px-4 py-12">
+    <div className="min-h-screen bg-[#E8EFF0] flex flex-col px-4 py-12">
       {/* Subtle top gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(22,163,74,0.07)_0%,_transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(22,125,120,0.07)_0%,_transparent_60%)] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto">
 
         {/* ── Header ── */}
         <div className="flex justify-between items-center mb-12">
           <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#A991D4] to-[#967CC5] rounded-xl flex items-center justify-center shadow-lg shadow-purple-900/15">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#167D78] to-[#116660] rounded-xl flex items-center justify-center shadow-lg shadow-teal-900/10">
               <Activity className="text-white" size={22} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-[#A991D4]">Gymora</span>
+            <span className="text-2xl font-bold tracking-tight text-[#167D78]">Gymora</span>
           </Link>
           <div className="flex items-center space-x-4">
-            <span className="text-[#6B5E78] text-sm">Welcome, <strong className="text-[#292431]">{user?.firstName}</strong></span>
+            <span className="text-[#697778] text-sm">Welcome, <strong className="text-[#344B4A]">{user?.firstName}</strong></span>
             <button
               onClick={logout}
-              className="flex items-center space-x-2 text-[#6B5E78] hover:text-[#A991D4] transition-colors text-sm bg-white px-4 py-2 rounded-lg border border-[#E5DDEB] hover:border-[#A991D4]"
+              className="flex items-center space-x-2 text-[#697778] hover:text-[#167D78] transition-colors text-sm bg-white px-4 py-2 rounded-lg border border-[#D9E2E3] hover:border-[#167D78]"
             >
               <LogOut size={16} /><span>Sign out</span>
             </button>
@@ -216,34 +216,34 @@ const GymOwnerSubscriptionPage = () => {
 
         {/* ── Title ── */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-[#A991D4]/10 border border-[#A991D4]/20 rounded-full px-4 py-1.5 text-[#A991D4] text-xs font-bold uppercase tracking-widest mb-5">
+          <div className="inline-flex items-center gap-2 bg-[#167D78]/10 border border-[#167D78]/20 rounded-full px-4 py-1.5 text-[#167D78] text-xs font-bold uppercase tracking-widest mb-5">
             <Sparkles size={12} /> Choose Your Plan
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold text-[#292431] mb-4 tracking-tight">
-            Power Your Gym with <span className="text-[#A991D4]">Gymora</span>
+          <h1 className="text-3xl md:text-5xl font-bold text-[#344B4A] mb-4 tracking-tight">
+            Power Your Gym with <span className="text-[#167D78]">Gymora</span>
           </h1>
-          <p className="text-[#6B5E78] max-w-2xl mx-auto text-lg mb-8">
+          <p className="text-[#697778] max-w-2xl mx-auto text-lg mb-8">
             Your gym registration is approved! Select a subscription plan to access the Gym Dashboard and start managing your gym with AI.
           </p>
 
           {/* ── Billing Toggle ── */}
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#292431]' : 'text-[#6B5E78]'}`}>Monthly</span>
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#344B4A]' : 'text-[#697778]'}`}>Monthly</span>
             <button
               onClick={() => setIsAnnual(!isAnnual)}
               aria-pressed={isAnnual}
-              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A991D4] focus:ring-offset-2 ${isAnnual ? 'bg-[#A991D4]' : 'bg-[#E5DDEB]'}`}
+              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#167D78] focus:ring-offset-2 ${isAnnual ? 'bg-[#167D78]' : 'bg-[#D9E2E3]'}`}
             >
               <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-9' : 'translate-x-1'}`} />
             </button>
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#292431]' : 'text-[#6B5E78]'}`}>Annual</span>
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#344B4A]' : 'text-[#697778]'}`}>Annual</span>
               {isAnnual ? (
-                <span className="inline-flex items-center gap-1 bg-[#E9DFF4]/10 text-[#A991D4] border border-green-200 text-xs px-3 py-1 rounded-full font-bold">
+                <span className="inline-flex items-center gap-1 bg-[#D8EAE7]/10 text-[#167D78] border border-green-200 text-xs px-3 py-1 rounded-full font-bold">
                   <Gift size={11} /> 2 months FREE — Save up to 25%
                 </span>
               ) : (
-                <span className="text-xs bg-white text-[#E9DFF4] border border-[#E5DDEB] px-3 py-1 rounded-full">
+                <span className="text-xs bg-white text-[#D8EAE7] border border-[#D9E2E3] px-3 py-1 rounded-full">
                   Switch to annual & save 25%
                 </span>
               )}
@@ -252,7 +252,7 @@ const GymOwnerSubscriptionPage = () => {
 
           {isAnnual && (
             <div className="mt-4 inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-5 py-2.5 text-sm text-green-700 font-medium">
-              <CheckCircle size={15} className="text-[#A991D4] shrink-0" />
+              <CheckCircle size={15} className="text-[#167D78] shrink-0" />
               Annual billing: prices shown per month, total charged once a year.
             </div>
           )}
@@ -282,12 +282,12 @@ const GymOwnerSubscriptionPage = () => {
 
                 {/* Popular badge */}
                 {plan.popular && !isSelected && (
-                  <div className="bg-[#4C315E] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
+                  <div className="bg-[#344B4A] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                     ⭐ Most Popular
                   </div>
                 )}
                 {plan.popular && isSelected && (
-                  <div className="bg-[#4C315E] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
+                  <div className="bg-[#344B4A] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                     ⭐ Most Popular
                   </div>
                 )}
@@ -307,8 +307,8 @@ const GymOwnerSubscriptionPage = () => {
                         <Icon size={20} className={plan.iconColor} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-[#292431] text-sm">{plan.name}</h3>
-                        <span className="text-[10px] text-[#6B5E78] font-medium">{plan.badge}</span>
+                        <h3 className="font-bold text-[#344B4A] text-sm">{plan.name}</h3>
+                        <span className="text-[10px] text-[#697778] font-medium">{plan.badge}</span>
                       </div>
                     </div>
                   </div>
@@ -317,40 +317,40 @@ const GymOwnerSubscriptionPage = () => {
                   <div className="mb-4">
                     <div className="flex items-baseline gap-1">
                       <span className={`text-4xl font-black tracking-tight ${plan.priceColor}`}>{price.main}</span>
-                      <span className="text-[#6B5E78] text-sm font-medium">{price.period}</span>
+                      <span className="text-[#697778] text-sm font-medium">{price.period}</span>
                     </div>
                     {price.sub && (
-                      <p className="text-[#6B5E78] text-xs mt-0.5">{price.sub}</p>
+                      <p className="text-[#697778] text-xs mt-0.5">{price.sub}</p>
                     )}
                     {isAnnual && !plan.trial && plan.savingsAnnual && (
-                      <p className="text-[#A991D4] text-xs mt-1 font-bold">
+                      <p className="text-[#167D78] text-xs mt-1 font-bold">
                         💰 Save ₹{plan.savingsAnnual.toLocaleString('en-IN')} vs monthly
                       </p>
                     )}
                     {!isAnnual && !plan.trial && (
-                      <p className="text-[#6B5E78] text-xs mt-1">
+                      <p className="text-[#697778] text-xs mt-1">
                         or ₹{plan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo billed annually
                       </p>
                     )}
                   </div>
 
                   {/* Limits */}
-                  <div className="bg-[#F7F4FA] rounded-xl px-3 py-2 mb-4 border border-[#E5DDEB]">
-                    <p className="text-[10px] text-[#6B5E78] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
-                    <p className="text-xs text-[#292431] font-medium">{plan.limits}</p>
+                  <div className="bg-[#E8EFF0] rounded-xl px-3 py-2 mb-4 border border-[#D9E2E3]">
+                    <p className="text-[10px] text-[#697778] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
+                    <p className="text-xs text-[#344B4A] font-medium">{plan.limits}</p>
                   </div>
 
                   {/* Features */}
                   <ul className="space-y-2 mb-4 flex-1">
                     {plan.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-[#292431]">
+                      <li key={i} className="flex items-start gap-2 text-xs text-[#344B4A]">
                         <CheckCircle size={13} className={`shrink-0 mt-0.5 ${plan.checkColor}`} />
                         <span>{f}</span>
                       </li>
                     ))}
                     {plan.locked.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-[#E5DDEB]">
-                        <XCircle size={13} className="shrink-0 mt-0.5 text-[#E9DFF4]" />
+                      <li key={i} className="flex items-start gap-2 text-xs text-[#D9E2E3]">
+                        <XCircle size={13} className="shrink-0 mt-0.5 text-[#D8EAE7]" />
                         <span className="line-through">{f}</span>
                       </li>
                     ))}
@@ -370,7 +370,7 @@ const GymOwnerSubscriptionPage = () => {
                   <div className={`w-full py-2.5 rounded-xl text-xs font-bold text-center transition-all border-2 ${
                     isSelected
                       ? `${plan.accentBar} text-white border-transparent`
-                      : `bg-white border-[#E5DDEB] text-[#6B5E78] hover:border-[#A991D4] hover:text-[#A991D4]`
+                      : `bg-white border-[#D9E2E3] text-[#697778] hover:border-[#167D78] hover:text-[#167D78]`
                   }`}>
                     {isSelected ? `✓ ${plan.ctaText} Selected` : plan.ctaText}
                   </div>
@@ -387,8 +387,8 @@ const GymOwnerSubscriptionPage = () => {
             onClick={handleSelectPlan}
             className={`px-14 py-4 rounded-2xl font-bold text-lg flex items-center gap-2 transition-all duration-200 shadow-lg ${
               !selectedPlan || isLoading
-                ? 'bg-[#E9DFF4] text-[#6B5E78] cursor-not-allowed'
-                : 'bg-gradient-to-r from-[#A991D4] to-[#967CC5] text-white hover:from-[#967CC5] hover:to-[#967CC5] hover:-translate-y-0.5 shadow-purple-900/15'
+                ? 'bg-[#D8EAE7] text-[#697778] cursor-not-allowed'
+                : 'bg-gradient-to-r from-[#167D78] to-[#116660] text-white hover:from-[#116660] hover:to-[#116660] hover:-translate-y-0.5 shadow-teal-900/10'
             }`}
           >
             {isLoading ? (
@@ -409,7 +409,7 @@ const GymOwnerSubscriptionPage = () => {
             )}
           </button>
           {!selectedPlan && (
-            <p className="text-[#6B5E78] text-sm">Select a plan above to continue</p>
+            <p className="text-[#697778] text-sm">Select a plan above to continue</p>
           )}
         </div>
 

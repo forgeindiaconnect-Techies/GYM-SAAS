@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Search, Phone, Mail, Calendar, Loader2, MessageSquare, ArrowRight, UserPlus, CheckCircle, Download, Clock } from 'lucide-react';
 import api from '../../utils/api';
@@ -92,8 +92,8 @@ export const GymAdminEnquiries = () => {
     switch (status) {
       case 'NEW': return 'bg-blue-100 text-blue-700';
       case 'CONTACTED': return 'bg-yellow-100 text-yellow-700';
-      case 'FOLLOW_UP': return 'bg-purple-100 text-purple-700';
-      case 'CONVERTED': return 'bg-[#E9DFF4]/10 text-[#A991D4]';
+      case 'FOLLOW_UP': return 'bg-[#D8EAE7] text-[#167D78]';
+      case 'CONVERTED': return 'bg-[#D8EAE7]/10 text-[#167D78]';
       case 'CLOSED': return 'bg-gray-100 text-gray-700';
       default: return 'bg-gray-100 text-gray-700';
     }
@@ -121,24 +121,24 @@ export const GymAdminEnquiries = () => {
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Customer Enquiries</h1>
-          <p className="text-[#6B5E78] mt-1">Manage leads and prospective members who want to join your gym.</p>
+          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Customer Enquiries</h1>
+          <p className="text-[#697778] mt-1">Manage leads and prospective members who want to join your gym.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#697778]" size={18} />
             <input
               type="text"
               placeholder="Search leads..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-[#E9DFF4] rounded-xl text-sm focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4] outline-none"
+              className="pl-10 pr-4 py-2 border border-[#D8EAE7] rounded-xl text-sm focus:border-[#167D78] focus:ring-1 focus:ring-[#167D78] outline-none"
             />
           </div>
           <button
             onClick={handleDownloadPDF}
             disabled={filteredEnquiries.length === 0}
-            className="inline-flex items-center gap-2 bg-[#A991D4] text-[#292431] px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#967CC5] transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-2 bg-[#167D78] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#116660] transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
           >
             <Download size={16} />
             Download PDF
@@ -148,40 +148,40 @@ export const GymAdminEnquiries = () => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin text-[#A991D4]" size={40} />
+          <Loader2 className="animate-spin text-[#167D78]" size={40} />
         </div>
       ) : (
-        <div className="bg-white border border-[#E9DFF4] rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-white border border-[#D8EAE7] rounded-2xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#F7F4FA] border-b border-[#E9DFF4]">
-                  <th className="px-6 py-4 text-xs font-semibold text-[#6B5E78] uppercase tracking-wider">Customer</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#6B5E78] uppercase tracking-wider">Contact</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#6B5E78] uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#6B5E78] uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#6B5E78] uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#6B5E78] uppercase tracking-wider">Action</th>
+                <tr className="bg-[#E8EFF0] border-b border-[#D8EAE7]">
+                  <th className="px-6 py-4 text-xs font-semibold text-[#697778] uppercase tracking-wider">Customer</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#697778] uppercase tracking-wider">Contact</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#697778] uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#697778] uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#697778] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#697778] uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E9DFF4]">
+              <tbody className="divide-y divide-[#D8EAE7]">
                 {filteredEnquiries.map((enq) => (
-                  <tr key={enq._id} className="hover:bg-[#F7F4FA] transition-colors">
+                  <tr key={enq._id} className="hover:bg-[#E8EFF0] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-[#292431]">{enq.customerName}</div>
-                      <div className="text-sm text-[#6B5E78]">{enq.enquiryId}</div>
+                      <div className="font-semibold text-[#344B4A]">{enq.customerName}</div>
+                      <div className="text-sm text-[#697778]">{enq.enquiryId}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-[#292431] flex items-center gap-1"><Phone size={12}/> {enq.mobileNumber}</div>
-                      <div className="text-sm text-[#6B5E78] flex items-center gap-1 mt-1"><Mail size={12}/> {enq.email}</div>
+                      <div className="text-sm text-[#344B4A] flex items-center gap-1"><Phone size={12}/> {enq.mobileNumber}</div>
+                      <div className="text-sm text-[#697778] flex items-center gap-1 mt-1"><Mail size={12}/> {enq.email}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-[#292431]">{enq.enquiryType}</span>
+                      <span className="text-sm text-[#344B4A]">{enq.enquiryType}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-[#292431]">{new Date(enq.createdAt).toLocaleDateString()}</div>
-                      <div className="text-xs text-[#6B5E78] flex items-center gap-1 font-medium mt-0.5">
-                        <Clock size={11} className="text-[#A991D4]" />
+                      <div className="text-sm font-semibold text-[#344B4A]">{new Date(enq.createdAt).toLocaleDateString()}</div>
+                      <div className="text-xs text-[#697778] flex items-center gap-1 font-medium mt-0.5">
+                        <Clock size={11} className="text-[#167D78]" />
                         <span>{new Date(enq.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
                       </div>
                     </td>
@@ -193,7 +193,7 @@ export const GymAdminEnquiries = () => {
                     <td className="px-6 py-4">
                       <button 
                         onClick={() => { setSelectedEnquiry(enq); setNotes(enq.ownerNotes || ''); }}
-                        className="text-[#A991D4] hover:text-[#967CC5] font-semibold text-sm flex items-center gap-1"
+                        className="text-[#167D78] hover:text-[#167D78] font-semibold text-sm flex items-center gap-1"
                       >
                         View Details <ArrowRight size={16} />
                       </button>
@@ -202,8 +202,8 @@ export const GymAdminEnquiries = () => {
                 ))}
                 {filteredEnquiries.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-[#6B5E78]">
-                      <MessageSquare size={40} className="mx-auto text-[#967CC5] mb-3" />
+                    <td colSpan={6} className="px-6 py-12 text-center text-[#697778]">
+                      <MessageSquare size={40} className="mx-auto text-[#116660] mb-3" />
                       No enquiries found.
                     </td>
                   </tr>
@@ -218,17 +218,17 @@ export const GymAdminEnquiries = () => {
       {selectedEnquiry && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4 sm:p-6 overflow-y-auto">
           <div className="bg-white rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] my-auto">
-            <div className="p-6 border-b border-[#E9DFF4] flex justify-between items-center bg-[#F7F4FA]">
+            <div className="p-6 border-b border-[#D8EAE7] flex justify-between items-center bg-[#E8EFF0]">
               <div>
-                <h2 className="text-xl font-bold text-[#292431] flex items-center gap-2">
+                <h2 className="text-xl font-bold text-[#344B4A] flex items-center gap-2">
                   Enquiry Details
                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedEnquiry.status)}`}>
                     {selectedEnquiry.status.replace('_', ' ')}
                   </span>
                 </h2>
-                <p className="text-[#6B5E78] text-sm mt-1">{selectedEnquiry.enquiryId} • Submitted on {new Date(selectedEnquiry.createdAt).toLocaleString()}</p>
+                <p className="text-[#697778] text-sm mt-1">{selectedEnquiry.enquiryId} • Submitted on {new Date(selectedEnquiry.createdAt).toLocaleString()}</p>
               </div>
-              <button onClick={() => setSelectedEnquiry(null)} className="p-2 text-[#6B5E78] hover:bg-[#E9DFF4] rounded-full transition-colors">
+              <button onClick={() => setSelectedEnquiry(null)} className="p-2 text-[#697778] hover:bg-[#D8EAE7] rounded-full transition-colors">
                 <span className="sr-only">Close</span>✕
               </button>
             </div>
@@ -236,48 +236,48 @@ export const GymAdminEnquiries = () => {
             <div className="p-6 overflow-y-auto flex-1 grid md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-xs font-bold text-[#A991D4] uppercase tracking-wider mb-3">Customer Information</h3>
-                  <div className="border border-[#E5DDEB] rounded-xl overflow-hidden divide-y divide-[#E5DDEB] bg-white shadow-sm">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
+                  <h3 className="text-xs font-bold text-[#167D78] uppercase tracking-wider mb-3">Customer Information</h3>
+                  <div className="border border-[#D9E2E3] rounded-xl overflow-hidden divide-y divide-[#D9E2E3] bg-white shadow-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Customer Name</span>
-                        <span className="font-bold text-sm text-[#292431]">{selectedEnquiry.customerName}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Customer Name</span>
+                        <span className="font-bold text-sm text-[#344B4A]">{selectedEnquiry.customerName}</span>
                       </div>
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Mobile</span>
-                        <span className="font-semibold text-sm text-[#292431]">{selectedEnquiry.mobileNumber}</span>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Email</span>
-                        <span className="font-semibold text-sm text-[#292431] break-all">{selectedEnquiry.email}</span>
-                      </div>
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">City</span>
-                        <span className="font-semibold text-sm text-[#292431]">{selectedEnquiry.city || '—'}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Mobile</span>
+                        <span className="font-semibold text-sm text-[#344B4A]">{selectedEnquiry.mobileNumber}</span>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Preferred Contact</span>
-                        <span className="font-semibold text-sm text-[#A991D4]">{selectedEnquiry.preferredContactMethod || 'Any'}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Email</span>
+                        <span className="font-semibold text-sm text-[#344B4A] break-all">{selectedEnquiry.email}</span>
                       </div>
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Enquiry Type</span>
-                        <span className="font-semibold text-sm text-[#292431]">{selectedEnquiry.enquiryType || 'General'}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">City</span>
+                        <span className="font-semibold text-sm text-[#344B4A]">{selectedEnquiry.city || '—'}</span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Preferred Contact</span>
+                        <span className="font-semibold text-sm text-[#167D78]">{selectedEnquiry.preferredContactMethod || 'Any'}</span>
+                      </div>
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Enquiry Type</span>
+                        <span className="font-semibold text-sm text-[#344B4A]">{selectedEnquiry.enquiryType || 'General'}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-xs font-bold text-[#A991D4] uppercase tracking-wider mb-3">Message</h3>
-                  <div className="border border-[#E5DDEB] rounded-xl overflow-hidden divide-y divide-[#E5DDEB] bg-white shadow-sm">
-                    <div className="p-3 bg-[#F8FAF9] text-[11px] font-bold uppercase tracking-wider text-[#6B5E78]">
-                      Subject / Type: <span className="text-[#292431]">{selectedEnquiry.enquiryType}</span>
+                  <h3 className="text-xs font-bold text-[#167D78] uppercase tracking-wider mb-3">Message</h3>
+                  <div className="border border-[#D9E2E3] rounded-xl overflow-hidden divide-y divide-[#D9E2E3] bg-white shadow-sm">
+                    <div className="p-3 bg-[#E8EFF0] text-[11px] font-bold uppercase tracking-wider text-[#697778]">
+                      Subject / Type: <span className="text-[#344B4A]">{selectedEnquiry.enquiryType}</span>
                     </div>
-                    <div className="p-4 bg-white text-sm text-[#292431] leading-relaxed whitespace-pre-wrap">
+                    <div className="p-4 bg-white text-sm text-[#344B4A] leading-relaxed whitespace-pre-wrap">
                       {selectedEnquiry.message}
                     </div>
                   </div>
@@ -286,19 +286,19 @@ export const GymAdminEnquiries = () => {
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-sm font-semibold text-[#6B5E78] uppercase tracking-wider mb-3">Owner Notes</h3>
+                  <h3 className="text-sm font-semibold text-[#697778] uppercase tracking-wider mb-3">Owner Notes</h3>
                   <textarea
                     rows={4}
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
                     placeholder="Add internal notes about this lead..."
-                    className="w-full bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-3 text-sm focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4] outline-none transition-all resize-none"
+                    className="w-full bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-3 text-sm focus:border-[#167D78] focus:ring-1 focus:ring-[#167D78] outline-none transition-all resize-none"
                   />
                   <div className="flex justify-end mt-2">
                     <button 
                       onClick={() => updateStatus(selectedEnquiry._id, selectedEnquiry.status)}
                       disabled={updating}
-                      className="px-4 py-2 bg-[#F7F4FA] text-[#292431] font-semibold text-sm rounded-lg hover:bg-[#E9DFF4] transition-colors disabled:opacity-50"
+                      className="px-4 py-2 bg-[#E8EFF0] text-[#344B4A] font-semibold text-sm rounded-lg hover:bg-[#D8EAE7] transition-colors disabled:opacity-50"
                     >
                       {updating ? 'Saving...' : 'Save Notes'}
                     </button>
@@ -306,10 +306,10 @@ export const GymAdminEnquiries = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-semibold text-[#6B5E78] uppercase tracking-wider mb-3">Actions</h3>
+                  <h3 className="text-sm font-semibold text-[#697778] uppercase tracking-wider mb-3">Actions</h3>
                   <div className="space-y-3">
                     {selectedEnquiry.status === 'NEW' && (
-                      <button onClick={() => updateStatus(selectedEnquiry._id, 'CONTACTED')} className="w-full py-3 bg-[#A991D4]/10 text-[#A991D4] font-bold rounded-xl hover:bg-[#A991D4]/20 transition-colors flex items-center justify-center gap-2">
+                      <button onClick={() => updateStatus(selectedEnquiry._id, 'CONTACTED')} className="w-full py-3 bg-[#167D78]/10 text-[#167D78] font-bold rounded-xl hover:bg-[#167D78]/20 transition-colors flex items-center justify-center gap-2">
                         <CheckCircle size={18} /> Mark as Contacted
                       </button>
                     )}
@@ -319,12 +319,12 @@ export const GymAdminEnquiries = () => {
                       </button>
                     )}
                     {['NEW', 'CONTACTED', 'FOLLOW_UP'].includes(selectedEnquiry.status) && (
-                      <button onClick={() => handleConvert(selectedEnquiry)} className="w-full py-3 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#A991D4]/20">
+                      <button onClick={() => handleConvert(selectedEnquiry)} className="w-full py-3 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#167D78]/20">
                         <UserPlus size={18} /> Convert to Customer
                       </button>
                     )}
                     {['NEW', 'CONTACTED', 'FOLLOW_UP'].includes(selectedEnquiry.status) && (
-                      <button onClick={() => updateStatus(selectedEnquiry._id, 'CLOSED')} className="w-full py-3 bg-[#F7F4FA] text-[#6B5E78] font-bold rounded-xl hover:bg-[#E9DFF4] transition-colors flex items-center justify-center gap-2">
+                      <button onClick={() => updateStatus(selectedEnquiry._id, 'CLOSED')} className="w-full py-3 bg-[#E8EFF0] text-[#697778] font-bold rounded-xl hover:bg-[#D8EAE7] transition-colors flex items-center justify-center gap-2">
                         Close Enquiry
                       </button>
                     )}

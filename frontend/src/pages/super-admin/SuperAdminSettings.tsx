@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Save, Bell, Shield } from 'lucide-react';
 
 const SuperAdminSettings = () => {
@@ -29,15 +29,15 @@ const SuperAdminSettings = () => {
   };
 
   const ToggleBtn = ({ label, desc, active, onClick }: { label: string; desc: string; active: boolean; onClick: () => void }) => (
-    <div className="flex items-center justify-between p-4 bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl">
+    <div className="flex items-center justify-between p-4 bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl">
       <div>
-        <p className="text-[#292431] font-semibold">{label}</p>
-        <p className="text-[#6B5E78] text-sm">{desc}</p>
+        <p className="text-[#344B4A] font-semibold">{label}</p>
+        <p className="text-[#697778] text-sm">{desc}</p>
       </div>
       <button 
         type="button" 
         onClick={onClick} 
-        className={`w-12 h-6 rounded-full p-1 transition-colors ${active ? 'bg-[#E9DFF4]' : 'bg-[#E9DFF4]'}`}
+        className={`w-12 h-6 rounded-full p-1 transition-colors ${active ? 'bg-[#D8EAE7]' : 'bg-[#D8EAE7]'}`}
       >
         <div className={`w-4 h-4 bg-white rounded-full transition-transform ${active ? 'translate-x-6' : 'translate-x-0'}`} />
       </button>
@@ -47,16 +47,16 @@ const SuperAdminSettings = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#292431] tracking-tight">System Settings</h1>
-        <p className="text-[#6B5E78] mt-1">Configure global preferences and notifications.</p>
+        <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">System Settings</h1>
+        <p className="text-[#697778] mt-1">Configure global preferences and notifications.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         
         {/* Notifications */}
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8">
-          <div className="flex items-center gap-2 text-[#292431] mb-6 border-b border-[#E5DDEB] pb-2">
-            <Bell size={20} className="text-[#967CC5]"/>
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 md:p-8">
+          <div className="flex items-center gap-2 text-[#344B4A] mb-6 border-b border-[#D9E2E3] pb-2">
+            <Bell size={20} className="text-[#167D78]"/>
             <h2 className="text-xl font-bold">Notification Settings</h2>
           </div>
           <div className="space-y-4">
@@ -66,9 +66,9 @@ const SuperAdminSettings = () => {
         </div>
 
         {/* Security & Workflow */}
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8">
-          <div className="flex items-center gap-2 text-[#292431] mb-6 border-b border-[#E5DDEB] pb-2">
-            <Shield size={20} className="text-[#967CC5]"/>
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 md:p-8">
+          <div className="flex items-center gap-2 text-[#344B4A] mb-6 border-b border-[#D9E2E3] pb-2">
+            <Shield size={20} className="text-[#167D78]"/>
             <h2 className="text-xl font-bold">Security & Onboarding Workflow</h2>
           </div>
           <div className="space-y-4">
@@ -78,7 +78,7 @@ const SuperAdminSettings = () => {
         </div>
 
         <div className="flex justify-end">
-          <button type="submit" className="px-8 py-3 bg-[#E9DFF4] text-[#292431] font-bold rounded-xl hover:bg-teal-600 flex items-center gap-2 shadow-lg shadow-amber-500/20">
+          <button type="submit" className="px-8 py-3 bg-[#D8EAE7] text-[#344B4A] font-bold rounded-xl hover:bg-teal-600 flex items-center gap-2 shadow-lg shadow-amber-500/20">
             <Save size={18} /> Save Settings
           </button>
         </div>

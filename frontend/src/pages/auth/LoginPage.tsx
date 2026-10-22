@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
@@ -92,27 +92,27 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F4FA] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[#E8EFF0] flex flex-col items-center justify-center px-4">
       {/* Background glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(22,163,74,0.06)_0%,_transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(22,125,120,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
       {/* Back to Home Arrow */}
-      <Link to="/" className="absolute top-8 left-8 text-[#6B5E78] hover:text-[#A991D4] flex items-center gap-2 transition-colors">
+      <Link to="/" className="absolute top-8 left-8 text-[#697778] hover:text-[#167D78] flex items-center gap-2 transition-colors">
         <ArrowLeft size={20} />
         <span className="font-medium text-sm">Back to Home</span>
       </Link>
 
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2 mb-10 group">
-        <div className="w-9 h-9 bg-gradient-to-br from-[#A991D4] to-[#967CC5] rounded-xl flex items-center justify-center shadow-lg shadow-purple-900/15">
-          <Activity className="text-[#292431]" size={20} />
+        <div className="w-9 h-9 bg-gradient-to-br from-[#167D78] to-[#116660] rounded-xl flex items-center justify-center shadow-lg shadow-teal-900/10">
+          <Activity className="text-[#344B4A]" size={20} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#A991D4]">Gymora</span>
+        <span className="text-2xl font-bold tracking-tight text-[#167D78]">Gymora</span>
       </Link>
 
-      <div className="w-full max-w-md bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-8 shadow-2xl">
-        <h1 className="text-2xl font-bold text-[#292431] mb-1">Welcome back</h1>
-        <p className="text-[#6B5E78] text-sm mb-8">Log in to your Gymora account</p>
+      <div className="w-full max-w-md bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-8 shadow-2xl">
+        <h1 className="text-2xl font-bold text-[#344B4A] mb-1">Welcome back</h1>
+        <p className="text-[#697778] text-sm mb-8">Log in to your Gymora account</p>
 
         {error && (
           <div className="flex items-center space-x-3 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-6 text-sm">
@@ -124,7 +124,7 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit} noValidate autoComplete="off" className="space-y-5">
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-[#6B5E78] mb-2">Email Address</label>
+            <label className="block text-sm font-medium text-[#697778] mb-2">Email Address</label>
             <input
               id="login-email"
               type="email"
@@ -132,16 +132,16 @@ const LoginPage = () => {
               onChange={(e) => { setForm({ ...form, email: e.target.value }); setFieldErrors({ ...fieldErrors, email: '' }); }}
               placeholder="you@example.com"
               autoComplete="off"
-              className={`w-full bg-[#FFFFFF] border ${fieldErrors.email ? 'border-red-400' : 'border-[#E5DDEB]'} text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4] transition-colors`}
+              className={`w-full bg-[#FFFFFF] border ${fieldErrors.email ? 'border-red-400' : 'border-[#D9E2E3]'} text-[#344B4A] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#167D78] transition-colors`}
             />
-            {fieldErrors.email && <p className="text-[#E9DFF4] text-xs mt-1">{fieldErrors.email}</p>}
+            {fieldErrors.email && <p className="text-[#D8EAE7] text-xs mt-1">{fieldErrors.email}</p>}
           </div>
 
           {/* Password */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-[#6B5E78]">Password</label>
-              <Link to="/forgot-password" className="text-xs text-[#A991D4] hover:underline">Forgot Password?</Link>
+              <label className="block text-sm font-medium text-[#697778]">Password</label>
+              <Link to="/forgot-password" className="text-xs text-[#167D78] hover:underline">Forgot Password?</Link>
             </div>
             <div className="relative">
               <input
@@ -151,17 +151,17 @@ const LoginPage = () => {
                 onChange={(e) => { setForm({ ...form, password: e.target.value }); setFieldErrors({ ...fieldErrors, password: '' }); }}
                 placeholder="Enter your password"
                 autoComplete="new-password"
-                className={`w-full bg-[#FFFFFF] border ${fieldErrors.password ? 'border-red-400' : 'border-[#E5DDEB]'} text-[#292431] rounded-xl px-4 py-3 pr-12 text-sm outline-none focus:border-[#A991D4] transition-colors`}
+                className={`w-full bg-[#FFFFFF] border ${fieldErrors.password ? 'border-red-400' : 'border-[#D9E2E3]'} text-[#344B4A] rounded-xl px-4 py-3 pr-12 text-sm outline-none focus:border-[#167D78] transition-colors`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B5E78] hover:text-[#A991D4] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#697778] hover:text-[#167D78] transition-colors"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {fieldErrors.password && <p className="text-[#E9DFF4] text-xs mt-1">{fieldErrors.password}</p>}
+            {fieldErrors.password && <p className="text-[#D8EAE7] text-xs mt-1">{fieldErrors.password}</p>}
           </div>
 
           {/* Remember Me */}
@@ -170,11 +170,11 @@ const LoginPage = () => {
               type="button"
               id="remember-me"
               onClick={() => setRememberMe(!rememberMe)}
-              className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${rememberMe ? 'bg-[#A991D4] border-[#A991D4]' : 'border-[#555] bg-transparent'}`}
+              className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${rememberMe ? 'bg-[#167D78] border-[#167D78]' : 'border-[#697778] bg-transparent'}`}
             >
               {rememberMe && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="black" strokeWidth="2" strokeLinecap="round"/></svg>}
             </button>
-            <label className="text-sm text-[#6B5E78] cursor-pointer" onClick={() => setRememberMe(!rememberMe)}>Remember me</label>
+            <label className="text-sm text-[#697778] cursor-pointer" onClick={() => setRememberMe(!rememberMe)}>Remember me</label>
           </div>
 
           {/* Submit */}
@@ -182,19 +182,19 @@ const LoginPage = () => {
             id="login-submit"
             type="submit"
             disabled={isLoading}
-            className="w-full py-3.5 bg-gradient-to-r from-[#A991D4] to-[#967CC5] text-[#292431] font-bold rounded-xl hover:from-[#967CC5] hover:to-[#967CC5] transition-all disabled:opacity-60 flex items-center justify-center space-x-2 shadow-lg shadow-purple-900/15"
+            className="w-full py-3.5 bg-gradient-to-r from-[#167D78] to-[#116660] text-white font-bold rounded-xl hover:from-[#116660] hover:to-[#116660] transition-all disabled:opacity-60 flex items-center justify-center space-x-2 shadow-lg shadow-teal-900/10"
           >
             {isLoading ? <><Loader2 size={18} className="animate-spin" /><span>Logging in...</span></> : <span>Log In</span>}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-[#6B5E78]">
+        <div className="mt-6 text-center text-sm text-[#697778]">
           Don't have an account?{' '}
-          <Link to="/register" className="text-[#A991D4] font-semibold hover:underline">Sign Up</Link>
+          <Link to="/register" className="text-[#167D78] font-semibold hover:underline">Sign Up</Link>
         </div>
       </div>
 
-      <p className="mt-8 text-xs text-[#6B5E78]">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
+      <p className="mt-8 text-xs text-[#697778]">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
     </div>
   );
 };

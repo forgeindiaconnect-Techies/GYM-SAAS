@@ -13,22 +13,22 @@ export const sendOtpEmail = async (toEmail: string, otp: string): Promise<boolea
   }
 
   const htmlContent = `
-    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #E2E8F0; border-radius: 16px; background-color: #FFFFFF;">
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #D9E2E3; border-radius: 16px; background-color: #FFFFFF;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
-        <p style="color: #64748B; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
+        <h1 style="color: #167D78; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
+        <p style="color: #697778; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
       </div>
 
-      <div style="background-color: #FFF7ED; border: 1px solid #FFEDD5; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
-        <h2 style="color: #1E293B; margin-top: 0; font-size: 18px;">Email Verification Code</h2>
-        <p style="color: #475569; font-size: 14px; margin-bottom: 16px;">Use the following 6-digit One-Time Password (OTP) to complete your verification:</p>
-        <div style="display: inline-block; background-color: #F97316; color: #FFFFFF; font-size: 32px; font-weight: 800; letter-spacing: 6px; padding: 12px 32px; border-radius: 10px; margin: 8px 0;">
+      <div style="background-color: #E8EFF0; border: 1px solid #D8EAE7; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+        <h2 style="color: #344B4A; margin-top: 0; font-size: 18px;">Email Verification Code</h2>
+        <p style="color: #697778; font-size: 14px; margin-bottom: 16px;">Use the following 6-digit One-Time Password (OTP) to complete your verification:</p>
+        <div style="display: inline-block; background-color: #167D78; color: #FFFFFF; font-size: 32px; font-weight: 800; letter-spacing: 6px; padding: 12px 32px; border-radius: 10px; margin: 8px 0;">
           ${otp}
         </div>
-        <p style="color: #94A3B8; font-size: 12px; margin-top: 16px;">This OTP is valid for 10 minutes. Do not share this code with anyone.</p>
+        <p style="color: #697778; font-size: 12px; margin-top: 16px;">This OTP is valid for 10 minutes. Do not share this code with anyone.</p>
       </div>
 
-      <div style="color: #94A3B8; font-size: 12px; text-align: center; border-top: 1px solid #F1F5F9; padding-top: 16px;">
+      <div style="color: #697778; font-size: 12px; text-align: center; border-top: 1px solid #D9E2E3; padding-top: 16px;">
         If you did not request this code, please ignore this email.<br/>
         &copy; ${new Date().getFullYear()} Gymora Platform. All rights reserved.
       </div>
@@ -101,34 +101,34 @@ export const sendGymOwnerInvitationEmail = async (
   }
 
   const htmlContent = `
-    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 28px; border: 1px solid #E2E8F0; border-radius: 16px; background-color: #FFFFFF;">
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 28px; border: 1px solid #D9E2E3; border-radius: 16px; background-color: #FFFFFF;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
-        <p style="color: #64748B; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
+        <h1 style="color: #167D78; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
+        <p style="color: #697778; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
       </div>
 
-      <div style="background-color: #FFF7ED; border: 1px solid #FFEDD5; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
-        <h2 style="color: #1E293B; margin-top: 0; font-size: 20px;">You're Invited to Register Your Gym!</h2>
-        <p style="color: #475569; font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
+      <div style="background-color: #E8EFF0; border: 1px solid #D8EAE7; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+        <h2 style="color: #344B4A; margin-top: 0; font-size: 20px;">You're Invited to Register Your Gym!</h2>
+        <p style="color: #697778; font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
           Hello <strong>${ownerName || 'Gym Partner'}</strong>,<br/>
           You have been personally invited to register and manage your gym on our AI-powered gym management platform.
         </p>
 
-        <a href="${inviteLink}" style="display: inline-block; background-color: #F97316; color: #FFFFFF; font-size: 16px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; margin: 12px 0; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);">
+        <a href="${inviteLink}" style="display: inline-block; background-color: #167D78; color: #FFFFFF; font-size: 16px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; margin: 12px 0; box-shadow: 0 4px 12px rgba(22, 125, 120, 0.35);">
           Complete Gym Registration &rarr;
         </a>
 
-        <p style="color: #64748B; font-size: 13px; margin-top: 20px; line-height: 1.5;">
+        <p style="color: #697778; font-size: 13px; margin-top: 20px; line-height: 1.5;">
           Or copy and paste this link into your browser:<br/>
-          <a href="${inviteLink}" style="color: #F97316; word-break: break-all; font-size: 12px;">${inviteLink}</a>
+          <a href="${inviteLink}" style="color: #167D78; word-break: break-all; font-size: 12px;">${inviteLink}</a>
         </p>
         
-        <p style="color: #94A3B8; font-size: 12px; margin-top: 18px;">
+        <p style="color: #697778; font-size: 12px; margin-top: 18px;">
           ⏳ This invitation link expires in <strong>${expiry}</strong>.
         </p>
       </div>
 
-      <div style="color: #94A3B8; font-size: 12px; text-align: center; border-top: 1px solid #F1F5F9; padding-top: 16px;">
+      <div style="color: #697778; font-size: 12px; text-align: center; border-top: 1px solid #D9E2E3; padding-top: 16px;">
         If you did not expect this invitation, you can safely ignore this email.<br/>
         &copy; ${new Date().getFullYear()} Gymora Platform. All rights reserved.
       </div>
@@ -206,34 +206,34 @@ export const sendGymOwnerExpiryWarningEmail = async (
   }
 
   const htmlContent = `
-    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 28px; border: 1px solid #E2E8F0; border-radius: 16px; background-color: #FFFFFF;">
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 28px; border: 1px solid #D9E2E3; border-radius: 16px; background-color: #FFFFFF;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="color: #F97316; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
-        <p style="color: #64748B; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
+        <h1 style="color: #167D78; margin: 0; font-size: 28px; font-weight: 800;">Gymora</h1>
+        <p style="color: #697778; font-size: 14px; margin-top: 4px;">Smart Gym Management Platform</p>
       </div>
 
       <div style="background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
-        <div style="display: inline-block; background-color: #EF4444; color: #FFFFFF; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 12px;">
+        <div style="display: inline-block; background-color: #C43D35; color: #FFFFFF; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 12px;">
           URGENT: EXPIRING SOON
         </div>
-        <h2 style="color: #991B1B; margin-top: 0; font-size: 22px;">Your Registration Link Will Expire Soon!</h2>
-        <p style="color: #475569; font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
+        <h2 style="color: #C43D35; margin-top: 0; font-size: 22px;">Your Registration Link Will Expire Soon!</h2>
+        <p style="color: #697778; font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
           Hello <strong>${ownerName || 'Gym Partner'}</strong>,<br/>
           This is an urgent reminder that your gym onboarding invitation link will expire in approximately <strong>${timeLeftText}</strong>.
           Once expired, the link will no longer work and you will need to request a new invitation.
         </p>
 
-        <a href="${inviteLink}" style="display: inline-block; background-color: #EF4444; color: #FFFFFF; font-size: 16px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; margin: 12px 0; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);">
+        <a href="${inviteLink}" style="display: inline-block; background-color: #C43D35; color: #FFFFFF; font-size: 16px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 10px; margin: 12px 0; box-shadow: 0 4px 12px rgba(196, 61, 53, 0.35);">
           Complete Registration Before Expiry &rarr;
         </a>
 
-        <p style="color: #64748B; font-size: 13px; margin-top: 20px; line-height: 1.5;">
+        <p style="color: #697778; font-size: 13px; margin-top: 20px; line-height: 1.5;">
           Direct link:<br/>
-          <a href="${inviteLink}" style="color: #EF4444; word-break: break-all; font-size: 12px;">${inviteLink}</a>
+          <a href="${inviteLink}" style="color: #167D78; word-break: break-all; font-size: 12px;">${inviteLink}</a>
         </p>
       </div>
 
-      <div style="color: #94A3B8; font-size: 12px; text-align: center; border-top: 1px solid #F1F5F9; padding-top: 16px;">
+      <div style="color: #697778; font-size: 12px; text-align: center; border-top: 1px solid #D9E2E3; padding-top: 16px;">
         &copy; ${new Date().getFullYear()} Gymora Platform. All rights reserved.
       </div>
     </div>
@@ -292,4 +292,3 @@ export const sendGymOwnerExpiryWarningEmail = async (
     }
   });
 };
-

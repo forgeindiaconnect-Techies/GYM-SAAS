@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { IndianRupee, Download, Search, CheckCircle, XCircle, Loader2, FileText, RotateCcw } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -119,50 +119,50 @@ const GymAdminPayments = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Membership Payments</h1>
-          <p className="text-[#6B5E78] mt-1">Manage gym member membership payments, fee collections, and payment verification.</p>
+          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Membership Payments</h1>
+          <p className="text-[#697778] mt-1">Manage gym member membership payments, fee collections, and payment verification.</p>
         </div>
       </div>
 
-      <div className="flex border-b border-[#E5DDEB] space-x-8 mb-6">
+      <div className="flex border-b border-[#D9E2E3] space-x-8 mb-6">
         <button 
           onClick={() => setActiveTab('all')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'all' ? 'border-[#A991D4] text-[#A991D4]' : 'border-transparent text-[#6B5E78] hover:text-[#292431]'}`}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'all' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}
         >
           All Payments ({payments.length})
         </button>
         <button 
           onClick={() => setActiveTab('manual')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'manual' ? 'border-[#A991D4] text-[#A991D4]' : 'border-transparent text-[#6B5E78] hover:text-[#292431]'}`}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'manual' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}
         >
           Manual Payments
         </button>
         <button 
           onClick={() => setActiveTab('qr')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'qr' ? 'border-[#A991D4] text-[#A991D4]' : 'border-transparent text-[#6B5E78] hover:text-[#292431]'}`}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'qr' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}
         >
           QR Code Payments
         </button>
         <button 
           onClick={() => setActiveTab('trial')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'trial' ? 'border-[#A991D4] text-[#A991D4]' : 'border-transparent text-[#6B5E78] hover:text-[#292431]'}`}
+          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'trial' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}
         >
           Free Trials ({payments.filter(p => (p.planName || '').toLowerCase().includes('trial') || p.paymentMethod === 'Trial' || p.amount === 0).length})
         </button>
       </div>
 
       <div className="space-y-6">
-          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 relative overflow-hidden flex items-center justify-between">
+          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 relative overflow-hidden flex items-center justify-between">
             <div>
-              <p className="text-[#6B5E78] text-sm font-semibold mb-1">Total Member Revenue</p>
-              <h3 className="text-3xl font-black text-[#292431]">₹{payments.filter(p => p.status === 'Approved').reduce((acc, curr) => acc + (curr.amount || 0), 0).toLocaleString('en-IN')}</h3>
+              <p className="text-[#697778] text-sm font-semibold mb-1">Total Member Revenue</p>
+              <h3 className="text-3xl font-black text-[#344B4A]">₹{payments.filter(p => p.status === 'Approved').reduce((acc, curr) => acc + (curr.amount || 0), 0).toLocaleString('en-IN')}</h3>
             </div>
-            <IndianRupee size={48} className="text-[#A991D4]/20" />
+            <IndianRupee size={48} className="text-[#167D78]/20" />
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl overflow-hidden">
-            <div className="p-6 border-b border-[#E5DDEB] flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h3 className="text-lg font-bold text-[#292431]">Member Payment Verification</h3>
+          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden">
+            <div className="p-6 border-b border-[#D9E2E3] flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <h3 className="text-lg font-bold text-[#344B4A]">Member Payment Verification</h3>
               <div className="flex gap-4 w-full md:w-auto">
                 <div className="relative flex-1 md:w-72">
                   <input
@@ -170,19 +170,19 @@ const GymAdminPayments = () => {
                     placeholder="Search transactions..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl pl-9 pr-4 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none"
+                    className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl pl-9 pr-4 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none"
                   />
-                  <Search className="absolute left-2.5 top-2.5 text-[#6B5E78]" size={16} />
+                  <Search className="absolute left-2.5 top-2.5 text-[#697778]" size={16} />
                 </div>
                 <button
                   onClick={handleDownloadPDF}
-                  className="px-4 py-2 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors flex items-center gap-2 text-sm shrink-0 cursor-pointer shadow-sm"
+                  className="px-4 py-2 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors flex items-center gap-2 text-sm shrink-0 cursor-pointer shadow-sm"
                 >
                   <Download size={16} /> Download PDF
                 </button>
                 <button
                   onClick={exportToCSV}
-                  className="px-4 py-2 bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] font-bold rounded-xl hover:bg-[#F7F4FA] transition-colors flex items-center gap-2 text-sm shrink-0 cursor-pointer"
+                  className="px-4 py-2 bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] font-bold rounded-xl hover:bg-[#E8EFF0] transition-colors flex items-center gap-2 text-sm shrink-0 cursor-pointer"
                 >
                   <Download size={16} /> Export CSV
                 </button>
@@ -190,11 +190,11 @@ const GymAdminPayments = () => {
             </div>
             
             {loading ? (
-              <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#A991D4]" size={40} /></div>
+              <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#167D78]" size={40} /></div>
             ) : (
               <div className="overflow-x-auto custom-scrollbar">
-                <table className="w-full text-left text-sm text-[#6B5E78] whitespace-nowrap">
-                  <thead className="bg-[#FFFFFF] border-b border-[#E5DDEB] text-[#292431]">
+                <table className="w-full text-left text-sm text-[#697778] whitespace-nowrap">
+                  <thead className="bg-[#FFFFFF] border-b border-[#D9E2E3] text-[#344B4A]">
                     <tr>
                       <th className="px-6 py-4 font-semibold">Date</th>
                       <th className="px-6 py-4 font-semibold">Customer</th>
@@ -204,36 +204,36 @@ const GymAdminPayments = () => {
                       <th className="px-6 py-4 font-semibold text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5DDEB]">
+                  <tbody className="divide-y divide-[#D9E2E3]">
                     {filtered.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="px-6 py-8 text-center text-[#6B5E78]">No transactions match your search.</td>
+                        <td colSpan={7} className="px-6 py-8 text-center text-[#697778]">No transactions match your search.</td>
                       </tr>
                     ) : filtered.map((trx) => (
-                      <tr key={trx._id} className="hover:bg-[#F7F4FA] transition-colors">
+                      <tr key={trx._id} className="hover:bg-[#E8EFF0] transition-colors">
                         <td className="px-6 py-4">{new Date(trx.paymentDate || trx.createdAt).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 font-semibold text-[#292431]">{trx.customerId?.firstName} {trx.customerId?.lastName}</td>
+                        <td className="px-6 py-4 font-semibold text-[#344B4A]">{trx.customerId?.firstName} {trx.customerId?.lastName}</td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <p className="font-bold text-[#292431]">{trx.planName}</p>
+                            <p className="font-bold text-[#344B4A]">{trx.planName}</p>
                             {((trx.planName || '').toLowerCase().includes('trial') || trx.paymentMethod === 'Trial' || trx.amount === 0) && (
-                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#D8EAE7] text-[#167D78] border border-[#D9E2E3]">
                                 Trial
                               </span>
                             )}
                           </div>
-                          <p className="text-[#A991D4] font-bold text-sm">
+                          <p className="text-[#167D78] font-bold text-sm">
                             {trx.amount === 0 || (trx.planName || '').toLowerCase().includes('trial') ? (
-                              <span className="text-purple-700 font-bold">₹0 (Free Trial)</span>
+                              <span className="text-[#167D78] font-bold">₹0 (Free Trial)</span>
                             ) : (
                               `₹${Number(trx.amount).toLocaleString('en-IN')}`
                             )}
                           </p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-[#292431] font-medium">
+                          <p className="text-[#344B4A] font-medium">
                             {trx.paymentMethod === 'Trial' ? (
-                              <span className="inline-flex items-center gap-1 text-purple-700 font-semibold">
+                              <span className="inline-flex items-center gap-1 text-[#167D78] font-semibold">
                                 Trial
                               </span>
                             ) : (
@@ -244,7 +244,7 @@ const GymAdminPayments = () => {
                         </td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            trx.status === 'Approved' ? 'bg-[#E9DFF4]/10 text-[#A991D4]' :
+                            trx.status === 'Approved' ? 'bg-[#D8EAE7]/10 text-[#167D78]' :
                             trx.status === 'Rejected' ? 'bg-red-100 text-red-700' :
                             'bg-yellow-100 text-yellow-700'
                           }`}>
@@ -255,13 +255,13 @@ const GymAdminPayments = () => {
                           <div className="flex justify-end gap-2 items-center">
                             <button 
                               onClick={() => setSelectedTrx(trx)}
-                              className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold whitespace-nowrap"
+                              className="px-3 py-1.5 bg-blue-50 text-[#167D78] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold whitespace-nowrap"
                             >
                               View Details
                             </button>
                             {trx.status === 'Pending Verification' ? (
                               <>
-                                <button onClick={() => handleVerify(trx._id, 'Approve')} className="p-1.5 bg-green-50 text-[#A991D4] rounded-lg hover:bg-green-100 transition-colors" title="Approve">
+                                <button onClick={() => handleVerify(trx._id, 'Approve')} className="p-1.5 bg-green-50 text-[#167D78] rounded-lg hover:bg-green-100 transition-colors" title="Approve">
                                   <CheckCircle size={18} />
                                 </button>
                                 <button onClick={() => setRejectingPaymentId(trx._id)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" title="Reject">
@@ -289,39 +289,39 @@ const GymAdminPayments = () => {
                 <button onClick={() => setSelectedTrx(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                   <XCircle size={24} />
                 </button>
-                <h2 className="text-2xl font-bold text-[#292431] mb-6 border-b pb-4">Transaction Details</h2>
+                <h2 className="text-2xl font-bold text-[#344B4A] mb-6 border-b pb-4">Transaction Details</h2>
                 
                 <div className="space-y-4">
-                  <div className="border border-[#E5DDEB] rounded-xl overflow-hidden divide-y divide-[#E5DDEB] bg-white shadow-sm">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
+                  <div className="border border-[#D9E2E3] rounded-xl overflow-hidden divide-y divide-[#D9E2E3] bg-white shadow-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Customer</span>
-                        <span className="font-bold text-sm text-[#292431]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Customer</span>
+                        <span className="font-bold text-sm text-[#344B4A]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</span>
                       </div>
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Payment Date</span>
-                        <span className="font-semibold text-sm text-[#292431]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Membership Plan</span>
-                        <span className="font-bold text-sm text-[#292431]">{selectedTrx.planName}</span>
-                      </div>
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Amount</span>
-                        <span className="font-bold text-base text-[#A991D4]">₹{selectedTrx.amount}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Payment Date</span>
+                        <span className="font-semibold text-sm text-[#344B4A]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleDateString()}</span>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DDEB]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Payment Method</span>
-                        <span className="font-semibold text-sm text-[#292431]">{selectedTrx.paymentMethod}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Membership Plan</span>
+                        <span className="font-bold text-sm text-[#344B4A]">{selectedTrx.planName}</span>
                       </div>
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Verification Status</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Amount</span>
+                        <span className="font-bold text-base text-[#167D78]">₹{selectedTrx.amount}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Payment Method</span>
+                        <span className="font-semibold text-sm text-[#344B4A]">{selectedTrx.paymentMethod}</span>
+                      </div>
+                      <div className="p-3.5 bg-white flex flex-col justify-center">
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Verification Status</span>
                         <span className="inline-flex items-center">
                           <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                             selectedTrx.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
@@ -336,32 +336,32 @@ const GymAdminPayments = () => {
 
                     {selectedTrx.paymentMethod === 'Bank Transfer' ? (
                       <div className="p-3.5 bg-white flex flex-col">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-2">Customer Bank Details</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-2">Customer Bank Details</span>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                          <div><span className="text-gray-500">Bank:</span> <span className="font-bold text-[#292431]">{selectedTrx.customerBankDetails?.bankName || 'N/A'}</span></div>
-                          <div><span className="text-gray-500">Account:</span> <span className="font-bold text-[#292431]">{selectedTrx.customerBankDetails?.accountNumber || 'N/A'}</span></div>
-                          <div><span className="text-gray-500">IFSC:</span> <span className="font-bold text-[#292431]">{selectedTrx.customerBankDetails?.ifscCode || 'N/A'}</span></div>
+                          <div><span className="text-gray-500">Bank:</span> <span className="font-bold text-[#344B4A]">{selectedTrx.customerBankDetails?.bankName || 'N/A'}</span></div>
+                          <div><span className="text-gray-500">Account:</span> <span className="font-bold text-[#344B4A]">{selectedTrx.customerBankDetails?.accountNumber || 'N/A'}</span></div>
+                          <div><span className="text-gray-500">IFSC:</span> <span className="font-bold text-[#344B4A]">{selectedTrx.customerBankDetails?.ifscCode || 'N/A'}</span></div>
                         </div>
                       </div>
                     ) : (
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Transaction ID / Reference</span>
-                        <span className="font-mono text-sm font-semibold text-[#292431] break-all">{selectedTrx.transactionId || 'Not Provided'}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Transaction ID / Reference</span>
+                        <span className="font-mono text-sm font-semibold text-[#344B4A] break-all">{selectedTrx.transactionId || 'Not Provided'}</span>
                       </div>
                     )}
 
                     {selectedTrx.notes && (
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Additional Notes</span>
-                        <span className="text-sm text-[#292431] italic">{selectedTrx.notes}</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Additional Notes</span>
+                        <span className="text-sm text-[#344B4A] italic">{selectedTrx.notes}</span>
                       </div>
                     )}
 
                     {selectedTrx.paymentMethod !== 'Bank Transfer' && (
                       <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider mb-2">Payment Proof</span>
+                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-2">Payment Proof</span>
                         {selectedTrx.paymentProofUrl ? (
-                          <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-blue-50 text-[#A991D4] font-bold rounded-lg hover:bg-blue-100 transition-colors w-fit text-xs border border-blue-200">
+                          <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-blue-50 text-[#167D78] font-bold rounded-lg hover:bg-blue-100 transition-colors w-fit text-xs border border-blue-200">
                             <FileText size={16} className="mr-1.5"/> View Attached Proof Document
                           </a>
                         ) : (
@@ -375,7 +375,7 @@ const GymAdminPayments = () => {
                 <div className="mt-8 pt-6 border-t border-gray-100">
                   <button 
                     onClick={() => setSelectedTrx(null)} 
-                    className="w-full py-3 bg-gray-100 text-[#6B5E78] font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                    className="w-full py-3 bg-gray-100 text-[#697778] font-bold rounded-xl hover:bg-gray-200 transition-colors"
                   >
                     Close Details
                   </button>
@@ -387,14 +387,14 @@ const GymAdminPayments = () => {
           {rejectingPaymentId && (
             <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
               <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-                <h2 className="text-xl font-bold text-[#292431] mb-4">Reject Payment</h2>
-                <p className="text-[#6B5E78] mb-4 text-sm">Please provide a reason for rejecting this payment (optional). This will be shown to the customer.</p>
+                <h2 className="text-xl font-bold text-[#344B4A] mb-4">Reject Payment</h2>
+                <p className="text-[#697778] mb-4 text-sm">Please provide a reason for rejecting this payment (optional). This will be shown to the customer.</p>
                 <textarea
                   value={rejectionReasonInput}
                   onChange={(e) => setRejectionReasonInput(e.target.value)}
                   placeholder="e.g., The payment screenshot is blurry or invalid."
                   rows={4}
-                  className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl p-3 text-[#292431] focus:border-red-500 outline-none resize-none mb-6 text-sm"
+                  className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-3 text-[#344B4A] focus:border-red-500 outline-none resize-none mb-6 text-sm"
                 ></textarea>
                 <div className="flex gap-3">
                   <button 
@@ -402,7 +402,7 @@ const GymAdminPayments = () => {
                       setRejectingPaymentId(null);
                       setRejectionReasonInput('');
                     }}
-                    className="flex-1 py-2.5 bg-gray-100 text-[#6B5E78] font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                    className="flex-1 py-2.5 bg-gray-100 text-[#697778] font-bold rounded-xl hover:bg-gray-200 transition-colors"
                   >
                     Cancel
                   </button>

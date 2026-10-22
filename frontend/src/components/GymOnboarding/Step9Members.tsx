@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { UserCheck, Plus, X } from 'lucide-react';
 
 export const Step9Members = ({ data, updateData }: any) => {
@@ -39,36 +39,36 @@ export const Step9Members = ({ data, updateData }: any) => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#E5DDEB]">
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#D9E2E3]">
         <div className="flex items-center space-x-3">
-          <UserCheck className="text-[#A991D4]" size={24} />
+          <UserCheck className="text-[#167D78]" size={24} />
           <h2 className="text-xl font-bold">Initial Members Setup</h2>
         </div>
         {!isAdding && (
-          <button onClick={() => setIsAdding(true)} className="px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold flex items-center space-x-2 text-sm">
+          <button onClick={() => setIsAdding(true)} className="px-4 py-2 bg-[#167D78] text-white rounded-xl font-bold flex items-center space-x-2 text-sm">
             <Plus size={16} /><span>Add Member</span>
           </button>
         )}
       </div>
 
       {data.members.length === 0 && !isAdding && (
-        <div className="text-center py-12 border-2 border-dashed border-[#E5DDEB] rounded-2xl">
-          <UserCheck className="text-[#6B5E78] mx-auto mb-3" size={40} />
-          <p className="text-[#6B5E78]">No initial members added.</p>
-          <button onClick={() => setIsAdding(true)} className="mt-4 text-[#A991D4] font-semibold hover:underline">Add a member (Optional)</button>
+        <div className="text-center py-12 border-2 border-dashed border-[#D9E2E3] rounded-2xl">
+          <UserCheck className="text-[#697778] mx-auto mb-3" size={40} />
+          <p className="text-[#697778]">No initial members added.</p>
+          <button onClick={() => setIsAdding(true)} className="mt-4 text-[#167D78] font-semibold hover:underline">Add a member (Optional)</button>
         </div>
       )}
 
       {data.members.length > 0 && !isAdding && (
         <div className="grid md:grid-cols-2 gap-4">
           {data.members.map((m: any) => (
-            <div key={m.id} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E5DDEB] flex justify-between items-start">
+            <div key={m.id} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#D9E2E3] flex justify-between items-start">
               <div>
-                <h4 className="text-[#292431] font-bold">{m.name}</h4>
-                <p className="text-sm text-[#A991D4] font-medium">{m.planName}</p>
-                <p className="text-xs text-[#6B5E78] mt-1">{m.phone} • Joined: {m.joiningDate}</p>
+                <h4 className="text-[#344B4A] font-bold">{m.name}</h4>
+                <p className="text-sm text-[#167D78] font-medium">{m.planName}</p>
+                <p className="text-xs text-[#697778] mt-1">{m.phone} • Joined: {m.joiningDate}</p>
               </div>
-              <button onClick={() => removeMember(m.id)} className="text-[#6B5E78] hover:text-[#E9DFF4] transition-colors">
+              <button onClick={() => removeMember(m.id)} className="text-[#697778] hover:text-[#D8EAE7] transition-colors">
                 <X size={18} />
               </button>
             </div>
@@ -77,33 +77,33 @@ export const Step9Members = ({ data, updateData }: any) => {
       )}
 
       {isAdding && (
-        <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E5DDEB]">
+        <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#D9E2E3]">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-lg">Add New Member</h3>
-            <button onClick={() => setIsAdding(false)} className="text-[#6B5E78] hover:text-[#292431]"><X size={20} /></button>
+            <button onClick={() => setIsAdding(false)} className="text-[#697778] hover:text-[#344B4A]"><X size={20} /></button>
           </div>
           
           {data.plans.length === 0 ? (
-            <div className="p-4 bg-[#E9DFF4]/10 text-[#E9DFF4] rounded-xl text-sm">
+            <div className="p-4 bg-[#D8EAE7]/10 text-[#D8EAE7] rounded-xl text-sm">
               Please create at least one Subscription Plan (Step 8) before adding members.
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs text-[#6B5E78] mb-1">Full Name *</label>
-                <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-3 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none" />
+                <label className="block text-xs text-[#697778] mb-1">Full Name *</label>
+                <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" />
               </div>
               <div>
-                <label className="block text-xs text-[#6B5E78] mb-1">Email (Optional)</label>
-                <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-3 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none" />
+                <label className="block text-xs text-[#697778] mb-1">Email (Optional)</label>
+                <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" />
               </div>
               <div>
-                <label className="block text-xs text-[#6B5E78] mb-1">Phone *</label>
-                <input type="text" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '')})} className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-3 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none" placeholder="10 digit number" />
+                <label className="block text-xs text-[#697778] mb-1">Phone *</label>
+                <input type="text" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '')})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" placeholder="10 digit number" />
               </div>
               <div>
-                <label className="block text-xs text-[#6B5E78] mb-1">Select Plan *</label>
-                <select value={form.planId} onChange={e => setForm({...form, planId: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-3 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none appearance-none">
+                <label className="block text-xs text-[#697778] mb-1">Select Plan *</label>
+                <select value={form.planId} onChange={e => setForm({...form, planId: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none appearance-none">
                   <option value="">Choose a plan</option>
                   {data.plans.map((p: any) => (
                     <option key={p.id} value={p.id}>{p.planName} (₹{p.finalPrice})</option>
@@ -111,15 +111,15 @@ export const Step9Members = ({ data, updateData }: any) => {
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-[#6B5E78] mb-1">Joining Date *</label>
-                <input type="date" value={form.joiningDate} onChange={e => setForm({...form, joiningDate: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-3 py-2 text-sm text-[#292431] focus:border-[#A991D4] outline-none [color-scheme:dark]" />
+                <label className="block text-xs text-[#697778] mb-1">Joining Date *</label>
+                <input type="date" value={form.joiningDate} onChange={e => setForm({...form, joiningDate: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none [color-scheme:dark]" />
               </div>
             </div>
           )}
           
           <div className="mt-6 flex justify-end space-x-3">
-            <button onClick={() => setIsAdding(false)} className="px-4 py-2 text-[#6B5E78] hover:text-[#A991D4] text-sm">Cancel</button>
-            <button onClick={handleAdd} disabled={data.plans.length === 0} className="px-6 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold text-sm disabled:opacity-50">Save Member</button>
+            <button onClick={() => setIsAdding(false)} className="px-4 py-2 text-[#697778] hover:text-[#167D78] text-sm">Cancel</button>
+            <button onClick={handleAdd} disabled={data.plans.length === 0} className="px-6 py-2 bg-[#167D78] text-white rounded-xl font-bold text-sm disabled:opacity-50">Save Member</button>
           </div>
         </div>
       )}

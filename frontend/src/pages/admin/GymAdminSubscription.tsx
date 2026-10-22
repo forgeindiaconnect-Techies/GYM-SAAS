@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import {
   CheckCircle, XCircle, Zap, Star, Crown, Sparkles,
   Users, Dumbbell, Building2, UserCheck, TrendingUp,
@@ -16,12 +16,12 @@ const PLAN_DETAILS: Record<string, any> = {
     priceMonthly: 999, priceAnnual: 9990,
   },
   PROFESSIONAL: {
-    name: 'Professional', color: 'text-[#A991D4]', bg: 'bg-[#A991D4]/10', border: 'border-[#A991D4]/40',
+    name: 'Professional', color: 'text-[#167D78]', bg: 'bg-[#167D78]/10', border: 'border-[#167D78]/40',
     icon: Crown, limits: { members: 500, trainers: 15, staff: 5, branches: 1 },
     priceMonthly: 2499, priceAnnual: 24990,
   },
   ENTERPRISE: {
-    name: 'Enterprise', color: 'text-purple-400', bg: 'bg-purple-400/10', border: 'border-purple-500/30',
+    name: 'Enterprise', color: 'text-[#D8EAE7]', bg: 'bg-[#167D78]/10', border: 'border-[#167D78]/30',
     icon: Sparkles, limits: { members: 1000, trainers: 50, staff: 10, branches: 2 },
     priceMonthly: 5999, priceAnnual: 59990,
   },
@@ -31,12 +31,12 @@ const PLAN_DETAILS: Record<string, any> = {
     priceMonthly: 799, priceAnnual: 7990,
   },
   GOLD: {
-    name: 'Gold', color: 'text-[#A991D4]', bg: 'bg-[#A991D4]/10', border: 'border-[#A991D4]/40',
+    name: 'Gold', color: 'text-[#167D78]', bg: 'bg-[#167D78]/10', border: 'border-[#167D78]/40',
     icon: Crown, limits: { members: 500, trainers: 15, staff: 5, branches: 2 },
     priceMonthly: 1499, priceAnnual: 14990,
   },
   PREMIUM: {
-    name: 'Premium', color: 'text-purple-400', bg: 'bg-purple-400/10', border: 'border-purple-500/30',
+    name: 'Premium', color: 'text-[#D8EAE7]', bg: 'bg-[#167D78]/10', border: 'border-[#167D78]/30',
     icon: Sparkles, limits: { members: -1, trainers: -1, staff: -1, branches: 5 },
     priceMonthly: 2499, priceAnnual: 24990,
   },
@@ -50,21 +50,21 @@ const UPGRADE_PLANS = [
   {
     key: 'SILVER', name: 'Silver', tagline: 'Beginner package for growing gyms',
     priceMonthly: 799, priceAnnual: 7190, savingsAnnual: 1598,
-    color: 'text-slate-500', border: 'border-slate-300', ctaStyle: 'bg-white border-2 border-[#E5DDEB] text-[#292431] hover:border-[#A991D4] hover:bg-[#F7F4FA]',
+    color: 'text-slate-500', border: 'border-slate-300', ctaStyle: 'bg-white border-2 border-[#D9E2E3] text-[#344B4A] hover:border-[#167D78] hover:bg-[#E8EFF0]',
     icon: Star,
     features: ['Gym Profile Management', 'Member Management (up to 100)', 'Trainer & Staff Management', 'AI Fitness Assessment', 'Basic AI Workout & Diet Plans', 'AI Chat Assistant', 'Basic Reports (3 types)', 'Membership Tracking']
   },
   {
     key: 'GOLD', name: 'Gold', tagline: 'Most popular all-in-one powerhouse',
     priceMonthly: 1499, priceAnnual: 13490, savingsAnnual: 4498,
-    color: 'text-[#A991D4]', border: 'border-[#A991D4]', ctaStyle: 'bg-[#A991D4] text-[#292431] hover:bg-[#967CC5]',
+    color: 'text-[#167D78]', border: 'border-[#167D78]', ctaStyle: 'bg-[#167D78] text-white hover:bg-[#116660]',
     icon: Crown, popular: true,
     features: ['Everything in Silver', 'Advanced AI Workout & Diet Plans', 'AI Fitness Assistant', 'Goal-Based Workout Recs', 'Trainer Discovery & Booking', 'Trainer Scheduling', 'Detailed Progress Analytics', 'Revenue & Membership Analytics']
   },
   {
     key: 'PREMIUM', name: 'Premium', tagline: 'Enterprise-grade multi-branch scale',
     priceMonthly: 2499, priceAnnual: 22490, savingsAnnual: 7498,
-    color: 'text-purple-600', border: 'border-purple-300', ctaStyle: 'bg-purple-600 border border-purple-500/50 text-white hover:bg-purple-700',
+    color: 'text-[#167D78]', border: 'border-[#D9E2E3]', ctaStyle: 'bg-[#167D78] border border-[#167D78]/50 text-white hover:bg-[#344B4A]',
     icon: Sparkles,
     features: ['Everything in Gold', '1-on-1 Online Coaching', 'Live Trainer Sessions', 'Priority Trainer Booking', 'AI + Trainer Hybrid Recs', 'Branch-wise Analytics', 'Member Retention Analytics', 'Gym Store & Supplements', 'Priority Support']
   },
@@ -79,16 +79,16 @@ const LimitBar = ({ label, icon: Icon, used, max, color }: any) => {
       <div className="flex items-center justify-between text-sm">
         <div className="flex items-center space-x-2">
           <Icon size={14} className={color} />
-          <span className="text-[#6B5E78] text-xs">{label}</span>
+          <span className="text-[#697778] text-xs">{label}</span>
         </div>
-        <span className={`text-xs font-bold ${isFull ? 'text-teal-400' : 'text-[#292431]'}`}>
+        <span className={`text-xs font-bold ${isFull ? 'text-teal-400' : 'text-[#344B4A]'}`}>
           {isUnlimited ? `${used} / ∞` : `${used} / ${max}`}
         </span>
       </div>
       {!isUnlimited && (
         <div className="w-full bg-[#FFFFFF] rounded-full h-1.5 overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${isFull ? 'bg-teal-400' : pct > 80 ? 'bg-[#E9DFF4]' : 'bg-[#A991D4]'}`}
+            className={`h-full rounded-full transition-all duration-500 ${isFull ? 'bg-teal-400' : pct > 80 ? 'bg-[#D8EAE7]' : 'bg-[#167D78]'}`}
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -145,29 +145,29 @@ const GymAdminSubscription = () => {
         <head>
           <title>Invoice ${invoice.id}</title>
           <style>
-            body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #292431; max-width: 800px; margin: 0 auto; }
-            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #E9DFF4; padding-bottom: 20px; margin-bottom: 40px; }
-            .title { font-size: 28px; font-weight: 900; color: #A991D4; }
+            body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #344B4A; max-width: 800px; margin: 0 auto; }
+            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #D8EAE7; padding-bottom: 20px; margin-bottom: 40px; }
+            .title { font-size: 28px; font-weight: 900; color: #167D78; }
             .details { margin-bottom: 30px; }
             .details table { width: 100%; border-collapse: collapse; }
-            .details th, .details td { padding: 16px; text-align: left; border-bottom: 1px solid #E9DFF4; }
-            .details th { background: #F7F4FA; color: #6B5E78; font-size: 12px; text-transform: uppercase; font-weight: bold; }
-            .payment-info { background: #F7F4FA; padding: 16px; border-radius: 8px; border: 1px solid #E9DFF4; margin-bottom: 20px; }
-            .payment-info h3 { margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #6B5E78; }
+            .details th, .details td { padding: 16px; text-align: left; border-bottom: 1px solid #D8EAE7; }
+            .details th { background: #E8EFF0; color: #697778; font-size: 12px; text-transform: uppercase; font-weight: bold; }
+            .payment-info { background: #E8EFF0; padding: 16px; border-radius: 8px; border: 1px solid #D8EAE7; margin-bottom: 20px; }
+            .payment-info h3 { margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #697778; }
             .payment-info p { margin: 4px 0; font-size: 14px; font-weight: 500; }
-            .total { font-size: 24px; font-weight: bold; text-align: right; padding: 16px; background: #F7F4FA; border-radius: 8px; border: 1px solid #E5DDEB; }
-            .footer { margin-top: 60px; font-size: 12px; color: #6B5E78; text-align: center; }
+            .total { font-size: 24px; font-weight: bold; text-align: right; padding: 16px; background: #E8EFF0; border-radius: 8px; border: 1px solid #D9E2E3; }
+            .footer { margin-top: 60px; font-size: 12px; color: #697778; text-align: center; }
           </style>
         </head>
         <body>
           <div class="header">
             <div>
               <div class="title">Gymora SAAS</div>
-              <p style="margin: 5px 0 0 0; color: #6B5E78;">Subscription Invoice</p>
+              <p style="margin: 5px 0 0 0; color: #697778;">Subscription Invoice</p>
             </div>
             <div style="text-align: right;">
               <h2 style="margin: 0;">${invoice.id}</h2>
-              <p style="margin: 5px 0 0 0; color: #6B5E78;">Date: ${invoice.date}</p>
+              <p style="margin: 5px 0 0 0; color: #697778;">Date: ${invoice.date}</p>
               <span style="display: inline-block; background: #D1FAE5; color: #047857; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: bold; margin-top: 10px;">
                 STATUS: ${invoice.status.toUpperCase()}
               </span>
@@ -194,10 +194,10 @@ const GymAdminSubscription = () => {
           <div class="payment-info">
             <h3>Payment Information</h3>
             <p><strong>Method:</strong> ${invoice.paymentMethod}</p>
-            <p><strong>Details:</strong> <span style="color: #6B5E78;">${invoice.paymentDetails}</span></p>
+            <p><strong>Details:</strong> <span style="color: #697778;">${invoice.paymentDetails}</span></p>
           </div>
           
-          <div class="total">Total Paid: <span style="color: #A991D4;">${invoice.amount}</span></div>
+          <div class="total">Total Paid: <span style="color: #167D78;">${invoice.amount}</span></div>
           
           <div class="footer">
             Thank you for your business!<br/>
@@ -368,8 +368,8 @@ const GymAdminSubscription = () => {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Subscription Management</h1>
-        <p className="text-[#6B5E78] mt-1">Manage your Gymora SaaS platform subscription and usage.</p>
+        <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Subscription Management</h1>
+        <p className="text-[#697778] mt-1">Manage your Gymora SaaS platform subscription and usage.</p>
       </div>
 
       {/* Payment Success Banner */}
@@ -379,25 +379,25 @@ const GymAdminSubscription = () => {
             <CheckCircle size={24} className="text-green-400" />
           </div>
           <div>
-            <h3 className="text-[#292431] font-bold">Payment Successful! Your plan has been upgraded.</h3>
-            <p className="text-[#6B5E78] text-sm mt-1">Your new features are now active. Refresh if any dashboard items haven't updated yet.</p>
+            <h3 className="text-[#344B4A] font-bold">Payment Successful! Your plan has been upgraded.</h3>
+            <p className="text-[#697778] text-sm mt-1">Your new features are now active. Refresh if any dashboard items haven't updated yet.</p>
           </div>
         </div>
       )}
 
       {/* Expiry Warning */}
       {(isExpired || isTrial) && !isActive && (
-        <div className={`border rounded-2xl p-5 flex items-center justify-between ${isExpired ? 'bg-[#E9DFF4]/10 border-[#E9DFF4]/30' : 'bg-[#FFFFFF] border-[#A991D4]/30'}`}>
+        <div className={`border rounded-2xl p-5 flex items-center justify-between ${isExpired ? 'bg-[#D8EAE7]/10 border-[#D8EAE7]/30' : 'bg-[#FFFFFF] border-[#167D78]/30'}`}>
           <div className="flex items-center space-x-4">
-            <AlertTriangle size={24} className={isExpired ? 'text-teal-400' : 'text-[#A991D4]'} />
+            <AlertTriangle size={24} className={isExpired ? 'text-teal-400' : 'text-[#167D78]'} />
             <div>
-              <h3 className="text-[#292431] font-bold">{isExpired ? 'Your free trial has expired!' : 'Free Trial Active — 1 Day Remaining'}</h3>
-              <p className="text-[#6B5E78] text-sm mt-0.5">{isExpired ? 'Upgrade to a paid plan to restore full access.' : 'Upgrade now to avoid interruption when your trial ends.'}</p>
+              <h3 className="text-[#344B4A] font-bold">{isExpired ? 'Your free trial has expired!' : 'Free Trial Active — 1 Day Remaining'}</h3>
+              <p className="text-[#697778] text-sm mt-0.5">{isExpired ? 'Upgrade to a paid plan to restore full access.' : 'Upgrade now to avoid interruption when your trial ends.'}</p>
             </div>
           </div>
           <button
             onClick={() => document.getElementById('upgrade-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="shrink-0 flex items-center space-x-2 px-4 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors text-sm"
+            className="shrink-0 flex items-center space-x-2 px-4 py-2.5 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors text-sm"
           >
             <ArrowUpCircle size={16} />
             <span>Upgrade Now</span>
@@ -413,15 +413,15 @@ const GymAdminSubscription = () => {
               <PlanIcon size={26} className={currentPlan.color} />
             </div>
             <div>
-              <p className="text-[#6B5E78] text-xs uppercase tracking-widest font-bold mb-1">Current Plan</p>
+              <p className="text-[#697778] text-xs uppercase tracking-widest font-bold mb-1">Current Plan</p>
               <h2 className={`text-2xl font-black ${currentPlan.color}`}>{currentPlan.name} Plan</h2>
               <div className="flex items-center space-x-2 mt-1">
                 <span className={`inline-flex items-center space-x-1 text-xs px-2.5 py-0.5 rounded-full font-bold ${
                   isActive ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 
-                  isTrial ? 'bg-[#A991D4]/10 text-[#A991D4]' : 
+                  isTrial ? 'bg-[#167D78]/10 text-[#167D78]' : 
                   'bg-red-500/10 text-red-500'
                 }`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : isTrial ? 'bg-[#A991D4]' : 'bg-red-500'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : isTrial ? 'bg-[#167D78]' : 'bg-red-500'}`} />
                   <span>{isActive ? 'Active' : isTrial ? 'Trial' : 'Expired'}</span>
                 </span>
               </div>
@@ -435,9 +435,9 @@ const GymAdminSubscription = () => {
               { label: 'Renewal Date', value: renewalDateFormatted },
               { label: 'Status', value: isActive ? 'Active' : isTrial ? 'Trial' : 'Expired' },
             ].map((item, i) => (
-              <div key={i} className="bg-[#FFFFFF] rounded-xl p-3 border border-[#E5DDEB]">
-                <p className="text-[#555] text-[10px] uppercase tracking-wider font-bold">{item.label}</p>
-                <p className="text-[#292431] font-bold text-sm mt-1">{item.value}</p>
+              <div key={i} className="bg-[#FFFFFF] rounded-xl p-3 border border-[#D9E2E3]">
+                <p className="text-[#697778] text-[10px] uppercase tracking-wider font-bold">{item.label}</p>
+                <p className="text-[#344B4A] font-bold text-sm mt-1">{item.value}</p>
               </div>
             ))}
           </div>
@@ -445,18 +445,18 @@ const GymAdminSubscription = () => {
       </div>
 
       {/* Usage Overview */}
-      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6">
-        <h2 className="text-lg font-bold text-[#292431] mb-5 flex items-center space-x-2">
-          <TrendingUp size={20} className="text-[#A991D4]" />
+      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-[#344B4A] mb-5 flex items-center space-x-2">
+          <TrendingUp size={20} className="text-[#167D78]" />
           <span>Platform Usage</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <LimitBar label="Members" icon={Users} used={usage.members} max={displayPlan.limits.members} color="text-blue-400" />
           <LimitBar label="Trainers" icon={Dumbbell} used={usage.trainers} max={displayPlan.limits.trainers} color="text-green-400" />
-          <LimitBar label="Staff" icon={UserCheck} used={usage.staff} max={displayPlan.limits.staff} color="text-purple-400" />
-          <LimitBar label="Branches" icon={Building2} used={usage.branches} max={displayPlan.limits.branches} color="text-[#A991D4]" />
+          <LimitBar label="Staff" icon={UserCheck} used={usage.staff} max={displayPlan.limits.staff} color="text-[#D8EAE7]" />
+          <LimitBar label="Branches" icon={Building2} used={usage.branches} max={displayPlan.limits.branches} color="text-[#167D78]" />
         </div>
-        <p className="text-[#555] text-xs mt-4">
+        <p className="text-[#697778] text-xs mt-4">
           💡 Usage stats update in real-time. When you reach a limit, you'll see an upgrade prompt in the respective section.
         </p>
       </div>
@@ -464,24 +464,24 @@ const GymAdminSubscription = () => {
       {/* Upgrade Plans */}
       <div id="upgrade-section" className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h2 className="text-xl font-bold text-[#292431]">Upgrade Your Plan</h2>
+          <h2 className="text-xl font-bold text-[#344B4A]">Upgrade Your Plan</h2>
           <div className="flex items-center gap-3 flex-wrap">
-            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#292431]' : 'text-[#6B5E78]'}`}>Monthly</span>
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#344B4A]' : 'text-[#697778]'}`}>Monthly</span>
             <button
               onClick={() => setIsAnnual(!isAnnual)}
               aria-pressed={isAnnual}
-              className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A991D4] focus:ring-offset-1 ${isAnnual ? 'bg-[#A991D4]' : 'bg-[#E5DDEB]'}`}
+              className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#167D78] focus:ring-offset-1 ${isAnnual ? 'bg-[#167D78]' : 'bg-[#D9E2E3]'}`}
             >
               <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-8' : 'translate-x-1'}`} />
             </button>
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#292431]' : 'text-[#6B5E78]'}`}>Annual</span>
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#344B4A]' : 'text-[#697778]'}`}>Annual</span>
               {isAnnual ? (
-                <span className="text-xs bg-[#E9DFF4]/10 text-[#A991D4] px-2 py-0.5 rounded-full font-bold border border-green-200">
+                <span className="text-xs bg-[#D8EAE7]/10 text-[#167D78] px-2 py-0.5 rounded-full font-bold border border-green-200">
                   2 months FREE!
                 </span>
               ) : (
-                <span className="text-xs bg-[#F7F4FA] text-[#967CC5] px-2 py-0.5 rounded-full border border-[#E5DDEB]">
+                <span className="text-xs bg-[#E8EFF0] text-[#116660] px-2 py-0.5 rounded-full border border-[#D9E2E3]">
                   Save up to 25%
                 </span>
               )}
@@ -490,7 +490,7 @@ const GymAdminSubscription = () => {
         </div>
         {isAnnual && (
           <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-2.5 text-sm text-green-700 font-medium">
-            <CheckCircle size={15} className="text-[#A991D4] shrink-0" />
+            <CheckCircle size={15} className="text-[#167D78] shrink-0" />
             Annual billing: prices shown are per month — total charged once per year.
           </div>
         )}
@@ -516,11 +516,11 @@ const GymAdminSubscription = () => {
               <div
                 key={plan.key}
                 onClick={() => setPreviewPlanKey(isSelected ? null : plan.key)}
-                className={`relative flex flex-col bg-white rounded-2xl border-2 cursor-pointer transition-all duration-200 overflow-hidden ${isSelected ? 'border-[#A991D4] shadow-2xl -translate-y-2 ring-2 ring-[#A991D4] ring-offset-2' : `${plan.borderDefault} hover:-translate-y-1 hover:shadow-lg`}`}
+                className={`relative flex flex-col bg-white rounded-2xl border-2 cursor-pointer transition-all duration-200 overflow-hidden ${isSelected ? 'border-[#167D78] shadow-2xl -translate-y-2 ring-2 ring-[#167D78] ring-offset-2' : `${plan.borderDefault} hover:-translate-y-1 hover:shadow-lg`}`}
               >
                 {/* Popular badge */}
                 {plan.popular && (
-                  <div className="bg-[#A991D4] text-[#292431] text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
+                  <div className="bg-[#167D78] text-white text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                     ⭐ Most Popular
                   </div>
                 )}
@@ -533,8 +533,8 @@ const GymAdminSubscription = () => {
                         <Icon size={20} className={plan.iconColor} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-[#292431] text-sm">{plan.name}</h3>
-                        <span className="text-[10px] text-[#6B5E78] font-medium">{plan.badge}</span>
+                        <h3 className="font-bold text-[#344B4A] text-sm">{plan.name}</h3>
+                        <span className="text-[10px] text-[#697778] font-medium">{plan.badge}</span>
                       </div>
                     </div>
                   </div>
@@ -543,47 +543,47 @@ const GymAdminSubscription = () => {
                   <div className="mb-4">
                     <div className="flex items-baseline gap-1">
                       <span className={`text-4xl font-black tracking-tight ${plan.priceColor}`}>{price.main}</span>
-                      <span className="text-[#6B5E78] text-sm font-medium">{price.period}</span>
+                      <span className="text-[#697778] text-sm font-medium">{price.period}</span>
                     </div>
                     {price.sub && (
-                      <p className="text-[#6B5E78] text-xs mt-0.5">{price.sub}</p>
+                      <p className="text-[#697778] text-xs mt-0.5">{price.sub}</p>
                     )}
                     {isAnnual && !plan.trial && plan.savingsAnnual && (
-                      <p className="text-[#A991D4] text-xs mt-1 font-bold">
+                      <p className="text-[#167D78] text-xs mt-1 font-bold">
                         💰 Save ₹{plan.savingsAnnual.toLocaleString('en-IN')} vs monthly
                       </p>
                     )}
                     {!isAnnual && !plan.trial && (
-                      <p className="text-[#6B5E78] text-xs mt-1">
+                      <p className="text-[#697778] text-xs mt-1">
                         or ₹{plan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo billed annually
                       </p>
                     )}
                   </div>
 
                   {/* Limits */}
-                  <div className="bg-[#F7F4FA] rounded-xl px-3 py-2 mb-4 border border-[#E5DDEB]">
-                    <p className="text-[10px] text-[#6B5E78] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
-                    <p className="text-xs text-[#292431] font-medium">{plan.limits}</p>
+                  <div className="bg-[#E8EFF0] rounded-xl px-3 py-2 mb-4 border border-[#D9E2E3]">
+                    <p className="text-[10px] text-[#697778] font-bold uppercase tracking-widest mb-0.5">Platform Limits</p>
+                    <p className="text-xs text-[#344B4A] font-medium">{plan.limits}</p>
                   </div>
 
                   {/* Features */}
                   <div className="flex-1 mb-4">
                     <button 
                       onClick={(e) => toggleFeatures(e, plan.key)}
-                      className="text-xs font-bold text-[#A991D4] hover:text-[#967CC5] underline mb-3 transition-colors"
+                      className="text-xs font-bold text-[#167D78] hover:text-[#167D78] underline mb-3 transition-colors"
                     >
                       {expandedPlans[plan.key] ? 'Hide Features' : 'View Features'}
                     </button>
                     {expandedPlans[plan.key] && (
                       <ul className="space-y-2">
                         {plan.features.map((f, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-[#292431]">
+                          <li key={i} className="flex items-start gap-2 text-xs text-[#344B4A]">
                             <CheckCircle size={13} className={`shrink-0 mt-0.5 ${plan.checkColor}`} />
                             <span>{f}</span>
                           </li>
                         ))}
                         {plan.locked.map((f, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-[#E5DDEB]">
+                          <li key={i} className="flex items-start gap-2 text-xs text-[#D9E2E3]">
                             <XCircle size={13} className="shrink-0 mt-0.5 text-rose-600" />
                             <span className="line-through">{f}</span>
                           </li>
@@ -610,10 +610,10 @@ const GymAdminSubscription = () => {
                     disabled={loading !== null}
                     className={`w-full py-2.5 rounded-xl text-xs font-bold text-center transition-all mt-auto ${
                       plan.key === 'GOLD' 
-                      ? 'bg-[#A991D4] text-[#292431] hover:bg-[#967CC5]' 
+                      ? 'bg-[#167D78] text-white hover:bg-[#116660]' 
                       : plan.key === 'PREMIUM'
-                      ? 'bg-purple-600/80 text-white hover:bg-purple-600'
-                      : 'bg-white border-2 border-[#E5DDEB] text-[#6B5E78] hover:border-[#A991D4] hover:text-[#A991D4]'
+                      ? 'bg-[#167D78]/80 text-white hover:bg-[#167D78]'
+                      : 'bg-white border-2 border-[#D9E2E3] text-[#697778] hover:border-[#167D78] hover:text-[#167D78]'
                     }`}
                   >
                     Upgrade to {plan.name}
@@ -626,17 +626,17 @@ const GymAdminSubscription = () => {
       </div>
 
       {/* Payment Details Section */}
-      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 mb-10 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 border-b border-[#E5DDEB] pb-4">
-          <h2 className="text-lg font-bold text-[#292431] flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center font-bold text-base border border-[#A991D4]/20">
+      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 mb-10 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 border-b border-[#D9E2E3] pb-4">
+          <h2 className="text-lg font-bold text-[#344B4A] flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold text-base border border-[#167D78]/20">
               <IndianRupee size={18} />
             </div>
             <span>Gym Owner Subscription Payment Details</span>
           </h2>
           <button
             onClick={() => setSortAsc(!sortAsc)}
-            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[#E5DDEB] bg-[#F7F4FA] text-[#A991D4] hover:bg-[#E9DFF4] transition-colors self-start sm:self-auto"
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[#D9E2E3] bg-[#E8EFF0] text-[#167D78] hover:bg-[#D8EAE7] transition-colors self-start sm:self-auto"
             title="Toggle sort order"
           >
             <ArrowUpDown size={13} />
@@ -647,21 +647,21 @@ const GymAdminSubscription = () => {
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left border-collapse min-w-[720px]">
             <thead>
-              <tr className="border-b border-[#E5DDEB] bg-[#F7F4FA]/70">
-                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap text-center w-12">S.No</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Invoice ID</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Date</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Plan</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Amount</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider whitespace-nowrap">Status</th>
-                <th className="py-3 px-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider text-right whitespace-nowrap">Action</th>
+              <tr className="border-b border-[#D9E2E3] bg-[#E8EFF0]/70">
+                <th className="py-3 px-3 text-xs font-bold text-[#697778] uppercase tracking-wider whitespace-nowrap text-center w-12">S.No</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#697778] uppercase tracking-wider whitespace-nowrap">Invoice ID</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#697778] uppercase tracking-wider whitespace-nowrap">Date</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#697778] uppercase tracking-wider whitespace-nowrap">Plan</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#697778] uppercase tracking-wider whitespace-nowrap">Amount</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#697778] uppercase tracking-wider whitespace-nowrap">Payment Details</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#697778] uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="py-3 px-3 text-xs font-bold text-[#697778] uppercase tracking-wider text-right whitespace-nowrap">Action</th>
               </tr>
             </thead>
             <tbody>
               {paymentHistory.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-[#6B5E78] text-sm font-medium">
+                  <td colSpan={8} className="py-8 text-center text-[#697778] text-sm font-medium">
                     No subscription payment history found.
                   </td>
                 </tr>
@@ -669,30 +669,30 @@ const GymAdminSubscription = () => {
                 (sortAsc ? [...paymentHistory] : [...paymentHistory].reverse()).map((invoice, idx) => (
                   <tr 
                     key={invoice.id} 
-                    className={`border-b border-[#F7F4FA] transition-colors last:border-0 ${
-                      invoice.isCurrent ? 'bg-orange-50/40 hover:bg-orange-50/60' : 'hover:bg-[#F7F4FA]'
+                    className={`border-b border-[#E8EFF0] transition-colors last:border-0 ${
+                      invoice.isCurrent ? 'bg-orange-50/40 hover:bg-orange-50/60' : 'hover:bg-[#E8EFF0]'
                     }`}
                   >
-                    <td className="py-3.5 px-3 text-sm font-bold text-[#A991D4] text-center whitespace-nowrap">
+                    <td className="py-3.5 px-3 text-sm font-bold text-[#167D78] text-center whitespace-nowrap">
                       {idx + 1}
                     </td>
-                    <td className="py-3.5 px-3 text-sm font-semibold text-[#292431] whitespace-nowrap">
+                    <td className="py-3.5 px-3 text-sm font-semibold text-[#344B4A] whitespace-nowrap">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-mono text-xs font-bold">{invoice.id}</span>
                         {invoice.isCurrent && (
-                          <span className="text-[10px] bg-[#A991D4] text-[#292431] px-2 py-0.5 rounded-full font-bold">
+                          <span className="text-[10px] bg-[#167D78] text-white px-2 py-0.5 rounded-full font-bold">
                             Current
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="py-3.5 px-3 text-sm text-[#6B5E78] whitespace-nowrap">{invoice.date}</td>
-                    <td className="py-3.5 px-3 text-sm font-medium text-[#292431] whitespace-nowrap">{invoice.plan}</td>
-                    <td className="py-3.5 px-3 text-sm font-bold text-[#A991D4] whitespace-nowrap">{invoice.amount}</td>
+                    <td className="py-3.5 px-3 text-sm text-[#697778] whitespace-nowrap">{invoice.date}</td>
+                    <td className="py-3.5 px-3 text-sm font-medium text-[#344B4A] whitespace-nowrap">{invoice.plan}</td>
+                    <td className="py-3.5 px-3 text-sm font-bold text-[#167D78] whitespace-nowrap">{invoice.amount}</td>
                     <td className="py-4 px-4 whitespace-nowrap">
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-[#292431]">{invoice.paymentMethod}</span>
-                        <span className="text-xs text-[#6B5E78]">{invoice.paymentDetails}</span>
+                        <span className="text-sm font-bold text-[#344B4A]">{invoice.paymentMethod}</span>
+                        <span className="text-xs text-[#697778]">{invoice.paymentDetails}</span>
                       </div>
                     </td>
                     <td className="py-4 px-4 whitespace-nowrap">
@@ -707,7 +707,7 @@ const GymAdminSubscription = () => {
                     <td className="py-4 px-4 text-right whitespace-nowrap">
                       <button 
                         onClick={() => handleDownloadInvoice(invoice)}
-                        className="inline-flex items-center space-x-1 text-[#A991D4] hover:text-[#967CC5] font-bold text-xs bg-[#F7F4FA] hover:bg-[#D1FAE5] px-3 py-1.5 rounded-lg transition-colors border border-[#E5DDEB]"
+                        className="inline-flex items-center space-x-1 text-[#167D78] hover:text-[#167D78] font-bold text-xs bg-[#E8EFF0] hover:bg-[#D1FAE5] px-3 py-1.5 rounded-lg transition-colors border border-[#D9E2E3]"
                       >
                         <Download size={14} />
                         <span>Invoice</span>
@@ -724,28 +724,28 @@ const GymAdminSubscription = () => {
       {/* Payment Modal */}
       {paymentStep && upgradeTarget && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex items-center space-x-3 mb-6">
-              <div className={`w-12 h-12 ${upgradeTarget.key === 'GOLD' ? 'bg-[#A991D4]/10' : 'bg-purple-400/10'} rounded-xl flex items-center justify-center`}>
+              <div className={`w-12 h-12 ${upgradeTarget.key === 'GOLD' ? 'bg-[#167D78]/10' : 'bg-[#167D78]/10'} rounded-xl flex items-center justify-center`}>
                 <upgradeTarget.icon size={24} className={upgradeTarget.color} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#292431]">Upgrade to {upgradeTarget.name}</h2>
-                <p className="text-[#6B5E78] text-sm">{upgradeTarget.tagline}</p>
+                <h2 className="text-xl font-bold text-[#344B4A]">Upgrade to {upgradeTarget.name}</h2>
+                <p className="text-[#697778] text-sm">{upgradeTarget.tagline}</p>
               </div>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl p-4 mb-6 space-y-3">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-4 mb-6 space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-[#6B5E78]">Plan</span>
-                <span className="text-[#292431] font-semibold">{upgradeTarget.name}</span>
+                <span className="text-[#697778]">Plan</span>
+                <span className="text-[#344B4A] font-semibold">{upgradeTarget.name}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#6B5E78]">Billing</span>
-                <span className="text-[#292431] font-semibold">{isAnnual ? 'Annual' : 'Monthly'}</span>
+                <span className="text-[#697778]">Billing</span>
+                <span className="text-[#344B4A] font-semibold">{isAnnual ? 'Annual' : 'Monthly'}</span>
               </div>
-              <div className="flex justify-between text-sm border-t border-[#E5DDEB] pt-3">
-                <span className="text-[#6B5E78] font-bold">Total</span>
+              <div className="flex justify-between text-sm border-t border-[#D9E2E3] pt-3">
+                <span className="text-[#697778] font-bold">Total</span>
                 <span className={`font-bold text-lg ${upgradeTarget.color}`}>
                   ₹{(isAnnual ? upgradeTarget.priceAnnual : upgradeTarget.priceMonthly).toLocaleString('en-IN')}{isAnnual ? '/year' : '/month'}
                 </span>
@@ -758,27 +758,27 @@ const GymAdminSubscription = () => {
             </div>
 
             <div className="space-y-3 mb-6">
-              <input type="text" placeholder="Card Number" className="w-full bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4]" maxLength={19} />
+              <input type="text" placeholder="Card Number" className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#167D78]" maxLength={19} />
               <div className="grid grid-cols-2 gap-3">
-                <input type="text" placeholder="MM / YY" className="bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4]" maxLength={7} />
-                <input type="text" placeholder="CVV" className="bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4]" maxLength={3} />
+                <input type="text" placeholder="MM / YY" className="bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#167D78]" maxLength={7} />
+                <input type="text" placeholder="CVV" className="bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#167D78]" maxLength={3} />
               </div>
-              <input type="text" placeholder="Cardholder Name" className="w-full bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4]" />
+              <input type="text" placeholder="Cardholder Name" className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#167D78]" />
             </div>
 
             <div className="flex space-x-3">
-              <button onClick={() => setPaymentStep(null)} className="flex-1 py-3 bg-[#FFFFFF] text-[#292431] rounded-xl font-bold hover:bg-[#E9DFF4] transition-colors text-sm">Cancel</button>
+              <button onClick={() => setPaymentStep(null)} className="flex-1 py-3 bg-[#FFFFFF] text-[#344B4A] rounded-xl font-bold hover:bg-[#D8EAE7] transition-colors text-sm">Cancel</button>
               <button
                 onClick={handlePayment}
                 disabled={loading !== null}
-                className="flex-1 py-3 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors disabled:opacity-60 text-sm flex items-center justify-center space-x-2"
+                className="flex-1 py-3 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors disabled:opacity-60 text-sm flex items-center justify-center space-x-2"
               >
                 {loading ? <><Loader2 size={16} className="animate-spin" /><span>Processing...</span></> : <span>Pay Now</span>}
               </button>
             </div>
             <div className="flex items-center justify-center space-x-1 mt-4">
-              <Shield size={12} className="text-[#555]" />
-              <p className="text-center text-xs text-[#555]">256-bit SSL encrypted</p>
+              <Shield size={12} className="text-[#697778]" />
+              <p className="text-center text-xs text-[#697778]">256-bit SSL encrypted</p>
             </div>
           </div>
         </div>

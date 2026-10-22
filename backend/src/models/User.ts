@@ -46,8 +46,11 @@ export interface IUser extends Document {
   rejectionReason?: string;
   suspensionReason?: string;
 
-  // Onboarding origin
+  // Onboarding origin & referrals
   customerType?: 'EXISTING_CUSTOMER' | 'NEW_CUSTOMER' | 'PUBLIC_SIGNUP';
+  referralCode?: string;
+  referredBy?: mongoose.Types.ObjectId;
+  referralCreditsBalance?: number;
 
   subscriptionStatus: SubscriptionStatus;
   subscriptionPlan?: string;
@@ -112,6 +115,9 @@ const userSchema = new Schema<IUser>(
     assignedTrainer: { type: Schema.Types.ObjectId, ref: 'Trainer' },
     isActive: { type: Boolean, default: true },
     customerType: { type: String, enum: ['EXISTING_CUSTOMER', 'NEW_CUSTOMER', 'PUBLIC_SIGNUP'] },
+    referralCode: { type: String, trim: true, index: true },
+    referredBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    referralCreditsBalance: { type: Number, default: 0, min: 0 },
 
     approvalStatus: {
       type: String,

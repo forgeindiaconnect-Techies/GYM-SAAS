@@ -1,41 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
+
 @theme {
-  --color-primary: #A991D4;
-  --color-primary-hover: #967CC5;
-  --color-secondary: #E9DFF4;
-  --color-accent: #4C315E;
-  --color-background: #F7F4FA;
-  --color-sidebar: #4C315E;
+  --color-primary: #167D78;
+  --color-primary-hover: #116660;
+  --color-secondary: #D8EAE7;
+  --color-accent: #344B4A;
+  --color-background: #E8EFF0;
+  --color-sidebar: #FFFFFF;
   --color-card: #FFFFFF;
-  --color-text: #292431;
-  --color-text-secondary: #6B5E78;
-  --color-border: #E5DDEB;
+  --color-text: #344B4A;
+  --color-text-secondary: #697778;
+  --color-border: #D9E2E3;
   --color-success: #27845A;
-  --color-warning: #B77916;
-  --color-error: #C43D4D;
-  --color-plum: #4C315E;
-  --color-lavender: #A991D4;
-  --color-lilac: #E9DFF4;
+  --color-warning: #D99A27;
+  --color-error: #C43D35;
+  --color-teal: #167D78;
+  --color-deep-teal: #344B4A;
+  --color-light-teal: #D8EAE7;
+  --color-mist-grey: #E8EFF0;
 }
 
 :root {
-  --color-primary: #A991D4;
-  --color-primary-hover: #967CC5;
-  --color-secondary: #E9DFF4;
-  --color-accent: #4C315E;
-  --color-background: #F7F4FA;
-  --color-sidebar: #4C315E;
+  --color-primary: #167D78;
+  --color-primary-hover: #116660;
+  --color-secondary: #D8EAE7;
+  --color-accent: #344B4A;
+  --color-background: #E8EFF0;
+  --color-sidebar: #FFFFFF;
   --color-card: #FFFFFF;
-  --color-text: #292431;
-  --color-text-secondary: #6B5E78;
-  --color-border: #E5DDEB;
+  --color-text: #344B4A;
+  --color-text-secondary: #697778;
+  --color-border: #D9E2E3;
   --color-success: #27845A;
-  --color-warning: #B77916;
-  --color-error: #C43D4D;
-  --color-plum: #4C315E;
-  --color-lavender: #A991D4;
-  --color-lilac: #E9DFF4;
+  --color-warning: #D99A27;
+  --color-error: #C43D35;
+  --color-teal: #167D78;
+  --color-deep-teal: #344B4A;
+  --color-light-teal: #D8EAE7;
+  --color-mist-grey: #E8EFF0;
 }
 
 *, *::before, *::after {
@@ -47,15 +50,15 @@ html {
 }
 
 body {
-  background-color: #F7F4FA;
-  color: #292431;
+  background-color: #E8EFF0;
+  color: #344B4A;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
 }
 
-/* Custom Scrollbar — Lavender / Deep Plum theme */
+/* Custom Scrollbar — Teal + Mist Grey theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -64,18 +67,18 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #E5DDEB;
+  background-color: #D9E2E3;
   border-radius: 20px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #A991D4;
+  background-color: #167D78;
 }
 
 /* Sidebar mobile overlay */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(76, 49, 94, 0.4);
+  background: rgba(52, 75, 74, 0.4);
   z-index: 30;
   display: none;
 }
@@ -83,18 +86,18 @@ body {
   display: block;
 }
 
-/* Input/select global reset for Lavender theme */
+/* Input/select global reset */
 input, select, textarea {
-  color: #292431;
+  color: #344B4A;
   background-color: #FFFFFF;
 }
 
 input::placeholder, textarea::placeholder {
-  color: #6B5E78;
+  color: #697778;
 }
 
-/* Focus ring — Lavender */
+/* Focus ring — Teal */
 input:focus, select:focus, textarea:focus, button:focus-visible {
-  outline: 2px solid #A991D4;
+  outline: 2px solid #167D78;
   outline-offset: 2px;
 }

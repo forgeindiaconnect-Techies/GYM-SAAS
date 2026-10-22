@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Search, Star, Calendar, Eye, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
@@ -41,8 +41,8 @@ const MemberFindTrainers = () => {
       <MemberTrainingTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Find Trainers</h1>
-          <p className="text-[#6B5E78] mt-1">Select an active online trainer to review your AI Analysis and guide your live training.</p>
+          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Find Trainers</h1>
+          <p className="text-[#697778] mt-1">Select an active online trainer to review your AI Analysis and guide your live training.</p>
         </div>
         <div className="relative w-full md:w-64">
           <input 
@@ -50,19 +50,19 @@ const MemberFindTrainers = () => {
             placeholder="Search by name or spec..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl pl-10 pr-4 py-2 text-[#292431] focus:border-[#A991D4] focus:ring-1 focus:ring-[#C43D4D] transition-all"
+            className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl pl-10 pr-4 py-2 text-[#344B4A] focus:border-[#167D78] focus:ring-1 focus:ring-[#C43D35] transition-all"
           />
-          <Search className="absolute left-3 top-2.5 text-[#6B5E78]" size={18} />
+          <Search className="absolute left-3 top-2.5 text-[#697778]" size={18} />
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12 text-[#6B5E78]">Loading online trainers...</div>
+        <div className="text-center py-12 text-[#697778]">Loading online trainers...</div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map(trainer => (
-              <div key={trainer._id} className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 hover:border-[#A991D4]/50 transition-colors flex flex-col h-full shadow-sm relative overflow-hidden">
+              <div key={trainer._id} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 hover:border-[#167D78]/50 transition-colors flex flex-col h-full shadow-sm relative overflow-hidden">
                 {/* Status Badge */}
                 <div className="flex justify-between items-start mb-3">
                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5 ${
@@ -71,13 +71,13 @@ const MemberFindTrainers = () => {
                     <span className={`w-2 h-2 rounded-full ${trainer.availabilityStatus === 'Offline' ? 'bg-gray-400' : 'bg-emerald-500 animate-pulse'}`} />
                     {trainer.availabilityStatus || 'Available'}
                   </span>
-                  <span className="text-xs font-semibold text-[#A991D4] bg-[#A991D4]/10 px-2 py-0.5 rounded-md capitalize">
+                  <span className="text-xs font-semibold text-[#167D78] bg-[#167D78]/10 px-2 py-0.5 rounded-md capitalize">
                     {trainer.trainingMode === 'both' ? 'Online & Gym' : (trainer.trainingMode || 'Online')}
                   </span>
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-[#FFFFFF] rounded-full flex items-center justify-center text-xl font-bold text-[#A991D4] border border-[#E5DDEB] overflow-hidden shrink-0 shadow-sm">
+                  <div className="w-16 h-16 bg-[#FFFFFF] rounded-full flex items-center justify-center text-xl font-bold text-[#167D78] border border-[#D9E2E3] overflow-hidden shrink-0 shadow-sm">
                     {trainer.profilePhoto ? (
                       <img src={trainer.profilePhoto} alt={trainer.name} className="w-full h-full object-cover" />
                     ) : (
@@ -85,37 +85,37 @@ const MemberFindTrainers = () => {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-[#292431] truncate">{trainer.name}</h3>
-                    <p className="text-sm text-[#A991D4] font-medium truncate">{trainer.specialization || 'Fitness Specialist'}</p>
-                    <div className="flex items-center space-x-1 mt-1 text-[#6B5E78] text-xs">
+                    <h3 className="text-lg font-bold text-[#344B4A] truncate">{trainer.name}</h3>
+                    <p className="text-sm text-[#167D78] font-medium truncate">{trainer.specialization || 'Fitness Specialist'}</p>
+                    <div className="flex items-center space-x-1 mt-1 text-[#697778] text-xs">
                       <Star size={13} className="text-yellow-500 fill-yellow-500 shrink-0" />
                       <span className="font-bold">{trainer.averageRating || trainer.rating || '5.0'}</span>
-                      <span className="text-[#6B5E78]">({trainer.totalReviews || trainer.reviewCount || '12'} reviews)</span>
+                      <span className="text-[#697778]">({trainer.totalReviews || trainer.reviewCount || '12'} reviews)</span>
                     </div>
                   </div>
                 </div>
                 
-                <div className="mt-4 pt-4 border-t border-[#E5DDEB] space-y-2 text-sm text-[#6B5E78] flex-1">
-                  <p><span className="text-[#292431] font-semibold">Experience:</span> {trainer.experience ? `${trainer.experience} years` : '3+ years'}</p>
-                  <p><span className="text-[#292431] font-semibold">Expertise:</span> {
+                <div className="mt-4 pt-4 border-t border-[#D9E2E3] space-y-2 text-sm text-[#697778] flex-1">
+                  <p><span className="text-[#344B4A] font-semibold">Experience:</span> {trainer.experience ? `${trainer.experience} years` : '3+ years'}</p>
+                  <p><span className="text-[#344B4A] font-semibold">Expertise:</span> {
                     typeof trainer.expertise === 'string'
                       ? trainer.expertise.split('\n').filter(Boolean).join(' • ')
                       : (Array.isArray(trainer.expertise) ? trainer.expertise.join(' • ') : (trainer.expertise || trainer.specialization || 'Strength & Conditioning'))
                   }</p>
-                  <p><span className="text-[#292431] font-semibold">Available Slots:</span> {trainer.availableSlot || 5} per day ({trainer.availableStartTime || '09:00 AM'} - {trainer.availableEndTime || '06:00 PM'})</p>
+                  <p><span className="text-[#344B4A] font-semibold">Available Slots:</span> {trainer.availableSlot || 5} per day ({trainer.availableStartTime || '09:00 AM'} - {trainer.availableEndTime || '06:00 PM'})</p>
                 </div>
                 
                 <div className="mt-6 flex items-center gap-2">
                   <button 
                     onClick={() => setSelectedTrainer(trainer)} 
-                    className="flex-1 py-2.5 px-3 bg-[#F7F4FA] text-[#292431] border border-[#E5DDEB] rounded-xl font-bold text-xs sm:text-sm hover:bg-[#E9DFF4] hover:border-[#A991D4]/40 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs min-w-0 cursor-pointer"
+                    className="flex-1 py-2.5 px-3 bg-[#E8EFF0] text-[#344B4A] border border-[#D9E2E3] rounded-xl font-bold text-xs sm:text-sm hover:bg-[#D8EAE7] hover:border-[#167D78]/40 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs min-w-0 cursor-pointer"
                   >
-                    <Eye size={15} className="shrink-0 text-[#A991D4]" />
+                    <Eye size={15} className="shrink-0 text-[#167D78]" />
                     <span className="whitespace-nowrap truncate">View Details</span>
                   </button>
                   <Link 
                     to={`/member/book-session?trainerId=${trainer._id}`} 
-                    className="flex-1 py-2.5 px-3 bg-[#A991D4] text-[#292431] rounded-xl font-bold text-xs sm:text-sm hover:bg-[#967CC5] transition-all flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs min-w-0 cursor-pointer"
+                    className="flex-1 py-2.5 px-3 bg-[#167D78] text-white rounded-xl font-bold text-xs sm:text-sm hover:bg-[#116660] transition-all flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs min-w-0 cursor-pointer"
                   >
                     <Calendar size={15} className="shrink-0" />
                     <span className="whitespace-nowrap truncate">Book Session</span>
@@ -126,8 +126,8 @@ const MemberFindTrainers = () => {
           </div>
           
           {filtered.length === 0 && (
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-12 text-center">
-              <p className="text-[#6B5E78] text-lg">No trainers found matching your search.</p>
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-12 text-center">
+              <p className="text-[#697778] text-lg">No trainers found matching your search.</p>
             </div>
           )}
         </>
@@ -136,17 +136,17 @@ const MemberFindTrainers = () => {
       {/* Trainer Details Modal */}
       {selectedTrainer && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar animate-scale-in flex flex-col shadow-2xl border border-[#E5DDEB]">
-            <div className="flex justify-between items-center p-6 border-b border-[#E5DDEB] sticky top-0 bg-white/95 backdrop-blur z-10">
-              <h2 className="text-xl font-bold text-[#292431]">Trainer Profile</h2>
-              <button onClick={() => setSelectedTrainer(null)} className="text-[#6B5E78] hover:bg-[#F7F4FA] p-2 rounded-full transition-colors">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar animate-scale-in flex flex-col shadow-2xl border border-[#D9E2E3]">
+            <div className="flex justify-between items-center p-6 border-b border-[#D9E2E3] sticky top-0 bg-white/95 backdrop-blur z-10">
+              <h2 className="text-xl font-bold text-[#344B4A]">Trainer Profile</h2>
+              <button onClick={() => setSelectedTrainer(null)} className="text-[#697778] hover:bg-[#E8EFF0] p-2 rounded-full transition-colors">
                 <X size={24} />
               </button>
             </div>
             
             <div className="p-6 md:p-8 space-y-8">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                <div className="w-32 h-32 bg-[#F7F4FA] rounded-2xl flex items-center justify-center text-4xl font-bold text-[#A991D4] border-4 border-[#E5DDEB] overflow-hidden shadow-lg shrink-0">
+                <div className="w-32 h-32 bg-[#E8EFF0] rounded-2xl flex items-center justify-center text-4xl font-bold text-[#167D78] border-4 border-[#D9E2E3] overflow-hidden shadow-lg shrink-0">
                   {selectedTrainer.profilePhoto ? (
                     <img src={selectedTrainer.profilePhoto} alt={selectedTrainer.name} className="w-full h-full object-cover" />
                   ) : (
@@ -154,8 +154,8 @@ const MemberFindTrainers = () => {
                   )}
                 </div>
                 <div className="text-center md:text-left flex-1">
-                  <h3 className="text-3xl font-bold text-[#292431] mb-2">{selectedTrainer.name}</h3>
-                  <p className="text-lg text-[#A991D4] font-semibold mb-3">{selectedTrainer.specialization || 'General Fitness'}</p>
+                  <h3 className="text-3xl font-bold text-[#344B4A] mb-2">{selectedTrainer.name}</h3>
+                  <p className="text-lg text-[#167D78] font-semibold mb-3">{selectedTrainer.specialization || 'General Fitness'}</p>
                   
                   <div className="flex flex-wrap justify-center md:justify-start gap-3">
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg text-sm font-medium border border-yellow-200">
@@ -168,55 +168,55 @@ const MemberFindTrainers = () => {
 
               {/* Section: Contact Info */}
               <div>
-                <h4 className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-3">Contact Information</h4>
+                <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-3">Contact Information</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Email</p>
-                    <p className="font-semibold text-[#292431]">{selectedTrainer.email || 'N/A'}</p>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Email</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedTrainer.email || 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Phone</p>
-                    <p className="font-semibold text-[#292431]">{selectedTrainer.phone || 'N/A'}</p>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Phone</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedTrainer.phone || 'N/A'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Section: Professional Info */}
               <div>
-                <h4 className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-3">Professional Details</h4>
+                <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-3">Professional Details</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Specialization</p>
-                    <p className="font-semibold text-[#292431]">{selectedTrainer.specialization || 'N/A'}</p>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Specialization</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedTrainer.specialization || 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Experience</p>
-                    <p className="font-semibold text-[#292431]">{selectedTrainer.experience ? `${selectedTrainer.experience} Years` : 'N/A'}</p>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Experience</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedTrainer.experience ? `${selectedTrainer.experience} Years` : 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Training Mode</p>
-                    <p className="font-semibold text-[#292431] capitalize">{selectedTrainer.trainingMode || 'N/A'}</p>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Training Mode</p>
+                    <p className="font-semibold text-[#344B4A] capitalize">{selectedTrainer.trainingMode || 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Qualifications</p>
-                    <p className="font-semibold text-[#292431]">
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Qualifications</p>
+                    <p className="font-semibold text-[#344B4A]">
                       {selectedTrainer.qualifications && selectedTrainer.qualifications.length > 0 
                         ? (Array.isArray(selectedTrainer.qualifications) ? selectedTrainer.qualifications.join(', ') : selectedTrainer.qualifications) 
                         : 'N/A'}
                     </p>
                   </div>
                   {selectedTrainer.expertise && selectedTrainer.expertise.length > 0 && (
-                    <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                      <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Expertise</p>
-                      <p className="font-semibold text-[#292431]">
+                    <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                      <p className="text-[#697778] text-xs font-medium mb-1.5">Expertise</p>
+                      <p className="font-semibold text-[#344B4A]">
                         {Array.isArray(selectedTrainer.expertise) ? selectedTrainer.expertise.join(', ') : selectedTrainer.expertise}
                       </p>
                     </div>
                   )}
                   {selectedTrainer.certifications && selectedTrainer.certifications.length > 0 && (
-                    <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                      <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Certifications</p>
-                      <p className="font-semibold text-[#292431]">
+                    <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                      <p className="text-[#697778] text-xs font-medium mb-1.5">Certifications</p>
+                      <p className="font-semibold text-[#344B4A]">
                         {Array.isArray(selectedTrainer.certifications) ? selectedTrainer.certifications.join(', ') : selectedTrainer.certifications}
                       </p>
                     </div>
@@ -226,39 +226,39 @@ const MemberFindTrainers = () => {
 
               {/* Section: Fee Info */}
               <div>
-                <h4 className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-3">Fee & Payment</h4>
+                <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-3">Fee & Payment</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Fee</p>
-                    <p className="font-semibold text-[#292431]">{selectedTrainer.fee ? `₹${selectedTrainer.fee}` : 'N/A'}</p>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Fee</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedTrainer.fee ? `₹${selectedTrainer.fee}` : 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Payment Type</p>
-                    <p className="font-semibold text-[#292431]">{selectedTrainer.paymentType || 'N/A'}</p>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Payment Type</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedTrainer.paymentType || 'N/A'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Section: Availability */}
               <div>
-                <h4 className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-3">Availability</h4>
+                <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-3">Availability</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Available Days</p>
-                    <p className="font-semibold text-[#292431]">{selectedTrainer.availableDays || 'N/A'}</p>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Available Days</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedTrainer.availableDays || 'N/A'}</p>
                   </div>
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Timings</p>
-                    <p className="font-semibold text-[#292431]">
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#697778] text-xs font-medium mb-1.5">Timings</p>
+                    <p className="font-semibold text-[#344B4A]">
                       {selectedTrainer.availableStartTime || '—'}
                       {(selectedTrainer.availableStartTime) ? ' → ' : ''}
                       {selectedTrainer.availableEndTime || 'N/A'}
                     </p>
                   </div>
                   {selectedTrainer.availableSlot && (
-                    <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4 sm:col-span-2">
-                      <p className="text-[#6B5E78] text-xs font-medium mb-1.5">Slot Duration</p>
-                      <p className="font-semibold text-[#292431]">{selectedTrainer.availableSlot}</p>
+                    <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4 sm:col-span-2">
+                      <p className="text-[#697778] text-xs font-medium mb-1.5">Slot Duration</p>
+                      <p className="font-semibold text-[#344B4A]">{selectedTrainer.availableSlot}</p>
                     </div>
                   )}
                 </div>
@@ -267,19 +267,19 @@ const MemberFindTrainers = () => {
               {/* Section: Bio */}
               {selectedTrainer.bio && (
                 <div>
-                  <h4 className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-3">About</h4>
-                  <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                    <p className="text-[#292431] text-sm leading-relaxed">{selectedTrainer.bio}</p>
+                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-3">About</h4>
+                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                    <p className="text-[#344B4A] text-sm leading-relaxed">{selectedTrainer.bio}</p>
                   </div>
                 </div>
               )}
             </div>
             
-            <div className="p-6 border-t border-[#E5DDEB] bg-[#F7F4FA] flex justify-end gap-3 sticky bottom-0 rounded-b-3xl">
-              <button onClick={() => setSelectedTrainer(null)} className="px-5 py-2.5 bg-white border border-[#E5DDEB] text-[#6B5E78] font-medium rounded-xl hover:bg-[#F7F4FA] transition-colors">
+            <div className="p-6 border-t border-[#D9E2E3] bg-[#E8EFF0] flex justify-end gap-3 sticky bottom-0 rounded-b-3xl">
+              <button onClick={() => setSelectedTrainer(null)} className="px-5 py-2.5 bg-white border border-[#D9E2E3] text-[#697778] font-medium rounded-xl hover:bg-[#E8EFF0] transition-colors">
                 Close
               </button>
-              <Link to={`/member/book-session?trainerId=${selectedTrainer._id}`} className="px-5 py-2.5 bg-[#A991D4] text-[#292431] font-semibold rounded-xl hover:bg-[#967CC5] transition-colors flex items-center gap-2 shadow-lg shadow-[#A991D4]/20">
+              <Link to={`/member/book-session?trainerId=${selectedTrainer._id}`} className="px-5 py-2.5 bg-[#167D78] text-white font-semibold rounded-xl hover:bg-[#116660] transition-colors flex items-center gap-2 shadow-lg shadow-[#167D78]/20">
                 <Calendar size={18} />
                 Book Session Now
               </Link>

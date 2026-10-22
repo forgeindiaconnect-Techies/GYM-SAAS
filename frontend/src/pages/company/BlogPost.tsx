@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Activity,
@@ -37,38 +37,38 @@ const BlogPost = () => {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#F7F4FA] text-[#292431] flex flex-col justify-between">
-        <nav className="border-b border-[#E5DDEB] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
+      <div className="min-h-screen bg-[#E8EFF0] text-[#344B4A] flex flex-col justify-between">
+        <nav className="border-b border-[#D9E2E3] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-[#A991D4] rounded-sm flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#167D78] rounded-sm flex items-center justify-center">
                 <Activity className="text-black" size={20} />
               </div>
-              <span className="text-xl font-bold tracking-tight text-[#A991D4]">Gymora</span>
+              <span className="text-xl font-bold tracking-tight text-[#167D78]">Gymora</span>
             </Link>
-            <Link to="/blog" className="text-sm font-medium text-[#6B5E78] hover:text-[#A991D4] flex items-center space-x-2">
+            <Link to="/blog" className="text-sm font-medium text-[#697778] hover:text-[#167D78] flex items-center space-x-2">
               <ArrowLeft size={16} /> <span>Back to Blog</span>
             </Link>
           </div>
         </nav>
 
         <main className="max-w-2xl mx-auto px-4 py-24 text-center">
-          <div className="w-16 h-16 bg-[#E9DFF4] rounded-2xl flex items-center justify-center mx-auto mb-6 text-[#A991D4]">
+          <div className="w-16 h-16 bg-[#D8EAE7] rounded-2xl flex items-center justify-center mx-auto mb-6 text-[#167D78]">
             <Activity size={32} />
           </div>
           <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
-          <p className="text-[#6B5E78] mb-8">
+          <p className="text-[#697778] mb-8">
             The article you are looking for doesn't exist or has been moved. Check out our latest fitness and AI insights.
           </p>
           <button
             onClick={() => navigate('/blog')}
-            className="px-6 py-3 bg-[#A991D4] text-black font-semibold rounded-xl hover:bg-[#967CC5] transition-colors"
+            className="px-6 py-3 bg-[#167D78] text-white font-semibold rounded-xl hover:bg-[#116660] transition-colors"
           >
             Browse All Articles
           </button>
         </main>
 
-        <footer className="border-t border-[#E5DDEB] py-8 text-center text-sm text-[#6B5E78]">
+        <footer className="border-t border-[#D9E2E3] py-8 text-center text-sm text-[#697778]">
           <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
         </footer>
       </div>
@@ -79,26 +79,26 @@ const BlogPost = () => {
   const relatedPosts = BLOG_POSTS.filter((p) => p.id !== post.id);
 
   return (
-    <div className="min-h-screen bg-[#F7F4FA] text-[#292431] selection:bg-[#A991D4] selection:text-[#292431]">
+    <div className="min-h-screen bg-[#E8EFF0] text-[#344B4A] selection:bg-[#167D78] selection:text-[#344B4A]">
       {/* Top Navbar */}
-      <nav className="border-b border-[#E5DDEB] bg-[#FFFFFF]/90 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-[#D9E2E3] bg-[#FFFFFF]/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 bg-[#A991D4] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 bg-[#167D78] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#A991D4]">Gymora</span>
+            <span className="text-xl font-bold tracking-tight text-[#167D78]">Gymora</span>
           </Link>
           <div className="flex items-center space-x-6">
             <Link
               to="/blog"
-              className="text-sm font-medium text-[#6B5E78] hover:text-[#A991D4] flex items-center space-x-2 transition-colors"
+              className="text-sm font-medium text-[#697778] hover:text-[#167D78] flex items-center space-x-2 transition-colors"
             >
               <ArrowLeft size={16} /> <span>All Articles</span>
             </Link>
             <Link
               to="/"
-              className="hidden sm:inline-block text-sm font-medium text-[#6B5E78] hover:text-[#A991D4] transition-colors"
+              className="hidden sm:inline-block text-sm font-medium text-[#697778] hover:text-[#167D78] transition-colors"
             >
               Back to Home
             </Link>
@@ -109,48 +109,48 @@ const BlogPost = () => {
       {/* Main Container */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-xs md:text-sm text-[#6B5E78] mb-8 overflow-x-auto whitespace-nowrap pb-1">
-          <Link to="/" className="hover:text-[#A991D4]">Home</Link>
+        <div className="flex items-center space-x-2 text-xs md:text-sm text-[#697778] mb-8 overflow-x-auto whitespace-nowrap pb-1">
+          <Link to="/" className="hover:text-[#167D78]">Home</Link>
           <span>/</span>
-          <Link to="/blog" className="hover:text-[#A991D4]">Blog</Link>
+          <Link to="/blog" className="hover:text-[#167D78]">Blog</Link>
           <span>/</span>
-          <span className="text-[#292431] font-medium truncate max-w-xs md:max-w-md">{post.title}</span>
+          <span className="text-[#344B4A] font-medium truncate max-w-xs md:max-w-md">{post.title}</span>
         </div>
 
         {/* Metadata badges */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
-          <span className="bg-[#E9DFF4] text-[#292431] font-semibold text-xs px-3 py-1.5 rounded-full">
+          <span className="bg-[#D8EAE7] text-[#344B4A] font-semibold text-xs px-3 py-1.5 rounded-full">
             {post.category}
           </span>
-          <span className="flex items-center text-xs text-[#6B5E78] space-x-1.5">
+          <span className="flex items-center text-xs text-[#697778] space-x-1.5">
             <Calendar size={14} />
             <span>{post.date}</span>
           </span>
-          <span className="flex items-center text-xs text-[#6B5E78] space-x-1.5">
+          <span className="flex items-center text-xs text-[#697778] space-x-1.5">
             <Clock size={14} />
             <span>{post.readTime}</span>
           </span>
         </div>
 
         {/* Main Title & Subtitle */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-6 text-[#292431]">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-6 text-[#344B4A]">
           {post.title}
         </h1>
-        <p className="text-lg md:text-xl text-[#6B5E78] leading-relaxed mb-8">
+        <p className="text-lg md:text-xl text-[#697778] leading-relaxed mb-8">
           {post.subtitle}
         </p>
 
         {/* Author Header & Actions */}
-        <div className="flex items-center justify-between border-y border-[#E5DDEB] py-4 mb-8">
+        <div className="flex items-center justify-between border-y border-[#D9E2E3] py-4 mb-8">
           <div className="flex items-center space-x-4">
             <img
               src={post.author.avatar}
               alt={post.author.name}
-              className="w-12 h-12 rounded-full object-cover border-2 border-[#E9DFF4]"
+              className="w-12 h-12 rounded-full object-cover border-2 border-[#D8EAE7]"
             />
             <div>
-              <p className="font-semibold text-sm text-[#292431]">{post.author.name}</p>
-              <p className="text-xs text-[#6B5E78]">{post.author.role}</p>
+              <p className="font-semibold text-sm text-[#344B4A]">{post.author.name}</p>
+              <p className="text-xs text-[#697778]">{post.author.role}</p>
             </div>
           </div>
 
@@ -160,8 +160,8 @@ const BlogPost = () => {
               title="Bookmark article"
               className={`p-2.5 rounded-xl border transition-colors ${
                 bookmarked
-                  ? 'bg-[#A991D4] text-black border-[#A991D4]'
-                  : 'bg-white border-[#E5DDEB] text-[#6B5E78] hover:text-[#292431] hover:border-stone-400'
+                  ? 'bg-[#167D78] text-white border-[#167D78]'
+                  : 'bg-white border-[#D9E2E3] text-[#697778] hover:text-[#344B4A] hover:border-stone-400'
               }`}
             >
               <Bookmark size={18} />
@@ -169,7 +169,7 @@ const BlogPost = () => {
             <button
               onClick={handleShare}
               title="Share article link"
-              className="flex items-center space-x-2 px-3.5 py-2.5 bg-white border border-[#E5DDEB] rounded-xl text-xs font-semibold text-[#292431] hover:border-[#A991D4] transition-colors"
+              className="flex items-center space-x-2 px-3.5 py-2.5 bg-white border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#344B4A] hover:border-[#167D78] transition-colors"
             >
               {copied ? <Check size={16} className="text-emerald-600" /> : <Share2 size={16} />}
               <span>{copied ? 'Copied Link!' : 'Share'}</span>
@@ -178,7 +178,7 @@ const BlogPost = () => {
         </div>
 
         {/* Hero Image */}
-        <div className="rounded-2xl overflow-hidden mb-12 shadow-sm border border-[#E5DDEB]">
+        <div className="rounded-2xl overflow-hidden mb-12 shadow-sm border border-[#D9E2E3]">
           <img
             src={post.image}
             alt={post.title}
@@ -187,21 +187,21 @@ const BlogPost = () => {
         </div>
 
         {/* Intro */}
-        <div className="text-lg md:text-xl font-normal leading-relaxed text-[#44403C] mb-10 pb-8 border-b border-[#E5DDEB]">
+        <div className="text-lg md:text-xl font-normal leading-relaxed text-[#344B4A] mb-10 pb-8 border-b border-[#D9E2E3]">
           {post.content.intro}
         </div>
 
         {/* Key Takeaways Box */}
         {post.content.takeaways && post.content.takeaways.length > 0 && (
-          <div className="bg-[#FFF8ED] border border-[#E9DFF4] rounded-2xl p-6 md:p-8 mb-12">
-            <div className="flex items-center space-x-2.5 mb-4 text-[#A991D4]">
+          <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl p-6 md:p-8 mb-12">
+            <div className="flex items-center space-x-2.5 mb-4 text-[#167D78]">
               <Sparkles size={20} />
-              <h2 className="text-lg font-bold text-[#292431]">Key Takeaways at a Glance</h2>
+              <h2 className="text-lg font-bold text-[#344B4A]">Key Takeaways at a Glance</h2>
             </div>
             <ul className="space-y-3">
               {post.content.takeaways.map((takeaway, idx) => (
-                <li key={idx} className="flex items-start space-x-3 text-sm md:text-base text-[#57534E]">
-                  <CheckCircle2 size={18} className="text-[#A991D4] shrink-0 mt-0.5" />
+                <li key={idx} className="flex items-start space-x-3 text-sm md:text-base text-[#697778]">
+                  <CheckCircle2 size={18} className="text-[#167D78] shrink-0 mt-0.5" />
                   <span>{takeaway}</span>
                 </li>
               ))}
@@ -213,18 +213,18 @@ const BlogPost = () => {
         <div className="space-y-12 mb-16">
           {post.content.sections.map((section, idx) => (
             <div key={idx} className="space-y-4">
-              <h2 className="text-2xl md:text-3xl font-bold text-[#292431] tracking-tight">
+              <h2 className="text-2xl md:text-3xl font-bold text-[#344B4A] tracking-tight">
                 {section.heading}
               </h2>
 
               {section.body.map((paragraph, pIdx) => (
-                <p key={pIdx} className="text-base md:text-lg leading-relaxed text-[#57534E]">
+                <p key={pIdx} className="text-base md:text-lg leading-relaxed text-[#697778]">
                   {paragraph}
                 </p>
               ))}
 
               {section.quote && (
-                <div className="my-6 border-l-4 border-[#A991D4] bg-[#FFFFFF] p-6 rounded-r-2xl shadow-sm italic text-base md:text-lg text-[#292431]">
+                <div className="my-6 border-l-4 border-[#167D78] bg-[#FFFFFF] p-6 rounded-r-2xl shadow-sm italic text-base md:text-lg text-[#344B4A]">
                   "{section.quote}"
                 </div>
               )}
@@ -232,8 +232,8 @@ const BlogPost = () => {
               {section.bullets && section.bullets.length > 0 && (
                 <ul className="space-y-3.5 my-6 pl-2">
                   {section.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx} className="flex items-start space-x-3 text-sm md:text-base text-[#57534E]">
-                      <div className="w-2 h-2 rounded-full bg-[#A991D4] shrink-0 mt-2" />
+                    <li key={bIdx} className="flex items-start space-x-3 text-sm md:text-base text-[#697778]">
+                      <div className="w-2 h-2 rounded-full bg-[#167D78] shrink-0 mt-2" />
                       <span>{bullet}</span>
                     </li>
                   ))}
@@ -245,29 +245,29 @@ const BlogPost = () => {
 
         {/* Pro Tip Box */}
         {post.content.proTip && (
-          <div className="bg-[#FFFFFF] border-2 border-[#E9DFF4] rounded-2xl p-6 md:p-8 mb-16 shadow-sm">
-            <div className="flex items-center space-x-2 text-[#967CC5] font-bold text-sm uppercase tracking-wide mb-2">
+          <div className="bg-[#FFFFFF] border-2 border-[#D8EAE7] rounded-2xl p-6 md:p-8 mb-16 shadow-sm">
+            <div className="flex items-center space-x-2 text-[#116660] font-bold text-sm uppercase tracking-wide mb-2">
               <Lightbulb size={20} />
               <span>Expert Coach Pro Tip</span>
             </div>
-            <p className="text-base md:text-lg text-[#44403C] leading-relaxed">
+            <p className="text-base md:text-lg text-[#344B4A] leading-relaxed">
               {post.content.proTip}
             </p>
           </div>
         )}
 
         {/* Author Bio Box */}
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 md:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-16">
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 md:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-16">
           <img
             src={post.author.avatar}
             alt={post.author.name}
-            className="w-20 h-20 rounded-full object-cover border-2 border-[#E9DFF4] shrink-0"
+            className="w-20 h-20 rounded-full object-cover border-2 border-[#D8EAE7] shrink-0"
           />
           <div className="text-center sm:text-left">
-            <span className="text-xs uppercase tracking-wider text-[#A991D4] font-bold">Written by</span>
-            <h3 className="text-xl font-bold text-[#292431] mt-1">{post.author.name}</h3>
-            <p className="text-sm text-[#6B5E78] mb-3">{post.author.role}</p>
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <span className="text-xs uppercase tracking-wider text-[#167D78] font-bold">Written by</span>
+            <h3 className="text-xl font-bold text-[#344B4A] mt-1">{post.author.name}</h3>
+            <p className="text-sm text-[#697778] mb-3">{post.author.role}</p>
+            <p className="text-sm text-[#697778] leading-relaxed">
               Contributing fitness scientist and lead author for Gymora. Passionate about evidence-based biomechanics, progressive overload protocols, and nutrition optimization.
             </p>
           </div>
@@ -275,15 +275,15 @@ const BlogPost = () => {
 
         {/* Related Articles Section */}
         {relatedPosts.length > 0 && (
-          <div className="border-t border-[#E5DDEB] pt-16">
+          <div className="border-t border-[#D9E2E3] pt-16">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-xs uppercase tracking-wider text-[#A991D4] font-bold">Continue Reading</span>
-                <h2 className="text-2xl md:text-3xl font-bold text-[#292431] mt-1">Related Articles</h2>
+                <span className="text-xs uppercase tracking-wider text-[#167D78] font-bold">Continue Reading</span>
+                <h2 className="text-2xl md:text-3xl font-bold text-[#344B4A] mt-1">Related Articles</h2>
               </div>
               <Link
                 to="/blog"
-                className="text-sm font-semibold text-[#A991D4] hover:underline flex items-center space-x-1"
+                className="text-sm font-semibold text-[#167D78] hover:underline flex items-center space-x-1"
               >
                 <span>View All</span>
                 <ArrowRight size={16} />
@@ -295,7 +295,7 @@ const BlogPost = () => {
                 <div
                   key={item.id}
                   onClick={() => navigate(`/blog/${item.slug}`)}
-                  className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl overflow-hidden group hover:border-[#A991D4]/50 transition-all cursor-pointer flex flex-col shadow-sm hover:shadow-md"
+                  className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden group hover:border-[#167D78]/50 transition-all cursor-pointer flex flex-col shadow-sm hover:shadow-md"
                 >
                   <div className="h-48 overflow-hidden relative">
                     <img
@@ -303,23 +303,23 @@ const BlogPost = () => {
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-xs font-semibold px-2.5 py-1 rounded-md text-[#292431]">
+                    <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-xs font-semibold px-2.5 py-1 rounded-md text-[#344B4A]">
                       {item.category}
                     </span>
                   </div>
                   <div className="p-6 flex-1 flex flex-col">
-                    <div className="flex items-center text-xs text-[#6B5E78] space-x-3 mb-2">
+                    <div className="flex items-center text-xs text-[#697778] space-x-3 mb-2">
                       <span>{item.date}</span>
                       <span>•</span>
                       <span>{item.readTime}</span>
                     </div>
-                    <h3 className="text-lg font-bold text-[#292431] mb-3 group-hover:text-[#A991D4] transition-colors">
+                    <h3 className="text-lg font-bold text-[#344B4A] mb-3 group-hover:text-[#167D78] transition-colors">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-[#6B5E78] line-clamp-2 mb-4">
+                    <p className="text-xs text-[#697778] line-clamp-2 mb-4">
                       {item.excerpt}
                     </p>
-                    <div className="mt-auto flex items-center space-x-2 text-[#A991D4] text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                    <div className="mt-auto flex items-center space-x-2 text-[#167D78] text-sm font-semibold group-hover:translate-x-1 transition-transform">
                       <span>Read Article</span>
                       <ArrowRight size={16} />
                     </div>
@@ -332,19 +332,19 @@ const BlogPost = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#E5DDEB] bg-[#FFFFFF] py-12 mt-16 text-center text-sm text-[#6B5E78]">
+      <footer className="border-t border-[#D9E2E3] bg-[#FFFFFF] py-12 mt-16 text-center text-sm text-[#697778]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-[#A991D4] rounded-sm flex items-center justify-center">
+            <div className="w-6 h-6 bg-[#167D78] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={16} />
             </div>
-            <span className="font-bold text-[#A991D4]">Gymora</span>
+            <span className="font-bold text-[#167D78]">Gymora</span>
           </div>
           <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
           <div className="flex items-center space-x-6 text-xs">
-            <Link to="/about" className="hover:text-[#A991D4]">About</Link>
-            <Link to="/blog" className="hover:text-[#A991D4]">Blog</Link>
-            <Link to="/contact" className="hover:text-[#A991D4]">Contact</Link>
+            <Link to="/about" className="hover:text-[#167D78]">About</Link>
+            <Link to="/blog" className="hover:text-[#167D78]">Blog</Link>
+            <Link to="/contact" className="hover:text-[#167D78]">Contact</Link>
           </div>
         </div>
       </footer>

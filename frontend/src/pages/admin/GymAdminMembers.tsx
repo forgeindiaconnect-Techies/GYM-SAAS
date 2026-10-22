@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, Download, Check, History, Sparkles } from 'lucide-react';
@@ -33,8 +33,8 @@ const getPlanBadge = (planName: string, isSmall = false) => {
     iconColor = 'text-orange-600';
     label = 'Professional';
   } else if (p.includes('enterprise')) {
-    bgClass = 'bg-purple-700 text-purple-50 border border-purple-600 shadow-xs';
-    iconColor = 'text-purple-200';
+    bgClass = 'bg-[#344B4A] text-white border border-[#167D78] shadow-xs';
+    iconColor = 'text-[#D8EAE7]';
     label = 'Enterprise';
   } else if (p.includes('trial')) {
     bgClass = 'bg-amber-100 text-amber-800 border border-amber-300 shadow-xs';
@@ -49,8 +49,8 @@ const getPlanBadge = (planName: string, isSmall = false) => {
     iconColor = 'text-amber-600';
     label = 'Gold';
   } else if (p.includes('platinum') || p.includes('premium')) {
-    bgClass = 'bg-purple-700 text-purple-50 border border-purple-600 shadow-xs';
-    iconColor = 'text-purple-200';
+    bgClass = 'bg-[#344B4A] text-white border border-[#167D78] shadow-xs';
+    iconColor = 'text-[#D8EAE7]';
     label = planName;
   } else if (p.includes('basic')) {
     bgClass = 'bg-emerald-700 text-emerald-50 border border-emerald-600';
@@ -341,11 +341,11 @@ const GymAdminMembers = () => {
   const getStatusColor = (status: string) => {
     switch(status) {
       case 'Active': return 'bg-[#27845A]/10 text-[#27845A] border-[#27845A]/30';
-      case 'Pending': return 'bg-[#B77916]/10 text-[#B77916] border-[#B77916]/30';
-      case 'Inactive': return 'bg-stone-500/10 text-[#6B5E78] border-stone-300';
-      case 'Rejected': return 'bg-[#C43D4D]/10 text-[#C43D4D] border-[#C43D4D]/30';
-      case 'New': return 'bg-blue-500/10 text-blue-600 border-blue-200';
-      case 'Existing': return 'bg-purple-500/10 text-purple-600 border-purple-200';
+      case 'Pending': return 'bg-[#D99A27]/10 text-[#D99A27] border-[#D99A27]/30';
+      case 'Inactive': return 'bg-stone-500/10 text-[#697778] border-stone-300';
+      case 'Rejected': return 'bg-[#C43D35]/10 text-[#C43D35] border-[#C43D35]/30';
+      case 'New': return 'bg-blue-500/10 text-[#167D78] border-blue-200';
+      case 'Existing': return 'bg-[#167D78]/10 text-[#167D78] border-[#D9E2E3]';
       default: return 'bg-gray-500/10 text-gray-600 border-gray-200';
     }
   };
@@ -385,20 +385,20 @@ const GymAdminMembers = () => {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#292431] tracking-tight">Members</h1>
-          <p className="text-sm text-[#6B5E78] mt-1">Manage your gym members, subscriptions, and profiles.</p>
+          <h1 className="text-3xl font-extrabold text-[#344B4A] tracking-tight">Members</h1>
+          <p className="text-sm text-[#697778] mt-1">Manage your gym members, subscriptions, and profiles.</p>
         </div>
         <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap shrink-0">
           <button 
             onClick={handleDownloadPDF}
-            className="px-3.5 py-2.5 bg-white text-[#A991D4] font-bold rounded-xl border border-[#E5DDEB] hover:bg-[#F7F4FA] hover:border-[#A991D4]/40 transition-all flex items-center gap-2 cursor-pointer shadow-xs text-xs sm:text-sm active:scale-95"
+            className="px-3.5 py-2.5 bg-white text-[#167D78] font-bold rounded-xl border border-[#D9E2E3] hover:bg-[#E8EFF0] hover:border-[#167D78]/40 transition-all flex items-center gap-2 cursor-pointer shadow-xs text-xs sm:text-sm active:scale-95"
             title="Export Members Directory"
           >
             <Download size={16} /> Download PDF
           </button>
           <button 
             onClick={handleAddMemberClick}
-            className="px-4 py-2.5 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-all flex items-center gap-2 shadow-md shadow-[#A991D4]/20 text-xs sm:text-sm active:scale-95 shrink-0"
+            className="px-4 py-2.5 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-all flex items-center gap-2 shadow-md shadow-[#167D78]/20 text-xs sm:text-sm active:scale-95 shrink-0"
           >
             <Plus size={18} /> Add Member
           </button>
@@ -409,52 +409,52 @@ const GymAdminMembers = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         <div 
           onClick={() => setFilter('All')}
-          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'All' ? 'border-[#A991D4] ring-2 ring-[#A991D4]/20 shadow-sm' : 'border-[#E5DDEB] hover:border-[#A991D4]/40 hover:shadow-xs'}`}
+          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'All' ? 'border-[#167D78] ring-2 ring-[#167D78]/20 shadow-sm' : 'border-[#D9E2E3] hover:border-[#167D78]/40 hover:shadow-xs'}`}
         >
-          <div className="flex items-center space-x-1.5 text-[#6B5E78] mb-1.5"><Users size={15}/> <span className="font-semibold text-xs">Total</span></div>
-          <span className="text-2xl font-extrabold text-[#292431]">{members.length}</span>
+          <div className="flex items-center space-x-1.5 text-[#697778] mb-1.5"><Users size={15}/> <span className="font-semibold text-xs">Total</span></div>
+          <span className="text-2xl font-extrabold text-[#344B4A]">{members.length}</span>
         </div>
         <div 
           onClick={() => setFilter('Active')}
-          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'Active' ? 'border-[#27845A] ring-2 ring-[#27845A]/20 shadow-sm' : 'border-[#E5DDEB] hover:border-[#27845A]/40 hover:shadow-xs'}`}
+          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'Active' ? 'border-[#27845A] ring-2 ring-[#27845A]/20 shadow-sm' : 'border-[#D9E2E3] hover:border-[#27845A]/40 hover:shadow-xs'}`}
         >
           <div className="flex items-center space-x-1.5 text-[#27845A] mb-1.5"><CheckCircle size={15}/> <span className="font-semibold text-xs">Active</span></div>
-          <span className="text-2xl font-extrabold text-[#292431]">{members.filter(m => m.status === 'Active').length}</span>
+          <span className="text-2xl font-extrabold text-[#344B4A]">{members.filter(m => m.status === 'Active').length}</span>
         </div>
         <div 
           onClick={() => setFilter(filter === 'Free Trial' ? 'All' : 'Free Trial')}
-          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'Free Trial' ? 'border-amber-500 ring-2 ring-amber-500/20 shadow-sm bg-amber-50/20' : 'border-[#E5DDEB] hover:border-amber-400 hover:shadow-xs'}`}
+          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'Free Trial' ? 'border-amber-500 ring-2 ring-amber-500/20 shadow-sm bg-amber-50/20' : 'border-[#D9E2E3] hover:border-amber-400 hover:shadow-xs'}`}
         >
           <div className="flex items-center space-x-1.5 text-amber-600 mb-1.5"><Sparkles size={15}/> <span className="font-semibold text-xs">Free Trial</span></div>
-          <span className="text-2xl font-extrabold text-[#292431]">
+          <span className="text-2xl font-extrabold text-[#344B4A]">
             {members.filter(m => m.plan?.toLowerCase().includes('trial') || m.membership?.status === 'Free Trial' || m.membershipHistory?.some((h: any) => (h.planName || '').toLowerCase().includes('trial') || h.status === 'Free Trial' || h.paymentMethod === 'Trial')).length}
           </span>
         </div>
         <div 
           onClick={() => setFilter('Pending')}
-          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'Pending' ? 'border-[#B77916] ring-2 ring-[#B77916]/20 shadow-sm' : 'border-[#E5DDEB] hover:border-[#B77916]/40 hover:shadow-xs'}`}
+          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'Pending' ? 'border-[#D99A27] ring-2 ring-[#D99A27]/20 shadow-sm' : 'border-[#D9E2E3] hover:border-[#D99A27]/40 hover:shadow-xs'}`}
         >
-          <div className="flex items-center space-x-1.5 text-[#B77916] mb-1.5"><Clock size={15}/> <span className="font-semibold text-xs">Pending</span></div>
-          <span className="text-2xl font-extrabold text-[#292431]">{members.filter(m => m.status === 'Pending').length}</span>
+          <div className="flex items-center space-x-1.5 text-[#D99A27] mb-1.5"><Clock size={15}/> <span className="font-semibold text-xs">Pending</span></div>
+          <span className="text-2xl font-extrabold text-[#344B4A]">{members.filter(m => m.status === 'Pending').length}</span>
         </div>
         <div 
           onClick={() => setFilter('Inactive')}
-          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'Inactive' ? 'border-stone-400 ring-2 ring-stone-400/20 shadow-sm' : 'border-[#E5DDEB] hover:border-stone-400 hover:shadow-xs'}`}
+          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'Inactive' ? 'border-stone-400 ring-2 ring-stone-400/20 shadow-sm' : 'border-[#D9E2E3] hover:border-stone-400 hover:shadow-xs'}`}
         >
-          <div className="flex items-center space-x-1.5 text-[#6B5E78] mb-1.5"><XCircle size={15}/> <span className="font-semibold text-xs">Inactive</span></div>
-          <span className="text-2xl font-extrabold text-[#292431]">{members.filter(m => m.status === 'Inactive').length}</span>
+          <div className="flex items-center space-x-1.5 text-[#697778] mb-1.5"><XCircle size={15}/> <span className="font-semibold text-xs">Inactive</span></div>
+          <span className="text-2xl font-extrabold text-[#344B4A]">{members.filter(m => m.status === 'Inactive').length}</span>
         </div>
         <div 
           onClick={() => setFilter('New')}
-          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'New' ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-sm' : 'border-[#E5DDEB] hover:border-blue-400 hover:shadow-xs'}`}
+          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'New' ? 'border-[#167D78] ring-2 ring-blue-500/20 shadow-sm' : 'border-[#D9E2E3] hover:border-blue-400 hover:shadow-xs'}`}
         >
-          <div className="flex items-center space-x-1.5 text-blue-600 mb-1.5"><UserPlus size={15}/> <span className="font-semibold text-xs">New</span></div>
-          <span className="text-2xl font-extrabold text-[#292431]">{members.filter(m => m.customerType === 'NEW_CUSTOMER').length}</span>
+          <div className="flex items-center space-x-1.5 text-[#167D78] mb-1.5"><UserPlus size={15}/> <span className="font-semibold text-xs">New</span></div>
+          <span className="text-2xl font-extrabold text-[#344B4A]">{members.filter(m => m.customerType === 'NEW_CUSTOMER').length}</span>
         </div>
       </div>
 
       {/* Filters & Search Bar */}
-      <div className="flex flex-col xl:flex-row gap-3 justify-between items-stretch xl:items-center bg-[#FFFFFF] p-3 sm:p-3.5 rounded-2xl border border-[#E5DDEB] shadow-xs">
+      <div className="flex flex-col xl:flex-row gap-3 justify-between items-stretch xl:items-center bg-[#FFFFFF] p-3 sm:p-3.5 rounded-2xl border border-[#D9E2E3] shadow-xs">
         <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar py-0.5 min-w-0">
           {['All', 'Active', 'Free Trial', 'Inactive', 'Pending', 'Rejected', 'New'].map(f => (
             <button 
@@ -462,8 +462,8 @@ const GymAdminMembers = () => {
               onClick={() => setFilter(f)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                 filter === f 
-                  ? 'bg-[#A991D4] text-[#292431] shadow-xs' 
-                  : 'bg-[#F7F4FA] border border-[#E5DDEB] text-[#6B5E78] hover:bg-[#E9DFF4]/30 hover:text-[#292431]'
+                  ? 'bg-[#167D78] text-white shadow-xs' 
+                  : 'bg-[#E8EFF0] border border-[#D9E2E3] text-[#697778] hover:bg-[#D8EAE7]/30 hover:text-[#344B4A]'
               }`}
             >
               {f}
@@ -476,17 +476,17 @@ const GymAdminMembers = () => {
             placeholder="Search by name, email or phone..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl pl-9 pr-4 py-2 text-[#292431] outline-none focus:border-[#A991D4] text-xs font-medium placeholder-[#6B5E78]"
+            className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl pl-9 pr-4 py-2 text-[#344B4A] outline-none focus:border-[#167D78] text-xs font-medium placeholder-[#697778]"
           />
-          <Search className="absolute left-3 top-2.5 text-[#6B5E78]" size={15} />
+          <Search className="absolute left-3 top-2.5 text-[#697778]" size={15} />
         </div>
       </div>
 
       {/* Data Table */}
-      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-sm text-[#6B5E78] whitespace-nowrap min-w-[800px]">
-            <thead className="bg-[#F7F4FA] border-b border-[#E5DDEB] text-[#292431]">
+          <table className="w-full text-left text-sm text-[#697778] whitespace-nowrap min-w-[800px]">
+            <thead className="bg-[#E8EFF0] border-b border-[#D9E2E3] text-[#344B4A]">
               <tr>
                 <th className="px-6 py-4 font-semibold text-left">Member</th>
                 <th className="px-6 py-4 font-semibold text-left">Contact Details</th>
@@ -495,23 +495,23 @@ const GymAdminMembers = () => {
                 <th className="px-6 py-4 font-semibold text-right pr-6">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5DDEB]">
+            <tbody className="divide-y divide-[#D9E2E3]">
               {filteredMembers.map((member, index) => (
-                <tr key={`${member.id}-${index}`} className="hover:bg-[#F7F4FA] transition-colors relative">
+                <tr key={`${member.id}-${index}`} className="hover:bg-[#E8EFF0] transition-colors relative">
                   <td className="px-6 py-4 align-middle">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center font-bold text-lg uppercase shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold text-lg uppercase shrink-0">
                         {member.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-[#292431] font-bold capitalize">{member.name}</p>
+                        <p className="text-[#344B4A] font-bold capitalize">{member.name}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 align-middle">
                     <div className="space-y-1">
-                      <p className="flex items-center text-xs text-[#292431] font-medium"><Mail size={12} className="mr-1.5 text-[#6B5E78] shrink-0"/> {member.email}</p>
-                      <p className="flex items-center text-xs text-[#292431] font-medium"><Phone size={12} className="mr-1.5 text-[#6B5E78] shrink-0"/> {member.phone}</p>
+                      <p className="flex items-center text-xs text-[#344B4A] font-medium"><Mail size={12} className="mr-1.5 text-[#697778] shrink-0"/> {member.email}</p>
+                      <p className="flex items-center text-xs text-[#344B4A] font-medium"><Phone size={12} className="mr-1.5 text-[#697778] shrink-0"/> {member.phone}</p>
                     </div>
                   </td>
                   <td className="px-6 py-4 align-middle">
@@ -526,7 +526,7 @@ const GymAdminMembers = () => {
                               e.stopPropagation();
                               setSelectedMember(member);
                             }}
-                            className="text-[10px] font-bold bg-[#A991D4]/10 text-[#A991D4] border border-[#A991D4]/25 px-2 py-0.5 rounded-md hover:bg-[#A991D4]/20 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                            className="text-[10px] font-bold bg-[#167D78]/10 text-[#167D78] border border-[#167D78]/25 px-2 py-0.5 rounded-md hover:bg-[#167D78]/20 transition-colors inline-flex items-center gap-1 cursor-pointer"
                             title="Click to view plan history"
                           >
                             <History size={10} />
@@ -549,15 +549,15 @@ const GymAdminMembers = () => {
                                   e.stopPropagation();
                                   setSelectedMember(member);
                                 }}
-                                className="flex items-center gap-2 text-[10px] bg-[#F8FAFA] px-2 py-1 rounded-lg border border-[#E5DDEB]/70 w-full max-w-fit hover:bg-[#F7F4FA] transition-colors cursor-pointer"
+                                className="flex items-center gap-2 text-[10px] bg-[#E8EFF0] px-2 py-1 rounded-lg border border-[#D9E2E3]/70 w-full max-w-fit hover:bg-[#E8EFF0] transition-colors cursor-pointer"
                                 title={`${hist.planName || hist.status} (${hist.duration || 'N/A'})${hist.startDate ? ' — ' + new Date(hist.startDate).toLocaleDateString() : ''}`}
                               >
-                                <span className="text-[10px] font-bold text-[#899794] shrink-0">
+                                <span className="text-[10px] font-bold text-[#697778] shrink-0">
                                   {hIdx + 1}.
                                 </span>
                                 {getPlanBadge(hist.planName || hist.status || 'Free Trial', true)}
                                 {hist.startDate && (
-                                  <span className="text-[#6B5E78] font-medium ml-1">
+                                  <span className="text-[#697778] font-medium ml-1">
                                     {new Date(hist.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })}
                                   </span>
                                 )}
@@ -565,7 +565,7 @@ const GymAdminMembers = () => {
                             ))}
                         </div>
                       )}
-                      <p className="flex items-center text-[11px] text-[#6B5E78]">
+                      <p className="flex items-center text-[11px] text-[#697778]">
                         <Calendar size={10} className="mr-1 shrink-0"/> Joined: {member.originalUser?.createdAt ? new Date(member.originalUser.createdAt).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : member.joined}
                       </p>
                       {(() => {
@@ -583,7 +583,7 @@ const GymAdminMembers = () => {
                           expiryRaw = expiry.toISOString();
                         }
                         if (!expiryRaw) return (
-                          <p className="flex items-center text-[11px] text-[#6B5E78] font-medium mt-0.5">
+                          <p className="flex items-center text-[11px] text-[#697778] font-medium mt-0.5">
                             <Calendar size={10} className="mr-1 shrink-0"/> Expiry: N/A
                           </p>
                         );
@@ -593,7 +593,7 @@ const GymAdminMembers = () => {
                         const isExpired = expiryDate < now;
                         const isSoon = !isExpired && hoursLeft <= 24;
                         return (
-                          <p className={`flex items-center gap-1 text-[11px] font-medium mt-0.5 ${isExpired ? 'text-red-500' : isSoon ? 'text-orange-500 font-bold' : 'text-[#6B5E78]'}`}>
+                          <p className={`flex items-center gap-1 text-[11px] font-medium mt-0.5 ${isExpired ? 'text-red-500' : isSoon ? 'text-orange-500 font-bold' : 'text-[#697778]'}`}>
                             <Calendar size={10} className="shrink-0"/>
                             {isExpired ? 'Expired: ' : 'Expires: '}
                             {expiryDate.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -611,14 +611,14 @@ const GymAdminMembers = () => {
                   </td>
                   <td className="px-6 py-4 align-middle text-right pr-6">
                     <div className="flex justify-end gap-1.5 items-center relative">
-                      <button onClick={() => setSelectedMember(member)} className="p-1.5 text-[#6B5E78] hover:text-[#A991D4] hover:bg-[#F7F4FA] rounded-lg transition-colors" title="View Profile">
+                      <button onClick={() => setSelectedMember(member)} className="p-1.5 text-[#697778] hover:text-[#167D78] hover:bg-[#E8EFF0] rounded-lg transition-colors" title="View Profile">
                         <Eye size={18} />
                       </button>
-                      <button onClick={() => handleEditClick(member)} className="p-1.5 text-[#6B5E78] hover:text-[#A991D4] hover:bg-[#F7F4FA] rounded-lg transition-colors" title="Edit Profile">
+                      <button onClick={() => handleEditClick(member)} className="p-1.5 text-[#697778] hover:text-[#167D78] hover:bg-[#E8EFF0] rounded-lg transition-colors" title="Edit Profile">
                         <Edit2 size={18} />
                       </button>
 
-                      <button onClick={() => handleDeleteMember(member.id)} className="p-1.5 text-[#6B5E78] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Member">
+                      <button onClick={() => handleDeleteMember(member.id)} className="p-1.5 text-[#697778] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Member">
                         <Trash2 size={18} />
                       </button>
                       
@@ -627,12 +627,12 @@ const GymAdminMembers = () => {
                         onClick={(e) => handleToggleStatusDropdown(e, member)} 
                         className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 border ml-1 ${
                           statusDropdown?.memberId === member.id 
-                            ? 'bg-[#292431] text-white border-[#292431]' 
-                            : 'bg-white text-[#6B5E78] border-[#E9DFF4] hover:bg-[#F7F4FA]'
+                            ? 'bg-[#344B4A] text-white border-[#344B4A]' 
+                            : 'bg-white text-[#697778] border-[#D8EAE7] hover:bg-[#E8EFF0]'
                         }`} 
                         title="Set Status"
                       >
-                        <Activity size={14} className={statusDropdown?.memberId === member.id ? 'text-white' : 'text-[#6B5E78]'} /> Status
+                        <Activity size={14} className={statusDropdown?.memberId === member.id ? 'text-white' : 'text-[#697778]'} /> Status
                       </button>
                     </div>
                   </td>
@@ -640,7 +640,7 @@ const GymAdminMembers = () => {
               ))}
               {filteredMembers.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-[#6B5E78]">
+                  <td colSpan={5} className="px-6 py-8 text-center text-[#697778]">
                     No members found matching your filters.
                   </td>
                 </tr>
@@ -653,15 +653,15 @@ const GymAdminMembers = () => {
       {/* Modals */}
       {showUpgradeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl border border-[#E5DDEB] text-center">
-            <ShieldCheck size={60} className="mx-auto text-[#A991D4] mb-4" />
-            <h2 className="text-2xl font-bold text-[#292431] mb-2">Member Limit Reached</h2>
-            <p className="text-[#6B5E78] mb-6">Your current subscription plan limits you to {getMemberLimit(user?.subscriptionPlan)} members. Upgrade your plan to add more members and grow your gym!</p>
+          <div className="bg-[#FFFFFF] rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl border border-[#D9E2E3] text-center">
+            <ShieldCheck size={60} className="mx-auto text-[#167D78] mb-4" />
+            <h2 className="text-2xl font-bold text-[#344B4A] mb-2">Member Limit Reached</h2>
+            <p className="text-[#697778] mb-6">Your current subscription plan limits you to {getMemberLimit(user?.subscriptionPlan)} members. Upgrade your plan to add more members and grow your gym!</p>
             <div className="flex flex-col space-y-3">
-              <button onClick={() => navigate('/admin/subscription')} className="w-full py-3 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors shadow-lg shadow-[#A991D4]/20">
+              <button onClick={() => navigate('/admin/subscription')} className="w-full py-3 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors shadow-lg shadow-[#167D78]/20">
                 View Upgrade Options
               </button>
-              <button onClick={() => setShowUpgradeModal(false)} className="w-full py-3 bg-[#F7F4FA] text-[#6B5E78] font-bold rounded-xl hover:bg-[#F7F4FA] transition-colors">
+              <button onClick={() => setShowUpgradeModal(false)} className="w-full py-3 bg-[#E8EFF0] text-[#697778] font-bold rounded-xl hover:bg-[#E8EFF0] transition-colors">
                 Maybe Later
               </button>
             </div>
@@ -695,26 +695,26 @@ const GymAdminMembers = () => {
       {/* Member View Modal */}
       {selectedMember && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#E5DDEB] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
-            <div className="p-6 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA] shrink-0">
-              <h2 className="text-xl font-bold text-[#292431]">Member Profile</h2>
-              <button onClick={() => setSelectedMember(null)} className="text-[#6B5E78] hover:text-[#292431] transition-colors p-2 hover:bg-gray-100 rounded-lg">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#D9E2E3] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
+            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0] shrink-0">
+              <h2 className="text-xl font-bold text-[#344B4A]">Member Profile</h2>
+              <button onClick={() => setSelectedMember(null)} className="text-[#697778] hover:text-[#344B4A] transition-colors p-2 hover:bg-gray-100 rounded-lg">
                 <XCircle size={24} />
               </button>
             </div>
             <div className="p-6 space-y-6 overflow-y-auto flex-1">
               
               <div className="flex items-center space-x-4">
-                <div className="w-20 h-20 bg-[#A991D4]/10 text-[#A991D4] rounded-2xl flex items-center justify-center text-3xl font-bold border border-[#A991D4]/20 uppercase">
+                <div className="w-20 h-20 bg-[#167D78]/10 text-[#167D78] rounded-2xl flex items-center justify-center text-3xl font-bold border border-[#167D78]/20 uppercase">
                   {selectedMember.name.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-[#292431] mb-1 capitalize">{selectedMember.name}</h3>
+                  <h3 className="text-2xl font-bold text-[#344B4A] mb-1 capitalize">{selectedMember.name}</h3>
                   <div className="flex gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.status === 'Active' ? 'bg-[#A991D4]/10 text-[#A991D4]' : 'bg-[#E9DFF4]/10 text-[#967CC5]'}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.status === 'Active' ? 'bg-[#167D78]/10 text-[#167D78]' : 'bg-[#D8EAE7]/10 text-[#116660]'}`}>
                       {selectedMember.status}
                     </span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.customerType === 'NEW_CUSTOMER' ? 'bg-blue-50 text-blue-600' : 'bg-gray-500/10 text-gray-600'}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.customerType === 'NEW_CUSTOMER' ? 'bg-blue-50 text-[#167D78]' : 'bg-gray-500/10 text-gray-600'}`}>
                       {selectedMember.customerType === 'NEW_CUSTOMER' ? 'New Customer' : 'Existing Customer'}
                     </span>
                   </div>
@@ -723,34 +723,34 @@ const GymAdminMembers = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Email</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.email}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Email</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.email}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Phone</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.phone}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Phone</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.phone}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Membership Plan</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Membership Plan</p>
                   <div className="flex items-center gap-2 flex-wrap">
                     {getPlanBadge(selectedMember.plan)}
                     {selectedMember.membershipHistory && selectedMember.membershipHistory.length > 1 && (
-                      <span className="text-xs text-[#A991D4] font-semibold bg-[#A991D4]/10 px-2 py-0.5 rounded-full border border-[#A991D4]/20">
+                      <span className="text-xs text-[#167D78] font-semibold bg-[#167D78]/10 px-2 py-0.5 rounded-full border border-[#167D78]/20">
                         {selectedMember.membershipHistory.length} Total Plans
                       </span>
                     )}
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Join Date</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.joined}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Join Date</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.joined}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Gender</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.gender || 'Not specified'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Gender</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.gender || 'Not specified'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Expiry Date & Time</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Expiry Date & Time</p>
                   {(() => {
                     let expiryRaw = selectedMember.membership?.endDate || selectedMember.originalUser?.subscriptionExpiry;
                     const isTrial = selectedMember.membership?.status === 'Free Trial' || selectedMember.plan === 'Free Trial' || selectedMember.originalUser?.subscriptionStatus === 'Free Trial' || selectedMember.originalUser?.subscriptionStatus === 'FREE_TRIAL';
@@ -766,7 +766,7 @@ const GymAdminMembers = () => {
                     const isSoon = !isExpired && hoursLeft <= 24;
                     return (
                       <div>
-                        <p className={`font-semibold ${ isExpired ? 'text-red-500' : isSoon ? 'text-orange-500' : 'text-[#292431]'}`}>
+                        <p className={`font-semibold ${ isExpired ? 'text-red-500' : isSoon ? 'text-orange-500' : 'text-[#344B4A]'}`}>
                           {expiryDate.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </p>
                         {isSoon && !isExpired && <p className="text-xs text-orange-500 font-bold mt-0.5">⚠ Expiring in {Math.round(hoursLeft)}h</p>}
@@ -776,56 +776,56 @@ const GymAdminMembers = () => {
                   })()}
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Last Login</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.originalUser?.lastLogin ? new Date(selectedMember.originalUser.lastLogin).toLocaleString() : 'Never'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Last Login</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.originalUser?.lastLogin ? new Date(selectedMember.originalUser.lastLogin).toLocaleString() : 'Never'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Date of Birth</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.dob || 'Not specified'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Date of Birth</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.dob || 'Not specified'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">City & PIN</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.originalUser?.city || 'Not specified'} - {selectedMember.originalUser?.pinCode || ''}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">City & PIN</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.originalUser?.city || 'Not specified'} - {selectedMember.originalUser?.pinCode || ''}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Height / Weight</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.originalUser?.height ? `${selectedMember.originalUser.height} cm` : '--'} / {selectedMember.originalUser?.weight ? `${selectedMember.originalUser.weight} kg` : '--'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Height / Weight</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.originalUser?.height ? `${selectedMember.originalUser.height} cm` : '--'} / {selectedMember.originalUser?.weight ? `${selectedMember.originalUser.weight} kg` : '--'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Fitness Goal</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.fitnessGoal || 'Not specified'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Fitness Goal</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.fitnessGoal || 'Not specified'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Experience Level</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.originalUser?.experienceLevel || 'Not specified'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Experience Level</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.originalUser?.experienceLevel || 'Not specified'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Pref. Training</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.originalUser?.preferredTraining || 'Not specified'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Pref. Training</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.originalUser?.preferredTraining || 'Not specified'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Pref. Workout Time</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.originalUser?.preferredWorkoutTime || 'Not specified'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Pref. Workout Time</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.originalUser?.preferredWorkoutTime || 'Not specified'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1">Assigned Trainer</p>
-                  <p className="font-semibold text-[#292431]">{selectedMember.trainer || 'Unassigned'}</p>
+                  <p className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Assigned Trainer</p>
+                  <p className="font-semibold text-[#344B4A]">{selectedMember.trainer || 'Unassigned'}</p>
                 </div>
               </div>
 
               {/* Membership & Plan History Section */}
-              <div className="bg-white p-5 rounded-2xl border border-[#E5DDEB] space-y-4 shadow-xs">
-                <div className="flex items-center justify-between border-b border-[#E5DDEB] pb-3">
+              <div className="bg-white p-5 rounded-2xl border border-[#D9E2E3] space-y-4 shadow-xs">
+                <div className="flex items-center justify-between border-b border-[#D9E2E3] pb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-[#167D78]/10 text-[#167D78] flex items-center justify-center">
                       <History size={18} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-[#292431]">Membership & Plan History</h4>
-                      <p className="text-[11px] text-[#6B5E78]">Complete history of Free Trial and paid plans</p>
+                      <h4 className="font-bold text-sm text-[#344B4A]">Membership & Plan History</h4>
+                      <p className="text-[11px] text-[#697778]">Complete history of Free Trial and paid plans</p>
                     </div>
                   </div>
-                  <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#A991D4]/10 text-[#A991D4] border border-[#A991D4]/20">
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#167D78]/10 text-[#167D78] border border-[#167D78]/20">
                     {selectedMember.membershipHistory?.length || 1} {selectedMember.membershipHistory?.length === 1 ? 'Record' : 'Records'}
                   </span>
                 </div>
@@ -843,8 +843,8 @@ const GymAdminMembers = () => {
                           key={item._id || idx}
                           className={`p-4 rounded-xl border transition-all ${
                             isCurrent 
-                              ? 'bg-[#F8FAFA] border-[#A991D4]/30 shadow-xs ring-1 ring-[#A991D4]/10' 
-                              : 'bg-white border-[#E5DDEB]/80'
+                              ? 'bg-[#E8EFF0] border-[#167D78]/30 shadow-xs ring-1 ring-[#167D78]/10' 
+                              : 'bg-white border-[#D9E2E3]/80'
                           }`}
                         >
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -862,20 +862,20 @@ const GymAdminMembers = () => {
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-[#6B5E78] flex items-center gap-2 flex-wrap">
+                              <div className="text-xs text-[#697778] flex items-center gap-2 flex-wrap">
                                 <span className="flex items-center gap-1 font-medium">
-                                  <Clock size={12} className="text-[#899794]" />
-                                  Duration: <strong className="text-[#292431]">{item.duration || (isTrialPlan ? '1 Day' : '1 Month')}</strong>
+                                  <Clock size={12} className="text-[#697778]" />
+                                  Duration: <strong className="text-[#344B4A]">{item.duration || (isTrialPlan ? '1 Day' : '1 Month')}</strong>
                                 </span>
                                 <span className="text-stone-600">•</span>
                                 <span className="font-medium">
-                                  Method: <strong className="text-[#292431]">{item.paymentMethod || (isTrialPlan ? 'Free Trial' : 'Membership')}</strong>
+                                  Method: <strong className="text-[#344B4A]">{item.paymentMethod || (isTrialPlan ? 'Free Trial' : 'Membership')}</strong>
                                 </span>
                                 {item.finalAmount !== undefined && (
                                   <>
                                     <span className="text-stone-600">•</span>
                                     <span className="font-medium">
-                                      Amount: <strong className="text-[#A991D4]">₹{Number(item.finalAmount).toFixed(2).replace(/\.00$/, '')}</strong>
+                                      Amount: <strong className="text-[#167D78]">₹{Number(item.finalAmount).toFixed(2).replace(/\.00$/, '')}</strong>
                                     </span>
                                   </>
                                 )}
@@ -883,12 +883,12 @@ const GymAdminMembers = () => {
                             </div>
 
                             <div className="text-left sm:text-right text-xs shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
-                              <p className="font-bold text-[#292431]">
+                              <p className="font-bold text-[#344B4A]">
                                 {startDateStr ? new Date(startDateStr).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                                 {endDateStr && ` – ${new Date(endDateStr).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}`}
                               </p>
-                              <p className="text-[11px] font-semibold text-[#899794] mt-0.5">
-                                Status: <span className={item.status === 'Active' ? 'text-emerald-600' : 'text-[#899794]'}>{item.status || 'Active'}</span>
+                              <p className="text-[11px] font-semibold text-[#697778] mt-0.5">
+                                Status: <span className={item.status === 'Active' ? 'text-emerald-600' : 'text-[#697778]'}>{item.status || 'Active'}</span>
                               </p>
                             </div>
                           </div>
@@ -896,37 +896,37 @@ const GymAdminMembers = () => {
                       );
                     })
                   ) : (
-                    <div className="p-4 rounded-xl border border-dashed border-[#E5DDEB] text-center text-sm text-[#6B5E78]">
+                    <div className="p-4 rounded-xl border border-dashed border-[#D9E2E3] text-center text-sm text-[#697778]">
                       No previous membership records found.
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-[#E5DDEB]">
-                <p className="text-[#A991D4] font-bold mb-4 uppercase text-xs tracking-wider flex items-center gap-2"><Phone size={14}/> Emergency Contact</p>
+              <div className="pt-2 border-t border-[#D9E2E3]">
+                <p className="text-[#167D78] font-bold mb-4 uppercase text-xs tracking-wider flex items-center gap-2"><Phone size={14}/> Emergency Contact</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <p className="text-xs font-bold text-[#6B5E78] mb-1">Name</p>
-                    <p className="font-semibold text-[#292431]">{selectedMember.emergencyName || 'None provided'}</p>
+                    <p className="text-xs font-bold text-[#697778] mb-1">Name</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedMember.emergencyName || 'None provided'}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-[#6B5E78] mb-1">Phone</p>
-                    <p className="font-semibold text-[#292431]">{selectedMember.emergencyPhone || 'None provided'}</p>
+                    <p className="text-xs font-bold text-[#697778] mb-1">Phone</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedMember.emergencyPhone || 'None provided'}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-[#6B5E78] mb-1">Relationship</p>
-                    <p className="font-semibold text-[#292431]">{selectedMember.emergencyRelation || 'None provided'}</p>
+                    <p className="text-xs font-bold text-[#697778] mb-1">Relationship</p>
+                    <p className="font-semibold text-[#344B4A]">{selectedMember.emergencyRelation || 'None provided'}</p>
                   </div>
                 </div>
               </div>
               
             </div>
-            <div className="p-4 bg-[#F7F4FA] border-t border-[#E5DDEB] flex justify-end gap-3 shrink-0">
+            <div className="p-4 bg-[#E8EFF0] border-t border-[#D9E2E3] flex justify-end gap-3 shrink-0">
               <button onClick={() => handleDeleteMember(selectedMember.id)} className="px-6 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors">
                 Delete Member
               </button>
-              <button onClick={() => setSelectedMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#E9DFF4] text-[#292431] rounded-xl font-bold hover:bg-[#F7F4FA] transition-colors">
+              <button onClick={() => setSelectedMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#D8EAE7] text-[#344B4A] rounded-xl font-bold hover:bg-[#E8EFF0] transition-colors">
                 Close Profile
               </button>
             </div>
@@ -937,13 +937,13 @@ const GymAdminMembers = () => {
       {/* Edit Member Modal */}
       {editMember && editForm && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#E5DDEB] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
-            <div className="p-6 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA] shrink-0">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#D9E2E3] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
+            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0] shrink-0">
               <div>
-                <h2 className="text-xl font-bold text-[#292431]">Edit Member</h2>
-                <p className="text-sm text-[#6B5E78] mt-0.5 capitalize">Editing profile for {editMember.name}</p>
+                <h2 className="text-xl font-bold text-[#344B4A]">Edit Member</h2>
+                <p className="text-sm text-[#697778] mt-0.5 capitalize">Editing profile for {editMember.name}</p>
               </div>
-              <button onClick={() => setEditMember(null)} className="text-[#6B5E78] hover:text-[#292431] transition-colors p-2 hover:bg-gray-100 rounded-lg">
+              <button onClick={() => setEditMember(null)} className="text-[#697778] hover:text-[#344B4A] transition-colors p-2 hover:bg-gray-100 rounded-lg">
                 <XCircle size={24} />
               </button>
             </div>
@@ -952,35 +952,35 @@ const GymAdminMembers = () => {
                 
                 {/* Personal Info */}
                 <div>
-                  <p className="text-xs font-bold text-[#A991D4] uppercase tracking-wider mb-3 flex items-center gap-2"><User size={14}/> Personal Information</p>
+                  <p className="text-xs font-bold text-[#167D78] uppercase tracking-wider mb-3 flex items-center gap-2"><User size={14}/> Personal Information</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Full Name *</label>
-                      <input required value={editForm.name || ''} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" placeholder="Full Name" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Full Name *</label>
+                      <input required value={editForm.name || ''} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" placeholder="Full Name" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Email Address *</label>
-                      <input required type="email" value={editForm.email || ''} onChange={e => setEditForm({...editForm, email: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" placeholder="Email" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Email Address *</label>
+                      <input required type="email" value={editForm.email || ''} onChange={e => setEditForm({...editForm, email: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" placeholder="Email" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Phone Number *</label>
-                      <input required type="tel" value={editForm.phone || ''} onChange={e => { const v = e.target.value.replace(/\D/g,''); if(v.length<=10) setEditForm({...editForm, phone: v}); }} maxLength={10} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" placeholder="10-digit number" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Phone Number *</label>
+                      <input required type="tel" value={editForm.phone || ''} onChange={e => { const v = e.target.value.replace(/\D/g,''); if(v.length<=10) setEditForm({...editForm, phone: v}); }} maxLength={10} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" placeholder="10-digit number" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Gender</label>
-                      <select value={editForm.gender || 'Male'} onChange={e => setEditForm({...editForm, gender: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm">
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Gender</label>
+                      <select value={editForm.gender || 'Male'} onChange={e => setEditForm({...editForm, gender: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm">
                         <option>Male</option>
                         <option>Female</option>
                         <option>Other</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Date of Birth</label>
-                      <input type="date" value={editForm.dob || ''} onChange={e => setEditForm({...editForm, dob: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Date of Birth</label>
+                      <input type="date" value={editForm.dob || ''} onChange={e => setEditForm({...editForm, dob: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Fitness Goal</label>
-                      <select value={editForm.fitnessGoal || 'General Fitness'} onChange={e => setEditForm({...editForm, fitnessGoal: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm">
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Fitness Goal</label>
+                      <select value={editForm.fitnessGoal || 'General Fitness'} onChange={e => setEditForm({...editForm, fitnessGoal: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm">
                         <option>General Fitness</option>
                         <option>Weight Loss</option>
                         <option>Muscle Gain</option>
@@ -993,18 +993,18 @@ const GymAdminMembers = () => {
                 </div>
 
                 {/* Membership */}
-                <div className="border-t border-[#E5DDEB] pt-6">
-                  <p className="text-xs font-bold text-[#A991D4] uppercase tracking-wider mb-3 flex items-center gap-2"><ShieldCheck size={14}/> Membership</p>
+                <div className="border-t border-[#D9E2E3] pt-6">
+                  <p className="text-xs font-bold text-[#167D78] uppercase tracking-wider mb-3 flex items-center gap-2"><ShieldCheck size={14}/> Membership</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Plan</label>
-                      <select value={editForm.plan || ''} onChange={e => setEditForm({...editForm, plan: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm">
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Plan</label>
+                      <select value={editForm.plan || ''} onChange={e => setEditForm({...editForm, plan: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm">
                         {mockPlans.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Status</label>
-                      <select value={editForm.status || 'Active'} onChange={e => setEditForm({...editForm, status: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm">
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Status</label>
+                      <select value={editForm.status || 'Active'} onChange={e => setEditForm({...editForm, status: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm">
                         <option>Active</option>
                         <option>Pending</option>
                         <option>Inactive</option>
@@ -1013,41 +1013,41 @@ const GymAdminMembers = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Join Date</label>
-                      <input type="date" value={editForm.joined || ''} onChange={e => setEditForm({...editForm, joined: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Join Date</label>
+                      <input type="date" value={editForm.joined || ''} onChange={e => setEditForm({...editForm, joined: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Assigned Trainer</label>
-                      <input value={editForm.trainer || ''} onChange={e => setEditForm({...editForm, trainer: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" placeholder="Trainer Name" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Assigned Trainer</label>
+                      <input value={editForm.trainer || ''} onChange={e => setEditForm({...editForm, trainer: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" placeholder="Trainer Name" />
                     </div>
                   </div>
                 </div>
 
                 {/* Emergency Contact */}
-                <div className="border-t border-[#E5DDEB] pt-6">
-                  <p className="text-xs font-bold text-[#A991D4] uppercase tracking-wider mb-3 flex items-center gap-2"><Phone size={14}/> Emergency Contact</p>
+                <div className="border-t border-[#D9E2E3] pt-6">
+                  <p className="text-xs font-bold text-[#167D78] uppercase tracking-wider mb-3 flex items-center gap-2"><Phone size={14}/> Emergency Contact</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Name</label>
-                      <input value={editForm.emergencyName || ''} onChange={e => setEditForm({...editForm, emergencyName: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" placeholder="Contact Name" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Name</label>
+                      <input value={editForm.emergencyName || ''} onChange={e => setEditForm({...editForm, emergencyName: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" placeholder="Contact Name" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Phone</label>
-                      <input type="tel" value={editForm.emergencyPhone || ''} onChange={e => { const v = e.target.value.replace(/\D/g,''); if(v.length<=10) setEditForm({...editForm, emergencyPhone: v}); }} maxLength={10} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" placeholder="Phone" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Phone</label>
+                      <input type="tel" value={editForm.emergencyPhone || ''} onChange={e => { const v = e.target.value.replace(/\D/g,''); if(v.length<=10) setEditForm({...editForm, emergencyPhone: v}); }} maxLength={10} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" placeholder="Phone" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#6B5E78] mb-1">Relationship</label>
-                      <input value={editForm.emergencyRelation || ''} onChange={e => setEditForm({...editForm, emergencyRelation: e.target.value})} className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-2.5 outline-none focus:border-[#A991D4] text-sm" placeholder="e.g. Parent" />
+                      <label className="block text-xs font-bold text-[#697778] mb-1">Relationship</label>
+                      <input value={editForm.emergencyRelation || ''} onChange={e => setEditForm({...editForm, emergencyRelation: e.target.value})} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2.5 outline-none focus:border-[#167D78] text-sm" placeholder="e.g. Parent" />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-[#F7F4FA] border-t border-[#E5DDEB] flex justify-end gap-3 shrink-0">
-                <button type="button" onClick={() => setEditMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#E9DFF4] text-[#6B5E78] rounded-xl font-bold hover:bg-[#F7F4FA] transition-colors">
+              <div className="p-4 bg-[#E8EFF0] border-t border-[#D9E2E3] flex justify-end gap-3 shrink-0">
+                <button type="button" onClick={() => setEditMember(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#D8EAE7] text-[#697778] rounded-xl font-bold hover:bg-[#E8EFF0] transition-colors">
                   Cancel
                 </button>
-                <button type="submit" className="px-8 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors shadow-lg shadow-[#A991D4]/20 flex items-center gap-2">
+                <button type="submit" className="px-8 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-[#167D78]/20 flex items-center gap-2">
                   <Edit2 size={16}/> Save Changes
                 </button>
               </div>
@@ -1064,16 +1064,16 @@ const GymAdminMembers = () => {
             onClick={() => setStatusDropdown(null)} 
           />
           <div 
-            className="status-dropdown-menu fixed w-48 rounded-xl shadow-2xl bg-white border border-[#E5DDEB] z-[9999] overflow-hidden flex flex-col animate-in fade-in slide-in-from-top-1 duration-150"
+            className="status-dropdown-menu fixed w-48 rounded-xl shadow-2xl bg-white border border-[#D9E2E3] z-[9999] overflow-hidden flex flex-col animate-in fade-in slide-in-from-top-1 duration-150"
             style={{
               top: `${statusDropdown.top}px`,
               right: `${statusDropdown.right}px`,
               maxHeight: statusDropdown.maxHeight ? `${statusDropdown.maxHeight}px` : '280px',
             }}
           >
-            <div className="px-3.5 py-2 bg-[#F7F4FA] border-b border-[#E5DDEB] flex items-center justify-between shrink-0">
-              <span className="text-[10px] font-bold text-[#6B5E78] uppercase tracking-wider">Set Status</span>
-              <span className="text-[10px] font-semibold text-[#A991D4] bg-[#A991D4]/10 px-1.5 py-0.5 rounded">
+            <div className="px-3.5 py-2 bg-[#E8EFF0] border-b border-[#D9E2E3] flex items-center justify-between shrink-0">
+              <span className="text-[10px] font-bold text-[#697778] uppercase tracking-wider">Set Status</span>
+              <span className="text-[10px] font-semibold text-[#167D78] bg-[#167D78]/10 px-1.5 py-0.5 rounded">
                 {statusDropdown.memberStatus}
               </span>
             </div>
@@ -1089,11 +1089,11 @@ const GymAdminMembers = () => {
                       setStatusDropdown(null);
                     }}
                     className={`block w-full text-left px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center justify-between ${
-                      isCurrent ? 'text-[#A991D4] bg-[#F7F4FA] font-bold' : 'text-[#292431] hover:bg-[#F7F4FA]'
+                      isCurrent ? 'text-[#167D78] bg-[#E8EFF0] font-bold' : 'text-[#344B4A] hover:bg-[#E8EFF0]'
                     }`}
                   >
                     <span>{status}</span>
-                    {isCurrent && <Check size={13} className="text-[#A991D4]" />}
+                    {isCurrent && <Check size={13} className="text-[#167D78]" />}
                   </button>
                 );
               })}

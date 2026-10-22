@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+﻿import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import {
@@ -332,28 +332,28 @@ const GymAdminImportCustomers: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/admin/members')}
-            className="p-2 rounded-xl hover:bg-[#F7F4FA] text-[#6B5E78] hover:text-[#A991D4] transition-colors"
+            className="p-2 rounded-xl hover:bg-[#E8EFF0] text-[#697778] hover:text-[#167D78] transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-[#292431] tracking-tight flex items-center gap-2">
-              <FileSpreadsheet size={28} className="text-[#A991D4]" />
+            <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight flex items-center gap-2">
+              <FileSpreadsheet size={28} className="text-[#167D78]" />
               Import Existing Customers
             </h1>
-            <p className="text-[#6B5E78] mt-1">Upload an Excel or CSV file to bulk-import your existing members.</p>
+            <p className="text-[#697778] mt-1">Upload an Excel or CSV file to bulk-import your existing members.</p>
           </div>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setStep('history')}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E5DDEB] bg-white text-[#6B5E78] hover:bg-[#F7F4FA] hover:text-[#A991D4] transition-colors text-sm font-semibold"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#D9E2E3] bg-white text-[#697778] hover:bg-[#E8EFF0] hover:text-[#167D78] transition-colors text-sm font-semibold"
           >
             <History size={16} /> Import History
           </button>
           <button
             onClick={downloadTemplate}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#A991D4] text-[#292431] font-bold hover:bg-[#967CC5] transition-colors shadow-lg shadow-[#A991D4]/20 text-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#167D78] text-white font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-[#167D78]/20 text-sm"
           >
             <Download size={16} /> Download Template
           </button>
@@ -368,9 +368,9 @@ const GymAdminImportCustomers: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Upload Zone */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="bg-white rounded-2xl border border-[#E5DDEB] p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-[#292431] mb-4 flex items-center gap-2">
-                <Upload size={20} className="text-[#A991D4]" /> Upload Excel / CSV File
+            <div className="bg-white rounded-2xl border border-[#D9E2E3] p-6 shadow-sm">
+              <h2 className="text-lg font-bold text-[#344B4A] mb-4 flex items-center gap-2">
+                <Upload size={20} className="text-[#167D78]" /> Upload Excel / CSV File
               </h2>
 
               {/* Drop Zone */}
@@ -381,7 +381,7 @@ const GymAdminImportCustomers: React.FC = () => {
                 onClick={() => fileInputRef.current?.click()}
                 className={`
                   relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-200
-                  ${dragOver ? 'border-[#A991D4] bg-[#F7F4FA] scale-[1.01]' : 'border-[#E5DDEB] bg-[#F7F4FA] hover:border-[#A991D4] hover:bg-[#F7F4FA]'}
+                  ${dragOver ? 'border-[#167D78] bg-[#E8EFF0] scale-[1.01]' : 'border-[#D9E2E3] bg-[#E8EFF0] hover:border-[#167D78] hover:bg-[#E8EFF0]'}
                 `}
               >
                 <input
@@ -392,18 +392,18 @@ const GymAdminImportCustomers: React.FC = () => {
                   onChange={handleInputChange}
                 />
                 <div className="flex flex-col items-center gap-3">
-                  <div className={`p-4 rounded-2xl transition-colors ${dragOver ? 'bg-[#A991D4]/10' : 'bg-[#E9DFF4]'}`}>
-                    <FileSpreadsheet size={36} className={dragOver ? 'text-[#A991D4]' : 'text-[#6B5E78]'} />
+                  <div className={`p-4 rounded-2xl transition-colors ${dragOver ? 'bg-[#167D78]/10' : 'bg-[#D8EAE7]'}`}>
+                    <FileSpreadsheet size={36} className={dragOver ? 'text-[#167D78]' : 'text-[#697778]'} />
                   </div>
                   {selectedFile ? (
                     <div className="space-y-1">
-                      <p className="font-bold text-[#292431] text-lg">{selectedFile.name}</p>
-                      <p className="text-sm text-[#6B5E78]">{(selectedFile.size / 1024).toFixed(1)} KB · Click to change</p>
+                      <p className="font-bold text-[#344B4A] text-lg">{selectedFile.name}</p>
+                      <p className="text-sm text-[#697778]">{(selectedFile.size / 1024).toFixed(1)} KB · Click to change</p>
                     </div>
                   ) : (
                     <div className="space-y-1">
-                      <p className="font-bold text-[#292431] text-lg">Drop your file here or click to browse</p>
-                      <p className="text-sm text-[#6B5E78]">Supports .xlsx, .xls, .csv · Max 10 MB · Up to 5,000 rows</p>
+                      <p className="font-bold text-[#344B4A] text-lg">Drop your file here or click to browse</p>
+                      <p className="text-sm text-[#697778]">Supports .xlsx, .xls, .csv · Max 10 MB · Up to 5,000 rows</p>
                     </div>
                   )}
                 </div>
@@ -428,7 +428,7 @@ const GymAdminImportCustomers: React.FC = () => {
                 <button
                   onClick={handleValidate}
                   disabled={!selectedFile || step === 'validating'}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#A991D4] text-[#292431] font-bold hover:bg-[#967CC5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#A991D4]/20"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#167D78] text-white font-bold hover:bg-[#116660] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#167D78]/20"
                 >
                   {step === 'validating' ? <RefreshCw size={16} className="animate-spin" /> : <CheckCircle size={16} />}
                   {step === 'validating' ? 'Validating...' : 'Validate File'}
@@ -450,31 +450,31 @@ const GymAdminImportCustomers: React.FC = () => {
         <div className="space-y-6">
           {/* Summary Cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <SummaryCard label="Total Rows" value={summary.total} color="text-[#292431]" bg="bg-white" />
+            <SummaryCard label="Total Rows" value={summary.total} color="text-[#344B4A]" bg="bg-white" />
             <SummaryCard label="Valid" value={summary.valid} color="text-emerald-700" bg="bg-emerald-50" border="border-emerald-200" />
             <SummaryCard label="Errors" value={summary.error} color="text-red-700" bg="bg-red-50" border="border-red-200" />
             <SummaryCard label="Duplicates" value={summary.duplicate} color="text-amber-700" bg="bg-amber-50" border="border-amber-200" />
             <SummaryCard label="Existing" value={summary.existing} color="text-blue-700" bg="bg-blue-50" border="border-blue-200" />
-            <SummaryCard label="New" value={summary.newCustomers} color="text-[#A991D4]" bg="bg-[#F7F4FA]" border="border-[#E5DDEB]" />
+            <SummaryCard label="New" value={summary.newCustomers} color="text-[#167D78]" bg="bg-[#E8EFF0]" border="border-[#D9E2E3]" />
           </div>
 
           {/* Existing customers bulk action */}
           {summary.existing > 0 && (
             <div className="flex flex-wrap items-center gap-3 bg-blue-50 border border-blue-200 rounded-2xl p-4">
-              <Info size={18} className="text-[#967CC5] shrink-0" />
+              <Info size={18} className="text-[#116660] shrink-0" />
               <span className="text-blue-800 font-semibold text-sm flex-1">
                 {summary.existing} existing customer(s) found. Choose default action:
               </span>
               <div className="flex gap-2">
                 <button
                   onClick={() => applyToAllExisting('skip')}
-                  className={`px-4 py-1.5 rounded-lg text-sm font-bold border transition-colors ${updateAllExisting === 'skip' ? 'bg-[#E9DFF4] text-white border-blue-600' : 'bg-white text-blue-700 border-blue-300 hover:bg-blue-50'}`}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-bold border transition-colors ${updateAllExisting === 'skip' ? 'bg-[#D8EAE7] text-white border-blue-600' : 'bg-white text-blue-700 border-blue-300 hover:bg-blue-50'}`}
                 >
                   <SkipForward size={13} className="inline mr-1" /> Skip All
                 </button>
                 <button
                   onClick={() => applyToAllExisting('update')}
-                  className={`px-4 py-1.5 rounded-lg text-sm font-bold border transition-colors ${updateAllExisting === 'update' ? 'bg-[#E9DFF4] text-white border-blue-600' : 'bg-white text-blue-700 border-blue-300 hover:bg-blue-50'}`}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-bold border transition-colors ${updateAllExisting === 'update' ? 'bg-[#D8EAE7] text-white border-blue-600' : 'bg-white text-blue-700 border-blue-300 hover:bg-blue-50'}`}
                 >
                   <Edit3 size={13} className="inline mr-1" /> Update All
                 </button>
@@ -483,19 +483,19 @@ const GymAdminImportCustomers: React.FC = () => {
           )}
 
           {/* Table */}
-          <div className="bg-white rounded-2xl border border-[#E5DDEB] overflow-hidden shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-b border-[#E5DDEB]">
+          <div className="bg-white rounded-2xl border border-[#D9E2E3] overflow-hidden shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-b border-[#D9E2E3]">
               <div className="flex flex-wrap items-center gap-2">
-                <Filter size={15} className="text-[#6B5E78]" />
-                <span className="text-xs font-bold text-[#6B5E78] mr-1">Filter:</span>
+                <Filter size={15} className="text-[#697778]" />
+                <span className="text-xs font-bold text-[#697778] mr-1">Filter:</span>
 
                 {/* All */}
                 <button
                   onClick={() => setFilterStatus('all')}
                   className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                     filterStatus === 'all'
-                      ? 'bg-[#292431] text-white shadow-sm'
-                      : 'bg-[#F7F4FA] text-[#6B5E78] hover:bg-[#E9DFF4]'
+                      ? 'bg-[#344B4A] text-white shadow-sm'
+                      : 'bg-[#E8EFF0] text-[#697778] hover:bg-[#D8EAE7]'
                   }`}
                 >
                   All <span className="ml-1 opacity-70">({rows.length})</span>
@@ -545,7 +545,7 @@ const GymAdminImportCustomers: React.FC = () => {
                   onClick={() => setFilterStatus('existing')}
                   className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                     filterStatus === 'existing'
-                      ? 'bg-[#E9DFF4] text-white shadow-sm'
+                      ? 'bg-[#D8EAE7] text-white shadow-sm'
                       : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
                   }`}
                 >
@@ -555,13 +555,13 @@ const GymAdminImportCustomers: React.FC = () => {
               </div>
 
               <div className="relative w-full md:w-64">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#697778]" />
                 <input
                   type="text"
                   placeholder="Search name, email, or mobile..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#A991D4] focus:border-transparent transition-all placeholder:font-medium"
+                  className="w-full pl-9 pr-4 py-2 bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#167D78] focus:border-transparent transition-all placeholder:font-medium"
                 />
               </div>
             </div>
@@ -569,36 +569,36 @@ const GymAdminImportCustomers: React.FC = () => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-[#F7F4FA] border-b border-[#E5DDEB]">
+                <thead className="bg-[#E8EFF0] border-b border-[#D9E2E3]">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#6B5E78] uppercase tracking-wider w-12">#</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Name</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Email</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Mobile</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Plan</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Branch</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Status</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Action</th>
-                    <th className="px-4 py-3 text-center text-xs font-bold text-[#6B5E78] uppercase tracking-wider w-20">Details</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#697778] uppercase tracking-wider w-12">#</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#697778] uppercase tracking-wider">Name</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#697778] uppercase tracking-wider">Email</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#697778] uppercase tracking-wider">Mobile</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#697778] uppercase tracking-wider">Plan</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#697778] uppercase tracking-wider">Branch</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#697778] uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#697778] uppercase tracking-wider">Action</th>
+                    <th className="px-4 py-3 text-center text-xs font-bold text-[#697778] uppercase tracking-wider w-20">Details</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#F7F4FA]">
+                <tbody className="divide-y divide-[#E8EFF0]">
                   {filteredRows.length === 0 ? (
-                    <tr><td colSpan={9} className="px-4 py-12 text-center text-[#6B5E78]">No rows match the selected filter.</td></tr>
+                    <tr><td colSpan={9} className="px-4 py-12 text-center text-[#697778]">No rows match the selected filter.</td></tr>
                   ) : filteredRows.map(row => (
                     <React.Fragment key={row.rowNumber}>
-                      <tr className={`transition-colors ${expandedRow === row.rowNumber ? 'bg-[#F7F4FA]' : 'hover:bg-[#FAFFFE]'}`}>
-                        <td className="px-4 py-3 text-[#6B5E78] font-mono text-xs">{row.rowNumber}</td>
-                        <td className="px-4 py-3 font-semibold text-[#292431]">
+                      <tr className={`transition-colors ${expandedRow === row.rowNumber ? 'bg-[#E8EFF0]' : 'hover:bg-[#FAFFFE]'}`}>
+                        <td className="px-4 py-3 text-[#697778] font-mono text-xs">{row.rowNumber}</td>
+                        <td className="px-4 py-3 font-semibold text-[#344B4A]">
                           {row.data.firstName || ''} {row.data.lastName || ''}
                           {row.status === 'existing' && (
-                            <div className="text-xs text-blue-500 mt-0.5">Exists as: {row.existingUserName}</div>
+                            <div className="text-xs text-[#167D78] mt-0.5">Exists as: {row.existingUserName}</div>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-[#6B5E78] text-xs">{row.data.email || <span className="text-red-400 italic">missing</span>}</td>
-                        <td className="px-4 py-3 text-[#6B5E78] text-xs">{row.data.mobile || <span className="text-red-400 italic">missing</span>}</td>
-                        <td className="px-4 py-3 text-[#6B5E78] text-xs">{row.data.membershipPlan || '—'}</td>
-                        <td className="px-4 py-3 text-[#6B5E78] text-xs">{row.data.branch || '—'}</td>
+                        <td className="px-4 py-3 text-[#697778] text-xs">{row.data.email || <span className="text-red-400 italic">missing</span>}</td>
+                        <td className="px-4 py-3 text-[#697778] text-xs">{row.data.mobile || <span className="text-red-400 italic">missing</span>}</td>
+                        <td className="px-4 py-3 text-[#697778] text-xs">{row.data.membershipPlan || '—'}</td>
+                        <td className="px-4 py-3 text-[#697778] text-xs">{row.data.branch || '—'}</td>
                         <td className="px-4 py-3">
                           <StatusBadge status={row.status} />
                         </td>
@@ -611,7 +611,7 @@ const GymAdminImportCustomers: React.FC = () => {
                               >Skip</button>
                               <button
                                 onClick={() => setUpdateRowData(row)}
-                                className={`px-2 py-1 rounded text-xs font-bold transition-colors ${row.action === 'update' ? 'bg-[#E9DFF4] text-white' : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'}`}
+                                className={`px-2 py-1 rounded text-xs font-bold transition-colors ${row.action === 'update' ? 'bg-[#D8EAE7] text-white' : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'}`}
                               >Update</button>
                             </div>
                           )}
@@ -637,23 +637,23 @@ const GymAdminImportCustomers: React.FC = () => {
                             onClick={() => setExpandedRow(expandedRow === row.rowNumber ? null : row.rowNumber)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
                               expandedRow === row.rowNumber 
-                                ? 'bg-[#A991D4] text-[#292431] border-[#A991D4] shadow-sm' 
-                                : 'bg-white text-[#A991D4] border-[#E5DDEB] hover:bg-[#F7F4FA]'
+                                ? 'bg-[#167D78] text-white border-[#167D78] shadow-sm' 
+                                : 'bg-white text-[#167D78] border-[#D9E2E3] hover:bg-[#E8EFF0]'
                             }`}
                           >
-                            <Eye size={14} className={expandedRow === row.rowNumber ? 'text-white' : 'text-[#A991D4]'} />
+                            <Eye size={14} className={expandedRow === row.rowNumber ? 'text-white' : 'text-[#167D78]'} />
                             View
                           </button>
                         </td>
                       </tr>
                       {expandedRow === row.rowNumber && (
-                        <tr className="bg-[#F7F4FA] border-y border-[#E9DFF4]">
+                        <tr className="bg-[#E8EFF0] border-y border-[#D8EAE7]">
                           <td colSpan={9} className="p-4">
-                            <div className="bg-white rounded-xl border border-[#E9DFF4] shadow-sm overflow-hidden">
+                            <div className="bg-white rounded-xl border border-[#D8EAE7] shadow-sm overflow-hidden">
                               
                               {/* Errors and Warnings */}
                               {(row.errors.length > 0 || row.warnings.length > 0) && (
-                                <div className="p-4 border-b border-[#E9DFF4] space-y-2 bg-[#FAFAFA]">
+                                <div className="p-4 border-b border-[#D8EAE7] space-y-2 bg-[#FAFAFA]">
                                   {row.errors.map((e, i) => (
                                     <div key={i} className="flex items-start gap-2 text-red-700 text-xs bg-red-50 p-2.5 rounded-lg border border-red-100 font-medium">
                                       <XCircle size={14} className="shrink-0 mt-0.5 text-rose-600" /> {e}
@@ -669,7 +669,7 @@ const GymAdminImportCustomers: React.FC = () => {
 
                               {/* Customer Details */}
                               <div className="p-4">
-                                <h4 className="text-[10px] font-black text-[#6B5E78] uppercase tracking-wider mb-3 flex items-center gap-2">
+                                <h4 className="text-[10px] font-black text-[#697778] uppercase tracking-wider mb-3 flex items-center gap-2">
                                   <FileText size={12} /> Parsed Data
                                 </h4>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-6">
@@ -686,10 +686,10 @@ const GymAdminImportCustomers: React.FC = () => {
                                     
                                     return (
                                       <div key={k}>
-                                        <div className="text-[10px] font-bold text-[#6B5E78] uppercase mb-0.5">
+                                        <div className="text-[10px] font-bold text-[#697778] uppercase mb-0.5">
                                           {k.replace(/([A-Z])/g, ' $1').trim()}
                                         </div>
-                                        <div className="text-xs text-[#292431] font-semibold">
+                                        <div className="text-xs text-[#344B4A] font-semibold">
                                           {displayVal}
                                         </div>
                                       </div>
@@ -710,15 +710,15 @@ const GymAdminImportCustomers: React.FC = () => {
           </div>
 
           {/* Ready to Import Summary + Action Buttons */}
-          <div className="bg-white rounded-2xl border border-[#E5DDEB] p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-[#292431] mb-4 flex items-center gap-2">
-              <BarChart2 size={20} className="text-[#A991D4]" /> Ready to Import Summary
+          <div className="bg-white rounded-2xl border border-[#D9E2E3] p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-[#344B4A] mb-4 flex items-center gap-2">
+              <BarChart2 size={20} className="text-[#167D78]" /> Ready to Import Summary
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <ReadySummaryCard label="Total Records" value={summary.total} />
-              <ReadySummaryCard label="New Customers" value={readyToImport} color="text-[#A991D4]" />
-              <ReadySummaryCard label="Will Update" value={toUpdate} color="text-[#967CC5]" />
-              <ReadySummaryCard label="Will Skip" value={toSkip} color="text-[#6B5E78]" />
+              <ReadySummaryCard label="New Customers" value={readyToImport} color="text-[#167D78]" />
+              <ReadySummaryCard label="Will Update" value={toUpdate} color="text-[#167D78]" />
+              <ReadySummaryCard label="Will Skip" value={toSkip} color="text-[#697778]" />
             </div>
             <div className="flex flex-col gap-3">
               {readyToImport + toUpdate === 0 && (
@@ -730,20 +730,20 @@ const GymAdminImportCustomers: React.FC = () => {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => { setStep('upload'); setSelectedFile(null); setValidationResult(null); setRows([]); }}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E9DFF4] text-[#6B5E78] hover:bg-[#F7F4FA] transition-colors font-semibold text-sm"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#D8EAE7] text-[#697778] hover:bg-[#E8EFF0] transition-colors font-semibold text-sm"
                 >
                   <ArrowLeft size={16} /> Cancel
                 </button>
                 <button
                   onClick={() => { if (fileInputRef.current) fileInputRef.current.value = ''; setSelectedFile(null); setValidationResult(null); setRows([]); setStep('upload'); }}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E9DFF4] text-[#6B5E78] hover:bg-[#F7F4FA] transition-colors font-semibold text-sm"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#D8EAE7] text-[#697778] hover:bg-[#E8EFF0] transition-colors font-semibold text-sm"
                 >
                   <RefreshCw size={16} /> Re-upload
                 </button>
                 <button
                   disabled={readyToImport + toUpdate === 0}
                   onClick={() => setShowConfirmModal(true)}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#A991D4] text-[#292431] font-bold hover:bg-[#967CC5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#A991D4]/20"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#167D78] text-white font-bold hover:bg-[#116660] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#167D78]/20"
                 >
                   <Users size={16} /> Import Customers
                 </button>
@@ -755,24 +755,24 @@ const GymAdminImportCustomers: React.FC = () => {
 
       {/* ── STEP: IMPORTING ── */}
       {step === 'importing' && (
-        <div className="bg-white rounded-2xl border border-[#E5DDEB] p-12 shadow-sm text-center">
+        <div className="bg-white rounded-2xl border border-[#D9E2E3] p-12 shadow-sm text-center">
           <div className="flex flex-col items-center gap-6 max-w-md mx-auto">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full border-4 border-[#E5DDEB] flex items-center justify-center">
-                <RefreshCw size={32} className="text-[#A991D4] animate-spin" />
+              <div className="w-20 h-20 rounded-full border-4 border-[#D9E2E3] flex items-center justify-center">
+                <RefreshCw size={32} className="text-[#167D78] animate-spin" />
               </div>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-[#292431]">Importing Customers...</h2>
-              <p className="text-[#6B5E78] mt-2">Please wait while we securely import your customer data.</p>
+              <h2 className="text-2xl font-bold text-[#344B4A]">Importing Customers...</h2>
+              <p className="text-[#697778] mt-2">Please wait while we securely import your customer data.</p>
             </div>
-            <div className="w-full bg-[#E9DFF4] rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-[#D8EAE7] rounded-full h-3 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#A991D4] to-[#967CC5] rounded-full transition-all duration-300"
+                className="h-full bg-gradient-to-r from-[#167D78] to-[#116660] rounded-full transition-all duration-300"
                 style={{ width: `${importProgress}%` }}
               />
             </div>
-            <p className="text-sm text-[#6B5E78]">{importProgress}% complete</p>
+            <p className="text-sm text-[#697778]">{importProgress}% complete</p>
           </div>
         </div>
       )}
@@ -780,17 +780,17 @@ const GymAdminImportCustomers: React.FC = () => {
       {/* ── STEP: RESULT ── */}
       {step === 'result' && importResult && (
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl border border-[#E5DDEB] p-8 shadow-sm text-center">
+          <div className="bg-white rounded-2xl border border-[#D9E2E3] p-8 shadow-sm text-center">
             <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 ${importResult.status === 'FAILED' ? 'bg-red-100' : 'bg-emerald-100'}`}>
               {importResult.status === 'FAILED'
                 ? <XCircle size={40} className="text-red-600" />
                 : <CheckCircle size={40} className="text-emerald-600" />
               }
             </div>
-            <h2 className="text-2xl font-bold text-[#292431]">
+            <h2 className="text-2xl font-bold text-[#344B4A]">
               {importResult.status === 'FAILED' ? 'Import Failed' : importResult.status === 'PARTIAL' ? 'Import Partially Completed' : 'Import Successful!'}
             </h2>
-            <p className="text-[#6B5E78] mt-2">
+            <p className="text-[#697778] mt-2">
               {importResult.status === 'COMPLETED'
                 ? 'All valid customers have been imported successfully.'
                 : 'Some records could not be imported. Download the error report for details.'}
@@ -799,7 +799,7 @@ const GymAdminImportCustomers: React.FC = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <ResultCard label="New Customers" value={importResult.newCustomers} icon={<UserCheck size={20} />} color="text-emerald-600" bg="bg-emerald-50" border="border-emerald-200" />
-            <ResultCard label="Updated" value={importResult.updatedCustomers} icon={<Edit3 size={20} />} color="text-[#967CC5]" bg="bg-blue-50" border="border-blue-200" />
+            <ResultCard label="Updated" value={importResult.updatedCustomers} icon={<Edit3 size={20} />} color="text-[#167D78]" bg="bg-blue-50" border="border-blue-200" />
             <ResultCard label="Skipped" value={importResult.skippedCustomers} icon={<SkipForward size={20} />} color="text-amber-600" bg="bg-amber-50" border="border-amber-200" />
             <ResultCard label="Failed" value={importResult.failedRecords} icon={<UserX size={20} />} color="text-red-600" bg="bg-red-50" border="border-red-200" />
           </div>
@@ -807,7 +807,7 @@ const GymAdminImportCustomers: React.FC = () => {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => navigate('/admin/members')}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#A991D4] text-[#292431] font-bold hover:bg-[#967CC5] transition-colors shadow-lg shadow-[#A991D4]/20"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#167D78] text-white font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-[#167D78]/20"
             >
               <Users size={16} /> View Members
             </button>
@@ -821,13 +821,13 @@ const GymAdminImportCustomers: React.FC = () => {
             )}
             <button
               onClick={() => setStep('history')}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5DDEB] text-[#6B5E78] hover:bg-[#F7F4FA] transition-colors font-semibold text-sm"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#D9E2E3] text-[#697778] hover:bg-[#E8EFF0] transition-colors font-semibold text-sm"
             >
               <History size={16} /> View Import History
             </button>
             <button
               onClick={() => { setStep('upload'); setSelectedFile(null); setValidationResult(null); setRows([]); setImportResult(null); }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5DDEB] text-[#6B5E78] hover:bg-[#F7F4FA] transition-colors font-semibold text-sm"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#D9E2E3] text-[#697778] hover:bg-[#E8EFF0] transition-colors font-semibold text-sm"
             >
               <Upload size={16} /> Import Another File
             </button>
@@ -839,20 +839,20 @@ const GymAdminImportCustomers: React.FC = () => {
       {step === 'history' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-[#292431] flex items-center gap-2">
-              <History size={20} className="text-[#A991D4]" /> Import History
+            <h2 className="text-xl font-bold text-[#344B4A] flex items-center gap-2">
+              <History size={20} className="text-[#167D78]" /> Import History
             </h2>
             <button
               onClick={() => setStep('upload')}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#A991D4] text-[#292431] font-bold hover:bg-[#967CC5] transition-colors text-sm shadow-lg shadow-[#A991D4]/20"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#167D78] text-white font-bold hover:bg-[#116660] transition-colors text-sm shadow-lg shadow-[#167D78]/20"
             >
               <Upload size={15} /> New Import
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl border border-[#E5DDEB] overflow-hidden shadow-sm">
+          <div className="bg-white rounded-2xl border border-[#D9E2E3] overflow-hidden shadow-sm">
             {history.length === 0 ? (
-              <div className="p-12 text-center text-[#6B5E78]">
+              <div className="p-12 text-center text-[#697778]">
                 <History size={40} className="mx-auto mb-3 opacity-30" />
                 <p className="font-semibold">No import history yet.</p>
                 <p className="text-sm mt-1">Your import records will appear here after you complete an import.</p>
@@ -860,37 +860,37 @@ const GymAdminImportCustomers: React.FC = () => {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-[#F7F4FA] border-b border-[#E5DDEB]">
+                  <thead className="bg-[#E8EFF0] border-b border-[#D9E2E3]">
                     <tr>
                       {['File Name', 'Imported Date', 'Imported By', 'Total', 'New', 'Updated', 'Skipped', 'Failed', 'Status', 'Actions'].map(h => {
                         const isNumeric = ['Total', 'New', 'Updated', 'Skipped', 'Failed'].includes(h);
                         return (
-                          <th key={h} className={`px-4 py-3 text-xs font-bold text-[#6B5E78] uppercase tracking-wider ${isNumeric ? 'text-center' : 'text-left'}`}>
+                          <th key={h} className={`px-4 py-3 text-xs font-bold text-[#697778] uppercase tracking-wider ${isNumeric ? 'text-center' : 'text-left'}`}>
                             {h}
                           </th>
                         );
                       })}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F7F4FA]">
+                  <tbody className="divide-y divide-[#E8EFF0]">
                     {history.map(h => (
                       <tr key={h._id} className="hover:bg-[#FAFFFE] transition-colors">
-                        <td className="px-4 py-3 font-semibold text-[#292431] flex items-center gap-2">
-                          <FileText size={14} className="text-[#6B5E78] shrink-0" /> {h.fileName}
+                        <td className="px-4 py-3 font-semibold text-[#344B4A] flex items-center gap-2">
+                          <FileText size={14} className="text-[#697778] shrink-0" /> {h.fileName}
                         </td>
-                        <td className="px-4 py-3 text-[#6B5E78] text-xs whitespace-nowrap">{new Date(h.createdAt).toLocaleString()}</td>
-                        <td className="px-4 py-3 text-[#6B5E78] text-xs">{h.importedBy?.firstName} {h.importedBy?.lastName}</td>
-                        <td className="px-4 py-3 text-center font-bold text-[#292431]">{h.totalRecords}</td>
+                        <td className="px-4 py-3 text-[#697778] text-xs whitespace-nowrap">{new Date(h.createdAt).toLocaleString()}</td>
+                        <td className="px-4 py-3 text-[#697778] text-xs">{h.importedBy?.firstName} {h.importedBy?.lastName}</td>
+                        <td className="px-4 py-3 text-center font-bold text-[#344B4A]">{h.totalRecords}</td>
                         <td className="px-4 py-3 text-center font-bold text-emerald-600">{h.newCustomers}</td>
-                        <td className="px-4 py-3 text-center font-bold text-[#967CC5]">{h.updatedCustomers}</td>
+                        <td className="px-4 py-3 text-center font-bold text-[#116660]">{h.updatedCustomers}</td>
                         <td className="px-4 py-3 text-center font-bold text-amber-600">{h.skippedCustomers}</td>
-                        <td className="px-4 py-3 text-center font-bold text-[#967CC5]">{h.failedRecords}</td>
+                        <td className="px-4 py-3 text-center font-bold text-[#116660]">{h.failedRecords}</td>
                         <td className="px-4 py-3"><ImportStatusBadge status={h.status} /></td>
                         <td className="px-4 py-3">
                           <div className="flex gap-2">
                             <button
                               onClick={() => setHistoryDetail(h)}
-                              className="flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold text-[#A991D4] hover:bg-[#F7F4FA] transition-colors border border-[#E5DDEB]"
+                              className="flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold text-[#167D78] hover:bg-[#E8EFF0] transition-colors border border-[#D9E2E3]"
                             >
                               <Eye size={11} /> View
                             </button>
@@ -938,10 +938,10 @@ const GymAdminImportCustomers: React.FC = () => {
       {/* ── CONFIRM IMPORT MODAL ── */}
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#E5DDEB] overflow-hidden">
-            <div className="p-6 border-b border-[#E5DDEB] bg-[#F7F4FA]">
-              <h2 className="text-xl font-bold text-[#292431]">Confirm Import</h2>
-              <p className="text-sm text-[#6B5E78] mt-1">Review before importing. This action cannot be undone.</p>
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#D9E2E3] overflow-hidden">
+            <div className="p-6 border-b border-[#D9E2E3] bg-[#E8EFF0]">
+              <h2 className="text-xl font-bold text-[#344B4A]">Confirm Import</h2>
+              <p className="text-sm text-[#697778] mt-1">Review before importing. This action cannot be undone.</p>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-2 text-sm">
@@ -958,13 +958,13 @@ const GymAdminImportCustomers: React.FC = () => {
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setShowConfirmModal(false)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-[#E9DFF4] text-[#6B5E78] hover:bg-[#F7F4FA] font-semibold transition-colors"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-[#D8EAE7] text-[#697778] hover:bg-[#E8EFF0] font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleImport}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-[#A991D4] text-[#292431] font-bold hover:bg-[#967CC5] transition-colors shadow-lg shadow-[#A991D4]/20"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-[#167D78] text-white font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-[#167D78]/20"
                 >
                   Import Customers
                 </button>
@@ -977,20 +977,20 @@ const GymAdminImportCustomers: React.FC = () => {
       {/* ── HISTORY DETAIL MODAL ── */}
       {historyDetail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-[#E5DDEB] overflow-hidden max-h-[80vh] flex flex-col">
-            <div className="p-5 border-b border-[#E5DDEB] bg-[#F7F4FA] flex justify-between items-start">
+          <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-[#D9E2E3] overflow-hidden max-h-[80vh] flex flex-col">
+            <div className="p-5 border-b border-[#D9E2E3] bg-[#E8EFF0] flex justify-between items-start">
               <div>
-                <h2 className="text-lg font-bold text-[#292431]">{historyDetail.fileName}</h2>
-                <p className="text-xs text-[#6B5E78] mt-1">{new Date(historyDetail.createdAt).toLocaleString()}</p>
+                <h2 className="text-lg font-bold text-[#344B4A]">{historyDetail.fileName}</h2>
+                <p className="text-xs text-[#697778] mt-1">{new Date(historyDetail.createdAt).toLocaleString()}</p>
               </div>
-              <button onClick={() => setHistoryDetail(null)} className="p-1.5 rounded-lg hover:bg-[#E9DFF4] transition-colors text-[#6B5E78]">
+              <button onClick={() => setHistoryDetail(null)} className="p-1.5 rounded-lg hover:bg-[#D8EAE7] transition-colors text-[#697778]">
                 <XCircle size={20} />
               </button>
             </div>
             <div className="p-5 overflow-y-auto">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-                <MiniStatCard label="New" value={historyDetail.newCustomers} color="text-[#A991D4]" />
-                <MiniStatCard label="Updated" value={historyDetail.updatedCustomers} color="text-[#967CC5]" />
+                <MiniStatCard label="New" value={historyDetail.newCustomers} color="text-[#167D78]" />
+                <MiniStatCard label="Updated" value={historyDetail.updatedCustomers} color="text-[#167D78]" />
                 <MiniStatCard label="Skipped" value={historyDetail.skippedCustomers} color="text-orange-500" />
                 <MiniStatCard label="Failed" value={historyDetail.failedRecords} color="text-red-600" />
               </div>
@@ -1007,7 +1007,7 @@ const GymAdminImportCustomers: React.FC = () => {
 
               {historyDetail.failedRows && historyDetail.failedRows.length > 0 && (
                 <div>
-                  <h3 className="font-bold text-[#292431] mb-3 flex items-center gap-2 text-sm">
+                  <h3 className="font-bold text-[#344B4A] mb-3 flex items-center gap-2 text-sm">
                     <AlertCircle size={15} className="text-rose-600" /> Failed Rows ({historyDetail.failedRows.length})
                   </h3>
                   <div className="space-y-2">
@@ -1015,7 +1015,7 @@ const GymAdminImportCustomers: React.FC = () => {
                       <div key={i} className="bg-red-50 border border-red-200 rounded-xl p-3">
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-xs font-bold text-red-700">Row {fr.rowNumber}</span>
-                          <span className="text-xs text-[#6B5E78]">{fr.data?.email}</span>
+                          <span className="text-xs text-[#697778]">{fr.data?.email}</span>
                         </div>
                         {(fr.errors || []).map((e: string, j: number) => (
                           <p key={j} className="text-xs text-red-600 flex items-start gap-1">
@@ -1035,13 +1035,13 @@ const GymAdminImportCustomers: React.FC = () => {
       {/* ── FIX ERROR MODAL ── */}
       {fixRowData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-[#E5DDEB] overflow-hidden">
-            <div className="p-5 border-b border-[#E5DDEB] bg-[#F7F4FA] flex justify-between items-start">
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-[#D9E2E3] overflow-hidden">
+            <div className="p-5 border-b border-[#D9E2E3] bg-[#E8EFF0] flex justify-between items-start">
               <div>
-                <h2 className="text-lg font-bold text-[#292431]">Fix Row {fixRowData.rowNumber}</h2>
+                <h2 className="text-lg font-bold text-[#344B4A]">Fix Row {fixRowData.rowNumber}</h2>
                 <p className="text-xs text-red-600 font-semibold mt-1">Please correct the errors below</p>
               </div>
-              <button onClick={() => setFixRowData(null)} className="p-1.5 rounded-lg hover:bg-[#E9DFF4] transition-colors text-[#6B5E78]">
+              <button onClick={() => setFixRowData(null)} className="p-1.5 rounded-lg hover:bg-[#D8EAE7] transition-colors text-[#697778]">
                 <XCircle size={20} />
               </button>
             </div>
@@ -1062,25 +1062,25 @@ const GymAdminImportCustomers: React.FC = () => {
               }} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-[#6B5E78] mb-1">First Name</label>
-                    <input name="firstName" defaultValue={fixRowData.data.firstName} className="w-full text-sm p-2 border border-[#E9DFF4] rounded-lg" required />
+                    <label className="block text-xs font-bold text-[#697778] mb-1">First Name</label>
+                    <input name="firstName" defaultValue={fixRowData.data.firstName} className="w-full text-sm p-2 border border-[#D8EAE7] rounded-lg" required />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[#6B5E78] mb-1">Last Name</label>
-                    <input name="lastName" defaultValue={fixRowData.data.lastName} className="w-full text-sm p-2 border border-[#E9DFF4] rounded-lg" />
+                    <label className="block text-xs font-bold text-[#697778] mb-1">Last Name</label>
+                    <input name="lastName" defaultValue={fixRowData.data.lastName} className="w-full text-sm p-2 border border-[#D8EAE7] rounded-lg" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[#6B5E78] mb-1">Email</label>
-                    <input name="email" type="email" defaultValue={fixRowData.data.email} className="w-full text-sm p-2 border border-[#E9DFF4] rounded-lg" required />
+                    <label className="block text-xs font-bold text-[#697778] mb-1">Email</label>
+                    <input name="email" type="email" defaultValue={fixRowData.data.email} className="w-full text-sm p-2 border border-[#D8EAE7] rounded-lg" required />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[#6B5E78] mb-1">Mobile</label>
-                    <input name="mobile" defaultValue={fixRowData.data.mobile} className="w-full text-sm p-2 border border-[#E9DFF4] rounded-lg" required />
+                    <label className="block text-xs font-bold text-[#697778] mb-1">Mobile</label>
+                    <input name="mobile" defaultValue={fixRowData.data.mobile} className="w-full text-sm p-2 border border-[#D8EAE7] rounded-lg" required />
                   </div>
                 </div>
-                <div className="flex justify-end gap-3 pt-4 border-t border-[#F7F4FA]">
-                  <button type="button" onClick={() => setFixRowData(null)} className="px-4 py-2 rounded-xl text-sm font-semibold text-[#6B5E78] hover:bg-[#F7F4FA]">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl text-sm font-bold bg-[#A991D4] text-[#292431] hover:bg-[#967CC5]">Save & Validate</button>
+                <div className="flex justify-end gap-3 pt-4 border-t border-[#E8EFF0]">
+                  <button type="button" onClick={() => setFixRowData(null)} className="px-4 py-2 rounded-xl text-sm font-semibold text-[#697778] hover:bg-[#E8EFF0]">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded-xl text-sm font-bold bg-[#167D78] text-white hover:bg-[#116660]">Save & Validate</button>
                 </div>
               </form>
             </div>
@@ -1104,9 +1104,9 @@ const GymAdminImportCustomers: React.FC = () => {
             <div className="p-6 overflow-y-auto">
               <div className="grid grid-cols-2 gap-6">
                 {/* Existing Data */}
-                <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4">
-                  <h3 className="font-bold text-[#292431] mb-4 text-sm flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#6B5E78]" /> Existing Data
+                <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
+                  <h3 className="font-bold text-[#344B4A] mb-4 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#697778]" /> Existing Data
                   </h3>
                   <div className="space-y-3 text-sm">
                     <ConfirmRow label="Name" value={updateRowData.existingUserName || 'N/A'} />
@@ -1117,7 +1117,7 @@ const GymAdminImportCustomers: React.FC = () => {
                   </div>
                 </div>
                 {/* Uploaded Data */}
-                <div className="bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl p-4">
+                <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-4">
                   <h3 className="font-bold text-[#0F766E] mb-4 text-sm flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#14B8A6]" /> Uploaded Data
                   </h3>
@@ -1131,8 +1131,8 @@ const GymAdminImportCustomers: React.FC = () => {
                 </div>
               </div>
               <div className="flex justify-end gap-3 pt-6 mt-2">
-                <button onClick={() => setUpdateRowData(null)} className="px-5 py-2.5 rounded-xl text-sm font-semibold text-[#6B5E78] hover:bg-[#F7F4FA]">Cancel</button>
-                <button onClick={handleUpdateConfirm} className="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#E9DFF4] text-white hover:bg-blue-700 shadow-md">Confirm Update</button>
+                <button onClick={() => setUpdateRowData(null)} className="px-5 py-2.5 rounded-xl text-sm font-semibold text-[#697778] hover:bg-[#E8EFF0]">Cancel</button>
+                <button onClick={handleUpdateConfirm} className="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#D8EAE7] text-white hover:bg-blue-700 shadow-md">Confirm Update</button>
               </div>
             </div>
           </div>
@@ -1160,7 +1160,7 @@ const GymAdminImportCustomers: React.FC = () => {
                   </p>
                 ))}
               </div>
-              <div className="bg-[#F7F4FA] border border-[#E9DFF4] rounded-xl p-4 mb-6">
+              <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4 mb-6">
                  <div className="space-y-2 text-sm">
                     <ConfirmRow label="Name" value={`${reviewRowData.data.firstName || ''} ${reviewRowData.data.lastName || ''}`} />
                     <ConfirmRow label="Email" value={reviewRowData.data.email || 'N/A'} />
@@ -1198,11 +1198,11 @@ const StepIndicator: React.FC<{ step: Step }> = ({ step }) => {
     <div className="flex items-center gap-0">
       {steps.map((s, i) => (
         <React.Fragment key={s.key}>
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-colors ${i <= activeIndex ? 'bg-[#A991D4] text-[#292431]' : 'bg-[#E9DFF4] text-[#6B5E78]'}`}>
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-colors ${i <= activeIndex ? 'bg-[#167D78] text-white' : 'bg-[#D8EAE7] text-[#697778]'}`}>
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-black ${i <= activeIndex ? 'bg-white/30' : 'bg-white/50'}`}>{i + 1}</span>
             {s.label}
           </div>
-          {i < steps.length - 1 && <div className={`h-0.5 w-6 ${i < activeIndex ? 'bg-[#A991D4]' : 'bg-[#E9DFF4]'}`} />}
+          {i < steps.length - 1 && <div className={`h-0.5 w-6 ${i < activeIndex ? 'bg-[#167D78]' : 'bg-[#D8EAE7]'}`} />}
         </React.Fragment>
       ))}
     </div>
@@ -1210,8 +1210,8 @@ const StepIndicator: React.FC<{ step: Step }> = ({ step }) => {
 };
 
 const InfoCard: React.FC = () => (
-  <div className="bg-white rounded-2xl border border-[#E5DDEB] p-5 shadow-sm">
-    <h3 className="font-bold text-[#292431] mb-3 flex items-center gap-2 text-sm"><Info size={16} className="text-[#A991D4]" /> Required Columns</h3>
+  <div className="bg-white rounded-2xl border border-[#D9E2E3] p-5 shadow-sm">
+    <h3 className="font-bold text-[#344B4A] mb-3 flex items-center gap-2 text-sm"><Info size={16} className="text-[#167D78]" /> Required Columns</h3>
     <div className="space-y-1.5">
       {[
         { col: 'Customer Name', req: true },
@@ -1230,10 +1230,10 @@ const InfoCard: React.FC = () => (
         { col: 'Emergency Contact', req: false },
       ].map(({ col, req }) => (
         <div key={col} className="flex items-center justify-between text-xs">
-          <span className="text-[#6B5E78]">{col}</span>
+          <span className="text-[#697778]">{col}</span>
           {req
             ? <span className="text-red-600 font-bold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded text-[10px]">Required</span>
-            : <span className="text-[#6B5E78] bg-[#F7F4FA] border border-[#E9DFF4] px-1.5 py-0.5 rounded text-[10px]">Optional</span>
+            : <span className="text-[#697778] bg-[#E8EFF0] border border-[#D8EAE7] px-1.5 py-0.5 rounded text-[10px]">Optional</span>
           }
         </div>
       ))}
@@ -1242,7 +1242,7 @@ const InfoCard: React.FC = () => (
 );
 
 const TemplateCard: React.FC<{ onDownload: () => void }> = ({ onDownload }) => (
-  <div className="bg-gradient-to-br from-[#A991D4] to-[#967CC5] rounded-2xl p-5 text-white shadow-lg shadow-purple-900/15">
+  <div className="bg-gradient-to-br from-[#167D78] to-[#116660] rounded-2xl p-5 text-white shadow-lg shadow-teal-900/10">
     <FileSpreadsheet size={24} className="mb-3 opacity-80" />
     <h3 className="font-bold text-base mb-1">Download Template</h3>
     <p className="text-sm opacity-80 mb-4">Get the pre-formatted Excel template with all required columns and sample data.</p>
@@ -1280,16 +1280,16 @@ const ImportStatusBadge: React.FC<{ status: string }> = ({ status }) => {
 };
 
 const SummaryCard: React.FC<{ label: string; value: number; color: string; bg: string; border?: string }> = ({ label, value, color, bg, border }) => (
-  <div className={`${bg} rounded-2xl p-4 border ${border || 'border-[#E5DDEB]'} text-center shadow-sm`}>
+  <div className={`${bg} rounded-2xl p-4 border ${border || 'border-[#D9E2E3]'} text-center shadow-sm`}>
     <div className={`text-2xl font-black ${color}`}>{value}</div>
-    <div className="text-xs text-[#6B5E78] font-semibold mt-1">{label}</div>
+    <div className="text-xs text-[#697778] font-semibold mt-1">{label}</div>
   </div>
 );
 
 const ReadySummaryCard: React.FC<{ label: string; value: number; color?: string }> = ({ label, value, color }) => (
-  <div className="bg-[#F7F4FA] rounded-xl p-4 border border-[#E9DFF4]">
-    <div className={`text-xl font-black ${color || 'text-[#292431]'}`}>{value}</div>
-    <div className="text-xs text-[#6B5E78] font-semibold mt-1">{label}</div>
+  <div className="bg-[#E8EFF0] rounded-xl p-4 border border-[#D8EAE7]">
+    <div className={`text-xl font-black ${color || 'text-[#344B4A]'}`}>{value}</div>
+    <div className="text-xs text-[#697778] font-semibold mt-1">{label}</div>
   </div>
 );
 
@@ -1297,21 +1297,21 @@ const ResultCard: React.FC<{ label: string; value: number; icon: React.ReactNode
   <div className={`${bg} rounded-2xl p-5 border ${border} text-center shadow-sm`}>
     <div className={`flex justify-center mb-2 ${color}`}>{icon}</div>
     <div className={`text-3xl font-black ${color}`}>{value}</div>
-    <div className="text-xs text-[#6B5E78] font-semibold mt-1">{label}</div>
+    <div className="text-xs text-[#697778] font-semibold mt-1">{label}</div>
   </div>
 );
 
 const ConfirmRow: React.FC<{ label: string; value: string | number; highlight?: boolean }> = ({ label, value, highlight }) => (
-  <div className="flex justify-between items-center py-1 border-b border-[#F7F4FA] last:border-0">
-    <span className="text-[#6B5E78]">{label}</span>
-    <span className={`font-bold ${highlight ? 'text-[#A991D4]' : 'text-[#292431]'}`}>{value}</span>
+  <div className="flex justify-between items-center py-1 border-b border-[#E8EFF0] last:border-0">
+    <span className="text-[#697778]">{label}</span>
+    <span className={`font-bold ${highlight ? 'text-[#167D78]' : 'text-[#344B4A]'}`}>{value}</span>
   </div>
 );
 
 const MiniStatCard: React.FC<{ label: string; value: number; color: string }> = ({ label, value, color }) => (
-  <div className="bg-white rounded-xl p-3 text-center border border-[#E9DFF4]">
+  <div className="bg-white rounded-xl p-3 text-center border border-[#D8EAE7]">
     <div className={`text-xl font-black ${color}`}>{value}</div>
-    <div className="text-xs text-[#6B5E78] font-semibold mt-0.5">{label}</div>
+    <div className="text-xs text-[#697778] font-semibold mt-0.5">{label}</div>
   </div>
 );
 

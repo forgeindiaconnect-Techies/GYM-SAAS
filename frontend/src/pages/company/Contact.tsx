@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Activity, ArrowLeft, Mail, Phone, MapPin, CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
 import api from '../../utils/api';
@@ -62,16 +62,16 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F4FA] text-[#292431] selection:bg-[#A991D4] selection:text-[#292431]">
-      <nav className="border-b border-[#E5DDEB] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
+    <div className="min-h-screen bg-[#E8EFF0] text-[#344B4A] selection:bg-[#167D78] selection:text-[#344B4A]">
+      <nav className="border-b border-[#D9E2E3] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 bg-[#A991D4] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 bg-[#167D78] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#A991D4]">Gymora</span>
+            <span className="text-xl font-bold tracking-tight text-[#167D78]">Gymora</span>
           </Link>
-          <Link to="/" className="text-sm font-medium text-[#6B5E78] hover:text-[#A991D4] flex items-center space-x-2 transition-colors">
+          <Link to="/" className="text-sm font-medium text-[#697778] hover:text-[#167D78] flex items-center space-x-2 transition-colors">
             <ArrowLeft size={16} /> <span>Back to Home</span>
           </Link>
         </div>
@@ -80,57 +80,57 @@ const Contact = () => {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid md:grid-cols-2 gap-16">
           <div>
-            <span className="text-[#A991D4] text-sm font-bold uppercase tracking-wider mb-4 block">Get In Touch</span>
+            <span className="text-[#167D78] text-sm font-bold uppercase tracking-wider mb-4 block">Get In Touch</span>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
-            <p className="text-[#6B5E78] text-lg mb-10 leading-relaxed">
+            <p className="text-[#697778] text-lg mb-10 leading-relaxed">
               Have questions about our AI fitness platform, your subscription, or looking to partner your gym with us? Send us a message and we'll respond within 24 hours.
             </p>
 
             <div className="space-y-6">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#E9DFF4] rounded-full flex items-center justify-center">
-                  <Mail size={20} className="text-[#A991D4]" />
+                <div className="w-12 h-12 bg-[#D8EAE7] rounded-full flex items-center justify-center">
+                  <Mail size={20} className="text-[#167D78]" />
                 </div>
                 <div>
-                  <p className="text-[#6B5E78] text-sm">Email</p>
+                  <p className="text-[#697778] text-sm">Email</p>
                   <p className="font-semibold text-lg">support@aigym.com</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#E9DFF4] rounded-full flex items-center justify-center">
-                  <Phone size={20} className="text-[#A991D4]" />
+                <div className="w-12 h-12 bg-[#D8EAE7] rounded-full flex items-center justify-center">
+                  <Phone size={20} className="text-[#167D78]" />
                 </div>
                 <div>
-                  <p className="text-[#6B5E78] text-sm">Phone</p>
+                  <p className="text-[#697778] text-sm">Phone</p>
                   <p className="font-semibold text-lg">+1 (555) 123-4567</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#E9DFF4] rounded-full flex items-center justify-center">
-                  <MapPin size={20} className="text-[#A991D4]" />
+                <div className="w-12 h-12 bg-[#D8EAE7] rounded-full flex items-center justify-center">
+                  <MapPin size={20} className="text-[#167D78]" />
                 </div>
                 <div>
-                  <p className="text-[#6B5E78] text-sm">Office</p>
+                  <p className="text-[#697778] text-sm">Office</p>
                   <p className="font-semibold text-lg">123 Fitness Blvd, NY 10001</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-8 shadow-sm">
+          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-8 shadow-sm">
             {isSuccess ? (
               <div className="py-12 text-center flex flex-col items-center">
-                <div className="w-16 h-16 bg-[#E9DFF4] rounded-2xl flex items-center justify-center mb-6 text-[#A991D4]">
+                <div className="w-16 h-16 bg-[#D8EAE7] rounded-2xl flex items-center justify-center mb-6 text-[#167D78]">
                   <CheckCircle2 size={36} />
                 </div>
-                <h3 className="text-2xl font-bold text-[#292431] mb-3">Message Sent Successfully!</h3>
-                <p className="text-[#6B5E78] text-base max-w-sm mb-8 leading-relaxed">
+                <h3 className="text-2xl font-bold text-[#344B4A] mb-3">Message Sent Successfully!</h3>
+                <p className="text-[#697778] text-base max-w-sm mb-8 leading-relaxed">
                   Thank you for reaching out. Your enquiry has been received and instant notifications have been sent to our gym owners and superadmin team.
                 </p>
                 <button
                   type="button"
                   onClick={() => setIsSuccess(false)}
-                  className="px-6 py-3 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors"
+                  className="px-6 py-3 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors"
                 >
                   Send Another Message
                 </button>
@@ -146,32 +146,32 @@ const Contact = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-[#6B5E78] mb-2 font-medium">First Name</label>
+                    <label className="block text-sm text-[#697778] mb-2 font-medium">First Name</label>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] focus:outline-none focus:border-[#A991D4] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] focus:outline-none focus:border-[#167D78] transition-colors"
                       placeholder="John"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#6B5E78] mb-2 font-medium">Last Name</label>
+                    <label className="block text-sm text-[#697778] mb-2 font-medium">Last Name</label>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] focus:outline-none focus:border-[#A991D4] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] focus:outline-none focus:border-[#167D78] transition-colors"
                       placeholder="Doe"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[#6B5E78] mb-2 font-medium">
-                    Email Address <span className="text-[#A991D4]">*</span>
+                  <label className="block text-sm text-[#697778] mb-2 font-medium">
+                    Email Address <span className="text-[#167D78]">*</span>
                   </label>
                   <input
                     type="email"
@@ -179,14 +179,14 @@ const Contact = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] focus:outline-none focus:border-[#A991D4] transition-colors"
+                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] focus:outline-none focus:border-[#167D78] transition-colors"
                     placeholder="john@example.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[#6B5E78] mb-2 font-medium">
-                    Message <span className="text-[#A991D4]">*</span>
+                  <label className="block text-sm text-[#697778] mb-2 font-medium">
+                    Message <span className="text-[#167D78]">*</span>
                   </label>
                   <textarea
                     rows={4}
@@ -194,7 +194,7 @@ const Contact = () => {
                     required
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] focus:outline-none focus:border-[#A991D4] transition-colors resize-none"
+                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] focus:outline-none focus:border-[#167D78] transition-colors resize-none"
                     placeholder="How can we help you?"
                   />
                 </div>
@@ -202,7 +202,7 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer"
+                  className="w-full py-4 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import {
   IndianRupee, AlertCircle, Search, CreditCard, CheckCircle,
   Building2, Smartphone, QrCode, Copy, Check, X, Banknote
@@ -207,8 +207,8 @@ const GymAdminTrainerPayments = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-[#E5DDEB] overflow-hidden">
-        <div className="p-4 border-b border-[#E5DDEB] bg-gray-50/50 flex gap-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-[#D9E2E3] overflow-hidden">
+        <div className="p-4 border-b border-[#D9E2E3] bg-gray-50/50 flex gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -216,7 +216,7 @@ const GymAdminTrainerPayments = () => {
               placeholder="Search trainers by name..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[#E5DDEB] rounded-xl focus:border-[#A991D4] outline-none text-sm"
+              className="w-full pl-10 pr-4 py-2 border border-[#D9E2E3] rounded-xl focus:border-[#167D78] outline-none text-sm"
             />
           </div>
         </div>
@@ -224,11 +224,11 @@ const GymAdminTrainerPayments = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#F7F4FA] border-b border-[#E5DDEB]">
-                <th className="p-4 text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Trainer</th>
-                <th className="p-4 text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Training Type</th>
-                <th className="p-4 text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Fee Amount</th>
-                <th className="p-4 text-xs font-bold text-[#6B5E78] uppercase tracking-wider text-right">Actions</th>
+              <tr className="bg-[#E8EFF0] border-b border-[#D9E2E3]">
+                <th className="p-4 text-xs font-bold text-[#697778] uppercase tracking-wider">Trainer</th>
+                <th className="p-4 text-xs font-bold text-[#697778] uppercase tracking-wider">Training Type</th>
+                <th className="p-4 text-xs font-bold text-[#697778] uppercase tracking-wider">Fee Amount</th>
+                <th className="p-4 text-xs font-bold text-[#697778] uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -249,7 +249,7 @@ const GymAdminTrainerPayments = () => {
                           {fee.trainerId?.profilePhoto ? (
                             <img src={fee.trainerId.profilePhoto} alt="Trainer" className="w-10 h-10 rounded-full object-cover border" />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center font-bold text-sm">
+                            <div className="w-10 h-10 rounded-full bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold text-sm">
                               {fee.trainerId?.name?.charAt(0) || 'T'}
                             </div>
                           )}
@@ -272,7 +272,7 @@ const GymAdminTrainerPayments = () => {
                       <td className="p-4 text-right">
                         <button
                           onClick={() => handleMakePayment(fee)}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl hover:bg-[#967CC5] font-bold text-xs shadow-md shadow-[#A991D4]/15 transition-all"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-[#167D78] text-white rounded-xl hover:bg-[#116660] font-bold text-xs shadow-md shadow-[#167D78]/15 transition-all"
                         >
                           <CreditCard className="w-4 h-4" /> Process Payment
                         </button>
@@ -289,13 +289,13 @@ const GymAdminTrainerPayments = () => {
       {/* Process Trainer Payment Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-[#E5DDEB] mt-8 mb-8 flex flex-col max-h-[90vh]">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-[#D9E2E3] mt-8 mb-8 flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="p-6 border-b border-[#E5DDEB] flex justify-between items-center bg-[#F7F4FA] shrink-0">
+            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0] shrink-0">
               <div>
-                <h2 className="text-xl font-bold text-[#292431]">Process Trainer Payment</h2>
-                <p className="text-xs text-[#6B5E78] mt-0.5">
+                <h2 className="text-xl font-bold text-[#344B4A]">Process Trainer Payment</h2>
+                <p className="text-xs text-[#697778] mt-0.5">
                   Confirm and record fee disbursement to trainer
                 </p>
               </div>
@@ -310,24 +310,24 @@ const GymAdminTrainerPayments = () => {
             <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto flex-1 custom-scrollbar">
               
               {/* Trainer Summary Badge */}
-              <div className="p-4 bg-gradient-to-r from-[#F7F4FA] to-[#FFFFFF] border border-[#E5DDEB] rounded-xl flex items-center justify-between">
+              <div className="p-4 bg-gradient-to-r from-[#E8EFF0] to-[#FFFFFF] border border-[#D9E2E3] rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-[#A991D4] text-[#292431] flex items-center justify-center font-bold text-base shadow-sm">
+                  <div className="w-11 h-11 rounded-full bg-[#167D78] text-white flex items-center justify-center font-bold text-base shadow-sm">
                     {selectedFee?.trainerId?.name?.[0]?.toUpperCase() || 'T'}
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#292431] text-base leading-tight">
+                    <h3 className="font-bold text-[#344B4A] text-base leading-tight">
                       {selectedFee?.trainerId?.name || 'Trainer'}
                     </h3>
-                    <p className="text-xs text-[#6B5E78]">{selectedFee?.trainerId?.email}</p>
-                    <span className="inline-block mt-1 text-[11px] font-semibold text-[#A991D4] bg-[#A991D4]/10 px-2 py-0.5 rounded-full">
+                    <p className="text-xs text-[#697778]">{selectedFee?.trainerId?.email}</p>
+                    <span className="inline-block mt-1 text-[11px] font-semibold text-[#167D78] bg-[#167D78]/10 px-2 py-0.5 rounded-full">
                       {selectedFee?.trainingType || 'Offline Training'}
                     </span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-[#6B5E78] font-semibold block">Due Amount</span>
-                  <span className="text-2xl font-black text-[#A991D4] tracking-tight">
+                  <span className="text-xs text-[#697778] font-semibold block">Due Amount</span>
+                  <span className="text-2xl font-black text-[#167D78] tracking-tight">
                     ₹{Number(selectedFee?.feeAmount || 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-xs text-gray-500 block font-medium">/ {selectedFee?.billingCycle || 'Monthly'}</span>
@@ -338,7 +338,7 @@ const GymAdminTrainerPayments = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider">
                       Amount to Pay *
                     </label>
                   </div>
@@ -350,13 +350,13 @@ const GymAdminTrainerPayments = () => {
                       min="1"
                       value={form.amount}
                       onChange={e => setForm({ ...form, amount: e.target.value })}
-                      className="w-full pl-9 pr-3 py-2.5 border border-[#E5DDEB] rounded-xl text-base font-bold text-[#292431] outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/20"
+                      className="w-full pl-9 pr-3 py-2.5 border border-[#D9E2E3] rounded-xl text-base font-bold text-[#344B4A] outline-none focus:border-[#167D78] focus:ring-1 focus:ring-[#167D78]/20"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1.5">
                     Payment Date *
                   </label>
                   <input
@@ -364,14 +364,14 @@ const GymAdminTrainerPayments = () => {
                     required
                     value={form.paymentDate}
                     onChange={e => setForm({ ...form, paymentDate: e.target.value })}
-                    className="w-full px-3 py-2.5 border border-[#E5DDEB] rounded-xl text-sm font-semibold outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/20"
+                    className="w-full px-3 py-2.5 border border-[#D9E2E3] rounded-xl text-sm font-semibold outline-none focus:border-[#167D78] focus:ring-1 focus:ring-[#167D78]/20"
                   />
                 </div>
               </div>
 
               {/* Payment Method Selector Tabs */}
               <div>
-                <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-2">
                   Select Payment Method *
                 </label>
                 <div className="grid grid-cols-3 gap-3">
@@ -382,8 +382,8 @@ const GymAdminTrainerPayments = () => {
                     onClick={() => setForm({ ...form, paymentMethod: 'Bank Transfer' })}
                     className={`flex flex-col items-center justify-center p-3.5 rounded-xl border-2 transition-all ${
                       form.paymentMethod === 'Bank Transfer'
-                        ? 'border-[#A991D4] bg-[#A991D4]/5 text-[#A991D4] font-bold shadow-sm'
-                        : 'border-[#E5DDEB] bg-white text-gray-600 hover:border-gray-300'
+                        ? 'border-[#167D78] bg-[#167D78]/5 text-[#167D78] font-bold shadow-sm'
+                        : 'border-[#D9E2E3] bg-white text-gray-600 hover:border-gray-300'
                     }`}
                   >
                     <Building2 className="w-5 h-5 mb-1" />
@@ -396,8 +396,8 @@ const GymAdminTrainerPayments = () => {
                     onClick={() => setForm({ ...form, paymentMethod: 'UPI' })}
                     className={`flex flex-col items-center justify-center p-3.5 rounded-xl border-2 transition-all ${
                       form.paymentMethod === 'UPI'
-                        ? 'border-[#A991D4] bg-[#A991D4]/5 text-[#A991D4] font-bold shadow-sm'
-                        : 'border-[#E5DDEB] bg-white text-gray-600 hover:border-gray-300'
+                        ? 'border-[#167D78] bg-[#167D78]/5 text-[#167D78] font-bold shadow-sm'
+                        : 'border-[#D9E2E3] bg-white text-gray-600 hover:border-gray-300'
                     }`}
                   >
                     <Smartphone className="w-5 h-5 mb-1" />
@@ -410,8 +410,8 @@ const GymAdminTrainerPayments = () => {
                     onClick={() => setForm({ ...form, paymentMethod: 'Cash' })}
                     className={`flex flex-col items-center justify-center p-3.5 rounded-xl border-2 transition-all ${
                       form.paymentMethod === 'Cash'
-                        ? 'border-[#A991D4] bg-[#A991D4]/5 text-[#A991D4] font-bold shadow-sm'
-                        : 'border-[#E5DDEB] bg-white text-gray-600 hover:border-gray-300'
+                        ? 'border-[#167D78] bg-[#167D78]/5 text-[#167D78] font-bold shadow-sm'
+                        : 'border-[#D9E2E3] bg-white text-gray-600 hover:border-gray-300'
                     }`}
                   >
                     <Banknote className="w-5 h-5 mb-1" />
@@ -448,7 +448,7 @@ const GymAdminTrainerPayments = () => {
                         value={form.accountHolder}
                         onChange={e => setForm({ ...form, accountHolder: e.target.value })}
                         placeholder="Trainer full name as per bank"
-                        className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm outline-none focus:border-blue-500"
+                        className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm outline-none focus:border-[#167D78]"
                       />
                     </div>
 
@@ -459,7 +459,7 @@ const GymAdminTrainerPayments = () => {
                         value={form.bankName}
                         onChange={e => setForm({ ...form, bankName: e.target.value })}
                         placeholder="e.g. HDFC Bank, SBI, ICICI"
-                        className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm outline-none focus:border-blue-500"
+                        className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm outline-none focus:border-[#167D78]"
                       />
                     </div>
 
@@ -483,14 +483,14 @@ const GymAdminTrainerPayments = () => {
                           className={`w-full px-3 py-2 bg-white border rounded-lg text-sm font-mono outline-none pr-11 transition-all ${
                             form.accountNumber && form.accountNumber.length < 9
                               ? 'border-amber-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-200'
-                              : 'border-blue-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-200'
+                              : 'border-blue-200 focus:border-[#167D78] focus:ring-1 focus:ring-blue-200'
                           }`}
                         />
                         {form.accountNumber && (
                           <button
                             type="button"
                             onClick={() => copyToClipboard(form.accountNumber, 'acc')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-600 rounded transition-colors"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#167D78] rounded transition-colors"
                             title="Copy Account Number"
                           >
                             {copiedKey === 'acc' ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
@@ -518,13 +518,13 @@ const GymAdminTrainerPayments = () => {
                           value={form.ifscCode}
                           onChange={e => setForm({ ...form, ifscCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) })}
                           placeholder="e.g. HDFC0001234"
-                          className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm font-mono uppercase outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200 pr-11 transition-all"
+                          className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm font-mono uppercase outline-none focus:border-[#167D78] focus:ring-1 focus:ring-blue-200 pr-11 transition-all"
                         />
                         {form.ifscCode && (
                           <button
                             type="button"
                             onClick={() => copyToClipboard(form.ifscCode, 'ifsc')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-600 rounded transition-colors"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#167D78] rounded transition-colors"
                             title="Copy IFSC Code"
                           >
                             {copiedKey === 'ifsc' ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
@@ -587,7 +587,7 @@ const GymAdminTrainerPayments = () => {
                           onClick={() => handleSelectUpiApp(app)}
                           className={`px-3 py-2 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 ${
                             form.upiApp === app.name
-                              ? 'bg-[#A991D4] text-[#292431] border-[#A991D4] shadow-sm'
+                              ? 'bg-[#167D78] text-white border-[#167D78] shadow-sm'
                               : 'bg-white text-gray-700 border-emerald-200 hover:bg-emerald-100/50'
                           }`}
                         >
@@ -634,7 +634,7 @@ const GymAdminTrainerPayments = () => {
                       <div className="space-y-1.5 flex-1">
                         <div className="flex items-center gap-1.5 justify-center sm:justify-start">
                           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          <h5 className="font-bold text-sm text-[#292431]">Scan with Any UPI App</h5>
+                          <h5 className="font-bold text-sm text-[#344B4A]">Scan with Any UPI App</h5>
                         </div>
                         <p className="text-xs text-gray-600 leading-relaxed">
                           Scan using <b>Google Pay</b>, <b>PhonePe</b>, <b>Paytm</b>, or <b>BHIM</b> to transfer <b>₹{Number(form.amount).toLocaleString('en-IN')}</b> directly to <b>{form.upiName || selectedFee?.trainerId?.name}</b>.
@@ -703,20 +703,20 @@ const GymAdminTrainerPayments = () => {
 
               {/* Notes */}
               <div>
-                <label className="block text-xs font-bold text-[#6B5E78] uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1.5">
                   Payment Notes / Remarks (Optional)
                 </label>
                 <textarea
                   value={form.notes}
                   onChange={e => setForm({ ...form, notes: e.target.value })}
-                  className="w-full px-3.5 py-2.5 border border-[#E5DDEB] rounded-xl text-sm outline-none focus:border-[#A991D4] focus:ring-1 focus:ring-[#A991D4]/20"
+                  className="w-full px-3.5 py-2.5 border border-[#D9E2E3] rounded-xl text-sm outline-none focus:border-[#167D78] focus:ring-1 focus:ring-[#167D78]/20"
                   rows={2}
                   placeholder="e.g. Monthly trainer retainer fee for September 2026"
                 />
               </div>
 
               {/* Modal Footer Buttons */}
-              <div className="pt-3 border-t border-[#E5DDEB] flex justify-end gap-3 bg-[#F7F4FA] -mx-6 -mb-6 p-4">
+              <div className="pt-3 border-t border-[#D9E2E3] flex justify-end gap-3 bg-[#E8EFF0] -mx-6 -mb-6 p-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
@@ -727,7 +727,7 @@ const GymAdminTrainerPayments = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-7 py-2.5 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors disabled:opacity-50 text-sm shadow-lg shadow-[#A991D4]/20 flex items-center gap-2"
+                  className="px-7 py-2.5 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors disabled:opacity-50 text-sm shadow-lg shadow-[#167D78]/20 flex items-center gap-2"
                 >
                   {saving ? (
                     <>

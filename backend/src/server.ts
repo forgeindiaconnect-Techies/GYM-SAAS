@@ -29,6 +29,10 @@ import analyticsRoutes from './routes/analyticsRoutes';
 import trainerPlanRoutes from './routes/trainerPlanRoutes';
 import gymPackageRoutes from './routes/gymPackageRoutes';
 import dietProgressRoutes from './routes/dietProgressRoutes';
+import challengeRoutes from './routes/challengeRoutes';
+import rewardRoutes from './routes/rewardRoutes';
+import performanceRoutes from './routes/performanceRoutes';
+import referralRoutes from './routes/referralRoutes';
 
 dotenv.config();
 
@@ -70,6 +74,10 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/trainer-plans', trainerPlanRoutes);
 app.use('/api/gym-packages', gymPackageRoutes);
 app.use('/api/diet-progress', dietProgressRoutes);
+app.use('/api/challenges', challengeRoutes);
+app.use('/api/rewards', rewardRoutes);
+app.use('/api/performance', performanceRoutes);
+app.use('/api/referrals', referralRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running' });

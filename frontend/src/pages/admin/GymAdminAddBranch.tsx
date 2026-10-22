@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Building2, MapPin, Clock, ArrowLeft, Loader2, Dumbbell, Activity, CheckCircle, Wifi, Users, Droplets, Plus, Edit, X } from 'lucide-react';
 import api from '../../utils/api';
@@ -170,12 +170,12 @@ const GymAdminAddBranch = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => navigate('/admin/branches')} className="w-10 h-10 bg-white border border-[#E5DDEB] rounded-xl flex items-center justify-center text-[#6B5E78] hover:bg-[#F7F4FA] hover:text-[#A991D4] transition-colors">
+        <button onClick={() => navigate('/admin/branches')} className="w-10 h-10 bg-white border border-[#D9E2E3] rounded-xl flex items-center justify-center text-[#697778] hover:bg-[#E8EFF0] hover:text-[#167D78] transition-colors">
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Add New Branch</h1>
-          <p className="text-[#6B5E78] mt-1">Add a new location under your gym.</p>
+          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Add New Branch</h1>
+          <p className="text-[#697778] mt-1">Add a new location under your gym.</p>
         </div>
       </div>
 
@@ -188,67 +188,67 @@ const GymAdminAddBranch = () => {
       <form onSubmit={handleSubmit} className="space-y-8">
         
         {/* Section 1 - Basic Information */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-8">
-          <h2 className="text-xl font-bold text-[#292431] mb-6 flex items-center gap-2 border-b border-[#E5DDEB] pb-4">
-            <Building2 className="text-[#A991D4]" /> Basic Information
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-8">
+          <h2 className="text-xl font-bold text-[#344B4A] mb-6 flex items-center gap-2 border-b border-[#D9E2E3] pb-4">
+            <Building2 className="text-[#167D78]" /> Basic Information
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Branch Name *</label>
-              <input required type="text" value={form.branchName} onChange={e => setForm({...form, branchName: e.target.value})} placeholder="e.g. Main Branch" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">Branch Name *</label>
+              <input required type="text" value={form.branchName} onChange={e => setForm({...form, branchName: e.target.value})} placeholder="e.g. Main Branch" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Branch Code *</label>
-              <input required type="text" value={form.branchCode} onChange={e => setForm({...form, branchCode: e.target.value.toUpperCase()})} placeholder="e.g. GYM-001" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">Branch Code *</label>
+              <input required type="text" value={form.branchCode} onChange={e => setForm({...form, branchCode: e.target.value.toUpperCase()})} placeholder="e.g. GYM-001" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Branch Phone Number *</label>
-              <input required type="tel" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '')})} placeholder="e.g. 9876543210" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">Branch Phone Number *</label>
+              <input required type="tel" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '')})} placeholder="e.g. 9876543210" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Branch Email</label>
-              <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="e.g. branch@gym.com" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">Branch Email</label>
+              <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="e.g. branch@gym.com" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
           </div>
         </div>
 
         {/* Section 2 - Location */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-8">
-          <h2 className="text-xl font-bold text-[#292431] mb-6 flex items-center gap-2 border-b border-[#E5DDEB] pb-4">
-            <MapPin className="text-[#A991D4]" /> Location
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-8">
+          <h2 className="text-xl font-bold text-[#344B4A] mb-6 flex items-center gap-2 border-b border-[#D9E2E3] pb-4">
+            <MapPin className="text-[#167D78]" /> Location
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Street Address *</label>
-              <input required type="text" value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Enter full address" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">Street Address *</label>
+              <input required type="text" value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Enter full address" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Area / Locality *</label>
-              <input required type="text" value={form.locality} onChange={e => setForm({...form, locality: e.target.value})} placeholder="Locality" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">Area / Locality *</label>
+              <input required type="text" value={form.locality} onChange={e => setForm({...form, locality: e.target.value})} placeholder="Locality" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">City *</label>
-              <input required type="text" value={form.city} onChange={e => setForm({...form, city: e.target.value})} placeholder="City" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">City *</label>
+              <input required type="text" value={form.city} onChange={e => setForm({...form, city: e.target.value})} placeholder="City" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">State *</label>
-              <input required type="text" value={form.state} onChange={e => setForm({...form, state: e.target.value})} placeholder="State" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">State *</label>
+              <input required type="text" value={form.state} onChange={e => setForm({...form, state: e.target.value})} placeholder="State" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Pincode *</label>
-              <input required type="text" value={form.pinCode} onChange={e => setForm({...form, pinCode: e.target.value})} placeholder="Pincode" className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" />
+              <label className="block text-sm font-bold text-[#697778] mb-2">Pincode *</label>
+              <input required type="text" value={form.pinCode} onChange={e => setForm({...form, pinCode: e.target.value})} placeholder="Pincode" className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" />
             </div>
           </div>
         </div>
 
         {/* Section 3 - Operating Hours */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-8">
-          <h2 className="text-xl font-bold text-[#292431] mb-6 flex items-center gap-2 border-b border-[#E5DDEB] pb-4">
-            <Clock className="text-[#A991D4]" /> Operating Details
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-8">
+          <h2 className="text-xl font-bold text-[#344B4A] mb-6 flex items-center gap-2 border-b border-[#D9E2E3] pb-4">
+            <Clock className="text-[#167D78]" /> Operating Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Opening Time *</label>
+              <label className="block text-sm font-bold text-[#697778] mb-2">Opening Time *</label>
               <div className="flex gap-2">
                 <input 
                   required 
@@ -261,12 +261,12 @@ const GymAdminAddBranch = () => {
                     if (val.length === 2 && !val.includes(':') && e.target.value.length === 2) val += ':';
                     setForm({...form, openingTime: `${val} ${form.openingTime.split(' ')[1] || 'AM'}`})
                   }} 
-                  className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" 
+                  className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" 
                 />
                 <select 
                   value={form.openingTime.split(' ')[1] || 'AM'}
                   onChange={e => setForm({...form, openingTime: `${form.openingTime.split(' ')[0] || '06:00'} ${e.target.value}`})}
-                  className="bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4] font-bold"
+                  className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78] font-bold"
                 >
                   <option value="AM">AM</option>
                   <option value="PM">PM</option>
@@ -274,7 +274,7 @@ const GymAdminAddBranch = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#6B5E78] mb-2">Closing Time *</label>
+              <label className="block text-sm font-bold text-[#697778] mb-2">Closing Time *</label>
               <div className="flex gap-2">
                 <input 
                   required 
@@ -287,12 +287,12 @@ const GymAdminAddBranch = () => {
                     if (val.length === 2 && !val.includes(':') && e.target.value.length === 2) val += ':';
                     setForm({...form, closingTime: `${val} ${form.closingTime.split(' ')[1] || 'PM'}`})
                   }} 
-                  className="w-full bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4]" 
+                  className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]" 
                 />
                 <select 
                   value={form.closingTime.split(' ')[1] || 'PM'}
                   onChange={e => setForm({...form, closingTime: `${form.closingTime.split(' ')[0] || '10:00'} ${e.target.value}`})}
-                  className="bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-[#292431] outline-none focus:border-[#A991D4] font-bold"
+                  className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78] font-bold"
                 >
                   <option value="AM">AM</option>
                   <option value="PM">PM</option>
@@ -301,7 +301,7 @@ const GymAdminAddBranch = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-bold text-[#6B5E78] mb-3">Working Days *</label>
+            <label className="block text-sm font-bold text-[#697778] mb-3">Working Days *</label>
             <div className="flex flex-wrap gap-3">
               {daysOfWeek.map(day => (
                 <button
@@ -310,8 +310,8 @@ const GymAdminAddBranch = () => {
                   onClick={() => handleDayToggle(day)}
                   className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors border ${
                     form.workingDays.includes(day)
-                      ? 'bg-[#A991D4] text-[#292431] border-[#A991D4]'
-                      : 'bg-[#F7F4FA] text-[#6B5E78] border-[#E5DDEB] hover:border-[#A991D4]'
+                      ? 'bg-[#167D78] text-white border-[#167D78]'
+                      : 'bg-[#E8EFF0] text-[#697778] border-[#D9E2E3] hover:border-[#167D78]'
                   }`}
                 >
                   {day}
@@ -322,12 +322,12 @@ const GymAdminAddBranch = () => {
         </div>
 
         {/* Section 4 & 5 - Mode and Services */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-8">
-          <h2 className="text-xl font-bold text-[#292431] mb-6 flex items-center gap-2 border-b border-[#E5DDEB] pb-4">
-            <Activity className="text-[#A991D4]" /> Training & Services
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-8">
+          <h2 className="text-xl font-bold text-[#344B4A] mb-6 flex items-center gap-2 border-b border-[#D9E2E3] pb-4">
+            <Activity className="text-[#167D78]" /> Training & Services
           </h2>
           <div className="mb-8">
-            <label className="block text-sm font-bold text-[#6B5E78] mb-3">Training Mode *</label>
+            <label className="block text-sm font-bold text-[#697778] mb-3">Training Mode *</label>
             <div className="flex gap-4">
               {['offline', 'online', 'both'].map(mode => (
                 <button
@@ -336,8 +336,8 @@ const GymAdminAddBranch = () => {
                   onClick={() => setForm({...form, trainingMode: mode})}
                   className={`flex-1 py-3 rounded-xl border text-sm font-bold capitalize transition-colors ${
                     form.trainingMode === mode 
-                      ? 'bg-green-50 border-[#A991D4] text-[#A991D4]' 
-                      : 'bg-white border-[#E5DDEB] text-[#6B5E78] hover:border-[#A991D4]'
+                      ? 'bg-green-50 border-[#167D78] text-[#167D78]' 
+                      : 'bg-white border-[#D9E2E3] text-[#697778] hover:border-[#167D78]'
                   }`}
                 >
                   {mode}
@@ -346,7 +346,7 @@ const GymAdminAddBranch = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-bold text-[#6B5E78] mb-3">Services Offered</label>
+            <label className="block text-sm font-bold text-[#697778] mb-3">Services Offered</label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {allServices.map(service => (
                 <button
@@ -355,8 +355,8 @@ const GymAdminAddBranch = () => {
                   onClick={() => handleServiceToggle(service)}
                   className={`px-4 py-3 rounded-xl text-sm font-semibold transition-colors border text-left flex items-center gap-2 ${
                     form.services.includes(service)
-                      ? 'bg-[#A991D4] text-[#292431] border-[#A991D4]'
-                      : 'bg-[#F7F4FA] text-[#6B5E78] border-[#E5DDEB] hover:border-[#A991D4]'
+                      ? 'bg-[#167D78] text-white border-[#167D78]'
+                      : 'bg-[#E8EFF0] text-[#697778] border-[#D9E2E3] hover:border-[#167D78]'
                   }`}
                 >
                   <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${form.services.includes(service) ? 'border-white bg-white/20' : 'border-gray-300'}`}>
@@ -370,9 +370,9 @@ const GymAdminAddBranch = () => {
         </div>
 
         {/* Section 6 - Facilities */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-8">
-          <h2 className="text-xl font-bold text-[#292431] mb-6 flex items-center gap-2 border-b border-[#E5DDEB] pb-4">
-            <Building2 className="text-[#A991D4]" /> Facilities
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-8">
+          <h2 className="text-xl font-bold text-[#344B4A] mb-6 flex items-center gap-2 border-b border-[#D9E2E3] pb-4">
+            <Building2 className="text-[#167D78]" /> Facilities
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {commonFacilities.map(fac => {
@@ -384,11 +384,11 @@ const GymAdminAddBranch = () => {
                   onClick={() => handleFacilityToggle(fac.label)}
                   className={`px-4 py-3 rounded-xl text-sm font-semibold transition-colors border text-left flex items-center gap-3 ${
                     form.facilities.includes(fac.label)
-                      ? 'bg-[#A991D4] text-[#292431] border-[#A991D4]'
-                      : 'bg-[#F7F4FA] text-[#6B5E78] border-[#E5DDEB] hover:border-[#A991D4]'
+                      ? 'bg-[#167D78] text-white border-[#167D78]'
+                      : 'bg-[#E8EFF0] text-[#697778] border-[#D9E2E3] hover:border-[#167D78]'
                   }`}
                 >
-                  <Icon size={18} className={form.facilities.includes(fac.label) ? 'text-white' : 'text-[#A991D4]'} />
+                  <Icon size={18} className={form.facilities.includes(fac.label) ? 'text-white' : 'text-[#167D78]'} />
                   {fac.label}
                 </button>
               )
@@ -397,32 +397,32 @@ const GymAdminAddBranch = () => {
         </div>
 
         {/* Section 7 - Subscription Plans */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-8">
-          <div className="flex items-center justify-between border-b border-[#E5DDEB] pb-4 mb-6">
-            <h2 className="text-xl font-bold text-[#292431] flex items-center gap-2">
-              <CheckCircle className="text-[#A991D4]" /> Subscription Plans
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-8">
+          <div className="flex items-center justify-between border-b border-[#D9E2E3] pb-4 mb-6">
+            <h2 className="text-xl font-bold text-[#344B4A] flex items-center gap-2">
+              <CheckCircle className="text-[#167D78]" /> Subscription Plans
             </h2>
-            <button type="button" onClick={handleOpenAddPlan} className="px-4 py-2 bg-[#A991D4] text-[#292431] text-sm font-bold rounded-xl hover:bg-[#967CC5] transition-colors flex items-center gap-2">
+            <button type="button" onClick={handleOpenAddPlan} className="px-4 py-2 bg-[#167D78] text-white text-sm font-bold rounded-xl hover:bg-[#116660] transition-colors flex items-center gap-2">
               <Plus size={16} /> Add Plan
             </button>
           </div>
           
           {form.subscriptionPlans.length === 0 ? (
-            <p className="text-sm text-[#6B5E78] italic text-center py-4">No plans added yet. Click "Add Plan" to create one.</p>
+            <p className="text-sm text-[#697778] italic text-center py-4">No plans added yet. Click "Add Plan" to create one.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {form.subscriptionPlans.map((plan, idx) => (
-                <div key={idx} className="border border-[#E5DDEB] rounded-xl p-4 flex justify-between items-start bg-[#F7F4FA] hover:border-[#A991D4]/30 transition-colors">
+                <div key={idx} className="border border-[#D9E2E3] rounded-xl p-4 flex justify-between items-start bg-[#E8EFF0] hover:border-[#167D78]/30 transition-colors">
                   <div className="flex-1 pr-3">
-                    <h3 className="font-bold text-[#292431] text-lg">{plan.name}</h3>
-                    <p className="text-sm font-bold text-[#A991D4]">₹{plan.price} / {plan.duration}</p>
-                    <p className="text-xs text-[#6B5E78] mt-2 whitespace-pre-line leading-relaxed">{plan.features}</p>
+                    <h3 className="font-bold text-[#344B4A] text-lg">{plan.name}</h3>
+                    <p className="text-sm font-bold text-[#167D78]">₹{plan.price} / {plan.duration}</p>
+                    <p className="text-xs text-[#697778] mt-2 whitespace-pre-line leading-relaxed">{plan.features}</p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       type="button"
                       onClick={() => handleEditPlan(idx)}
-                      className="text-[#A991D4] hover:bg-[#A991D4]/10 p-1.5 rounded-lg transition-colors"
+                      className="text-[#167D78] hover:bg-[#167D78]/10 p-1.5 rounded-lg transition-colors"
                       title="Edit Plan & Features"
                     >
                       <Edit size={16} />
@@ -443,10 +443,10 @@ const GymAdminAddBranch = () => {
         </div>
 
         <div className="flex justify-end gap-4 pt-6">
-          <button type="button" onClick={() => navigate('/admin/branches')} className="px-6 py-3 bg-white border border-[#E5DDEB] text-[#6B5E78] font-bold rounded-xl hover:bg-[#F7F4FA] transition-colors">
+          <button type="button" onClick={() => navigate('/admin/branches')} className="px-6 py-3 bg-white border border-[#D9E2E3] text-[#697778] font-bold rounded-xl hover:bg-[#E8EFF0] transition-colors">
             Cancel
           </button>
-          <button type="submit" disabled={loading} className="px-8 py-3 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors flex items-center gap-2 disabled:opacity-70 shadow-lg shadow-[#A991D4]/20">
+          <button type="submit" disabled={loading} className="px-8 py-3 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors flex items-center gap-2 disabled:opacity-70 shadow-lg shadow-[#167D78]/20">
             {loading ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
             Create Branch
           </button>
@@ -458,8 +458,8 @@ const GymAdminAddBranch = () => {
       {showPlanModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-[#FFFFFF] w-full max-w-lg rounded-2xl p-6 shadow-2xl">
-            <div className="flex justify-between items-center mb-6 border-b border-[#E5DDEB] pb-4">
-              <h2 className="text-2xl font-bold text-[#292431]">
+            <div className="flex justify-between items-center mb-6 border-b border-[#D9E2E3] pb-4">
+              <h2 className="text-2xl font-bold text-[#344B4A]">
                 {editingPlanIndex !== null ? 'Edit Subscription Plan' : 'Create Subscription Plan'}
               </h2>
               <button
@@ -468,7 +468,7 @@ const GymAdminAddBranch = () => {
                   setShowPlanModal(false);
                   setEditingPlanIndex(null);
                 }}
-                className="text-[#6B5E78] hover:text-[#967CC5] transition-colors"
+                className="text-[#697778] hover:text-[#167D78] transition-colors"
               >
                 <X size={24} />
               </button>
@@ -476,17 +476,17 @@ const GymAdminAddBranch = () => {
 
             <form onSubmit={handleSavePlan} className="space-y-4">
               <div>
-                <label className="block text-sm font-bold text-[#6B5E78] mb-1">Plan Name</label>
-                <input required value={planForm.name} onChange={e => setPlanForm({...planForm, name: e.target.value})} className="w-full border border-[#E5DDEB] rounded-lg px-4 py-2 outline-none focus:border-[#A991D4]" placeholder="e.g. Pro Tier" />
+                <label className="block text-sm font-bold text-[#697778] mb-1">Plan Name</label>
+                <input required value={planForm.name} onChange={e => setPlanForm({...planForm, name: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" placeholder="e.g. Pro Tier" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-[#6B5E78] mb-1">Price (₹)</label>
-                  <input required type="text" value={planForm.price} onChange={e => setPlanForm({...planForm, price: e.target.value.replace(/[^0-9.]/g, '')})} className="w-full border border-[#E5DDEB] rounded-lg px-4 py-2 outline-none focus:border-[#A991D4]" placeholder="499" />
+                  <label className="block text-sm font-bold text-[#697778] mb-1">Price (₹)</label>
+                  <input required type="text" value={planForm.price} onChange={e => setPlanForm({...planForm, price: e.target.value.replace(/[^0-9.]/g, '')})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" placeholder="499" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#6B5E78] mb-1">Duration</label>
-                  <select value={planForm.duration} onChange={e => setPlanForm({...planForm, duration: e.target.value})} className="w-full border border-[#E5DDEB] rounded-lg px-4 py-2 outline-none focus:border-[#A991D4]">
+                  <label className="block text-sm font-bold text-[#697778] mb-1">Duration</label>
+                  <select value={planForm.duration} onChange={e => setPlanForm({...planForm, duration: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]">
                     <option value="Monthly">Monthly</option>
                     <option value="Quarterly">Quarterly</option>
                     <option value="Half-Yearly">Half-Yearly</option>
@@ -495,8 +495,8 @@ const GymAdminAddBranch = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#6B5E78] mb-1">Features (Description & Inclusions)</label>
-                <textarea required rows={5} value={planForm.features} onChange={e => setPlanForm({...planForm, features: e.target.value})} className="w-full border border-[#E5DDEB] rounded-lg px-4 py-2 outline-none focus:border-[#A991D4]" placeholder="Enter features (e.g. Access to gym, 1 PT session, Locker access)" />
+                <label className="block text-sm font-bold text-[#697778] mb-1">Features (Description & Inclusions)</label>
+                <textarea required rows={5} value={planForm.features} onChange={e => setPlanForm({...planForm, features: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" placeholder="Enter features (e.g. Access to gym, 1 PT session, Locker access)" />
               </div>
               <div className="pt-4 flex justify-end gap-3">
                 <button
@@ -505,11 +505,11 @@ const GymAdminAddBranch = () => {
                     setShowPlanModal(false);
                     setEditingPlanIndex(null);
                   }}
-                  className="px-4 py-2 text-[#6B5E78] hover:bg-[#F7F4FA] rounded-lg font-medium transition-colors"
+                  className="px-4 py-2 text-[#697778] hover:bg-[#E8EFF0] rounded-lg font-medium transition-colors"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-6 py-2 bg-[#A991D4] text-[#292431] font-bold rounded-lg hover:bg-[#967CC5] transition-colors">
+                <button type="submit" className="px-6 py-2 bg-[#167D78] text-white font-bold rounded-lg hover:bg-[#116660] transition-colors">
                   {editingPlanIndex !== null ? 'Update Plan' : 'Save Plan'}
                 </button>
               </div>

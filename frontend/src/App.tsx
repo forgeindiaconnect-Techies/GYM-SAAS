@@ -69,6 +69,10 @@ import GymAdminVideoBookings from './pages/admin/GymAdminVideoBookings';
 import GymAdminExerciseLibrary from './pages/admin/GymAdminExerciseLibrary';
 import GymExerciseVideos from './pages/common/GymExerciseVideos';
 import RevenueAnalytics from './pages/admin/RevenueAnalytics';
+import GymAdminChallenges from './pages/admin/GymAdminChallenges';
+import GymAdminRewards from './pages/admin/GymAdminRewards';
+import GymAdminRewardsPerformance from './pages/admin/GymAdminRewardsPerformance';
+import GymAdminReferrals from './pages/admin/GymAdminReferrals';
 
 // Gym Store (Admin)
 import GymStoreDashboard from './pages/admin/store/GymStoreDashboard';
@@ -137,6 +141,8 @@ import MemberMessages from './pages/member/MemberMessages';
 import MemberNotifications from './pages/member/MemberNotifications';
 import MemberUpgrade from './pages/member/MemberUpgrade';
 import MemberSettings from './pages/member/MemberSettings';
+import MemberChallenges from './pages/member/MemberChallenges';
+import MemberReferrals from './pages/member/MemberReferrals';
 
 // Trainer
 import TrainerLayout from './layouts/TrainerLayout';
@@ -165,6 +171,8 @@ import TrainerAIAssistant from './pages/trainer/TrainerAIAssistant';
 import TrainerAIReview from './pages/trainer/TrainerAIReview';
 import TrainerAIFeedback from './pages/trainer/TrainerAIFeedback';
 import TrainerReviewsRatings from './pages/trainer/TrainerReviewsRatings';
+import TrainerCustomerChallenges from './pages/trainer/TrainerCustomerChallenges';
+import TrainerRewards from './pages/trainer/TrainerRewards';
 
 // Stub dashboards
 import stubDashboard from './pages/StubDashboard';
@@ -261,6 +269,9 @@ function App() {
             <Route path="store/payments" element={<MemberStorePayments />} />
             <Route path="enquiries" element={<MemberEnquiries />} />
             <Route path="settings" element={<MemberSettings />} />
+            <Route path="challenges" element={<MemberChallenges />} />
+            <Route path="referrals" element={<MemberReferrals />} />
+            <Route path="refer-earn" element={<MemberReferrals />} />
           </Route>
 
           {/* Trainer Routes */}
@@ -296,6 +307,8 @@ function App() {
             <Route path="ai-review/:customerId" element={<TrainerAIReview />} />
             <Route path="ai-feedback" element={<TrainerAIFeedback />} />
             <Route path="reviews" element={<TrainerReviewsRatings />} />
+            <Route path="challenges" element={<TrainerCustomerChallenges />} />
+            <Route path="rewards" element={<TrainerRewards />} />
           </Route>
 
 {/* Manager Dashboard */}
@@ -359,6 +372,10 @@ function App() {
             <Route path="store/offline-sales" element={<GymStoreOfflineSales />} />
             <Route path="store/sales" element={<GymStoreSalesHistory />} />
             <Route path="store/settings" element={<GymStoreSettings />} />
+            <Route path="challenges" element={<GymAdminChallenges />} />
+            <Route path="rewards" element={<GymAdminRewardsPerformance />} />
+            <Route path="rewards-performance" element={<GymAdminRewardsPerformance />} />
+            <Route path="referrals" element={<GymAdminReferrals />} />
           </Route>
 
 {/* Super Admin Routes */}

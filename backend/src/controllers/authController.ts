@@ -8,6 +8,9 @@ import CustomerMembership, { CustomerMembershipStatus } from '../models/Customer
 import Otp from '../models/Otp';
 import Subscription, { SubscriptionPaymentStatus } from '../models/Subscription';
 import Payment, { PaymentStatus } from '../models/Payment';
+import Referral from '../models/Referral';
+import ReferralCampaign from '../models/ReferralCampaign';
+import Notification from '../models/Notification';
 import { sendOtpEmail, sendGymOwnerInvitationEmail, sendGymOwnerExpiryWarningEmail } from '../utils/emailService';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
@@ -19,7 +22,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       dateOfBirth, gender, city, pinCode,
       fitnessGoal, experienceLevel, preferredTraining, preferredWorkoutTime,
       height, weight,
-      emergencyContact, gymId, branchId
+      emergencyContact, gymId, branchId,
+      referralCode
     } = req.body;
 
     if (!firstName || !lastName || !email || !mobile || !password) {
@@ -38,6 +42,29 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const trialEndDate = new Date();
     trialEndDate.setDate(trialEndDate.getDate() + 1); // 1 Day Free Trial
+
+    // Generate unique referral code for this new customer
+    const cleanFirstName = (firstName || 'MEMBER').replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 5);
+    const newReferralCode = `${cleanFirstName}${Math.floor(1000 + Math.random() * 9000)}`;
+
+    // Check if referred by someone
+    let referrerUser: any = null;
+    let targetCampaign: any = null;
+    if (referralCode && typeof referralCode === 'string') {
+      const cleanInputCode = referralCode.trim().toUpperCase();
+      referrerUser = await User.findOne({ referralCode: cleanInputCode, isActive: true });
+      if (referrerUser) {
+        const campaignGymId = gymId || referrerUser.gymId;
+        if (campaignGymId) {
+          targetCampaign = await ReferralCampaign.findOne({
+            gymId: campaignGymId,
+            status: 'Active',
+            startDate: { $lte: new Date() },
+            endDate: { $gte: new Date() }
+          }).sort({ createdAt: -1 });
+        }
+      }
+    }
 
     const user = new User({
       firstName,
@@ -65,9 +92,46 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       height,
       weight,
       emergencyContact,
+      referralCode: newReferralCode,
+      referredBy: referrerUser ? referrerUser._id : undefined,
+      referralCreditsBalance: 0,
     });
 
     await user.save();
+
+    // Create referral tracking record if referred
+    if (referrerUser && targetCampaign) {
+      try {
+        await Referral.create({
+          gymId: targetCampaign.gymId,
+          campaignId: targetCampaign._id,
+          referrerId: referrerUser._id,
+          referredId: user._id,
+          referralCode: referralCode.trim().toUpperCase(),
+          status: 'Registered',
+          referrerRewardStatus: 'Pending',
+          referrerRewardType: targetCampaign.referrerRewardType,
+          referrerRewardAmount: targetCampaign.referrerRewardValue,
+          refereeRewardStatus: 'Pending',
+          refereeRewardType: targetCampaign.refereeRewardType,
+          refereeRewardAmount: targetCampaign.refereeRewardValue,
+          notes: `Customer registered with referral code ${referralCode.trim().toUpperCase()}`
+        });
+
+        // Notify referrer that friend registered
+        await Notification.create({
+          recipientId: referrerUser._id,
+          recipientRole: 'MEMBER',
+          gymId: targetCampaign.gymId,
+          title: 'Friend Joined via Referral!',
+          message: `${firstName} ${lastName} joined using your referral code (${referralCode.trim().toUpperCase()}). Your reward will be issued upon their membership payment!`,
+          type: 'info',
+          link: '/member/referrals'
+        });
+      } catch (refErr) {
+        console.error('Error creating initial referral record on signup:', refErr);
+      }
+    }
 
     if (gymId) {
       await CustomerMembership.create({

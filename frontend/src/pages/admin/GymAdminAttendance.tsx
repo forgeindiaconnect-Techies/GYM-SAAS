@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import {
   UserCheck,
   Clock,
@@ -243,10 +243,10 @@ const GymAdminAttendance = () => {
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292431] tracking-tight">
+          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">
             {activeTab === 'CUSTOMERS' ? 'Facility Attendance' : 'Trainer Attendance'}
           </h1>
-          <p className="text-[#6B5E78] mt-1">
+          <p className="text-[#697778] mt-1">
             {activeTab === 'CUSTOMERS'
               ? 'Live check-ins, peak hours, and member activity.'
               : 'Real-time staff check-ins, duty shifts, session attendance, and punctuality.'}
@@ -255,7 +255,7 @@ const GymAdminAttendance = () => {
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Live tracking badge */}
-          <div className="flex items-center space-x-2 text-sm font-bold bg-[#FFFFFF] border border-[#E5DDEB] px-4 py-2 rounded-xl text-[#292431] shadow-sm">
+          <div className="flex items-center space-x-2 text-sm font-bold bg-[#FFFFFF] border border-[#D9E2E3] px-4 py-2 rounded-xl text-[#344B4A] shadow-sm">
             <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></div>
             <span>
               {activeTab === 'CUSTOMERS' ? 'Live Tracking Active' : `${trainerStats.onDutyCount} Trainers On Duty`}
@@ -266,15 +266,15 @@ const GymAdminAttendance = () => {
           <button
             onClick={loadAttendanceData}
             title="Refresh attendance"
-            className="p-2.5 bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl hover:bg-[#F7F4FA] text-[#292431] transition-colors shadow-sm"
+            className="p-2.5 bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl hover:bg-[#E8EFF0] text-[#344B4A] transition-colors shadow-sm"
           >
-            <RefreshCw size={16} className={loading ? 'animate-spin text-[#A991D4]' : ''} />
+            <RefreshCw size={16} className={loading ? 'animate-spin text-[#167D78]' : ''} />
           </button>
 
           {/* Download PDF button */}
           <button
             onClick={handleDownloadPDF}
-            className="flex items-center space-x-2 px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors shadow-sm cursor-pointer text-sm"
+            className="flex items-center space-x-2 px-4 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors shadow-sm cursor-pointer text-sm"
           >
             <Download size={16} />
             <span>Download PDF</span>
@@ -283,7 +283,7 @@ const GymAdminAttendance = () => {
       </div>
 
       {/* TABS SWITCHER: Customers Attendance vs Trainers Attendance */}
-      <div className="flex items-center space-x-2 border-b border-[#E5DDEB] pb-2">
+      <div className="flex items-center space-x-2 border-b border-[#D9E2E3] pb-2">
         <button
           onClick={() => {
             setActiveTab('CUSTOMERS');
@@ -291,15 +291,15 @@ const GymAdminAttendance = () => {
           }}
           className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center space-x-2 ${
             activeTab === 'CUSTOMERS'
-              ? 'bg-[#A991D4] text-[#292431] shadow-md shadow-[#A991D4]/20 scale-[1.02]'
-              : 'bg-[#FFFFFF] text-[#6B5E78] border border-[#E5DDEB] hover:bg-[#F7F4FA] hover:text-[#292431]'
+              ? 'bg-[#167D78] text-white shadow-md shadow-[#167D78]/20 scale-[1.02]'
+              : 'bg-[#FFFFFF] text-[#697778] border border-[#D9E2E3] hover:bg-[#E8EFF0] hover:text-[#344B4A]'
           }`}
         >
           <Users size={16} />
           <span>Customers Attendance</span>
           <span
             className={`text-xs px-2 py-0.5 rounded-full font-extrabold ${
-              activeTab === 'CUSTOMERS' ? 'bg-white/20 text-white' : 'bg-[#F7F4FA] text-[#6B5E78]'
+              activeTab === 'CUSTOMERS' ? 'bg-white/20 text-white' : 'bg-[#E8EFF0] text-[#697778]'
             }`}
           >
             {customerCheckins.length}
@@ -313,15 +313,15 @@ const GymAdminAttendance = () => {
           }}
           className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center space-x-2 ${
             activeTab === 'TRAINERS'
-              ? 'bg-[#A991D4] text-[#292431] shadow-md shadow-[#A991D4]/20 scale-[1.02]'
-              : 'bg-[#FFFFFF] text-[#6B5E78] border border-[#E5DDEB] hover:bg-[#F7F4FA] hover:text-[#292431]'
+              ? 'bg-[#167D78] text-white shadow-md shadow-[#167D78]/20 scale-[1.02]'
+              : 'bg-[#FFFFFF] text-[#697778] border border-[#D9E2E3] hover:bg-[#E8EFF0] hover:text-[#344B4A]'
           }`}
         >
           <Dumbbell size={16} />
           <span>Trainers Attendance</span>
           <span
             className={`text-xs px-2 py-0.5 rounded-full font-extrabold ${
-              activeTab === 'TRAINERS' ? 'bg-white/20 text-white' : 'bg-[#F7F4FA] text-[#6B5E78]'
+              activeTab === 'TRAINERS' ? 'bg-white/20 text-white' : 'bg-[#E8EFF0] text-[#697778]'
             }`}
           >
             {trainerRecords.length}
@@ -334,74 +334,74 @@ const GymAdminAttendance = () => {
         <div className="space-y-6 animate-fadeIn">
           {/* Customer Stat Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-10 h-10 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-blue-500/10 text-[#167D78] rounded-xl flex items-center justify-center">
                   <Users size={20} />
                 </div>
               </div>
-              <p className="text-[#6B5E78] text-sm font-medium">Currently in Gym</p>
-              <h3 className="text-3xl font-bold text-[#292431] mt-1">42</h3>
+              <p className="text-[#697778] text-sm font-medium">Currently in Gym</p>
+              <h3 className="text-3xl font-bold text-[#344B4A] mt-1">42</h3>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
                 <div className="w-10 h-10 bg-green-500/10 text-green-500 rounded-xl flex items-center justify-center">
                   <UserCheck size={20} />
                 </div>
               </div>
-              <p className="text-[#6B5E78] text-sm font-medium">Total Check-ins Today</p>
-              <h3 className="text-3xl font-bold text-[#292431] mt-1">156</h3>
+              <p className="text-[#697778] text-sm font-medium">Total Check-ins Today</p>
+              <h3 className="text-3xl font-bold text-[#344B4A] mt-1">156</h3>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-10 h-10 bg-[#A991D4]/10 text-[#A991D4] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-[#167D78]/10 text-[#167D78] rounded-xl flex items-center justify-center">
                   <Clock size={20} />
                 </div>
               </div>
-              <p className="text-[#6B5E78] text-sm font-medium">Peak Hour Today</p>
-              <h3 className="text-3xl font-bold text-[#292431] mt-1">18:00</h3>
+              <p className="text-[#697778] text-sm font-medium">Peak Hour Today</p>
+              <h3 className="text-3xl font-bold text-[#344B4A] mt-1">18:00</h3>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-10 h-10 bg-[#E9DFF4]/10 text-[#967CC5] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-[#D8EAE7]/10 text-[#116660] rounded-xl flex items-center justify-center">
                   <UserX size={20} />
                 </div>
               </div>
-              <p className="text-[#6B5E78] text-sm font-medium">Failed Entries</p>
-              <h3 className="text-3xl font-bold text-[#292431] mt-1">3</h3>
+              <p className="text-[#697778] text-sm font-medium">Failed Entries</p>
+              <h3 className="text-3xl font-bold text-[#344B4A] mt-1">3</h3>
             </div>
           </div>
 
           {/* Today's Traffic & Recent Check-ins */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-[#292431]">Today's Traffic</h3>
-                <span className="text-xs font-semibold text-[#6B5E78] bg-[#F7F4FA] px-2.5 py-1 rounded-lg">
+                <h3 className="text-lg font-bold text-[#344B4A]">Today's Traffic</h3>
+                <span className="text-xs font-semibold text-[#697778] bg-[#E8EFF0] px-2.5 py-1 rounded-lg">
                   Hourly Member Volume
                 </span>
               </div>
-              <div className="h-48 flex items-end justify-between gap-1 pt-4 border-t border-[#E5DDEB]">
+              <div className="h-48 flex items-end justify-between gap-1 pt-4 border-t border-[#D9E2E3]">
                 {[20, 15, 10, 5, 10, 30, 45, 60, 80, 50, 40, 70, 90, 85, 60, 40].map((val, idx) => (
                   <div key={idx} className="flex-1 flex flex-col items-center justify-end h-full relative group">
                     <div
                       className="w-full rounded-t-lg transition-all duration-200 group-hover:opacity-80 cursor-pointer"
                       style={{
                         height: `${val}%`,
-                        background: `linear-gradient(to top, #4C315E, #A991D4)`,
+                        background: `linear-gradient(to top, #344B4A, #167D78)`,
                       }}
                     >
-                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#292431] text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10 pointer-events-none">
+                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#344B4A] text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10 pointer-events-none">
                         {val}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between mt-2 text-xs text-[#6B5E78]">
+              <div className="flex justify-between mt-2 text-xs text-[#697778]">
                 <span>06:00</span>
                 <span>12:00</span>
                 <span>18:00</span>
@@ -409,36 +409,36 @@ const GymAdminAttendance = () => {
               </div>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 flex flex-col shadow-sm">
-              <div className="flex items-center justify-between mb-4 border-b border-[#E5DDEB] pb-2">
-                <h3 className="text-lg font-bold text-[#292431]">Recent Check-ins</h3>
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 flex flex-col shadow-sm">
+              <div className="flex items-center justify-between mb-4 border-b border-[#D9E2E3] pb-2">
+                <h3 className="text-lg font-bold text-[#344B4A]">Recent Check-ins</h3>
               </div>
               <div className="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-1 max-h-[220px]">
                 {customerCheckins.slice(0, 6).map((log) => (
                   <div
                     key={log.id}
-                    className="flex items-center justify-between p-3 bg-[#FFFFFF] rounded-xl border border-[#E5DDEB] hover:border-[#A991D4]/30 transition-colors"
+                    className="flex items-center justify-between p-3 bg-[#FFFFFF] rounded-xl border border-[#D9E2E3] hover:border-[#167D78]/30 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
                           log.type === 'VIP Member'
-                            ? 'bg-purple-100 text-purple-700'
+                            ? 'bg-[#D8EAE7] text-[#167D78]'
                             : log.type === 'Guest'
                             ? 'bg-amber-100 text-amber-700'
-                            : 'bg-[#E9DFF4] text-[#292431]'
+                            : 'bg-[#D8EAE7] text-[#344B4A]'
                         }`}
                       >
                         {log.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-[#292431]">{log.name}</p>
-                        <p className="text-xs text-[#6B5E78]">
+                        <p className="text-sm font-semibold text-[#344B4A]">{log.name}</p>
+                        <p className="text-xs text-[#697778]">
                           {log.type} • {formatDateDisplay(log.date)}
                         </p>
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-[#A991D4]">{log.checkInTime}</span>
+                    <span className="text-xs font-bold text-[#167D78]">{log.checkInTime}</span>
                   </div>
                 ))}
               </div>
@@ -446,22 +446,22 @@ const GymAdminAttendance = () => {
           </div>
 
           {/* Customer Attendance Table: Filter Option & Log Entry Removed */}
-          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm space-y-4">
+          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold text-[#292431]">Customer Access Logs</h3>
-                <p className="text-xs text-[#6B5E78]">Complete history of facility entries today</p>
+                <h3 className="text-lg font-bold text-[#344B4A]">Customer Access Logs</h3>
+                <p className="text-xs text-[#697778]">Complete history of facility entries today</p>
               </div>
 
               <div className="flex items-center">
                 <div className="relative">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#697778]" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search member name or date..."
-                    className="pl-9 pr-4 py-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-medium outline-none focus:border-[#A991D4] text-[#292431] w-64 md:w-80"
+                    className="pl-9 pr-4 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-medium outline-none focus:border-[#167D78] text-[#344B4A] w-64 md:w-80"
                   />
                 </div>
               </div>
@@ -470,7 +470,7 @@ const GymAdminAttendance = () => {
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-[#E5DDEB] text-[#6B5E78] text-xs font-bold uppercase tracking-wider bg-[#F7F4FA]">
+                  <tr className="border-b border-[#D9E2E3] text-[#697778] text-xs font-bold uppercase tracking-wider bg-[#E8EFF0]">
                     <th className="py-3 px-4">Member Name</th>
                     <th className="py-3 px-4">Type</th>
                     <th className="py-3 px-4">Date</th>
@@ -479,39 +479,39 @@ const GymAdminAttendance = () => {
                     <th className="py-3 px-4 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E5DDEB]">
+                <tbody className="divide-y divide-[#D9E2E3]">
                   {filteredCustomerCheckins.map((item) => (
                     <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
                       {/* 1. Member Name */}
-                      <td className="py-3.5 px-4 font-semibold text-[#292431]">
+                      <td className="py-3.5 px-4 font-semibold text-[#344B4A]">
                         <div className="flex items-center space-x-2.5">
-                          <div className="w-8 h-8 rounded-full bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center font-bold text-xs">
+                          <div className="w-8 h-8 rounded-full bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold text-xs">
                             {item.name.charAt(0)}
                           </div>
                           <div>
                             <p className="font-bold">{item.name}</p>
-                            {item.email && <p className="text-[11px] text-[#6B5E78] font-normal">{item.email}</p>}
+                            {item.email && <p className="text-[11px] text-[#697778] font-normal">{item.email}</p>}
                           </div>
                         </div>
                       </td>
 
                       {/* 2. Type */}
-                      <td className="py-3.5 px-4 text-xs font-semibold text-[#6B5E78]">
-                        <span className="px-2.5 py-1 rounded-md bg-[#F7F4FA] border border-[#E5DDEB]">
+                      <td className="py-3.5 px-4 text-xs font-semibold text-[#697778]">
+                        <span className="px-2.5 py-1 rounded-md bg-[#E8EFF0] border border-[#D9E2E3]">
                           {item.type}
                         </span>
                       </td>
 
                       {/* 3. Date */}
-                      <td className="py-3.5 px-4 text-xs font-medium text-[#292431]">
+                      <td className="py-3.5 px-4 text-xs font-medium text-[#344B4A]">
                         <span className="inline-flex items-center gap-1.5">
-                          <Calendar size={13} className="text-[#A991D4]" />
+                          <Calendar size={13} className="text-[#167D78]" />
                           {formatDateDisplay(item.date)}
                         </span>
                       </td>
 
                       {/* 4. Check-in Time */}
-                      <td className="py-3.5 px-4 text-xs font-bold text-[#A991D4]">
+                      <td className="py-3.5 px-4 text-xs font-bold text-[#167D78]">
                         <span className="inline-flex items-center gap-1.5">
                           <Clock size={13} className="text-emerald-600" />
                           {item.checkInTime}
@@ -526,7 +526,7 @@ const GymAdminAttendance = () => {
                             In Gym
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 text-[#6B5E78]">
+                          <span className="inline-flex items-center gap-1.5 text-[#697778]">
                             <LogOut size={13} className="text-rose-500" />
                             {item.checkOutTime}
                           </span>
@@ -537,7 +537,7 @@ const GymAdminAttendance = () => {
                       <td className="py-3.5 px-4 text-right">
                         <button
                           onClick={() => setSelectedRecord({ ...item, recordType: 'customer' })}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F7F4FA] hover:bg-orange-50 text-[#A991D4] border border-[#A991D4]/30 hover:border-[#A991D4] text-xs font-semibold shadow-sm transition-all"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#E8EFF0] hover:bg-orange-50 text-[#167D78] border border-[#167D78]/30 hover:border-[#167D78] text-xs font-semibold shadow-sm transition-all"
                         >
                           <Eye size={13} />
                           <span>View Details</span>
@@ -557,79 +557,79 @@ const GymAdminAttendance = () => {
         <div className="space-y-6 animate-fadeIn">
           {/* Trainer Stat Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
                 <div className="w-10 h-10 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center">
                   <UserCheck size={20} />
                 </div>
               </div>
-              <p className="text-[#6B5E78] text-sm font-medium">Trainers On Duty</p>
-              <h3 className="text-3xl font-bold text-[#292431] mt-1">{trainerStats.onDutyCount}</h3>
+              <p className="text-[#697778] text-sm font-medium">Trainers On Duty</p>
+              <h3 className="text-3xl font-bold text-[#344B4A] mt-1">{trainerStats.onDutyCount}</h3>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-10 h-10 bg-blue-500/10 text-blue-600 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-blue-500/10 text-[#167D78] rounded-xl flex items-center justify-center">
                   <Dumbbell size={20} />
                 </div>
               </div>
-              <p className="text-[#6B5E78] text-sm font-medium">Total Trainer Check-ins</p>
-              <h3 className="text-3xl font-bold text-[#292431] mt-1">{trainerStats.totalToday}</h3>
+              <p className="text-[#697778] text-sm font-medium">Total Trainer Check-ins</p>
+              <h3 className="text-3xl font-bold text-[#344B4A] mt-1">{trainerStats.totalToday}</h3>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-10 h-10 bg-[#A991D4]/10 text-[#A991D4] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-[#167D78]/10 text-[#167D78] rounded-xl flex items-center justify-center">
                   <Clock size={20} />
                 </div>
               </div>
-              <p className="text-[#6B5E78] text-sm font-medium">Completed Sessions / Shifts</p>
-              <h3 className="text-3xl font-bold text-[#292431] mt-1">{trainerStats.completedCount}</h3>
+              <p className="text-[#697778] text-sm font-medium">Completed Sessions / Shifts</p>
+              <h3 className="text-3xl font-bold text-[#344B4A] mt-1">{trainerStats.completedCount}</h3>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-10 h-10 bg-[#967CC5]/20 text-[#8c6b3e] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-[#116660]/20 text-[#8c6b3e] rounded-xl flex items-center justify-center">
                   <Activity size={20} />
                 </div>
               </div>
-              <p className="text-[#6B5E78] text-sm font-medium">Attendance Rate</p>
-              <h3 className="text-3xl font-bold text-[#292431] mt-1">{trainerStats.attendancePct}%</h3>
+              <p className="text-[#697778] text-sm font-medium">Attendance Rate</p>
+              <h3 className="text-3xl font-bold text-[#344B4A] mt-1">{trainerStats.attendancePct}%</h3>
             </div>
           </div>
 
           {/* Trainer Shift Coverage & Live Trainer Feed */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm">
+            <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h3 className="text-lg font-bold text-[#292431]">Trainer Shift & Session Coverage</h3>
-                  <p className="text-xs text-[#6B5E78] mt-0.5">Active coach distribution across facility hours</p>
+                  <h3 className="text-lg font-bold text-[#344B4A]">Trainer Shift & Session Coverage</h3>
+                  <p className="text-xs text-[#697778] mt-0.5">Active coach distribution across facility hours</p>
                 </div>
-                <span className="text-xs font-semibold text-[#A991D4] bg-[#A991D4]/10 px-2.5 py-1 rounded-lg">
+                <span className="text-xs font-semibold text-[#167D78] bg-[#167D78]/10 px-2.5 py-1 rounded-lg">
                   Floor & PT Availability
                 </span>
               </div>
 
               {/* Hourly Coach Availability Bar */}
-              <div className="h-48 flex items-end justify-between gap-1 pt-4 border-t border-[#E5DDEB]">
+              <div className="h-48 flex items-end justify-between gap-1 pt-4 border-t border-[#D9E2E3]">
                 {[50, 70, 85, 90, 80, 60, 50, 75, 95, 100, 85, 70, 60, 40].map((val, idx) => (
                   <div key={idx} className="flex-1 flex flex-col items-center justify-end h-full relative group">
                     <div
                       className="w-full rounded-t-lg transition-all duration-200 group-hover:opacity-80 cursor-pointer"
                       style={{
                         height: `${val}%`,
-                        background: `linear-gradient(to top, #A991D4, #967CC5)`,
+                        background: `linear-gradient(to top, #167D78, #116660)`,
                       }}
                     >
-                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#292431] text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10 pointer-events-none">
+                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#344B4A] text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10 pointer-events-none">
                         {Math.round((val / 100) * 8)} Active Coaches
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between mt-2 text-xs text-[#6B5E78]">
+              <div className="flex justify-between mt-2 text-xs text-[#697778]">
                 <span>06:00 (Early Floor)</span>
                 <span>12:00 (Midday Peak)</span>
                 <span>17:00 (Evening PT)</span>
@@ -637,23 +637,23 @@ const GymAdminAttendance = () => {
               </div>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 flex flex-col shadow-sm">
-              <h3 className="text-lg font-bold text-[#292431] mb-4 border-b border-[#E5DDEB] pb-2">
+            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 flex flex-col shadow-sm">
+              <h3 className="text-lg font-bold text-[#344B4A] mb-4 border-b border-[#D9E2E3] pb-2">
                 Live Trainer Status
               </h3>
               <div className="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-1 max-h-[220px]">
                 {trainerRecords.slice(0, 6).map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between p-3 bg-[#FFFFFF] rounded-xl border border-[#E5DDEB] hover:border-[#A991D4]/30 transition-colors"
+                    className="flex items-center justify-between p-3 bg-[#FFFFFF] rounded-xl border border-[#D9E2E3] hover:border-[#167D78]/30 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-[#A991D4] text-[#292431] flex items-center justify-center text-xs font-bold">
+                      <div className="w-8 h-8 rounded-full bg-[#167D78] text-white flex items-center justify-center text-xs font-bold">
                         {item.trainerName.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-[#292431]">{item.trainerName}</p>
-                        <p className="text-xs text-[#6B5E78] truncate max-w-[150px]">{item.dutyType}</p>
+                        <p className="text-sm font-semibold text-[#344B4A]">{item.trainerName}</p>
+                        <p className="text-xs text-[#697778] truncate max-w-[150px]">{item.dutyType}</p>
                       </div>
                     </div>
                     <span
@@ -672,22 +672,22 @@ const GymAdminAttendance = () => {
           </div>
 
           {/* Trainer Attendance Table */}
-          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 shadow-sm space-y-4">
+          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold text-[#292431]">Trainers Attendance & Shift Logs</h3>
-                <p className="text-xs text-[#6B5E78]">Detailed records of trainer check-ins, sessions, and duty times</p>
+                <h3 className="text-lg font-bold text-[#344B4A]">Trainers Attendance & Shift Logs</h3>
+                <p className="text-xs text-[#697778]">Detailed records of trainer check-ins, sessions, and duty times</p>
               </div>
 
               <div className="flex items-center">
                 <div className="relative">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#697778]" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search trainer, duty, client or date..."
-                    className="pl-9 pr-4 py-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs font-medium outline-none focus:border-[#A991D4] text-[#292431] w-64 md:w-80"
+                    className="pl-9 pr-4 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-medium outline-none focus:border-[#167D78] text-[#344B4A] w-64 md:w-80"
                   />
                 </div>
               </div>
@@ -696,7 +696,7 @@ const GymAdminAttendance = () => {
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-[#E5DDEB] text-[#6B5E78] text-xs font-bold uppercase tracking-wider bg-[#F7F4FA]">
+                  <tr className="border-b border-[#D9E2E3] text-[#697778] text-xs font-bold uppercase tracking-wider bg-[#E8EFF0]">
                     <th className="py-3 px-4">Trainer</th>
                     <th className="py-3 px-4">Date</th>
                     <th className="py-3 px-4">Assigned Duty / Mode</th>
@@ -707,57 +707,57 @@ const GymAdminAttendance = () => {
                     <th className="py-3 px-4 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E5DDEB]">
+                <tbody className="divide-y divide-[#D9E2E3]">
                   {filteredTrainerRecords.map((t) => (
                     <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
                       {/* 1. Trainer */}
-                      <td className="py-3.5 px-4 font-semibold text-[#292431]">
+                      <td className="py-3.5 px-4 font-semibold text-[#344B4A]">
                         <div className="flex items-center space-x-2.5">
-                          <div className="w-9 h-9 rounded-full bg-[#A991D4] text-[#292431] flex items-center justify-center font-bold text-xs shadow-sm">
+                          <div className="w-9 h-9 rounded-full bg-[#167D78] text-white flex items-center justify-center font-bold text-xs shadow-sm">
                             {t.trainerName.charAt(0)}
                           </div>
                           <div>
                             <p className="font-bold">{t.trainerName}</p>
-                            <p className="text-[11px] text-[#6B5E78] font-normal">{t.specialization}</p>
+                            <p className="text-[11px] text-[#697778] font-normal">{t.specialization}</p>
                           </div>
                         </div>
                       </td>
 
                       {/* 2. Date */}
-                      <td className="py-3.5 px-4 text-xs font-medium text-[#292431]">
+                      <td className="py-3.5 px-4 text-xs font-medium text-[#344B4A]">
                         <span className="inline-flex items-center gap-1.5 font-semibold">
-                          <Calendar size={13} className="text-[#A991D4]" />
+                          <Calendar size={13} className="text-[#167D78]" />
                           {formatDateDisplay(t.date)}
                         </span>
                       </td>
 
                       {/* 3. Assigned Duty / Mode */}
-                      <td className="py-3.5 px-4 text-xs font-semibold text-[#292431]">
-                        <span className="px-2.5 py-1 rounded-md bg-[#F7F4FA] border border-[#E5DDEB]">
+                      <td className="py-3.5 px-4 text-xs font-semibold text-[#344B4A]">
+                        <span className="px-2.5 py-1 rounded-md bg-[#E8EFF0] border border-[#D9E2E3]">
                           {t.dutyType}
                         </span>
                       </td>
 
                       {/* 4. Client / Area */}
-                      <td className="py-3.5 px-4 text-xs font-bold text-[#A991D4]">
+                      <td className="py-3.5 px-4 text-xs font-bold text-[#167D78]">
                         {t.assignedCustomer ? `Client: ${t.assignedCustomer}` : 'Main Floor'}
                       </td>
 
                       {/* 5. Scheduled Slot */}
-                      <td className="py-3.5 px-4 text-xs font-medium text-[#6B5E78]">
+                      <td className="py-3.5 px-4 text-xs font-medium text-[#697778]">
                         <span className="flex items-center gap-1">
-                          <Clock size={12} className="text-[#A991D4]" /> {t.scheduledTime}
+                          <Clock size={12} className="text-[#167D78]" /> {t.scheduledTime}
                         </span>
                       </td>
 
                       {/* 6. Check-In */}
-                      <td className="py-3.5 px-4 text-xs font-bold text-[#292431]">
+                      <td className="py-3.5 px-4 text-xs font-bold text-[#344B4A]">
                         <div className="flex items-center gap-1">
                           <Clock size={12} className="text-emerald-600" />
                           <span>{t.checkInTime}</span>
                         </div>
                         {t.punctuality && (
-                          <span className="text-[10px] text-[#6B5E78] font-normal block">{t.punctuality}</span>
+                          <span className="text-[10px] text-[#697778] font-normal block">{t.punctuality}</span>
                         )}
                       </td>
 
@@ -767,7 +767,7 @@ const GymAdminAttendance = () => {
                           className={
                             t.checkOutTime === 'In Progress'
                               ? 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 animate-pulse'
-                              : 'text-[#292431]'
+                              : 'text-[#344B4A]'
                           }
                         >
                           {t.checkOutTime}
@@ -778,7 +778,7 @@ const GymAdminAttendance = () => {
                       <td className="py-3.5 px-4 text-right">
                         <button
                           onClick={() => setSelectedRecord({ ...t, recordType: 'trainer' })}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F7F4FA] hover:bg-orange-50 text-[#A991D4] border border-[#A991D4]/30 hover:border-[#A991D4] text-xs font-semibold shadow-sm transition-all"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#E8EFF0] hover:bg-orange-50 text-[#167D78] border border-[#167D78]/30 hover:border-[#167D78] text-xs font-semibold shadow-sm transition-all"
                         >
                           <Eye size={13} />
                           <span>View Details</span>
@@ -796,18 +796,18 @@ const GymAdminAttendance = () => {
       {/* Attendance & Shift Details Modal */}
       {selectedRecord && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-2xl border border-[#E5DDEB] shadow-2xl w-full max-w-lg overflow-hidden animate-scaleIn">
+          <div className="bg-white rounded-2xl border border-[#D9E2E3] shadow-2xl w-full max-w-lg overflow-hidden animate-scaleIn">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5DDEB] bg-[#F7F4FA]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#D9E2E3] bg-[#E8EFF0]">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 text-[#A991D4] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 text-[#167D78] flex items-center justify-center font-bold">
                   <Activity size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#292431]">
+                  <h3 className="text-base font-bold text-[#344B4A]">
                     {selectedRecord.recordType === 'trainer' ? 'Trainer Shift & Session Details' : 'Member Check-In Details'}
                   </h3>
-                  <p className="text-xs text-[#6B5E78]">
+                  <p className="text-xs text-[#697778]">
                     {formatDateDisplay(selectedRecord.date)} • {selectedRecord.recordType === 'trainer' ? selectedRecord.dutyType : selectedRecord.type}
                   </p>
                 </div>
@@ -827,43 +827,43 @@ const GymAdminAttendance = () => {
                   {/* Trainer Info Card */}
                   <div className="flex items-center justify-between p-4 rounded-xl bg-stone-50 border border-stone-200">
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-full bg-[#A991D4] text-[#292431] flex items-center justify-center font-bold text-base shadow-sm">
+                      <div className="w-12 h-12 rounded-full bg-[#167D78] text-white flex items-center justify-center font-bold text-base shadow-sm">
                         {selectedRecord.trainerName?.charAt(0) || 'T'}
                       </div>
                       <div>
-                        <h4 className="font-bold text-[#292431] text-sm">{selectedRecord.trainerName}</h4>
-                        <p className="text-xs text-[#6B5E78]">{selectedRecord.specialization}</p>
+                        <h4 className="font-bold text-[#344B4A] text-sm">{selectedRecord.trainerName}</h4>
+                        <p className="text-xs text-[#697778]">{selectedRecord.specialization}</p>
                       </div>
                     </div>
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 text-[#A991D4] border border-orange-200">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 text-[#167D78] border border-orange-200">
                       {selectedRecord.punctuality || 'On Time'}
                     </span>
                   </div>
 
                   {/* Details Grid */}
                   <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="p-3 rounded-xl bg-[#F7F4FA] border border-stone-200">
+                    <div className="p-3 rounded-xl bg-[#E8EFF0] border border-stone-200">
                       <span className="text-stone-400 font-medium block mb-1">Assigned Client / Area</span>
-                      <span className="font-bold text-[#292431] text-sm">
+                      <span className="font-bold text-[#344B4A] text-sm">
                         {selectedRecord.assignedCustomer || 'General Floor'}
                       </span>
                     </div>
-                    <div className="p-3 rounded-xl bg-[#F7F4FA] border border-stone-200">
+                    <div className="p-3 rounded-xl bg-[#E8EFF0] border border-stone-200">
                       <span className="text-stone-400 font-medium block mb-1">Session Mode / Duty</span>
-                      <span className="font-bold text-[#292431] text-sm">
+                      <span className="font-bold text-[#344B4A] text-sm">
                         {selectedRecord.dutyType}
                       </span>
                     </div>
-                    <div className="p-3 rounded-xl bg-[#F7F4FA] border border-stone-200">
+                    <div className="p-3 rounded-xl bg-[#E8EFF0] border border-stone-200">
                       <span className="text-stone-400 font-medium block mb-1">Scheduled Slot</span>
                       <span className="font-bold text-stone-800 text-sm flex items-center gap-1">
-                        <Clock size={13} className="text-[#A991D4]" /> {selectedRecord.scheduledTime}
+                        <Clock size={13} className="text-[#167D78]" /> {selectedRecord.scheduledTime}
                       </span>
                     </div>
-                    <div className="p-3 rounded-xl bg-[#F7F4FA] border border-stone-200">
+                    <div className="p-3 rounded-xl bg-[#E8EFF0] border border-stone-200">
                       <span className="text-stone-400 font-medium block mb-1">Date</span>
                       <span className="font-bold text-stone-800 text-sm flex items-center gap-1">
-                        <Calendar size={13} className="text-[#A991D4]" /> {formatDateDisplay(selectedRecord.date)}
+                        <Calendar size={13} className="text-[#167D78]" /> {formatDateDisplay(selectedRecord.date)}
                       </span>
                     </div>
                     <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
@@ -892,12 +892,12 @@ const GymAdminAttendance = () => {
                   {/* Member Info Card */}
                   <div className="flex items-center justify-between p-4 rounded-xl bg-stone-50 border border-stone-200">
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-full bg-[#A991D4]/15 text-[#A991D4] flex items-center justify-center font-bold text-base shadow-sm">
+                      <div className="w-12 h-12 rounded-full bg-[#167D78]/15 text-[#167D78] flex items-center justify-center font-bold text-base shadow-sm">
                         {selectedRecord.name?.charAt(0) || 'M'}
                       </div>
                       <div>
-                        <h4 className="font-bold text-[#292431] text-sm">{selectedRecord.name}</h4>
-                        {selectedRecord.email && <p className="text-xs text-[#6B5E78]">{selectedRecord.email}</p>}
+                        <h4 className="font-bold text-[#344B4A] text-sm">{selectedRecord.name}</h4>
+                        {selectedRecord.email && <p className="text-xs text-[#697778]">{selectedRecord.email}</p>}
                       </div>
                     </div>
                     <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-300">
@@ -907,15 +907,15 @@ const GymAdminAttendance = () => {
 
                   {/* Details Grid */}
                   <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="p-3 rounded-xl bg-[#F7F4FA] border border-stone-200">
+                    <div className="p-3 rounded-xl bg-[#E8EFF0] border border-stone-200">
                       <span className="text-stone-400 font-medium block mb-1">Date</span>
                       <span className="font-bold text-stone-800 text-sm flex items-center gap-1">
-                        <Calendar size={13} className="text-[#A991D4]" /> {formatDateDisplay(selectedRecord.date)}
+                        <Calendar size={13} className="text-[#167D78]" /> {formatDateDisplay(selectedRecord.date)}
                       </span>
                     </div>
-                    <div className="p-3 rounded-xl bg-[#F7F4FA] border border-stone-200">
+                    <div className="p-3 rounded-xl bg-[#E8EFF0] border border-stone-200">
                       <span className="text-stone-400 font-medium block mb-1">Membership / Pass</span>
-                      <span className="font-bold text-[#292431] text-sm">
+                      <span className="font-bold text-[#344B4A] text-sm">
                         {selectedRecord.type}
                       </span>
                     </div>
@@ -937,10 +937,10 @@ const GymAdminAttendance = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex items-center justify-end px-6 py-4 border-t border-[#E5DDEB] bg-stone-50">
+            <div className="flex items-center justify-end px-6 py-4 border-t border-[#D9E2E3] bg-stone-50">
               <button
                 onClick={() => setSelectedRecord(null)}
-                className="px-5 py-2 rounded-xl bg-[#292431] hover:bg-stone-800 text-white text-xs font-bold transition-all shadow-sm"
+                className="px-5 py-2 rounded-xl bg-[#344B4A] hover:bg-stone-800 text-white text-xs font-bold transition-all shadow-sm"
               >
                 Close
               </button>

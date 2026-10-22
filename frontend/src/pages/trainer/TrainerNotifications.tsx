@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Info, AlertCircle, CheckCircle, MessageSquare, XCircle, CheckCheck } from 'lucide-react';
 import api from '../../utils/api';
 
 const TYPE_STYLES: Record<string, { icon: any; color: string; bg: string }> = {
-  info: { icon: Info, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+  info: { icon: Info, color: 'text-[#167D78]', bg: 'bg-blue-500/10' },
   success: { icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-500/10' },
-  alert: { icon: AlertCircle, color: 'text-[#967CC5]', bg: 'bg-red-500/10' },
-  message: { icon: MessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+  alert: { icon: AlertCircle, color: 'text-[#167D78]', bg: 'bg-red-500/10' },
+  message: { icon: MessageSquare, color: 'text-[#167D78]', bg: 'bg-[#167D78]/10' },
 };
 
 const TrainerNotifications = () => {
@@ -60,19 +60,19 @@ const TrainerNotifications = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex justify-between items-end border-b border-[#E5DDEB] pb-4">
+      <div className="flex justify-between items-end border-b border-[#D9E2E3] pb-4">
         <div>
           <h1 className="text-3xl font-bold">Notifications</h1>
-          <p className="text-[#6B5E78]">Alerts, messages and updates</p>
+          <p className="text-[#697778]">Alerts, messages and updates</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#6B5E78]">
+          <span className="text-xs text-[#697778]">
             {notifications.filter(n => !n.isRead).length} unread
           </span>
           <button
             onClick={markAllAsRead}
             disabled={notifications.every(n => n.isRead)}
-            className="inline-flex items-center gap-1.5 text-sm text-[#A991D4] hover:underline disabled:opacity-40 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 text-sm text-[#167D78] hover:underline disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <CheckCheck size={15} />
             Mark all as read
@@ -82,13 +82,13 @@ const TrainerNotifications = () => {
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : notifications.length === 0 ? (
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl py-16 text-center">
-          <Bell size={40} className="mx-auto text-[#E5DDEB] mb-3" />
-          <p className="text-[#6B5E78] font-semibold">No notifications yet</p>
-          <p className="text-[#6B5E78] text-sm mt-1">Alerts, messages and updates will appear here.</p>
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl py-16 text-center">
+          <Bell size={40} className="mx-auto text-[#D9E2E3] mb-3" />
+          <p className="text-[#697778] font-semibold">No notifications yet</p>
+          <p className="text-[#697778] text-sm mt-1">Alerts, messages and updates will appear here.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -99,22 +99,22 @@ const TrainerNotifications = () => {
               <button
                 key={notif._id}
                 onClick={() => openNotification(notif)}
-                className={`w-full text-left p-4 rounded-xl border transition-colors ${!notif.isRead ? 'bg-[#FFFFFF] border-[#E5DDEB]' : 'bg-transparent border-transparent'} flex gap-4 hover:border-[#A991D4]/40`}
+                className={`w-full text-left p-4 rounded-xl border transition-colors ${!notif.isRead ? 'bg-[#FFFFFF] border-[#D9E2E3]' : 'bg-transparent border-transparent'} flex gap-4 hover:border-[#167D78]/40`}
               >
                 <div className={`w-10 h-10 rounded-full ${s.bg} flex items-center justify-center shrink-0 ${s.color}`}>
                   <Icon size={18} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start mb-1 gap-3">
-                    <h4 className={`font-bold truncate ${!notif.isRead ? 'text-[#292431]' : 'text-[#6B5E78]'}`}>{notif.title}</h4>
-                    <span className="text-xs text-[#6B5E78] whitespace-nowrap">
+                    <h4 className={`font-bold truncate ${!notif.isRead ? 'text-[#344B4A]' : 'text-[#697778]'}`}>{notif.title}</h4>
+                    <span className="text-xs text-[#697778] whitespace-nowrap">
                       {notif.createdAt ? new Date(notif.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }) : ''}
                     </span>
                   </div>
-                  <p className="text-sm text-[#6B5E78] line-clamp-2">{notif.message}</p>
+                  <p className="text-sm text-[#697778] line-clamp-2">{notif.message}</p>
                 </div>
                 {!notif.isRead && (
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#A991D4] shrink-0 self-center" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#167D78] shrink-0 self-center" />
                 )}
               </button>
             );
@@ -126,39 +126,39 @@ const TrainerNotifications = () => {
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-[#E9DFF4] bg-[#F7F4FA]">
+            <div className="flex items-center justify-between p-4 border-b border-[#D8EAE7] bg-[#E8EFF0]">
               <div className="flex items-center gap-2">
                 {(() => { const s = TYPE_STYLES[selected.type] || TYPE_STYLES.info; const I = s.icon; return <I size={18} className={s.color} />; })()}
-                <h3 className="font-bold text-[#292431]">Notification Details</h3>
+                <h3 className="font-bold text-[#344B4A]">Notification Details</h3>
               </div>
-              <button onClick={() => setSelected(null)} className="text-[#6B5E78] hover:text-[#292431]">
+              <button onClick={() => setSelected(null)} className="text-[#697778] hover:text-[#344B4A]">
                 <XCircle size={20} />
               </button>
             </div>
             <div className="p-5 space-y-4">
               <div>
-                <p className="text-xs text-[#6B5E78] uppercase tracking-wide font-semibold mb-1">Title</p>
-                <p className="font-bold text-[#292431]">{selected.title}</p>
+                <p className="text-xs text-[#697778] uppercase tracking-wide font-semibold mb-1">Title</p>
+                <p className="font-bold text-[#344B4A]">{selected.title}</p>
               </div>
               <div>
-                <p className="text-xs text-[#6B5E78] uppercase tracking-wide font-semibold mb-1">Message</p>
-                <p className="text-sm text-[#6B5E78] leading-relaxed">{selected.message}</p>
+                <p className="text-xs text-[#697778] uppercase tracking-wide font-semibold mb-1">Message</p>
+                <p className="text-sm text-[#697778] leading-relaxed">{selected.message}</p>
               </div>
               <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
                 <div>
-                  <p className="text-xs text-[#6B5E78] uppercase tracking-wide font-semibold mb-1">Type</p>
-                  <p className="text-sm font-semibold text-[#292431] capitalize">{selected.type || 'info'}</p>
+                  <p className="text-xs text-[#697778] uppercase tracking-wide font-semibold mb-1">Type</p>
+                  <p className="text-sm font-semibold text-[#344B4A] capitalize">{selected.type || 'info'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-[#6B5E78] uppercase tracking-wide font-semibold mb-1">Status</p>
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${selected.isRead ? 'bg-gray-100 text-gray-600' : 'bg-[#E9DFF4]/10 text-[#A991D4]'}`}>
+                  <p className="text-xs text-[#697778] uppercase tracking-wide font-semibold mb-1">Status</p>
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${selected.isRead ? 'bg-gray-100 text-gray-600' : 'bg-[#D8EAE7]/10 text-[#167D78]'}`}>
                     <CheckCircle size={12} />
                     {selected.isRead ? 'Read' : 'Unread'}
                   </span>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-xs text-[#6B5E78] uppercase tracking-wide font-semibold mb-1">Received At</p>
-                  <p className="text-sm font-semibold text-[#292431]">
+                  <p className="text-xs text-[#697778] uppercase tracking-wide font-semibold mb-1">Received At</p>
+                  <p className="text-sm font-semibold text-[#344B4A]">
                     {selected.createdAt ? new Date(selected.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '-'}
                   </p>
                 </div>

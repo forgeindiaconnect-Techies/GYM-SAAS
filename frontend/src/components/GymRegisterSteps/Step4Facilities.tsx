@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Check } from 'lucide-react';
 
 interface StepProps {
@@ -28,9 +28,9 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#E5DDEB] pb-2">
-        <h2 className="text-lg font-semibold text-[#292431]">Gym Facilities</h2>
-        <p className="text-sm text-[#6B5E78]">Select all the amenities available at your gym.</p>
+      <div className="border-b border-[#D9E2E3] pb-2">
+        <h2 className="text-lg font-semibold text-[#344B4A]">Gym Facilities</h2>
+        <p className="text-sm text-[#697778]">Select all the amenities available at your gym.</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -43,11 +43,11 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
               onClick={() => toggleFacility(facility)}
               className={`flex items-center space-x-2 p-3 rounded-xl border text-left transition-colors ${
                 isSelected 
-                  ? 'bg-[#A991D4]/10 border-[#A991D4] text-[#292431]' 
-                  : 'bg-[#FFFFFF] border-[#E5DDEB] text-[#6B5E78] hover:border-[#A991D4]/50'
+                  ? 'bg-[#167D78]/10 border-[#167D78] text-[#344B4A]' 
+                  : 'bg-[#FFFFFF] border-[#D9E2E3] text-[#697778] hover:border-[#167D78]/50'
               }`}
             >
-              <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border ${isSelected ? 'bg-[#A991D4] border-[#A991D4]' : 'border-[#555]'}`}>
+              <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border ${isSelected ? 'bg-[#167D78] border-[#167D78]' : 'border-[#697778]'}`}>
                 {isSelected && <Check size={14} className="text-black" />}
               </div>
               <span className="text-xs font-medium leading-tight">{facility}</span>

@@ -1,4 +1,4 @@
-import { Dumbbell, Clock, Flame, Play, Plus } from 'lucide-react';
+﻿import { Dumbbell, Clock, Flame, Play, Plus } from 'lucide-react';
 
 const MemberWorkout = () => {
   return (
@@ -6,24 +6,24 @@ const MemberWorkout = () => {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold">Workout Plan</h1>
-          <p className="text-[#6B5E78]">Your customized routine for today</p>
+          <p className="text-[#697778]">Your customized routine for today</p>
         </div>
-        <button className="bg-[#A991D4] text-[#292431] px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#967CC5] transition-colors">
+        <button className="bg-[#167D78] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#116660] transition-colors">
           <Plus size={18} /> Custom Workout
         </button>
       </div>
 
-      <div className="bg-gradient-to-r from-[#FFFFFF] to-[#1a1a1a] border border-[#E5DDEB] rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="bg-gradient-to-r from-[#FFFFFF] to-[#1a1a1a] border border-[#D9E2E3] rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
-          <div className="inline-block px-3 py-1 bg-[#A991D4]/10 text-[#A991D4] rounded-full text-xs font-bold mb-3">TODAY'S FOCUS</div>
+          <div className="inline-block px-3 py-1 bg-[#167D78]/10 text-[#167D78] rounded-full text-xs font-bold mb-3">TODAY'S FOCUS</div>
           <h2 className="text-2xl font-bold mb-2">Upper Body Power</h2>
-          <div className="flex gap-4 text-sm text-[#6B5E78]">
+          <div className="flex gap-4 text-sm text-[#697778]">
             <span className="flex items-center gap-1"><Clock size={16} /> 45 Mins</span>
             <span className="flex items-center gap-1"><Flame size={16} /> 320 kcal</span>
             <span className="flex items-center gap-1"><Dumbbell size={16} /> Intermediate</span>
           </div>
         </div>
-        <button className="w-full md:w-auto px-8 py-3 bg-[#A991D4] text-[#292431] font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-105 transition-transform">
+        <button className="w-full md:w-auto px-8 py-3 bg-[#167D78] text-white font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-105 transition-transform">
           <Play size={18} fill="currentColor" /> Start Workout
         </button>
       </div>
@@ -39,32 +39,32 @@ const MemberWorkout = () => {
             { name: 'Overhead Press', sets: '3', reps: '8-10', weight: '40kg' },
             { name: 'Tricep Pushdown', sets: '3', reps: '15', weight: '20kg' },
           ].map((ex, i) => (
-            <div key={i} className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl p-4 flex items-center justify-between group hover:border-[#A991D4]/50 transition-colors">
+            <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-4 flex items-center justify-between group hover:border-[#167D78]/50 transition-colors">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#FFFFFF] rounded-lg flex items-center justify-center font-bold text-[#6B5E78]">
+                <div className="w-12 h-12 bg-[#FFFFFF] rounded-lg flex items-center justify-center font-bold text-[#697778]">
                   {i + 1}
                 </div>
                 <div>
                   <h4 className="font-bold text-lg">{ex.name}</h4>
-                  <p className="text-sm text-[#6B5E78]">{ex.sets} Sets × {ex.reps} Reps</p>
+                  <p className="text-sm text-[#697778]">{ex.sets} Sets × {ex.reps} Reps</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-[#C43D4D] font-bold">{ex.weight}</span>
+                <span className="text-[#C43D35] font-bold">{ex.weight}</span>
               </div>
             </div>
           ))}
         </div>
         
         <div className="space-y-6">
-          <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6">
+          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6">
             <h3 className="font-bold mb-4">Weekly Progress</h3>
             <div className="space-y-3">
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (
                 <div key={i} className="flex items-center justify-between">
-                  <span className="text-sm text-[#6B5E78] w-8">{day}</span>
-                  <div className="flex-1 mx-3 h-2 bg-[#E9DFF4] rounded-full overflow-hidden">
-                    <div className={`h-full rounded-full ${[0, 2, 4].includes(i) ? 'bg-[#A991D4]' : i === 1 ? 'bg-[#A991D4]/50' : ''}`} style={{ width: [0, 2, 4].includes(i) ? '100%' : i === 1 ? '50%' : '0%' }}></div>
+                  <span className="text-sm text-[#697778] w-8">{day}</span>
+                  <div className="flex-1 mx-3 h-2 bg-[#D8EAE7] rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${[0, 2, 4].includes(i) ? 'bg-[#167D78]' : i === 1 ? 'bg-[#167D78]/50' : ''}`} style={{ width: [0, 2, 4].includes(i) ? '100%' : i === 1 ? '50%' : '0%' }}></div>
                   </div>
                   <span className="text-xs w-6 text-right">
                     {[0, 2, 4].includes(i) ? '✓' : i === 1 ? 'Half' : '-'}

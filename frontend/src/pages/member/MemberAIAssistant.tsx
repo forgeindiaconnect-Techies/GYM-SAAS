@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Bot, Send, Loader2, Sparkles, ArrowRight, 
@@ -44,7 +44,7 @@ const renderFormattedText = (text: string) => {
     const parts = line.split(/(\*\*.*?\*\*)/g);
     const renderedLine = parts.map((part, idx) => {
       if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={idx} className="font-bold text-[#A991D4]">{part.slice(2, -2)}</strong>;
+        return <strong key={idx} className="font-bold text-[#167D78]">{part.slice(2, -2)}</strong>;
       }
       return part;
     });
@@ -140,17 +140,17 @@ const MemberAIAssistant = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-9rem)] flex flex-col bg-white border border-[#E5DDEB] rounded-2xl overflow-hidden shadow-sm relative">
+    <div className="max-w-4xl mx-auto h-[calc(100vh-9rem)] flex flex-col bg-white border border-[#D9E2E3] rounded-2xl overflow-hidden shadow-sm relative">
       {/* Header */}
-      <div className="p-4 border-b border-[#E5DDEB] flex items-center justify-between bg-[#1C1917] text-white">
+      <div className="p-4 border-b border-[#D9E2E3] flex items-center justify-between bg-[#1C1917] text-white">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#A991D4] rounded-xl flex items-center justify-center text-[#292431] shadow-xs">
+          <div className="w-10 h-10 bg-[#167D78] rounded-xl flex items-center justify-center text-[#344B4A] shadow-xs">
             <Bot size={22} />
           </div>
           <div>
             <h2 className="font-bold text-white text-base flex items-center gap-1.5">
               Gym Smart Assistant
-              <Sparkles size={14} className="text-[#A991D4]" />
+              <Sparkles size={14} className="text-[#167D78]" />
             </h2>
             <p className="text-xs text-stone-600 font-medium flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -175,10 +175,10 @@ const MemberAIAssistant = () => {
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#F7F4FA]">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#E8EFF0]">
         {messages.length === 0 ? (
           <div className="max-w-xl mx-auto space-y-6 pt-4 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center mx-auto shadow-xs">
+            <div className="w-16 h-16 rounded-2xl bg-[#167D78]/10 text-[#167D78] flex items-center justify-center mx-auto shadow-xs">
               <Bot size={32} />
             </div>
             <div>
@@ -190,7 +190,7 @@ const MemberAIAssistant = () => {
 
             <div className="text-left space-y-2">
               <p className="text-[11px] font-bold text-stone-500 uppercase tracking-wider px-1 flex items-center gap-1">
-                <Compass size={12} className="text-[#A991D4]" />
+                <Compass size={12} className="text-[#167D78]" />
                 Suggested Inquiries
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -198,10 +198,10 @@ const MemberAIAssistant = () => {
                   <button
                     key={idx}
                     onClick={() => handleSendMessage(q)}
-                    className="text-left p-3 bg-white border border-[#E5DDEB] hover:border-[#A991D4] hover:bg-[#F7F4FA] text-xs font-semibold text-stone-800 rounded-xl transition-all shadow-2xs flex items-center justify-between group cursor-pointer"
+                    className="text-left p-3 bg-white border border-[#D9E2E3] hover:border-[#167D78] hover:bg-[#E8EFF0] text-xs font-semibold text-stone-800 rounded-xl transition-all shadow-2xs flex items-center justify-between group cursor-pointer"
                   >
                     <span className="truncate pr-2">{q}</span>
-                    <ArrowRight size={13} className="text-[#A991D4] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                    <ArrowRight size={13} className="text-[#167D78] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                   </button>
                 ))}
               </div>
@@ -211,7 +211,7 @@ const MemberAIAssistant = () => {
           messages.map(msg => (
             <div key={msg.id} className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
               {msg.sender === 'bot' && (
-                <div className="w-8 h-8 rounded-xl bg-[#A991D4] text-[#292431] flex items-center justify-center shrink-0 text-xs shadow-xs mt-0.5">
+                <div className="w-8 h-8 rounded-xl bg-[#167D78] text-white flex items-center justify-center shrink-0 text-xs shadow-xs mt-0.5">
                   <Bot size={16} />
                 </div>
               )}
@@ -219,10 +219,10 @@ const MemberAIAssistant = () => {
                 {/* Bubble */}
                 <div className={`p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                   msg.sender === 'user'
-                    ? 'bg-[#A991D4] text-[#292431] rounded-tr-xs font-medium shadow-xs'
+                    ? 'bg-[#167D78] text-white rounded-tr-xs font-medium shadow-xs'
                     : msg.isRestricted
                     ? 'bg-rose-50 text-rose-900 border border-rose-200 rounded-tl-xs shadow-2xs'
-                    : 'bg-white text-stone-800 border border-[#E5DDEB] rounded-tl-xs shadow-2xs'
+                    : 'bg-white text-stone-800 border border-[#D9E2E3] rounded-tl-xs shadow-2xs'
                 }`}>
                   {renderFormattedText(msg.text)}
                 </div>
@@ -237,15 +237,15 @@ const MemberAIAssistant = () => {
                       {msg.matchedItems.map(item => (
                         <div
                           key={item.id}
-                          className="p-3 bg-white border border-[#E5DDEB] hover:border-[#A991D4] rounded-xl transition-all shadow-2xs group flex flex-col justify-between"
+                          className="p-3 bg-white border border-[#D9E2E3] hover:border-[#167D78] rounded-xl transition-all shadow-2xs group flex flex-col justify-between"
                         >
                           <div>
                             <div className="flex items-center justify-between gap-1">
-                              <h5 className="font-bold text-xs text-stone-800 group-hover:text-[#A991D4] truncate">
+                              <h5 className="font-bold text-xs text-stone-800 group-hover:text-[#167D78] truncate">
                                 {item.title}
                               </h5>
                               {item.badge && (
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-[#A991D4]/10 text-[#A991D4] rounded-full shrink-0">
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-[#167D78]/10 text-[#167D78] rounded-full shrink-0">
                                   {item.badge}
                                 </span>
                               )}
@@ -256,7 +256,7 @@ const MemberAIAssistant = () => {
                           </div>
                           <button
                             onClick={() => navigate(item.route)}
-                            className="mt-2.5 px-3 py-1.5 bg-[#A991D4] hover:bg-[#967CC5] text-[#292431] text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer w-full"
+                            className="mt-2.5 px-3 py-1.5 bg-[#167D78] hover:bg-[#116660] text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer w-full"
                           >
                             <span>{item.actionLabel}</span>
                             <ChevronRight size={13} />
@@ -271,7 +271,7 @@ const MemberAIAssistant = () => {
                 {msg.sender === 'bot' && msg.liveItems && msg.liveItems.length > 0 && (
                   <div className="space-y-1.5 pt-1">
                     <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block px-1 flex items-center gap-1">
-                      <ShoppingBag size={11} className="text-[#A991D4]" />
+                      <ShoppingBag size={11} className="text-[#167D78]" />
                       Products & Plans
                     </span>
                     <div className="grid grid-cols-2 gap-2">
@@ -279,22 +279,22 @@ const MemberAIAssistant = () => {
                         <div
                           key={live.id}
                           onClick={() => navigate(live.route || '/member/store')}
-                          className="p-2.5 bg-white border border-[#E5DDEB] hover:border-[#A991D4] rounded-xl text-left cursor-pointer transition-all shadow-2xs group"
+                          className="p-2.5 bg-white border border-[#D9E2E3] hover:border-[#167D78] rounded-xl text-left cursor-pointer transition-all shadow-2xs group"
                         >
                           {live.image ? (
                             <div className="w-full h-20 rounded-lg bg-stone-50 overflow-hidden mb-1.5">
                               <img src={live.image} alt={live.title} className="w-full h-full object-contain p-1" />
                             </div>
                           ) : (
-                            <div className="w-full h-14 rounded-lg bg-[#A991D4]/5 text-[#A991D4] flex items-center justify-center mb-1.5">
+                            <div className="w-full h-14 rounded-lg bg-[#167D78]/5 text-[#167D78] flex items-center justify-center mb-1.5">
                               <Tag size={18} />
                             </div>
                           )}
-                          <h6 className="font-bold text-xs text-stone-800 truncate group-hover:text-[#A991D4]">
+                          <h6 className="font-bold text-xs text-stone-800 truncate group-hover:text-[#167D78]">
                             {live.title}
                           </h6>
                           <div className="flex items-center justify-between mt-1">
-                            <span className="font-extrabold text-xs text-[#A991D4]">
+                            <span className="font-extrabold text-xs text-[#167D78]">
                               ₹{live.price}
                             </span>
                             {live.tag && (
@@ -320,7 +320,7 @@ const MemberAIAssistant = () => {
                         <button
                           key={fIdx}
                           onClick={() => handleSendMessage(fu)}
-                          className="text-xs px-3 py-1 bg-stone-100 hover:bg-[#A991D4]/10 hover:text-[#A991D4] text-stone-700 rounded-full font-medium transition-colors border border-stone-200 cursor-pointer"
+                          className="text-xs px-3 py-1 bg-stone-100 hover:bg-[#167D78]/10 hover:text-[#167D78] text-stone-700 rounded-full font-medium transition-colors border border-stone-200 cursor-pointer"
                         >
                           {fu}
                         </button>
@@ -339,11 +339,11 @@ const MemberAIAssistant = () => {
 
         {loading && (
           <div className="flex gap-3 items-start">
-            <div className="w-8 h-8 rounded-xl bg-[#A991D4] text-[#292431] flex items-center justify-center shrink-0 text-xs">
+            <div className="w-8 h-8 rounded-xl bg-[#167D78] text-white flex items-center justify-center shrink-0 text-xs">
               <Bot size={16} />
             </div>
-            <div className="bg-white border border-[#E5DDEB] p-3.5 rounded-2xl rounded-tl-xs text-xs text-stone-600 flex items-center gap-2 shadow-2xs">
-              <Loader2 size={16} className="animate-spin text-[#A991D4]" />
+            <div className="bg-white border border-[#D9E2E3] p-3.5 rounded-2xl rounded-tl-xs text-xs text-stone-600 flex items-center gap-2 shadow-2xs">
+              <Loader2 size={16} className="animate-spin text-[#167D78]" />
               <span>Searching gym features and verified knowledge...</span>
             </div>
           </div>
@@ -352,7 +352,7 @@ const MemberAIAssistant = () => {
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-[#E5DDEB] bg-white">
+      <div className="p-4 border-t border-[#D9E2E3] bg-white">
         <div className="flex gap-2">
           <input
             type="text"
@@ -361,12 +361,12 @@ const MemberAIAssistant = () => {
             onKeyDown={e => e.key === 'Enter' && handleSendMessage()}
             disabled={loading}
             placeholder="Ask anything about your gym..."
-            className="flex-1 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-[#A991D4] text-stone-800 placeholder:text-stone-400"
+            className="flex-1 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-[#167D78] text-stone-800 placeholder:text-stone-400"
           />
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputMessage.trim() || loading}
-            className="px-5 py-3 bg-[#A991D4] text-[#292431] rounded-xl hover:bg-[#967CC5] transition-colors disabled:opacity-40 font-bold flex items-center gap-2 shadow-xs cursor-pointer"
+            className="px-5 py-3 bg-[#167D78] text-white rounded-xl hover:bg-[#116660] transition-colors disabled:opacity-40 font-bold flex items-center gap-2 shadow-xs cursor-pointer"
           >
             <Send size={16} />
             <span className="hidden sm:inline">Search</span>

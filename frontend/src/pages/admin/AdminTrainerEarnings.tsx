@@ -1,4 +1,4 @@
-import { TrendingUp } from 'lucide-react';
+﻿import { TrendingUp } from 'lucide-react';
 
 const AdminTrainerEarnings = () => {
   return (
@@ -6,12 +6,12 @@ const AdminTrainerEarnings = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <TrendingUp className="text-[#A991D4]" size={32} />
+            <TrendingUp className="text-[#167D78]" size={32} />
             Trainer Earnings
           </h1>
-          <p className="text-[#6B5E78] mt-2">Monitor trainer revenues and outstanding balances.</p>
+          <p className="text-[#697778] mt-2">Monitor trainer revenues and outstanding balances.</p>
         </div>
-        <button className="px-6 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors">
+        <button className="px-6 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors">
           Manage Trainer Earnings
         </button>
       </div>
@@ -19,14 +19,14 @@ const AdminTrainerEarnings = () => {
       
       <div className="grid md:grid-cols-3 gap-6">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-5">
+          <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5">
             <div className="flex justify-between items-center mb-4">
               <div className="font-bold">Trainer #{i}</div>
-              <div className="text-xs bg-[#E9DFF4] px-2 py-1 rounded text-[#6B5E78]">85% Split</div>
+              <div className="text-xs bg-[#D8EAE7] px-2 py-1 rounded text-[#697778]">85% Split</div>
             </div>
-            <p className="text-sm text-[#6B5E78]">Pending Payout</p>
-            <p className="text-2xl font-bold text-[#A991D4] mb-4">${(i * 450).toFixed(2)}</p>
-            <button className="w-full py-2 bg-[#E9DFF4] hover:bg-[#333] rounded-lg text-sm transition-colors">Process Payout</button>
+            <p className="text-sm text-[#697778]">Pending Payout</p>
+            <p className="text-2xl font-bold text-[#167D78] mb-4">${(i * 450).toFixed(2)}</p>
+            <button className="w-full py-2 bg-[#D8EAE7] hover:bg-[#333] rounded-lg text-sm transition-colors">Process Payout</button>
           </div>
         ))}
       </div>

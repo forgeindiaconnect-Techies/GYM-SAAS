@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+﻿import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../utils/routeHelpers';
 
@@ -13,8 +13,8 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F7F4FA] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#A991D4] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#E8EFF0] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#167D78] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

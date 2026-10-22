@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   Wrench, Search, CheckCircle2, AlertTriangle, ShieldCheck,
   RefreshCw, Dumbbell, Activity, Check, X, Sparkles, Filter,
@@ -155,18 +155,18 @@ const TrainerGymEquipments: React.FC = () => {
       )}
 
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-[#E5DDEB] rounded-3xl p-6 md:p-8 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[#A991D4]/10 text-[#A991D4] flex items-center gap-1.5">
+            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[#167D78]/10 text-[#167D78] flex items-center gap-1.5">
               <Wrench size={13} /> Gym Equipment Approvals
             </span>
-            <span className="text-xs text-[#6B5E78]">• {gymName} Equipment Inventory</span>
+            <span className="text-xs text-[#697778]">• {gymName} Equipment Inventory</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#292431] tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[#344B4A] tracking-tight">
             Gym Equipments Management
           </h1>
-          <p className="text-sm text-[#6B5E78] mt-1 max-w-2xl">
+          <p className="text-sm text-[#697778] mt-1 max-w-2xl">
             Equipments added by gym owners appear here. Click <strong>Approval</strong> on any equipment to verify safety and automatically publish it to the customer dashboard.
           </p>
         </div>
@@ -174,7 +174,7 @@ const TrainerGymEquipments: React.FC = () => {
         <div className="flex items-center gap-3 w-full md:w-auto">
           <button
             onClick={fetchEquipments}
-            className="p-2.5 text-[#6B5E78] hover:text-[#292431] bg-[#F7F4FA] border border-[#E5DDEB] rounded-2xl transition-all hover:bg-[#E9DFF4]/30"
+            className="p-2.5 text-[#697778] hover:text-[#344B4A] bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl transition-all hover:bg-[#D8EAE7]/30"
             title="Refresh equipment list"
           >
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
@@ -192,13 +192,13 @@ const TrainerGymEquipments: React.FC = () => {
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-xs">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Total Equipments</span>
-            <Layers size={18} className="text-[#A991D4]" />
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Total Equipments</span>
+            <Layers size={18} className="text-[#167D78]" />
           </div>
-          <div className="text-3xl font-black text-[#292431]">{totalCount}</div>
-          <p className="text-[11px] text-[#6B5E78] mt-1">Added by gym owner</p>
+          <div className="text-3xl font-black text-[#344B4A]">{totalCount}</div>
+          <p className="text-[11px] text-[#697778] mt-1">Added by gym owner</p>
         </div>
 
         <div className="bg-white border border-emerald-200 rounded-2xl p-5 shadow-xs bg-emerald-50/20">
@@ -219,28 +219,28 @@ const TrainerGymEquipments: React.FC = () => {
           <p className="text-[11px] text-amber-600 mt-1">Needs trainer verification</p>
         </div>
 
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-xs">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-xs">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Service Status</span>
-            <Activity size={18} className="text-blue-500" />
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Service Status</span>
+            <Activity size={18} className="text-[#167D78]" />
           </div>
-          <div className="text-3xl font-black text-[#292431]">
+          <div className="text-3xl font-black text-[#344B4A]">
             {equipments.filter(e => e.condition === 'Good' || e.condition === 'Excellent').length}
           </div>
-          <p className="text-[11px] text-[#6B5E78] mt-1">Operational condition</p>
+          <p className="text-[11px] text-[#697778] mt-1">Operational condition</p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-[#E5DDEB] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
+      <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
         <div className="relative flex-1 w-full md:w-auto">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B5E78]" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#697778]" />
           <input
             type="text"
             placeholder="Search equipment by name, brand, or category..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-sm outline-none focus:border-[#A991D4] text-[#292431]"
+            className="w-full pl-10 pr-4 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm outline-none focus:border-[#167D78] text-[#344B4A]"
           />
         </div>
 
@@ -252,8 +252,8 @@ const TrainerGymEquipments: React.FC = () => {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors whitespace-nowrap ${
                 selectedCategory === cat
-                  ? 'bg-[#A991D4] text-[#292431]'
-                  : 'bg-[#F7F4FA] text-[#6B5E78] hover:bg-[#E9DFF4]'
+                  ? 'bg-[#167D78] text-white'
+                  : 'bg-[#E8EFF0] text-[#697778] hover:bg-[#D8EAE7]'
               }`}
             >
               {cat}
@@ -262,7 +262,7 @@ const TrainerGymEquipments: React.FC = () => {
         </div>
 
         {/* Status Filter */}
-        <div className="flex items-center gap-1.5 border-l border-[#E5DDEB] pl-3 shrink-0">
+        <div className="flex items-center gap-1.5 border-l border-[#D9E2E3] pl-3 shrink-0">
           {(['All', 'Approved', 'Pending'] as const).map(st => (
             <button
               key={st}
@@ -270,7 +270,7 @@ const TrainerGymEquipments: React.FC = () => {
               className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
                 statusFilter === st
                   ? 'bg-stone-900 text-white'
-                  : 'text-[#6B5E78] hover:bg-stone-100'
+                  : 'text-[#697778] hover:bg-stone-100'
               }`}
             >
               {st}
@@ -281,15 +281,15 @@ const TrainerGymEquipments: React.FC = () => {
 
       {/* Equipment Grid */}
       {loading ? (
-        <div className="text-center py-20 text-[#6B5E78]">
-          <div className="w-10 h-10 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <div className="text-center py-20 text-[#697778]">
+          <div className="w-10 h-10 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="font-semibold text-sm">Loading gym equipments...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-[#E5DDEB] rounded-3xl p-12 text-center">
-          <Wrench size={48} className="mx-auto text-[#6B5E78] mb-3" />
-          <h3 className="text-base font-bold text-[#292431]">No equipments found</h3>
-          <p className="text-xs text-[#6B5E78] mt-1">
+        <div className="bg-white border border-[#D9E2E3] rounded-3xl p-12 text-center">
+          <Wrench size={48} className="mx-auto text-[#697778] mb-3" />
+          <h3 className="text-base font-bold text-[#344B4A]">No equipments found</h3>
+          <p className="text-xs text-[#697778] mt-1">
             {search ? 'Try clearing your search query' : 'Equipments added by gym owners will automatically appear here for trainer review and approval.'}
           </p>
         </div>
@@ -304,7 +304,7 @@ const TrainerGymEquipments: React.FC = () => {
               <div
                 key={eqId}
                 className={`bg-white border rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${
-                  isApproved ? 'border-emerald-200 ring-1 ring-emerald-500/10' : 'border-[#E5DDEB]'
+                  isApproved ? 'border-emerald-200 ring-1 ring-emerald-500/10' : 'border-[#D9E2E3]'
                 }`}
               >
                 <div>
@@ -333,32 +333,32 @@ const TrainerGymEquipments: React.FC = () => {
                   </div>
 
                   {/* Equipment Title & Brand */}
-                  <h3 className="font-extrabold text-lg text-[#292431] mb-1 leading-snug">
+                  <h3 className="font-extrabold text-lg text-[#344B4A] mb-1 leading-snug">
                     {eq.name}
                   </h3>
                   {eq.brand && (
-                    <p className="text-xs font-semibold text-[#6B5E78] mb-4">
-                      Brand: <span className="text-[#292431]">{eq.brand}</span>
+                    <p className="text-xs font-semibold text-[#697778] mb-4">
+                      Brand: <span className="text-[#344B4A]">{eq.brand}</span>
                     </p>
                   )}
 
                   {/* Attributes Details */}
-                  <div className="grid grid-cols-2 gap-2 bg-[#F7F4FA] p-3 rounded-2xl border border-[#E5DDEB] text-xs mb-4">
+                  <div className="grid grid-cols-2 gap-2 bg-[#E8EFF0] p-3 rounded-2xl border border-[#D9E2E3] text-xs mb-4">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Quantity</span>
-                      <strong className="text-[#292431]">{eq.quantity || 1} Units</strong>
+                      <span className="text-[10px] uppercase font-bold text-[#697778] block">Quantity</span>
+                      <strong className="text-[#344B4A]">{eq.quantity || 1} Units</strong>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Condition</span>
+                      <span className="text-[10px] uppercase font-bold text-[#697778] block">Condition</span>
                       <span className="font-semibold text-emerald-700">{eq.condition || 'Good'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Availability</span>
-                      <span className="font-semibold text-[#292431]">{eq.availability || 'Available'}</span>
+                      <span className="text-[10px] uppercase font-bold text-[#697778] block">Availability</span>
+                      <span className="font-semibold text-[#344B4A]">{eq.availability || 'Available'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#6B5E78] block">Next Service</span>
-                      <span className="font-medium text-[#6B5E78]">{eq.nextService || 'Up to date'}</span>
+                      <span className="text-[10px] uppercase font-bold text-[#697778] block">Next Service</span>
+                      <span className="font-medium text-[#697778]">{eq.nextService || 'Up to date'}</span>
                     </div>
                   </div>
 
@@ -377,7 +377,7 @@ const TrainerGymEquipments: React.FC = () => {
                 </div>
 
                 {/* APPROVAL ACTION BUTTON */}
-                <div className="pt-3 border-t border-[#E5DDEB] mt-2">
+                <div className="pt-3 border-t border-[#D9E2E3] mt-2">
                   <button
                     onClick={() => handleToggleApproval(eq)}
                     disabled={isProcessing}

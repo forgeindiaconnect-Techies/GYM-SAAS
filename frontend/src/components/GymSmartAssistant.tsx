@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   Bot, X, Send, Loader2, Sparkles, Minimize2, Maximize2, 
@@ -101,7 +101,7 @@ const renderFormattedText = (text: string) => {
     const parts = line.split(/(\*\*.*?\*\*)/g);
     const renderedLine = parts.map((part, idx) => {
       if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={idx} className="font-bold text-[#A991D4]">{part.slice(2, -2)}</strong>;
+        return <strong key={idx} className="font-bold text-[#167D78]">{part.slice(2, -2)}</strong>;
       }
       return part;
     });
@@ -258,7 +258,7 @@ const GymSmartAssistant = () => {
             setIsOpen(true);
             setIsMinimized(false);
           }}
-          className="fixed bottom-2 right-4 sm:bottom-2.5 sm:right-6 z-40 bg-gradient-to-r from-[#A991D4] via-[#967CC5] to-[#C2410C] text-white py-2 px-3 sm:py-2.5 sm:px-4 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-2 border-2 border-white/50 ring-4 ring-[#A991D4]/20 group cursor-pointer"
+          className="fixed bottom-2 right-4 sm:bottom-2.5 sm:right-6 z-40 bg-gradient-to-r from-[#167D78] via-[#116660] to-[#167D78] text-white py-2 px-3 sm:py-2.5 sm:px-4 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-2 border-2 border-white/50 ring-4 ring-[#167D78]/20 group cursor-pointer"
           title="Open Gym Smart Assistant"
         >
           <div className="relative">
@@ -272,7 +272,7 @@ const GymSmartAssistant = () => {
       {/* ── Smart Assistant Window / Drawer ── */}
       {isOpen && (
         <div
-          className={`fixed right-3 sm:right-6 z-50 bg-white rounded-3xl border border-[#E5DDEB] shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
+          className={`fixed right-3 sm:right-6 z-50 bg-white rounded-3xl border border-[#D9E2E3] shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
             isMinimized
               ? 'bottom-2 sm:bottom-2.5 w-72 sm:w-80 h-14'
               : 'bottom-2 sm:bottom-4 w-[94vw] sm:w-[440px] h-[580px] max-h-[88vh]'
@@ -281,13 +281,13 @@ const GymSmartAssistant = () => {
           {/* Header Bar */}
           <div className="bg-[#1C1917] text-white px-4 sm:px-5 py-3.5 flex items-center justify-between shrink-0 shadow-md border-b border-stone-800">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#A991D4] flex items-center justify-center text-[#292431] shrink-0 shadow-xs">
+              <div className="w-8 h-8 rounded-xl bg-[#167D78] flex items-center justify-center text-[#344B4A] shrink-0 shadow-xs">
                 <Bot size={18} />
               </div>
               <div className="truncate">
                 <h3 className="font-bold text-sm tracking-tight leading-none text-white flex items-center gap-1.5">
                   Gym Smart Assistant
-                  <Sparkles size={12} className="text-[#A991D4]" />
+                  <Sparkles size={12} className="text-[#167D78]" />
                 </h3>
                 <p className="text-[10px] text-stone-400 flex items-center gap-1.5 mt-0.5 truncate">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
@@ -327,23 +327,23 @@ const GymSmartAssistant = () => {
           {!isMinimized && (
             <>
               {/* Context Breadcrumb */}
-              <div className="bg-[#F7F4FA] px-4 py-1.5 border-b border-[#E5DDEB] flex items-center justify-between text-[11px] text-[#6B5E78] font-medium shrink-0">
+              <div className="bg-[#E8EFF0] px-4 py-1.5 border-b border-[#D9E2E3] flex items-center justify-between text-[11px] text-[#697778] font-medium shrink-0">
                 <span className="truncate flex items-center gap-1">
-                  <Compass size={12} className="text-[#A991D4] shrink-0" />
+                  <Compass size={12} className="text-[#167D78] shrink-0" />
                   Screen: <strong className="text-stone-800 truncate">{pageTitle}</strong>
                 </span>
-                <span className="text-[#A991D4] font-semibold shrink-0 ml-2">
+                <span className="text-[#167D78] font-semibold shrink-0 ml-2">
                   {user?.firstName ? `Hi, ${user.firstName}` : 'Gym Guest'}
                 </span>
               </div>
 
               {/* Chat Scrollable Content */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F7F4FA]">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#E8EFF0]">
                 {messages.length === 0 ? (
                   <div className="space-y-4 pt-1">
                     {/* Welcome Card */}
-                    <div className="bg-white border border-[#E5DDEB] rounded-2xl p-4 shadow-2xs text-center space-y-2">
-                      <div className="w-12 h-12 rounded-2xl bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center mx-auto">
+                    <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-2xs text-center space-y-2">
+                      <div className="w-12 h-12 rounded-2xl bg-[#167D78]/10 text-[#167D78] flex items-center justify-center mx-auto">
                         <Bot size={24} />
                       </div>
                       <h4 className="font-bold text-stone-800 text-sm">Welcome to Gym Smart Assistant! 👋</h4>
@@ -355,7 +355,7 @@ const GymSmartAssistant = () => {
                     {/* Popular / Suggested Questions */}
                     <div>
                       <p className="text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2 px-1 flex items-center gap-1.5">
-                        <Sparkles size={11} className="text-[#A991D4]" />
+                        <Sparkles size={11} className="text-[#167D78]" />
                         Suggested Searches
                       </p>
                       <div className="flex flex-col gap-1.5">
@@ -363,10 +363,10 @@ const GymSmartAssistant = () => {
                           <button
                             key={idx}
                             onClick={() => handleSendMessage(q)}
-                            className="text-left px-3.5 py-2.5 bg-white border border-[#E5DDEB] hover:border-[#A991D4] hover:bg-[#F7F4FA] text-xs font-semibold text-stone-800 rounded-xl transition-all flex items-center justify-between group shadow-2xs cursor-pointer"
+                            className="text-left px-3.5 py-2.5 bg-white border border-[#D9E2E3] hover:border-[#167D78] hover:bg-[#E8EFF0] text-xs font-semibold text-stone-800 rounded-xl transition-all flex items-center justify-between group shadow-2xs cursor-pointer"
                           >
                             <span className="truncate pr-2">{q}</span>
-                            <ArrowRight size={13} className="text-[#A991D4] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                            <ArrowRight size={13} className="text-[#167D78] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                           </button>
                         ))}
                       </div>
@@ -379,7 +379,7 @@ const GymSmartAssistant = () => {
                       className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       {msg.sender === 'bot' && (
-                        <div className="w-7 h-7 rounded-xl bg-[#A991D4] text-[#292431] flex items-center justify-center shrink-0 mt-0.5 text-xs shadow-2xs">
+                        <div className="w-7 h-7 rounded-xl bg-[#167D78] text-white flex items-center justify-center shrink-0 mt-0.5 text-xs shadow-2xs">
                           <Bot size={14} />
                         </div>
                       )}
@@ -389,10 +389,10 @@ const GymSmartAssistant = () => {
                         <div
                           className={`p-3.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
                             msg.sender === 'user'
-                              ? 'bg-[#A991D4] text-[#292431] rounded-tr-xs shadow-sm font-medium'
+                              ? 'bg-[#167D78] text-white rounded-tr-xs shadow-sm font-medium'
                               : msg.isRestricted
                               ? 'bg-rose-50 text-rose-900 border border-rose-200 rounded-tl-xs shadow-2xs'
-                              : 'bg-white text-stone-800 border border-[#E5DDEB] rounded-tl-xs shadow-2xs'
+                              : 'bg-white text-stone-800 border border-[#D9E2E3] rounded-tl-xs shadow-2xs'
                           }`}
                         >
                           {msg.isRestricted && (
@@ -410,27 +410,27 @@ const GymSmartAssistant = () => {
                             <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block px-1 flex items-center gap-1">
                               {msg.category === 'STORE' ? (
                                 <>
-                                  <ShoppingBag size={11} className="text-[#A991D4]" />
+                                  <ShoppingBag size={11} className="text-[#167D78]" />
                                   Available in Store / Catalog
                                 </>
                               ) : msg.category === 'ADMIN' ? (
                                 <>
-                                  <Building2 size={11} className="text-[#A991D4]" />
+                                  <Building2 size={11} className="text-[#167D78]" />
                                   Registered Gym Owners & Facilities
                                 </>
                               ) : msg.category === 'TRAINERS' ? (
                                 <>
-                                  <Dumbbell size={11} className="text-[#A991D4]" />
+                                  <Dumbbell size={11} className="text-[#167D78]" />
                                   Featured Coaches & Trainers
                                 </>
                               ) : msg.category === 'MEMBERS' ? (
                                 <>
-                                  <Users size={11} className="text-[#A991D4]" />
+                                  <Users size={11} className="text-[#167D78]" />
                                   Customer & Member Records
                                 </>
                               ) : (
                                 <>
-                                  <Layers size={11} className="text-[#A991D4]" />
+                                  <Layers size={11} className="text-[#167D78]" />
                                   Direct Records & Navigation
                                 </>
                               )}
@@ -440,14 +440,14 @@ const GymSmartAssistant = () => {
                                 <div
                                   key={live.id}
                                   onClick={() => handleNavigate(live.route || (msg.category === 'ADMIN' ? '/super-admin/gym-owners' : '/member/dashboard'))}
-                                  className="p-2 bg-white border border-[#E5DDEB] hover:border-[#A991D4] rounded-xl text-left cursor-pointer transition-all shadow-2xs group"
+                                  className="p-2 bg-white border border-[#D9E2E3] hover:border-[#167D78] rounded-xl text-left cursor-pointer transition-all shadow-2xs group"
                                 >
                                   {live.image ? (
                                     <div className="w-full h-16 rounded-lg bg-stone-50 overflow-hidden mb-1.5">
                                       <img src={live.image} alt={live.title} className="w-full h-full object-contain p-1" />
                                     </div>
                                   ) : (
-                                    <div className="w-full h-10 rounded-lg bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center mb-1.5">
+                                    <div className="w-full h-10 rounded-lg bg-[#167D78]/10 text-[#167D78] flex items-center justify-center mb-1.5">
                                       {msg.category === 'ADMIN' ? (
                                         <Building2 size={16} />
                                       ) : msg.category === 'TRAINERS' ? (
@@ -459,12 +459,12 @@ const GymSmartAssistant = () => {
                                       )}
                                     </div>
                                   )}
-                                  <h5 className="font-bold text-[11px] text-stone-800 truncate group-hover:text-[#A991D4]">
+                                  <h5 className="font-bold text-[11px] text-stone-800 truncate group-hover:text-[#167D78]">
                                     {live.title}
                                   </h5>
                                   <div className="flex items-center justify-between mt-1">
                                     {live.price !== undefined ? (
-                                      <span className="font-extrabold text-xs text-[#A991D4]">
+                                      <span className="font-extrabold text-xs text-[#167D78]">
                                         ₹{live.price}
                                       </span>
                                     ) : (
@@ -473,7 +473,7 @@ const GymSmartAssistant = () => {
                                       </span>
                                     )}
                                     {live.tag && (
-                                      <span className="text-[9px] text-[#A991D4] bg-[#A991D4]/10 px-1.5 py-0.5 rounded-full font-bold truncate max-w-[70px]">
+                                      <span className="text-[9px] text-[#167D78] bg-[#167D78]/10 px-1.5 py-0.5 rounded-full font-bold truncate max-w-[70px]">
                                         {live.tag}
                                       </span>
                                     )}
@@ -494,15 +494,15 @@ const GymSmartAssistant = () => {
                               {msg.matchedItems.map(item => (
                                 <div
                                   key={item.id}
-                                  className="p-2.5 bg-white border border-[#E5DDEB] hover:border-[#A991D4] rounded-xl transition-all shadow-2xs group flex items-center justify-between gap-2"
+                                  className="p-2.5 bg-white border border-[#D9E2E3] hover:border-[#167D78] rounded-xl transition-all shadow-2xs group flex items-center justify-between gap-2"
                                 >
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-1.5">
-                                      <span className="font-bold text-xs text-stone-800 truncate group-hover:text-[#A991D4] transition-colors">
+                                      <span className="font-bold text-xs text-stone-800 truncate group-hover:text-[#167D78] transition-colors">
                                         {item.title}
                                       </span>
                                       {item.badge && (
-                                        <span className="text-[9px] font-bold px-1.5 py-0.2 bg-[#A991D4]/10 text-[#A991D4] rounded-full shrink-0">
+                                        <span className="text-[9px] font-bold px-1.5 py-0.2 bg-[#167D78]/10 text-[#167D78] rounded-full shrink-0">
                                           {item.badge}
                                         </span>
                                       )}
@@ -513,7 +513,7 @@ const GymSmartAssistant = () => {
                                   </div>
                                   <button
                                     onClick={() => handleNavigate(item.route)}
-                                    className="px-2.5 py-1.5 bg-[#A991D4] hover:bg-[#967CC5] text-[#292431] text-[11px] font-bold rounded-lg transition-colors shrink-0 flex items-center gap-1 shadow-2xs cursor-pointer"
+                                    className="px-2.5 py-1.5 bg-[#167D78] hover:bg-[#116660] text-white text-[11px] font-bold rounded-lg transition-colors shrink-0 flex items-center gap-1 shadow-2xs cursor-pointer"
                                   >
                                     <span>{item.actionLabel}</span>
                                     <ChevronRight size={12} />
@@ -533,8 +533,8 @@ const GymSmartAssistant = () => {
                                 onClick={() => handleNavigate(act.route)}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer ${
                                   act.variant === 'primary'
-                                    ? 'bg-[#A991D4] text-[#292431] hover:bg-[#967CC5]'
-                                    : 'bg-white text-stone-800 border border-[#E5DDEB] hover:border-[#A991D4] hover:bg-[#F7F4FA]'
+                                    ? 'bg-[#167D78] text-white hover:bg-[#116660]'
+                                    : 'bg-white text-stone-800 border border-[#D9E2E3] hover:border-[#167D78] hover:bg-[#E8EFF0]'
                                 }`}
                               >
                                 <span>{act.label}</span>
@@ -555,7 +555,7 @@ const GymSmartAssistant = () => {
                                 <button
                                   key={fIdx}
                                   onClick={() => handleSendMessage(fu)}
-                                  className="text-[11px] px-2.5 py-1 bg-stone-100 hover:bg-[#A991D4]/10 hover:text-[#A991D4] text-stone-700 rounded-full font-medium transition-colors border border-stone-200 cursor-pointer"
+                                  className="text-[11px] px-2.5 py-1 bg-stone-100 hover:bg-[#167D78]/10 hover:text-[#167D78] text-stone-700 rounded-full font-medium transition-colors border border-stone-200 cursor-pointer"
                                 >
                                   {fu}
                                 </button>
@@ -575,11 +575,11 @@ const GymSmartAssistant = () => {
                 {/* Loading Indicator */}
                 {loading && (
                   <div className="flex gap-2.5 items-start">
-                    <div className="w-7 h-7 rounded-xl bg-[#A991D4] text-[#292431] flex items-center justify-center shrink-0 text-xs">
+                    <div className="w-7 h-7 rounded-xl bg-[#167D78] text-white flex items-center justify-center shrink-0 text-xs">
                       <Bot size={14} />
                     </div>
-                    <div className="bg-white border border-[#E5DDEB] p-3 rounded-2xl rounded-tl-xs shadow-2xs text-xs text-stone-600 flex items-center gap-2">
-                      <Loader2 size={14} className="animate-spin text-[#A991D4]" />
+                    <div className="bg-white border border-[#D9E2E3] p-3 rounded-2xl rounded-tl-xs shadow-2xs text-xs text-stone-600 flex items-center gap-2">
+                      <Loader2 size={14} className="animate-spin text-[#167D78]" />
                       <span>Searching gym knowledge & features...</span>
                     </div>
                   </div>
@@ -588,7 +588,7 @@ const GymSmartAssistant = () => {
               </div>
 
               {/* Input Footer */}
-              <div className="p-3 border-t border-[#E5DDEB] bg-white shrink-0">
+              <div className="p-3 border-t border-[#D9E2E3] bg-white shrink-0">
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -597,12 +597,12 @@ const GymSmartAssistant = () => {
                     onKeyDown={handleKeyPress}
                     disabled={loading}
                     placeholder="Ask anything about your gym..."
-                    className="flex-1 px-4 py-2.5 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl text-xs focus:outline-none focus:border-[#A991D4] text-stone-800 placeholder:text-stone-400"
+                    className="flex-1 px-4 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs focus:outline-none focus:border-[#167D78] text-stone-800 placeholder:text-stone-400"
                   />
                   <button
                     onClick={() => handleSendMessage()}
                     disabled={!inputMessage.trim() || loading}
-                    className="p-2.5 bg-[#A991D4] text-[#292431] rounded-xl hover:bg-[#967CC5] transition-colors disabled:opacity-40 disabled:hover:bg-[#A991D4] shadow-xs cursor-pointer"
+                    className="p-2.5 bg-[#167D78] text-white rounded-xl hover:bg-[#116660] transition-colors disabled:opacity-40 disabled:hover:bg-[#167D78] shadow-xs cursor-pointer"
                     title="Send / Search"
                   >
                     <Send size={15} />

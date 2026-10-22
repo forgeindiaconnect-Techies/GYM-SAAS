@@ -160,8 +160,9 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     }, { new: true });
 
     // Record payment for paid plan or Free Trial
+    let paymentRecord: any = null;
     try {
-      await Payment.create({
+      paymentRecord = await Payment.create({
         customerId: userId,
         gymId,
         branchId,
@@ -176,6 +177,26 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       });
     } catch (payErr) {
       console.error('Failed to create payment record in joinGym:', payErr);
+    }
+
+    // Process referral eligibility and reward issuance for paid memberships
+    if (!isFreeTrial) {
+      try {
+        const { processReferralOnPayment } = require('./referralController');
+        await processReferralOnPayment({
+          gymId: gym._id,
+          userId,
+          membershipId: membership._id,
+          planName: planName || 'Standard',
+          planAmount: numPrice,
+          finalPaidAmount: finalAmount,
+          paymentId: paymentRecord?._id,
+          paymentReference,
+          referralCodeSubmitted: req.body.referralCode
+        });
+      } catch (refErr) {
+        console.error('Referral processing error in joinGym:', refErr);
+      }
     }
 
     if (gym.ownerId) {

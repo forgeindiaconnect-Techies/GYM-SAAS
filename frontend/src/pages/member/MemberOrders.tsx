@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, ShoppingBag, Eye, X, MapPin, Truck, XCircle, Navigation } from 'lucide-react';
 import api from '../../utils/api';
@@ -7,10 +7,10 @@ import MemberStoreTabs from '../../components/Member/MemberStoreTabs';
 const statusColor: Record<string, string> = {
   'Pending': 'bg-yellow-100 text-yellow-700',
   'Confirmed': 'bg-blue-100 text-blue-700',
-  'Preparing': 'bg-purple-100 text-purple-700',
+  'Preparing': 'bg-[#D8EAE7] text-[#167D78]',
   'Ready for Pickup': 'bg-teal-100 text-teal-700',
   'Out for Delivery': 'bg-indigo-100 text-indigo-700',
-  'Completed': 'bg-[#E9DFF4]/10 text-[#A991D4]',
+  'Completed': 'bg-[#D8EAE7]/10 text-[#167D78]',
   'Cancelled': 'bg-red-100 text-red-700',
   'Refunded': 'bg-orange-100 text-orange-700',
 };
@@ -34,7 +34,7 @@ const ZigzagTimeline = ({ order }: { order: any }) => {
   return (
     <div className="relative">
       {/* Center vertical line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#E5DDEB] -translate-x-1/2" />
+      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#D9E2E3] -translate-x-1/2" />
       <div className="space-y-6">
         {steps.map((h: any, i: number, arr: any[]) => {
           const isReached = !h.future;
@@ -45,26 +45,26 @@ const ZigzagTimeline = ({ order }: { order: any }) => {
           const dotColor = isCancelStatus
             ? 'bg-red-500 shadow-[0_0_0_4px_rgba(220,38,38,0.15)]'
             : isLastReached
-            ? 'bg-[#A991D4] shadow-[0_0_0_4px_rgba(22,74,74,0.15)]'
+            ? 'bg-[#167D78] shadow-[0_0_0_4px_rgba(22,74,74,0.15)]'
             : isReached
-            ? 'bg-[#E9DFF4]'
-            : 'bg-[#E5DDEB]';
+            ? 'bg-[#D8EAE7]'
+            : 'bg-[#D9E2E3]';
 
           const cardBg = isReached
             ? isCancelStatus
               ? 'bg-red-50 border-red-200'
               : isLastReached
-              ? 'bg-[#F0F7F6] border-[#E9DFF4]'
-              : 'bg-[#F8FAFA] border-[#E5DDEB]'
+              ? 'bg-[#E8EFF0] border-[#D8EAE7]'
+              : 'bg-[#E8EFF0] border-[#D9E2E3]'
             : 'bg-gray-50 border-gray-100 opacity-50';
 
           const labelColor = isCancelStatus
             ? 'text-red-600'
             : isLastReached
-            ? 'text-[#A991D4]'
+            ? 'text-[#167D78]'
             : isReached
-            ? 'text-[#6B5E78]'
-            : 'text-[#6B5E78]';
+            ? 'text-[#697778]'
+            : 'text-[#697778]';
 
           return (
             <div key={i} className="relative flex items-center justify-between gap-2">
@@ -74,12 +74,12 @@ const ZigzagTimeline = ({ order }: { order: any }) => {
                   <div className={`rounded-xl border p-3 text-right ${cardBg}`}>
                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                     {isReached ? (
-                      <p className="text-[11px] text-[#6B5E78] mt-0.5 leading-snug">
+                      <p className="text-[11px] text-[#697778] mt-0.5 leading-snug">
                         {new Date(h.at).toLocaleString()}
                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                       </p>
                     ) : (
-                      <p className="text-[11px] text-[#6B5E78] mt-0.5">Upcoming step</p>
+                      <p className="text-[11px] text-[#697778] mt-0.5">Upcoming step</p>
                     )}
                   </div>
                 ) : <div />}
@@ -104,12 +104,12 @@ const ZigzagTimeline = ({ order }: { order: any }) => {
                   <div className={`rounded-xl border p-3 ${cardBg}`}>
                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                     {isReached ? (
-                      <p className="text-[11px] text-[#6B5E78] mt-0.5 leading-snug">
+                      <p className="text-[11px] text-[#697778] mt-0.5 leading-snug">
                         {new Date(h.at).toLocaleString()}
                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                       </p>
                     ) : (
-                      <p className="text-[11px] text-[#6B5E78] mt-0.5">Upcoming step</p>
+                      <p className="text-[11px] text-[#697778] mt-0.5">Upcoming step</p>
                     )}
                   </div>
                 ) : <div />}
@@ -172,14 +172,14 @@ const MemberOrders = () => {
     <div className="space-y-6">
       <MemberStoreTabs />
       <div>
-        <h1 className="text-3xl font-bold text-[#292431] tracking-tight">My Orders</h1>
-        <p className="text-[#6B5E78] mt-1">Track your gym store orders from placement to pickup/delivery.</p>
+        <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">My Orders</h1>
+        <p className="text-[#697778] mt-1">Track your gym store orders from placement to pickup/delivery.</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#E5DDEB] space-x-6 overflow-x-auto">
+      <div className="flex border-b border-[#D9E2E3] space-x-6 overflow-x-auto">
         {['all', 'Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Out for Delivery', 'Completed', 'Cancelled'].map((s) => (
-          <button key={s} onClick={() => setStatus(s)} className={`py-3 font-semibold text-sm transition-colors border-b-2 whitespace-nowrap ${status === s ? 'border-[#A991D4] text-[#A991D4]' : 'border-transparent text-[#6B5E78] hover:text-[#292431]'}`}>
+          <button key={s} onClick={() => setStatus(s)} className={`py-3 font-semibold text-sm transition-colors border-b-2 whitespace-nowrap ${status === s ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}>
             {s === 'all' ? 'All Orders' : s === 'Cancelled' ? 'Cancelled / Refunded' : s}
           </button>
         ))}
@@ -187,33 +187,33 @@ const MemberOrders = () => {
 
       {/* Order List */}
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#A991D4]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#167D78]" size={40} /></div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-[#E5DDEB] rounded-2xl">
-          <ShoppingBag className="mx-auto text-[#A991D4]/30 mb-4" size={52} />
-          <p className="text-[#6B5E78] font-medium mb-4">No orders here yet.</p>
-          <button onClick={() => navigate('/member/store')} className="px-5 py-2.5 bg-gradient-to-r from-[#A991D4] to-[#967CC5] text-white font-bold rounded-xl shadow-lg shadow-purple-900/15 hover:opacity-90 transition-opacity">
+        <div className="text-center py-20 bg-white border border-[#D9E2E3] rounded-2xl">
+          <ShoppingBag className="mx-auto text-[#167D78]/30 mb-4" size={52} />
+          <p className="text-[#697778] font-medium mb-4">No orders here yet.</p>
+          <button onClick={() => navigate('/member/store')} className="px-5 py-2.5 bg-gradient-to-r from-[#167D78] to-[#116660] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity">
             Browse Store
           </button>
         </div>
       ) : (
         <div className="space-y-4">
           {orders.map((o) => (
-            <div key={o._id} className="bg-white border border-[#E5DDEB] rounded-2xl p-5 hover:border-[#A991D4]/30 hover:shadow-md transition-all">
+            <div key={o._id} className="bg-white border border-[#D9E2E3] rounded-2xl p-5 hover:border-[#167D78]/30 hover:shadow-md transition-all">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
                 {/* Left: item count + order info */}
                 <div className="flex items-start sm:items-center gap-4">
-                  <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${o.status === 'Completed' ? 'bg-green-50 text-green-700 border border-green-200' : o.status === 'Cancelled' || o.status === 'Refunded' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-[#F7F4FA] text-[#A991D4] border border-[#E5DDEB]'}`}>
+                  <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${o.status === 'Completed' ? 'bg-green-50 text-green-700 border border-green-200' : o.status === 'Cancelled' || o.status === 'Refunded' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-[#E8EFF0] text-[#167D78] border border-[#D9E2E3]'}`}>
                     <span className="text-lg font-black leading-none mb-0.5">{o.items.reduce((s: number, i: any) => s + i.quantity, 0)}</span>
                     <span className="text-[10px] font-bold uppercase tracking-wider">Items</span>
                   </div>
                   <div>
-                    <p className="font-black text-[#292431] text-lg mb-1 tracking-tight">{o.orderNumber}</p>
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-[#6B5E78]">
+                    <p className="font-black text-[#344B4A] text-lg mb-1 tracking-tight">{o.orderNumber}</p>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-[#697778]">
                       <span className="font-medium">{new Date(o.createdAt).toLocaleDateString()} at {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       <span className="w-1 h-1 rounded-full bg-gray-300" />
-                      <span className={`font-semibold inline-flex items-center gap-1 ${o.fulfilmentType === 'Delivery' ? 'text-[#A991D4]' : 'text-amber-600'}`}>
+                      <span className={`font-semibold inline-flex items-center gap-1 ${o.fulfilmentType === 'Delivery' ? 'text-[#167D78]' : 'text-amber-600'}`}>
                         {o.fulfilmentType === 'Delivery' ? <Truck size={12} /> : <MapPin size={12} />}
                         {o.fulfilmentType === 'Delivery' ? 'Delivery' : 'Gym Pickup'}
                       </span>
@@ -224,7 +224,7 @@ const MemberOrders = () => {
                 {/* Right: price + status + TWO BUTTONS */}
                 <div className="flex items-center justify-between sm:justify-end gap-4 sm:border-l sm:border-gray-200 sm:pl-6 mt-2 sm:mt-0 pt-3 sm:pt-0 border-t border-gray-100 sm:border-t-0">
                   <div className="flex flex-col gap-1.5 min-w-[90px]">
-                    <p className="font-black text-[#A991D4] text-xl leading-none">₹{o.total}</p>
+                    <p className="font-black text-[#167D78] text-xl leading-none">₹{o.total}</p>
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider inline-block text-center w-fit ${statusColor[o.status] || 'bg-gray-100 text-gray-700'}`}>{o.status}</span>
                   </div>
 
@@ -233,16 +233,16 @@ const MemberOrders = () => {
                     {/* View Details */}
                     <button
                       onClick={() => { setSelected(o); setCancelPrompt(false); setCancelReason(''); }}
-                      className="px-4 py-2 bg-white border border-[#E5DDEB] text-[#292431] rounded-xl hover:bg-[#F7F4FA] hover:border-[#A991D4] transition-all text-xs font-bold inline-flex items-center gap-1.5 shadow-sm group"
+                      className="px-4 py-2 bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl hover:bg-[#E8EFF0] hover:border-[#167D78] transition-all text-xs font-bold inline-flex items-center gap-1.5 shadow-sm group"
                     >
-                      <Eye size={14} className="text-[#967CC5] group-hover:text-[#A991D4] transition-colors" />
+                      <Eye size={14} className="text-[#116660] group-hover:text-[#167D78] transition-colors" />
                       View Details
                     </button>
 
                     {/* Track Order */}
                     <button
                       onClick={() => setTracking(o)}
-                      className="px-4 py-2 bg-gradient-to-r from-[#A991D4] to-[#967CC5] text-white rounded-xl hover:opacity-90 transition-opacity text-xs font-bold inline-flex items-center gap-1.5 shadow-sm shadow-purple-900/15"
+                      className="px-4 py-2 bg-gradient-to-r from-[#167D78] to-[#116660] text-white rounded-xl hover:opacity-90 transition-opacity text-xs font-bold inline-flex items-center gap-1.5 shadow-sm shadow-teal-900/10"
                     >
                       <Navigation size={14} />
                       Track Order
@@ -266,12 +266,12 @@ const MemberOrders = () => {
 
             {/* Header */}
             <div className="flex items-center justify-between pr-8 mb-2">
-              <h2 className="text-2xl font-bold text-[#292431]">{selected.orderNumber}</h2>
+              <h2 className="text-2xl font-bold text-[#344B4A]">{selected.orderNumber}</h2>
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColor[selected.status]}`}>
                 {selected.status === 'Cancelled' ? 'Cancelled / Refunded' : selected.status}
               </span>
             </div>
-            <p className="text-sm text-[#6B5E78] mb-5">
+            <p className="text-sm text-[#697778] mb-5">
               Placed {new Date(selected.createdAt).toLocaleString()} ·{' '}
               {selected.fulfilmentType === 'Delivery'
                 ? <span className="inline-flex items-center gap-1 font-semibold"><Truck size={14} /> Delivery</span>
@@ -283,43 +283,43 @@ const MemberOrders = () => {
             )}
 
             {/* Items */}
-            <div className="border border-[#E5DDEB] rounded-xl overflow-hidden mb-4">
-              <div className="px-4 py-3 bg-[#F7F4FA] font-bold text-[#292431] text-sm border-b border-[#E5DDEB]">Items Ordered</div>
+            <div className="border border-[#D9E2E3] rounded-xl overflow-hidden mb-4">
+              <div className="px-4 py-3 bg-[#E8EFF0] font-bold text-[#344B4A] text-sm border-b border-[#D9E2E3]">Items Ordered</div>
               {selected.items.map((it: any, idx: number) => (
-                <div key={idx} className="flex items-center justify-between px-4 py-3 border-b border-[#F7F4FA] last:border-0">
+                <div key={idx} className="flex items-center justify-between px-4 py-3 border-b border-[#E8EFF0] last:border-0">
                   <div>
                     <div className="flex items-center gap-1.5 flex-wrap my-0.5">
-                      <p className="font-semibold text-[#292431] text-sm mr-2">{it.name}</p>
+                      <p className="font-semibold text-[#344B4A] text-sm mr-2">{it.name}</p>
                       {it.attributes && Object.entries(it.attributes).map(([k, v]) => (
                         <span key={k} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">{String(v)}</span>
                       ))}
                     </div>
-                    <p className="text-xs text-[#6B5E78]">Qty {it.quantity} × ₹{it.unitPrice}</p>
+                    <p className="text-xs text-[#697778]">Qty {it.quantity} × ₹{it.unitPrice}</p>
                   </div>
-                  <p className="font-bold text-[#292431]">₹{it.total}</p>
+                  <p className="font-bold text-[#344B4A]">₹{it.total}</p>
                 </div>
               ))}
-              <div className="px-4 py-3 bg-[#F7F4FA] flex justify-between text-sm">
-                <span className="text-[#6B5E78]">{selected.discount ? `Subtotal ₹${selected.subtotal} − discount ₹${selected.discount}` : 'Total'}</span>
-                <span className="font-black text-[#292431]">₹{selected.total}</span>
+              <div className="px-4 py-3 bg-[#E8EFF0] flex justify-between text-sm">
+                <span className="text-[#697778]">{selected.discount ? `Subtotal ₹${selected.subtotal} − discount ₹${selected.discount}` : 'Total'}</span>
+                <span className="font-black text-[#344B4A]">₹{selected.total}</span>
               </div>
             </div>
 
             {/* Payment Info */}
-            <div className="bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl p-4 mb-4">
+            <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-4 mb-4">
               <p className="text-xs text-gray-500 font-semibold uppercase mb-2">Payment</p>
-              <p className="font-bold text-[#292431]">{selected.paymentMethod} · ₹{selected.total}</p>
+              <p className="font-bold text-[#344B4A]">{selected.paymentMethod} · ₹{selected.total}</p>
               {selected.paymentMethod === 'Net Banking' && selected.bankName && (
-                <p className="text-sm text-[#6B5E78] mt-0.5">Bank: <span className="font-semibold">{selected.bankName}</span></p>
+                <p className="text-sm text-[#697778] mt-0.5">Bank: <span className="font-semibold">{selected.bankName}</span></p>
               )}
-              <p className="text-xs text-[#292431] font-medium mt-1 font-semibold">{selected.paymentStatus}</p>
+              <p className="text-xs text-[#344B4A] font-medium mt-1 font-semibold">{selected.paymentStatus}</p>
             </div>
 
             {/* Delivery Address */}
             {selected.deliveryDetails && (
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
                 <p className="text-xs text-gray-500 font-semibold uppercase mb-2">Delivery Address</p>
-                <p className="text-sm text-[#6B5E78]">
+                <p className="text-sm text-[#697778]">
                   {selected.deliveryDetails.name} · {selected.deliveryDetails.phone}<br />
                   {selected.deliveryDetails.address}, {selected.deliveryDetails.city}, {selected.deliveryDetails.state} — {selected.deliveryDetails.pinCode}
                 </p>
@@ -368,17 +368,17 @@ const MemberOrders = () => {
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#A991D4] to-[#967CC5] flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#167D78] to-[#116660] flex items-center justify-center">
                 <Navigation size={17} className="text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#292431]">Track Order</h2>
-                <p className="text-xs text-[#6B5E78] font-semibold">{tracking.orderNumber}</p>
+                <h2 className="text-xl font-bold text-[#344B4A]">Track Order</h2>
+                <p className="text-xs text-[#697778] font-semibold">{tracking.orderNumber}</p>
               </div>
               <span className={`ml-auto px-3 py-1 rounded-full text-xs font-bold ${statusColor[tracking.status]}`}>{tracking.status}</span>
             </div>
 
-            <p className="text-xs text-[#6B5E78] mb-6 mt-2">
+            <p className="text-xs text-[#697778] mb-6 mt-2">
               {tracking.fulfilmentType === 'Delivery'
                 ? <span className="inline-flex items-center gap-1"><Truck size={12} /> Delivery order</span>
                 : <span className="inline-flex items-center gap-1"><MapPin size={12} /> Gym Pickup order</span>}

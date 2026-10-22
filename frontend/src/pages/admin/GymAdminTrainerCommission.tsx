@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import {
   Percent, ArrowUpRight, CheckCircle, Clock,
   Search, Building2, Smartphone, Copy, Check, X,
@@ -298,12 +298,12 @@ const GymAdminTrainerCommission = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-[#292431]">Commission &amp; Withdrawals</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#A991D4]/10 text-[#A991D4]">
+            <h1 className="text-2xl font-bold text-[#344B4A]">Commission &amp; Withdrawals</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#167D78]/10 text-[#167D78]">
               Gym Owner Revenue
             </span>
           </div>
-          <p className="text-sm text-[#6B5E78] mt-1">
+          <p className="text-sm text-[#697778] mt-1">
             Track commission retained from trainer disbursements and withdraw your commission earnings directly to your bank account or UPI.
           </p>
         </div>
@@ -317,7 +317,7 @@ const GymAdminTrainerCommission = () => {
               }
               setWithdrawModalOpen(true);
             }}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl font-bold text-xs hover:bg-[#967CC5] transition-all shadow-md shadow-[#A991D4]/20 cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#167D78] text-white rounded-xl font-bold text-xs hover:bg-[#116660] transition-all shadow-md shadow-[#167D78]/20 cursor-pointer"
           >
             <Wallet className="w-4 h-4" /> Withdraw Commission
           </button>
@@ -338,24 +338,24 @@ const GymAdminTrainerCommission = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Metric 1: Total Commission Earned */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm relative overflow-hidden">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Total Commission Earned</span>
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Total Commission Earned</span>
             <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
               <Percent className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-2xl font-black text-[#A991D4] mt-2">
+          <p className="text-2xl font-black text-[#167D78] mt-2">
             ₹{stats.totalCommissionEarned.toLocaleString('en-IN')}
           </p>
-          <p className="text-xs text-[#6B5E78] mt-1 flex items-center gap-1 font-medium">
+          <p className="text-xs text-[#697778] mt-1 flex items-center gap-1 font-medium">
             <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600" />
             Total commission taken across trainer payments
           </p>
         </div>
 
         {/* Metric 2: Available Commission Balance */}
-        <div className="bg-gradient-to-br from-[#A991D4] to-[#0F3535] rounded-2xl p-5 shadow-sm text-white relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#167D78] to-[#116660] rounded-2xl p-5 shadow-sm text-white relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-teal-100 uppercase tracking-wider">Available to Withdraw</span>
             <div className="w-9 h-9 rounded-xl bg-white/10 text-white flex items-center justify-center">
@@ -381,25 +381,25 @@ const GymAdminTrainerCommission = () => {
         </div>
 
         {/* Metric 3: Withdrawn Commission */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm relative overflow-hidden">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Withdrawn Commission</span>
-            <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Withdrawn Commission</span>
+            <div className="w-9 h-9 rounded-xl bg-[#E8EFF0] text-[#167D78] flex items-center justify-center">
               <CheckCircle className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-2xl font-black text-[#292431] mt-2">
+          <p className="text-2xl font-black text-[#344B4A] mt-2">
             ₹{stats.totalCommissionWithdrawn.toLocaleString('en-IN')}
           </p>
-          <p className="text-xs text-[#6B5E78] mt-1 font-medium">
+          <p className="text-xs text-[#697778] mt-1 font-medium">
             {withdrawals.filter(w => w.status === 'Completed').length} completed payouts to gym owner
           </p>
         </div>
 
         {/* Metric 4: Pending Withdrawals */}
-        <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm relative overflow-hidden">
+        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#6B5E78] uppercase tracking-wider">Pending Withdrawals</span>
+            <span className="text-xs font-bold text-[#697778] uppercase tracking-wider">Pending Withdrawals</span>
             <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
               <Clock className="w-5 h-5" />
             </div>
@@ -407,7 +407,7 @@ const GymAdminTrainerCommission = () => {
           <p className="text-2xl font-black text-amber-600 mt-2">
             ₹{stats.pendingWithdrawal.toLocaleString('en-IN')}
           </p>
-          <p className="text-xs text-[#6B5E78] mt-1 font-medium">
+          <p className="text-xs text-[#697778] mt-1 font-medium">
             {withdrawals.filter(w => w.status === 'Pending' || w.status === 'Processing').length} requests in verification
           </p>
         </div>
@@ -415,13 +415,13 @@ const GymAdminTrainerCommission = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-[#E5DDEB] gap-6">
+      <div className="flex border-b border-[#D9E2E3] gap-6">
         <button
           onClick={() => setActiveTab('commission')}
           className={`pb-3 font-bold text-sm flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
             activeTab === 'commission'
-              ? 'border-[#A991D4] text-[#A991D4]'
-              : 'border-transparent text-[#6B5E78] hover:text-[#292431]'
+              ? 'border-[#167D78] text-[#167D78]'
+              : 'border-transparent text-[#697778] hover:text-[#344B4A]'
           }`}
         >
           <Percent className="w-4 h-4" /> Commission Earned from Trainers
@@ -430,8 +430,8 @@ const GymAdminTrainerCommission = () => {
           onClick={() => setActiveTab('withdrawals')}
           className={`pb-3 font-bold text-sm flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
             activeTab === 'withdrawals'
-              ? 'border-[#A991D4] text-[#A991D4]'
-              : 'border-transparent text-[#6B5E78] hover:text-[#292431]'
+              ? 'border-[#167D78] text-[#167D78]'
+              : 'border-transparent text-[#697778] hover:text-[#344B4A]'
           }`}
         >
           <Wallet className="w-4 h-4" /> Gym Owner Withdrawal Options ({withdrawals.length})
@@ -443,23 +443,23 @@ const GymAdminTrainerCommission = () => {
         <div className="space-y-6">
 
           {/* Search & Model Filter */}
-          <div className="bg-white border border-[#E5DDEB] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+          <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
             <div className="relative w-full sm:w-80">
-              <Search className="w-4 h-4 text-[#6B5E78] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[#697778] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search by trainer name or payment ref..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-[#E5DDEB] rounded-xl text-xs focus:outline-none focus:border-[#A991D4]"
+                className="w-full pl-10 pr-4 py-2 border border-[#D9E2E3] rounded-xl text-xs focus:outline-none focus:border-[#167D78]"
               />
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-              <Filter className="w-4 h-4 text-[#6B5E78]" />
+              <Filter className="w-4 h-4 text-[#697778]" />
               <select
                 value={modelFilter}
                 onChange={e => setModelFilter(e.target.value)}
-                className="border border-[#E5DDEB] rounded-xl px-3 py-2 text-xs font-semibold text-[#292431] bg-white focus:outline-none focus:border-[#A991D4]"
+                className="border border-[#D9E2E3] rounded-xl px-3 py-2 text-xs font-semibold text-[#344B4A] bg-white focus:outline-none focus:border-[#167D78]"
               >
                 <option value="All">All Commission Models</option>
                 <option value="Percentage">Percentage (%)</option>
@@ -469,29 +469,29 @@ const GymAdminTrainerCommission = () => {
           </div>
 
           {/* Commission Collection Ledger */}
-          <div className="bg-white border border-[#E5DDEB] rounded-2xl overflow-hidden shadow-sm">
-            <div className="p-4 border-b border-[#E5DDEB] flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white border border-[#D9E2E3] rounded-2xl overflow-hidden shadow-sm">
+            <div className="p-4 border-b border-[#D9E2E3] flex items-center justify-between bg-gray-50/50">
               <div>
-                <h3 className="font-bold text-sm text-[#292431]">Commission Earned from Trainer Fee Disbursements</h3>
-                <p className="text-xs text-[#6B5E78] mt-0.5">
+                <h3 className="font-bold text-sm text-[#344B4A]">Commission Earned from Trainer Fee Disbursements</h3>
+                <p className="text-xs text-[#697778] mt-0.5">
                   Exact commission retained and added to your gym commission balance upon paying trainers
                 </p>
               </div>
-              <span className="text-xs font-bold text-[#A991D4] bg-[#A991D4]/10 px-2.5 py-1 rounded-full">
+              <span className="text-xs font-bold text-[#167D78] bg-[#167D78]/10 px-2.5 py-1 rounded-full">
                 {filteredLedger.length} Records Found
               </span>
             </div>
 
             {loading ? (
-              <div className="p-12 text-center text-[#6B5E78]">
-                <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#A991D4]" />
+              <div className="p-12 text-center text-[#697778]">
+                <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#167D78]" />
                 <p className="text-xs font-semibold">Loading commission records...</p>
               </div>
             ) : filteredLedger.length === 0 ? (
-              <div className="p-12 text-center text-[#6B5E78]">
+              <div className="p-12 text-center text-[#697778]">
                 <Percent className="w-10 h-10 mx-auto mb-2 text-stone-600" />
-                <p className="font-bold text-sm text-[#292431]">No Commission Records Found</p>
-                <p className="text-xs text-[#6B5E78] mt-1 max-w-sm mx-auto">
+                <p className="font-bold text-sm text-[#344B4A]">No Commission Records Found</p>
+                <p className="text-xs text-[#697778] mt-1 max-w-sm mx-auto">
                   When you disburse trainer fees with a commission rate applied, your retained commission will appear here automatically.
                 </p>
               </div>
@@ -499,7 +499,7 @@ const GymAdminTrainerCommission = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-gray-50/75 border-b border-[#E5DDEB] text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider">
+                    <tr className="bg-gray-50/75 border-b border-[#D9E2E3] text-[11px] font-bold text-[#697778] uppercase tracking-wider">
                       <th className="py-3 px-4">Trainer</th>
                       <th className="py-3 px-4">Payment Date</th>
                       <th className="py-3 px-4">Base Fee</th>
@@ -509,28 +509,28 @@ const GymAdminTrainerCommission = () => {
                       <th className="py-3 px-4">Transaction Ref</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5DDEB] text-xs">
+                  <tbody className="divide-y divide-[#D9E2E3] text-xs">
                     {filteredLedger.map((row) => (
                       <tr key={row._id} className="hover:bg-gray-50/60 transition-colors">
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-[#A991D4]/10 text-[#A991D4] flex items-center justify-center font-bold text-xs uppercase shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold text-xs uppercase shrink-0">
                               {row.trainer?.name ? row.trainer.name.charAt(0) : 'T'}
                             </div>
                             <div>
-                              <p className="font-bold text-[#292431]">{row.trainer?.name || 'Trainer'}</p>
-                              <p className="text-[11px] text-[#6B5E78]">{row.trainer?.email || 'N/A'}</p>
+                              <p className="font-bold text-[#344B4A]">{row.trainer?.name || 'Trainer'}</p>
+                              <p className="text-[11px] text-[#697778]">{row.trainer?.email || 'N/A'}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="py-3.5 px-4 text-[#6B5E78]">
+                        <td className="py-3.5 px-4 text-[#697778]">
                           {row.paymentDate ? new Date(row.paymentDate).toLocaleDateString('en-IN', {
                             day: 'numeric',
                             month: 'short',
                             year: 'numeric'
                           }) : 'N/A'}
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-[#292431]">
+                        <td className="py-3.5 px-4 font-bold text-[#344B4A]">
                           ₹{row.baseFee.toLocaleString('en-IN')}
                         </td>
                         <td className="py-3.5 px-4">
@@ -547,19 +547,19 @@ const GymAdminTrainerCommission = () => {
                             Retained in Balance
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-[#292431]">
+                        <td className="py-3.5 px-4 font-bold text-[#344B4A]">
                           ₹{row.netDisbursed.toLocaleString('en-IN')}
-                          <p className="text-[10px] text-[#6B5E78] font-normal">{row.paymentMethod || 'Disbursed'}</p>
+                          <p className="text-[10px] text-[#697778] font-normal">{row.paymentMethod || 'Disbursed'}</p>
                         </td>
                         <td className="py-3.5 px-4">
-                          <div className="flex items-center gap-1 text-[#6B5E78]">
+                          <div className="flex items-center gap-1 text-[#697778]">
                             <span className="font-mono text-[11px] bg-gray-100 px-2 py-0.5 rounded">
                               {row.transactionId || 'DIRECT-PAY'}
                             </span>
                             {row.transactionId && (
                               <button
                                 onClick={() => copyToClipboard(row.transactionId, row._id)}
-                                className="p-1 hover:text-[#A991D4] cursor-pointer"
+                                className="p-1 hover:text-[#167D78] cursor-pointer"
                                 title="Copy Transaction ID"
                               >
                                 {copiedKey === row._id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
@@ -585,7 +585,7 @@ const GymAdminTrainerCommission = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {/* Quick Withdraw Hero Card */}
-            <div className="lg:col-span-2 bg-gradient-to-br from-[#A991D4] to-[#0D2D2D] rounded-2xl p-6 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+            <div className="lg:col-span-2 bg-gradient-to-br from-[#167D78] to-[#116660] rounded-2xl p-6 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/10 text-teal-100 border border-white/10">
@@ -613,7 +613,7 @@ const GymAdminTrainerCommission = () => {
                     setWithdrawModalOpen(true);
                   }}
                   disabled={stats.availableBalance <= 0}
-                  className="flex items-center gap-2 px-5 py-3 bg-white text-[#A991D4] rounded-xl font-black text-xs hover:bg-gray-100 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="flex items-center gap-2 px-5 py-3 bg-white text-[#167D78] rounded-xl font-black text-xs hover:bg-gray-100 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <Wallet className="w-4 h-4" /> Withdraw Commission Now
                 </button>
@@ -625,39 +625,39 @@ const GymAdminTrainerCommission = () => {
             </div>
 
             {/* Withdrawal Methods Info Card */}
-            <div className="bg-white border border-[#E5DDEB] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+            <div className="bg-white border border-[#D9E2E3] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
               <div>
-                <h4 className="font-bold text-sm text-[#292431] flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#A991D4]" /> Supported Payout Channels
+                <h4 className="font-bold text-sm text-[#344B4A] flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#167D78]" /> Supported Payout Channels
                 </h4>
-                <p className="text-xs text-[#6B5E78] mt-1">
+                <p className="text-xs text-[#697778] mt-1">
                   Commission funds are directly transferred via Indian banking channels:
                 </p>
 
                 <div className="mt-4 space-y-3">
-                  <div className="p-3 rounded-xl border border-[#E5DDEB] bg-gray-50 flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-[#D9E2E3] bg-gray-50 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
                       <Building2 className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-[#292431]">Bank Account (IMPS / NEFT)</p>
-                      <p className="text-[11px] text-[#6B5E78]">Requires Account No, IFSC, &amp; Holder Name</p>
+                      <p className="text-xs font-bold text-[#344B4A]">Bank Account (IMPS / NEFT)</p>
+                      <p className="text-[11px] text-[#697778]">Requires Account No, IFSC, &amp; Holder Name</p>
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl border border-[#E5DDEB] bg-gray-50 flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-[#D9E2E3] bg-gray-50 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
                       <Smartphone className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-[#292431]">UPI Transfer (VPA)</p>
-                      <p className="text-[11px] text-[#6B5E78]">Instant payout to any valid UPI ID (e.g. name@upi)</p>
+                      <p className="text-xs font-bold text-[#344B4A]">UPI Transfer (VPA)</p>
+                      <p className="text-[11px] text-[#697778]">Instant payout to any valid UPI ID (e.g. name@upi)</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#E5DDEB] text-[11px] text-[#6B5E78]">
+              <div className="mt-4 pt-3 border-t border-[#D9E2E3] text-[11px] text-[#697778]">
                 Payout requests are logged with unique reference IDs for accounting and tax records.
               </div>
             </div>
@@ -665,20 +665,20 @@ const GymAdminTrainerCommission = () => {
           </div>
 
           {/* Section: Withdrawal History Table */}
-          <div className="bg-white border border-[#E5DDEB] rounded-2xl overflow-hidden shadow-sm">
-            <div className="p-4 border-b border-[#E5DDEB] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50/50">
+          <div className="bg-white border border-[#D9E2E3] rounded-2xl overflow-hidden shadow-sm">
+            <div className="p-4 border-b border-[#D9E2E3] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50/50">
               <div>
-                <h3 className="font-bold text-sm text-[#292431]">Commission Withdrawal History</h3>
-                <p className="text-xs text-[#6B5E78] mt-0.5">
+                <h3 className="font-bold text-sm text-[#344B4A]">Commission Withdrawal History</h3>
+                <p className="text-xs text-[#697778] mt-0.5">
                   Complete record of commission revenue transferred to the gym owner
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-[#6B5E78]" />
+                <Filter className="w-4 h-4 text-[#697778]" />
                 <select
                   value={withdrawalStatusFilter}
                   onChange={e => setWithdrawalStatusFilter(e.target.value)}
-                  className="border border-[#E5DDEB] rounded-xl px-3 py-1.5 text-xs font-semibold text-[#292431] bg-white focus:outline-none focus:border-[#A991D4]"
+                  className="border border-[#D9E2E3] rounded-xl px-3 py-1.5 text-xs font-semibold text-[#344B4A] bg-white focus:outline-none focus:border-[#167D78]"
                 >
                   <option value="All">All Statuses</option>
                   <option value="Completed">Completed</option>
@@ -689,21 +689,21 @@ const GymAdminTrainerCommission = () => {
             </div>
 
             {loading ? (
-              <div className="p-12 text-center text-[#6B5E78]">
-                <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#A991D4]" />
+              <div className="p-12 text-center text-[#697778]">
+                <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#167D78]" />
                 <p className="text-xs font-semibold">Loading withdrawal records...</p>
               </div>
             ) : filteredWithdrawals.length === 0 ? (
-              <div className="p-12 text-center text-[#6B5E78]">
+              <div className="p-12 text-center text-[#697778]">
                 <Wallet className="w-10 h-10 mx-auto mb-2 text-stone-600" />
-                <p className="font-bold text-sm text-[#292431]">No Commission Withdrawals Yet</p>
-                <p className="text-xs text-[#6B5E78] mt-1 max-w-sm mx-auto">
+                <p className="font-bold text-sm text-[#344B4A]">No Commission Withdrawals Yet</p>
+                <p className="text-xs text-[#697778] mt-1 max-w-sm mx-auto">
                   When you withdraw your commission balance, your payout receipts and transfer logs will appear here.
                 </p>
                 {stats.availableBalance > 0 && (
                   <button
                     onClick={() => setWithdrawModalOpen(true)}
-                    className="mt-4 px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold text-xs hover:bg-[#967CC5] cursor-pointer"
+                    className="mt-4 px-4 py-2 bg-[#167D78] text-white rounded-xl font-bold text-xs hover:bg-[#116660] cursor-pointer"
                   >
                     Withdraw ₹{stats.availableBalance.toLocaleString('en-IN')} Now
                   </button>
@@ -713,7 +713,7 @@ const GymAdminTrainerCommission = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-gray-50/75 border-b border-[#E5DDEB] text-[11px] font-bold text-[#6B5E78] uppercase tracking-wider">
+                    <tr className="bg-gray-50/75 border-b border-[#D9E2E3] text-[11px] font-bold text-[#697778] uppercase tracking-wider">
                       <th className="py-3 px-4">Reference ID</th>
                       <th className="py-3 px-4">Date &amp; Time</th>
                       <th className="py-3 px-4">Amount Withdrawn</th>
@@ -723,24 +723,24 @@ const GymAdminTrainerCommission = () => {
                       <th className="py-3 px-4 text-center">Receipt &amp; Download</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5DDEB] text-xs">
+                  <tbody className="divide-y divide-[#D9E2E3] text-xs">
                     {filteredWithdrawals.map((w: any) => (
                       <tr key={w._id} className="hover:bg-gray-50/60 transition-colors">
                         <td className="py-3.5 px-4">
-                          <div className="flex items-center gap-1 text-[#6B5E78]">
-                            <span className="font-mono text-[11px] font-bold text-[#292431] bg-gray-100 px-2 py-0.5 rounded">
+                          <div className="flex items-center gap-1 text-[#697778]">
+                            <span className="font-mono text-[11px] font-bold text-[#344B4A] bg-gray-100 px-2 py-0.5 rounded">
                               {w.transactionId || `COMM-WD-${w._id.slice(-6)}`}
                             </span>
                             <button
                               onClick={() => copyToClipboard(w.transactionId || w._id, w._id)}
-                              className="p-1 hover:text-[#A991D4] cursor-pointer"
+                              className="p-1 hover:text-[#167D78] cursor-pointer"
                               title="Copy Ref"
                             >
                               {copiedKey === w._id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                             </button>
                           </div>
                         </td>
-                        <td className="py-3.5 px-4 text-[#6B5E78]">
+                        <td className="py-3.5 px-4 text-[#697778]">
                           {w.requestedAt ? new Date(w.requestedAt).toLocaleString('en-IN', {
                             day: 'numeric',
                             month: 'short',
@@ -757,18 +757,18 @@ const GymAdminTrainerCommission = () => {
                             {w.withdrawalMethod}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 text-[#6B5E78]">
+                        <td className="py-3.5 px-4 text-[#697778]">
                           {w.withdrawalMethod === 'Bank Transfer' ? (
                             <div>
-                              <p className="font-semibold text-[#292431] text-xs">
+                              <p className="font-semibold text-[#344B4A] text-xs">
                                 {w.bankDetails?.bankName || 'Bank'} (A/C: ****{w.bankDetails?.accountNumber?.slice(-4) || 'XXXX'})
                               </p>
-                              <p className="text-[10px] text-[#6B5E78]">IFSC: {w.bankDetails?.ifscCode || 'N/A'}</p>
+                              <p className="text-[10px] text-[#697778]">IFSC: {w.bankDetails?.ifscCode || 'N/A'}</p>
                             </div>
                           ) : (
                             <div>
-                              <p className="font-semibold text-[#292431] text-xs">{w.upiDetails?.upiId || 'UPI ID'}</p>
-                              <p className="text-[10px] text-[#6B5E78]">{w.upiDetails?.upiName || 'Beneficiary'}</p>
+                              <p className="font-semibold text-[#344B4A] text-xs">{w.upiDetails?.upiId || 'UPI ID'}</p>
+                              <p className="text-[10px] text-[#697778]">{w.upiDetails?.upiName || 'Beneficiary'}</p>
                             </div>
                           )}
                         </td>
@@ -785,14 +785,14 @@ const GymAdminTrainerCommission = () => {
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => setReceiptModal(w)}
-                              className="p-1.5 text-[#A991D4] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                              className="p-1.5 text-[#167D78] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                               title="View Receipt Details"
                             >
                               <Eye className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDownloadWithdrawalPDF(w)}
-                              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#A991D4] text-[#292431] hover:bg-[#967CC5] rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#167D78] text-white hover:bg-[#116660] rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
                               title="Download PDF Receipt"
                             >
                               <Download className="w-3.5 h-3.5" /> Download Receipt
@@ -814,10 +814,10 @@ const GymAdminTrainerCommission = () => {
       {withdrawModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex justify-center items-start pt-20 pb-16 px-4 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-5 relative">
-            <div className="flex items-center justify-between border-b border-[#E5DDEB] pb-3">
+            <div className="flex items-center justify-between border-b border-[#D9E2E3] pb-3">
               <div>
-                <h3 className="text-lg font-bold text-[#292431]">Withdraw Gym Commission</h3>
-                <p className="text-xs text-[#6B5E78] mt-0.5">Transfer your retained commission balance</p>
+                <h3 className="text-lg font-bold text-[#344B4A]">Withdraw Gym Commission</h3>
+                <p className="text-xs text-[#697778] mt-0.5">Transfer your retained commission balance</p>
               </div>
               <button
                 onClick={() => setWithdrawModalOpen(false)}
@@ -831,7 +831,7 @@ const GymAdminTrainerCommission = () => {
             <div className="p-3.5 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">Available Commission</span>
-                <span className="text-xl font-black text-[#A991D4]">₹{stats.availableBalance.toLocaleString('en-IN')}</span>
+                <span className="text-xl font-black text-[#167D78]">₹{stats.availableBalance.toLocaleString('en-IN')}</span>
               </div>
               <button
                 type="button"
@@ -846,11 +846,11 @@ const GymAdminTrainerCommission = () => {
               
               {/* Amount Input */}
               <div>
-                <label className="block text-xs font-bold text-[#292431] mb-1">
+                <label className="block text-xs font-bold text-[#344B4A] mb-1">
                   Withdrawal Amount (₹) <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-[#6B5E78]">₹</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-[#697778]">₹</span>
                   <input
                     type="number"
                     min="1"
@@ -859,14 +859,14 @@ const GymAdminTrainerCommission = () => {
                     placeholder="e.g. 750"
                     value={withdrawForm.amount}
                     onChange={e => setWithdrawForm({ ...withdrawForm, amount: e.target.value })}
-                    className="w-full pl-8 pr-4 py-2.5 border border-[#E5DDEB] rounded-xl text-sm font-bold text-[#292431] focus:outline-none focus:border-[#A991D4]"
+                    className="w-full pl-8 pr-4 py-2.5 border border-[#D9E2E3] rounded-xl text-sm font-bold text-[#344B4A] focus:outline-none focus:border-[#167D78]"
                   />
                 </div>
               </div>
 
               {/* Method Selector */}
               <div>
-                <label className="block text-xs font-bold text-[#292431] mb-1">
+                <label className="block text-xs font-bold text-[#344B4A] mb-1">
                   Payout Method <span className="text-red-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -875,8 +875,8 @@ const GymAdminTrainerCommission = () => {
                     onClick={() => setWithdrawForm({ ...withdrawForm, withdrawalMethod: 'Bank Transfer' })}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       withdrawForm.withdrawalMethod === 'Bank Transfer'
-                        ? 'border-[#A991D4] bg-[#A991D4]/5 text-[#A991D4]'
-                        : 'border-[#E5DDEB] text-[#6B5E78] hover:bg-gray-50'
+                        ? 'border-[#167D78] bg-[#167D78]/5 text-[#167D78]'
+                        : 'border-[#D9E2E3] text-[#697778] hover:bg-gray-50'
                     }`}
                   >
                     <Building2 className="w-4 h-4" /> Bank Account
@@ -886,8 +886,8 @@ const GymAdminTrainerCommission = () => {
                     onClick={() => setWithdrawForm({ ...withdrawForm, withdrawalMethod: 'UPI' })}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       withdrawForm.withdrawalMethod === 'UPI'
-                        ? 'border-[#A991D4] bg-[#A991D4]/5 text-[#A991D4]'
-                        : 'border-[#E5DDEB] text-[#6B5E78] hover:bg-gray-50'
+                        ? 'border-[#167D78] bg-[#167D78]/5 text-[#167D78]'
+                        : 'border-[#D9E2E3] text-[#697778] hover:bg-gray-50'
                     }`}
                   >
                     <Smartphone className="w-4 h-4" /> UPI ID
@@ -897,75 +897,75 @@ const GymAdminTrainerCommission = () => {
 
               {/* Bank Transfer Inputs */}
               {withdrawForm.withdrawalMethod === 'Bank Transfer' ? (
-                <div className="space-y-3 bg-gray-50/70 p-3.5 rounded-xl border border-[#E5DDEB]">
+                <div className="space-y-3 bg-gray-50/70 p-3.5 rounded-xl border border-[#D9E2E3]">
                   <div>
-                    <label className="block text-[11px] font-bold text-[#6B5E78] mb-0.5">Account Holder Name *</label>
+                    <label className="block text-[11px] font-bold text-[#697778] mb-0.5">Account Holder Name *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Pooja Hegde"
                       value={withdrawForm.accountHolder}
                       onChange={e => setWithdrawForm({ ...withdrawForm, accountHolder: e.target.value })}
-                      className="w-full px-3 py-1.5 border border-[#E5DDEB] rounded-lg text-xs font-medium focus:outline-none focus:border-[#A991D4] bg-white"
+                      className="w-full px-3 py-1.5 border border-[#D9E2E3] rounded-lg text-xs font-medium focus:outline-none focus:border-[#167D78] bg-white"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[11px] font-bold text-[#6B5E78] mb-0.5">Bank Name</label>
+                      <label className="block text-[11px] font-bold text-[#697778] mb-0.5">Bank Name</label>
                       <input
                         type="text"
                         placeholder="e.g. HDFC Bank"
                         value={withdrawForm.bankName}
                         onChange={e => setWithdrawForm({ ...withdrawForm, bankName: e.target.value })}
-                        className="w-full px-3 py-1.5 border border-[#E5DDEB] rounded-lg text-xs font-medium focus:outline-none focus:border-[#A991D4] bg-white"
+                        className="w-full px-3 py-1.5 border border-[#D9E2E3] rounded-lg text-xs font-medium focus:outline-none focus:border-[#167D78] bg-white"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-bold text-[#6B5E78] mb-0.5">IFSC Code *</label>
+                      <label className="block text-[11px] font-bold text-[#697778] mb-0.5">IFSC Code *</label>
                       <input
                         type="text"
                         required
                         placeholder="HDFC0001234"
                         value={withdrawForm.ifscCode}
                         onChange={e => setWithdrawForm({ ...withdrawForm, ifscCode: e.target.value.toUpperCase() })}
-                        className="w-full px-3 py-1.5 border border-[#E5DDEB] rounded-lg text-xs font-mono font-medium focus:outline-none focus:border-[#A991D4] bg-white"
+                        className="w-full px-3 py-1.5 border border-[#D9E2E3] rounded-lg text-xs font-mono font-medium focus:outline-none focus:border-[#167D78] bg-white"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold text-[#6B5E78] mb-0.5">Account Number *</label>
+                    <label className="block text-[11px] font-bold text-[#697778] mb-0.5">Account Number *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. 5010023456789"
                       value={withdrawForm.accountNumber}
                       onChange={e => setWithdrawForm({ ...withdrawForm, accountNumber: e.target.value })}
-                      className="w-full px-3 py-1.5 border border-[#E5DDEB] rounded-lg text-xs font-mono font-medium focus:outline-none focus:border-[#A991D4] bg-white"
+                      className="w-full px-3 py-1.5 border border-[#D9E2E3] rounded-lg text-xs font-mono font-medium focus:outline-none focus:border-[#167D78] bg-white"
                     />
                   </div>
                 </div>
               ) : (
                 /* UPI Inputs */
-                <div className="space-y-3 bg-gray-50/70 p-3.5 rounded-xl border border-[#E5DDEB]">
+                <div className="space-y-3 bg-gray-50/70 p-3.5 rounded-xl border border-[#D9E2E3]">
                   <div>
-                    <label className="block text-[11px] font-bold text-[#6B5E78] mb-0.5">UPI ID (VPA) *</label>
+                    <label className="block text-[11px] font-bold text-[#697778] mb-0.5">UPI ID (VPA) *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. pooja@okhdfcbank"
                       value={withdrawForm.upiId}
                       onChange={e => setWithdrawForm({ ...withdrawForm, upiId: e.target.value })}
-                      className="w-full px-3 py-1.5 border border-[#E5DDEB] rounded-lg text-xs font-medium focus:outline-none focus:border-[#A991D4] bg-white"
+                      className="w-full px-3 py-1.5 border border-[#D9E2E3] rounded-lg text-xs font-medium focus:outline-none focus:border-[#167D78] bg-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold text-[#6B5E78] mb-0.5">Beneficiary Name</label>
+                    <label className="block text-[11px] font-bold text-[#697778] mb-0.5">Beneficiary Name</label>
                     <input
                       type="text"
                       placeholder="e.g. Pooja Hegde"
                       value={withdrawForm.upiName}
                       onChange={e => setWithdrawForm({ ...withdrawForm, upiName: e.target.value })}
-                      className="w-full px-3 py-1.5 border border-[#E5DDEB] rounded-lg text-xs font-medium focus:outline-none focus:border-[#A991D4] bg-white"
+                      className="w-full px-3 py-1.5 border border-[#D9E2E3] rounded-lg text-xs font-medium focus:outline-none focus:border-[#167D78] bg-white"
                     />
                   </div>
                 </div>
@@ -973,29 +973,29 @@ const GymAdminTrainerCommission = () => {
 
               {/* Notes */}
               <div>
-                <label className="block text-[11px] font-bold text-[#6B5E78] mb-0.5">Reference Notes (Optional)</label>
+                <label className="block text-[11px] font-bold text-[#697778] mb-0.5">Reference Notes (Optional)</label>
                 <input
                   type="text"
                   placeholder="e.g. October Commission Payout"
                   value={withdrawForm.notes}
                   onChange={e => setWithdrawForm({ ...withdrawForm, notes: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-[#E5DDEB] rounded-lg text-xs focus:outline-none focus:border-[#A991D4]"
+                  className="w-full px-3 py-1.5 border border-[#D9E2E3] rounded-lg text-xs focus:outline-none focus:border-[#167D78]"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-2 flex items-center justify-end gap-3 border-t border-[#E5DDEB]">
+              <div className="pt-2 flex items-center justify-end gap-3 border-t border-[#D9E2E3]">
                 <button
                   type="button"
                   onClick={() => setWithdrawModalOpen(false)}
-                  className="px-4 py-2 border border-[#E5DDEB] text-[#6B5E78] rounded-xl text-xs font-bold hover:bg-gray-50 cursor-pointer"
+                  className="px-4 py-2 border border-[#D9E2E3] text-[#697778] rounded-xl text-xs font-bold hover:bg-gray-50 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingWithdrawal || !withdrawForm.amount || Number(withdrawForm.amount) <= 0 || Number(withdrawForm.amount) > stats.availableBalance}
-                  className="px-5 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl text-xs font-bold hover:bg-[#967CC5] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
+                  className="px-5 py-2.5 bg-[#167D78] text-white rounded-xl text-xs font-bold hover:bg-[#116660] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
                 >
                   {submittingWithdrawal ? (
                     <>
@@ -1018,10 +1018,10 @@ const GymAdminTrainerCommission = () => {
       {receiptModal && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex justify-center items-start pt-20 pb-16 px-4 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4 relative">
-            <div className="flex items-center justify-between border-b border-[#E5DDEB] pb-3">
+            <div className="flex items-center justify-between border-b border-[#D9E2E3] pb-3">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                <h3 className="font-bold text-sm text-[#292431]">Commission Payout Receipt</h3>
+                <h3 className="font-bold text-sm text-[#344B4A]">Commission Payout Receipt</h3>
               </div>
               <button
                 onClick={() => setReceiptModal(null)}
@@ -1041,70 +1041,70 @@ const GymAdminTrainerCommission = () => {
               </span>
             </div>
 
-            <div className="divide-y divide-[#E5DDEB] text-xs">
+            <div className="divide-y divide-[#D9E2E3] text-xs">
               <div className="py-2 flex justify-between">
-                <span className="text-[#6B5E78]">Transaction Ref</span>
-                <span className="font-mono font-bold text-[#292431]">{receiptModal.transactionId || receiptModal._id}</span>
+                <span className="text-[#697778]">Transaction Ref</span>
+                <span className="font-mono font-bold text-[#344B4A]">{receiptModal.transactionId || receiptModal._id}</span>
               </div>
               <div className="py-2 flex justify-between">
-                <span className="text-[#6B5E78]">Date &amp; Time</span>
-                <span className="font-semibold text-[#292431]">{new Date(receiptModal.requestedAt).toLocaleString('en-IN')}</span>
+                <span className="text-[#697778]">Date &amp; Time</span>
+                <span className="font-semibold text-[#344B4A]">{new Date(receiptModal.requestedAt).toLocaleString('en-IN')}</span>
               </div>
               <div className="py-2 flex justify-between">
-                <span className="text-[#6B5E78]">Payout Method</span>
-                <span className="font-semibold text-[#292431]">{receiptModal.withdrawalMethod}</span>
+                <span className="text-[#697778]">Payout Method</span>
+                <span className="font-semibold text-[#344B4A]">{receiptModal.withdrawalMethod}</span>
               </div>
               {receiptModal.withdrawalMethod === 'Bank Transfer' ? (
                 <>
                   <div className="py-2 flex justify-between">
-                    <span className="text-[#6B5E78]">Account Holder</span>
-                    <span className="font-semibold text-[#292431]">{receiptModal.bankDetails?.accountHolder || 'N/A'}</span>
+                    <span className="text-[#697778]">Account Holder</span>
+                    <span className="font-semibold text-[#344B4A]">{receiptModal.bankDetails?.accountHolder || 'N/A'}</span>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <span className="text-[#6B5E78]">Bank Name</span>
-                    <span className="font-semibold text-[#292431]">{receiptModal.bankDetails?.bankName || 'N/A'}</span>
+                    <span className="text-[#697778]">Bank Name</span>
+                    <span className="font-semibold text-[#344B4A]">{receiptModal.bankDetails?.bankName || 'N/A'}</span>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <span className="text-[#6B5E78]">Account Number</span>
-                    <span className="font-mono font-semibold text-[#292431]">{receiptModal.bankDetails?.accountNumber || 'N/A'}</span>
+                    <span className="text-[#697778]">Account Number</span>
+                    <span className="font-mono font-semibold text-[#344B4A]">{receiptModal.bankDetails?.accountNumber || 'N/A'}</span>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <span className="text-[#6B5E78]">IFSC Code</span>
-                    <span className="font-mono font-semibold text-[#292431]">{receiptModal.bankDetails?.ifscCode || 'N/A'}</span>
+                    <span className="text-[#697778]">IFSC Code</span>
+                    <span className="font-mono font-semibold text-[#344B4A]">{receiptModal.bankDetails?.ifscCode || 'N/A'}</span>
                   </div>
                 </>
               ) : (
                 <>
                   <div className="py-2 flex justify-between">
-                    <span className="text-[#6B5E78]">UPI ID (VPA)</span>
-                    <span className="font-mono font-semibold text-[#292431]">{receiptModal.upiDetails?.upiId || 'N/A'}</span>
+                    <span className="text-[#697778]">UPI ID (VPA)</span>
+                    <span className="font-mono font-semibold text-[#344B4A]">{receiptModal.upiDetails?.upiId || 'N/A'}</span>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <span className="text-[#6B5E78]">Beneficiary Name</span>
-                    <span className="font-semibold text-[#292431]">{receiptModal.upiDetails?.upiName || 'N/A'}</span>
+                    <span className="text-[#697778]">Beneficiary Name</span>
+                    <span className="font-semibold text-[#344B4A]">{receiptModal.upiDetails?.upiName || 'N/A'}</span>
                   </div>
                 </>
               )}
               {receiptModal.notes && (
                 <div className="py-2 flex justify-between">
-                  <span className="text-[#6B5E78]">Notes</span>
-                  <span className="font-medium text-[#292431]">{receiptModal.notes}</span>
+                  <span className="text-[#697778]">Notes</span>
+                  <span className="font-medium text-[#344B4A]">{receiptModal.notes}</span>
                 </div>
               )}
             </div>
 
-            <div className="pt-3 flex items-center justify-between border-t border-[#E5DDEB]">
+            <div className="pt-3 flex items-center justify-between border-t border-[#D9E2E3]">
               <button
                 type="button"
                 onClick={() => handleDownloadWithdrawalPDF(receiptModal)}
-                className="flex items-center gap-2 px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl text-xs font-bold hover:bg-[#967CC5] transition-all shadow-sm cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-[#167D78] text-white rounded-xl text-xs font-bold hover:bg-[#116660] transition-all shadow-sm cursor-pointer"
               >
                 <Download className="w-4 h-4" /> Download PDF Receipt
               </button>
               <button
                 type="button"
                 onClick={() => setReceiptModal(null)}
-                className="px-4 py-2 border border-[#E5DDEB] text-[#6B5E78] hover:bg-gray-50 rounded-xl text-xs font-bold cursor-pointer"
+                className="px-4 py-2 border border-[#D9E2E3] text-[#697778] hover:bg-gray-50 rounded-xl text-xs font-bold cursor-pointer"
               >
                 Close Receipt
               </button>

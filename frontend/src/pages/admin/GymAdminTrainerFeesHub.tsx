@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { Settings, Clock, History, TrendingUp, ChevronRight } from 'lucide-react';
 
 const cards = [
@@ -7,9 +7,9 @@ const cards = [
     description: 'Configure and manage fees for each trainer in your gym.',
     icon: Settings,
     path: '/admin/trainer-fees/settings',
-    color: 'from-[#A991D4] to-[#967CC5]',
+    color: 'from-[#167D78] to-[#116660]',
     bg: 'bg-green-50',
-    iconColor: 'text-[#A991D4]',
+    iconColor: 'text-[#167D78]',
   },
   {
     title: 'Pending Trainer Payments',
@@ -27,7 +27,7 @@ const cards = [
     path: '/admin/trainer-fees/history',
     color: 'from-blue-500 to-indigo-500',
     bg: 'bg-blue-50',
-    iconColor: 'text-[#967CC5]',
+    iconColor: 'text-[#167D78]',
   },
   {
     title: 'Trainer Earnings',
@@ -35,8 +35,8 @@ const cards = [
     icon: TrendingUp,
     path: '/admin/trainer-fees/earnings',
     color: 'from-purple-500 to-pink-500',
-    bg: 'bg-purple-50',
-    iconColor: 'text-purple-600',
+    bg: 'bg-[#E8EFF0]',
+    iconColor: 'text-[#167D78]',
   },
 ];
 
@@ -44,8 +44,8 @@ const GymAdminTrainerFeesHub = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#292431]">Trainer Fees & Payments</h1>
-        <p className="text-[#6B5E78] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
+        <h1 className="text-2xl font-bold text-[#344B4A]">Trainer Fees & Payments</h1>
+        <p className="text-[#697778] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-5">
@@ -55,16 +55,16 @@ const GymAdminTrainerFeesHub = () => {
             <Link
               key={card.path}
               to={card.path}
-              className="bg-white border border-[#E9DFF4] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#E5DDEB] transition-all group"
+              className="bg-white border border-[#D8EAE7] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#D9E2E3] transition-all group"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl ${card.bg} flex items-center justify-center`}>
                   <Icon size={22} className={card.iconColor} />
                 </div>
-                <ChevronRight size={18} className="text-[#E5DDEB] group-hover:text-[#A991D4] group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight size={18} className="text-[#D9E2E3] group-hover:text-[#167D78] group-hover:translate-x-0.5 transition-all" />
               </div>
-              <h3 className="font-bold text-[#292431] mb-1">{card.title}</h3>
-              <p className="text-sm text-[#6B5E78]">{card.description}</p>
+              <h3 className="font-bold text-[#344B4A] mb-1">{card.title}</h3>
+              <p className="text-sm text-[#697778]">{card.description}</p>
             </Link>
           );
         })}

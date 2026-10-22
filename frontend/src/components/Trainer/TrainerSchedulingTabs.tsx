@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+﻿import { Link, useLocation } from 'react-router-dom';
 import { Calendar, CalendarCheck, Clock } from 'lucide-react';
 
 export const TrainerSchedulingTabs = () => {
@@ -27,7 +27,7 @@ export const TrainerSchedulingTabs = () => {
 
   return (
     <div className="w-full pb-2">
-      <div className="flex items-center gap-2 p-1.5 bg-white border border-[#E5DDEB] rounded-2xl w-full sm:w-fit overflow-x-auto shadow-xs">
+      <div className="flex items-center gap-2 p-1.5 bg-white border border-[#D9E2E3] rounded-2xl w-full sm:w-fit overflow-x-auto shadow-xs">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -36,11 +36,11 @@ export const TrainerSchedulingTabs = () => {
               to={tab.path}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap shrink-0 ${
                 tab.isActive
-                  ? 'bg-[#A991D4] text-[#292431] font-bold shadow-sm'
-                  : 'text-[#6B5E78] hover:text-[#292431] hover:bg-[#F7F4FA] font-medium'
+                  ? 'bg-[#167D78] text-white font-bold shadow-sm'
+                  : 'text-[#697778] hover:text-[#344B4A] hover:bg-[#E8EFF0] font-medium'
               }`}
             >
-              <Icon size={16} className={tab.isActive ? 'text-white' : 'text-[#6B5E78]'} />
+              <Icon size={16} className={tab.isActive ? 'text-white' : 'text-[#697778]'} />
               <span>{tab.label}</span>
             </Link>
           );

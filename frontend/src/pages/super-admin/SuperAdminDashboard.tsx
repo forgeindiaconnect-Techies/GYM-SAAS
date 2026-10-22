@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { getDb } from '../../utils/mockDb';
 import { Building2, FileText, CheckCircle, XCircle, AlertTriangle, Activity, BarChart } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -33,29 +33,29 @@ const SuperAdminDashboard = () => {
   };
 
   const cards = [
-    { title: 'Active Gyms', value: stats.active, icon: Activity, color: 'text-[#4C315E]', bg: 'bg-[#E9DFF4]' },
+    { title: 'Active Gyms', value: stats.active, icon: Activity, color: 'text-[#344B4A]', bg: 'bg-[#D8EAE7]' },
     { title: 'Approved Gyms', value: stats.approved, icon: CheckCircle, color: 'text-[#27845A]', bg: 'bg-[#27845A]/10' },
-    { title: 'Pending Gyms', value: stats.pending, icon: FileText, color: 'text-[#B77916]', bg: 'bg-[#B77916]/10' },
-    { title: 'Suspended Gyms', value: stats.suspended, icon: AlertTriangle, color: 'text-[#B77916]', bg: 'bg-[#B77916]/10' },
-    { title: 'Rejected Gyms', value: stats.rejected, icon: XCircle, color: 'text-[#C43D4D]', bg: 'bg-[#C43D4D]/10' },
+    { title: 'Pending Gyms', value: stats.pending, icon: FileText, color: 'text-[#D99A27]', bg: 'bg-[#D99A27]/10' },
+    { title: 'Suspended Gyms', value: stats.suspended, icon: AlertTriangle, color: 'text-[#D99A27]', bg: 'bg-[#D99A27]/10' },
+    { title: 'Rejected Gyms', value: stats.rejected, icon: XCircle, color: 'text-[#C43D35]', bg: 'bg-[#C43D35]/10' },
   ];
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-[#292431] tracking-tight">Super Admin Dashboard</h1>
-        <p className="text-[#6B5E78] mt-1">Platform overview and gym onboarding metrics.</p>
+        <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Super Admin Dashboard</h1>
+        <p className="text-[#697778] mt-1">Platform overview and gym onboarding metrics.</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-4">
         {cards.map((c, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-5 flex items-center space-x-3.5 shadow-sm hover:shadow-md transition-shadow">
+          <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5 flex items-center space-x-3.5 shadow-sm hover:shadow-md transition-shadow">
             <div className={`w-12 h-12 rounded-xl shrink-0 flex items-center justify-center ${c.bg} ${c.color}`}>
               <c.icon size={24} />
             </div>
             <div className="min-w-0">
-              <p className="text-[#6B5E78] text-xs font-semibold uppercase tracking-wider truncate">{c.title}</p>
-              <h3 className="text-2xl font-bold text-[#292431] mt-0.5">{c.value}</h3>
+              <p className="text-[#697778] text-xs font-semibold uppercase tracking-wider truncate">{c.title}</p>
+              <h3 className="text-2xl font-bold text-[#344B4A] mt-0.5">{c.value}</h3>
             </div>
           </div>
         ))}
@@ -63,42 +63,42 @@ const SuperAdminDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         {/* Quick Actions */}
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 flex flex-col h-full shadow-sm">
-          <div className="flex items-center justify-between mb-5 border-b border-[#E5DDEB] pb-4">
-            <h2 className="text-xl font-bold text-[#292431]">Onboarding Actions</h2>
-            <span className="text-xs text-[#6B5E78] font-medium">Quick Access</span>
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+          <div className="flex items-center justify-between mb-5 border-b border-[#D9E2E3] pb-4">
+            <h2 className="text-xl font-bold text-[#344B4A]">Onboarding Actions</h2>
+            <span className="text-xs text-[#697778] font-medium">Quick Access</span>
           </div>
           <div className="grid grid-cols-2 gap-4 flex-1">
-            <Link to="/super-admin/gyms/add" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl hover:border-[#A991D4] hover:bg-[#E9DFF4]/30 transition-all text-center group">
-              <div className="w-12 h-12 rounded-xl bg-[#E9DFF4] text-[#4C315E] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Link to="/super-admin/gyms/add" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl hover:border-[#167D78] hover:bg-[#D8EAE7]/30 transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                 <Building2 size={24} />
               </div>
-              <span className="font-semibold text-sm text-[#292431]">Add Gym Manually</span>
+              <span className="font-semibold text-sm text-[#344B4A]">Add Gym Manually</span>
             </Link>
-            <Link to="/super-admin/gym-owners" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl hover:border-[#A991D4] hover:bg-[#E9DFF4]/30 transition-all text-center group">
-              <div className="w-12 h-12 rounded-xl bg-[#E9DFF4] text-[#4C315E] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Link to="/super-admin/gym-owners" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl hover:border-[#167D78] hover:bg-[#D8EAE7]/30 transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                 <FileText size={24} />
               </div>
-              <span className="font-semibold text-sm text-[#292431]">Review Approvals</span>
+              <span className="font-semibold text-sm text-[#344B4A]">Review Approvals</span>
             </Link>
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-6 flex flex-col h-full shadow-sm">
-          <div className="flex justify-between items-center mb-5 border-b border-[#E5DDEB] pb-4">
-            <h2 className="text-xl font-bold text-[#292431]">Recent Registrations</h2>
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+          <div className="flex justify-between items-center mb-5 border-b border-[#D9E2E3] pb-4">
+            <h2 className="text-xl font-bold text-[#344B4A]">Recent Registrations</h2>
           </div>
           {activities.length > 0 ? (
-            <div className="flex-1 space-y-3 max-h-[320px] overflow-y-auto pr-1 divide-y divide-[#E5DDEB]/40">
+            <div className="flex-1 space-y-3 max-h-[320px] overflow-y-auto pr-1 divide-y divide-[#D9E2E3]/40">
               {activities.map((user: any, idx: number) => (
-                <div key={idx} className="flex items-center space-x-3.5 p-3 rounded-xl hover:bg-[#F9FBFA] transition-colors pt-3">
-                  <div className="w-3 h-3 rounded-full shrink-0 bg-[#A991D4]" />
+                <div key={idx} className="flex items-center space-x-3.5 p-3 rounded-xl hover:bg-[#E8EFF0] transition-colors pt-3">
+                  <div className="w-3 h-3 rounded-full shrink-0 bg-[#167D78]" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-[#292431] font-bold truncate">
+                    <p className="text-sm text-[#344B4A] font-bold truncate">
                       {user.gymId?.name ? user.gymId.name : `${user.firstName} ${user.lastName}`}
                     </p>
-                    <p className="text-xs text-[#6B5E78] mt-0.5 truncate">
+                    <p className="text-xs text-[#697778] mt-0.5 truncate">
                       {user.email} • {new Date(user.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -109,8 +109,8 @@ const SuperAdminDashboard = () => {
               ))}
             </div>
           ) : (
-            <div className="flex-1 text-center flex flex-col items-center justify-center text-[#6B5E78] py-12">
-              <BarChart size={40} className="mb-2 opacity-40 text-[#A991D4]" />
+            <div className="flex-1 text-center flex flex-col items-center justify-center text-[#697778] py-12">
+              <BarChart size={40} className="mb-2 opacity-40 text-[#167D78]" />
               <p className="text-sm font-medium">No recent gym owner registrations.</p>
             </div>
           )}

@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Activity, AlertCircle, Loader2, ChevronRight, ChevronLeft, Check,
   Eye, EyeOff, ArrowLeft, Lock, Star, Dumbbell, Target, Zap, TrendingUp,
-  Crown, Leaf, Users, Cpu, Package
+  Crown, Leaf, Users, Cpu, Package, Sparkles, Gift
 } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -27,9 +27,9 @@ const GOAL_ICONS: Record<string, any> = {
   'CrossFit': TrendingUp, 'Personal Training': Users, 'Online Coaching': Cpu,
 };
 const GOAL_COLORS: Record<string, string> = {
-  'Weight Loss': '#C43D4D', 'Muscle Gain': '#A991D4', 'Strength': '#6366F1',
-  'General Fitness': '#27845A', 'Bodybuilding': '#967CC5', 'Yoga': '#27845A',
-  'CrossFit': '#B77916', 'Personal Training': '#8B5CF6', 'Online Coaching': '#0EA5E9',
+  'Weight Loss': '#C43D35', 'Muscle Gain': '#167D78', 'Strength': '#6366F1',
+  'General Fitness': '#27845A', 'Bodybuilding': '#116660', 'Yoga': '#27845A',
+  'CrossFit': '#D99A27', 'Personal Training': '#8B5CF6', 'Online Coaching': '#0EA5E9',
 };
 
 const initialForm = {
@@ -41,6 +41,8 @@ const initialForm = {
   // Package selection
   selectedPackageId: '',
   selectedBillingPlan: '' as 'monthly' | 'annual' | '',
+  // Referral
+  referralCode: '',
 };
 
 interface GymPackage {
@@ -60,6 +62,7 @@ interface GymPackage {
 
 const CustomerRegisterPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [step, setStep] = useState(() => {
     const saved = sessionStorage.getItem('customer_reg_step');
@@ -76,6 +79,11 @@ const CustomerRegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [intentData, setIntentData] = useState<any>(null);
 
+  // Referral state
+  const [validatedReferral, setValidatedReferral] = useState<any>(null);
+  const [referralCheckLoading, setReferralCheckLoading] = useState<boolean>(false);
+  const [referralMessage, setReferralMessage] = useState<string>('');
+
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(() => {
@@ -91,12 +99,53 @@ const CustomerRegisterPage = () => {
   useEffect(() => { sessionStorage.setItem('customer_reg_form', JSON.stringify(form)); }, [form]);
   useEffect(() => { sessionStorage.setItem('customer_reg_otp', otpVerified.toString()); }, [otpVerified]);
 
+  const handleValidateReferralCode = useCallback(async (codeToValidate: string, explicitGymId?: string) => {
+    if (!codeToValidate || !codeToValidate.trim()) return;
+    const clean = codeToValidate.trim().toUpperCase();
+    try {
+      setReferralCheckLoading(true);
+      setReferralMessage('');
+      const targetGym = explicitGymId || intentData?.gymId;
+      const res = await api.get(`/referrals/validate/${clean}`, {
+        params: targetGym ? { gymId: targetGym } : undefined
+      });
+      if (res.data?.valid) {
+        setValidatedReferral(res.data);
+        setReferralMessage(res.data.message || 'Valid referral code applied!');
+        sessionStorage.setItem('customer_referral_code', clean);
+      } else {
+        setValidatedReferral(null);
+        setReferralMessage(res.data?.message || 'Invalid referral code');
+      }
+    } catch (err: any) {
+      setValidatedReferral(null);
+      setReferralMessage(err.response?.data?.message || 'Referral code not found or inactive');
+    } finally {
+      setReferralCheckLoading(false);
+    }
+  }, [intentData?.gymId]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const refCode = params.get('ref') || params.get('referral') || sessionStorage.getItem('customer_referral_code');
+    if (refCode && !form.referralCode) {
+      setForm((prev: any) => ({ ...prev, referralCode: refCode.toUpperCase() }));
+      handleValidateReferralCode(refCode);
+    }
+  }, [location.search, handleValidateReferralCode]);
+
   useEffect(() => {
     const intentStr = sessionStorage.getItem('checkout_intent');
     if (intentStr) {
-      try { setIntentData(JSON.parse(intentStr)); } catch (e) { /* noop */ }
+      try {
+        const parsed = JSON.parse(intentStr);
+        setIntentData(parsed);
+        if (parsed.gymId && form.referralCode && !validatedReferral) {
+          handleValidateReferralCode(form.referralCode, parsed.gymId);
+        }
+      } catch (e) { /* noop */ }
     }
-  }, []);
+  }, [form.referralCode, validatedReferral, handleValidateReferralCode]);
 
   // Fetch packages when entering step 3 (Package) and a fitness goal is selected
   const fetchPackages = useCallback(async (goal: string, gymId?: string) => {
@@ -269,6 +318,7 @@ const CustomerRegisterPage = () => {
         },
         gymId: intentData?.gymId,
         branchId: intentData?.branchId,
+        referralCode: form.referralCode?.trim() || undefined,
       });
 
       if (res.data.token && res.data.user) {
@@ -288,6 +338,7 @@ const CustomerRegisterPage = () => {
               fitnessGoal: form.fitnessGoal,
               planName: packages.find(p => p._id === form.selectedPackageId)?.name || 'Standard',
               paymentMethod: 'UPI',
+              referralCode: form.referralCode?.trim() || undefined,
             });
           } catch (joinErr) {
             console.error('Failed to auto-join gym after registration:', joinErr);
@@ -325,44 +376,44 @@ const CustomerRegisterPage = () => {
   };
 
   const inputCls = (field: string) =>
-    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#E9DFF4]' : 'border-[#E5DDEB]'} text-[#292431] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#A991D4] transition-colors placeholder-[#555]`;
+    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#D8EAE7]' : 'border-[#D9E2E3]'} text-[#344B4A] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#167D78] transition-colors placeholder-[#697778]`;
 
   const selBtnCls = (active: boolean) =>
-    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#A991D4] text-[#292431] border-[#A991D4] font-semibold' : 'bg-[#FFFFFF] border-[#E5DDEB] text-[#6B5E78] hover:border-[#A991D4]/50'}`;
+    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#167D78] text-white border-[#167D78] font-semibold' : 'bg-[#FFFFFF] border-[#D9E2E3] text-[#697778] hover:border-[#167D78]/50'}`;
 
   // Helper: get selected package
   const selectedPkg = packages.find(p => p._id === form.selectedPackageId);
 
   return (
-    <div className="min-h-screen bg-[#F7F4FA] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#E8EFF0] flex flex-col items-center justify-center px-4 py-12">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
       {/* Back to Home Arrow */}
-      <Link to="/" className="absolute top-8 left-8 text-[#6B5E78] hover:text-[#A991D4] flex items-center gap-2 transition-colors z-10">
+      <Link to="/" className="absolute top-8 left-8 text-[#697778] hover:text-[#167D78] flex items-center gap-2 transition-colors z-10">
         <ArrowLeft size={20} />
         <span className="font-medium text-sm">Back to Home</span>
       </Link>
 
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2 mb-8 group z-10">
-        <div className="w-9 h-9 bg-[#A991D4] rounded-md flex items-center justify-center">
+        <div className="w-9 h-9 bg-[#167D78] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#A991D4]">Gymora</span>
+        <span className="text-2xl font-bold tracking-tight text-[#167D78]">Gymora</span>
       </Link>
 
-      <div className="w-full max-w-2xl bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl shadow-2xl overflow-hidden z-10">
+      <div className="w-full max-w-2xl bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl shadow-2xl overflow-hidden z-10">
         {/* Progress Header */}
-        <div className="bg-[#FFFFFF] border-b border-[#E5DDEB] px-8 py-5 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-[#292431]">Customer Registration</h1>
+        <div className="bg-[#FFFFFF] border-b border-[#D9E2E3] px-8 py-5 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-[#344B4A]">Customer Registration</h1>
           <div className="flex items-center space-x-2">
             {STEPS.map((s, i) => (
               <div key={i} className="flex items-center space-x-2" title={s}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#A991D4] text-[#292431]' : i === step ? 'bg-[#A991D4] text-[#292431] ring-2 ring-[#C43D4D]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#E9DFF4] text-[#555]'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#167D78] text-white' : i === step ? 'bg-[#167D78] text-white ring-2 ring-[#C43D35]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#D8EAE7] text-[#697778]'}`}>
                   {i < step ? <Check size={14} /> : i + 1}
                 </div>
-                <span className={`text-xs hidden sm:block ${i === step ? 'text-[#292431] font-medium' : 'text-[#555]'}`}>{s}</span>
-                {i < STEPS.length - 1 && <div className={`h-px w-4 sm:w-6 ${i < step ? 'bg-[#A991D4]' : 'bg-[#E9DFF4]'}`} />}
+                <span className={`text-xs hidden sm:block ${i === step ? 'text-[#344B4A] font-medium' : 'text-[#697778]'}`}>{s}</span>
+                {i < STEPS.length - 1 && <div className={`h-px w-4 sm:w-6 ${i < step ? 'bg-[#167D78]' : 'bg-[#D8EAE7]'}`} />}
               </div>
             ))}
           </div>
@@ -370,7 +421,7 @@ const CustomerRegisterPage = () => {
 
         <form onSubmit={handleSubmit} className="p-8">
           {apiError && (
-            <div className="flex items-center space-x-3 bg-[#E9DFF4]/10 border border-[#E9DFF4]/30 text-teal-400 rounded-xl px-4 py-3 mb-6 text-sm">
+            <div className="flex items-center space-x-3 bg-[#D8EAE7]/10 border border-[#D8EAE7]/30 text-teal-400 rounded-xl px-4 py-3 mb-6 text-sm">
               <AlertCircle size={18} className="shrink-0" /><span>{apiError}</span>
             </div>
           )}
@@ -378,25 +429,25 @@ const CustomerRegisterPage = () => {
           {/* STEP 0 — Account */}
           {step === 0 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-semibold text-[#292431] mb-1">Account Details</h2>
+              <h2 className="text-lg font-semibold text-[#344B4A] mb-1">Account Details</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#6B5E78] mb-2">First Name *</label>
+                  <label className="block text-sm text-[#697778] mb-2">First Name *</label>
                   <input id="reg-firstName" value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="John" className={inputCls('firstName')} />
                   {errors.firstName && <p className="text-teal-400 text-xs mt-1">{errors.firstName}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#6B5E78] mb-2">Last Name *</label>
+                  <label className="block text-sm text-[#697778] mb-2">Last Name *</label>
                   <input id="reg-lastName" value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="Doe" className={inputCls('lastName')} />
                   {errors.lastName && <p className="text-teal-400 text-xs mt-1">{errors.lastName}</p>}
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-2">Email Address *</label>
+                <label className="block text-sm text-[#697778] mb-2">Email Address *</label>
                 <div className="flex gap-2">
                   <input id="reg-email" type="email" value={form.email} onChange={e => { set('email', e.target.value); setOtpVerified(false); setOtpSent(false); }} disabled={otpVerified} placeholder="you@example.com" className={inputCls('email') + ' flex-1'} />
                   {!otpVerified && (
-                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#A991D4] text-[#292431] rounded-xl text-sm font-bold hover:bg-[#967CC5] transition-colors whitespace-nowrap">
+                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#167D78] text-white rounded-xl text-sm font-bold hover:bg-[#116660] transition-colors whitespace-nowrap">
                       {otpSent ? 'Resend' : 'Send OTP'}
                     </button>
                   )}
@@ -406,20 +457,20 @@ const CustomerRegisterPage = () => {
                     </button>
                   )}
                 </div>
-                {errors.email && <p className="text-[#E9DFF4] text-xs mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-[#D8EAE7] text-xs mt-1">{errors.email}</p>}
                 {otpSent && !otpVerified && (
                   <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl">
-                    <label className="block text-xs font-semibold text-[#A991D4] mb-2">Enter OTP sent to your email</label>
+                    <label className="block text-xs font-semibold text-[#167D78] mb-2">Enter OTP sent to your email</label>
                     <div className="flex gap-2">
-                      <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#292431] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#A991D4] transition-colors flex-1" maxLength={6} />
-                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#292431] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">Verify</button>
+                      <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#344B4A] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#167D78] transition-colors flex-1" maxLength={6} />
+                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#344B4A] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">Verify</button>
                     </div>
                   </div>
                 )}
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm text-[#6B5E78]">Mobile Number *</label>
+                  <label className="block text-sm text-[#697778]">Mobile Number *</label>
                   {!otpVerified ? (
                     <span className="text-xs text-amber-600 font-medium flex items-center gap-1"><Lock size={12} /> Verify email first</span>
                   ) : (
@@ -433,29 +484,86 @@ const CustomerRegisterPage = () => {
                     onFocus={e => { if (!otpVerified) { e.target.blur(); handleMobileClick(e); } }}
                     readOnly={!otpVerified}
                     placeholder={otpVerified ? '10-digit number' : 'Please verify email first'}
-                    className={inputCls('mobile') + (!otpVerified ? ' bg-[#F7F4FA]/70 cursor-not-allowed select-none' : '')} />
+                    className={inputCls('mobile') + (!otpVerified ? ' bg-[#E8EFF0]/70 cursor-not-allowed select-none' : '')} />
                 </div>
                 {errors.mobile && <p className="text-teal-400 text-xs mt-1">{errors.mobile}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-2">Password *</label>
+                <label className="block text-sm text-[#697778] mb-2">Password *</label>
                 <div className="relative">
                   <input id="reg-password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => set('password', e.target.value)} placeholder="Minimum 8 characters" className={inputCls('password') + ' pr-12'} />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B5E78] hover:text-[#292431]">
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#697778] hover:text-[#344B4A]">
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 {errors.password && <p className="text-teal-400 text-xs mt-1">{errors.password}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-2">Confirm Password *</label>
+                <label className="block text-sm text-[#697778] mb-2">Confirm Password *</label>
                 <div className="relative">
                   <input id="reg-confirmPassword" type={showConfirm ? 'text' : 'password'} value={form.confirmPassword} onChange={e => set('confirmPassword', e.target.value)} placeholder="Repeat your password" className={inputCls('confirmPassword') + ' pr-12'} />
-                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B5E78] hover:text-[#292431]">
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#697778] hover:text-[#344B4A]">
                     {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 {errors.confirmPassword && <p className="text-teal-400 text-xs mt-1">{errors.confirmPassword}</p>}
+              </div>
+
+              {/* Referral Code (Optional) */}
+              <div className="pt-3 border-t border-[#D9E2E3] space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm text-[#697778] flex items-center gap-1.5 font-medium">
+                    <Gift size={16} className="text-[#167D78]" />
+                    Referral Code (Optional)
+                  </label>
+                  <span className="text-[11px] text-[#167D78] font-semibold">Special Joiner Perks</span>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    id="reg-referralCode"
+                    type="text"
+                    value={form.referralCode || ''}
+                    onChange={e => {
+                      set('referralCode', e.target.value.toUpperCase());
+                      setValidatedReferral(null);
+                      setReferralMessage('');
+                    }}
+                    placeholder="e.g. ALEX4821"
+                    className={inputCls('referralCode') + ' font-mono uppercase tracking-wider flex-1'}
+                  />
+                  <button
+                    type="button"
+                    disabled={!form.referralCode || referralCheckLoading}
+                    onClick={() => handleValidateReferralCode(form.referralCode)}
+                    className="px-4 py-2 bg-[#167D78] hover:bg-[#116660] disabled:bg-[#D8EAE7] text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap shadow-sm"
+                  >
+                    {referralCheckLoading ? 'Validating...' : 'Apply Code'}
+                  </button>
+                </div>
+
+                {validatedReferral && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 space-y-1 animate-fadeIn">
+                    <div className="flex items-center gap-1.5 font-bold text-emerald-950">
+                      <Sparkles size={14} className="text-emerald-600" />
+                      Referral Offer Verified!
+                    </div>
+                    <p>
+                      Referred by <strong>{validatedReferral.referrer?.name}</strong>. You'll receive{' '}
+                      <strong>
+                        {validatedReferral.refereeReward?.discountType === 'Percentage'
+                          ? `${validatedReferral.refereeReward?.value}% off`
+                          : `₹${validatedReferral.refereeReward?.value} off`}
+                      </strong>{' '}
+                      your first membership purchase at checkout!
+                    </p>
+                  </div>
+                )}
+
+                {referralMessage && !validatedReferral && (
+                  <p className="text-amber-600 text-xs flex items-center gap-1">
+                    <AlertCircle size={13} /> {referralMessage}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -463,20 +571,20 @@ const CustomerRegisterPage = () => {
           {/* STEP 1 — Personal */}
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-semibold text-[#292431] mb-1">Personal Details</h2>
+              <h2 className="text-lg font-semibold text-[#344B4A] mb-1">Personal Details</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#6B5E78] mb-2">City *</label>
+                  <label className="block text-sm text-[#697778] mb-2">City *</label>
                   <input id="reg-city" value={form.city} onChange={e => set('city', e.target.value)} placeholder="Your city" className={inputCls('city')} />
                   {errors.city && <p className="text-teal-400 text-xs mt-1">{errors.city}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#6B5E78] mb-2">PIN Code</label>
+                  <label className="block text-sm text-[#697778] mb-2">PIN Code</label>
                   <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-3">Gender *</label>
+                <label className="block text-sm text-[#697778] mb-3">Gender *</label>
                 <div className="flex flex-wrap gap-2">
                   {GENDERS.map(g => (
                     <button key={g} type="button" onClick={() => set('gender', g)} className={selBtnCls(form.gender === g)}>{g}</button>
@@ -486,30 +594,30 @@ const CustomerRegisterPage = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#6B5E78] mb-2">Height (cm) *</label>
+                  <label className="block text-sm text-[#697778] mb-2">Height (cm) *</label>
                   <input id="reg-height" type="number" value={form.height} onChange={e => set('height', e.target.value)} placeholder="e.g. 175" className={inputCls('height')} />
                   {errors.height && <p className="text-teal-400 text-xs mt-1">{errors.height}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#6B5E78] mb-2">Weight (kg) *</label>
+                  <label className="block text-sm text-[#697778] mb-2">Weight (kg) *</label>
                   <input id="reg-weight" type="number" value={form.weight} onChange={e => set('weight', e.target.value)} placeholder="e.g. 70" className={inputCls('weight')} />
                   {errors.weight && <p className="text-teal-400 text-xs mt-1">{errors.weight}</p>}
                 </div>
               </div>
-              <div className="pt-4 border-t border-[#E5DDEB]">
-                <h3 className="text-[#292431] font-bold mb-4">Emergency Contact</h3>
+              <div className="pt-4 border-t border-[#D9E2E3]">
+                <h3 className="text-[#344B4A] font-bold mb-4">Emergency Contact</h3>
                 <div className="space-y-4">
                   <div>
                     <input type="text" placeholder="Contact Name" value={form.emergencyContactName} onChange={e => set('emergencyContactName', e.target.value)} className={inputCls('emergencyContactName')} />
-                    {errors.emergencyContactName && <p className="text-[#E9DFF4] text-xs mt-1">{errors.emergencyContactName}</p>}
+                    {errors.emergencyContactName && <p className="text-[#D8EAE7] text-xs mt-1">{errors.emergencyContactName}</p>}
                   </div>
                   <div>
                     <input type="tel" maxLength={10} placeholder="Contact Number" value={form.emergencyContactMobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if (v.length <= 10) set('emergencyContactMobile', v); }} className={inputCls('emergencyContactMobile')} />
-                    {errors.emergencyContactMobile && <p className="text-[#E9DFF4] text-xs mt-1">{errors.emergencyContactMobile}</p>}
+                    {errors.emergencyContactMobile && <p className="text-[#D8EAE7] text-xs mt-1">{errors.emergencyContactMobile}</p>}
                   </div>
                   <div>
                     <input type="text" placeholder="Relationship (e.g., Parent, Spouse)" value={form.emergencyContactRelation} onChange={e => set('emergencyContactRelation', e.target.value)} className={inputCls('emergencyContactRelation')} />
-                    {errors.emergencyContactRelation && <p className="text-[#E9DFF4] text-xs mt-1">{errors.emergencyContactRelation}</p>}
+                    {errors.emergencyContactRelation && <p className="text-[#D8EAE7] text-xs mt-1">{errors.emergencyContactRelation}</p>}
                   </div>
                 </div>
               </div>
@@ -519,17 +627,17 @@ const CustomerRegisterPage = () => {
           {/* STEP 2 — Fitness Preferences */}
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold text-[#292431] mb-1">Fitness Preferences</h2>
+              <h2 className="text-lg font-semibold text-[#344B4A] mb-1">Fitness Preferences</h2>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-3">Fitness Goal *</label>
+                <label className="block text-sm text-[#697778] mb-3">Fitness Goal *</label>
                 <div className="flex flex-wrap gap-2">
                   {FITNESS_GOALS.map(g => {
                     const Icon = GOAL_ICONS[g] || Activity;
-                    const color = GOAL_COLORS[g] || '#A991D4';
+                    const color = GOAL_COLORS[g] || '#167D78';
                     const isActive = form.fitnessGoal === g;
                     return (
                       <button key={g} type="button" onClick={() => setFitnessGoal(g)}
-                        className={`px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer flex items-center gap-1.5 ${isActive ? 'text-white border-transparent font-semibold' : 'bg-[#FFFFFF] border-[#E5DDEB] text-[#6B5E78] hover:border-[#A991D4]/50'}`}
+                        className={`px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer flex items-center gap-1.5 ${isActive ? 'text-white border-transparent font-semibold' : 'bg-[#FFFFFF] border-[#D9E2E3] text-[#697778] hover:border-[#167D78]/50'}`}
                         style={isActive ? { backgroundColor: color, borderColor: color } : {}}>
                         <Icon size={14} />
                         {g}
@@ -540,7 +648,7 @@ const CustomerRegisterPage = () => {
                 {errors.fitnessGoal && <p className="text-teal-400 text-xs mt-2">{errors.fitnessGoal}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-3">Experience Level *</label>
+                <label className="block text-sm text-[#697778] mb-3">Experience Level *</label>
                 <div className="flex gap-2">
                   {EXPERIENCE_LEVELS.map(l => (
                     <button key={l} type="button" onClick={() => set('experienceLevel', l)} className={selBtnCls(form.experienceLevel === l)}>{l}</button>
@@ -549,7 +657,7 @@ const CustomerRegisterPage = () => {
                 {errors.experienceLevel && <p className="text-teal-400 text-xs mt-2">{errors.experienceLevel}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-3">Preferred Workout Type *</label>
+                <label className="block text-sm text-[#697778] mb-3">Preferred Workout Type *</label>
                 <div className="flex gap-2">
                   {TRAINING_TYPES.map(t => (
                     <button key={t} type="button" onClick={() => set('preferredTraining', t)} className={selBtnCls(form.preferredTraining === t)}>{t}</button>
@@ -558,7 +666,7 @@ const CustomerRegisterPage = () => {
                 {errors.preferredTraining && <p className="text-teal-400 text-xs mt-2">{errors.preferredTraining}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-3">Preferred Workout Days *</label>
+                <label className="block text-sm text-[#697778] mb-3">Preferred Workout Days *</label>
                 <div className="flex gap-2">
                   {WORKOUT_DAYS.map(d => (
                     <button key={d} type="button" onClick={() => set('preferredWorkoutDays', d)} className={selBtnCls(form.preferredWorkoutDays === d)}>{d}</button>
@@ -567,7 +675,7 @@ const CustomerRegisterPage = () => {
                 {errors.preferredWorkoutDays && <p className="text-teal-400 text-xs mt-2">{errors.preferredWorkoutDays}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#6B5E78] mb-3">Preferred Workout Time *</label>
+                <label className="block text-sm text-[#697778] mb-3">Preferred Workout Time *</label>
                 <div className="flex flex-wrap gap-2">
                   {WORKOUT_TIMES.map(t => (
                     <button key={t} type="button" onClick={() => set('preferredWorkoutTime', t)} className={selBtnCls(form.preferredWorkoutTime === t)}>{t}</button>
@@ -582,38 +690,38 @@ const CustomerRegisterPage = () => {
           {step === 3 && (
             <div className="space-y-5">
               <div>
-                <h2 className="text-lg font-semibold text-[#292431] mb-1">Select Your Package</h2>
-                <p className="text-sm text-[#6B5E78]">
-                  Showing packages for: <span className="font-semibold text-[#A991D4]">{form.fitnessGoal}</span>
+                <h2 className="text-lg font-semibold text-[#344B4A] mb-1">Select Your Package</h2>
+                <p className="text-sm text-[#697778]">
+                  Showing packages for: <span className="font-semibold text-[#167D78]">{form.fitnessGoal}</span>
                 </p>
               </div>
 
               {pkgLoading ? (
                 <div className="flex justify-center py-12">
-                  <div className="w-8 h-8 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : pkgError ? (
                 <div className="text-center py-8 text-red-500 text-sm">{pkgError}</div>
               ) : packages.length === 0 ? (
-                <div className="text-center py-12 space-y-3 bg-stone-50 rounded-2xl border border-[#E5DDEB]">
+                <div className="text-center py-12 space-y-3 bg-stone-50 rounded-2xl border border-[#D9E2E3]">
                   <div className="w-14 h-14 mx-auto bg-orange-50 rounded-2xl flex items-center justify-center">
-                    <Package size={28} className="text-[#A991D4]" />
+                    <Package size={28} className="text-[#167D78]" />
                   </div>
-                  <p className="font-semibold text-[#292431]">No packages available</p>
-                  <p className="text-xs text-[#6B5E78]">No packages exist yet for <span className="font-medium">{form.fitnessGoal}</span>.</p>
-                  <p className="text-xs text-[#6B5E78]">You can continue your registration and join a package later.</p>
+                  <p className="font-semibold text-[#344B4A]">No packages available</p>
+                  <p className="text-xs text-[#697778]">No packages exist yet for <span className="font-medium">{form.fitnessGoal}</span>.</p>
+                  <p className="text-xs text-[#697778]">You can continue your registration and join a package later.</p>
                 </div>
               ) : (
                 <div className="space-y-4 max-h-[55vh] overflow-y-auto pr-1">
                   {packages.map(pkg => {
                     const Icon = GOAL_ICONS[pkg.fitnessGoal] || Activity;
-                    const color = GOAL_COLORS[pkg.fitnessGoal] || '#A991D4';
+                    const color = GOAL_COLORS[pkg.fitnessGoal] || '#167D78';
                     const isSelected = form.selectedPackageId === pkg._id;
 
                     return (
                       <div key={pkg._id}
                         onClick={() => selectPackage(pkg._id)}
-                        className={`rounded-2xl p-5 border-2 cursor-pointer transition-all ${isSelected ? 'border-[#A991D4] shadow-md' : 'border-[#E5DDEB] hover:border-[#A991D4]/50'}`}>
+                        className={`rounded-2xl p-5 border-2 cursor-pointer transition-all ${isSelected ? 'border-[#167D78] shadow-md' : 'border-[#D9E2E3] hover:border-[#167D78]/50'}`}>
                         {/* Package header */}
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3">
@@ -622,36 +730,36 @@ const CustomerRegisterPage = () => {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-bold text-[#292431] text-sm">{pkg.name}</h3>
+                                <h3 className="font-bold text-[#344B4A] text-sm">{pkg.name}</h3>
                                 {pkg.isPopular && (
-                                  <span className="text-[10px] bg-[#A991D4] text-[#292431] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                  <span className="text-[10px] bg-[#167D78] text-white font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                                     <Star size={8} className="fill-white" /> Popular
                                   </span>
                                 )}
                               </div>
                               <div className="flex gap-2 mt-0.5">
-                                <span className="text-xs text-[#6B5E78]">{pkg.trainingType}</span>
-                                <span className="text-[#E5DDEB]">·</span>
-                                <span className="text-xs text-[#6B5E78]">{pkg.duration}</span>
+                                <span className="text-xs text-[#697778]">{pkg.trainingType}</span>
+                                <span className="text-[#D9E2E3]">·</span>
+                                <span className="text-xs text-[#697778]">{pkg.duration}</span>
                               </div>
                             </div>
                           </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 transition-all ${isSelected ? 'border-[#A991D4] bg-[#A991D4]' : 'border-[#E5DDEB]'}`}>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 transition-all ${isSelected ? 'border-[#167D78] bg-[#167D78]' : 'border-[#D9E2E3]'}`}>
                             {isSelected && <Check size={12} className="text-white" strokeWidth={3} />}
                           </div>
                         </div>
 
                         {pkg.description && (
-                          <p className="text-xs text-[#6B5E78] mb-3 leading-relaxed">{pkg.description}</p>
+                          <p className="text-xs text-[#697778] mb-3 leading-relaxed">{pkg.description}</p>
                         )}
 
                         {/* Features */}
                         {pkg.features.length > 0 && (
                           <div className="mb-4">
-                            <p className="text-xs font-bold text-[#292431] mb-2 uppercase tracking-wider">Features:</p>
+                            <p className="text-xs font-bold text-[#344B4A] mb-2 uppercase tracking-wider">Features:</p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                               {pkg.features.slice(0, 6).map((f, i) => (
-                                <div key={i} className="flex items-center gap-1.5 text-xs text-[#6B5E78]">
+                                <div key={i} className="flex items-center gap-1.5 text-xs text-[#697778]">
                                   <Check size={10} style={{ color }} strokeWidth={3} className="shrink-0" />
                                   {f}
                                 </div>
@@ -662,23 +770,23 @@ const CustomerRegisterPage = () => {
 
                         {/* Billing plan selection */}
                         {isSelected && (
-                          <div className="border-t border-[#E5DDEB] pt-3 mt-1 space-y-2">
-                            <p className="text-xs font-bold text-[#292431] mb-2">Choose your billing plan:</p>
+                          <div className="border-t border-[#D9E2E3] pt-3 mt-1 space-y-2">
+                            <p className="text-xs font-bold text-[#344B4A] mb-2">Choose your billing plan:</p>
                             <div className="grid grid-cols-2 gap-3">
                               {(pkg.availablePlans === 'monthly' || pkg.availablePlans === 'both') && (
                                 <button type="button"
                                   onClick={e => { e.stopPropagation(); setForm((f: any) => ({ ...f, selectedBillingPlan: 'monthly' })); setErrors((e: any) => { const n = { ...e }; delete n['selectedBillingPlan']; return n; }); }}
-                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'monthly' ? 'border-[#A991D4] bg-orange-50' : 'border-[#E5DDEB] hover:border-[#A991D4]/50'}`}>
-                                  <span className="block text-xs font-semibold text-[#6B5E78]">Monthly</span>
-                                  <span className="block text-lg font-black text-[#A991D4]">₹{pkg.monthlyPrice.toLocaleString('en-IN')}</span>
-                                  <span className="block text-[10px] text-[#6B5E78]">per month</span>
+                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'monthly' ? 'border-[#167D78] bg-orange-50' : 'border-[#D9E2E3] hover:border-[#167D78]/50'}`}>
+                                  <span className="block text-xs font-semibold text-[#697778]">Monthly</span>
+                                  <span className="block text-lg font-black text-[#167D78]">₹{pkg.monthlyPrice.toLocaleString('en-IN')}</span>
+                                  <span className="block text-[10px] text-[#697778]">per month</span>
                                 </button>
                               )}
                               {(pkg.availablePlans === 'annual' || pkg.availablePlans === 'both') && (
                                 <button type="button"
                                   onClick={e => { e.stopPropagation(); setForm((f: any) => ({ ...f, selectedBillingPlan: 'annual' })); setErrors((e: any) => { const n = { ...e }; delete n['selectedBillingPlan']; return n; }); }}
-                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'annual' ? 'border-[#27845A] bg-emerald-50' : 'border-[#E5DDEB] hover:border-emerald-300'}`}>
-                                  <span className="block text-xs font-semibold text-[#6B5E78]">Annual</span>
+                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'annual' ? 'border-[#27845A] bg-emerald-50' : 'border-[#D9E2E3] hover:border-emerald-300'}`}>
+                                  <span className="block text-xs font-semibold text-[#697778]">Annual</span>
                                   <span className="block text-lg font-black text-[#27845A]">₹{pkg.annualPrice.toLocaleString('en-IN')}</span>
                                   <span className="block text-[10px] text-emerald-700 font-semibold">per year · Save more</span>
                                 </button>
@@ -701,15 +809,15 @@ const CustomerRegisterPage = () => {
 
               {/* Summary of selected */}
               {selectedPkg && form.selectedBillingPlan && (
-                <div className="p-4 bg-[#F7F4FA] border border-[#A991D4]/30 rounded-xl">
-                  <p className="text-xs font-bold text-[#292431] mb-2">Selected Plan Summary</p>
-                  <div className="space-y-1 text-xs text-[#6B5E78]">
-                    <div className="flex justify-between"><span>Package:</span><span className="font-semibold text-[#292431]">{selectedPkg.name}</span></div>
-                    <div className="flex justify-between"><span>Goal:</span><span className="font-semibold text-[#292431]">{selectedPkg.fitnessGoal}</span></div>
-                    <div className="flex justify-between"><span>Plan:</span><span className="font-semibold text-[#292431] capitalize">{form.selectedBillingPlan}</span></div>
+                <div className="p-4 bg-[#E8EFF0] border border-[#167D78]/30 rounded-xl">
+                  <p className="text-xs font-bold text-[#344B4A] mb-2">Selected Plan Summary</p>
+                  <div className="space-y-1 text-xs text-[#697778]">
+                    <div className="flex justify-between"><span>Package:</span><span className="font-semibold text-[#344B4A]">{selectedPkg.name}</span></div>
+                    <div className="flex justify-between"><span>Goal:</span><span className="font-semibold text-[#344B4A]">{selectedPkg.fitnessGoal}</span></div>
+                    <div className="flex justify-between"><span>Plan:</span><span className="font-semibold text-[#344B4A] capitalize">{form.selectedBillingPlan}</span></div>
                     <div className="flex justify-between">
                       <span>Price:</span>
-                      <span className="font-bold text-[#A991D4]">
+                      <span className="font-bold text-[#167D78]">
                         ₹{(form.selectedBillingPlan === 'annual' ? selectedPkg.annualPrice : selectedPkg.monthlyPrice).toLocaleString('en-IN')}
                         {form.selectedBillingPlan === 'monthly' ? '/month' : '/year'}
                       </span>
@@ -723,20 +831,20 @@ const CustomerRegisterPage = () => {
           {/* STEP 4 — Terms */}
           {step === 4 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <h2 className="text-lg font-semibold text-[#292431] mb-1">Terms &amp; Conditions</h2>
-              <p className="text-[#6B5E78] text-sm">Please read and accept the following before creating your account.</p>
+              <h2 className="text-lg font-semibold text-[#344B4A] mb-1">Terms &amp; Conditions</h2>
+              <p className="text-[#697778] text-sm">Please read and accept the following before creating your account.</p>
 
               {/* Selected plan summary */}
               {selectedPkg && form.selectedBillingPlan && (
-                <div className="p-4 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl mb-4">
-                  <h3 className="font-bold text-[#292431] mb-3">Selected Membership Package</h3>
-                  <div className="space-y-2 text-sm text-[#6B5E78]">
-                    <div className="flex justify-between"><span>Package:</span><span className="font-semibold text-[#292431]">{selectedPkg.name}</span></div>
-                    <div className="flex justify-between"><span>Fitness Goal:</span><span className="font-semibold text-[#292431]">{selectedPkg.fitnessGoal}</span></div>
-                    <div className="flex justify-between"><span>Billing Plan:</span><span className="font-semibold text-[#292431] capitalize">{form.selectedBillingPlan}</span></div>
+                <div className="p-4 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl mb-4">
+                  <h3 className="font-bold text-[#344B4A] mb-3">Selected Membership Package</h3>
+                  <div className="space-y-2 text-sm text-[#697778]">
+                    <div className="flex justify-between"><span>Package:</span><span className="font-semibold text-[#344B4A]">{selectedPkg.name}</span></div>
+                    <div className="flex justify-between"><span>Fitness Goal:</span><span className="font-semibold text-[#344B4A]">{selectedPkg.fitnessGoal}</span></div>
+                    <div className="flex justify-between"><span>Billing Plan:</span><span className="font-semibold text-[#344B4A] capitalize">{form.selectedBillingPlan}</span></div>
                     <div className="flex justify-between">
                       <span>Price:</span>
-                      <span className="font-semibold text-[#A991D4]">
+                      <span className="font-semibold text-[#167D78]">
                         ₹{(form.selectedBillingPlan === 'annual' ? selectedPkg.annualPrice : selectedPkg.monthlyPrice).toLocaleString('en-IN')}
                         {form.selectedBillingPlan === 'monthly' ? ' / month' : ' / year'}
                       </span>
@@ -746,33 +854,33 @@ const CustomerRegisterPage = () => {
               )}
 
               {intentData?.plan && !selectedPkg && (
-                <div className="p-4 bg-[#F7F4FA] border border-[#E5DDEB] rounded-xl mb-6">
-                  <h3 className="font-bold text-[#292431] mb-3">Selected Membership Plan</h3>
-                  <div className="space-y-2 text-sm text-[#6B5E78]">
-                    <div className="flex justify-between"><span>Plan:</span><span className="font-semibold text-[#292431]">{intentData.plan.name}</span></div>
-                    <div className="flex justify-between"><span>Duration:</span><span className="font-semibold text-[#292431]">{intentData.plan.duration}</span></div>
-                    <div className="flex justify-between"><span>Price:</span><span className="font-semibold text-[#A991D4]">₹{intentData.plan.price}</span></div>
+                <div className="p-4 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl mb-6">
+                  <h3 className="font-bold text-[#344B4A] mb-3">Selected Membership Plan</h3>
+                  <div className="space-y-2 text-sm text-[#697778]">
+                    <div className="flex justify-between"><span>Plan:</span><span className="font-semibold text-[#344B4A]">{intentData.plan.name}</span></div>
+                    <div className="flex justify-between"><span>Duration:</span><span className="font-semibold text-[#344B4A]">{intentData.plan.duration}</span></div>
+                    <div className="flex justify-between"><span>Price:</span><span className="font-semibold text-[#167D78]">₹{intentData.plan.price}</span></div>
                   </div>
                 </div>
               )}
 
-              <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-xl p-4 text-sm text-[#6B5E78] max-h-40 overflow-y-auto leading-relaxed">
-                <strong className="text-[#292431] block mb-2">Terms &amp; Conditions</strong>
+              <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-4 text-sm text-[#697778] max-h-40 overflow-y-auto leading-relaxed">
+                <strong className="text-[#344B4A] block mb-2">Terms &amp; Conditions</strong>
                 By creating an account on Gymora, you agree to use the platform in compliance with all applicable laws. Your personal data will be used to provide fitness coaching and gym management services. AI-generated plans are for guidance only and not a substitute for professional medical advice. Subscriptions are billed according to your chosen plan. You may cancel at any time.
               </div>
               <div className="space-y-4">
                 <label className="flex items-start space-x-3 cursor-pointer">
-                  <button type="button" onClick={() => set('acceptTerms', !form.acceptTerms)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptTerms ? 'bg-[#A991D4] border-[#A991D4]' : 'border-[#555]'}`}>
+                  <button type="button" onClick={() => set('acceptTerms', !form.acceptTerms)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptTerms ? 'bg-[#167D78] border-[#167D78]' : 'border-[#697778]'}`}>
                     {form.acceptTerms && <Check size={12} className="text-black" />}
                   </button>
-                  <span className="text-sm text-[#6B5E78]">I accept the <Link to="/terms-of-service" className="text-[#A991D4] hover:underline">Terms &amp; Conditions</Link></span>
+                  <span className="text-sm text-[#697778]">I accept the <Link to="/terms-of-service" className="text-[#167D78] hover:underline">Terms &amp; Conditions</Link></span>
                 </label>
                 {errors.acceptTerms && <p className="text-teal-400 text-xs ml-8">{errors.acceptTerms}</p>}
                 <label className="flex items-start space-x-3 cursor-pointer">
-                  <button type="button" onClick={() => set('acceptPrivacy', !form.acceptPrivacy)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptPrivacy ? 'bg-[#A991D4] border-[#A991D4]' : 'border-[#555]'}`}>
+                  <button type="button" onClick={() => set('acceptPrivacy', !form.acceptPrivacy)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptPrivacy ? 'bg-[#167D78] border-[#167D78]' : 'border-[#697778]'}`}>
                     {form.acceptPrivacy && <Check size={12} className="text-black" />}
                   </button>
-                  <span className="text-sm text-[#6B5E78]">I accept the <Link to="/privacy-policy" className="text-[#A991D4] hover:underline">Privacy Policy</Link></span>
+                  <span className="text-sm text-[#697778]">I accept the <Link to="/privacy-policy" className="text-[#167D78] hover:underline">Privacy Policy</Link></span>
                 </label>
                 {errors.acceptPrivacy && <p className="text-teal-400 text-xs ml-8">{errors.acceptPrivacy}</p>}
               </div>
@@ -780,23 +888,23 @@ const CustomerRegisterPage = () => {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#E5DDEB]">
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#D9E2E3]">
             {step > 0 ? (
-              <button type="button" onClick={prev} className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl hover:bg-[#202020] transition-colors text-sm">
+              <button type="button" onClick={prev} className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl hover:bg-[#202020] transition-colors text-sm">
                 <ChevronLeft size={18} /><span>Back</span>
               </button>
             ) : (
-              <Link to="/login" className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#E5DDEB] text-[#292431] rounded-xl hover:bg-[#202020] transition-colors text-sm">
+              <Link to="/login" className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl hover:bg-[#202020] transition-colors text-sm">
                 <span>Back to Login</span>
               </Link>
             )}
 
             {step < STEPS.length - 1 ? (
-              <button type="button" onClick={next} className="flex items-center space-x-2 px-6 py-2.5 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] transition-colors text-sm">
+              <button type="button" onClick={next} className="flex items-center space-x-2 px-6 py-2.5 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors text-sm">
                 <span>Next</span><ChevronRight size={18} />
               </button>
             ) : (
-              <button id="reg-submit" type="submit" disabled={isLoading} className="flex items-center space-x-2 px-6 py-2.5 bg-[#A991D4] text-[#292431] font-bold rounded-xl hover:bg-[#967CC5] disabled:opacity-60 transition-colors text-sm">
+              <button id="reg-submit" type="submit" disabled={isLoading} className="flex items-center space-x-2 px-6 py-2.5 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] disabled:opacity-60 transition-colors text-sm">
                 {isLoading ? <><Loader2 size={18} className="animate-spin" /><span>Creating Profile...</span></> : <><span>Create Profile</span><Check size={18} /></>}
               </button>
             )}

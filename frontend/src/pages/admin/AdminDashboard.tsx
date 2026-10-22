@@ -1,4 +1,4 @@
-import { LayoutDashboard } from 'lucide-react';
+﻿import { LayoutDashboard } from 'lucide-react';
 
 const AdminDashboard = () => {
   return (
@@ -6,43 +6,43 @@ const AdminDashboard = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <LayoutDashboard className="text-[#A991D4]" size={32} />
+            <LayoutDashboard className="text-[#167D78]" size={32} />
             Dashboard Overview
           </h1>
-          <p className="text-[#6B5E78] mt-2">High-level view of your gym platform operations.</p>
+          <p className="text-[#697778] mt-2">High-level view of your gym platform operations.</p>
         </div>
-        <button className="px-6 py-2 bg-[#A991D4] text-[#292431] rounded-xl font-bold hover:bg-[#967CC5] transition-colors">
+        <button className="px-6 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors">
           Manage Dashboard Overview
         </button>
       </div>
       
       
       <div className="grid md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-5">
-           <p className="text-[#6B5E78] text-sm">Total Active Users</p>
-           <p className="text-3xl font-bold text-[#292431] mt-1">1,248</p>
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5">
+           <p className="text-[#697778] text-sm">Total Active Users</p>
+           <p className="text-3xl font-bold text-[#344B4A] mt-1">1,248</p>
            <p className="text-green-500 text-xs mt-2">+12% this month</p>
         </div>
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-5">
-           <p className="text-[#6B5E78] text-sm">Monthly Revenue</p>
-           <p className="text-3xl font-bold text-[#292431] mt-1">$48,290</p>
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5">
+           <p className="text-[#697778] text-sm">Monthly Revenue</p>
+           <p className="text-3xl font-bold text-[#344B4A] mt-1">$48,290</p>
            <p className="text-green-500 text-xs mt-2">+5.4% this month</p>
         </div>
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-5">
-           <p className="text-[#6B5E78] text-sm">Active Trainers</p>
-           <p className="text-3xl font-bold text-[#292431] mt-1">42</p>
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5">
+           <p className="text-[#697778] text-sm">Active Trainers</p>
+           <p className="text-3xl font-bold text-[#344B4A] mt-1">42</p>
            <p className="text-green-500 text-xs mt-2">+3 new this week</p>
         </div>
-        <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl p-5">
-           <p className="text-[#6B5E78] text-sm">AI Sessions Today</p>
-           <p className="text-3xl font-bold text-[#292431] mt-1">3,492</p>
+        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5">
+           <p className="text-[#697778] text-sm">AI Sessions Today</p>
+           <p className="text-3xl font-bold text-[#344B4A] mt-1">3,492</p>
            <p className="text-green-500 text-xs mt-2">+18% vs yesterday</p>
         </div>
       </div>
-      <div className="bg-[#FFFFFF] border border-[#E5DDEB] rounded-2xl overflow-hidden p-6">
+      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden p-6">
          <h2 className="text-lg font-bold mb-4">Platform Activity Map</h2>
-         <div className="h-64 bg-[#FFFFFF] rounded-xl flex items-center justify-center border border-[#E5DDEB]">
-           <p className="text-[#6B5E78]">Interactive Chart Component Placeholder</p>
+         <div className="h-64 bg-[#FFFFFF] rounded-xl flex items-center justify-center border border-[#D9E2E3]">
+           <p className="text-[#697778]">Interactive Chart Component Placeholder</p>
          </div>
       </div>
     

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { TrendingUp, IndianRupee, Users, CheckCircle, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -47,7 +47,7 @@ const GymAdminTrainerEarnings = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center py-32">
-      <div className="w-10 h-10 border-4 border-[#A991D4] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -55,73 +55,73 @@ const GymAdminTrainerEarnings = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#292431]">Trainer Earnings Overview</h1>
-        <p className="text-[#6B5E78] text-sm mt-1">Summary of all trainer fee configurations and payments</p>
+        <h1 className="text-2xl font-bold text-[#344B4A]">Trainer Earnings Overview</h1>
+        <p className="text-[#697778] text-sm mt-1">Summary of all trainer fee configurations and payments</p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E9DFF4] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D8EAE7] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-              <CheckCircle size={16} className="text-[#A991D4]" />
+              <CheckCircle size={16} className="text-[#167D78]" />
             </div>
-            <p className="text-xs font-semibold text-[#6B5E78] uppercase tracking-wide">Total Paid Out</p>
+            <p className="text-xs font-semibold text-[#697778] uppercase tracking-wide">Total Paid Out</p>
           </div>
-          <p className="text-2xl font-bold text-[#292431]">₹{(data?.totalPaidOut || 0).toLocaleString('en-IN')}</p>
-          <p className="text-xs text-[#6B5E78] mt-1">{data?.paymentsCount || 0} payments</p>
+          <p className="text-2xl font-bold text-[#344B4A]">₹{(data?.totalPaidOut || 0).toLocaleString('en-IN')}</p>
+          <p className="text-xs text-[#697778] mt-1">{data?.paymentsCount || 0} payments</p>
         </div>
-        <div className="bg-white border border-[#E9DFF4] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D8EAE7] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users size={16} className="text-[#967CC5]" />
+              <Users size={16} className="text-[#167D78]" />
             </div>
-            <p className="text-xs font-semibold text-[#6B5E78] uppercase tracking-wide">Active Trainers</p>
+            <p className="text-xs font-semibold text-[#697778] uppercase tracking-wide">Active Trainers</p>
           </div>
-          <p className="text-2xl font-bold text-[#292431]">{fees.length}</p>
-          <p className="text-xs text-[#6B5E78] mt-1">With active fee config</p>
+          <p className="text-2xl font-bold text-[#344B4A]">{fees.length}</p>
+          <p className="text-xs text-[#697778] mt-1">With active fee config</p>
         </div>
-        <div className="bg-white border border-[#E9DFF4] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D8EAE7] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-              <IndianRupee size={16} className="text-purple-600" />
+            <div className="w-8 h-8 bg-[#D8EAE7] rounded-lg flex items-center justify-center">
+              <IndianRupee size={16} className="text-[#167D78]" />
             </div>
-            <p className="text-xs font-semibold text-[#6B5E78] uppercase tracking-wide">Monthly Commitment</p>
+            <p className="text-xs font-semibold text-[#697778] uppercase tracking-wide">Monthly Commitment</p>
           </div>
-          <p className="text-2xl font-bold text-[#292431]">₹{totalConfiguredMonthly.toLocaleString('en-IN')}</p>
-          <p className="text-xs text-[#6B5E78] mt-1">Monthly trainers only</p>
+          <p className="text-2xl font-bold text-[#344B4A]">₹{totalConfiguredMonthly.toLocaleString('en-IN')}</p>
+          <p className="text-xs text-[#697778] mt-1">Monthly trainers only</p>
         </div>
-        <div className="bg-white border border-[#E9DFF4] rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D8EAE7] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
               <TrendingUp size={16} className="text-amber-600" />
             </div>
-            <p className="text-xs font-semibold text-[#6B5E78] uppercase tracking-wide">Avg Payout</p>
+            <p className="text-xs font-semibold text-[#697778] uppercase tracking-wide">Avg Payout</p>
           </div>
-          <p className="text-2xl font-bold text-[#292431]">
+          <p className="text-2xl font-bold text-[#344B4A]">
             ₹{data?.paymentsCount ? Math.round((data?.totalPaidOut || 0) / data.paymentsCount).toLocaleString('en-IN') : '0'}
           </p>
-          <p className="text-xs text-[#6B5E78] mt-1">Per payment</p>
+          <p className="text-xs text-[#697778] mt-1">Per payment</p>
         </div>
       </div>
 
       {/* Per-Trainer Breakdown */}
-      <div className="bg-white border border-[#E9DFF4] rounded-2xl overflow-hidden shadow-sm">
-        <div className="px-6 py-4 border-b border-[#E9DFF4]">
-          <h2 className="font-bold text-[#292431]">Trainer Earnings Breakdown</h2>
+      <div className="bg-white border border-[#D8EAE7] rounded-2xl overflow-hidden shadow-sm">
+        <div className="px-6 py-4 border-b border-[#D8EAE7]">
+          <h2 className="font-bold text-[#344B4A]">Trainer Earnings Breakdown</h2>
         </div>
         {trainerSummary.length === 0 ? (
           <div className="text-center py-16 px-6">
-            <div className="w-16 h-16 rounded-full bg-purple-50 flex items-center justify-center mx-auto mb-4">
-              <TrendingUp size={28} className="text-purple-300" />
+            <div className="w-16 h-16 rounded-full bg-[#E8EFF0] flex items-center justify-center mx-auto mb-4">
+              <TrendingUp size={28} className="text-[#D8EAE7]" />
             </div>
-            <p className="text-[#292431] font-bold text-lg">No trainer fee data yet</p>
-            <p className="text-[#6B5E78] text-sm mt-2 max-w-sm mx-auto">
+            <p className="text-[#344B4A] font-bold text-lg">No trainer fee data yet</p>
+            <p className="text-[#697778] text-sm mt-2 max-w-sm mx-auto">
               Earnings overview will populate once you configure fees for your trainers.
             </p>
             <Link
               to="/admin/trainer-fees/settings"
-              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-[#A991D4] text-[#292431] rounded-xl text-sm font-bold hover:bg-[#967CC5] transition-colors shadow-lg shadow-purple-900/15"
+              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-[#167D78] text-white rounded-xl text-sm font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-teal-900/10"
             >
               Configure Trainer Fees
               <ArrowRight size={15} />
@@ -131,36 +131,36 @@ const GymAdminTrainerEarnings = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#F7F4FA] border-b border-[#E9DFF4]">
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Trainer</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Training Type</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78] text-right">Configured Fee</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Billing Cycle</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78] text-right">Total Paid</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#6B5E78]">Payments</th>
+                <tr className="bg-[#E8EFF0] border-b border-[#D8EAE7]">
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Trainer</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Training Type</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778] text-right">Configured Fee</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Billing Cycle</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778] text-right">Total Paid</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Payments</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F7F4FA]">
+              <tbody className="divide-y divide-[#E8EFF0]">
                 {trainerSummary.map(({ fee, paid, paymentsCount }) => (
-                  <tr key={fee._id} className="hover:bg-[#F7F4FA] transition-colors">
+                  <tr key={fee._id} className="hover:bg-[#E8EFF0] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#A991D4] to-[#967CC5] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#167D78] to-[#116660] flex items-center justify-center text-white font-bold text-sm shrink-0">
                           {fee.trainerId?.name?.[0] || 'T'}
                         </div>
                         <div>
-                          <p className="font-semibold text-[#292431]">{fee.trainerId?.name || 'Unknown'}</p>
-                          <p className="text-xs text-[#6B5E78]">{fee.trainerId?.email}</p>
+                          <p className="font-semibold text-[#344B4A]">{fee.trainerId?.name || 'Unknown'}</p>
+                          <p className="text-xs text-[#697778]">{fee.trainerId?.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#6B5E78]">{fee.trainingType}</td>
-                    <td className="px-5 py-4 text-right font-bold text-[#292431]">₹{fee.feeAmount?.toLocaleString('en-IN')}</td>
+                    <td className="px-5 py-4 text-[#697778]">{fee.trainingType}</td>
+                    <td className="px-5 py-4 text-right font-bold text-[#344B4A]">₹{fee.feeAmount?.toLocaleString('en-IN')}</td>
                     <td className="px-5 py-4">
                       <span className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-700 text-xs font-semibold">{fee.billingCycle}</span>
                     </td>
-                    <td className="px-5 py-4 text-right font-bold text-[#A991D4]">₹{paid.toLocaleString('en-IN')}</td>
-                    <td className="px-5 py-4 text-[#6B5E78]">{paymentsCount} payments</td>
+                    <td className="px-5 py-4 text-right font-bold text-[#167D78]">₹{paid.toLocaleString('en-IN')}</td>
+                    <td className="px-5 py-4 text-[#697778]">{paymentsCount} payments</td>
                     <td className="px-5 py-4 text-right">
                       <button
                         onClick={() => setSelectedTrainer(fee.trainerId)}
@@ -181,14 +181,14 @@ const GymAdminTrainerEarnings = () => {
       {selectedTrainer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
-            <div className="flex items-center justify-between p-5 border-b border-[#E9DFF4] bg-[#F7F4FA]">
+            <div className="flex items-center justify-between p-5 border-b border-[#D8EAE7] bg-[#E8EFF0]">
               <div>
-                <h3 className="text-lg font-bold text-[#292431]">{selectedTrainer.name}'s Payments</h3>
-                <p className="text-xs text-[#6B5E78]">{selectedTrainer.email}</p>
+                <h3 className="text-lg font-bold text-[#344B4A]">{selectedTrainer.name}'s Payments</h3>
+                <p className="text-xs text-[#697778]">{selectedTrainer.email}</p>
               </div>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="text-[#6B5E78] hover:text-[#292431] bg-white rounded-full p-1 border border-gray-200"
+                className="text-[#697778] hover:text-[#344B4A] bg-white rounded-full p-1 border border-gray-200"
               >
                 ✕
               </button>
@@ -203,7 +203,7 @@ const GymAdminTrainerEarnings = () => {
                 if (trainerPayments.length === 0) {
                   return (
                     <div className="text-center py-10">
-                      <p className="text-[#6B5E78]">No payments recorded for this trainer yet.</p>
+                      <p className="text-[#697778]">No payments recorded for this trainer yet.</p>
                     </div>
                   );
                 }
@@ -211,15 +211,15 @@ const GymAdminTrainerEarnings = () => {
                 return (
                   <div className="space-y-4">
                     {trainerPayments.map((p, i) => (
-                      <div key={i} className="bg-white border border-[#E9DFF4] rounded-xl overflow-hidden shadow-sm hover:border-[#E5DDEB] transition-colors">
-                        <div className="flex justify-between items-center bg-[#F7F4FA] p-4 border-b border-[#E9DFF4]">
+                      <div key={i} className="bg-white border border-[#D8EAE7] rounded-xl overflow-hidden shadow-sm hover:border-[#D9E2E3] transition-colors">
+                        <div className="flex justify-between items-center bg-[#E8EFF0] p-4 border-b border-[#D8EAE7]">
                           <div>
                             <span className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1 block">Payment Amount</span>
-                            <span className="text-xl font-bold text-[#292431]">₹{p.amount?.toLocaleString('en-IN')}</span>
+                            <span className="text-xl font-bold text-[#344B4A]">₹{p.amount?.toLocaleString('en-IN')}</span>
                           </div>
                           <div className="text-right">
                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${
-                              p.paymentStatus === 'Paid' ? 'bg-[#E9DFF4]/10 text-[#A991D4]' :
+                              p.paymentStatus === 'Paid' ? 'bg-[#D8EAE7]/10 text-[#167D78]' :
                               p.paymentStatus === 'Pending' ? 'bg-amber-100 text-amber-700' :
                               'bg-gray-100 text-gray-700'
                             }`}>
