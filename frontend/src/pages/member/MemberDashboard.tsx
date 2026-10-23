@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   Bot, Dumbbell, TrendingUp, Calendar, MapPin, AlertCircle,
@@ -91,11 +91,12 @@ const MemberDashboard = () => {
   }, [loading, hasActive, expiredMembership, user, location.state, isApproved]);
 
   const quickLinks = [
-    { icon: Bot, label: 'AI Coach', desc: 'Chat with your AI trainer', path: '/member/ai-assistant', color: 'text-[#344B4A] bg-[#D8EAE7] border border-[#D9E2E3]' },
-    { icon: Dumbbell, label: 'Today\'s Workout', desc: 'Interactive exercise tracker', path: '/member/workout', color: 'text-[#344B4A] bg-[#D8EAE7] border border-[#D9E2E3]' },
-    { icon: Utensils, label: 'My Diet Plan', desc: 'Track daily meals & macros', path: '/member/diet', color: 'text-[#344B4A] bg-[#D8EAE7] border border-[#D9E2E3]' },
-    { icon: TrendingUp, label: 'My Progress', desc: 'View workout & diet logs', path: '/member/progress', color: 'text-[#344B4A] bg-[#D8EAE7] border border-[#D9E2E3]' },
-    { icon: Calendar, label: 'Book Session', desc: '1-on-1 Trainer coaching', path: '/member/bookings', color: 'text-[#344B4A] bg-[#D8EAE7] border border-[#D9E2E3]' },
+    { icon: Bot, label: 'AI Coach', desc: 'Chat with your AI trainer', path: '/member/ai-assistant', iconColor: 'text-[#818CF8]', bg: 'bg-[#6366F1]/10' },
+    { icon: Dumbbell, label: "Today's Workout", desc: 'Interactive exercise tracker', path: '/member/workout', iconColor: 'text-[#6366F1]', bg: 'bg-[#6366F1]/10' },
+    { icon: Utensils, label: 'My Diet Plan', desc: 'Track daily meals & macros', path: '/member/diet', iconColor: 'text-[#818CF8]', bg: 'bg-[#6366F1]/10' },
+    { icon: Award, label: 'Rewards & Awards', desc: 'Points, badges & certificates', path: '/member/challenges', iconColor: 'text-amber-400', bg: 'bg-amber-500/10' },
+    { icon: TrendingUp, label: 'My Progress', desc: 'View workout & diet logs', path: '/member/progress', iconColor: 'text-[#4F46E5]', bg: 'bg-[#4F46E5]/10' },
+    { icon: Calendar, label: 'Book Session', desc: '1-on-1 Trainer coaching', path: '/member/bookings', iconColor: 'text-[#818CF8]', bg: 'bg-[#818CF8]/10' },
   ];
 
   // Exercises to display in Today's AI Workout
@@ -114,50 +115,54 @@ const MemberDashboard = () => {
   const workoutCalories = aiRec?.workoutPlan?.caloriesBurnEstimate || 380;
 
   if (loading) {
-    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#167D78]" size={40} /></div>;
+    return (
+      <div className="flex justify-center items-center py-24">
+        <Loader2 className="animate-spin text-[#6366F1]" size={40} />
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12 text-[#F8FAFC]">
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#344B4A] tracking-tight">
-            Welcome back, <span className="text-[#167D78]">{user?.firstName || 'Member'}!</span>
+          <h1 className="text-3xl font-extrabold text-[#F8FAFC] tracking-tight">
+            Welcome back, <span className="text-[#818CF8]">{user?.firstName || 'Member'}!</span>
           </h1>
-          <p className="text-[#697778] mt-1 text-sm">Here is your daily workout routine, schedule, and membership overview.</p>
+          <p className="text-[#A1A1AA] mt-1 text-sm">Here is your daily workout routine, schedule, and membership overview.</p>
         </div>
         
         {hasActive ? (
-          <div className="flex items-center space-x-3.5 bg-[#FFFFFF] px-5 py-3 rounded-2xl border border-[#D9E2E3] shadow-sm shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-[#167D78]/10 text-[#167D78] flex items-center justify-center">
+          <div className="flex items-center space-x-3.5 bg-[#11111F] border border-[#292940] px-5 py-3 rounded-2xl shadow-lg shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/30 flex items-center justify-center">
               <MapPin size={20} />
             </div>
             <div>
-              <p className="text-[10px] text-[#697778] font-bold uppercase tracking-wider mb-0.5">Active Gym</p>
-              <p className="font-bold text-sm text-[#344B4A] leading-tight">
+              <p className="text-[10px] text-[#A1A1AA] font-bold uppercase tracking-wider mb-0.5">Active Gym</p>
+              <p className="font-bold text-sm text-[#F8FAFC] leading-tight">
                 {activeMembership?.gymId?.name || user?.gymName || 'Gymora Network'}
               </p>
             </div>
           </div>
         ) : pendingMembership ? (
-           <div className="flex items-center space-x-3.5 bg-yellow-50 border border-yellow-200 px-5 py-3 rounded-2xl shadow-sm shrink-0">
-             <div className="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-700 flex items-center justify-center">
+           <div className="flex items-center space-x-3.5 bg-[#11111F] border border-amber-500/30 px-5 py-3 rounded-2xl shadow-lg shrink-0">
+             <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center">
                <AlertCircle size={20} />
              </div>
              <div>
-               <p className="text-[10px] text-yellow-600 font-bold uppercase tracking-wider mb-0.5">Subscription Status</p>
-               <p className="font-bold text-sm text-yellow-800 leading-tight">Payment Verification Pending</p>
+               <p className="text-[10px] text-amber-400 font-bold uppercase tracking-wider mb-0.5">Subscription Status</p>
+               <p className="font-bold text-sm text-[#F8FAFC] leading-tight">Payment Verification Pending</p>
              </div>
            </div>
         ) : (rejectedMembership || user?.subscriptionStatus?.toUpperCase() === 'REJECTED') ? (
-           <div className="flex items-center space-x-3.5 bg-red-50 border border-red-200 px-5 py-3 rounded-2xl shadow-sm shrink-0">
-             <div className="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+           <div className="flex items-center space-x-3.5 bg-[#11111F] border border-red-500/30 px-5 py-3 rounded-2xl shadow-lg shrink-0">
+             <div className="w-10 h-10 rounded-xl bg-red-500/15 text-red-400 border border-red-500/30 flex items-center justify-center">
                <AlertCircle size={20} />
              </div>
              <div>
-               <p className="text-[10px] text-red-600 font-bold uppercase tracking-wider mb-0.5">Subscription Status</p>
-               <p className="font-bold text-sm text-red-800 leading-tight">Payment Rejected</p>
+               <p className="text-[10px] text-red-400 font-bold uppercase tracking-wider mb-0.5">Subscription Status</p>
+               <p className="font-bold text-sm text-[#F8FAFC] leading-tight">Payment Rejected</p>
              </div>
            </div>
         ) : null}
@@ -165,21 +170,21 @@ const MemberDashboard = () => {
 
       {/* Free Trial Notification Banner */}
       {isTrial && (
-        <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100 border border-emerald-200 rounded-2xl p-6 shadow-sm">
+        <div className="bg-gradient-to-r from-[#6366F1]/15 via-[#11111F] to-[#818CF8]/10 border border-[#6366F1]/30 rounded-2xl p-6 shadow-xl">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-md">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-[#6366F1]/30">
                 <Sparkles size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-emerald-950">Active Subscription: Free Trial</h3>
-                <p className="text-emerald-800 text-xs mt-0.5">
+                <h3 className="text-lg font-bold text-[#F8FAFC]">Active Subscription: Free Trial</h3>
+                <p className="text-[#A1A1AA] text-xs mt-0.5">
                   Full VIP Gym & AI Coaching Access • {trialDaysRemaining > 0 ? `${trialDaysRemaining} days remaining` : 'Ending soon'}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3 self-stretch md:self-auto">
-              <Link to="/member/upgrade" className="w-full md:w-auto px-5 py-2.5 bg-[#167D78] hover:bg-[#116660] text-white rounded-xl font-bold transition-colors shadow-sm text-xs text-center">
+              <Link to="/member/upgrade" className="w-full md:w-auto px-5 py-2.5 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] hover:from-[#4F46E5] hover:to-[#6366F1] text-white rounded-xl font-bold transition-all shadow-md shadow-[#6366F1]/25 text-xs text-center">
                 Upgrade to Silver Plan
               </Link>
             </div>
@@ -191,42 +196,42 @@ const MemberDashboard = () => {
         <>
           {/* Quick Metrics Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center shrink-0">
+            <div className="bg-[#11111F] border border-[#292940] rounded-2xl p-4 shadow-lg flex items-center gap-3.5 hover:border-[#6366F1]/40 transition-colors">
+              <div className="w-11 h-11 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/30 text-[#818CF8] flex items-center justify-center shrink-0">
                 <Flame size={22} />
               </div>
               <div>
-                <p className="text-[11px] text-[#697778] font-medium uppercase tracking-wider">Target Calories</p>
-                <p className="text-lg font-bold text-[#344B4A]">{workoutCalories} <span className="text-xs font-normal text-[#697778]">kcal</span></p>
+                <p className="text-[11px] text-[#A1A1AA] font-medium uppercase tracking-wider">Target Calories</p>
+                <p className="text-lg font-bold text-[#F8FAFC]">{workoutCalories} <span className="text-xs font-normal text-[#A1A1AA]">kcal</span></p>
               </div>
             </div>
-            <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center shrink-0">
+            <div className="bg-[#11111F] border border-[#292940] rounded-2xl p-4 shadow-lg flex items-center gap-3.5 hover:border-[#6366F1]/40 transition-colors">
+              <div className="w-11 h-11 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/30 text-[#6366F1] flex items-center justify-center shrink-0">
                 <Clock size={22} />
               </div>
               <div>
-                <p className="text-[11px] text-[#697778] font-medium uppercase tracking-wider">Daily Session</p>
-                <p className="text-lg font-bold text-[#344B4A]">{workoutDuration}</p>
+                <p className="text-[11px] text-[#A1A1AA] font-medium uppercase tracking-wider">Daily Session</p>
+                <p className="text-lg font-bold text-[#F8FAFC]">{workoutDuration}</p>
               </div>
             </div>
-            <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center shrink-0">
+            <div className="bg-[#11111F] border border-[#292940] rounded-2xl p-4 shadow-lg flex items-center gap-3.5 hover:border-[#6366F1]/40 transition-colors">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
                 <Award size={22} />
               </div>
               <div>
-                <p className="text-[11px] text-[#697778] font-medium uppercase tracking-wider">Weekly Streak</p>
-                <p className="text-lg font-bold text-[#344B4A]">
+                <p className="text-[11px] text-[#A1A1AA] font-medium uppercase tracking-wider">Weekly Streak</p>
+                <p className="text-lg font-bold text-[#F8FAFC]">
                   {progressStats?.totalWorkoutsCompleted ? `${progressStats.totalWorkoutsCompleted} Sessions` : '4 Active Days'}
                 </p>
               </div>
             </div>
-            <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center shrink-0">
+            <div className="bg-[#11111F] border border-[#292940] rounded-2xl p-4 shadow-lg flex items-center gap-3.5 hover:border-[#6366F1]/40 transition-colors">
+              <div className="w-11 h-11 rounded-xl bg-[#818CF8]/15 border border-[#818CF8]/30 text-[#818CF8] flex items-center justify-center shrink-0">
                 <Activity size={22} />
               </div>
               <div>
-                <p className="text-[11px] text-[#697778] font-medium uppercase tracking-wider">Current Plan</p>
-                <p className="text-sm font-bold text-[#167D78] truncate max-w-[130px]">
+                <p className="text-[11px] text-[#A1A1AA] font-medium uppercase tracking-wider">Current Plan</p>
+                <p className="text-sm font-bold text-[#818CF8] truncate max-w-[130px]">
                   {activeMembership?.planName || user?.subscriptionPlan || 'Free Trial'}
                 </p>
               </div>
@@ -234,15 +239,15 @@ const MemberDashboard = () => {
           </div>
 
           {/* Quick Links Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
             {quickLinks.map((item, i) => (
-              <Link key={i} to={item.path} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-4 flex items-center space-x-3.5 shadow-sm hover:shadow-md transition-shadow group">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${item.color}`}>
+              <Link key={i} to={item.path} className="bg-[#11111F] border border-[#292940] hover:border-[#6366F1]/50 rounded-2xl p-4 flex items-center space-x-3.5 shadow-lg hover:shadow-xl transition-all group">
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${item.bg} ${item.iconColor} border border-current/20`}>
                   <item.icon size={20} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-bold text-sm text-[#344B4A] group-hover:text-[#167D78] transition-colors">{item.label}</h3>
-                  <p className="text-[11px] text-[#697778] mt-0.5 truncate">{item.desc}</p>
+                  <h3 className="font-bold text-sm text-[#F8FAFC] group-hover:text-[#818CF8] transition-colors">{item.label}</h3>
+                  <p className="text-[11px] text-[#A1A1AA] mt-0.5 truncate">{item.desc}</p>
                 </div>
               </Link>
             ))}
@@ -251,19 +256,19 @@ const MemberDashboard = () => {
           {/* Main 2-Column Content: Today's AI Workout & Upcoming Schedule */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
             
-            {/* Left Column: Today's AI Workout (Filled & Interactive) */}
-            <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#D9E2E3] rounded-3xl p-6 flex flex-col h-full shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 border-b border-[#D9E2E3] pb-4">
+            {/* Left Column: Today's AI Workout */}
+            <div className="lg:col-span-2 bg-[#11111F] border border-[#292940] rounded-3xl p-6 flex flex-col h-full shadow-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 border-b border-[#292940] pb-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-bold text-[#344B4A]">Today's AI Workout</h3>
-                    <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
+                    <h3 className="text-xl font-bold text-[#F8FAFC]">Today's AI Workout</h3>
+                    <span className="bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
                       <Sparkles size={10} /> AI Tailored
                     </span>
                   </div>
-                  <p className="text-xs text-[#697778] mt-1">{workoutTitle}</p>
+                  <p className="text-xs text-[#A1A1AA] mt-1">{workoutTitle}</p>
                 </div>
-                <Link to="/member/ai-assistant" className="text-xs text-[#167D78] font-semibold hover:underline flex items-center gap-1">
+                <Link to="/member/ai-assistant" className="text-xs text-[#818CF8] font-semibold hover:underline flex items-center gap-1">
                   AI Coach Assistant <ArrowRight size={12} />
                 </Link>
               </div>
@@ -272,16 +277,16 @@ const MemberDashboard = () => {
               <div className="flex-1 space-y-4 flex flex-col justify-between">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {exercisesToDisplay.map((ex: any, idx: number) => (
-                    <div key={idx} className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-3.5 flex items-start gap-3 hover:border-[#167D78]/40 transition-colors">
-                      <div className="w-8 h-8 rounded-xl bg-[#167D78] text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                    <div key={idx} className="bg-[#17172A] border border-[#292940] rounded-2xl p-3.5 flex items-start gap-3 hover:border-[#6366F1]/50 transition-colors">
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 shadow-sm shadow-[#6366F1]/30">
                         {idx + 1}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-bold text-xs text-[#344B4A] truncate">{ex.name}</p>
-                        <p className="text-[11px] text-[#697778] mt-0.5 flex items-center gap-2">
-                          <span className="font-semibold text-emerald-700">{ex.sets} Sets × {ex.reps} Reps</span>
+                        <p className="font-bold text-xs text-[#F8FAFC] truncate">{ex.name}</p>
+                        <p className="text-[11px] text-[#A1A1AA] mt-0.5 flex items-center gap-2">
+                          <span className="font-semibold text-[#818CF8]">{ex.sets} Sets × {ex.reps} Reps</span>
                           {ex.targetMuscleGroup && (
-                            <span className="text-[#697778]">• {ex.targetMuscleGroup}</span>
+                            <span className="text-[#A1A1AA]">• {ex.targetMuscleGroup}</span>
                           )}
                         </p>
                       </div>
@@ -290,30 +295,30 @@ const MemberDashboard = () => {
                 </div>
 
                 {/* Card Action Footer */}
-                <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 mt-2">
-                  <div className="flex items-center gap-3 text-xs text-[#697778]">
-                    <span className="flex items-center gap-1 font-semibold text-[#344B4A]">
-                      <Clock size={14} className="text-[#167D78]" /> {workoutDuration}
+                <div className="bg-[#17172A] border border-[#292940] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 mt-2">
+                  <div className="flex items-center gap-3 text-xs text-[#A1A1AA]">
+                    <span className="flex items-center gap-1 font-semibold text-[#F8FAFC]">
+                      <Clock size={14} className="text-[#818CF8]" /> {workoutDuration}
                     </span>
                     <span>•</span>
-                    <span className="flex items-center gap-1 font-semibold text-[#344B4A]">
-                      <Flame size={14} className="text-orange-500" /> ~{workoutCalories} kcal
+                    <span className="flex items-center gap-1 font-semibold text-[#F8FAFC]">
+                      <Flame size={14} className="text-[#6366F1]" /> ~{workoutCalories} kcal
                     </span>
                     <span>•</span>
-                    <span className="bg-white px-2 py-0.5 rounded-md border border-[#D9E2E3] text-[11px] font-medium">
+                    <span className="bg-[#11111F] px-2 py-0.5 rounded-md border border-[#292940] text-[11px] font-medium text-[#F8FAFC]">
                       {workoutGoal}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Link
                       to="/member/diet"
-                      className="flex-1 sm:flex-none px-4 py-2.5 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      className="flex-1 sm:flex-none px-4 py-2.5 bg-[#11111F] hover:bg-[#292940] border border-[#292940] text-[#F8FAFC] text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                     >
-                      <Utensils size={13} className="text-[#167D78]" /> Diet Plan
+                      <Utensils size={13} className="text-[#818CF8]" /> Diet Plan
                     </Link>
                     <Link
                       to="/member/workout"
-                      className="flex-1 sm:flex-none px-5 py-2.5 bg-[#167D78] hover:bg-[#116660] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      className="flex-1 sm:flex-none px-5 py-2.5 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] hover:from-[#4F46E5] hover:to-[#6366F1] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md shadow-[#6366F1]/25"
                     >
                       <Play size={13} fill="currentColor" /> Start Workout
                     </Link>
@@ -323,65 +328,65 @@ const MemberDashboard = () => {
             </div>
 
             {/* Right Column: Upcoming Schedule & Classes */}
-            <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-3xl p-6 flex flex-col h-full shadow-sm">
-              <div className="flex justify-between items-center mb-5 border-b border-[#D9E2E3] pb-4">
+            <div className="bg-[#11111F] border border-[#292940] rounded-3xl p-6 flex flex-col h-full shadow-xl">
+              <div className="flex justify-between items-center mb-5 border-b border-[#292940] pb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-[#344B4A]">Upcoming Schedule</h3>
-                  <p className="text-xs text-[#697778] mt-0.5">Sessions & Gym Floor Access</p>
+                  <h3 className="text-xl font-bold text-[#F8FAFC]">Upcoming Schedule</h3>
+                  <p className="text-xs text-[#A1A1AA] mt-0.5">Sessions & Gym Floor Access</p>
                 </div>
-                <Link to="/member/bookings" className="text-xs font-semibold text-[#167D78] hover:underline">View All</Link>
+                <Link to="/member/bookings" className="text-xs font-semibold text-[#818CF8] hover:underline">View All</Link>
               </div>
 
               <div className="space-y-3 flex-1 flex flex-col justify-start">
                 {/* Booked Sessions if any */}
                 {sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status)).slice(0, 2).map((session, i) => (
-                  <div key={i} className="flex space-x-3 items-center justify-between p-3.5 bg-[#E8EFF0] rounded-2xl border border-[#D9E2E3]">
+                  <div key={i} className="flex space-x-3 items-center justify-between p-3.5 bg-[#17172A] rounded-2xl border border-[#292940]">
                     <div className="flex space-x-3 items-center min-w-0">
-                      <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${session.status === 'Pending' ? 'bg-amber-500' : 'bg-[#167D78]'}`}></div>
+                      <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${session.status === 'Pending' ? 'bg-amber-400' : 'bg-[#6366F1]'}`}></div>
                       <div className="min-w-0">
-                        <p className="font-bold text-xs text-[#344B4A] capitalize truncate">
+                        <p className="font-bold text-xs text-[#F8FAFC] capitalize truncate">
                           {session.trainerId?.name ? `${session.trainerId.name} (${session.mode || 'Online'})` : `${session.mode || 'Online'} Session`}
                         </p>
-                        <p className="text-[11px] text-[#697778] mt-0.5">{new Date(session.date).toLocaleDateString()} at {session.startTime}</p>
+                        <p className="text-[11px] text-[#A1A1AA] mt-0.5">{new Date(session.date).toLocaleDateString()} at {session.startTime}</p>
                       </div>
                     </div>
                     <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 ${
                       session.status === 'Pending' 
-                        ? 'bg-amber-50 text-amber-800 border border-amber-200' 
-                        : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                        ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' 
+                        : 'bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30'
                     }`}>
                       {session.status === 'Pending' ? 'Waiting' : 'Confirmed'}
                     </span>
                   </div>
                 ))}
 
-                {/* Default Daily Gym Schedule items so it's always informative */}
-                <div className="p-3.5 bg-[#E8EFF0] rounded-2xl border border-[#D9E2E3] space-y-2">
+                {/* Default Daily Gym Schedule items */}
+                <div className="p-3.5 bg-[#17172A] rounded-2xl border border-[#292940] space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#344B4A] flex items-center gap-1.5">
-                      <ShieldCheck size={14} className="text-[#167D78]" /> Daily Gym Access
+                    <span className="text-xs font-bold text-[#F8FAFC] flex items-center gap-1.5">
+                      <ShieldCheck size={14} className="text-[#818CF8]" /> Daily Gym Access
                     </span>
-                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Open</span>
+                    <span className="text-[10px] font-bold bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30 px-2 py-0.5 rounded-full">Open</span>
                   </div>
-                  <p className="text-[11px] text-[#697778]">Full access to cardio & weight training floors.</p>
-                  <p className="text-[11px] font-medium text-[#167D78]">06:00 AM – 10:00 PM</p>
+                  <p className="text-[11px] text-[#A1A1AA]">Full access to cardio & weight training floors.</p>
+                  <p className="text-[11px] font-medium text-[#818CF8]">06:00 AM – 10:00 PM</p>
                 </div>
 
-                <div className="p-3.5 bg-[#E8EFF0] rounded-2xl border border-[#D9E2E3] space-y-2">
+                <div className="p-3.5 bg-[#17172A] rounded-2xl border border-[#292940] space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#344B4A] flex items-center gap-1.5">
-                      <Activity size={14} className="text-amber-600" /> Evening HIIT & Cardio Group
+                    <span className="text-xs font-bold text-[#F8FAFC] flex items-center gap-1.5">
+                      <Activity size={14} className="text-[#4F46E5]" /> Evening HIIT & Cardio Group
                     </span>
-                    <span className="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full">Today</span>
+                    <span className="text-[10px] font-bold bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/30 px-2 py-0.5 rounded-full">Today</span>
                   </div>
-                  <p className="text-[11px] text-[#697778]">Instructor-led group session on main floor.</p>
-                  <p className="text-[11px] font-medium text-amber-700">06:30 PM – 07:15 PM</p>
+                  <p className="text-[11px] text-[#A1A1AA]">Instructor-led group session on main floor.</p>
+                  <p className="text-[11px] font-medium text-[#4F46E5]">06:30 PM – 07:15 PM</p>
                 </div>
 
                 <div className="pt-2 mt-auto">
                   <Link
                     to="/member/find-trainers"
-                    className="w-full py-2.5 bg-[#E8EFF0] hover:bg-[#D8EAE7] text-[#167D78] border border-[#D9E2E3] text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors"
+                    className="w-full py-2.5 bg-[#11111F] hover:bg-[#17172A] text-[#818CF8] border border-[#292940] hover:border-[#6366F1]/40 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors"
                   >
                     <User size={13} /> Book 1-on-1 Trainer Session
                   </Link>
@@ -391,19 +396,19 @@ const MemberDashboard = () => {
           </div>
 
           {/* Payment History & Membership Summary Table */}
-          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-3xl overflow-hidden shadow-sm">
-            <div className="p-6 border-b border-[#D9E2E3] flex items-center justify-between">
+          <div className="bg-[#11111F] border border-[#292940] rounded-3xl overflow-hidden shadow-xl">
+            <div className="p-6 border-b border-[#292940] flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-[#344B4A]">Membership & Payment Record</h3>
-                <p className="text-xs text-[#697778] mt-0.5">Your invoices, plan activations, and payment status</p>
+                <h3 className="text-lg font-bold text-[#F8FAFC]">Membership & Payment Record</h3>
+                <p className="text-xs text-[#A1A1AA] mt-0.5">Your invoices, plan activations, and payment status</p>
               </div>
-              <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30">
                 {activeMembership?.status || 'Active'}
               </span>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-[#697778]">
-                <thead className="bg-[#E8EFF0] border-b border-[#D9E2E3] text-[#344B4A]">
+              <table className="w-full text-left text-sm text-[#A1A1AA]">
+                <thead className="bg-[#0B0B12] border-b border-[#292940] text-[#F8FAFC]">
                   <tr>
                     <th className="px-6 py-4 font-semibold">Date</th>
                     <th className="px-6 py-4 font-semibold">Plan</th>
@@ -413,20 +418,20 @@ const MemberDashboard = () => {
                     <th className="px-6 py-4 font-semibold">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#D9E2E3]">
+                <tbody className="divide-y divide-[#292940]">
                   {payments.length > 0 ? (
                     payments.map((p, idx) => (
-                      <tr key={idx} className="hover:bg-[#E8EFF0] transition-colors">
+                      <tr key={idx} className="hover:bg-[#17172A] transition-colors">
                         <td className="px-6 py-4">{new Date(p.paymentDate || p.createdAt).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 font-medium text-[#344B4A]">{p.planName}</td>
-                        <td className="px-6 py-4 font-bold text-[#167D78]">₹{p.amount}</td>
-                        <td className="px-6 py-4 text-[#344B4A]">{p.paymentMethod}</td>
+                        <td className="px-6 py-4 font-medium text-[#F8FAFC]">{p.planName}</td>
+                        <td className="px-6 py-4 font-bold text-[#818CF8]">₹{p.amount}</td>
+                        <td className="px-6 py-4 text-[#F8FAFC]">{p.paymentMethod}</td>
                         <td className="px-6 py-4 font-mono text-xs">{p.transactionId || p.paymentReference || (p._id ? `TXN-${p._id.slice(-8).toUpperCase()}` : 'N/A')}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                            p.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' :
-                            p.status === 'Rejected' ? 'bg-red-100 text-red-700' :
-                            'bg-yellow-100 text-yellow-700'
+                            p.status === 'Approved' ? 'bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30' :
+                            p.status === 'Rejected' ? 'bg-red-500/15 text-red-400 border border-red-500/30' :
+                            'bg-amber-500/15 text-amber-400 border border-amber-500/30'
                           }`}>
                             {p.status}
                           </span>
@@ -435,24 +440,24 @@ const MemberDashboard = () => {
                     ))
                   ) : (
                     /* Show active membership record if no separate payment history item yet */
-                    <tr className="hover:bg-[#E8EFF0] transition-colors">
+                    <tr className="hover:bg-[#17172A] transition-colors">
                       <td className="px-6 py-4">
                         {new Date(activeMembership?.startDate || activeMembership?.createdAt || new Date()).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 font-medium text-[#344B4A]">
+                      <td className="px-6 py-4 font-medium text-[#F8FAFC]">
                         {activeMembership?.planName || user?.subscriptionPlan || 'Free Trial Plan'}
                       </td>
-                      <td className="px-6 py-4 font-bold text-[#167D78]">
+                      <td className="px-6 py-4 font-bold text-[#818CF8]">
                         {activeMembership?.price ? `₹${activeMembership.price}` : '₹0 (Trial)'}
                       </td>
-                      <td className="px-6 py-4 text-[#344B4A]">
+                      <td className="px-6 py-4 text-[#F8FAFC]">
                         {activeMembership?.paymentMethod || 'Online'}
                       </td>
                       <td className="px-6 py-4 font-mono text-xs">
                         MEM-{activeMembership?._id ? activeMembership._id.slice(-8).toUpperCase() : 'ACTIVE'}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30">
                           {activeMembership?.status || 'Active'}
                         </span>
                       </td>
@@ -467,26 +472,26 @@ const MemberDashboard = () => {
 
       {/* Membership Expired Popup */}
       {!isApproved && showExpiredPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#344B4A]/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative animate-in fade-in zoom-in-95 border-2 border-red-300">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="text-red-500" size={32} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#11111F] rounded-2xl max-w-md w-full p-8 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#EF4444]">
+            <div className="w-16 h-16 bg-red-950/40 border border-red-500/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="text-[#EF4444]" size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-[#344B4A] mb-2 text-center">Plan Completed</h2>
-            <p className="text-[#697778] mb-8 text-center text-sm">
+            <h2 className="text-2xl font-bold text-[#F8FAFC] mb-2 text-center">Plan Completed</h2>
+            <p className="text-[#A1A1AA] mb-8 text-center text-sm">
               Your subscription plan is completed. Please upgrade your plan to continue accessing premium gym services.
             </p>
             <div className="flex flex-col gap-3">
               <Link 
-                to="/member/upgrade"
+                to="/member/subscription"
                 onClick={() => setShowExpiredPopup(false)}
-                className="w-full py-4 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors shadow-lg text-center"
+                className="w-full py-3.5 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] hover:from-[#4F46E5] hover:to-[#6366F1] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#6366F1]/25 text-center text-sm"
               >
                 Upgrade Your Plan
               </Link>
               <button 
                 onClick={logout}
-                className="w-full py-3 text-[#697778] font-semibold hover:text-[#344B4A] hover:bg-[#E8EFF0] rounded-xl transition-colors"
+                className="w-full py-2.5 text-[#A1A1AA] font-semibold hover:text-[#F8FAFC] hover:bg-[#17172A] rounded-xl transition-colors text-sm"
               >
                 Logout
               </button>

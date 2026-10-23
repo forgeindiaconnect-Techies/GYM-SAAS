@@ -69,21 +69,21 @@ const GymAdminBranches = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64"><Activity className="animate-spin text-[#167D78]" size={32} /></div>;
+    return <div className="flex justify-center items-center h-64"><Activity className="animate-spin text-[#6366F1]" size={32} /></div>;
   }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Branches</h1>
-          <p className="text-[#697778] mt-1">Manage all branches under your gym.</p>
+          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Branches</h1>
+          <p className="text-[#A1A1AA] mt-1">Manage all branches under your gym.</p>
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="bg-white border border-[#D9E2E3] rounded-xl p-3 flex flex-col shadow-sm">
-            <span className="text-xs text-[#697778] font-bold uppercase tracking-wider">{currentPlan} Plan</span>
-            <span className="text-sm text-[#344B4A] font-bold">Branches: <span className={currentBranchesCount >= branchLimit ? 'text-[#167D78]' : 'text-[#167D78]'}>{currentBranchesCount} / {branchLimit}</span> used</span>
+          <div className="bg-white border border-[#292940] rounded-xl p-3 flex flex-col shadow-sm">
+            <span className="text-xs text-[#A1A1AA] font-bold uppercase tracking-wider">{currentPlan} Plan</span>
+            <span className="text-sm text-[#11111F] font-bold">Branches: <span className={currentBranchesCount >= branchLimit ? 'text-[#6366F1]' : 'text-[#6366F1]'}>{currentBranchesCount} / {branchLimit}</span> used</span>
           </div>
           <button 
             onClick={handleAddBranch}
@@ -91,7 +91,7 @@ const GymAdminBranches = () => {
             className={`px-4 py-3 font-bold rounded-xl flex items-center gap-2 shadow-lg transition-colors ${
               currentBranchesCount >= branchLimit 
                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed shadow-none' 
-                : 'bg-[#167D78] text-white hover:bg-[#116660] shadow-[#167D78]/20'
+                : 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-[#6366F1]/20'
             }`}
           >
             <Plus size={20} /> Add Branch
@@ -100,28 +100,28 @@ const GymAdminBranches = () => {
       </div>
 
       {branches.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#D9E2E3] p-12 text-center flex flex-col items-center">
-          <div className="w-16 h-16 bg-[#E8EFF0] rounded-full flex items-center justify-center mb-4">
-            <Building2 className="text-[#167D78]" size={32} />
+        <div className="bg-white rounded-2xl border border-[#292940] p-12 text-center flex flex-col items-center">
+          <div className="w-16 h-16 bg-[#0B0B12] rounded-full flex items-center justify-center mb-4">
+            <Building2 className="text-[#6366F1]" size={32} />
           </div>
-          <h3 className="text-xl font-bold text-[#344B4A] mb-2">No Branches Yet</h3>
-          <p className="text-[#697778] mb-6 max-w-md">You haven't created any branches yet. Expand your gym's presence by adding a new location.</p>
-          <button onClick={handleAddBranch} className="px-6 py-3 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors">
+          <h3 className="text-xl font-bold text-[#11111F] mb-2">No Branches Yet</h3>
+          <p className="text-[#A1A1AA] mb-6 max-w-md">You haven't created any branches yet. Expand your gym's presence by adding a new location.</p>
+          <button onClick={handleAddBranch} className="px-6 py-3 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] transition-colors">
             Create First Branch
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {branches.map(branch => (
-            <div key={branch._id} className="bg-white border border-[#D9E2E3] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative group flex flex-col">
+            <div key={branch._id} className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative group flex flex-col">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-[#E8EFF0] flex items-center justify-center text-[#167D78] shrink-0 border border-[#D9E2E3]">
+                  <div className="w-12 h-12 rounded-xl bg-[#0B0B12] flex items-center justify-center text-[#6366F1] shrink-0 border border-[#292940]">
                     <Building2 size={24} />
                   </div>
                   <div className="truncate">
-                    <h3 className="font-bold text-[#344B4A] text-lg truncate" title={branch.branchName}>{branch.branchName}</h3>
-                    <p className="text-xs font-semibold text-[#697778] uppercase tracking-wider">CODE: {branch.branchCode}</p>
+                    <h3 className="font-bold text-[#11111F] text-lg truncate" title={branch.branchName}>{branch.branchName}</h3>
+                    <p className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider">CODE: {branch.branchCode}</p>
                   </div>
                 </div>
                 
@@ -136,30 +136,30 @@ const GymAdminBranches = () => {
               </div>
 
               <div className="space-y-2 mb-6 flex-1">
-                <div className="flex items-center gap-2 text-sm text-[#697778] truncate">
-                  <MapPin size={16} className="text-[#167D78] shrink-0" />
+                <div className="flex items-center gap-2 text-sm text-[#A1A1AA] truncate">
+                  <MapPin size={16} className="text-[#6366F1] shrink-0" />
                   <span className="truncate" title={`${branch.location.address}, ${branch.location.city}`}>{branch.location.address}, {branch.location.city}</span>
                 </div>
                 {branch.phone && (
-                  <div className="flex items-center gap-2 text-sm text-[#697778]">
-                    <Phone size={16} className="text-[#167D78] shrink-0" />
+                  <div className="flex items-center gap-2 text-sm text-[#A1A1AA]">
+                    <Phone size={16} className="text-[#6366F1] shrink-0" />
                     <span>{branch.phone}</span>
                   </div>
                 )}
                 {branch.managerId && (
-                  <div className="flex items-center gap-2 text-sm text-[#697778]">
-                    <ShieldCheck size={16} className="text-[#167D78] shrink-0" />
+                  <div className="flex items-center gap-2 text-sm text-[#A1A1AA]">
+                    <ShieldCheck size={16} className="text-[#6366F1] shrink-0" />
                     <span>Manager: {branch.managerId.firstName} {branch.managerId.lastName}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-2 text-sm text-[#697778]">
-                  <Activity size={16} className="text-[#167D78] shrink-0" />
+                <div className="flex items-center gap-2 text-sm text-[#A1A1AA]">
+                  <Activity size={16} className="text-[#6366F1] shrink-0" />
                   <span className="capitalize">{branch.trainingMode} Training</span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#D9E2E3] flex gap-2">
-                <Link to={`/admin/branches/${branch._id}`} className="flex-1 py-2 bg-[#E8EFF0] border border-[#D8EAE7] text-[#344B4A] rounded-lg text-sm font-bold text-center hover:bg-[#D8EAE7] transition-colors flex justify-center items-center gap-1">
+              <div className="pt-4 border-t border-[#292940] flex gap-2">
+                <Link to={`/admin/branches/${branch._id}`} className="flex-1 py-2 bg-[#0B0B12] border border-[#17172A] text-[#11111F] rounded-lg text-sm font-bold text-center hover:bg-[#17172A] transition-colors flex justify-center items-center gap-1">
                   <Eye size={16} /> View
                 </Link>
                 <select 

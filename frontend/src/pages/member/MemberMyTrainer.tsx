@@ -39,17 +39,17 @@ const MemberMyTrainer = () => {
   }, []);
 
   if (loading) {
-    return <div className="p-8 text-center text-[#697778]">Loading your trainer details...</div>;
+    return <div className="p-8 text-center text-[#A1A1AA]">Loading your trainer details...</div>;
   }
 
   if (!trainer) {
     return (
       <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
         <MemberTrainingTabs />
-        <div className="p-12 text-center bg-white border border-[#D9E2E3] rounded-2xl">
-          <h1 className="text-3xl font-bold text-[#344B4A] mb-3">No Trainer Assigned</h1>
-          <p className="text-[#697778] mb-8">You haven't booked a session with a trainer yet.</p>
-          <Link to="/member/find-trainers" className="px-6 py-3 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors">
+        <div className="p-12 text-center bg-white border border-[#292940] rounded-2xl">
+          <h1 className="text-3xl font-bold text-[#11111F] mb-3">No Trainer Assigned</h1>
+          <p className="text-[#A1A1AA] mb-8">You haven't booked a session with a trainer yet.</p>
+          <Link to="/member/find-trainers" className="px-6 py-3 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors">
             Find a Trainer
           </Link>
         </div>
@@ -62,15 +62,15 @@ const MemberMyTrainer = () => {
       <MemberTrainingTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">My Trainer</h1>
-          <p className="text-[#697778] mt-1">Your dedicated fitness coach and mentor.</p>
+          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">My Trainer</h1>
+          <p className="text-[#A1A1AA] mt-1">Your dedicated fitness coach and mentor.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Image & Quick Actions */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white rounded-3xl p-6 border border-[#D8EAE7] shadow-sm flex flex-col items-center text-center">
+          <div className="bg-white rounded-3xl p-6 border border-[#17172A] shadow-sm flex flex-col items-center text-center">
             <div className="relative mb-6">
               {trainer.profilePhoto ? (
                 <img 
@@ -79,21 +79,21 @@ const MemberMyTrainer = () => {
                   className="w-48 h-48 rounded-full object-cover border-4 border-white shadow-xl"
                 />
               ) : (
-                <div className="w-48 h-48 rounded-full bg-[#E8EFF0] flex items-center justify-center text-5xl font-bold text-[#167D78] border-4 border-white shadow-xl">
+                <div className="w-48 h-48 rounded-full bg-[#0B0B12] flex items-center justify-center text-5xl font-bold text-[#6366F1] border-4 border-white shadow-xl">
                   {trainer.name?.charAt(0) || 'T'}
                 </div>
               )}
-              <div className="absolute bottom-2 right-4 bg-[#167D78] text-white p-2 rounded-full shadow-lg border-2 border-white">
+              <div className="absolute bottom-2 right-4 bg-[#6366F1] text-white p-2 rounded-full shadow-lg border-2 border-white">
                 <Award size={20} />
               </div>
             </div>
             
-            <h2 className="text-2xl font-bold text-[#344B4A]">{trainer.name}</h2>
-            <p className="text-[#167D78] font-medium mt-1 mb-4">{trainer.specialization || 'General Fitness'}</p>
+            <h2 className="text-2xl font-bold text-[#11111F]">{trainer.name}</h2>
+            <p className="text-[#6366F1] font-medium mt-1 mb-4">{trainer.specialization || 'General Fitness'}</p>
             
-            <div className="flex items-center justify-center space-x-2 text-sm text-[#697778] mb-6">
+            <div className="flex items-center justify-center space-x-2 text-sm text-[#A1A1AA] mb-6">
               <Star className="text-yellow-400 fill-yellow-400" size={18} />
-              <span className="font-bold text-[#344B4A]">{trainer.rating || '4.9'}</span>
+              <span className="font-bold text-[#11111F]">{trainer.rating || '4.9'}</span>
               <span>({trainer.reviews || '24'} Reviews)</span>
             </div>
 
@@ -102,39 +102,39 @@ const MemberMyTrainer = () => {
 
         {/* Right Column: Details & Bio */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#D8EAE7] shadow-sm">
-            <h3 className="text-xl font-bold text-[#344B4A] mb-6">About {trainer.name?.split(' ')[0]}</h3>
-            <p className="text-[#697778] leading-relaxed mb-8">
+          <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#17172A] shadow-sm">
+            <h3 className="text-xl font-bold text-[#11111F] mb-6">About {trainer.name?.split(' ')[0]}</h3>
+            <p className="text-[#A1A1AA] leading-relaxed mb-8">
               {trainer.bio || 'This trainer has not added a bio yet.'}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-              <div className="bg-[#E8EFF0] p-4 rounded-2xl flex items-center space-x-4 border border-[#D8EAE7]">
-                <div className="bg-blue-100 text-[#167D78] p-3 rounded-xl">
+              <div className="bg-[#0B0B12] p-4 rounded-2xl flex items-center space-x-4 border border-[#17172A]">
+                <div className="bg-blue-100 text-[#6366F1] p-3 rounded-xl">
                   <Award size={24} />
                 </div>
                 <div>
-                  <p className="text-sm text-[#697778]">Experience</p>
-                  <p className="font-bold text-[#344B4A]">{trainer.experience ? `${trainer.experience} Years` : 'Not specified'}</p>
+                  <p className="text-sm text-[#A1A1AA]">Experience</p>
+                  <p className="font-bold text-[#11111F]">{trainer.experience ? `${trainer.experience} Years` : 'Not specified'}</p>
                 </div>
               </div>
-              <div className="bg-[#E8EFF0] p-4 rounded-2xl flex items-center space-x-4 border border-[#D8EAE7]">
-                <div className="bg-[#D8EAE7] text-[#167D78] p-3 rounded-xl">
+              <div className="bg-[#0B0B12] p-4 rounded-2xl flex items-center space-x-4 border border-[#17172A]">
+                <div className="bg-[#17172A] text-[#6366F1] p-3 rounded-xl">
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <p className="text-sm text-[#697778]">Training Mode</p>
-                  <p className="font-bold text-[#344B4A] capitalize">{trainer.trainingMode || 'In-Person'}</p>
+                  <p className="text-sm text-[#A1A1AA]">Training Mode</p>
+                  <p className="font-bold text-[#11111F] capitalize">{trainer.trainingMode || 'In-Person'}</p>
                 </div>
               </div>
               {trainer.availability && (
-                <div className="bg-[#E8EFF0] p-4 rounded-2xl flex items-center space-x-4 border border-[#D8EAE7] sm:col-span-2">
-                  <div className="bg-green-100 text-[#167D78] p-3 rounded-xl">
+                <div className="bg-[#0B0B12] p-4 rounded-2xl flex items-center space-x-4 border border-[#17172A] sm:col-span-2">
+                  <div className="bg-green-100 text-[#6366F1] p-3 rounded-xl">
                     <Calendar size={24} />
                   </div>
                   <div>
-                    <p className="text-sm text-[#697778]">Availability</p>
-                    <p className="font-bold text-[#344B4A]">{trainer.availability}</p>
+                    <p className="text-sm text-[#A1A1AA]">Availability</p>
+                    <p className="font-bold text-[#11111F]">{trainer.availability}</p>
                   </div>
                 </div>
               )}
@@ -143,30 +143,30 @@ const MemberMyTrainer = () => {
             {/* Qualifications & Certifications */}
             {(trainer.qualifications || trainer.certifications) && (
               <div className="mb-8 space-y-4">
-                <h3 className="text-lg font-bold text-[#344B4A]">Qualifications & Certifications</h3>
+                <h3 className="text-lg font-bold text-[#11111F]">Qualifications & Certifications</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {trainer.qualifications && (
-                    <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
-                      <p className="text-[#697778] text-xs font-medium mb-1.5">Degrees / Qualifications</p>
-                      <p className="font-semibold text-[#344B4A]">{trainer.qualifications}</p>
+                    <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-4">
+                      <p className="text-[#A1A1AA] text-xs font-medium mb-1.5">Degrees / Qualifications</p>
+                      <p className="font-semibold text-[#11111F]">{trainer.qualifications}</p>
                     </div>
                   )}
                   {trainer.certifications && (
-                    <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-4">
-                      <p className="text-[#697778] text-xs font-medium mb-1.5">Certifications</p>
-                      <p className="font-semibold text-[#344B4A]">{trainer.certifications}</p>
+                    <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-4">
+                      <p className="text-[#A1A1AA] text-xs font-medium mb-1.5">Certifications</p>
+                      <p className="font-semibold text-[#11111F]">{trainer.certifications}</p>
                     </div>
                   )}
                 </div>
               </div>
             )}
 
-            <h3 className="text-lg font-bold text-[#344B4A] mb-4">Core Specialties</h3>
+            <h3 className="text-lg font-bold text-[#11111F] mb-4">Core Specialties</h3>
             <div className="flex flex-wrap gap-2">
               {trainer.expertise ? trainer.expertise.split(',').map((specialty: string, index: number) => (
                 <span 
                   key={index}
-                  className="bg-green-50 text-[#167D78] border border-green-200 px-4 py-2 rounded-full text-sm font-semibold"
+                  className="bg-green-50 text-[#6366F1] border border-green-200 px-4 py-2 rounded-full text-sm font-semibold"
                 >
                   {specialty.trim()}
                 </span>
@@ -177,7 +177,7 @@ const MemberMyTrainer = () => {
           </div>
 
           {/* Current Plan Mini-Card */}
-          <div className="bg-gradient-to-r from-[#344B4A] to-[#344B4A] rounded-3xl p-6 text-white shadow-lg flex items-center justify-between">
+          <div className="bg-gradient-to-r from-[#11111F] to-[#11111F] rounded-3xl p-6 text-white shadow-lg flex items-center justify-between">
             <div>
               <h3 className="font-bold text-lg mb-1">Personal Training Plan</h3>
               <p className="text-stone-600 text-sm">3 sessions remaining this week</p>

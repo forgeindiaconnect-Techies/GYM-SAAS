@@ -53,7 +53,7 @@ const METHOD_COLORS: Record<string, string> = {
   UPI:          'bg-emerald-50 text-emerald-700 border-emerald-200',
   Cash:         'bg-amber-50 text-amber-700 border-amber-200',
   'Bank Transfer': 'bg-blue-50 text-blue-700 border-blue-200',
-  Cheque:       'bg-[#E8EFF0] text-[#167D78] border-[#D9E2E3]',
+  Cheque:       'bg-[#0B0B12] text-[#6366F1] border-[#292940]',
 };
 
 const TrainerPaymentsReceived = () => {
@@ -94,13 +94,13 @@ const TrainerPaymentsReceived = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#344B4A]">Payments Received</h1>
-          <p className="text-[#697778] text-sm mt-1">History of all payments received from the Gym Owner.</p>
+          <h1 className="text-2xl font-bold text-[#11111F]">Payments Received</h1>
+          <p className="text-[#A1A1AA] text-sm mt-1">History of all payments received from the Gym Owner.</p>
         </div>
         <div className="flex gap-3">
-          <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-5 py-3 text-right">
-            <p className="text-xs text-[#697778]">Total Received</p>
-            <p className="text-xl font-bold text-[#167D78]">₹{totalReceived.toLocaleString('en-IN')}</p>
+          <div className="bg-[#0B0B12] border border-[#292940] rounded-xl px-5 py-3 text-right">
+            <p className="text-xs text-[#A1A1AA]">Total Received</p>
+            <p className="text-xl font-bold text-[#6366F1]">₹{totalReceived.toLocaleString('en-IN')}</p>
           </div>
           {pendingCount > 0 && (
             <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 text-right">
@@ -114,18 +114,18 @@ const TrainerPaymentsReceived = () => {
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#697778]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A1A1AA]" />
           <input
             type="text"
             placeholder="Search method or reference..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="pl-9 pr-4 py-2.5 border border-[#D8EAE7] rounded-xl text-sm outline-none focus:border-[#167D78] focus:ring-1 focus:ring-[#167D78]/30 w-56"
+            className="pl-9 pr-4 py-2.5 border border-[#17172A] rounded-xl text-sm outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/30 w-56"
           />
         </div>
-        <div className="flex items-center gap-2 bg-white border border-[#D8EAE7] rounded-xl px-3 py-2">
-          <Filter size={14} className="text-[#697778]" />
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#697778]">
+        <div className="flex items-center gap-2 bg-white border border-[#17172A] rounded-xl px-3 py-2">
+          <Filter size={14} className="text-[#A1A1AA]" />
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#A1A1AA]">
             <option value="All">All Status</option>
             <option value="Paid">Paid</option>
             <option value="Pending">Pending</option>
@@ -135,44 +135,44 @@ const TrainerPaymentsReceived = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-[#D8EAE7] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#17172A] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#167D78]/30 border-t-[#167D78] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#6366F1]/30 border-t-[#6366F1] rounded-full animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <History size={48} className="text-[#D9E2E3] mb-4" />
-            <h3 className="text-[#344B4A] font-semibold text-lg">No Payments Found</h3>
-            <p className="text-[#697778] text-sm mt-1">You haven't received any payments yet.</p>
+            <History size={48} className="text-[#292940] mb-4" />
+            <h3 className="text-[#11111F] font-semibold text-lg">No Payments Found</h3>
+            <p className="text-[#A1A1AA] text-sm mt-1">You haven't received any payments yet.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#E8EFF0] border-b border-[#D8EAE7]">
-                  <th className="px-6 py-4 text-xs font-bold text-[#697778] uppercase tracking-wider">Date &amp; Time</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#697778] uppercase tracking-wider">Amount</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#697778] uppercase tracking-wider">Method</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#697778] uppercase tracking-wider">Reference</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#697778] uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-xs font-bold text-[#697778] uppercase tracking-wider text-center">Details</th>
+                <tr className="bg-[#0B0B12] border-b border-[#17172A]">
+                  <th className="px-6 py-4 text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Date &amp; Time</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Method</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Reference</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-xs font-bold text-[#A1A1AA] uppercase tracking-wider text-center">Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E8EFF0]">
+              <tbody className="divide-y divide-[#0B0B12]">
                 {filtered.map(payment => {
                   const Icon = STATUS_ICONS[payment.paymentStatus] || CheckCircle;
                   const { date, time } = formatDateTime(payment.paymentDate || payment.createdAt, payment.createdAt);
                   const methodColor = METHOD_COLORS[payment.paymentMethod] || 'bg-gray-50 text-gray-600 border-gray-200';
                   return (
-                    <tr key={payment._id} className="hover:bg-[#E8EFF0] transition-colors">
+                    <tr key={payment._id} className="hover:bg-[#0B0B12] transition-colors">
                       {/* Date & Time */}
                       <td className="px-6 py-4">
                         <div className="flex items-start gap-2">
-                          <Calendar size={14} className="text-[#697778] mt-0.5 shrink-0" />
+                          <Calendar size={14} className="text-[#A1A1AA] mt-0.5 shrink-0" />
                           <div>
-                            <div className="text-sm font-semibold text-[#344B4A]">{date}</div>
-                            <div className="text-xs text-[#697778] mt-0.5">{time}</div>
+                            <div className="text-sm font-semibold text-[#11111F]">{date}</div>
+                            <div className="text-xs text-[#A1A1AA] mt-0.5">{time}</div>
                           </div>
                         </div>
                       </td>
@@ -180,8 +180,8 @@ const TrainerPaymentsReceived = () => {
                       {/* Amount */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1">
-                          <IndianRupee size={14} className="text-[#167D78]" />
-                          <span className="text-sm font-bold text-[#344B4A]">{Number(payment.amount).toLocaleString('en-IN')}</span>
+                          <IndianRupee size={14} className="text-[#6366F1]" />
+                          <span className="text-sm font-bold text-[#11111F]">{Number(payment.amount).toLocaleString('en-IN')}</span>
                         </div>
                       </td>
 
@@ -194,16 +194,16 @@ const TrainerPaymentsReceived = () => {
                       </td>
 
                       {/* Reference */}
-                      <td className="px-6 py-4 text-sm text-[#697778] font-mono">
+                      <td className="px-6 py-4 text-sm text-[#A1A1AA] font-mono">
                         {payment.transactionId ? (
-                          <span className="bg-[#E8EFF0] px-2 py-0.5 rounded text-xs">{payment.transactionId}</span>
+                          <span className="bg-[#0B0B12] px-2 py-0.5 rounded text-xs">{payment.transactionId}</span>
                         ) : '-'}
                       </td>
 
                       {/* Status */}
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${
-                          payment.paymentStatus === 'Paid'    ? 'bg-[#167D78]/10 text-[#167D78]' :
+                          payment.paymentStatus === 'Paid'    ? 'bg-[#6366F1]/10 text-[#6366F1]' :
                           payment.paymentStatus === 'Failed'  ? 'bg-red-100 text-red-700' :
                           'bg-amber-100 text-amber-700'
                         }`}>
@@ -215,7 +215,7 @@ const TrainerPaymentsReceived = () => {
                       <td className="px-6 py-4 text-center">
                         <button
                           onClick={() => setSelectedPayment(payment)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#167D78] hover:bg-[#116660] text-white rounded-lg text-xs font-semibold transition-colors shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-lg text-xs font-semibold transition-colors shadow-sm"
                           title="View full payment details"
                         >
                           <Eye size={13} />
@@ -238,9 +238,9 @@ const TrainerPaymentsReceived = () => {
         const methodColor = METHOD_COLORS[selectedPayment.paymentMethod] || 'bg-gray-50 text-gray-600 border-gray-200';
         return (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-[#D9E2E3] overflow-hidden my-auto max-h-[90vh] flex flex-col">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-[#292940] overflow-hidden my-auto max-h-[90vh] flex flex-col">
               {/* Modal Header */}
-              <div className="flex items-center justify-between px-6 py-3.5 bg-gradient-to-r from-[#167D78] to-[#167D78] shrink-0">
+              <div className="flex items-center justify-between px-6 py-3.5 bg-gradient-to-r from-[#6366F1] to-[#6366F1] shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
                     <CreditCard size={18} className="text-white" />
@@ -273,11 +273,11 @@ const TrainerPaymentsReceived = () => {
               {/* Details Body */}
               <div className="p-5 sm:p-6 space-y-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
                 {/* Amount */}
-                <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-3.5 text-center">
-                  <p className="text-xs text-[#697778] uppercase font-semibold tracking-wider mb-1">Exact Amount Received</p>
-                  <p className="text-3xl font-bold text-[#167D78]">₹{Number(selectedPayment.amount).toLocaleString('en-IN')}</p>
+                <div className="bg-[#0B0B12] border border-[#292940] rounded-xl p-3.5 text-center">
+                  <p className="text-xs text-[#A1A1AA] uppercase font-semibold tracking-wider mb-1">Exact Amount Received</p>
+                  <p className="text-3xl font-bold text-[#6366F1]">₹{Number(selectedPayment.amount).toLocaleString('en-IN')}</p>
                   {selectedPayment.trainerFeeId?.feeAmount && selectedPayment.trainerFeeId.feeAmount !== selectedPayment.amount && (
-                    <div className="mt-2 pt-2 border-t border-[#D9E2E3]/60 flex justify-between text-xs text-[#697778] font-medium px-2">
+                    <div className="mt-2 pt-2 border-t border-[#292940]/60 flex justify-between text-xs text-[#A1A1AA] font-medium px-2">
                       <span>Base Fee: ₹{Number(selectedPayment.trainerFeeId.feeAmount).toLocaleString('en-IN')}</span>
                       <span>Commission: –₹{(selectedPayment.trainerFeeId.feeAmount - selectedPayment.amount).toLocaleString('en-IN')}</span>
                     </div>
@@ -285,27 +285,27 @@ const TrainerPaymentsReceived = () => {
                 </div>
 
                 {/* Grid Info */}
-                <div className="border border-[#D9E2E3] rounded-xl overflow-hidden divide-y divide-[#D9E2E3] bg-white shadow-sm">
-                  <div className="grid grid-cols-2 divide-x divide-[#D9E2E3]">
+                <div className="border border-[#292940] rounded-xl overflow-hidden divide-y divide-[#292940] bg-white shadow-sm">
+                  <div className="grid grid-cols-2 divide-x divide-[#292940]">
                     <div className="p-3 bg-white flex flex-col justify-center">
-                      <div className="flex items-center gap-1.5 text-[#697778] mb-1">
+                      <div className="flex items-center gap-1.5 text-[#A1A1AA] mb-1">
                         <Calendar size={12} />
                         <span className="text-[10px] uppercase font-bold tracking-wider">Date</span>
                       </div>
-                      <p className="text-sm font-semibold text-[#344B4A]">{date}</p>
+                      <p className="text-sm font-semibold text-[#11111F]">{date}</p>
                     </div>
                     <div className="p-3 bg-white flex flex-col justify-center">
-                      <div className="flex items-center gap-1.5 text-[#697778] mb-1">
+                      <div className="flex items-center gap-1.5 text-[#A1A1AA] mb-1">
                         <Clock size={12} />
                         <span className="text-[10px] uppercase font-bold tracking-wider">Time</span>
                       </div>
-                      <p className="text-sm font-semibold text-[#344B4A]">{time}</p>
+                      <p className="text-sm font-semibold text-[#11111F]">{time}</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 divide-x divide-[#D9E2E3]">
+                  <div className="grid grid-cols-2 divide-x divide-[#292940]">
                     <div className="p-3 bg-white flex flex-col justify-center">
-                      <div className="flex items-center gap-1.5 text-[#697778] mb-1">
+                      <div className="flex items-center gap-1.5 text-[#A1A1AA] mb-1">
                         <Smartphone size={12} />
                         <span className="text-[10px] uppercase font-bold tracking-wider">Method</span>
                       </div>
@@ -314,12 +314,12 @@ const TrainerPaymentsReceived = () => {
                       </span>
                     </div>
                     <div className="p-3 bg-white flex flex-col justify-center">
-                      <div className="flex items-center gap-1.5 text-[#697778] mb-1">
+                      <div className="flex items-center gap-1.5 text-[#A1A1AA] mb-1">
                         <Hash size={12} />
                         <span className="text-[10px] uppercase font-bold tracking-wider">Reference / UTR</span>
                       </div>
-                      <p className="text-sm font-mono font-semibold text-[#344B4A] break-all">
-                        {selectedPayment.transactionId || <span className="text-[#697778] italic font-normal text-xs">Not provided</span>}
+                      <p className="text-sm font-mono font-semibold text-[#11111F] break-all">
+                        {selectedPayment.transactionId || <span className="text-[#A1A1AA] italic font-normal text-xs">Not provided</span>}
                       </p>
                     </div>
                   </div>
@@ -327,8 +327,8 @@ const TrainerPaymentsReceived = () => {
                   {/* Notes */}
                   {selectedPayment.notes && (
                     <div className="p-3 bg-white flex flex-col justify-center">
-                      <p className="text-[10px] uppercase font-bold tracking-wider text-[#697778] mb-1">Notes / Remarks</p>
-                      <p className="text-sm text-[#697778]">{selectedPayment.notes}</p>
+                      <p className="text-[10px] uppercase font-bold tracking-wider text-[#A1A1AA] mb-1">Notes / Remarks</p>
+                      <p className="text-sm text-[#A1A1AA]">{selectedPayment.notes}</p>
                     </div>
                   )}
 
@@ -343,10 +343,10 @@ const TrainerPaymentsReceived = () => {
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-3.5 bg-[#E8EFF0] border-t border-[#D9E2E3] flex justify-end shrink-0">
+              <div className="px-6 py-3.5 bg-[#0B0B12] border-t border-[#292940] flex justify-end shrink-0">
                 <button
                   onClick={() => setSelectedPayment(null)}
-                  className="px-6 py-2 bg-[#167D78] hover:bg-[#116660] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+                  className="px-6 py-2 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
                 >
                   Close
                 </button>

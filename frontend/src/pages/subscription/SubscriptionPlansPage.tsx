@@ -15,9 +15,9 @@ const SAAS_PLANS = [
     tagline: 'Try Gymora risk-free',
     badge: '1 DAY',
     icon: Zap,
-    iconColor: 'text-[#D8EAE7]',
-    iconBg: 'bg-[#E8EFF0]',
-    borderColor: 'border-[#D9E2E3]',
+    iconColor: 'text-[#17172A]',
+    iconBg: 'bg-[#0B0B12]',
+    borderColor: 'border-[#292940]',
     priceMonthly: 0,
     priceAnnual: 0,
     priceAnnualPerMonth: 0,
@@ -38,7 +38,7 @@ const SAAS_PLANS = [
       { text: '1-on-1 Coaching', included: false },
     ],
     ctaText: 'Start Free Trial',
-    ctaStyle: 'bg-[#167D78] text-white hover:bg-[#116660] shadow-sm',
+    ctaStyle: 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm',
     trial: true,
     popular: false,
   },
@@ -48,9 +48,9 @@ const SAAS_PLANS = [
     tagline: 'Beginner package for growing gyms',
     badge: 'BEGINNER',
     icon: Star,
-    iconColor: 'text-[#344B4A]',
-    iconBg: 'bg-[#D8EAE7]',
-    borderColor: 'border-[#D9E2E3]',
+    iconColor: 'text-[#11111F]',
+    iconBg: 'bg-[#17172A]',
+    borderColor: 'border-[#292940]',
     priceMonthly: 799,
     priceAnnual: 7190,
     priceAnnualPerMonth: 599,
@@ -72,7 +72,7 @@ const SAAS_PLANS = [
     ],
     annualBonuses: ['Save 25% with annual billing'],
     ctaText: 'Choose Silver',
-    ctaStyle: 'bg-[#167D78] text-white hover:bg-[#116660] shadow-sm',
+    ctaStyle: 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm',
     trial: false,
     popular: false,
   },
@@ -82,9 +82,9 @@ const SAAS_PLANS = [
     tagline: 'Most popular all-in-one powerhouse',
     badge: 'MOST POPULAR',
     icon: Crown,
-    iconColor: 'text-[#344B4A]',
-    iconBg: 'bg-[#D8EAE7]',
-    borderColor: 'border-[#167D78]',
+    iconColor: 'text-[#11111F]',
+    iconBg: 'bg-[#17172A]',
+    borderColor: 'border-[#6366F1]',
     priceMonthly: 1499,
     priceAnnual: 13490,
     priceAnnualPerMonth: 1124,
@@ -105,7 +105,7 @@ const SAAS_PLANS = [
     ],
     annualBonuses: ['Save ₹4,498 with annual billing'],
     ctaText: 'Choose Gold',
-    ctaStyle: 'bg-[#167D78] text-white hover:bg-[#116660] shadow-sm',
+    ctaStyle: 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm',
     trial: false,
     popular: true,
   },
@@ -115,9 +115,9 @@ const SAAS_PLANS = [
     tagline: 'Enterprise-grade multi-branch scale',
     badge: 'ADVANCED',
     icon: Sparkles,
-    iconColor: 'text-[#344B4A]',
-    iconBg: 'bg-[#D8EAE7]',
-    borderColor: 'border-[#D9E2E3]',
+    iconColor: 'text-[#11111F]',
+    iconBg: 'bg-[#17172A]',
+    borderColor: 'border-[#292940]',
     priceMonthly: 2499,
     priceAnnual: 22490,
     priceAnnualPerMonth: 1874,
@@ -136,7 +136,7 @@ const SAAS_PLANS = [
     ],
     annualBonuses: ['Save ₹7,498 with annual billing'],
     ctaText: 'Choose Premium',
-    ctaStyle: 'bg-[#167D78] text-white hover:bg-[#116660] shadow-sm',
+    ctaStyle: 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm',
     trial: false,
     popular: false,
   },
@@ -274,15 +274,15 @@ const SubscriptionPlansPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E8EFF0] text-[#344B4A] py-16 px-4">
+    <div className="min-h-screen bg-[#0B0B12] text-[#11111F] py-16 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-14">
           <div className="flex items-center justify-center space-x-2 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#167D78] to-[#116660] rounded-xl flex items-center justify-center shadow-lg shadow-teal-900/10">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-xl flex items-center justify-center shadow-lg shadow-teal-900/10">
               <Activity className="text-white" size={22} />
             </div>
-            <span className="text-2xl font-bold text-[#167D78]">Gymora</span>
+            <span className="text-2xl font-bold text-[#6366F1]">Gymora</span>
           </div>
 
           {(user?.subscriptionStatus?.toUpperCase() === 'EXPIRED' || (user?.subscriptionExpiry && new Date(user.subscriptionExpiry) < new Date()) || (location.state as any)?.message) && (
@@ -299,17 +299,17 @@ const SubscriptionPlansPage = () => {
             </div>
           )}
 
-          <div className="inline-flex items-center space-x-2 bg-[#167D78]/10 border border-[#167D78]/30 rounded-full px-4 py-1.5 text-[#167D78] text-xs font-bold uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center space-x-2 bg-[#6366F1]/10 border border-[#6366F1]/30 rounded-full px-4 py-1.5 text-[#6366F1] text-xs font-bold uppercase tracking-widest mb-6">
             <Sparkles size={12} />
             <span>SaaS Platform Subscriptions</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-[#344B4A]">
-            Power Your Gym with <span className="text-[#167D78]">Gymora</span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-[#11111F]">
+            Power Your Gym with <span className="text-[#6366F1]">Gymora</span>
           </h1>
-          <p className="text-[#697778] text-lg mb-3 max-w-2xl mx-auto">
+          <p className="text-[#A1A1AA] text-lg mb-3 max-w-2xl mx-auto">
             Choose a plan that fits your gym's size and ambitions. All plans include our core AI management platform.
           </p>
-          <p className="text-xs text-[#697778] mb-10">These are SaaS subscriptions for gym owners, not individual member plans.</p>
+          <p className="text-xs text-[#A1A1AA] mb-10">These are SaaS subscriptions for gym owners, not individual member plans.</p>
 
           {error && (
             <div className="inline-flex items-center space-x-2 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-2 text-sm mb-6">
@@ -319,7 +319,7 @@ const SubscriptionPlansPage = () => {
 
           {/* ─── Billing Toggle ─── */}
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#344B4A]' : 'text-[#697778]'}`}>
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#11111F]' : 'text-[#A1A1AA]'}`}>
               Monthly
             </span>
 
@@ -327,21 +327,21 @@ const SubscriptionPlansPage = () => {
             <button
               onClick={() => setIsAnnual(!isAnnual)}
               aria-pressed={isAnnual}
-              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#167D78] focus:ring-offset-2 ${isAnnual ? 'bg-[#167D78]' : 'bg-[#D9E2E3]'}`}
+              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:ring-offset-2 ${isAnnual ? 'bg-[#6366F1]' : 'bg-[#292940]'}`}
             >
               <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-9' : 'translate-x-1'}`} />
             </button>
 
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#344B4A]' : 'text-[#697778]'}`}>
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#11111F]' : 'text-[#A1A1AA]'}`}>
                 Annual
               </span>
               {isAnnual ? (
-                <span className="inline-flex items-center gap-1 bg-[#D8EAE7]/10 text-[#167D78] border border-green-200 text-xs px-3 py-1 rounded-full font-bold">
+                <span className="inline-flex items-center gap-1 bg-[#17172A]/10 text-[#6366F1] border border-green-200 text-xs px-3 py-1 rounded-full font-bold">
                   <Gift size={11} /> Save up to 25% — 2 months FREE!
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 bg-[#E8EFF0] text-[#D8EAE7] border border-[#D9E2E3] text-xs px-3 py-1 rounded-full font-medium">
+                <span className="inline-flex items-center gap-1 bg-[#0B0B12] text-[#17172A] border border-[#292940] text-xs px-3 py-1 rounded-full font-medium">
                   Switch to annual & save up to 25%
                 </span>
               )}
@@ -351,7 +351,7 @@ const SubscriptionPlansPage = () => {
           {/* Annual savings reminder bar */}
           {isAnnual && (
             <div className="mt-4 inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-2xl px-6 py-3 text-sm text-green-700 font-medium">
-              <CheckCircle size={16} className="text-[#167D78] shrink-0" />
+              <CheckCircle size={16} className="text-[#6366F1] shrink-0" />
               Annual billing: pay once, save big. Prices shown are per month, billed yearly.
             </div>
           )}
@@ -371,19 +371,19 @@ const SubscriptionPlansPage = () => {
               }}
             >
               <div
-                className="relative bg-white border border-[#D9E2E3] rounded-2xl sm:rounded-3xl shadow-2xl max-w-lg w-full max-h-[85vh] flex flex-col my-auto overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+                className="relative bg-white border border-[#292940] rounded-2xl sm:rounded-3xl shadow-2xl max-w-lg w-full max-h-[85vh] flex flex-col my-auto overflow-hidden animate-in fade-in zoom-in-95 duration-200"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Modal Header */}
-                <div className="px-5 sm:px-6 py-4 border-b border-[#D9E2E3] flex items-center justify-between bg-white shrink-0">
+                <div className="px-5 sm:px-6 py-4 border-b border-[#292940] flex items-center justify-between bg-white shrink-0">
                   <div className="flex items-center space-x-3">
                     <div className={`w-10 h-10 ${selectedPlan.iconBg} rounded-xl flex items-center justify-center shadow-sm`}>
                       <selectedPlan.icon size={20} className={selectedPlan.iconColor} />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-bold text-[#344B4A] leading-tight">Complete Your Purchase</h2>
-                      <p className="text-xs text-[#697778]">
-                        Subscribing to <span className="font-semibold text-[#344B4A]">{selectedPlan.name} Plan</span> ({isAnnual ? 'Annual' : 'Monthly'})
+                      <h2 className="text-base sm:text-lg font-bold text-[#11111F] leading-tight">Complete Your Purchase</h2>
+                      <p className="text-xs text-[#A1A1AA]">
+                        Subscribing to <span className="font-semibold text-[#11111F]">{selectedPlan.name} Plan</span> ({isAnnual ? 'Annual' : 'Monthly'})
                       </p>
                     </div>
                   </div>
@@ -400,36 +400,36 @@ const SubscriptionPlansPage = () => {
                 {/* Modal Body (Scrollable) */}
                 <div className="overflow-y-auto px-5 sm:px-6 py-4 space-y-4 flex-1">
                   {/* Order & GST Breakdown */}
-                  <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-4 space-y-2 text-sm shadow-sm">
-                    <div className="flex justify-between items-center text-xs text-[#697778]">
+                  <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-4 space-y-2 text-sm shadow-sm">
+                    <div className="flex justify-between items-center text-xs text-[#A1A1AA]">
                       <span>Selected Plan</span>
-                      <span className="text-[#344B4A] font-semibold">{selectedPlan.name} ({isAnnual ? 'Annual' : 'Monthly'})</span>
+                      <span className="text-[#11111F] font-semibold">{selectedPlan.name} ({isAnnual ? 'Annual' : 'Monthly'})</span>
                     </div>
-                    <div className="flex justify-between items-center text-xs text-[#697778]">
+                    <div className="flex justify-between items-center text-xs text-[#A1A1AA]">
                       <span>Base Plan Price</span>
-                      <span className="text-[#344B4A] font-semibold">{breakdown.baseFormatted}</span>
+                      <span className="text-[#11111F] font-semibold">{breakdown.baseFormatted}</span>
                     </div>
-                    <div className="flex justify-between items-center text-xs text-[#697778]">
+                    <div className="flex justify-between items-center text-xs text-[#A1A1AA]">
                       <span className="flex items-center gap-1.5">
                         GST (18%)
-                        <span className="text-[10px] bg-orange-100 text-[#167D78] font-bold px-1.5 py-0.2 rounded">Tax</span>
+                        <span className="text-[10px] bg-orange-100 text-[#6366F1] font-bold px-1.5 py-0.2 rounded">Tax</span>
                       </span>
-                      <span className="text-[#344B4A] font-semibold">+{breakdown.gstFormatted}</span>
+                      <span className="text-[#11111F] font-semibold">+{breakdown.gstFormatted}</span>
                     </div>
                     {isAnnual && (
-                      <div className="flex justify-between items-center text-xs text-[#697778]">
+                      <div className="flex justify-between items-center text-xs text-[#A1A1AA]">
                         <span>Effective Monthly</span>
-                        <span className="text-[#344B4A] font-medium">₹{selectedPlan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo</span>
+                        <span className="text-[#11111F] font-medium">₹{selectedPlan.priceAnnualPerMonth?.toLocaleString('en-IN')}/mo</span>
                       </div>
                     )}
-                    <div className="border-t border-[#D9E2E3] pt-2 flex justify-between items-baseline">
+                    <div className="border-t border-[#292940] pt-2 flex justify-between items-baseline">
                       <div>
-                        <span className="font-bold text-[#344B4A] text-sm">Total Due Today</span>
-                        <span className="block text-[10px] text-[#697778]">(Base + 18% GST included)</span>
+                        <span className="font-bold text-[#11111F] text-sm">Total Due Today</span>
+                        <span className="block text-[10px] text-[#A1A1AA]">(Base + 18% GST included)</span>
                       </div>
-                      <span className="text-xl font-black text-[#167D78]">
+                      <span className="text-xl font-black text-[#6366F1]">
                         {breakdown.totalFormatted}
-                        <span className="text-xs font-medium text-[#697778] ml-1">{breakdown.period}</span>
+                        <span className="text-xs font-medium text-[#A1A1AA] ml-1">{breakdown.period}</span>
                       </span>
                     </div>
                     {isAnnual && selectedPlan.savingsAnnual && (
@@ -441,7 +441,7 @@ const SubscriptionPlansPage = () => {
 
                   {/* Payment Method Selector */}
                   <div>
-                    <label className="block text-xs font-bold text-[#344B4A] uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-[#11111F] uppercase tracking-wider mb-2">
                       Select Payment Method
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -451,11 +451,11 @@ const SubscriptionPlansPage = () => {
                         onClick={() => setPaymentMethod('qr')}
                         className={`p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-xs font-semibold ${
                           paymentMethod === 'qr'
-                            ? 'border-[#167D78] bg-orange-50 text-[#116660] shadow-sm ring-2 ring-orange-200'
-                            : 'border-[#D9E2E3] bg-white text-[#344B4A] hover:border-orange-200 hover:bg-stone-50'
+                            ? 'border-[#6366F1] bg-orange-50 text-[#4F46E5] shadow-sm ring-2 ring-orange-200'
+                            : 'border-[#292940] bg-white text-[#11111F] hover:border-orange-200 hover:bg-stone-50'
                         }`}
                       >
-                        <QrCode size={18} className={paymentMethod === 'qr' ? 'text-[#167D78]' : 'text-stone-500'} />
+                        <QrCode size={18} className={paymentMethod === 'qr' ? 'text-[#6366F1]' : 'text-stone-500'} />
                         <span className="text-[11px]">QR Scanner</span>
                       </button>
 
@@ -465,11 +465,11 @@ const SubscriptionPlansPage = () => {
                         onClick={() => setPaymentMethod('gpay')}
                         className={`p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-xs font-semibold ${
                           paymentMethod === 'gpay'
-                            ? 'border-[#167D78] bg-orange-50 text-[#116660] shadow-sm ring-2 ring-orange-200'
-                            : 'border-[#D9E2E3] bg-white text-[#344B4A] hover:border-orange-200 hover:bg-stone-50'
+                            ? 'border-[#6366F1] bg-orange-50 text-[#4F46E5] shadow-sm ring-2 ring-orange-200'
+                            : 'border-[#292940] bg-white text-[#11111F] hover:border-orange-200 hover:bg-stone-50'
                         }`}
                       >
-                        <span className="w-5 h-5 flex items-center justify-center font-black text-xs text-[#167D78] bg-blue-50 rounded-full border border-blue-200">G</span>
+                        <span className="w-5 h-5 flex items-center justify-center font-black text-xs text-[#6366F1] bg-blue-50 rounded-full border border-blue-200">G</span>
                         <span className="text-[11px]">Google Pay</span>
                       </button>
 
@@ -479,11 +479,11 @@ const SubscriptionPlansPage = () => {
                         onClick={() => setPaymentMethod('phonepe')}
                         className={`p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-xs font-semibold ${
                           paymentMethod === 'phonepe'
-                            ? 'border-[#167D78] bg-orange-50 text-[#116660] shadow-sm ring-2 ring-orange-200'
-                            : 'border-[#D9E2E3] bg-white text-[#344B4A] hover:border-orange-200 hover:bg-stone-50'
+                            ? 'border-[#6366F1] bg-orange-50 text-[#4F46E5] shadow-sm ring-2 ring-orange-200'
+                            : 'border-[#292940] bg-white text-[#11111F] hover:border-orange-200 hover:bg-stone-50'
                         }`}
                       >
-                        <span className="w-5 h-5 flex items-center justify-center font-black text-xs text-[#167D78] bg-[#E8EFF0] rounded-full border border-[#D9E2E3]">पे</span>
+                        <span className="w-5 h-5 flex items-center justify-center font-black text-xs text-[#6366F1] bg-[#0B0B12] rounded-full border border-[#292940]">पे</span>
                         <span className="text-[11px]">PhonePe</span>
                       </button>
 
@@ -493,8 +493,8 @@ const SubscriptionPlansPage = () => {
                         onClick={() => setPaymentMethod('paytm')}
                         className={`p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-xs font-semibold ${
                           paymentMethod === 'paytm'
-                            ? 'border-[#167D78] bg-orange-50 text-[#116660] shadow-sm ring-2 ring-orange-200'
-                            : 'border-[#D9E2E3] bg-white text-[#344B4A] hover:border-orange-200 hover:bg-stone-50'
+                            ? 'border-[#6366F1] bg-orange-50 text-[#4F46E5] shadow-sm ring-2 ring-orange-200'
+                            : 'border-[#292940] bg-white text-[#11111F] hover:border-orange-200 hover:bg-stone-50'
                         }`}
                       >
                         <span className="w-5 h-5 flex items-center justify-center font-black text-[10px] text-sky-600 bg-sky-50 rounded border border-sky-200">tm</span>
@@ -507,11 +507,11 @@ const SubscriptionPlansPage = () => {
                         onClick={() => setPaymentMethod('manual')}
                         className={`p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-xs font-semibold ${
                           paymentMethod === 'manual'
-                            ? 'border-[#167D78] bg-orange-50 text-[#116660] shadow-sm ring-2 ring-orange-200'
-                            : 'border-[#D9E2E3] bg-white text-[#344B4A] hover:border-orange-200 hover:bg-stone-50'
+                            ? 'border-[#6366F1] bg-orange-50 text-[#4F46E5] shadow-sm ring-2 ring-orange-200'
+                            : 'border-[#292940] bg-white text-[#11111F] hover:border-orange-200 hover:bg-stone-50'
                         }`}
                       >
-                        <Landmark size={18} className={paymentMethod === 'manual' ? 'text-[#167D78]' : 'text-stone-500'} />
+                        <Landmark size={18} className={paymentMethod === 'manual' ? 'text-[#6366F1]' : 'text-stone-500'} />
                         <span className="text-[11px]">Manual Bank</span>
                       </button>
 
@@ -521,11 +521,11 @@ const SubscriptionPlansPage = () => {
                         onClick={() => setPaymentMethod('card')}
                         className={`p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-xs font-semibold ${
                           paymentMethod === 'card'
-                            ? 'border-[#167D78] bg-orange-50 text-[#116660] shadow-sm ring-2 ring-orange-200'
-                            : 'border-[#D9E2E3] bg-white text-[#344B4A] hover:border-orange-200 hover:bg-stone-50'
+                            ? 'border-[#6366F1] bg-orange-50 text-[#4F46E5] shadow-sm ring-2 ring-orange-200'
+                            : 'border-[#292940] bg-white text-[#11111F] hover:border-orange-200 hover:bg-stone-50'
                         }`}
                       >
-                        <CreditCard size={18} className={paymentMethod === 'card' ? 'text-[#167D78]' : 'text-stone-500'} />
+                        <CreditCard size={18} className={paymentMethod === 'card' ? 'text-[#6366F1]' : 'text-stone-500'} />
                         <span className="text-[11px]">Card / Debit</span>
                       </button>
                     </div>
@@ -533,7 +533,7 @@ const SubscriptionPlansPage = () => {
 
                   {/* Active Method Content */}
                   {paymentMethod === 'qr' && (
-                    <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-4 flex flex-col items-center text-center space-y-3">
+                    <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-4 flex flex-col items-center text-center space-y-3">
                       <div className="bg-white p-3 rounded-2xl border-2 border-orange-500 shadow-md">
                         <img
                           src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
@@ -544,21 +544,21 @@ const SubscriptionPlansPage = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-xs font-bold text-[#344B4A]">Scan with GPay, PhonePe, Paytm, or BHIM</p>
+                        <p className="text-xs font-bold text-[#11111F]">Scan with GPay, PhonePe, Paytm, or BHIM</p>
                         <div className="inline-flex items-center gap-2 bg-stone-100 border border-stone-200 px-3 py-1 rounded-lg text-xs font-mono text-stone-700">
                           <span>UPI: <strong>aigym@icici</strong></span>
                           <button
                             type="button"
                             onClick={() => handleCopy('aigym@icici', 'upi')}
-                            className="text-[#167D78] hover:text-[#167D78] flex items-center gap-1 font-sans font-bold ml-1"
+                            className="text-[#6366F1] hover:text-[#6366F1] flex items-center gap-1 font-sans font-bold ml-1"
                           >
                             {copiedText === 'upi' ? <Check size={12} className="text-green-600" /> : <Copy size={12} />}
                             <span>{copiedText === 'upi' ? 'Copied' : 'Copy'}</span>
                           </button>
                         </div>
                       </div>
-                      <div className="w-full text-left pt-2 border-t border-[#D9E2E3]">
-                        <label className="block text-xs font-medium text-[#697778] mb-1">
+                      <div className="w-full text-left pt-2 border-t border-[#292940]">
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">
                           UPI Reference / UTR Number (Optional verification)
                         </label>
                         <input
@@ -566,26 +566,26 @@ const SubscriptionPlansPage = () => {
                           value={utrNumber}
                           onChange={(e) => setUtrNumber(e.target.value.replace(/\D/g, '').slice(0, 12))}
                           placeholder="e.g. 428710982341"
-                          className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#167D78]"
+                          className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#6366F1]"
                         />
                       </div>
                     </div>
                   )}
 
                   {paymentMethod === 'gpay' && (
-                    <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-4 space-y-3">
-                      <div className="flex items-center gap-2 text-xs font-bold text-[#344B4A]">
-                        <span className="w-6 h-6 rounded-full bg-blue-50 text-[#167D78] flex items-center justify-center font-black text-xs border border-blue-200">G</span>
+                    <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-4 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-bold text-[#11111F]">
+                        <span className="w-6 h-6 rounded-full bg-blue-50 text-[#6366F1] flex items-center justify-center font-black text-xs border border-blue-200">G</span>
                         <span>Google Pay Instant Checkout</span>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-[#697778] mb-1">Google Pay UPI ID or Mobile Number</label>
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Google Pay UPI ID or Mobile Number</label>
                         <input
                           type="text"
                           value={upiIdInput}
                           onChange={(e) => setUpiIdInput(e.target.value)}
                           placeholder="e.g. mobile@okhdfcbank or 9876543210"
-                          className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2.5 text-xs outline-none focus:border-[#167D78]"
+                          className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2.5 text-xs outline-none focus:border-[#6366F1]"
                         />
                       </div>
                       <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 text-[11px] text-blue-800 leading-relaxed">
@@ -595,41 +595,41 @@ const SubscriptionPlansPage = () => {
                   )}
 
                   {paymentMethod === 'phonepe' && (
-                    <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-4 space-y-3">
-                      <div className="flex items-center gap-2 text-xs font-bold text-[#344B4A]">
-                        <span className="w-6 h-6 rounded-full bg-[#E8EFF0] text-[#167D78] flex items-center justify-center font-black text-xs border border-[#D9E2E3]">पे</span>
+                    <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-4 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-bold text-[#11111F]">
+                        <span className="w-6 h-6 rounded-full bg-[#0B0B12] text-[#6366F1] flex items-center justify-center font-black text-xs border border-[#292940]">पे</span>
                         <span>PhonePe Instant Checkout</span>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-[#697778] mb-1">PhonePe UPI ID or Registered Number</label>
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">PhonePe UPI ID or Registered Number</label>
                         <input
                           type="text"
                           value={upiIdInput}
                           onChange={(e) => setUpiIdInput(e.target.value)}
                           placeholder="e.g. mobile@ybl or 9876543210"
-                          className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2.5 text-xs outline-none focus:border-[#167D78]"
+                          className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2.5 text-xs outline-none focus:border-[#6366F1]"
                         />
                       </div>
-                      <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-2.5 text-[11px] text-[#116660] leading-relaxed">
+                      <div className="bg-[#0B0B12] border border-[#292940] rounded-xl p-2.5 text-[11px] text-[#4F46E5] leading-relaxed">
                         📲 Open PhonePe to verify and pay <strong>{breakdown.totalFormatted}</strong> via your UPI PIN.
                       </div>
                     </div>
                   )}
 
                   {paymentMethod === 'paytm' && (
-                    <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-4 space-y-3">
-                      <div className="flex items-center gap-2 text-xs font-bold text-[#344B4A]">
+                    <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-4 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-bold text-[#11111F]">
                         <span className="w-6 h-6 rounded bg-sky-50 text-sky-600 flex items-center justify-center font-black text-xs border border-sky-200">tm</span>
                         <span>Paytm UPI & Wallet</span>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-[#697778] mb-1">Paytm UPI ID or Mobile Number</label>
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Paytm UPI ID or Mobile Number</label>
                         <input
                           type="text"
                           value={upiIdInput}
                           onChange={(e) => setUpiIdInput(e.target.value)}
                           placeholder="e.g. mobile@paytm or 9876543210"
-                          className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2.5 text-xs outline-none focus:border-[#167D78]"
+                          className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2.5 text-xs outline-none focus:border-[#6366F1]"
                         />
                       </div>
                       <div className="bg-sky-50 border border-sky-200 rounded-xl p-2.5 text-[11px] text-sky-800 leading-relaxed">
@@ -639,27 +639,27 @@ const SubscriptionPlansPage = () => {
                   )}
 
                   {paymentMethod === 'manual' && (
-                    <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-4 space-y-3.5 text-xs">
-                      <div className="flex items-center justify-between border-b border-[#D9E2E3] pb-2">
-                        <div className="flex items-center gap-2 font-bold text-[#344B4A]">
-                          <Landmark size={16} className="text-[#167D78]" />
+                    <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-4 space-y-3.5 text-xs">
+                      <div className="flex items-center justify-between border-b border-[#292940] pb-2">
+                        <div className="flex items-center gap-2 font-bold text-[#11111F]">
+                          <Landmark size={16} className="text-[#6366F1]" />
                           <span>Manual Bank Transfer Details</span>
                         </div>
-                        <span className="text-[10px] bg-orange-100 text-[#167D78] font-bold px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] bg-orange-100 text-[#6366F1] font-bold px-2 py-0.5 rounded-full">
                           Fill Manually
                         </span>
                       </div>
 
                       {/* Bank Name */}
                       <div>
-                        <label className="block text-xs font-medium text-[#697778] mb-1">Bank Name</label>
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Bank Name</label>
                         <div className="relative">
                           <input
                             type="text"
                             value={bankName}
                             onChange={(e) => setBankName(e.target.value)}
                             placeholder="e.g. State Bank of India, HDFC Bank"
-                            className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 pl-9 text-xs outline-none focus:border-[#167D78] transition-colors"
+                            className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 pl-9 text-xs outline-none focus:border-[#6366F1] transition-colors"
                           />
                           <Landmark className="absolute left-3 top-2.5 text-stone-400" size={14} />
                         </div>
@@ -667,7 +667,7 @@ const SubscriptionPlansPage = () => {
 
                       {/* Account Number */}
                       <div>
-                        <label className="block text-xs font-medium text-[#697778] mb-1">Account Number</label>
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Account Number</label>
                         <input
                           type="text"
                           inputMode="numeric"
@@ -675,44 +675,44 @@ const SubscriptionPlansPage = () => {
                           onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, '').slice(0, 18))}
                           placeholder="Enter 9–18 digit account number"
                           maxLength={18}
-                          className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs font-mono tracking-wider outline-none focus:border-[#167D78] transition-colors"
+                          className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs font-mono tracking-wider outline-none focus:border-[#6366F1] transition-colors"
                         />
                       </div>
 
                       {/* IFSC Code and Branch Name */}
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-[#697778] mb-1">IFSC Code</label>
+                          <label className="block text-xs font-medium text-[#A1A1AA] mb-1">IFSC Code</label>
                           <input
                             type="text"
                             value={ifscCode}
                             onChange={(e) => setIfscCode(e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 11))}
                             placeholder="e.g. SBIN0001234"
                             maxLength={11}
-                            className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs uppercase font-mono tracking-wider outline-none focus:border-[#167D78] transition-colors"
+                            className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs uppercase font-mono tracking-wider outline-none focus:border-[#6366F1] transition-colors"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-[#697778] mb-1">Branch Name</label>
+                          <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Branch Name</label>
                           <input
                             type="text"
                             value={branchName}
                             onChange={(e) => setBranchName(e.target.value)}
                             placeholder="e.g. MG Road Branch"
-                            className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#167D78] transition-colors"
+                            className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#6366F1] transition-colors"
                           />
                         </div>
                       </div>
 
                       {/* Transaction Ref / UTR / Cheque Number */}
                       <div>
-                        <label className="block text-xs font-medium text-[#697778] mb-1">Transaction Ref / UTR / Cheque Number</label>
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Transaction Ref / UTR / Cheque Number</label>
                         <input
                           type="text"
                           value={utrNumber}
                           onChange={(e) => setUtrNumber(e.target.value)}
                           placeholder="e.g. IMPS/NEFT UTR reference number"
-                          className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#167D78] transition-colors"
+                          className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#6366F1] transition-colors"
                         />
                       </div>
                     </div>
@@ -721,48 +721,48 @@ const SubscriptionPlansPage = () => {
                   {paymentMethod === 'card' && (
                     <div className="space-y-3">
                       <div>
-                        <label className="block text-xs font-medium text-[#697778] mb-1">Card Number</label>
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Card Number</label>
                         <input
                           type="text"
                           value={cardNumber}
                           onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19))}
                           placeholder="4532 •••• •••• 8921"
-                          className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#167D78]"
+                          className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#6366F1]"
                           maxLength={19}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-[#697778] mb-1">Expiry Date</label>
+                          <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Expiry Date</label>
                           <input
                             type="text"
                             value={cardExpiry}
                             onChange={(e) => setCardExpiry(e.target.value.slice(0, 5))}
                             placeholder="MM / YY"
-                            className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#167D78]"
+                            className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#6366F1]"
                             maxLength={5}
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-[#697778] mb-1">CVV</label>
+                          <label className="block text-xs font-medium text-[#A1A1AA] mb-1">CVV</label>
                           <input
                             type="password"
                             value={cardCvv}
                             onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').slice(0, 4))}
                             placeholder="•••"
-                            className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#167D78]"
+                            className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#6366F1]"
                             maxLength={4}
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-[#697778] mb-1">Cardholder Name</label>
+                        <label className="block text-xs font-medium text-[#A1A1AA] mb-1">Cardholder Name</label>
                         <input
                           type="text"
                           value={cardName}
                           onChange={(e) => setCardName(e.target.value)}
                           placeholder="Name as printed on card"
-                          className="w-full bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#167D78]"
+                          className="w-full bg-white border border-[#292940] text-[#11111F] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#6366F1]"
                         />
                       </div>
                     </div>
@@ -770,12 +770,12 @@ const SubscriptionPlansPage = () => {
                 </div>
 
                 {/* Modal Footer (Sticky Bottom) */}
-                <div className="px-5 sm:px-6 py-3.5 border-t border-[#D9E2E3] bg-[#E8EFF0] shrink-0 space-y-2">
+                <div className="px-5 sm:px-6 py-3.5 border-t border-[#292940] bg-[#0B0B12] shrink-0 space-y-2">
                   <div className="flex space-x-3">
                     <button
                       type="button"
                       onClick={() => setPaymentStep(null)}
-                      className="flex-1 py-2.5 bg-white border border-[#D9E2E3] text-[#344B4A] rounded-xl font-bold hover:bg-stone-50 transition-colors text-xs sm:text-sm"
+                      className="flex-1 py-2.5 bg-white border border-[#292940] text-[#11111F] rounded-xl font-bold hover:bg-stone-50 transition-colors text-xs sm:text-sm"
                     >
                       Cancel
                     </button>
@@ -783,7 +783,7 @@ const SubscriptionPlansPage = () => {
                       type="button"
                       onClick={handlePayment}
                       disabled={loading !== null}
-                      className="flex-1 py-2.5 bg-gradient-to-r from-[#167D78] to-[#116660] text-white rounded-xl font-bold hover:from-[#116660] hover:to-[#116660] transition-all disabled:opacity-60 text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-md shadow-teal-900/10"
+                      className="flex-1 py-2.5 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white rounded-xl font-bold hover:from-[#4F46E5] hover:to-[#4F46E5] transition-all disabled:opacity-60 text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-md shadow-teal-900/10"
                     >
                       {loading ? (
                         <><Loader2 size={16} className="animate-spin" /><span>Processing...</span></>
@@ -792,7 +792,7 @@ const SubscriptionPlansPage = () => {
                       )}
                     </button>
                   </div>
-                  <p className="text-center text-[10px] text-[#697778] flex items-center justify-center gap-1">
+                  <p className="text-center text-[10px] text-[#A1A1AA] flex items-center justify-center gap-1">
                     <ShieldCheck size={12} className="text-green-600" /> Secured by 256-bit SSL encryption
                   </p>
                 </div>
@@ -818,7 +818,7 @@ const SubscriptionPlansPage = () => {
               >
                 {/* Popular ribbon */}
                 {isPopular && (
-                  <div className="bg-[#344B4A] text-white text-[10px] font-extrabold text-center py-2 uppercase tracking-widest">
+                  <div className="bg-[#11111F] text-white text-[10px] font-extrabold text-center py-2 uppercase tracking-widest">
                     ⭐ Most Popular
                   </div>
                 )}
@@ -839,12 +839,12 @@ const SubscriptionPlansPage = () => {
                           <Icon size={20} className={plan.iconColor} />
                         </div>
                         <div>
-                          <h3 className="font-bold text-[#344B4A] text-base">{plan.name}</h3>
-                          <p className="text-[#697778] text-xs">{plan.tagline}</p>
+                          <h3 className="font-bold text-[#11111F] text-base">{plan.name}</h3>
+                          <p className="text-[#A1A1AA] text-xs">{plan.tagline}</p>
                         </div>
                       </div>
                       {plan.badge && (
-                        <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-md border uppercase tracking-wider ${isPopular ? 'bg-[#344B4A] text-white border-transparent shadow-xs' : 'bg-[#D8EAE7] text-[#344B4A] border-[#D9E2E3]'}`}>
+                        <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-md border uppercase tracking-wider ${isPopular ? 'bg-[#11111F] text-white border-transparent shadow-xs' : 'bg-[#17172A] text-[#11111F] border-[#292940]'}`}>
                           {plan.badge}
                         </span>
                       )}
@@ -853,10 +853,10 @@ const SubscriptionPlansPage = () => {
                     {/* Price block */}
                     <div className="mt-4">
                       <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-black tracking-tight text-[#344B4A]">
+                        <span className="text-4xl font-black tracking-tight text-[#11111F]">
                           {priceDisplay.main}
                         </span>
-                        <span className="text-[#697778] text-sm font-medium">
+                        <span className="text-[#A1A1AA] text-sm font-medium">
                           {plan.trial ? '/ 1 day' : (isAnnual ? '/year' : '/mo')}
                         </span>
                       </div>
@@ -866,13 +866,13 @@ const SubscriptionPlansPage = () => {
                         <div className="mt-1 min-h-[1.5rem]">
                           {isAnnual ? (
                             <div className="space-y-0.5">
-                              <p className="text-[#697778] text-xs">{priceDisplay.sub}</p>
-                              <p className="text-[#167D78] text-xs font-bold">
+                              <p className="text-[#A1A1AA] text-xs">{priceDisplay.sub}</p>
+                              <p className="text-[#6366F1] text-xs font-bold">
                                 💰 Save ₹{plan.savingsAnnual?.toLocaleString('en-IN')} vs monthly
                               </p>
                             </div>
                           ) : (
-                            <p className="text-[#697778] text-xs">
+                            <p className="text-[#A1A1AA] text-xs">
                               or save 25% with annual
                             </p>
                           )}
@@ -882,21 +882,21 @@ const SubscriptionPlansPage = () => {
                   </div>
 
                   {/* Limits */}
-                  <div className="bg-[#E8EFF0] rounded-xl p-3 mb-5 border border-[#D9E2E3]">
-                    <p className="text-[10px] uppercase tracking-widest text-[#697778] font-bold mb-1">PLATFORM LIMITS</p>
-                    <p className="text-xs font-semibold text-[#344B4A]">{plan.platformLimits}</p>
+                  <div className="bg-[#0B0B12] rounded-xl p-3 mb-5 border border-[#292940]">
+                    <p className="text-[10px] uppercase tracking-widest text-[#A1A1AA] font-bold mb-1">PLATFORM LIMITS</p>
+                    <p className="text-xs font-semibold text-[#11111F]">{plan.platformLimits}</p>
                   </div>
 
                   {/* Features */}
                   <ul className="space-y-2 mb-4 flex-1">
                     {plan.features.map((f, i) => (
-                      <li key={i} className={`flex items-start space-x-2 text-xs ${f.included ? 'text-[#344B4A]' : 'text-[#697778]'}`}>
+                      <li key={i} className={`flex items-start space-x-2 text-xs ${f.included ? 'text-[#11111F]' : 'text-[#A1A1AA]'}`}>
                         {f.included ? (
-                          <CheckCircle size={14} className={`shrink-0 mt-0.5 ${plan.key === 'PREMIUM' ? 'text-[#167D78]' : 'text-[#167D78]'}`} />
+                          <CheckCircle size={14} className={`shrink-0 mt-0.5 ${plan.key === 'PREMIUM' ? 'text-[#6366F1]' : 'text-[#6366F1]'}`} />
                         ) : (
                           <XCircle size={14} className="shrink-0 mt-0.5 text-[#D6D3D1]" />
                         )}
-                        <span className={!f.included ? 'line-through text-[#697778]' : ''}>{f.text}</span>
+                        <span className={!f.included ? 'line-through text-[#A1A1AA]' : ''}>{f.text}</span>
                       </li>
                     ))}
                   </ul>
@@ -938,12 +938,12 @@ const SubscriptionPlansPage = () => {
         </div>
 
         {/* Bottom note */}
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-6 mb-8 text-center">
+        <div className="bg-white border border-[#292940] rounded-2xl p-6 mb-8 text-center">
           <div className="flex items-center justify-center space-x-2 mb-3">
-            <Lock size={18} className="text-[#167D78]" />
-            <h3 className="text-[#344B4A] font-bold">How Access Control Works</h3>
+            <Lock size={18} className="text-[#6366F1]" />
+            <h3 className="text-[#11111F] font-bold">How Access Control Works</h3>
           </div>
-          <p className="text-[#697778] text-sm max-w-2xl mx-auto">
+          <p className="text-[#A1A1AA] text-sm max-w-2xl mx-auto">
             Your subscription plan controls what features your gym can access on the Gymora platform.
             Adding members beyond your plan's limit, accessing Advanced Analytics on Silver, or using 1-on-1 Coaching
             on Gold will show an upgrade prompt. After payment, features unlock instantly.
@@ -951,7 +951,7 @@ const SubscriptionPlansPage = () => {
         </div>
 
         <div className="text-center">
-          <button onClick={logout} className="text-sm text-[#697778] hover:text-[#167D78] transition-colors flex items-center space-x-2 mx-auto">
+          <button onClick={logout} className="text-sm text-[#A1A1AA] hover:text-[#6366F1] transition-colors flex items-center space-x-2 mx-auto">
             <LogOut size={16} /><span>Sign out</span>
           </button>
         </div>

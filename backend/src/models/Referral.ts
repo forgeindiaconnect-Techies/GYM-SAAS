@@ -17,7 +17,11 @@ export interface IReferral extends Document {
   gymId: mongoose.Types.ObjectId;
   campaignId: mongoose.Types.ObjectId;
   referrerId: mongoose.Types.ObjectId; // Existing Customer who invited
-  referredId: mongoose.Types.ObjectId; // New Customer invited
+  referredId?: mongoose.Types.ObjectId; // New Customer invited (populated upon registration)
+  inviteeName?: string;
+  inviteeEmail?: string;
+  inviteChannel?: string;
+  invitedAt?: Date;
   referralCode: string;
 
   // Membership & Payment Details
@@ -57,7 +61,11 @@ const referralSchema = new Schema<IReferral>(
     gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true, index: true },
     campaignId: { type: Schema.Types.ObjectId, ref: 'ReferralCampaign', required: true, index: true },
     referrerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    referredId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    referredId: { type: Schema.Types.ObjectId, ref: 'User', required: false, index: true },
+    inviteeName: { type: String, trim: true },
+    inviteeEmail: { type: String, trim: true, lowercase: true, index: true },
+    inviteChannel: { type: String, default: 'Email' },
+    invitedAt: { type: Date, default: Date.now },
     referralCode: { type: String, required: true, trim: true, index: true },
 
     membershipId: { type: Schema.Types.ObjectId, ref: 'CustomerMembership' },
@@ -111,8 +119,12 @@ const referralSchema = new Schema<IReferral>(
   { timestamps: true }
 );
 
-// Prevent duplicate referral record between same referrer and referee in same gym
-referralSchema.index({ gymId: 1, referrerId: 1, referredId: 1 }, { unique: true });
+// Prevent duplicate referral record between same referrer and referee in same gym (only when referee is registered)
+referralSchema.index(
+  { gymId: 1, referrerId: 1, referredId: 1 },
+  { unique: true, partialFilterExpression: { referredId: { $type: 'objectId' } } }
+);
 referralSchema.index({ gymId: 1, referralCode: 1, status: 1 });
+referralSchema.index({ gymId: 1, referrerId: 1, inviteeEmail: 1 });
 
 export default mongoose.model<IReferral>('Referral', referralSchema);

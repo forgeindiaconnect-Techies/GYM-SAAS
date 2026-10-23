@@ -43,12 +43,12 @@ const TrainerPendingPayments = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#344B4A]">Pending Payments</h1>
-          <p className="text-[#697778] text-sm mt-1">Payments that are pending, processing, or have failed</p>
+          <h1 className="text-2xl font-bold text-[#11111F]">Pending Payments</h1>
+          <p className="text-[#A1A1AA] text-sm mt-1">Payments that are pending, processing, or have failed</p>
         </div>
         {totalPending > 0 && (
           <div className="bg-[#FFFBEB] border border-[#FEF3C7] rounded-xl px-5 py-3 text-right">
-            <p className="text-xs text-[#697778]">Total Pending</p>
+            <p className="text-xs text-[#A1A1AA]">Total Pending</p>
             <p className="text-xl font-bold text-[#D99A27]">₹{totalPending.toLocaleString('en-IN')}</p>
           </div>
         )}
@@ -56,51 +56,51 @@ const TrainerPendingPayments = () => {
 
       {/* Read-only notice */}
       <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl px-5 py-3">
-        <Lock size={15} className="text-[#167D78] mt-0.5 shrink-0" />
+        <Lock size={15} className="text-[#6366F1] mt-0.5 shrink-0" />
         <p className="text-blue-800 text-sm">Payment records are maintained by your Gym Owner and are <strong>read-only</strong>.</p>
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-[#D8EAE7] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#17172A] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : payments.length === 0 ? (
           <div className="text-center py-20">
-            <History size={40} className="mx-auto text-[#D9E2E3] mb-3" />
-            <p className="text-[#697778] font-semibold">No pending payments</p>
-            <p className="text-[#697778] text-sm mt-1">All your payments from Gym Owners are currently up to date</p>
+            <History size={40} className="mx-auto text-[#292940] mb-3" />
+            <p className="text-[#A1A1AA] font-semibold">No pending payments</p>
+            <p className="text-[#A1A1AA] text-sm mt-1">All your payments from Gym Owners are currently up to date</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#E8EFF0] border-b border-[#D8EAE7]">
-                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Gym Details</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Training Type</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Date</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#697778] text-right">Amount</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#697778]">Status</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#697778] text-right">Actions</th>
+                <tr className="bg-[#0B0B12] border-b border-[#17172A]">
+                  <th className="px-5 py-3.5 font-semibold text-[#A1A1AA]">Gym Details</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#A1A1AA]">Training Type</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#A1A1AA]">Date</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#A1A1AA] text-right">Amount</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#A1A1AA]">Status</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#A1A1AA] text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E8EFF0]">
+              <tbody className="divide-y divide-[#0B0B12]">
                 {payments.map(p => {
                   const Icon = STATUS_ICONS[p.paymentStatus] || Clock;
                   return (
-                    <tr key={p._id} className="hover:bg-[#E8EFF0] transition-colors">
+                    <tr key={p._id} className="hover:bg-[#0B0B12] transition-colors">
                       <td className="px-5 py-4">
-                          <p className="font-bold text-[#344B4A]">{p.gymId?.name || 'Unknown Gym'}</p>
-                          <p className="text-xs text-[#697778]">{p.branchId ? 'Branch ID: ' + p.branchId : 'Main Branch'}</p>
+                          <p className="font-bold text-[#11111F]">{p.gymId?.name || 'Unknown Gym'}</p>
+                          <p className="text-xs text-[#A1A1AA]">{p.branchId ? 'Branch ID: ' + p.branchId : 'Main Branch'}</p>
                       </td>
-                      <td className="px-5 py-4 text-[#697778]">{p.trainerFeeId?.trainingType || '-'}</td>
-                      <td className="px-5 py-4 text-[#697778] whitespace-nowrap">
+                      <td className="px-5 py-4 text-[#A1A1AA]">{p.trainerFeeId?.trainingType || '-'}</td>
+                      <td className="px-5 py-4 text-[#A1A1AA] whitespace-nowrap">
                         {p.paymentDate
                           ? new Date(p.paymentDate).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
                           : '-'}
                       </td>
-                      <td className="px-5 py-4 text-right font-bold text-[#344B4A]">₹{p.amount?.toLocaleString('en-IN')}</td>
+                      <td className="px-5 py-4 text-right font-bold text-[#11111F]">₹{p.amount?.toLocaleString('en-IN')}</td>
                       
                       <td className="px-5 py-4">
                         <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${STATUS_COLORS[p.paymentStatus] || 'bg-gray-100 text-gray-500'}`}>
@@ -111,7 +111,7 @@ const TrainerPendingPayments = () => {
                       <td className="px-5 py-4 text-right">
                         <button
                           onClick={() => setSelectedPayment(p)}
-                          className="px-3 py-1.5 text-xs font-semibold text-[#3B82F6] hover:bg-blue-50 rounded-lg transition-colors"
+                          className="px-3 py-1.5 text-xs font-semibold text-[#4F46E5] hover:bg-blue-50 rounded-lg transition-colors"
                         >
                           View
                         </button>
@@ -129,11 +129,11 @@ const TrainerPendingPayments = () => {
       {selectedPayment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-[#D8EAE7] bg-[#E8EFF0]">
-              <h3 className="font-bold text-[#344B4A]">Payment Details</h3>
+            <div className="flex items-center justify-between p-4 border-b border-[#17172A] bg-[#0B0B12]">
+              <h3 className="font-bold text-[#11111F]">Payment Details</h3>
               <button
                 onClick={() => setSelectedPayment(null)}
-                className="text-[#697778] hover:text-[#344B4A]"
+                className="text-[#A1A1AA] hover:text-[#11111F]"
               >
                 <XCircle size={20} />
               </button>
@@ -142,7 +142,7 @@ const TrainerPendingPayments = () => {
             <div className="p-5 space-y-4">
               <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <span className="text-gray-500 text-sm font-medium">Amount</span>
-                <span className="text-2xl font-bold text-[#344B4A]">₹{selectedPayment.amount?.toLocaleString('en-IN')}</span>
+                <span className="text-2xl font-bold text-[#11111F]">₹{selectedPayment.amount?.toLocaleString('en-IN')}</span>
               </div>
               
               <div className="grid grid-cols-2 gap-4 text-sm">

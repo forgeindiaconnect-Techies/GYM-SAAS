@@ -96,7 +96,7 @@ const GymAdminEquipment = () => {
     switch(status) {
       case 'Active': return 'bg-green-500/10 text-green-500 border-green-500/20';
       case 'Maintenance': return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
-      case 'Out of Order': return 'bg-[#D8EAE7]/10 text-[#116660] border-[#D8EAE7]/20';
+      case 'Out of Order': return 'bg-[#17172A]/10 text-[#4F46E5] border-[#17172A]/20';
       default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
     }
   };
@@ -260,18 +260,18 @@ const GymAdminEquipment = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-0">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Equipment</h1>
-          <p className="text-[#697778] mt-1">Manage inventory and track maintenance schedules.</p>
+          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Equipment</h1>
+          <p className="text-[#A1A1AA] mt-1">Manage inventory and track maintenance schedules.</p>
         </div>
         <div className="flex gap-2">
           <button 
             onClick={handleDownloadPDF} 
-            className="flex items-center space-x-2 px-4 py-2 bg-white text-[#167D78] border border-[#D9E2E3] rounded-xl font-bold hover:bg-[#E8EFF0] transition-colors shadow-sm cursor-pointer"
+            className="flex items-center space-x-2 px-4 py-2 bg-white text-[#6366F1] border border-[#292940] rounded-xl font-bold hover:bg-[#0B0B12] transition-colors shadow-sm cursor-pointer"
           >
             <Download size={18} />
             <span>Download PDF</span>
           </button>
-          <button onClick={() => setShowAddModal(true)} className="flex items-center space-x-2 px-4 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-[#167D78]/20 cursor-pointer">
+          <button onClick={() => setShowAddModal(true)} className="flex items-center space-x-2 px-4 py-2 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors shadow-lg shadow-[#6366F1]/20 cursor-pointer">
             <Plus size={20} />
             <span>Add Equipment</span>
           </button>
@@ -285,23 +285,23 @@ const GymAdminEquipment = () => {
             placeholder="Search equipment by name or ID..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl pl-10 pr-4 py-3 text-[#344B4A] outline-none focus:border-[#167D78]"
+            className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl pl-10 pr-4 py-3 text-[#11111F] outline-none focus:border-[#6366F1]"
           />
-          <Search className="absolute left-3 top-3.5 text-[#697778]" size={18} />
+          <Search className="absolute left-3 top-3.5 text-[#A1A1AA]" size={18} />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {isLoading ? (
-          <div className="col-span-1 md:col-span-2 xl:col-span-3 text-center py-10 text-[#697778]">Loading equipment...</div>
+          <div className="col-span-1 md:col-span-2 xl:col-span-3 text-center py-10 text-[#A1A1AA]">Loading equipment...</div>
         ) : equipmentToDisplay.length === 0 ? (
-          <div className="col-span-1 md:col-span-2 xl:col-span-3 text-center py-16 bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl flex flex-col items-center justify-center">
-            <div className="w-16 h-16 bg-[#E8EFF0] rounded-full flex items-center justify-center mb-4">
-              <Wrench size={32} className="text-[#697778]" />
+          <div className="col-span-1 md:col-span-2 xl:col-span-3 text-center py-16 bg-[#FFFFFF] border border-[#292940] rounded-2xl flex flex-col items-center justify-center">
+            <div className="w-16 h-16 bg-[#0B0B12] rounded-full flex items-center justify-center mb-4">
+              <Wrench size={32} className="text-[#A1A1AA]" />
             </div>
-            <h3 className="text-xl font-bold text-[#344B4A] mb-2">No Equipment Found</h3>
-            <p className="text-[#697778] max-w-md">There is no equipment in this branch yet. Add your first piece of equipment to start managing your inventory.</p>
-            <button onClick={() => setShowAddModal(true)} className="mt-6 flex items-center space-x-2 px-6 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors">
+            <h3 className="text-xl font-bold text-[#11111F] mb-2">No Equipment Found</h3>
+            <p className="text-[#A1A1AA] max-w-md">There is no equipment in this branch yet. Add your first piece of equipment to start managing your inventory.</p>
+            <button onClick={() => setShowAddModal(true)} className="mt-6 flex items-center space-x-2 px-6 py-2 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors">
               <Plus size={18} />
               <span>Add Equipment</span>
             </button>
@@ -311,19 +311,19 @@ const GymAdminEquipment = () => {
           .map((eq: any, idx: number) => {
             const status = eq.status || (eq.condition === 'Poor' ? 'Maintenance' : 'Active');
             return (
-          <div key={eq._id || eq.id || idx} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 hover:border-[#167D78]/30 transition-all group relative overflow-hidden">
+          <div key={eq._id || eq.id || idx} className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 hover:border-[#6366F1]/30 transition-all group relative overflow-hidden">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <div className="flex items-center space-x-2 mb-1">
-                  <span className="text-xs font-bold text-[#697778] bg-[#FFFFFF] px-2 py-1 rounded-md">{eq.id || `EQ00${idx+1}`}</span>
-                  <span className="text-xs font-semibold text-[#167D78] uppercase tracking-wider">{eq.category || 'General'}</span>
+                  <span className="text-xs font-bold text-[#A1A1AA] bg-[#FFFFFF] px-2 py-1 rounded-md">{eq.id || `EQ00${idx+1}`}</span>
+                  <span className="text-xs font-semibold text-[#6366F1] uppercase tracking-wider">{eq.category || 'General'}</span>
                 </div>
-                <h3 className="text-lg font-bold text-[#344B4A]">{eq.name}</h3>
-                <p className="text-sm text-[#697778] mt-0.5">{eq.brand || `Quantity: ${eq.quantity || 1}`}</p>
+                <h3 className="text-lg font-bold text-[#11111F]">{eq.name}</h3>
+                <p className="text-sm text-[#A1A1AA] mt-0.5">{eq.brand || `Quantity: ${eq.quantity || 1}`}</p>
               </div>
               <button 
                 onClick={() => handleEditClick(eq)}
-                className="text-[#697778] hover:text-[#167D78] hover:bg-[#E8EFF0] p-1.5 rounded-lg transition-colors"
+                className="text-[#A1A1AA] hover:text-[#6366F1] hover:bg-[#0B0B12] p-1.5 rounded-lg transition-colors"
                 title="Edit Equipment"
               >
                 <Edit2 size={18} />
@@ -331,28 +331,28 @@ const GymAdminEquipment = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-t border-[#D9E2E3]">
-                <span className="text-sm text-[#697778]">Current Status</span>
+              <div className="flex justify-between items-center py-3 border-t border-[#292940]">
+                <span className="text-sm text-[#A1A1AA]">Current Status</span>
                 <span className={`flex items-center text-xs font-bold px-3 py-1.5 rounded-lg border ${getStatusColor(status)}`}>
                   {getStatusIcon(status)}
                   {status}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-[#697778]">Next Service</span>
-                <span className="text-sm font-semibold text-[#344B4A] bg-[#FFFFFF] px-3 py-1 rounded-lg">
+                <span className="text-sm text-[#A1A1AA]">Next Service</span>
+                <span className="text-sm font-semibold text-[#11111F] bg-[#FFFFFF] px-3 py-1 rounded-lg">
                   {eq.nextService || 'N/A'}
                 </span>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[#D9E2E3] flex gap-2">
-              <button onClick={() => setSelectedEq(eq)} className="flex-1 py-2 bg-[#FFFFFF] border border-[#D9E2E3] hover:bg-[#D8EAE7] text-[#344B4A] text-sm font-bold rounded-xl transition-colors">
+            <div className="mt-6 pt-4 border-t border-[#292940] flex gap-2">
+              <button onClick={() => setSelectedEq(eq)} className="flex-1 py-2 bg-[#FFFFFF] border border-[#292940] hover:bg-[#17172A] text-[#11111F] text-sm font-bold rounded-xl transition-colors">
                 View Details
               </button>
               <button 
                 onClick={() => handleEditClick(eq)} 
-                className="flex-1 py-2 bg-[#E8EFF0] border border-[#D9E2E3] hover:bg-[#167D78] hover:text-white text-[#167D78] text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 bg-[#0B0B12] border border-[#292940] hover:bg-[#6366F1] hover:text-white text-[#6366F1] text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
                 title="Edit Equipment"
               >
                 <Edit2 size={14} />
@@ -360,7 +360,7 @@ const GymAdminEquipment = () => {
               </button>
               <button 
                 onClick={() => handleDeleteEquipment(eq.id || eq._id)}
-                className="py-2 px-3 bg-[#FFFFFF] border border-[#D9E2E3] hover:bg-red-50 text-rose-600 hover:border-red-200 text-sm font-bold rounded-xl transition-colors"
+                className="py-2 px-3 bg-[#FFFFFF] border border-[#292940] hover:bg-red-50 text-rose-600 hover:border-red-200 text-sm font-bold rounded-xl transition-colors"
                 title="Delete Equipment"
               >
                 Delete
@@ -373,20 +373,20 @@ const GymAdminEquipment = () => {
 
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#D9E2E3] mt-10 mb-10">
-            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
-              <h2 className="text-2xl font-bold text-[#344B4A]">Add New Equipment</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-[#697778] hover:text-[#344B4A]"><X size={24} /></button>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#292940] mt-10 mb-10">
+            <div className="p-6 border-b border-[#292940] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
+              <h2 className="text-2xl font-bold text-[#11111F]">Add New Equipment</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-[#A1A1AA] hover:text-[#11111F]"><X size={24} /></button>
             </div>
             <form onSubmit={handleAddEquipment} className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Equipment Name *</label>
-                  <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" placeholder="e.g. Treadmill Series X" />
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Equipment Name *</label>
+                  <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]" placeholder="e.g. Treadmill Series X" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Category *</label>
-                  <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]">
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Category *</label>
+                  <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]">
                     <option value="Cardio">Cardio</option>
                     <option value="Strength">Strength</option>
                     <option value="Free Weights">Free Weights</option>
@@ -394,16 +394,16 @@ const GymAdminEquipment = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Brand</label>
-                  <input value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" placeholder="e.g. LifeFitness" />
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Brand</label>
+                  <input value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]" placeholder="e.g. LifeFitness" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Quantity *</label>
-                  <input type="number" min="1" required value={formData.quantity} onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" />
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Quantity *</label>
+                  <input type="number" min="1" required value={formData.quantity} onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Condition</label>
-                  <select value={formData.condition} onChange={e => setFormData({...formData, condition: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]">
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Condition</label>
+                  <select value={formData.condition} onChange={e => setFormData({...formData, condition: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]">
                     <option value="Excellent">Excellent</option>
                     <option value="Good">Good</option>
                     <option value="Fair">Fair</option>
@@ -411,8 +411,8 @@ const GymAdminEquipment = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Status</label>
-                  <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]">
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Status</label>
+                  <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]">
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
                     <option value="Maintenance">Maintenance</option>
@@ -420,14 +420,14 @@ const GymAdminEquipment = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Next Service Date</label>
-                  <input type="date" value={formData.nextService} onChange={e => setFormData({...formData, nextService: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" />
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Next Service Date</label>
+                  <input type="date" value={formData.nextService} onChange={e => setFormData({...formData, nextService: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]" />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-4 border-t border-[#D9E2E3]">
-                <button type="button" onClick={() => setShowAddModal(false)} className="px-6 py-2 text-[#697778] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
-                <button type="submit" className="px-8 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-[#167D78]/20">Add Equipment</button>
+              <div className="flex justify-end space-x-3 pt-4 border-t border-[#292940]">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-6 py-2 text-[#A1A1AA] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+                <button type="submit" className="px-8 py-2 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors shadow-lg shadow-[#6366F1]/20">Add Equipment</button>
               </div>
             </form>
           </div>
@@ -436,28 +436,28 @@ const GymAdminEquipment = () => {
 
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#D9E2E3] mt-10 mb-10">
-            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#292940] mt-10 mb-10">
+            <div className="p-6 border-b border-[#292940] flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-2xl">
               <div className="flex items-center space-x-2">
-                <div className="w-9 h-9 rounded-lg bg-[#167D78]/10 text-[#167D78] flex items-center justify-center">
+                <div className="w-9 h-9 rounded-lg bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center">
                   <Edit2 size={18} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#344B4A]">Edit Equipment</h2>
-                  <p className="text-xs text-[#697778]">Modify equipment specifications and maintenance status</p>
+                  <h2 className="text-xl font-bold text-[#11111F]">Edit Equipment</h2>
+                  <p className="text-xs text-[#A1A1AA]">Modify equipment specifications and maintenance status</p>
                 </div>
               </div>
-              <button onClick={() => setShowEditModal(false)} className="text-[#697778] hover:text-[#344B4A]"><X size={24} /></button>
+              <button onClick={() => setShowEditModal(false)} className="text-[#A1A1AA] hover:text-[#11111F]"><X size={24} /></button>
             </div>
             <form onSubmit={handleSaveEdit} className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Equipment Name *</label>
-                  <input required value={editFormData.name} onChange={e => setEditFormData({...editFormData, name: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" placeholder="e.g. Treadmill Series X" />
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Equipment Name *</label>
+                  <input required value={editFormData.name} onChange={e => setEditFormData({...editFormData, name: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]" placeholder="e.g. Treadmill Series X" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Category *</label>
-                  <select required value={editFormData.category} onChange={e => setEditFormData({...editFormData, category: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]">
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Category *</label>
+                  <select required value={editFormData.category} onChange={e => setEditFormData({...editFormData, category: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]">
                     <option value="Cardio">Cardio</option>
                     <option value="Strength">Strength</option>
                     <option value="Free Weights">Free Weights</option>
@@ -465,16 +465,16 @@ const GymAdminEquipment = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Brand</label>
-                  <input value={editFormData.brand} onChange={e => setEditFormData({...editFormData, brand: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" placeholder="e.g. LifeFitness" />
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Brand</label>
+                  <input value={editFormData.brand} onChange={e => setEditFormData({...editFormData, brand: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]" placeholder="e.g. LifeFitness" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Quantity *</label>
-                  <input type="number" min="1" required value={editFormData.quantity} onChange={e => setEditFormData({...editFormData, quantity: parseInt(e.target.value) || 1})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" />
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Quantity *</label>
+                  <input type="number" min="1" required value={editFormData.quantity} onChange={e => setEditFormData({...editFormData, quantity: parseInt(e.target.value) || 1})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Condition</label>
-                  <select value={editFormData.condition} onChange={e => setEditFormData({...editFormData, condition: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]">
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Condition</label>
+                  <select value={editFormData.condition} onChange={e => setEditFormData({...editFormData, condition: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]">
                     <option value="Excellent">Excellent</option>
                     <option value="Good">Good</option>
                     <option value="Fair">Fair</option>
@@ -482,8 +482,8 @@ const GymAdminEquipment = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Status</label>
-                  <select value={editFormData.status} onChange={e => setEditFormData({...editFormData, status: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]">
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Status</label>
+                  <select value={editFormData.status} onChange={e => setEditFormData({...editFormData, status: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]">
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
                     <option value="Maintenance">Maintenance</option>
@@ -491,14 +491,14 @@ const GymAdminEquipment = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Next Service Date</label>
-                  <input type="date" value={editFormData.nextService} onChange={e => setEditFormData({...editFormData, nextService: e.target.value})} className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]" />
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Next Service Date</label>
+                  <input type="date" value={editFormData.nextService} onChange={e => setEditFormData({...editFormData, nextService: e.target.value})} className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]" />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-4 border-t border-[#D9E2E3]">
-                <button type="button" onClick={() => setShowEditModal(false)} className="px-6 py-2 text-[#697778] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
-                <button type="submit" className="px-8 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors shadow-lg shadow-[#167D78]/20">Save Changes</button>
+              <div className="flex justify-end space-x-3 pt-4 border-t border-[#292940]">
+                <button type="button" onClick={() => setShowEditModal(false)} className="px-6 py-2 text-[#A1A1AA] font-bold hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+                <button type="submit" className="px-8 py-2 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors shadow-lg shadow-[#6366F1]/20">Save Changes</button>
               </div>
             </form>
           </div>
@@ -507,45 +507,45 @@ const GymAdminEquipment = () => {
 
       {selectedEq && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#D9E2E3] mt-20 mb-10 overflow-hidden">
-            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0]">
-              <h2 className="text-xl font-bold text-[#344B4A]">Equipment Details</h2>
-              <button onClick={() => setSelectedEq(null)} className="text-[#697778] hover:text-[#344B4A]"><X size={24} /></button>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#292940] mt-20 mb-10 overflow-hidden">
+            <div className="p-6 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12]">
+              <h2 className="text-xl font-bold text-[#11111F]">Equipment Details</h2>
+              <button onClick={() => setSelectedEq(null)} className="text-[#A1A1AA] hover:text-[#11111F]"><X size={24} /></button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <span className="text-sm font-bold text-[#697778]">Name</span>
-                <p className="text-[#344B4A] font-semibold">{selectedEq.name}</p>
+                <span className="text-sm font-bold text-[#A1A1AA]">Name</span>
+                <p className="text-[#11111F] font-semibold">{selectedEq.name}</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <span className="text-sm font-bold text-[#697778]">Category</span>
-                  <p className="text-[#344B4A] font-semibold capitalize">{selectedEq.category}</p>
+                  <span className="text-sm font-bold text-[#A1A1AA]">Category</span>
+                  <p className="text-[#11111F] font-semibold capitalize">{selectedEq.category}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#697778]">Brand</span>
-                  <p className="text-[#344B4A] font-semibold">{selectedEq.brand || 'N/A'}</p>
+                  <span className="text-sm font-bold text-[#A1A1AA]">Brand</span>
+                  <p className="text-[#11111F] font-semibold">{selectedEq.brand || 'N/A'}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#697778]">Quantity</span>
-                  <p className="text-[#344B4A] font-semibold">{selectedEq.quantity || 1}</p>
+                  <span className="text-sm font-bold text-[#A1A1AA]">Quantity</span>
+                  <p className="text-[#11111F] font-semibold">{selectedEq.quantity || 1}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#697778]">Status</span>
-                  <p className="text-[#344B4A] font-semibold">{selectedEq.status || (selectedEq.condition === 'Poor' ? 'Maintenance' : 'Active')}</p>
+                  <span className="text-sm font-bold text-[#A1A1AA]">Status</span>
+                  <p className="text-[#11111F] font-semibold">{selectedEq.status || (selectedEq.condition === 'Poor' ? 'Maintenance' : 'Active')}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#697778]">Condition</span>
-                  <p className="text-[#344B4A] font-semibold">{selectedEq.condition || 'N/A'}</p>
+                  <span className="text-sm font-bold text-[#A1A1AA]">Condition</span>
+                  <p className="text-[#11111F] font-semibold">{selectedEq.condition || 'N/A'}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#697778]">Next Service Date</span>
-                  <p className="text-[#344B4A] font-semibold">{selectedEq.nextService || 'N/A'}</p>
+                  <span className="text-sm font-bold text-[#A1A1AA]">Next Service Date</span>
+                  <p className="text-[#11111F] font-semibold">{selectedEq.nextService || 'N/A'}</p>
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t border-[#D9E2E3] bg-[#E8EFF0] flex justify-end">
-              <button onClick={() => setSelectedEq(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] font-bold hover:bg-gray-100 rounded-xl transition-colors">Close</button>
+            <div className="p-6 border-t border-[#292940] bg-[#0B0B12] flex justify-end">
+              <button onClick={() => setSelectedEq(null)} className="px-6 py-2 bg-[#FFFFFF] border border-[#292940] text-[#11111F] font-bold hover:bg-gray-100 rounded-xl transition-colors">Close</button>
             </div>
           </div>
         </div>

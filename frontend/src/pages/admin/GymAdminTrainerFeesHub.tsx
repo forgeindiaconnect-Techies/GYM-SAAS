@@ -7,9 +7,9 @@ const cards = [
     description: 'Configure and manage fees for each trainer in your gym.',
     icon: Settings,
     path: '/admin/trainer-fees/settings',
-    color: 'from-[#167D78] to-[#116660]',
+    color: 'from-[#6366F1] to-[#4F46E5]',
     bg: 'bg-green-50',
-    iconColor: 'text-[#167D78]',
+    iconColor: 'text-[#6366F1]',
   },
   {
     title: 'Pending Trainer Payments',
@@ -27,7 +27,7 @@ const cards = [
     path: '/admin/trainer-fees/history',
     color: 'from-blue-500 to-indigo-500',
     bg: 'bg-blue-50',
-    iconColor: 'text-[#167D78]',
+    iconColor: 'text-[#6366F1]',
   },
   {
     title: 'Trainer Earnings',
@@ -35,8 +35,8 @@ const cards = [
     icon: TrendingUp,
     path: '/admin/trainer-fees/earnings',
     color: 'from-purple-500 to-pink-500',
-    bg: 'bg-[#E8EFF0]',
-    iconColor: 'text-[#167D78]',
+    bg: 'bg-[#0B0B12]',
+    iconColor: 'text-[#6366F1]',
   },
 ];
 
@@ -44,8 +44,8 @@ const GymAdminTrainerFeesHub = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#344B4A]">Trainer Fees & Payments</h1>
-        <p className="text-[#697778] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
+        <h1 className="text-2xl font-bold text-[#11111F]">Trainer Fees & Payments</h1>
+        <p className="text-[#A1A1AA] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-5">
@@ -55,16 +55,16 @@ const GymAdminTrainerFeesHub = () => {
             <Link
               key={card.path}
               to={card.path}
-              className="bg-white border border-[#D8EAE7] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#D9E2E3] transition-all group"
+              className="bg-white border border-[#17172A] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#292940] transition-all group"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl ${card.bg} flex items-center justify-center`}>
                   <Icon size={22} className={card.iconColor} />
                 </div>
-                <ChevronRight size={18} className="text-[#D9E2E3] group-hover:text-[#167D78] group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight size={18} className="text-[#292940] group-hover:text-[#6366F1] group-hover:translate-x-0.5 transition-all" />
               </div>
-              <h3 className="font-bold text-[#344B4A] mb-1">{card.title}</h3>
-              <p className="text-sm text-[#697778]">{card.description}</p>
+              <h3 className="font-bold text-[#11111F] mb-1">{card.title}</h3>
+              <p className="text-sm text-[#A1A1AA]">{card.description}</p>
             </Link>
           );
         })}

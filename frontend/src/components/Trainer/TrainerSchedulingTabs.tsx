@@ -27,7 +27,7 @@ export const TrainerSchedulingTabs = () => {
 
   return (
     <div className="w-full pb-2">
-      <div className="flex items-center gap-2 p-1.5 bg-white border border-[#D9E2E3] rounded-2xl w-full sm:w-fit overflow-x-auto shadow-xs">
+      <div className="flex items-center gap-2 p-1.5 bg-white border border-[#292940] rounded-2xl w-full sm:w-fit overflow-x-auto shadow-xs">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -36,11 +36,11 @@ export const TrainerSchedulingTabs = () => {
               to={tab.path}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap shrink-0 ${
                 tab.isActive
-                  ? 'bg-[#167D78] text-white font-bold shadow-sm'
-                  : 'text-[#697778] hover:text-[#344B4A] hover:bg-[#E8EFF0] font-medium'
+                  ? 'bg-[#6366F1] text-white font-bold shadow-sm'
+                  : 'text-[#A1A1AA] hover:text-[#11111F] hover:bg-[#0B0B12] font-medium'
               }`}
             >
-              <Icon size={16} className={tab.isActive ? 'text-white' : 'text-[#697778]'} />
+              <Icon size={16} className={tab.isActive ? 'text-white' : 'text-[#A1A1AA]'} />
               <span>{tab.label}</span>
             </Link>
           );

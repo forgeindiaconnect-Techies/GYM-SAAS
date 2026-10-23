@@ -307,17 +307,17 @@ const GymOwnerRegisterPage = () => {
   };
 
   const inputCls = (field: string) =>
-    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#D8EAE7]' : 'border-[#D9E2E3]'} text-[#344B4A] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#167D78] transition-colors placeholder-[#697778]`;
+    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#17172A]' : 'border-[#292940]'} text-[#11111F] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors placeholder-[#A1A1AA]`;
 
   const selBtnCls = (active: boolean) =>
-    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#167D78] text-white border-[#167D78] font-semibold' : 'bg-[#FFFFFF] border-[#D9E2E3] text-[#697778] hover:border-[#167D78]/50'}`;
+    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#6366F1] text-white border-[#6366F1] font-semibold' : 'bg-[#FFFFFF] border-[#292940] text-[#A1A1AA] hover:border-[#6366F1]/50'}`;
 
   if (isLinkExpired) {
     return (
-      <div className="min-h-screen bg-[#E8EFF0] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen bg-[#0B0B12] flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(22,125,120,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
-        <Link to="/" className="absolute top-8 left-8 text-[#697778] hover:text-[#167D78] flex items-center gap-2 transition-colors z-10">
+        <Link to="/" className="absolute top-8 left-8 text-[#A1A1AA] hover:text-[#6366F1] flex items-center gap-2 transition-colors z-10">
           <ArrowLeft size={20} />
           <span className="font-medium text-sm">Back to Home</span>
         </Link>
@@ -332,16 +332,16 @@ const GymOwnerRegisterPage = () => {
             <span>Link Validity Expired</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#344B4A] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#11111F] tracking-tight">
             This Invitation Link Has Expired
           </h1>
 
-          <p className="text-sm text-[#697778] mt-2 mb-6 leading-relaxed">
+          <p className="text-sm text-[#A1A1AA] mt-2 mb-6 leading-relaxed">
             The {expiryDurationText} onboarding validity period for this gym registration link has elapsed.
             For platform security and data integrity, expired invitation links can no longer be accessed.
           </p>
 
-          <div className="bg-[#E8EFF0] border border-stone-200 rounded-2xl p-4 text-left mb-6 text-xs text-stone-600 space-y-2.5">
+          <div className="bg-[#0B0B12] border border-stone-200 rounded-2xl p-4 text-left mb-6 text-xs text-stone-600 space-y-2.5">
             <div className="flex justify-between items-center pb-2 border-b border-stone-100">
               <span className="font-semibold text-stone-500">Target Recipient:</span>
               <strong className="text-stone-800 font-mono text-[11px]">{form.email || searchParams.get('email') || 'Gym Partner'}</strong>
@@ -359,7 +359,7 @@ const GymOwnerRegisterPage = () => {
           <div className="space-y-3">
             <a
               href={`mailto:support@aigym.com?subject=Renew%20Gym%20Invitation%20Link&body=Hello,%20my%20invitation%20link%20has%20expired%20for%20${encodeURIComponent(form.email || searchParams.get('email') || '')}.%20Please%20resend%20a%20new%20link.`}
-              className="w-full py-3.5 px-4 bg-[#167D78] hover:bg-[#116660] text-white font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-900/10"
+              className="w-full py-3.5 px-4 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-900/10"
             >
               <Mail size={16} />
               <span>Request New Invitation from Super Admin</span>
@@ -385,22 +385,22 @@ const GymOwnerRegisterPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#E8EFF0] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#0B0B12] flex flex-col items-center justify-center px-4 py-12">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
-      <Link to="/" className="absolute top-8 left-8 text-[#697778] hover:text-[#167D78] flex items-center gap-2 transition-colors z-10">
+      <Link to="/" className="absolute top-8 left-8 text-[#A1A1AA] hover:text-[#6366F1] flex items-center gap-2 transition-colors z-10">
         <ArrowLeft size={20} />
         <span className="font-medium text-sm">Back to Home</span>
       </Link>
 
       <Link to="/" className="flex items-center space-x-2 mb-8 group z-10">
-        <div className="w-9 h-9 bg-[#167D78] rounded-md flex items-center justify-center">
+        <div className="w-9 h-9 bg-[#6366F1] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#167D78]">Gymora</span>
+        <span className="text-2xl font-bold tracking-tight text-[#6366F1]">Gymora</span>
       </Link>
 
-      <div className="w-full max-w-3xl bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[85vh]">
+      <div className="w-full max-w-3xl bg-[#FFFFFF] border border-[#292940] rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[85vh]">
         {/* 1-Hour Expiry Warning Alert Banner */}
         {expiryWarning && (
           <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white px-6 py-3.5 shadow-md flex items-center justify-between gap-3 animate-pulse border-b border-amber-300 shrink-0">
@@ -422,16 +422,16 @@ const GymOwnerRegisterPage = () => {
         )}
 
         {/* Header and Progress Indicator */}
-        <div className="bg-[#FFFFFF] border-b border-[#D9E2E3] px-8 py-5 flex items-center justify-between shrink-0 overflow-x-auto custom-scrollbar">
-          <h1 className="text-xl font-bold text-[#344B4A] shrink-0 mr-8 whitespace-nowrap">Gym Owner Registration</h1>
+        <div className="bg-[#FFFFFF] border-b border-[#292940] px-8 py-5 flex items-center justify-between shrink-0 overflow-x-auto custom-scrollbar">
+          <h1 className="text-xl font-bold text-[#11111F] shrink-0 mr-8 whitespace-nowrap">Gym Owner Registration</h1>
           <div className="flex items-center space-x-2">
             {STEPS.map((s, i) => (
               <div key={i} className="flex items-center space-x-2 shrink-0" title={s}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#167D78] text-white' : i === step ? 'bg-[#167D78] text-white ring-2 ring-[#C43D35]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#D8EAE7] text-[#697778]'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#6366F1] text-white' : i === step ? 'bg-[#6366F1] text-white ring-2 ring-[#C43D35]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#17172A] text-[#A1A1AA]'}`}>
                   {i < step ? <Check size={14} /> : i + 1}
                 </div>
-                <span className={`text-xs hidden sm:block whitespace-nowrap ${i === step ? 'text-[#344B4A] font-medium' : 'text-[#697778]'}`}>{s}</span>
-                {i < STEPS.length - 1 && <div className={`h-px w-6 sm:w-8 ${i < step ? 'bg-[#167D78]' : 'bg-[#D8EAE7]'}`} />}
+                <span className={`text-xs hidden sm:block whitespace-nowrap ${i === step ? 'text-[#11111F] font-medium' : 'text-[#A1A1AA]'}`}>{s}</span>
+                {i < STEPS.length - 1 && <div className={`h-px w-6 sm:w-8 ${i < step ? 'bg-[#6366F1]' : 'bg-[#17172A]'}`} />}
               </div>
             ))}
           </div>
@@ -450,14 +450,14 @@ const GymOwnerRegisterPage = () => {
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t border-[#D9E2E3] p-6 bg-[#FFFFFF] shrink-0 flex flex-col">
+        <div className="border-t border-[#292940] p-6 bg-[#FFFFFF] shrink-0 flex flex-col">
           {apiError && (
-            <div className="flex items-center space-x-3 bg-[#D8EAE7]/10 border border-[#D8EAE7]/30 text-teal-400 rounded-xl px-4 py-3 mb-4 text-sm">
+            <div className="flex items-center space-x-3 bg-[#17172A]/10 border border-[#17172A]/30 text-teal-400 rounded-xl px-4 py-3 mb-4 text-sm">
               <AlertCircle size={18} className="shrink-0" /><span>{apiError}</span>
             </div>
           )}
           <div className="flex justify-between items-center w-full">
-            <button type="button" onClick={step === 0 ? () => navigate('/login') : prev} className="px-6 py-3 rounded-xl border border-[#D9E2E3] text-[#697778] hover:text-[#344B4A] hover:border-[#697778] transition-colors flex items-center space-x-2">
+            <button type="button" onClick={step === 0 ? () => navigate('/login') : prev} className="px-6 py-3 rounded-xl border border-[#292940] text-[#A1A1AA] hover:text-[#11111F] hover:border-[#A1A1AA] transition-colors flex items-center space-x-2">
               {step === 0 ? <span>Back to Login</span> : <><ChevronLeft size={18} /><span>Back</span></>}
             </button>
             
@@ -465,7 +465,7 @@ const GymOwnerRegisterPage = () => {
               type="button" 
               onClick={step === STEPS.length - 1 ? handleSubmit : next}
               disabled={isLoading}
-              className="px-8 py-3 bg-[#167D78] text-white font-semibold rounded-xl hover:bg-[#116660] transition-colors flex items-center space-x-2 disabled:opacity-50"
+              className="px-8 py-3 bg-[#6366F1] text-white font-semibold rounded-xl hover:bg-[#4F46E5] transition-colors flex items-center space-x-2 disabled:opacity-50"
             >
               {isLoading ? (
                 <><Loader2 size={18} className="animate-spin" /><span>Processing...</span></>

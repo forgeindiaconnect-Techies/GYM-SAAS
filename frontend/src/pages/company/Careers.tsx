@@ -10,40 +10,40 @@ const Careers = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#E8EFF0] text-[#344B4A] selection:bg-[#167D78] selection:text-[#344B4A]">
-      <nav className="border-b border-[#D9E2E3] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
+    <div className="min-h-screen bg-[#0B0B12] text-[#11111F] selection:bg-[#6366F1] selection:text-[#11111F]">
+      <nav className="border-b border-[#292940] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 bg-[#167D78] rounded-sm flex items-center justify-center">
+            <div className="w-8 h-8 bg-[#6366F1] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#167D78]">Gymora</span>
+            <span className="text-xl font-bold tracking-tight text-[#6366F1]">Gymora</span>
           </Link>
-          <Link to="/" className="text-sm font-medium text-[#697778] hover:text-[#167D78] flex items-center space-x-2">
+          <Link to="/" className="text-sm font-medium text-[#A1A1AA] hover:text-[#6366F1] flex items-center space-x-2">
             <ArrowLeft size={16} /> <span>Back to Home</span>
           </Link>
         </div>
       </nav>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <span className="text-[#167D78] text-sm font-bold uppercase tracking-wider mb-4 block">Join Our Team</span>
+        <span className="text-[#6366F1] text-sm font-bold uppercase tracking-wider mb-4 block">Join Our Team</span>
         <h1 className="text-4xl md:text-5xl font-bold mb-8">Build the Future of Fitness</h1>
-        <p className="text-[#697778] text-lg mb-12">
+        <p className="text-[#A1A1AA] text-lg mb-12">
           We are a fast-growing team of fitness enthusiasts, engineers, and designers. If you are passionate about health and technology, come join us!
         </p>
 
         <div className="space-y-4">
           {jobs.map((job, idx) => (
-            <div key={idx} className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#D9E2E3] hover:border-[#167D78]/50 transition-colors group flex flex-col md:flex-row md:items-center justify-between cursor-pointer">
+            <div key={idx} className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#292940] hover:border-[#6366F1]/50 transition-colors group flex flex-col md:flex-row md:items-center justify-between cursor-pointer">
               <div>
-                <h3 className="text-xl font-bold text-[#344B4A] mb-2">{job.title}</h3>
-                <div className="flex flex-wrap items-center space-x-4 text-sm text-[#697778]">
+                <h3 className="text-xl font-bold text-[#11111F] mb-2">{job.title}</h3>
+                <div className="flex flex-wrap items-center space-x-4 text-sm text-[#A1A1AA]">
                   <span className="flex items-center space-x-1"><Briefcase size={14} /> <span>{job.dept}</span></span>
                   <span className="flex items-center space-x-1"><MapPin size={14} /> <span>{job.loc}</span></span>
                   <span className="flex items-center space-x-1"><Clock size={14} /> <span>{job.type}</span></span>
                 </div>
               </div>
-              <button className="mt-4 md:mt-0 px-5 py-2.5 bg-[#D8EAE7] text-[#344B4A] font-semibold rounded-lg group-hover:bg-[#167D78] group-hover:text-black transition-colors">
+              <button className="mt-4 md:mt-0 px-5 py-2.5 bg-[#17172A] text-[#11111F] font-semibold rounded-lg group-hover:bg-[#6366F1] group-hover:text-black transition-colors">
                 Apply Now
               </button>
             </div>

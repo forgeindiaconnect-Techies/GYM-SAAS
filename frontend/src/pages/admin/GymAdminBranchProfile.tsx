@@ -147,8 +147,8 @@ const GymAdminBranchProfile = () => {
     return Math.round(mPrice * 10);
   };
 
-  if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-[#167D78]" size={32} /></div>;
-  if (!branch) return <div className="p-12 text-center text-[#116660]">Branch not found</div>;
+  if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-[#6366F1]" size={32} /></div>;
+  if (!branch) return <div className="p-12 text-center text-[#4F46E5]">Branch not found</div>;
 
   const currentPlans = (editMode ? form.subscriptionPlans : branch.subscriptionPlans)?.length 
     ? (editMode ? form.subscriptionPlans : branch.subscriptionPlans) 
@@ -159,32 +159,32 @@ const GymAdminBranchProfile = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/admin/branches')} className="w-10 h-10 bg-white border border-[#D9E2E3] rounded-xl flex items-center justify-center text-[#697778] hover:bg-[#E8EFF0] hover:text-[#167D78] transition-colors">
+          <button onClick={() => navigate('/admin/branches')} className="w-10 h-10 bg-white border border-[#292940] rounded-xl flex items-center justify-center text-[#A1A1AA] hover:bg-[#0B0B12] hover:text-[#6366F1] transition-colors">
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">{branch.branchName}</h1>
-            <p className="text-[#697778] mt-1 text-sm font-semibold uppercase tracking-wider">Branch Code: {branch.branchCode}</p>
+            <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">{branch.branchName}</h1>
+            <p className="text-[#A1A1AA] mt-1 text-sm font-semibold uppercase tracking-wider">Branch Code: {branch.branchCode}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <Link
             to={`/admin/location?branchId=${branch._id}`}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors shadow-sm text-sm cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] transition-colors shadow-sm text-sm cursor-pointer"
           >
             <MapPin size={16} /> Location Settings
           </Link>
           {editMode ? (
             <>
-              <button onClick={() => { setEditMode(false); setForm(branch); }} className="px-4 py-2 bg-white border border-[#D9E2E3] text-[#697778] font-bold rounded-xl hover:bg-gray-50 flex items-center gap-2">
+              <button onClick={() => { setEditMode(false); setForm(branch); }} className="px-4 py-2 bg-white border border-[#292940] text-[#A1A1AA] font-bold rounded-xl hover:bg-gray-50 flex items-center gap-2">
                 <X size={16} /> Cancel
               </button>
-              <button onClick={handleSave} disabled={saving} className="px-4 py-2 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] flex items-center gap-2 disabled:opacity-70">
+              <button onClick={handleSave} disabled={saving} className="px-4 py-2 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] flex items-center gap-2 disabled:opacity-70">
                 {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} Save Changes
               </button>
             </>
           ) : (
-            <button onClick={() => setEditMode(true)} className="px-4 py-2 bg-[#E8EFF0] border border-[#D9E2E3] text-[#344B4A] font-bold rounded-xl hover:bg-green-50 flex items-center gap-2">
+            <button onClick={() => setEditMode(true)} className="px-4 py-2 bg-[#0B0B12] border border-[#292940] text-[#11111F] font-bold rounded-xl hover:bg-green-50 flex items-center gap-2">
               <Edit size={16} /> Edit Profile
             </button>
           )}
@@ -196,83 +196,83 @@ const GymAdminBranchProfile = () => {
         {/* Left Column */}
         <div className="space-y-6">
           {/* Branch Information */}
-          <div className="bg-white border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-[#344B4A] mb-4 flex items-center gap-2">
-              <Building2 className="text-[#167D78]" /> Branch Information
+          <div className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-[#11111F] mb-4 flex items-center gap-2">
+              <Building2 className="text-[#6366F1]" /> Branch Information
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[#697778] font-medium mb-1">Branch Name</label>
+                <label className="block text-sm text-[#A1A1AA] font-medium mb-1">Branch Name</label>
                 {editMode ? (
-                  <input type="text" value={form.branchName} onChange={e => setForm({...form, branchName: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78]" />
+                  <input type="text" value={form.branchName} onChange={e => setForm({...form, branchName: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1]" />
                 ) : (
-                  <p className="font-semibold text-[#344B4A]">{branch.branchName}</p>
+                  <p className="font-semibold text-[#11111F]">{branch.branchName}</p>
                 )}
               </div>
               <div>
-                <label className="block text-sm text-[#697778] font-medium mb-1">Phone Number</label>
+                <label className="block text-sm text-[#A1A1AA] font-medium mb-1">Phone Number</label>
                 {editMode ? (
-                  <input type="tel" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} placeholder="10-digit number" className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78]" />
+                  <input type="tel" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} placeholder="10-digit number" className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1]" />
                 ) : (
-                  <p className="font-semibold text-[#344B4A]">{branch.phone || 'N/A'}</p>
+                  <p className="font-semibold text-[#11111F]">{branch.phone || 'N/A'}</p>
                 )}
               </div>
               <div>
-                <label className="block text-sm text-[#697778] font-medium mb-1">Email</label>
+                <label className="block text-sm text-[#A1A1AA] font-medium mb-1">Email</label>
                 {editMode ? (
-                  <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78]" />
+                  <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1]" />
                 ) : (
-                  <p className="font-semibold text-[#344B4A]">{branch.email || 'N/A'}</p>
+                  <p className="font-semibold text-[#11111F]">{branch.email || 'N/A'}</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Location Details */}
-          <div className="bg-white border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-[#344B4A] mb-4 flex items-center gap-2">
-              <MapPin className="text-[#167D78]" /> Location Details
+          <div className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-[#11111F] mb-4 flex items-center gap-2">
+              <MapPin className="text-[#6366F1]" /> Location Details
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[#697778] font-medium mb-1">Address</label>
+                <label className="block text-sm text-[#A1A1AA] font-medium mb-1">Address</label>
                 {editMode ? (
-                  <input type="text" value={form.location?.address} onChange={e => setForm({...form, location: {...form.location, address: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78]" />
+                  <input type="text" value={form.location?.address} onChange={e => setForm({...form, location: {...form.location, address: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1]" />
                 ) : (
-                  <p className="font-semibold text-[#344B4A]">{branch.location?.address}</p>
+                  <p className="font-semibold text-[#11111F]">{branch.location?.address}</p>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#697778] font-medium mb-1">Locality</label>
+                  <label className="block text-sm text-[#A1A1AA] font-medium mb-1">Locality</label>
                   {editMode ? (
-                    <input type="text" value={form.location?.area} onChange={e => setForm({...form, location: {...form.location, area: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78]" />
+                    <input type="text" value={form.location?.area} onChange={e => setForm({...form, location: {...form.location, area: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1]" />
                   ) : (
-                    <p className="font-semibold text-[#344B4A]">{branch.location?.area || 'N/A'}</p>
+                    <p className="font-semibold text-[#11111F]">{branch.location?.area || 'N/A'}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#697778] font-medium mb-1">City</label>
+                  <label className="block text-sm text-[#A1A1AA] font-medium mb-1">City</label>
                   {editMode ? (
-                    <input type="text" value={form.location?.city} onChange={e => setForm({...form, location: {...form.location, city: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78]" />
+                    <input type="text" value={form.location?.city} onChange={e => setForm({...form, location: {...form.location, city: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1]" />
                   ) : (
-                    <p className="font-semibold text-[#344B4A]">{branch.location?.city}</p>
+                    <p className="font-semibold text-[#11111F]">{branch.location?.city}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#697778] font-medium mb-1">State</label>
+                  <label className="block text-sm text-[#A1A1AA] font-medium mb-1">State</label>
                   {editMode ? (
-                    <input type="text" value={form.location?.state} onChange={e => setForm({...form, location: {...form.location, state: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78]" />
+                    <input type="text" value={form.location?.state} onChange={e => setForm({...form, location: {...form.location, state: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1]" />
                   ) : (
-                    <p className="font-semibold text-[#344B4A]">{branch.location?.state}</p>
+                    <p className="font-semibold text-[#11111F]">{branch.location?.state}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#697778] font-medium mb-1">Pincode</label>
+                  <label className="block text-sm text-[#A1A1AA] font-medium mb-1">Pincode</label>
                   {editMode ? (
-                    <input type="text" value={form.location?.pinCode} onChange={e => setForm({...form, location: {...form.location, pinCode: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78]" />
+                    <input type="text" value={form.location?.pinCode} onChange={e => setForm({...form, location: {...form.location, pinCode: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1]" />
                   ) : (
-                    <p className="font-semibold text-[#344B4A]">{branch.location?.pinCode}</p>
+                    <p className="font-semibold text-[#11111F]">{branch.location?.pinCode}</p>
                   )}
                 </div>
               </div>
@@ -283,13 +283,13 @@ const GymAdminBranchProfile = () => {
         {/* Right Column */}
         <div className="space-y-6">
           {/* Operating Hours */}
-          <div className="bg-white border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-[#344B4A] mb-4 flex items-center gap-2">
-              <Clock className="text-[#167D78]" /> Operating Hours
+          <div className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-[#11111F] mb-4 flex items-center gap-2">
+              <Clock className="text-[#6366F1]" /> Operating Hours
             </h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between items-center pb-2 border-b">
-                <span className="text-[#697778]">Opening Time</span>
+                <span className="text-[#A1A1AA]">Opening Time</span>
                 {editMode ? (
                   <div className="flex gap-1 items-center">
                     <input 
@@ -302,23 +302,23 @@ const GymAdminBranchProfile = () => {
                         if (val.length === 2 && !val.includes(':') && e.target.value.length === 2) val += ':';
                         setForm({...form, operatingHours: {...form.operatingHours, openingTime: `${val} ${form.operatingHours?.openingTime?.split(' ')[1] || 'AM'}`}})
                       }} 
-                      className="w-16 border rounded-lg px-2 py-1 outline-none focus:border-[#167D78] text-center text-sm" 
+                      className="w-16 border rounded-lg px-2 py-1 outline-none focus:border-[#6366F1] text-center text-sm" 
                     />
                     <select 
                       value={form.operatingHours?.openingTime?.split(' ')[1] || 'AM'}
                       onChange={e => setForm({...form, operatingHours: {...form.operatingHours, openingTime: `${form.operatingHours?.openingTime?.split(' ')[0] || '06:00'} ${e.target.value}`}})}
-                      className="border rounded-lg px-1 py-1 outline-none focus:border-[#167D78] text-sm"
+                      className="border rounded-lg px-1 py-1 outline-none focus:border-[#6366F1] text-sm"
                     >
                       <option value="AM">AM</option>
                       <option value="PM">PM</option>
                     </select>
                   </div>
                 ) : (
-                  <span className="font-bold text-[#344B4A]">{branch.operatingHours?.openingTime}</span>
+                  <span className="font-bold text-[#11111F]">{branch.operatingHours?.openingTime}</span>
                 )}
               </div>
               <div className="flex justify-between items-center pb-2 border-b">
-                <span className="text-[#697778]">Closing Time</span>
+                <span className="text-[#A1A1AA]">Closing Time</span>
                 {editMode ? (
                   <div className="flex gap-1 items-center">
                     <input 
@@ -331,42 +331,42 @@ const GymAdminBranchProfile = () => {
                         if (val.length === 2 && !val.includes(':') && e.target.value.length === 2) val += ':';
                         setForm({...form, operatingHours: {...form.operatingHours, closingTime: `${val} ${form.operatingHours?.closingTime?.split(' ')[1] || 'PM'}`}})
                       }} 
-                      className="w-16 border rounded-lg px-2 py-1 outline-none focus:border-[#167D78] text-center text-sm" 
+                      className="w-16 border rounded-lg px-2 py-1 outline-none focus:border-[#6366F1] text-center text-sm" 
                     />
                     <select 
                       value={form.operatingHours?.closingTime?.split(' ')[1] || 'PM'}
                       onChange={e => setForm({...form, operatingHours: {...form.operatingHours, closingTime: `${form.operatingHours?.closingTime?.split(' ')[0] || '10:00'} ${e.target.value}`}})}
-                      className="border rounded-lg px-1 py-1 outline-none focus:border-[#167D78] text-sm"
+                      className="border rounded-lg px-1 py-1 outline-none focus:border-[#6366F1] text-sm"
                     >
                       <option value="AM">AM</option>
                       <option value="PM">PM</option>
                     </select>
                   </div>
                 ) : (
-                  <span className="font-bold text-[#344B4A]">{branch.operatingHours?.closingTime}</span>
+                  <span className="font-bold text-[#11111F]">{branch.operatingHours?.closingTime}</span>
                 )}
               </div>
               <div className="flex justify-between items-center pb-2 border-b">
-                <span className="text-[#697778]">Approx Members</span>
+                <span className="text-[#A1A1AA]">Approx Members</span>
                 {editMode ? (
-                  <input type="number" value={form.memberCapacity || ''} onChange={e => setForm({...form, memberCapacity: e.target.value})} className="w-24 border rounded-lg px-2 py-1 outline-none focus:border-[#167D78] text-right" />
+                  <input type="number" value={form.memberCapacity || ''} onChange={e => setForm({...form, memberCapacity: e.target.value})} className="w-24 border rounded-lg px-2 py-1 outline-none focus:border-[#6366F1] text-right" />
                 ) : (
-                  <span className="font-bold text-[#344B4A]">{branch.memberCapacity || 'N/A'}</span>
+                  <span className="font-bold text-[#11111F]">{branch.memberCapacity || 'N/A'}</span>
                 )}
               </div>
               <div className="flex justify-between items-center pb-2 border-b">
-                <span className="text-[#697778]">Total Trainers</span>
+                <span className="text-[#A1A1AA]">Total Trainers</span>
                 {editMode ? (
-                  <input type="number" value={form.trainerCapacity || ''} onChange={e => setForm({...form, trainerCapacity: e.target.value})} className="w-24 border rounded-lg px-2 py-1 outline-none focus:border-[#167D78] text-right" />
+                  <input type="number" value={form.trainerCapacity || ''} onChange={e => setForm({...form, trainerCapacity: e.target.value})} className="w-24 border rounded-lg px-2 py-1 outline-none focus:border-[#6366F1] text-right" />
                 ) : (
-                  <span className="font-bold text-[#344B4A]">{branch.trainerCapacity || 'N/A'}</span>
+                  <span className="font-bold text-[#11111F]">{branch.trainerCapacity || 'N/A'}</span>
                 )}
               </div>
               <div className="pt-2">
-                <span className="text-[#697778] block mb-2">Working Days</span>
+                <span className="text-[#A1A1AA] block mb-2">Working Days</span>
                 <div className="flex flex-wrap gap-2">
                   {branch.operatingHours?.workingDays?.map((d: string) => (
-                    <span key={d} className="px-2.5 py-1 bg-green-50 text-[#167D78] text-xs font-bold rounded-lg border border-green-100">{d.substring(0,3)}</span>
+                    <span key={d} className="px-2.5 py-1 bg-green-50 text-[#6366F1] text-xs font-bold rounded-lg border border-green-100">{d.substring(0,3)}</span>
                   ))}
                 </div>
               </div>
@@ -374,36 +374,36 @@ const GymAdminBranchProfile = () => {
           </div>
 
           {/* Services & Facilities */}
-          <div className="bg-white border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-[#344B4A] mb-4 flex items-center gap-2">
-              <Activity className="text-[#167D78]" /> Services & Facilities
+          <div className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-[#11111F] mb-4 flex items-center gap-2">
+              <Activity className="text-[#6366F1]" /> Services & Facilities
             </h3>
             <div className="space-y-4">
               <div>
-                <span className="text-[#697778] text-sm block mb-2">Training Mode</span>
+                <span className="text-[#A1A1AA] text-sm block mb-2">Training Mode</span>
                 {editMode ? (
-                  <select value={form.trainingMode || 'offline'} onChange={e => setForm({...form, trainingMode: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#167D78] capitalize">
+                  <select value={form.trainingMode || 'offline'} onChange={e => setForm({...form, trainingMode: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#6366F1] capitalize">
                     <option value="offline">Offline</option>
                     <option value="online">Online</option>
                     <option value="both">Both</option>
                   </select>
                 ) : (
-                  <span className="px-3 py-1 bg-[#344B4A] text-white text-xs font-bold rounded-full capitalize">{branch.trainingMode}</span>
+                  <span className="px-3 py-1 bg-[#11111F] text-white text-xs font-bold rounded-full capitalize">{branch.trainingMode}</span>
                 )}
               </div>
               <div>
-                <span className="text-[#697778] text-sm block mb-2">Services</span>
+                <span className="text-[#A1A1AA] text-sm block mb-2">Services</span>
                 <div className="flex flex-wrap gap-2">
                   {branch.services?.map((s: string) => (
-                    <span key={s} className="px-2.5 py-1 bg-[#E8EFF0] border border-[#D9E2E3] text-[#697778] text-xs font-semibold rounded-lg flex items-center gap-1"><CheckCircle size={10} className="text-[#167D78]" /> {s}</span>
+                    <span key={s} className="px-2.5 py-1 bg-[#0B0B12] border border-[#292940] text-[#A1A1AA] text-xs font-semibold rounded-lg flex items-center gap-1"><CheckCircle size={10} className="text-[#6366F1]" /> {s}</span>
                   ))}
                 </div>
               </div>
               <div>
-                <span className="text-[#697778] text-sm block mb-2">Facilities</span>
+                <span className="text-[#A1A1AA] text-sm block mb-2">Facilities</span>
                 <div className="flex flex-wrap gap-2">
                   {branch.facilities?.map((f: string) => (
-                    <span key={f} className="px-2.5 py-1 bg-[#E8EFF0] border border-[#D9E2E3] text-[#697778] text-xs font-semibold rounded-lg">{f}</span>
+                    <span key={f} className="px-2.5 py-1 bg-[#0B0B12] border border-[#292940] text-[#A1A1AA] text-xs font-semibold rounded-lg">{f}</span>
                   ))}
                 </div>
               </div>
@@ -413,24 +413,24 @@ const GymAdminBranchProfile = () => {
       </div>
 
       {/* Package Plans Section - Full Width Card */}
-      <div className="bg-white border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 border-b border-[#D9E2E3] pb-4">
+      <div className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 border-b border-[#292940] pb-4">
           <div>
-            <h3 className="text-lg font-bold text-[#344B4A] flex items-center gap-2">
-              <CheckCircle className="text-[#167D78]" /> Package Plans
+            <h3 className="text-lg font-bold text-[#11111F] flex items-center gap-2">
+              <CheckCircle className="text-[#6366F1]" /> Package Plans
             </h3>
-            <p className="text-xs text-[#697778] mt-0.5">Plans and pricing options configured for this branch.</p>
+            <p className="text-xs text-[#A1A1AA] mt-0.5">Plans and pricing options configured for this branch.</p>
           </div>
           
           <div className="flex items-center gap-3">
-            <div className="bg-[#E8EFF0] p-1 rounded-xl flex items-center border border-[#D9E2E3]">
+            <div className="bg-[#0B0B12] p-1 rounded-xl flex items-center border border-[#292940]">
               <button
                 type="button"
                 onClick={() => setBillingCycle('monthly')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
                   billingCycle === 'monthly'
-                    ? 'bg-[#167D78] text-white shadow-xs'
-                    : 'text-[#697778] hover:text-[#344B4A]'
+                    ? 'bg-[#6366F1] text-white shadow-xs'
+                    : 'text-[#A1A1AA] hover:text-[#11111F]'
                 }`}
               >
                 Monthly Billed
@@ -440,16 +440,16 @@ const GymAdminBranchProfile = () => {
                 onClick={() => setBillingCycle('annually')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1 ${
                   billingCycle === 'annually'
-                    ? 'bg-[#167D78] text-white shadow-xs'
-                    : 'text-[#697778] hover:text-[#344B4A]'
+                    ? 'bg-[#6366F1] text-white shadow-xs'
+                    : 'text-[#A1A1AA] hover:text-[#11111F]'
                 }`}
               >
                 Annual Billed
-                <span className="bg-[#344B4A] text-[#167D78] text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase ml-0.5">Save 20%</span>
+                <span className="bg-[#11111F] text-[#6366F1] text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase ml-0.5">Save 20%</span>
               </button>
             </div>
             {editMode && (
-              <button type="button" onClick={handleOpenAddPlan} className="px-3.5 py-2 bg-[#E8EFF0] border border-[#D9E2E3] text-[#167D78] text-xs font-bold rounded-xl hover:bg-green-50 flex items-center gap-1.5 transition-colors shadow-sm shrink-0">
+              <button type="button" onClick={handleOpenAddPlan} className="px-3.5 py-2 bg-[#0B0B12] border border-[#292940] text-[#6366F1] text-xs font-bold rounded-xl hover:bg-green-50 flex items-center gap-1.5 transition-colors shadow-sm shrink-0">
                 <Plus size={15} /> Add Plan
               </button>
             )}
@@ -457,7 +457,7 @@ const GymAdminBranchProfile = () => {
         </div>
         
         {!currentPlans?.length ? (
-          <p className="text-sm text-[#697778] italic py-4 text-center">No plans assigned to this branch.</p>
+          <p className="text-sm text-[#A1A1AA] italic py-4 text-center">No plans assigned to this branch.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {currentPlans.map((plan: any, idx: number) => {
@@ -473,20 +473,20 @@ const GymAdminBranchProfile = () => {
               const annualPrice = getAnnualPrice(plan);
 
               return (
-                <div key={idx} className="border border-[#D9E2E3] rounded-xl p-4 flex flex-col justify-between bg-[#E8EFF0] hover:border-[#167D78]/30 transition-all shadow-sm relative overflow-hidden">
+                <div key={idx} className="border border-[#292940] rounded-xl p-4 flex flex-col justify-between bg-[#0B0B12] hover:border-[#6366F1]/30 transition-all shadow-sm relative overflow-hidden">
                   {billingCycle === 'annually' && Number(plan.price) > 0 && (
-                    <div className="absolute top-0 right-0 bg-[#167D78] text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                    <div className="absolute top-0 right-0 bg-[#6366F1] text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
                       2 Months Free
                     </div>
                   )}
                   <div>
-                    <div className="flex items-start justify-between gap-2 mb-2 pb-2 border-b border-[#D9E2E3]/60">
+                    <div className="flex items-start justify-between gap-2 mb-2 pb-2 border-b border-[#292940]/60">
                       <div>
-                        <h4 className="font-bold text-[#344B4A] text-base">{formatPlanName(plan.name)}</h4>
+                        <h4 className="font-bold text-[#11111F] text-base">{formatPlanName(plan.name)}</h4>
                         {billingCycle === 'annually' ? (
                           <div>
-                            <p className="text-sm font-bold text-[#167D78] mt-0.5">
-                              ₹{annualPrice.toLocaleString('en-IN')} <span className="text-xs text-[#697778] font-normal">/ Annually</span>
+                            <p className="text-sm font-bold text-[#6366F1] mt-0.5">
+                              ₹{annualPrice.toLocaleString('en-IN')} <span className="text-xs text-[#A1A1AA] font-normal">/ Annually</span>
                             </p>
                             {Number(plan.price) > 0 && (
                               <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">
@@ -496,11 +496,11 @@ const GymAdminBranchProfile = () => {
                           </div>
                         ) : (
                           <div>
-                            <p className="text-sm font-bold text-[#167D78] mt-0.5">
-                              ₹{Number(plan.price).toLocaleString('en-IN')} <span className="text-xs text-[#697778] font-normal">/ {plan.duration || 'Monthly'}</span>
+                            <p className="text-sm font-bold text-[#6366F1] mt-0.5">
+                              ₹{Number(plan.price).toLocaleString('en-IN')} <span className="text-xs text-[#A1A1AA] font-normal">/ {plan.duration || 'Monthly'}</span>
                             </p>
                             {Number(plan.price) > 0 && (
-                              <p className="text-[11px] text-[#697778] font-medium mt-0.5">
+                              <p className="text-[11px] text-[#A1A1AA] font-medium mt-0.5">
                                 Annual: ₹{annualPrice.toLocaleString('en-IN')}/yr <span className="text-emerald-600 font-bold">(Save 20%)</span>
                               </p>
                             )}
@@ -512,7 +512,7 @@ const GymAdminBranchProfile = () => {
                           <button
                             type="button"
                             onClick={() => handleEditPlan(idx)}
-                            className="text-[#167D78] hover:text-[#116660] hover:bg-[#167D78]/10 p-1.5 rounded-lg transition-colors"
+                            className="text-[#6366F1] hover:text-[#4F46E5] hover:bg-[#6366F1]/10 p-1.5 rounded-lg transition-colors"
                             title="Edit Plan & Features"
                           >
                             <Edit size={15} />
@@ -528,7 +528,7 @@ const GymAdminBranchProfile = () => {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-[#697778] mt-2 whitespace-pre-line leading-relaxed">{plan.features}</p>
+                    <p className="text-xs text-[#A1A1AA] mt-2 whitespace-pre-line leading-relaxed">{plan.features}</p>
                   </div>
                 </div>
               );
@@ -541,8 +541,8 @@ const GymAdminBranchProfile = () => {
       {showPlanModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-[#FFFFFF] w-full max-w-lg rounded-2xl p-6 shadow-2xl">
-            <div className="flex justify-between items-center mb-6 border-b border-[#D9E2E3] pb-4">
-              <h2 className="text-2xl font-bold text-[#344B4A]">
+            <div className="flex justify-between items-center mb-6 border-b border-[#292940] pb-4">
+              <h2 className="text-2xl font-bold text-[#11111F]">
                 {editingPlanIndex !== null ? 'Edit Package Plan' : 'Create Package Plan'}
               </h2>
               <button
@@ -551,7 +551,7 @@ const GymAdminBranchProfile = () => {
                   setShowPlanModal(false);
                   setEditingPlanIndex(null);
                 }}
-                className="text-[#697778] hover:text-[#167D78] transition-colors"
+                className="text-[#A1A1AA] hover:text-[#6366F1] transition-colors"
               >
                 <X size={24} />
               </button>
@@ -559,18 +559,18 @@ const GymAdminBranchProfile = () => {
 
             <form onSubmit={handleSavePlan} className="space-y-4">
               <div>
-                <label className="block text-sm font-bold text-[#697778] mb-1">Plan Name</label>
+                <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Plan Name</label>
                 <input
                   required
                   value={planForm.name}
                   onChange={e => setPlanForm({ ...planForm, name: e.target.value })}
-                  className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]"
+                  className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]"
                   placeholder="e.g. Growth Plan"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Monthly Price (₹)</label>
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Monthly Price (₹)</label>
                   <input
                     required
                     type="text"
@@ -583,27 +583,27 @@ const GymAdminBranchProfile = () => {
                         annualPrice: val ? String(Math.round(Number(val) * 10)) : '' 
                       });
                     }}
-                    className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]"
+                    className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]"
                     placeholder="2999"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#697778] mb-1">Annual Price (₹)</label>
+                  <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Annual Price (₹)</label>
                   <input
                     type="text"
                     value={planForm.annualPrice}
                     onChange={e => setPlanForm({ ...planForm, annualPrice: e.target.value.replace(/[^0-9.]/g, '') })}
-                    className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]"
+                    className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]"
                     placeholder="29990"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#697778] mb-1">Billing Duration</label>
+                <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Billing Duration</label>
                 <select
                   value={planForm.duration}
                   onChange={e => setPlanForm({ ...planForm, duration: e.target.value })}
-                  className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]"
+                  className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]"
                 >
                   <option value="Monthly">Monthly</option>
                   <option value="Quarterly">Quarterly</option>
@@ -612,13 +612,13 @@ const GymAdminBranchProfile = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#697778] mb-1">Features (Description & Inclusions)</label>
+                <label className="block text-sm font-bold text-[#A1A1AA] mb-1">Features (Description & Inclusions)</label>
                 <textarea
                   required
                   rows={5}
                   value={planForm.features}
                   onChange={e => setPlanForm({ ...planForm, features: e.target.value })}
-                  className="w-full border border-[#D9E2E3] rounded-lg px-4 py-2 outline-none focus:border-[#167D78]"
+                  className="w-full border border-[#292940] rounded-lg px-4 py-2 outline-none focus:border-[#6366F1]"
                   placeholder="Enter plan features..."
                 />
               </div>
@@ -629,13 +629,13 @@ const GymAdminBranchProfile = () => {
                     setShowPlanModal(false);
                     setEditingPlanIndex(null);
                   }}
-                  className="px-4 py-2 text-[#697778] hover:bg-[#E8EFF0] rounded-lg font-medium transition-colors"
+                  className="px-4 py-2 text-[#A1A1AA] hover:bg-[#0B0B12] rounded-lg font-medium transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-[#167D78] text-white font-bold rounded-lg hover:bg-[#116660] transition-colors"
+                  className="px-6 py-2 bg-[#6366F1] text-white font-bold rounded-lg hover:bg-[#4F46E5] transition-colors"
                 >
                   {editingPlanIndex !== null ? 'Update Plan' : 'Save Plan'}
                 </button>

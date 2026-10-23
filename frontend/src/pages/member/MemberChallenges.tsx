@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Trophy,
   Award,
@@ -13,6 +13,7 @@ import {
   Coins,
   Ticket,
   ChevronRight,
+  ChevronDown,
   TrendingUp,
   RefreshCw,
   AlertCircle,
@@ -24,9 +25,13 @@ import {
   Info,
   Utensils,
   Activity,
-  CalendarCheck
+  CalendarCheck,
+  Download,
+  Dumbbell
 } from 'lucide-react';
+import clsx from 'clsx';
 import api from '../../utils/api';
+import { generateAwardCertificatePDF } from '../../utils/certificateGenerator';
 
 interface Challenge {
   _id: string;
@@ -85,6 +90,24 @@ interface Reward {
   termsAndConditions?: string;
   expiryDate?: string;
   requireApproval: boolean;
+  assignmentMethod?: string;
+  sessionCount?: number;
+  sessionDuration?: string;
+  trainerId?: any;
+  discountType?: string;
+  discountValue?: number;
+  applicableService?: string;
+  productName?: string;
+  productQuantity?: number;
+  membershipDuration?: string;
+  packageName?: string;
+  awardReason?: string;
+  memberStatus?: string;
+  progressInfo?: {
+    required: number;
+    current: number;
+    label: string;
+  };
 }
 
 interface Claim {
@@ -107,7 +130,7 @@ const BADGE_ICONS: { [key: string]: any } = {
 };
 
 export default function MemberChallenges() {
-  const [activeTab, setActiveTab] = useState<'performance' | 'available' | 'active' | 'completed' | 'wallet' | 'leaderboard' | 'rewards' | 'claims'>('performance');
+  const [activeTab, setActiveTab] = useState<'performance' | 'available' | 'active' | 'completed' | 'wallet' | 'leaderboard' | 'rewards' | 'claims' | 'awards'>('performance');
   const [myPerformance, setMyPerformance] = useState<any>(null);
   const [availableChallenges, setAvailableChallenges] = useState<Challenge[]>([]);
   const [activeChallenges, setActiveChallenges] = useState<Challenge[]>([]);
@@ -116,6 +139,8 @@ export default function MemberChallenges() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [claims, setClaims] = useState<Claim[]>([]);
+  const [myAwards, setMyAwards] = useState<any[]>([]);
+  const [hallOfFame, setHallOfFame] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState<string | null>(null);
 
@@ -134,13 +159,29 @@ export default function MemberChallenges() {
   // Feedback Notification
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Navigation Dropdown State
+  const [openDropdown, setOpenDropdown] = useState<'performance' | 'challenges' | 'rewards' | 'master' | null>(null);
+  const dropdownContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownContainerRef.current && !dropdownContainerRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const fetchMemberData = async () => {
     try {
       setLoading(true);
-      const [chRes, rwdRes, perfRes] = await Promise.all([
-        api.get('/challenges/member'),
+      const [chRes, rwdRes, perfRes, awardsRes, hofRes] = await Promise.all([
+        api.get('/challenges/member').catch(() => ({ data: { success: true, available: [], active: [], completed: [], wallet: { currentBalance: 0, totalEarned: 0, totalRedeemed: 0, badges: [] } } })),
         api.get('/rewards/member').catch(() => ({ data: { rewards: [], claims: [], transactions: [] } })),
-        api.get('/performance/my-performance').catch(() => ({ data: { performance: null } }))
+        api.get('/performance/my-performance').catch(() => ({ data: { performance: null } })),
+        api.get('/awards/my-awards').catch(() => ({ data: { awards: [] } })),
+        api.get('/awards/hall-of-fame').catch(() => ({ data: { hallOfFame: [] } }))
       ]);
 
       if (chRes.data?.success) {
@@ -165,9 +206,16 @@ export default function MemberChallenges() {
       if (perfRes.data?.success && perfRes.data.performance) {
         setMyPerformance(perfRes.data.performance);
       }
+
+      if (awardsRes.data?.success) {
+        setMyAwards(awardsRes.data.awards || []);
+      }
+
+      if (hofRes.data?.success) {
+        setHallOfFame(hofRes.data.hallOfFame || []);
+      }
     } catch (err: any) {
       console.error(err);
-      setMessage({ type: 'error', text: 'Failed to load challenges data' });
     } finally {
       setLoading(false);
     }
@@ -247,45 +295,179 @@ export default function MemberChallenges() {
 
   const allChallengesList = [...activeChallenges, ...completedChallenges, ...availableChallenges];
 
+  type TabType = 'performance' | 'active' | 'available' | 'completed' | 'wallet' | 'leaderboard' | 'rewards' | 'claims' | 'awards';
+  type CategoryId = 'performance' | 'challenges' | 'rewards';
+
+  interface TabItemDef {
+    id: TabType;
+    label: string;
+    shortLabel: string;
+    category: CategoryId;
+    icon: any;
+    count?: number;
+    gold?: boolean;
+    description: string;
+  }
+
+  const ALL_TAB_ITEMS: TabItemDef[] = [
+    // 1. Performance Overview & Standings
+    {
+      id: 'performance',
+      label: 'My Performance',
+      shortLabel: 'Performance',
+      category: 'performance',
+      icon: TrendingUp,
+      description: 'Attendance stats, workout progress & adherence streaks'
+    },
+    {
+      id: 'leaderboard',
+      label: 'Leaderboard',
+      shortLabel: 'Leaderboard',
+      category: 'performance',
+      icon: Trophy,
+      description: 'Gym rankings and challenge competition standings'
+    },
+    // 2. Challenges
+    {
+      id: 'active',
+      label: `Active Challenges (${activeChallenges.length})`,
+      shortLabel: `Active (${activeChallenges.length})`,
+      category: 'challenges',
+      icon: Flame,
+      count: activeChallenges.length,
+      description: 'Challenges you are actively participating in'
+    },
+    {
+      id: 'available',
+      label: `Available Challenges (${availableChallenges.length})`,
+      shortLabel: `Available (${availableChallenges.length})`,
+      category: 'challenges',
+      icon: Sparkles,
+      count: availableChallenges.length,
+      description: 'New challenges open for participation'
+    },
+    {
+      id: 'completed',
+      label: `Completed Challenges (${completedChallenges.length})`,
+      shortLabel: `Completed (${completedChallenges.length})`,
+      category: 'challenges',
+      icon: CheckCircle2,
+      count: completedChallenges.length,
+      description: 'Finished fitness milestones & achievements'
+    },
+    // 3. Rewards, Store & Honors
+    {
+      id: 'wallet',
+      label: 'Points & Badges',
+      shortLabel: 'Points & Badges',
+      category: 'rewards',
+      icon: Coins,
+      description: 'Current points balance, badges earned & transactions'
+    },
+    {
+      id: 'rewards',
+      label: `Rewards Store (${rewards.length})`,
+      shortLabel: `Store (${rewards.length})`,
+      category: 'rewards',
+      icon: Gift,
+      count: rewards.length,
+      description: 'Redeem your points for gifts, passes & discounts'
+    },
+    {
+      id: 'claims',
+      label: `My Vouchers (${claims.length})`,
+      shortLabel: `Vouchers (${claims.length})`,
+      category: 'rewards',
+      icon: Ticket,
+      count: claims.length,
+      description: 'Claimed reward codes, passes & store vouchers'
+    },
+    {
+      id: 'awards',
+      label: `Awards & Honors (${myAwards.length})`,
+      shortLabel: `Awards (${myAwards.length})`,
+      category: 'rewards',
+      icon: Award,
+      count: myAwards.length,
+      gold: true,
+      description: 'Official gym awards, recognitions & certificates'
+    }
+  ];
+
+  const CATEGORIES: {
+    id: CategoryId;
+    title: string;
+    icon: any;
+    subTabs: TabType[];
+  }[] = [
+    {
+      id: 'performance',
+      title: 'Performance Overview',
+      icon: TrendingUp,
+      subTabs: ['performance', 'leaderboard']
+    },
+    {
+      id: 'challenges',
+      title: 'Fitness Challenges',
+      icon: Flame,
+      subTabs: ['active', 'available', 'completed']
+    },
+    {
+      id: 'rewards',
+      title: 'Rewards & Honors',
+      icon: Gift,
+      subTabs: ['wallet', 'rewards', 'claims', 'awards']
+    }
+  ];
+
+  const currentCategory = CATEGORIES.find(c => c.subTabs.includes(activeTab)) || CATEGORIES[0];
+  const currentTabItem = ALL_TAB_ITEMS.find(t => t.id === activeTab) || ALL_TAB_ITEMS[0];
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6" style={{ backgroundColor: '#E8EFF0', minHeight: '100vh' }}>
-      {/* Header Banner */}
-      <div className="bg-white p-6 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4" style={{ borderColor: '#D9E2E3' }}>
-        <div className="flex items-center gap-3">
-          <div className="p-3.5 rounded-2xl" style={{ backgroundColor: '#D8EAE7' }}>
-            <Trophy className="w-8 h-8" style={{ color: '#167D78' }} />
+    <div className="space-y-8 w-full max-w-7xl mx-auto pb-12">
+      {/* Header Banner - Dark Charcoal & Sand Gold theme */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#11111F] via-[#151515] to-[#0B0B12] border border-[#292940] p-6 sm:p-8 shadow-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,_rgba(99, 102, 241,0.12)_0%,_transparent_70%)] pointer-events-none" />
+
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="w-14 h-14 rounded-2xl bg-[#818CF8]/15 border border-[#818CF8]/30 flex items-center justify-center text-[#818CF8] shadow-md shadow-[#818CF8]/10 shrink-0">
+            <Trophy className="w-7 h-7" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#344B4A' }}>
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 mb-1.5 bg-[#818CF8]/15 border border-[#818CF8]/30 rounded-full text-[10px] font-bold uppercase tracking-wider text-[#818CF8]">
+              <Award size={12} className="text-[#818CF8]" />
+              Rewards & Performance
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
               Fitness Challenges & Rewards
             </h1>
-            <p className="text-sm" style={{ color: '#697778' }}>
-              Level up your workouts, maintain attendance streaks, and earn points and badges.
+            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-0.5 max-w-xl">
+              Level up your workouts, maintain attendance streaks, and earn points, badges, and honors.
             </p>
           </div>
         </div>
 
-        {/* Points & Badge Pills */}
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="flex-1 md:flex-none p-3 px-4 rounded-xl border flex items-center gap-3 bg-white shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-            <div className="p-2 rounded-lg" style={{ backgroundColor: '#D8EAE7', color: '#167D78' }}>
+        {/* Points & Badge Stat Cards */}
+        <div className="flex items-center gap-3 w-full sm:w-auto relative z-10">
+          <div className="flex-1 sm:flex-none p-3.5 px-5 rounded-2xl border border-[#292940] bg-[#11111F]/90 backdrop-blur-sm flex items-center gap-3.5 shadow-lg">
+            <div className="w-10 h-10 rounded-xl bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30 flex items-center justify-center shrink-0">
               <Coins className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[11px] font-bold block" style={{ color: '#697778' }}>MY POINTS BALANCE</span>
-              <span className="text-xl font-black" style={{ color: '#167D78' }}>
-                {wallet.currentBalance} pts
+              <span className="text-[10px] font-bold tracking-wider uppercase text-[#A1A1AA] block">Points Balance</span>
+              <span className="text-xl font-black text-white">
+                {wallet.currentBalance} <span className="text-xs font-semibold text-[#6366F1]">pts</span>
               </span>
             </div>
           </div>
 
-          <div className="flex-1 md:flex-none p-3 px-4 rounded-xl border flex items-center gap-3 bg-white shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-            <div className="p-2 rounded-lg" style={{ backgroundColor: '#FEF3C7', color: '#D99A27' }}>
+          <div className="flex-1 sm:flex-none p-3.5 px-5 rounded-2xl border border-[#292940] bg-[#11111F]/90 backdrop-blur-sm flex items-center gap-3.5 shadow-lg">
+            <div className="w-10 h-10 rounded-xl bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30 flex items-center justify-center shrink-0">
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[11px] font-bold block" style={{ color: '#697778' }}>EARNED BADGES</span>
-              <span className="text-xl font-black" style={{ color: '#344B4A' }}>
+              <span className="text-[10px] font-bold tracking-wider uppercase text-[#A1A1AA] block">Earned Badges</span>
+              <span className="text-xl font-black text-[#818CF8]">
                 {wallet.badges?.length || 0}
               </span>
             </div>
@@ -296,119 +478,198 @@ export default function MemberChallenges() {
       {/* Message Banner */}
       {message && (
         <div
-          className={`p-4 rounded-xl flex items-center justify-between border ${
+          className={clsx(
+            "p-4 rounded-2xl flex items-center justify-between border shadow-lg transition-all",
             message.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border-red-200 text-red-800'
-          }`}
+              ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300'
+              : 'bg-rose-950/40 border-rose-800/60 text-rose-300'
+          )}
         >
-          <div className="flex items-center gap-2">
-            {message.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+          <div className="flex items-center gap-3">
+            {message.type === 'success' ? <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> : <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />}
             <span className="text-sm font-medium">{message.text}</span>
           </div>
-          <button onClick={() => setMessage(null)} className="p-1 hover:bg-black/5 rounded">
+          <button onClick={() => setMessage(null)} className="p-1 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Navigation Tabs */}
-      <div className="flex flex-wrap border-b gap-2 sm:gap-6" style={{ borderColor: '#D9E2E3' }}>
-        <button
-          onClick={() => setActiveTab('performance')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'performance'
-              ? 'border-[#167D78] text-[#167D78]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <TrendingUp className="w-4 h-4" />
-          My Performance
-        </button>
+      {/* Organized Navigation with Dropdown Options */}
+      <div ref={dropdownContainerRef} className="space-y-3 bg-[#11111F]/90 border border-[#292940] p-3 sm:p-4 rounded-2xl shadow-xl backdrop-blur-sm relative z-30">
+        {/* Top Navigation Row: Category Dropdowns + Master View Selector Dropdown */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          
+          {/* Category Dropdowns */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+            {CATEGORIES.map(cat => {
+              const isCatActive = cat.subTabs.includes(activeTab);
+              const isOpen = openDropdown === cat.id;
+              const CatIcon = cat.icon;
 
-        <button
-          onClick={() => setActiveTab('active')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'active'
-              ? 'border-[#167D78] text-[#167D78]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Flame className="w-4 h-4" />
-          Active Challenges ({activeChallenges.length})
-        </button>
+              return (
+                <div key={cat.id} className="relative">
+                  <button
+                    onClick={() => {
+                      if (!isCatActive) {
+                        setActiveTab(cat.subTabs[0]);
+                      }
+                      setOpenDropdown(isOpen ? null : cat.id);
+                    }}
+                    className={clsx(
+                      "flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
+                      isCatActive
+                        ? "bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/25 border border-[#6366F1]"
+                        : "bg-[#141414] text-[#A1A1AA] hover:text-white hover:bg-[#17172A] border border-[#292940]"
+                    )}
+                  >
+                    <CatIcon className={clsx("w-4 h-4", isCatActive ? "text-white" : "text-[#A1A1AA]")} />
+                    <span>{cat.title}</span>
+                    <ChevronDown className={clsx("w-3.5 h-3.5 transition-transform duration-200", isOpen && "rotate-180")} />
+                  </button>
 
-        <button
-          onClick={() => setActiveTab('available')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'available'
-              ? 'border-[#167D78] text-[#167D78]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Sparkles className="w-4 h-4" />
-          Available Challenges ({availableChallenges.length})
-        </button>
+                  {/* Dropdown Menu for Category */}
+                  {isOpen && (
+                    <div className="absolute left-0 top-full mt-2 w-72 bg-[#11111F] border border-[#292940] rounded-2xl shadow-2xl z-50 p-2 space-y-1">
+                      <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#71717A] border-b border-[#292940]/60 mb-1">
+                        {cat.title} Options
+                      </div>
+                      {cat.subTabs.map(subId => {
+                        const item = ALL_TAB_ITEMS.find(t => t.id === subId)!;
+                        const isSubActive = activeTab === subId;
+                        const SubIcon = item.icon;
+                        return (
+                          <button
+                            key={subId}
+                            onClick={() => {
+                              setActiveTab(subId);
+                              setOpenDropdown(null);
+                            }}
+                            className={clsx(
+                              "w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all cursor-pointer group",
+                              isSubActive
+                                ? "bg-[#6366F1]/15 border border-[#6366F1]/40 text-white"
+                                : "hover:bg-[#17172A] text-[#A1A1AA] hover:text-white"
+                            )}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className={clsx(
+                                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                                isSubActive ? "bg-[#6366F1] text-white" : "bg-[#0B0B12] border border-[#292940] text-[#A1A1AA] group-hover:text-white"
+                              )}>
+                                <SubIcon className={clsx("w-4 h-4", item.gold && !isSubActive && "text-[#818CF8]")} />
+                              </div>
+                              <div className="truncate">
+                                <div className={clsx("text-xs font-bold", isSubActive ? "text-white" : "text-[#E4E4E7]")}>
+                                  {item.label}
+                                </div>
+                                <div className="text-[10px] text-[#71717A] truncate">
+                                  {item.description}
+                                </div>
+                              </div>
+                            </div>
+                            {isSubActive && <Check className="w-4 h-4 text-[#6366F1] shrink-0 ml-2" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
-        <button
-          onClick={() => setActiveTab('completed')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'completed'
-              ? 'border-[#167D78] text-[#167D78]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <CheckCircle2 className="w-4 h-4" />
-          Completed ({completedChallenges.length})
-        </button>
+          {/* Master View Selector Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setOpenDropdown(openDropdown === 'master' ? null : 'master')}
+              className="w-full md:w-auto flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#141414] hover:bg-[#17172A] border border-[#292940] text-white text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-sm"
+            >
+              <div className="flex items-center gap-2">
+                <currentTabItem.icon className={clsx("w-4 h-4", currentTabItem.gold ? "text-[#818CF8]" : "text-[#6366F1]")} />
+                <span className="text-[#A1A1AA] font-medium hidden sm:inline">Current View:</span>
+                <span className="font-bold text-white">{currentTabItem.label}</span>
+              </div>
+              <ChevronDown className={clsx("w-3.5 h-3.5 text-[#A1A1AA] transition-transform duration-200", openDropdown === 'master' && "rotate-180")} />
+            </button>
 
-        <button
-          onClick={() => setActiveTab('wallet')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'wallet'
-              ? 'border-[#167D78] text-[#167D78]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Coins className="w-4 h-4" />
-          Points & Badges
-        </button>
+            {/* Master Grouped Dropdown Menu */}
+            {openDropdown === 'master' && (
+              <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-[#11111F] border border-[#292940] rounded-2xl shadow-2xl z-50 p-3 space-y-3 max-h-[75vh] overflow-y-auto">
+                {CATEGORIES.map(cat => (
+                  <div key={cat.id} className="space-y-1">
+                    <div className="px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-2 border-b border-[#292940]/50 pb-1">
+                      <cat.icon className="w-3.5 h-3.5 text-[#818CF8]" />
+                      <span>{cat.title}</span>
+                    </div>
+                    {cat.subTabs.map(subId => {
+                      const item = ALL_TAB_ITEMS.find(t => t.id === subId)!;
+                      const isSubActive = activeTab === subId;
+                      const SubIcon = item.icon;
+                      return (
+                        <button
+                          key={subId}
+                          onClick={() => {
+                            setActiveTab(subId);
+                            setOpenDropdown(null);
+                          }}
+                          className={clsx(
+                            "w-full flex items-center justify-between p-2 rounded-xl text-left transition-all cursor-pointer group",
+                            isSubActive
+                              ? "bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/20"
+                              : "hover:bg-[#17172A] text-[#A1A1AA] hover:text-white"
+                          )}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className={clsx(
+                              "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
+                              isSubActive ? "bg-white/20 text-white" : "bg-[#0B0B12] border border-[#292940] text-[#A1A1AA]"
+                            )}>
+                              <SubIcon className={clsx("w-3.5 h-3.5", item.gold && !isSubActive && "text-[#818CF8]")} />
+                            </div>
+                            <div className="truncate">
+                              <div className={clsx("text-xs font-bold", isSubActive ? "text-white" : "text-[#E4E4E7]")}>
+                                {item.label}
+                              </div>
+                            </div>
+                          </div>
+                          {isSubActive && <Check className="w-4 h-4 text-white shrink-0 ml-2" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
 
-        <button
-          onClick={() => setActiveTab('leaderboard')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'leaderboard'
-              ? 'border-[#167D78] text-[#167D78]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Trophy className="w-4 h-4" />
-          Leaderboard
-        </button>
-
-        <button
-          onClick={() => setActiveTab('rewards')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'rewards'
-              ? 'border-[#167D78] text-[#167D78]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Gift className="w-4 h-4" />
-          Rewards Store ({rewards.length})
-        </button>
-
-        <button
-          onClick={() => setActiveTab('claims')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'claims'
-              ? 'border-[#167D78] text-[#167D78]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Ticket className="w-4 h-4" />
-          My Vouchers ({claims.length})
-        </button>
+        {/* Sub-Tabs for Active Category (Spacious & Clean, Eliminates Horizontal Clutter) */}
+        <div className="pt-2 border-t border-[#292940]/60 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#71717A] hidden sm:inline mr-1">
+            {currentCategory.title}:
+          </span>
+          {currentCategory.subTabs.map(subId => {
+            const item = ALL_TAB_ITEMS.find(t => t.id === subId)!;
+            const isSubActive = activeTab === subId;
+            const SubIcon = item.icon;
+            return (
+              <button
+                key={subId}
+                onClick={() => setActiveTab(subId)}
+                className={clsx(
+                  "flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
+                  isSubActive
+                    ? "bg-[#6366F1]/20 border border-[#6366F1] text-[#6366F1] shadow-sm font-extrabold"
+                    : "bg-[#141414] hover:bg-[#17172A] text-[#A1A1AA] hover:text-white border border-[#292940]"
+                )}
+              >
+                <SubIcon className={clsx("w-3.5 h-3.5", isSubActive ? "text-[#6366F1]" : item.gold ? "text-[#818CF8]" : "text-[#71717A]")} />
+                <span>{item.shortLabel}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* TAB 0: MY PERFORMANCE */}
@@ -416,134 +677,134 @@ export default function MemberChallenges() {
         <div className="space-y-6">
           {/* Top 4 Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-xl">
+              <div className="flex justify-between items-center text-xs text-[#A1A1AA] font-medium">
                 <span>Verified Attendance</span>
-                <span className="p-2 rounded-lg bg-amber-50 text-amber-600"><Flame className="w-4 h-4" /></span>
+                <span className="p-2 rounded-xl bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30"><Flame className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-gray-800">
-                {myPerformance?.attendance?.totalVerifiedVisits || 0} <span className="text-sm font-normal text-gray-500">visits</span>
+              <div className="text-3xl font-black mt-2 text-white">
+                {myPerformance?.attendance?.totalVerifiedVisits || 0} <span className="text-sm font-normal text-[#A1A1AA]">visits</span>
               </div>
-              <p className="text-xs text-amber-600 font-semibold mt-1">
+              <p className="text-xs text-[#818CF8] font-semibold mt-1">
                 🔥 {myPerformance?.attendance?.streakDays || 0} day streak
               </p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-xl">
+              <div className="flex justify-between items-center text-xs text-[#A1A1AA] font-medium">
                 <span>Workout Completion</span>
-                <span className="p-2 rounded-lg bg-[#D8EAE7] text-[#167D78]"><TrendingUp className="w-4 h-4" /></span>
+                <span className="p-2 rounded-xl bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30"><TrendingUp className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#167D78]">
+              <div className="text-3xl font-black mt-2 text-[#6366F1]">
                 {myPerformance?.workouts?.completionPercentage !== null && myPerformance?.workouts?.completionPercentage !== undefined
                   ? `${myPerformance.workouts.completionPercentage}%`
                   : 'Not Recorded'}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-[#A1A1AA] mt-1">
                 {myPerformance?.workouts?.completedCount || 0} workouts completed
               </p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-xl">
+              <div className="flex justify-between items-center text-xs text-[#A1A1AA] font-medium">
                 <span>Diet Adherence</span>
-                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><Utensils className="w-4 h-4" /></span>
+                <span className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"><Utensils className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-emerald-700">
+              <div className="text-3xl font-black mt-2 text-emerald-400">
                 {myPerformance?.diet?.adherencePercentage !== null && myPerformance?.diet?.adherencePercentage !== undefined
                   ? `${myPerformance.diet.adherencePercentage}%`
                   : 'No Logs'}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-[#A1A1AA] mt-1">
                 {myPerformance?.diet?.totalMealsRecorded || 0} meal check-ins recorded
               </p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-xl">
+              <div className="flex justify-between items-center text-xs text-[#A1A1AA] font-medium">
                 <span>Reward Points</span>
-                <span className="p-2 rounded-lg bg-[#D8EAE7] text-[#167D78]"><Coins className="w-4 h-4" /></span>
+                <span className="p-2 rounded-xl bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30"><Coins className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#167D78]">
-                {wallet.currentBalance} <span className="text-sm font-normal text-gray-500">pts</span>
+              <div className="text-3xl font-black mt-2 text-[#818CF8]">
+                {wallet.currentBalance} <span className="text-sm font-normal text-[#A1A1AA]">pts</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-[#A1A1AA] mt-1">
                 {wallet.badges?.length || 0} unlocked badges
               </p>
             </div>
           </div>
 
           {/* Body Measurements & Physical Progress */}
-          <div className="bg-white p-6 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-            <h3 className="text-base font-bold text-gray-800 flex items-center gap-2 mb-1">
-              <Activity className="w-5 h-5 text-[#167D78]" /> Physical Fitness Measurements & Progress
+          <div className="bg-[#11111F] p-6 rounded-2xl border border-[#292940] shadow-xl">
+            <h3 className="text-base font-bold text-white flex items-center gap-2 mb-1">
+              <Activity className="w-5 h-5 text-[#6366F1]" /> Physical Fitness Measurements & Progress
             </h3>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-[#A1A1AA] mb-4">
               Real body composition metrics and strength progress logged at the gym.
             </p>
 
             {myPerformance?.measurements ? (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1 text-xs">
-                <div className="p-3.5 rounded-xl bg-gray-50 border">
-                  <span className="text-gray-400 block font-medium">CURRENT WEIGHT</span>
-                  <span className="text-xl font-black text-gray-800 mt-1 block">
+                <div className="p-3.5 rounded-xl bg-[#0B0B12] border border-[#292940]">
+                  <span className="text-[#A1A1AA] block font-medium">CURRENT WEIGHT</span>
+                  <span className="text-xl font-black text-white mt-1 block">
                     {myPerformance.measurements.currentWeight} kg
                   </span>
                   {myPerformance.measurements.weightChange !== 0 && (
-                    <span className={`text-[11px] font-bold ${myPerformance.measurements.weightChange < 0 ? 'text-emerald-600' : 'text-blue-600'}`}>
+                    <span className={clsx("text-[11px] font-bold", myPerformance.measurements.weightChange < 0 ? 'text-emerald-400' : 'text-[#6366F1]')}>
                       {myPerformance.measurements.weightChange > 0 ? `+${myPerformance.measurements.weightChange}` : myPerformance.measurements.weightChange} kg from start
                     </span>
                   )}
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-gray-50 border">
-                  <span className="text-gray-400 block font-medium">BODY FAT %</span>
-                  <span className="text-xl font-black text-gray-800 mt-1 block">
+                <div className="p-3.5 rounded-xl bg-[#0B0B12] border border-[#292940]">
+                  <span className="text-[#A1A1AA] block font-medium">BODY FAT %</span>
+                  <span className="text-xl font-black text-white mt-1 block">
                     {myPerformance.measurements.bodyFatPercentage ? `${myPerformance.measurements.bodyFatPercentage}%` : 'Not recorded'}
                   </span>
-                  <span className="text-[11px] text-gray-400">Bio-impedance / caliper</span>
+                  <span className="text-[11px] text-[#A1A1AA]">Bio-impedance / caliper</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-gray-50 border">
-                  <span className="text-gray-400 block font-medium">BENCH PRESS MAX</span>
-                  <span className="text-xl font-black text-gray-800 mt-1 block">
+                <div className="p-3.5 rounded-xl bg-[#0B0B12] border border-[#292940]">
+                  <span className="text-[#A1A1AA] block font-medium">BENCH PRESS MAX</span>
+                  <span className="text-xl font-black text-white mt-1 block">
                     {myPerformance.measurements.benchPressMax ? `${myPerformance.measurements.benchPressMax} kg` : 'Not recorded'}
                   </span>
-                  <span className="text-[11px] text-gray-400">Personal record</span>
+                  <span className="text-[11px] text-[#A1A1AA]">Personal record</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-gray-50 border">
-                  <span className="text-gray-400 block font-medium">SQUAT MAX</span>
-                  <span className="text-xl font-black text-gray-800 mt-1 block">
+                <div className="p-3.5 rounded-xl bg-[#0B0B12] border border-[#292940]">
+                  <span className="text-[#A1A1AA] block font-medium">SQUAT MAX</span>
+                  <span className="text-xl font-black text-white mt-1 block">
                     {myPerformance.measurements.squatMax ? `${myPerformance.measurements.squatMax} kg` : 'Not recorded'}
                   </span>
-                  <span className="text-[11px] text-gray-400">Personal record</span>
+                  <span className="text-[11px] text-[#A1A1AA]">Personal record</span>
                 </div>
               </div>
             ) : (
-              <div className="p-6 text-center text-xs text-gray-400 bg-gray-50 rounded-xl border">
+              <div className="p-6 text-center text-xs text-[#A1A1AA] bg-[#0B0B12] rounded-xl border border-[#292940]">
                 No physical measurements recorded yet. Ask your trainer to log your weight and fitness stats!
               </div>
             )}
           </div>
 
           {/* Verified Gym Attendance History */}
-          <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-4" style={{ borderColor: '#D9E2E3' }}>
+          <div className="bg-[#11111F] p-6 rounded-2xl border border-[#292940] shadow-xl space-y-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
               <div>
-                <h3 className="font-bold text-base text-gray-800 flex items-center gap-2">
-                  <CalendarCheck className="w-5 h-5 text-[#167D78]" /> Verified Gym Attendance History
+                <h3 className="font-bold text-base text-white flex items-center gap-2">
+                  <CalendarCheck className="w-5 h-5 text-[#6366F1]" /> Verified Gym Attendance History
                 </h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-[#A1A1AA]">
                   Real check-ins and session attendance records verified on the gym floor.
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#D8EAE7] text-[#167D78] text-xs">
+                <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30 text-xs">
                   {myPerformance?.attendance?.totalVerifiedVisits || 0} Visits Total
                 </span>
                 {myPerformance?.attendance?.streakDays > 0 && (
-                  <span className="px-2.5 py-0.5 rounded-full font-bold bg-amber-50 text-amber-700 text-xs">
+                  <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30 text-xs">
                     🔥 {myPerformance.attendance.streakDays}d Streak
                   </span>
                 )}
@@ -551,13 +812,13 @@ export default function MemberChallenges() {
             </div>
 
             {(!myPerformance?.attendance?.attendanceLogs || myPerformance.attendance.attendanceLogs.length === 0) ? (
-              <div className="p-6 text-center text-xs text-gray-400 bg-gray-50 rounded-xl border">
+              <div className="p-6 text-center text-xs text-[#A1A1AA] bg-[#0B0B12] rounded-xl border border-[#292940]">
                 No attendance visits recorded yet. Check-in during your next gym visit to build your streak!
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-xl border" style={{ borderColor: '#E8EFF0' }}>
+              <div className="overflow-x-auto rounded-xl border border-[#292940]">
                 <table className="w-full text-left border-collapse text-xs">
-                  <thead className="bg-gray-50 text-gray-500 border-b text-[11px] uppercase">
+                  <thead className="bg-[#0B0B12] text-[#A1A1AA] border-b border-[#292940] text-[11px] uppercase">
                     <tr>
                       <th className="py-2.5 px-3">Date</th>
                       <th className="py-2.5 px-3">Check-in / Check-out</th>
@@ -566,26 +827,26 @@ export default function MemberChallenges() {
                       <th className="py-2.5 px-3 text-right">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y text-gray-700" style={{ borderColor: '#E8EFF0' }}>
+                  <tbody className="divide-y divide-[#292940] text-zinc-300">
                     {myPerformance.attendance.attendanceLogs.map((log: any, idx: number) => (
-                      <tr key={log._id || idx} className="hover:bg-gray-50/50">
-                        <td className="py-2.5 px-3 font-semibold text-gray-800">
+                      <tr key={log._id || idx} className="hover:bg-[#17172A]/60 transition">
+                        <td className="py-2.5 px-3 font-semibold text-white">
                           {log.date ? new Date(log.date).toLocaleDateString() : 'Visit'}
                         </td>
-                        <td className="py-2.5 px-3 text-gray-600">
-                          {log.checkInTime || '—'} {log.checkOutTime && log.checkOutTime !== '—' ? ` - ${log.checkOutTime}` : ''}
+                        <td className="py-2.5 px-3 text-[#A1A1AA]">
+                          {log.checkInTime || '--:--'} - {log.checkOutTime || '--:--'}
                         </td>
                         <td className="py-2.5 px-3">
-                          <span className="px-1.5 py-0.5 rounded font-medium bg-gray-100 text-gray-700 text-[11px]">
-                            {log.mode || 'In-Person Gym Visit'}
+                          <span className="px-2 py-0.5 rounded-md bg-[#17172A] text-zinc-300 text-[10px] font-medium border border-[#292940]">
+                            {log.mode || 'Standard Floor'}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 text-gray-600">
-                          {log.trainerName || 'Gym Floor'}
+                        <td className="py-2.5 px-3 text-[#A1A1AA]">
+                          {log.trainerName || 'General Floor'}
                         </td>
                         <td className="py-2.5 px-3 text-right">
-                          <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-700 text-[10px] inline-flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {log.status || 'Present'}
+                          <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px]">
+                            Verified ✓
                           </span>
                         </td>
                       </tr>
@@ -595,43 +856,6 @@ export default function MemberChallenges() {
               </div>
             )}
           </div>
-
-          {/* Active Challenges & Rewards Quick Links */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm flex flex-col justify-between" style={{ borderColor: '#D9E2E3' }}>
-              <div>
-                <h4 className="font-bold text-gray-800 flex items-center gap-2 mb-2">
-                  <Flame className="w-5 h-5 text-amber-500" /> My Active Challenges
-                </h4>
-                <p className="text-xs text-gray-500">
-                  You are currently competing in {activeChallenges.length} challenges. Keep up the attendance streak to unlock bonus points!
-                </p>
-              </div>
-              <button
-                onClick={() => setActiveTab('active')}
-                className="mt-4 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#167D78] self-start"
-              >
-                View Active Challenges
-              </button>
-            </div>
-
-            <div className="bg-white p-5 rounded-2xl border shadow-sm flex flex-col justify-between" style={{ borderColor: '#D9E2E3' }}>
-              <div>
-                <h4 className="font-bold text-gray-800 flex items-center gap-2 mb-2">
-                  <Gift className="w-5 h-5 text-emerald-600" /> Available Rewards
-                </h4>
-                <p className="text-xs text-gray-500">
-                  You have {wallet.currentBalance} points available to redeem discount coupons, merchandise vouchers, and free personal sessions.
-                </p>
-              </div>
-              <button
-                onClick={() => setActiveTab('rewards')}
-                className="mt-4 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#167D78] self-start"
-              >
-                Browse Rewards Store
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
@@ -639,21 +863,20 @@ export default function MemberChallenges() {
       {activeTab === 'active' && (
         <div>
           {loading ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#167D78', borderTopColor: 'transparent' }} />
-              <p className="mt-2 text-xs text-gray-500">Checking active challenges...</p>
+            <div className="text-center py-16 bg-[#11111F] rounded-2xl border border-[#292940]">
+              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto border-[#6366F1]" />
+              <p className="mt-2 text-xs text-[#A1A1AA]">Checking active challenges...</p>
             </div>
           ) : activeChallenges.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <Flame className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold" style={{ color: '#344B4A' }}>No Active Challenges</h3>
-              <p className="text-sm max-w-sm mx-auto mt-1" style={{ color: '#697778' }}>
+            <div className="text-center py-16 bg-[#11111F] rounded-2xl border border-[#292940]">
+              <Flame className="w-12 h-12 mx-auto text-zinc-600 mb-3" />
+              <h3 className="text-base font-bold text-white">No Active Challenges</h3>
+              <p className="text-sm max-w-sm mx-auto mt-1 text-[#A1A1AA]">
                 You have not joined any challenges yet. Browse the Available Challenges tab and join one to start tracking your progress!
               </p>
               <button
                 onClick={() => setActiveTab('available')}
-                className="mt-4 px-4 py-2 rounded-xl text-white text-xs font-semibold"
-                style={{ backgroundColor: '#167D78' }}
+                className="mt-4 px-4 py-2 rounded-xl text-white text-xs font-semibold bg-[#6366F1] hover:bg-[#4F46E5] transition cursor-pointer"
               >
                 Browse Challenges
               </button>
@@ -669,103 +892,82 @@ export default function MemberChallenges() {
                 return (
                   <div
                     key={challenge._id}
-                    className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                    style={{ borderColor: '#D9E2E3' }}
+                    className="bg-[#11111F] rounded-2xl border border-[#292940] p-5 flex flex-col justify-between hover:border-[#6366F1]/40 transition shadow-xl"
                   >
                     <div className="space-y-4">
                       {/* Top Header */}
                       <div className="flex items-center justify-between">
-                        <span
-                          className="text-xs px-2.5 py-1 rounded-full font-semibold"
-                          style={{ backgroundColor: '#D8EAE7', color: '#167D78' }}
-                        >
+                        <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30">
                           {challenge.challengeType}
                         </span>
 
-                        <div className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: '#D99A27' }}>
-                          <Flame className="w-4 h-4 fill-amber-500 text-amber-500" />
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#818CF8]">
+                          <Flame className="w-4 h-4 fill-[#818CF8] text-[#818CF8]" />
                           <span>{p.streakDays} Day Streak</span>
                         </div>
                       </div>
 
                       {/* Title */}
                       <div className="flex items-start gap-3">
-                        <span className="p-2 rounded-xl shrink-0" style={{ backgroundColor: '#D8EAE7', color: '#167D78' }}>
+                        <span className="p-2.5 rounded-xl shrink-0 bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30">
                           <IconComponent className="w-6 h-6" />
                         </span>
                         <div>
-                          <h3 className="font-bold text-base leading-tight" style={{ color: '#344B4A' }}>
+                          <h3 className="font-bold text-base leading-tight text-white">
                             {challenge.title}
                           </h3>
-                          <p className="text-xs line-clamp-2 text-gray-500 mt-1">
+                          <p className="text-xs line-clamp-2 text-[#A1A1AA] mt-1">
                             {challenge.description}
                           </p>
                         </div>
                       </div>
 
                       {/* Progress Metrics */}
-                      <div className="p-3.5 rounded-xl bg-gray-50/80 border space-y-2" style={{ borderColor: '#E8EFF0' }}>
+                      <div className="p-3.5 rounded-xl bg-[#0B0B12] border border-[#292940] space-y-2">
                         <div className="flex justify-between items-baseline text-xs">
-                          <span className="text-gray-500 font-medium">Completed Progress:</span>
-                          <span className="font-bold text-sm" style={{ color: '#344B4A' }}>
+                          <span className="text-[#A1A1AA] font-medium">Completed Progress:</span>
+                          <span className="font-bold text-sm text-white">
                             {p.currentProgress} / {challenge.targetValue} {challenge.targetUnit}
                           </span>
                         </div>
 
-                        <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="w-full h-2.5 bg-[#17172A] rounded-full overflow-hidden">
                           <div
-                            className="h-full rounded-full transition-all duration-300"
-                            style={{ width: `${progressPct}%`, backgroundColor: '#167D78' }}
+                            className="h-full rounded-full transition-all duration-300 bg-gradient-to-r from-[#6366F1] to-[#5e77f9]"
+                            style={{ width: `${progressPct}%` }}
                           />
                         </div>
 
                         <div className="flex justify-between items-center text-[11px] pt-1">
-                          <span className="text-gray-500">{remaining} {challenge.targetUnit} remaining</span>
-                          <span className="font-bold text-[#167D78]">+{p.pointsEarned} pts earned</span>
+                          <span className="text-[#A1A1AA]">{remaining} {challenge.targetUnit} remaining</span>
+                          <span className="font-bold text-[#818CF8]">+{p.pointsEarned} pts earned</span>
                         </div>
                       </div>
 
                       {/* Trainer Feedback if provided */}
                       {p.trainerFeedback && (
-                        <div className="p-2.5 rounded-xl bg-blue-50/70 border border-blue-100 text-xs text-blue-900">
-                          <span className="font-bold block">💬 Trainer Feedback:</span>
+                        <div className="p-2.5 rounded-xl bg-[#6366F1]/10 border border-[#6366F1]/30 text-xs text-blue-200">
+                          <span className="font-bold block text-white">💬 Trainer Feedback:</span>
                           <span className="italic">{p.trainerFeedback}</span>
                         </div>
                       )}
-
-                      {/* End Date */}
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5" />
-                          Ends {new Date(challenge.endDate).toLocaleDateString()}
-                        </span>
-                        <span className="font-medium text-emerald-700">
-                          +{challenge.pointsPerActivity} pts per {challenge.targetUnit.slice(0, -1) || 'activity'}
-                        </span>
-                      </div>
                     </div>
 
-                    {/* Card Footer Button */}
-                    <div className="pt-4 mt-3 border-t flex items-center justify-between gap-2" style={{ borderColor: '#D9E2E3' }}>
+                    <div className="pt-4 mt-3 border-t border-[#292940] flex justify-between items-center">
                       <button
-                        onClick={() => {
-                          setLeaderboardChallengeId(challenge._id);
-                          setActiveTab('leaderboard');
-                        }}
-                        className="text-xs font-semibold hover:underline flex items-center gap-1"
-                        style={{ color: '#167D78' }}
+                        onClick={() => setSelectedChallenge(challenge)}
+                        className="px-3 py-1.5 rounded-xl text-xs font-medium border border-[#292940] text-[#A1A1AA] hover:text-white hover:bg-[#17172A] transition"
                       >
-                        <Trophy className="w-3.5 h-3.5" /> View Rank
+                        Details
                       </button>
 
                       <button
                         onClick={() => handleSyncProgress(challenge._id)}
                         disabled={syncing === challenge._id}
-                        className="px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition hover:bg-gray-50"
-                        style={{ borderColor: '#D9E2E3', color: '#344B4A' }}
+                        className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-[#6366F1] hover:bg-[#4F46E5] transition flex items-center gap-1.5 shadow-sm"
                       >
-                        <RefreshCw className={`w-3.5 h-3.5 ${syncing === challenge._id ? 'animate-spin' : ''}`} />
-                        Sync Progress
+                        <RefreshCw className={clsx("w-3.5 h-3.5", syncing === challenge._id ? "animate-spin" : "")} />
+                        {syncing === challenge._id ? 'Syncing...' : 'Sync Activity'}
                       </button>
                     </div>
                   </div>
@@ -780,10 +982,10 @@ export default function MemberChallenges() {
       {activeTab === 'available' && (
         <div className="space-y-4">
           {availableChallenges.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <Trophy className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold" style={{ color: '#344B4A' }}>No New Challenges Available</h3>
-              <p className="text-sm max-w-sm mx-auto mt-1" style={{ color: '#697778' }}>
+            <div className="text-center py-16 bg-[#11111F] rounded-2xl border border-[#292940]">
+              <Trophy className="w-12 h-12 mx-auto text-zinc-600 mb-3" />
+              <h3 className="text-base font-bold text-white">No New Challenges Available</h3>
+              <p className="text-sm max-w-sm mx-auto mt-1 text-[#A1A1AA]">
                 You have already enrolled in all open challenges for your gym. Check back soon for new fitness challenges!
               </p>
             </div>
@@ -796,72 +998,67 @@ export default function MemberChallenges() {
                 return (
                   <div
                     key={challenge._id}
-                    className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                    style={{ borderColor: '#D9E2E3' }}
+                    className="bg-[#11111F] rounded-2xl border border-[#292940] p-5 flex flex-col justify-between hover:border-[#6366F1]/40 transition shadow-xl"
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span
-                          className="text-xs px-2.5 py-1 rounded-full font-semibold"
-                          style={{ backgroundColor: '#D8EAE7', color: '#167D78' }}
-                        >
+                        <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30">
                           {challenge.challengeType}
                         </span>
 
-                        <span className="text-xs text-gray-500 font-medium flex items-center gap-1">
+                        <span className="text-xs text-[#A1A1AA] font-medium flex items-center gap-1">
                           <Calendar className="w-3.5 h-3.5" />
                           Ends {new Date(challenge.endDate).toLocaleDateString()}
                         </span>
                       </div>
 
                       <div className="flex items-start gap-3">
-                        <span className="p-2.5 rounded-xl shrink-0" style={{ backgroundColor: '#D8EAE7', color: '#167D78' }}>
+                        <span className="p-2.5 rounded-xl shrink-0 bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30">
                           <IconComponent className="w-6 h-6" />
                         </span>
                         <div>
-                          <h3 className="font-bold text-base leading-tight" style={{ color: '#344B4A' }}>
+                          <h3 className="font-bold text-base leading-tight text-white">
                             {challenge.title}
                           </h3>
-                          <p className="text-xs line-clamp-2 text-gray-500 mt-1">
+                          <p className="text-xs line-clamp-2 text-[#A1A1AA] mt-1">
                             {challenge.description}
                           </p>
                         </div>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1.5 border" style={{ borderColor: '#E8EFF0' }}>
+                      <div className="p-3 rounded-xl bg-[#0B0B12] text-xs space-y-1.5 border border-[#292940]">
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Target Goal:</span>
-                          <span className="font-bold" style={{ color: '#344B4A' }}>
+                          <span className="text-[#A1A1AA]">Target Goal:</span>
+                          <span className="font-bold text-white">
                             {challenge.targetValue} {challenge.targetUnit}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Activity Reward:</span>
-                          <span className="font-bold text-[#167D78]">
+                          <span className="text-[#A1A1AA]">Activity Reward:</span>
+                          <span className="font-bold text-[#6366F1]">
                             +{challenge.pointsPerActivity} pts per verified record
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Bonus for Completing:</span>
-                          <span className="font-bold text-[#27845A]">
+                          <span className="text-[#A1A1AA]">Bonus for Completing:</span>
+                          <span className="font-bold text-[#818CF8]">
                             +{challenge.completionBonusPoints} pts + "{challenge.badgeName}"
                           </span>
                         </div>
                       </div>
 
                       {challenge.isPackageEligible === false && (
-                        <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-center gap-2">
-                          <Lock className="w-4 h-4 shrink-0 text-amber-600" />
+                        <div className="p-2.5 rounded-xl bg-amber-950/30 border border-amber-800/40 text-xs text-[#818CF8] flex items-center gap-2">
+                          <Lock className="w-4 h-4 shrink-0 text-[#818CF8]" />
                           <span>Requires specific gym membership package.</span>
                         </div>
                       )}
                     </div>
 
-                    <div className="pt-4 mt-3 border-t flex justify-end gap-2" style={{ borderColor: '#D9E2E3' }}>
+                    <div className="pt-4 mt-3 border-t border-[#292940] flex justify-end gap-2">
                       <button
                         onClick={() => setSelectedChallenge(challenge)}
-                        className="px-3 py-1.5 rounded-xl text-xs font-medium border text-gray-600 hover:bg-gray-50"
-                        style={{ borderColor: '#D9E2E3' }}
+                        className="px-3 py-1.5 rounded-xl text-xs font-medium border border-[#292940] text-[#A1A1AA] hover:text-white hover:bg-[#17172A] transition"
                       >
                         Details
                       </button>
@@ -869,9 +1066,10 @@ export default function MemberChallenges() {
                       <button
                         onClick={() => handleJoinChallenge(challenge._id)}
                         disabled={!canJoin || joiningId === challenge._id}
-                        className={`px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow transition ${
-                          canJoin ? 'bg-[#167D78] hover:opacity-90' : 'bg-gray-300 cursor-not-allowed'
-                        }`}
+                        className={clsx(
+                          "px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow transition cursor-pointer",
+                          canJoin ? 'bg-[#6366F1] hover:bg-[#4F46E5]' : 'bg-[#17172A] text-zinc-500 cursor-not-allowed border border-[#292940]'
+                        )}
                       >
                         {joiningId === challenge._id ? 'Enrolling...' : 'Join Challenge'}
                       </button>
@@ -888,10 +1086,10 @@ export default function MemberChallenges() {
       {activeTab === 'completed' && (
         <div className="space-y-4">
           {completedChallenges.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <Award className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold" style={{ color: '#344B4A' }}>No Completed Challenges Yet</h3>
-              <p className="text-sm max-w-sm mx-auto mt-1" style={{ color: '#697778' }}>
+            <div className="text-center py-16 bg-[#11111F] rounded-2xl border border-[#292940]">
+              <Award className="w-12 h-12 mx-auto text-zinc-600 mb-3" />
+              <h3 className="text-base font-bold text-white">No Completed Challenges Yet</h3>
+              <p className="text-sm max-w-sm mx-auto mt-1 text-[#A1A1AA]">
                 Keep logging your workouts and attendance! When you hit your target goal, your trophies and completion rewards will appear here.
               </p>
             </div>
@@ -905,90 +1103,82 @@ export default function MemberChallenges() {
                 return (
                   <div
                     key={challenge._id}
-                    className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between"
-                    style={{ borderColor: '#D9E2E3' }}
+                    className="bg-[#11111F] rounded-2xl border border-[#292940] p-5 flex flex-col justify-between shadow-xl"
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-emerald-100 text-emerald-800 flex items-center gap-1">
+                        <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Completed!
                         </span>
 
-                        <span className="text-xs text-gray-500 font-medium">
+                        <span className="text-xs text-[#A1A1AA] font-medium">
                           {p.completedAt ? new Date(p.completedAt).toLocaleDateString() : ''}
                         </span>
                       </div>
 
                       <div className="flex items-start gap-3">
-                        <span className="p-2.5 rounded-xl shrink-0 bg-amber-50 text-amber-600 border border-amber-200">
+                        <span className="p-2.5 rounded-xl shrink-0 bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30">
                           <IconComponent className="w-6 h-6" />
                         </span>
                         <div>
-                          <h3 className="font-bold text-base leading-tight" style={{ color: '#344B4A' }}>
+                          <h3 className="font-bold text-base leading-tight text-white">
                             {challenge.title}
                           </h3>
-                          <span className="text-xs font-semibold text-[#167D78] block mt-0.5">
-                            Badge Earned: {challenge.badgeName}
+                          <p className="text-xs line-clamp-2 text-[#A1A1AA] mt-1">
+                            {challenge.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-[#0B0B12] border border-[#292940] text-xs space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-[#A1A1AA]">Final Achievement:</span>
+                          <span className="font-bold text-white">
+                            {p.currentProgress} / {challenge.targetValue} {challenge.targetUnit}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#A1A1AA]">Points Awarded:</span>
+                          <span className="font-bold text-[#818CF8]">
+                            +{challenge.completionBonusPoints + p.pointsEarned} pts
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#A1A1AA]">Badge Unlocked:</span>
+                          <span className="font-bold text-emerald-400">
+                            🏆 {challenge.badgeName}
                           </span>
                         </div>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1 border" style={{ borderColor: '#E8EFF0' }}>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Achieved Goal:</span>
-                          <span className="font-bold">{p.currentProgress} {challenge.targetUnit}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Total Points Earned:</span>
-                          <span className="font-bold text-[#167D78]">+{p.pointsEarned} pts</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Final Streak:</span>
-                          <span className="font-bold text-amber-600">🔥 {p.streakDays} days</span>
-                        </div>
-                      </div>
-
-                      {/* Reward Claim status */}
-                      {challenge.rewardId && (
-                        <div className="p-3 rounded-xl border border-dashed text-xs bg-emerald-50/50 border-emerald-300">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-bold text-emerald-800 flex items-center gap-1">
-                              <Gift className="w-3.5 h-3.5" /> Reward: {(challenge.rewardId as any).title || 'Coupon'}
-                            </span>
-                            <span className="font-semibold text-emerald-700 text-[11px]">
-                              {p.rewardClaimStatus}
-                            </span>
+                      {p.claimCode && (
+                        <div className="p-2.5 rounded-xl bg-[#0B0B12] border border-dashed border-[#818CF8]/50 flex items-center justify-between text-xs">
+                          <div>
+                            <span className="text-[10px] text-[#A1A1AA] block">REWARD CLAIM CODE</span>
+                            <span className="font-mono font-bold text-white">{p.claimCode}</span>
                           </div>
-
-                          {p.claimCode && (
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-emerald-200">
-                              <span className="font-mono font-bold text-emerald-900 bg-white px-2 py-0.5 rounded border">
-                                {p.claimCode}
-                              </span>
-                              <button
-                                onClick={() => copyVoucherCode(p.claimCode!)}
-                                className="text-emerald-700 hover:text-emerald-900 font-medium flex items-center gap-1"
-                              >
-                                {copiedCode === p.claimCode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                                {copiedCode === p.claimCode ? 'Copied' : 'Copy'}
-                              </button>
-                            </div>
-                          )}
+                          <button
+                            onClick={() => copyVoucherCode(p.claimCode!)}
+                            className="p-1 rounded hover:bg-white/10 text-[#A1A1AA] hover:text-white"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
                         </div>
                       )}
                     </div>
 
-                    <div className="pt-4 mt-3 border-t flex justify-end" style={{ borderColor: '#D9E2E3' }}>
+                    <div className="pt-4 mt-3 border-t border-[#292940] flex justify-end">
                       {canClaim ? (
                         <button
-                          onClick={() => handleClaimReward(challenge.rewardId?._id || challenge.rewardId, challenge._id)}
-                          className="px-4 py-2 rounded-xl text-xs font-bold text-white shadow bg-[#167D78] hover:opacity-90 flex items-center gap-1.5"
+                          onClick={() => handleClaimReward(challenge.rewardId, challenge._id)}
+                          className="px-4 py-2 rounded-xl text-xs font-bold text-white shadow bg-[#6366F1] hover:bg-[#4F46E5] flex items-center gap-1.5 cursor-pointer"
                         >
-                          <Gift className="w-4 h-4" /> Claim Reward
+                          <Gift className="w-3.5 h-3.5" />
+                          Claim Completion Reward
                         </button>
                       ) : (
-                        <span className="text-xs text-gray-400 font-medium">
-                          {p.rewardClaimStatus === 'Claimed' ? 'Reward Claimed' : 'Achievement Unlocked'}
+                        <span className="text-xs text-[#A1A1AA] italic">
+                          Reward {p.rewardClaimStatus || 'Completed'}
                         </span>
                       )}
                     </div>
@@ -1004,16 +1194,16 @@ export default function MemberChallenges() {
       {activeTab === 'wallet' && (
         <div className="space-y-6">
           {/* Badges Grid */}
-          <div className="bg-white p-6 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-            <h2 className="text-lg font-bold mb-1" style={{ color: '#344B4A' }}>
+          <div className="bg-[#11111F] p-6 rounded-2xl border border-[#292940] shadow-xl">
+            <h2 className="text-lg font-bold mb-1 text-white">
               My Achievement Badges
             </h2>
-            <p className="text-xs text-gray-500 mb-6">
+            <p className="text-xs text-[#A1A1AA] mb-6">
               Badges unlocked by completing fitness and attendance challenges.
             </p>
 
             {wallet.badges?.length === 0 ? (
-              <div className="py-8 text-center text-sm text-gray-400">
+              <div className="py-8 text-center text-sm text-[#A1A1AA]">
                 No badges earned yet. Complete challenges to unlock achievement badges!
               </div>
             ) : (
@@ -1023,19 +1213,18 @@ export default function MemberChallenges() {
                   return (
                     <div
                       key={idx}
-                      className="p-4 rounded-2xl border text-center flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50 hover:shadow-md transition"
-                      style={{ borderColor: '#D9E2E3' }}
+                      className="p-4 rounded-2xl border border-[#292940] text-center flex flex-col items-center justify-center bg-[#0B0B12] hover:border-[#818CF8]/50 transition"
                     >
-                      <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2 shadow-inner" style={{ backgroundColor: '#D8EAE7', color: '#167D78' }}>
+                      <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2 bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30">
                         <IconComp className="w-7 h-7" />
                       </div>
-                      <div className="font-bold text-xs" style={{ color: '#344B4A' }}>
+                      <div className="font-bold text-xs text-white">
                         {badge.badgeName}
                       </div>
-                      <span className="text-[10px] text-gray-400 mt-1">
+                      <span className="text-[10px] text-[#A1A1AA] mt-1 truncate max-w-full">
                         {badge.challengeTitle || 'Challenge'}
                       </span>
-                      <span className="text-[10px] text-gray-400">
+                      <span className="text-[10px] text-zinc-500">
                         {new Date(badge.earnedAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -1046,36 +1235,36 @@ export default function MemberChallenges() {
           </div>
 
           {/* Points Transaction Ledger */}
-          <div className="bg-white p-6 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-            <h2 className="text-lg font-bold mb-1" style={{ color: '#344B4A' }}>
+          <div className="bg-[#11111F] p-6 rounded-2xl border border-[#292940] shadow-xl">
+            <h2 className="text-lg font-bold mb-1 text-white">
               Points History & Ledger
             </h2>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-[#A1A1AA] mb-4">
               Detailed audit trail of all earned, redeemed, and bonus points.
             </p>
 
             {transactions.length === 0 ? (
-              <div className="py-8 text-center text-sm text-gray-400">
+              <div className="py-8 text-center text-sm text-[#A1A1AA]">
                 No points transactions recorded yet.
               </div>
             ) : (
-              <div className="divide-y text-sm" style={{ borderColor: '#D9E2E3' }}>
+              <div className="divide-y divide-[#292940] text-sm">
                 {transactions.map((tx: any) => (
                   <div key={tx._id} className="py-3 flex justify-between items-center">
                     <div>
-                      <div className="font-semibold text-xs" style={{ color: '#344B4A' }}>
+                      <div className="font-semibold text-xs text-white">
                         {tx.description}
                       </div>
-                      <div className="text-[11px] text-gray-400">
+                      <div className="text-[11px] text-[#A1A1AA]">
                         {new Date(tx.createdAt).toLocaleString()} • Type: {tx.type}
                       </div>
                     </div>
 
                     <div className="text-right">
-                      <span className={`font-bold text-sm ${tx.amount > 0 ? 'text-[#167D78]' : 'text-red-600'}`}>
+                      <span className={clsx("font-bold text-sm", tx.amount > 0 ? 'text-[#818CF8]' : 'text-rose-400')}>
                         {tx.amount > 0 ? `+${tx.amount}` : tx.amount} pts
                       </span>
-                      <span className="text-[11px] text-gray-400 block">
+                      <span className="text-[11px] text-[#A1A1AA] block">
                         Bal: {tx.balanceAfter} pts
                       </span>
                     </div>
@@ -1089,13 +1278,13 @@ export default function MemberChallenges() {
 
       {/* TAB 5: LEADERBOARD */}
       {activeTab === 'leaderboard' && (
-        <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-4" style={{ borderColor: '#D9E2E3' }}>
+        <div className="bg-[#11111F] p-6 rounded-2xl border border-[#292940] shadow-xl space-y-4">
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <div>
-              <h2 className="text-lg font-bold" style={{ color: '#344B4A' }}>
+              <h2 className="text-lg font-bold text-white">
                 Challenge Leaderboard
               </h2>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-[#A1A1AA]">
                 Privacy-protected rankings. Your name is highlighted as "(You)".
               </p>
             </div>
@@ -1105,8 +1294,7 @@ export default function MemberChallenges() {
               <select
                 value={leaderboardChallengeId}
                 onChange={e => setLeaderboardChallengeId(e.target.value)}
-                className="px-3 py-2 rounded-xl border text-sm font-semibold max-w-xs focus:outline-none"
-                style={{ borderColor: '#D9E2E3' }}
+                className="px-3.5 py-2 rounded-xl border border-[#292940] bg-[#0B0B12] text-white text-sm font-semibold max-w-xs focus:outline-none focus:border-[#6366F1]"
               >
                 {allChallengesList.map(ch => (
                   <option key={ch._id} value={ch._id}>
@@ -1118,14 +1306,14 @@ export default function MemberChallenges() {
           </div>
 
           {loadingLeaderboard ? (
-            <div className="py-12 text-center text-sm text-gray-500">Loading rankings...</div>
+            <div className="py-12 text-center text-sm text-[#A1A1AA]">Loading rankings...</div>
           ) : leaderboardData.length === 0 ? (
-            <div className="py-12 text-center text-sm text-gray-400">
+            <div className="py-12 text-center text-sm text-[#A1A1AA]">
               No participants ranked for this challenge yet. Join now and make the top spot!
             </div>
           ) : (
             <div className="space-y-3 pt-2">
-              {leaderboardData.map((item, idx) => {
+              {leaderboardData.map((item) => {
                 const isTop1 = item.rank === 1;
                 const isTop2 = item.rank === 2;
                 const isTop3 = item.rank === 3;
@@ -1134,38 +1322,40 @@ export default function MemberChallenges() {
                 return (
                   <div
                     key={item.participantId}
-                    className={`flex items-center justify-between p-3.5 rounded-xl border transition ${
+                    className={clsx(
+                      "flex items-center justify-between p-3.5 rounded-xl border transition",
                       isMe
-                        ? 'bg-[#D8EAE7]/50 border-[#167D78] ring-1 ring-[#167D78]'
+                        ? 'bg-[#6366F1]/15 border-[#6366F1] ring-1 ring-[#6366F1]'
                         : isTop1
-                        ? 'bg-amber-50/70 border-amber-200'
+                        ? 'bg-[#818CF8]/10 border-[#818CF8]/30'
                         : isTop2
-                        ? 'bg-slate-50 border-slate-200'
+                        ? 'bg-zinc-800/40 border-zinc-700/50'
                         : isTop3
-                        ? 'bg-orange-50/50 border-orange-200'
-                        : 'bg-white border-gray-100'
-                    }`}
+                        ? 'bg-amber-950/20 border-amber-900/30'
+                        : 'bg-[#0B0B12] border-[#292940]'
+                    )}
                   >
                     <div className="flex items-center gap-3">
                       <span
-                        className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${
+                        className={clsx(
+                          "w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs",
                           isTop1
-                            ? 'bg-amber-400 text-white'
+                            ? 'bg-[#818CF8] text-black font-extrabold'
                             : isTop2
-                            ? 'bg-slate-400 text-white'
+                            ? 'bg-zinc-400 text-black'
                             : isTop3
-                            ? 'bg-orange-400 text-white'
-                            : 'bg-gray-100 text-gray-600'
-                        }`}
+                            ? 'bg-amber-600 text-white'
+                            : 'bg-[#17172A] text-[#A1A1AA]'
+                        )}
                       >
                         {item.rank}
                       </span>
 
                       <div>
-                        <div className={`font-bold text-sm ${isMe ? 'text-[#167D78]' : 'text-[#344B4A]'}`}>
+                        <div className={clsx("font-bold text-sm", isMe ? 'text-[#6366F1]' : 'text-white')}>
                           {item.displayName}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-[#A1A1AA]">
                           {item.currentProgress} / {item.targetValue}
                           {item.streakDays > 0 && ` • 🔥 ${item.streakDays}d streak`}
                         </div>
@@ -1173,11 +1363,11 @@ export default function MemberChallenges() {
                     </div>
 
                     <div className="text-right">
-                      <span className="font-bold text-sm text-[#167D78]">
+                      <span className="font-bold text-sm text-[#818CF8]">
                         +{item.pointsEarned} pts
                       </span>
                       {item.completed && (
-                        <span className="block text-[11px] font-semibold text-emerald-600">
+                        <span className="block text-[11px] font-semibold text-emerald-400">
                           🏆 Completed
                         </span>
                       )}
@@ -1193,81 +1383,184 @@ export default function MemberChallenges() {
       {/* TAB 6: REWARDS STORE */}
       {activeTab === 'rewards' && (
         <div className="space-y-4">
-          <div className="bg-white p-5 rounded-2xl border shadow-sm flex justify-between items-center" style={{ borderColor: '#D9E2E3' }}>
+          <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-xl flex justify-between items-center">
             <div>
-              <h2 className="text-lg font-bold" style={{ color: '#344B4A' }}>
+              <h2 className="text-lg font-bold text-white">
                 Rewards Store
               </h2>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-[#A1A1AA]">
                 Redeem your earned fitness points for exclusive coupons, merchandise, and sessions.
               </p>
             </div>
 
             <div className="text-right">
-              <span className="text-xs text-gray-500 block">Available Points</span>
-              <span className="text-xl font-black text-[#167D78]">{wallet.currentBalance} pts</span>
+              <span className="text-xs text-[#A1A1AA] block">Available Points</span>
+              <span className="text-xl font-black text-[#818CF8]">{wallet.currentBalance} pts</span>
             </div>
           </div>
 
           {rewards.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <Gift className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold" style={{ color: '#344B4A' }}>No Rewards In Store Right Now</h3>
-              <p className="text-sm max-w-sm mx-auto mt-1" style={{ color: '#697778' }}>
+            <div className="text-center py-16 bg-[#11111F] rounded-2xl border border-[#292940]">
+              <Gift className="w-12 h-12 mx-auto text-zinc-600 mb-3" />
+              <h3 className="text-base font-bold text-white">No Rewards In Store Right Now</h3>
+              <p className="text-sm max-w-sm mx-auto mt-1 text-[#A1A1AA]">
                 Your gym owner will publish rewards and discounts soon. Keep earning points!
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {rewards.map(reward => {
-                const canAfford = wallet.currentBalance >= (reward.requiredPoints || 0);
+                const status = reward.memberStatus || (
+                  (reward.requiredPoints || 0) > 0 && wallet.currentBalance < reward.requiredPoints
+                    ? 'Locked'
+                    : 'Available'
+                );
+                const isAvailable = status === 'Available';
+                const isClaimed = status === 'Claimed';
+                const isPending = status === 'Pending Approval';
+                const isExpired = status === 'Expired';
+                const isLocked = status === 'Locked';
 
                 return (
                   <div
                     key={reward._id}
-                    className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                    style={{ borderColor: '#D9E2E3' }}
+                    className={clsx(
+                      "bg-[#11111F] rounded-3xl border border-[#292940] p-5 flex flex-col justify-between hover:border-[#6366F1]/40 transition relative overflow-hidden shadow-xl",
+                      isClaimed ? 'opacity-70' : ''
+                    )}
                   >
+                    {/* Top Tag & Badges */}
                     <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-emerald-50 text-emerald-800">
-                          {reward.category}
-                        </span>
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30">
+                            {reward.category}
+                          </span>
+                          {reward.assignmentMethod === 'Direct' && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30 flex items-center gap-1">
+                              ⭐ Awarded to You
+                            </span>
+                          )}
+                        </div>
 
-                        <span className="text-xs font-bold text-[#167D78]">
-                          {reward.requiredPoints > 0 ? `${reward.requiredPoints} points` : 'Free'}
-                        </span>
+                        {/* Status Badge */}
+                        <div>
+                          {isClaimed && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#17172A] text-[#A1A1AA] border border-[#292940]">
+                              ✓ Claimed
+                            </span>
+                          )}
+                          {isPending && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-[#818CF8] border border-amber-500/30">
+                              ⏳ Pending Review
+                            </span>
+                          )}
+                          {isAvailable && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                              Unlocked
+                            </span>
+                          )}
+                          {isLocked && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                              Locked
+                            </span>
+                          )}
+                          {isExpired && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#17172A] text-zinc-500 border border-[#292940]">
+                              Expired
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <div>
-                        <h3 className="font-bold text-base leading-tight" style={{ color: '#344B4A' }}>
+                        <h3 className="font-bold text-base leading-tight text-white">
                           {reward.title}
                         </h3>
-                        <p className="text-xs line-clamp-2 text-gray-500 mt-1">
+                        <p className="text-xs line-clamp-2 text-[#A1A1AA] mt-1">
                           {reward.description}
                         </p>
                       </div>
 
-                      {reward.termsAndConditions && (
-                        <p className="text-[11px] text-gray-400 italic">
-                          Terms: {reward.termsAndConditions}
+                      {/* Category Specific Perks Pill */}
+                      <div className="p-2.5 rounded-xl bg-[#0B0B12] border border-[#292940] text-xs space-y-1">
+                        {reward.category === 'Personal Training' && (
+                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                            <Dumbbell className="w-3.5 h-3.5 text-[#6366F1]" />
+                            {reward.sessionCount || 1} Free PT Session(s) ({reward.sessionDuration || '45 mins'})
+                            {reward.trainerId?.firstName && ` with ${reward.trainerId.firstName}`}
+                          </p>
+                        )}
+                        {reward.category === 'Discount Coupon' && (
+                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                            <Ticket className="w-3.5 h-3.5 text-[#6366F1]" />
+                            {reward.discountValue}{reward.discountType === 'Percentage' ? '%' : '₹'} Off on {reward.applicableService || 'All Services'}
+                          </p>
+                        )}
+                        {reward.category === 'Free Product / Gift' && (
+                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                            <Gift className="w-3.5 h-3.5 text-[#6366F1]" />
+                            Free Gift: {reward.productName || 'Store Product'} (Qty: {reward.productQuantity || 1})
+                          </p>
+                        )}
+                        {reward.category === 'Free Membership / Membership Extension' && (
+                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                            <Award className="w-3.5 h-3.5 text-[#6366F1]" />
+                            {reward.membershipDuration || '1 Month'} Membership Access ({reward.packageName || 'Full Access'})
+                          </p>
+                        )}
+                        {reward.category === 'Performance Award' && (
+                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                            <Trophy className="w-3.5 h-3.5 text-[#818CF8]" />
+                            {reward.bonusAmount ? `₹${reward.bonusAmount} Payout • ` : ''}{reward.awardReason || 'Outstanding Gym Achievement'}
+                          </p>
+                        )}
+                        {reward.category === 'Points-Based Reward' && (
+                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                            <Coins className="w-3.5 h-3.5 text-[#818CF8]" />
+                            Cost: {reward.requiredPoints} pts
+                          </p>
+                        )}
+
+                        {/* Progress or Requirement info if locked */}
+                        {isLocked && reward.progressInfo && reward.progressInfo.label && (
+                          <p className="text-[11px] text-rose-400 font-medium pt-0.5">
+                            Requires {reward.progressInfo.required} {reward.progressInfo.label} (Current: {reward.progressInfo.current})
+                          </p>
+                        )}
+                      </div>
+
+                      {reward.expiryDate && (
+                        <p className="text-[11px] text-[#A1A1AA]">
+                          Valid until: {new Date(reward.expiryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </p>
                       )}
                     </div>
 
-                    <div className="pt-4 mt-3 border-t flex justify-between items-center" style={{ borderColor: '#D9E2E3' }}>
-                      <span className="text-xs text-gray-500">
-                        {reward.requireApproval ? 'Requires Owner Approval' : 'Instant Voucher'}
+                    <div className="pt-3 mt-3 border-t border-[#292940] flex justify-between items-center">
+                      <span className="text-[11px] text-[#A1A1AA]">
+                        {reward.requireApproval ? 'Owner Approval Required' : 'Instant Voucher'}
                       </span>
 
                       <button
                         onClick={() => handleClaimReward(reward._id)}
-                        disabled={!canAfford}
-                        className={`px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow ${
-                          canAfford ? 'bg-[#167D78] hover:opacity-90' : 'bg-gray-300 cursor-not-allowed'
-                        }`}
+                        disabled={!isAvailable}
+                        className={clsx(
+                          "px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm",
+                          isAvailable
+                            ? 'bg-[#6366F1] hover:bg-[#4F46E5] text-white cursor-pointer'
+                            : 'bg-[#17172A] text-zinc-500 cursor-not-allowed border border-[#292940]'
+                        )}
                       >
-                        {canAfford ? 'Redeem Reward' : 'Need More Points'}
+                        {isClaimed
+                          ? 'Claimed'
+                          : isPending
+                          ? 'Under Review'
+                          : isAvailable
+                          ? (reward.assignmentMethod === 'Direct' ? 'Accept Award' : 'Redeem Perk')
+                          : isExpired
+                          ? 'Expired'
+                          : 'Locked'}
                       </button>
                     </div>
                   </div>
@@ -1281,20 +1574,20 @@ export default function MemberChallenges() {
       {/* TAB 7: MY VOUCHERS / CLAIM HISTORY */}
       {activeTab === 'claims' && (
         <div className="space-y-4">
-          <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
-            <h2 className="text-lg font-bold" style={{ color: '#344B4A' }}>
+          <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-xl">
+            <h2 className="text-lg font-bold text-white">
               My Claimed Vouchers
             </h2>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-[#A1A1AA]">
               Present your voucher codes at the gym desk to redeem your rewards and benefits.
             </p>
           </div>
 
           {claims.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <Ticket className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold" style={{ color: '#344B4A' }}>No Claimed Rewards Yet</h3>
-              <p className="text-sm max-w-sm mx-auto mt-1" style={{ color: '#697778' }}>
+            <div className="text-center py-16 bg-[#11111F] rounded-2xl border border-[#292940]">
+              <Ticket className="w-12 h-12 mx-auto text-zinc-600 mb-3" />
+              <h3 className="text-base font-bold text-white">No Claimed Rewards Yet</h3>
+              <p className="text-sm max-w-sm mx-auto mt-1 text-[#A1A1AA]">
                 When you claim rewards or vouchers, your codes and approval status will appear here.
               </p>
             </div>
@@ -1303,58 +1596,58 @@ export default function MemberChallenges() {
               {claims.map(claim => (
                 <div
                   key={claim._id}
-                  className="bg-white rounded-2xl border shadow-sm p-5 space-y-3"
-                  style={{ borderColor: '#D9E2E3' }}
+                  className="bg-[#11111F] rounded-2xl border border-[#292940] p-5 space-y-3 shadow-xl"
                 >
                   <div className="flex justify-between items-center">
                     <span
-                      className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
+                      className={clsx(
+                        "text-xs px-2.5 py-1 rounded-full font-semibold",
                         claim.claimStatus === 'Approved'
-                          ? 'bg-emerald-100 text-emerald-800'
+                          ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
                           : claim.claimStatus === 'Pending'
-                          ? 'bg-amber-100 text-amber-800'
+                          ? 'bg-amber-500/15 text-[#818CF8] border border-amber-500/30'
                           : claim.claimStatus === 'Redeemed'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
+                          ? 'bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30'
+                          : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                      )}
                     >
                       {claim.claimStatus}
                     </span>
 
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-[#A1A1AA]">
                       {new Date(claim.createdAt).toLocaleDateString()}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-base" style={{ color: '#344B4A' }}>
+                    <h3 className="font-bold text-base text-white">
                       {claim.rewardId?.title || 'Reward'}
                     </h3>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-[#A1A1AA]">
                       {claim.rewardId?.category}
                     </span>
                   </div>
 
                   {/* Voucher Code Card */}
-                  <div className="p-3.5 rounded-xl border border-dashed bg-gray-50 flex items-center justify-between" style={{ borderColor: '#167D78' }}>
+                  <div className="p-3.5 rounded-xl border border-dashed border-[#6366F1]/50 bg-[#0B0B12] flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-gray-400 block font-semibold">VOUCHER CODE</span>
-                      <span className="font-mono font-bold text-base text-[#167D78]">
+                      <span className="text-[10px] text-[#A1A1AA] block font-semibold uppercase tracking-wider">VOUCHER CODE</span>
+                      <span className="font-mono font-bold text-base text-[#6366F1]">
                         {claim.claimCode}
                       </span>
                     </div>
 
                     <button
                       onClick={() => copyVoucherCode(claim.claimCode)}
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold border bg-white flex items-center gap-1 text-gray-700 hover:bg-gray-100"
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold border border-[#292940] bg-[#17172A] flex items-center gap-1 text-white hover:bg-[#292940] cursor-pointer"
                     >
-                      {copiedCode === claim.claimCode ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copiedCode === claim.claimCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                       {copiedCode === claim.claimCode ? 'Copied' : 'Copy'}
                     </button>
                   </div>
 
                   {claim.rejectionReason && (
-                    <div className="p-2.5 rounded-xl bg-red-50 text-xs text-red-700">
+                    <div className="p-2.5 rounded-xl bg-rose-950/30 border border-rose-800/40 text-xs text-rose-300">
                       Reason: {claim.rejectionReason}
                     </div>
                   )}
@@ -1365,68 +1658,239 @@ export default function MemberChallenges() {
         </div>
       )}
 
+      {/* TAB 8: AWARDS & CERTIFICATES */}
+      {activeTab === 'awards' && (
+        <div className="space-y-8">
+          {/* Header */}
+          <div className="relative overflow-hidden bg-gradient-to-r from-[#11111F] via-[#151515] to-[#0B0B12] p-6 rounded-3xl border border-[#292940] shadow-2xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-[#818CF8] font-bold text-xs uppercase tracking-wider mb-1">
+                  <Award className="w-4 h-4 text-[#818CF8]" />
+                  Official Recognition & Honors
+                </div>
+                <h2 className="text-xl font-black text-white">
+                  My Awards & Gym Hall of Fame
+                </h2>
+                <p className="text-xs text-[#A1A1AA] mt-1">
+                  Conferred fitness honors recognized by gym management. Download your tamper-verifiable certificates anytime.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="px-5 py-2.5 rounded-2xl bg-[#0B0B12] border border-[#292940] shadow-lg text-center">
+                  <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Awards Conferred</span>
+                  <span className="text-xl font-black text-[#818CF8]">{myAwards.length}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section: My Won Awards */}
+          <div>
+            <h3 className="text-base font-bold mb-4 flex items-center gap-2 text-white">
+              <Trophy className="w-4 h-4 text-[#818CF8]" />
+              My Conferred Honors ({myAwards.length})
+            </h3>
+
+            {myAwards.length === 0 ? (
+              <div className="text-center py-12 bg-[#11111F] rounded-2xl border border-[#292940]">
+                <Award className="w-12 h-12 mx-auto text-zinc-600 mb-3" />
+                <h4 className="text-base font-bold text-white">No Conferred Awards Yet</h4>
+                <p className="text-xs text-[#A1A1AA] max-w-md mx-auto mt-1">
+                  Stay consistent with your workouts, track verified attendance, and participate in challenges. Gym management awards top performers every month and quarter!
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {myAwards.map((award: any) => (
+                  <div
+                    key={award._id}
+                    className="bg-[#11111F] rounded-2xl border border-[#292940] p-5 relative overflow-hidden flex flex-col justify-between shadow-xl"
+                  >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-[#818CF8]/15 to-transparent rounded-bl-full pointer-events-none" />
+
+                    <div>
+                      <div className="flex justify-between items-start mb-3">
+                        <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30 flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-[#818CF8] text-[#818CF8]" />
+                          {award.awardPeriod || 'Official Award'}
+                        </span>
+                        <span className="text-[11px] text-[#A1A1AA]">
+                          {new Date(award.publishedAt || award.updatedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+
+                      <h4 className="text-lg font-black text-white mb-1">
+                        {award.title}
+                      </h4>
+                      <p className="text-xs font-semibold text-[#6366F1] mb-2">
+                        {award.category}
+                      </p>
+                      <p className="text-xs text-[#A1A1AA] line-clamp-3 mb-4 leading-relaxed">
+                        {award.description}
+                      </p>
+
+                      {award.winnerScore && (
+                        <div className="text-xs p-2 rounded-xl bg-[#0B0B12] border border-[#292940] text-zinc-300 mb-3">
+                          <span className="text-[#A1A1AA] text-[10px] block font-semibold">VERIFIED PERFORMANCE RECORD</span>
+                          <span className="font-bold text-[#818CF8]">{award.winnerScore}</span>
+                        </div>
+                      )}
+
+                      {award.bonusAmount > 0 && (
+                        <div className="text-xs p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 mb-3 flex items-center justify-between font-semibold">
+                          <span>Award Bonus/Prize:</span>
+                          <span className="font-black text-sm">₹{award.bonusAmount}</span>
+                        </div>
+                      )}
+
+                      <div className="p-2.5 rounded-xl bg-[#0B0B12] border border-[#292940] text-center mb-4">
+                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block tracking-wider">CERTIFICATE ID</span>
+                        <span className="font-mono text-xs font-black text-[#6366F1]">
+                          {award.certificateId || 'CERT-VERIFIED'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        generateAwardCertificatePDF({
+                          recipientName: award.winnerName || 'Gym Member',
+                          recipientRole: 'Customer',
+                          awardTitle: award.title,
+                          awardCategory: award.category,
+                          gymName: award.gymId?.name,
+                          awardDate: new Date(award.publishedAt || award.updatedAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          }),
+                          certificateId: award.certificateId || 'CERT-VERIFIED',
+                          metricAchieved: award.winnerScore ? `${award.winnerScore}` : undefined
+                        })
+                      }
+                      className="w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-md shadow-[#6366F1]/25 transition cursor-pointer"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download Official PDF Certificate
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Section: Gym Hall of Fame */}
+          <div>
+            <h3 className="text-base font-bold mb-4 flex items-center gap-2 text-white">
+              <Sparkles className="w-4 h-4 text-[#818CF8]" />
+              Gym Hall of Fame ({hallOfFame.length})
+            </h3>
+
+            {hallOfFame.length === 0 ? (
+              <div className="text-center py-10 bg-[#11111F] rounded-2xl border border-[#292940]">
+                <p className="text-xs text-[#A1A1AA]">Hall of fame honors will be unveiled as management publishes awards.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {hallOfFame.map((item: any) => (
+                  <div
+                    key={item._id}
+                    className="bg-[#11111F] rounded-2xl border border-[#292940] p-4 shadow-xl flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] px-2 py-0.5 rounded-md font-semibold bg-[#17172A] text-[#A1A1AA] border border-[#292940]">
+                          {item.recipientType}
+                        </span>
+                        <span className="text-[10px] text-zinc-500">
+                          {item.awardPeriod}
+                        </span>
+                      </div>
+                      <h5 className="font-bold text-sm text-white line-clamp-1">{item.title}</h5>
+                      <p className="text-xs text-[#818CF8] font-semibold mb-2">{item.category}</p>
+
+                      <div className="p-2.5 rounded-xl bg-[#0B0B12] border border-[#292940] mb-2">
+                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Conferred To</span>
+                        <span className="font-bold text-xs text-[#6366F1]">{item.winnerName}</span>
+                      </div>
+                    </div>
+
+                    <div className="text-[10px] text-[#A1A1AA] pt-2 border-t border-[#292940] flex justify-between items-center">
+                      <span className="font-mono text-zinc-400">{item.certificateId}</span>
+                      <span>{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : ''}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* CHALLENGE DETAILS MODAL */}
       {selectedChallenge && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-lg p-6 shadow-2xl border" style={{ borderColor: '#D9E2E3' }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#11111F] rounded-3xl w-full max-w-lg p-6 shadow-2xl border border-[#292940]">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl" style={{ backgroundColor: '#D8EAE7', color: '#167D78' }}>
+                <div className="p-2.5 rounded-2xl bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30">
                   <Trophy className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg" style={{ color: '#344B4A' }}>
+                  <h3 className="font-bold text-lg text-white">
                     {selectedChallenge.title}
                   </h3>
-                  <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-emerald-50 text-emerald-800">
+                  <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30">
                     {selectedChallenge.challengeType}
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedChallenge(null)}
-                className="p-1 rounded-lg hover:bg-gray-100 text-gray-400"
+                className="p-1 rounded-lg hover:bg-white/10 text-zinc-400 hover:text-white transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-gray-600 mb-4 leading-relaxed">
+            <p className="text-xs text-[#A1A1AA] mb-4 leading-relaxed">
               {selectedChallenge.description}
             </p>
 
-            <div className="p-4 rounded-xl bg-gray-50 text-xs space-y-2 border mb-5" style={{ borderColor: '#E8EFF0' }}>
+            <div className="p-4 rounded-xl bg-[#0B0B12] text-xs space-y-2 border border-[#292940] mb-5">
               <div className="flex justify-between">
-                <span className="text-gray-500">Duration:</span>
-                <span className="font-medium text-gray-800">
+                <span className="text-[#A1A1AA]">Duration:</span>
+                <span className="font-medium text-white">
                   {new Date(selectedChallenge.startDate).toLocaleDateString()} to {new Date(selectedChallenge.endDate).toLocaleDateString()}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-500">Target Goal:</span>
-                <span className="font-bold text-gray-800">
+                <span className="text-[#A1A1AA]">Target Goal:</span>
+                <span className="font-bold text-white">
                   {selectedChallenge.targetValue} {selectedChallenge.targetUnit}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-500">Points Awarded:</span>
-                <span className="font-bold text-[#167D78]">
+                <span className="text-[#A1A1AA]">Points Awarded:</span>
+                <span className="font-bold text-[#6366F1]">
                   +{selectedChallenge.pointsPerActivity} pts per verified visit/workout
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-500">Completion Bonus:</span>
-                <span className="font-bold text-[#27845A]">
+                <span className="text-[#A1A1AA]">Completion Bonus:</span>
+                <span className="font-bold text-[#818CF8]">
                   +{selectedChallenge.completionBonusPoints} bonus points
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-500">Achievement Badge:</span>
-                <span className="font-semibold text-gray-800">
+                <span className="text-[#A1A1AA]">Achievement Badge:</span>
+                <span className="font-semibold text-emerald-400">
                   {selectedChallenge.badgeName}
                 </span>
               </div>
@@ -1435,15 +1899,14 @@ export default function MemberChallenges() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setSelectedChallenge(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold border text-gray-600 hover:bg-gray-50"
-                style={{ borderColor: '#D9E2E3' }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold border border-[#292940] text-[#A1A1AA] hover:text-white hover:bg-[#17172A] transition cursor-pointer"
               >
                 Close
               </button>
 
               <button
                 onClick={() => handleJoinChallenge(selectedChallenge._id)}
-                className="px-5 py-2 rounded-xl text-xs font-bold text-white shadow bg-[#167D78] hover:opacity-90"
+                className="px-5 py-2 rounded-xl text-xs font-bold text-white shadow-md shadow-[#6366F1]/25 bg-[#6366F1] hover:bg-[#4F46E5] transition cursor-pointer"
               >
                 Join Challenge
               </button>

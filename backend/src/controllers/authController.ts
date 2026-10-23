@@ -66,6 +66,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       }
     }
 
+    // Resolve effective gymId from body, referring member, or campaign
+    const effectiveGymId = gymId || referrerUser?.gymId || targetCampaign?.gymId;
+
     const user = new User({
       firstName,
       lastName,
@@ -73,13 +76,13 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       mobile,
       passwordHash,
       role: Role.MEMBER,
-      approvalStatus: ApprovalStatus.PENDING,
+      approvalStatus: ApprovalStatus.APPROVED,
       isActive: true,
-      subscriptionStatus: gymId ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.NONE,
-      subscriptionPlan: gymId ? 'Free Trial' : undefined,
-      subscriptionExpiry: gymId ? trialEndDate : undefined,
+      subscriptionStatus: effectiveGymId ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.NONE,
+      subscriptionPlan: req.body.planName || (effectiveGymId ? 'Free Trial' : undefined),
+      subscriptionExpiry: effectiveGymId ? trialEndDate : undefined,
       customerType: 'PUBLIC_SIGNUP',
-      gymId,
+      gymId: effectiveGymId,
       branchId,
       dateOfBirth,
       gender,
@@ -99,30 +102,71 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     await user.save();
 
-    // Create referral tracking record if referred
-    if (referrerUser && targetCampaign) {
+    // Create initial membership record under the gym
+    if (effectiveGymId) {
       try {
-        await Referral.create({
-          gymId: targetCampaign.gymId,
-          campaignId: targetCampaign._id,
-          referrerId: referrerUser._id,
-          referredId: user._id,
-          referralCode: referralCode.trim().toUpperCase(),
-          status: 'Registered',
-          referrerRewardStatus: 'Pending',
-          referrerRewardType: targetCampaign.referrerRewardType,
-          referrerRewardAmount: targetCampaign.referrerRewardValue,
-          refereeRewardStatus: 'Pending',
-          refereeRewardType: targetCampaign.refereeRewardType,
-          refereeRewardAmount: targetCampaign.refereeRewardValue,
-          notes: `Customer registered with referral code ${referralCode.trim().toUpperCase()}`
+        const priceNum = Number(req.body.price) || 0;
+        const discountNum = Number(req.body.discount) || 0;
+        await CustomerMembership.create({
+          userId: user._id,
+          gymId: effectiveGymId,
+          branchId: branchId || undefined,
+          planName: req.body.planName || 'Free Trial',
+          duration: req.body.billingPlan === 'annual' ? '1 Year' : '1 Month',
+          price: priceNum,
+          discount: discountNum,
+          tax: 0,
+          finalAmount: Math.max(0, priceNum - discountNum),
+          status: CustomerMembershipStatus.ACTIVE,
+          startDate: new Date(),
+          endDate: trialEndDate,
+          paymentMethod: req.body.paymentMethod || 'Free Trial',
+          billingPlan: req.body.billingPlan === 'annual' ? 'annual' : 'monthly',
+          packageId: req.body.packageId || undefined,
+          features: ['Gym Access', 'Workout Tracking']
         });
+      } catch (memErr) {
+        console.error('Failed to create default membership for new customer:', memErr);
+      }
+    }
+
+    // Create or link referral tracking record if referred
+    if (referrerUser) {
+      try {
+        const existingInvite = await Referral.findOne({
+          referrerId: referrerUser._id,
+          inviteeEmail: email.trim().toLowerCase(),
+          status: 'Invited'
+        });
+
+        if (existingInvite) {
+          existingInvite.referredId = user._id;
+          existingInvite.status = 'Registered';
+          existingInvite.notes = `Customer registered after email invite. Referral code: ${referralCode.trim().toUpperCase()}`;
+          await existingInvite.save();
+        } else {
+          await Referral.create({
+            gymId: targetCampaign?.gymId || effectiveGymId,
+            campaignId: targetCampaign?._id || undefined,
+            referrerId: referrerUser._id,
+            referredId: user._id,
+            referralCode: referralCode.trim().toUpperCase(),
+            status: 'Registered',
+            referrerRewardStatus: 'Pending',
+            referrerRewardType: targetCampaign?.referrerRewardType || 'Wallet Points',
+            referrerRewardAmount: targetCampaign?.referrerRewardValue || 300,
+            refereeRewardStatus: 'Pending',
+            refereeRewardType: targetCampaign?.refereeRewardType || 'Membership Discount',
+            refereeRewardAmount: targetCampaign?.refereeRewardValue || 200,
+            notes: `Customer registered with referral code ${referralCode.trim().toUpperCase()}`
+          });
+        }
 
         // Notify referrer that friend registered
         await Notification.create({
           recipientId: referrerUser._id,
           recipientRole: 'MEMBER',
-          gymId: targetCampaign.gymId,
+          gymId: targetCampaign?.gymId || effectiveGymId,
           title: 'Friend Joined via Referral!',
           message: `${firstName} ${lastName} joined using your referral code (${referralCode.trim().toUpperCase()}). Your reward will be issued upon their membership payment!`,
           type: 'info',

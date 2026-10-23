@@ -98,7 +98,7 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
 
   return (
     <div className={`flex items-center gap-3 py-1.5 px-1 min-w-[220px] sm:min-w-[260px] select-none ${
-      isMine ? 'text-white' : 'text-[#344B4A]'
+      isMine ? 'text-white' : 'text-[#11111F]'
     }`}>
       <audio ref={audioRef} src={src} preload="metadata" />
 
@@ -108,8 +108,8 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
         onClick={togglePlay}
         className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform active:scale-95 cursor-pointer ${
           isMine 
-            ? 'bg-white text-[#167D78] hover:bg-white/90' 
-            : 'bg-[#167D78] text-white hover:bg-[#116660]'
+            ? 'bg-white text-[#6366F1] hover:bg-white/90' 
+            : 'bg-[#6366F1] text-white hover:bg-[#4F46E5]'
         }`}
         title={isPlaying ? 'Pause' : 'Play'}
       >
@@ -122,7 +122,7 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
           {/* Custom Track */}
           <div className="absolute inset-x-0 h-1.5 rounded-full overflow-hidden bg-black/15">
             <div 
-              className={`h-full transition-all duration-100 ${isMine ? 'bg-white' : 'bg-[#167D78]'}`}
+              className={`h-full transition-all duration-100 ${isMine ? 'bg-white' : 'bg-[#6366F1]'}`}
               style={{ width: `${progressPercent}%` }}
             />
           </div>

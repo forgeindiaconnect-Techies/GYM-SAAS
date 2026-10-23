@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import os from 'os';
 import { AuthRequest } from '../middlewares/auth';
 import ReferralCampaign, { IReferralCampaign } from '../models/ReferralCampaign';
 import Referral, { IReferral } from '../models/Referral';
@@ -9,6 +10,7 @@ import Gym from '../models/Gym';
 import Notification from '../models/Notification';
 import CustomerPointsWallet from '../models/CustomerPointsWallet';
 import PointsTransaction from '../models/PointsTransaction';
+import { sendReferralInvitationEmail } from '../utils/emailService';
 
 // Helper to generate a unique referral code
 const generateReferralCode = (firstName: string): string => {
@@ -447,13 +449,44 @@ export const getCustomerReferralCode = async (req: AuthRequest, res: Response): 
     const gym = await Gym.findById(gymId || user.gymId).select('name slug');
 
     // Share link
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    const shareLink = `${baseUrl}/register/customer?ref=${user.referralCode}&gymId=${gymId || user.gymId}`;
+    let baseUrl = process.env.FRONTEND_URL;
+    if (!baseUrl) {
+      const origin = req.get('origin') || req.get('referer');
+      if (origin) {
+        try {
+          const u = new URL(origin);
+          baseUrl = `${u.protocol}//${u.host}`;
+        } catch {
+          baseUrl = 'http://localhost:5173';
+        }
+      } else {
+        baseUrl = 'http://localhost:5173';
+      }
+    }
+    const targetGymId = (gymId || user.gymId)?.toString();
+    const gymQuery = targetGymId ? `&gymId=${targetGymId}` : '';
+    const shareLink = `${baseUrl}/register/customer?ref=${user.referralCode}${gymQuery}`;
+
+    // Also determine LAN network URL for direct mobile phone QR scanning over local Wi-Fi
+    let networkShareLink = shareLink;
+    try {
+      const ifaces = os.networkInterfaces();
+      for (const dev in ifaces) {
+        ifaces[dev]?.forEach((details: any) => {
+          if (details.family === 'IPv4' && !details.internal && !details.address.startsWith('127.')) {
+            networkShareLink = `http://${details.address}:5173/register/customer?ref=${user.referralCode}${gymQuery}`;
+          }
+        });
+      }
+    } catch {
+      // fallback
+    }
 
     res.status(200).json({
       success: true,
       referralCode: user.referralCode,
       shareLink,
+      networkShareLink,
       gymName: gym?.name || 'Our Gym',
       creditsBalance: user.referralCreditsBalance || 0,
       campaign: campaign || {
@@ -549,11 +582,14 @@ export const getCustomerReferralHistory = async (req: AuthRequest, res: Response
       const refUser = r.referredId as any;
       const maskedName = refUser
         ? `${refUser.firstName || 'Friend'} ${(refUser.lastName || '').slice(0, 1)}.`
-        : 'Referred Member';
+        : (r.inviteeName ? `${r.inviteeName} (Invited)` : (r.inviteeEmail || 'Invited Friend'));
 
       return {
         _id: r._id,
         referredName: maskedName,
+        refereeName: maskedName,
+        inviteeEmail: r.inviteeEmail,
+        inviteChannel: r.inviteChannel || 'Email',
         referralCode: r.referralCode,
         status: r.status,
         membershipPlan: r.membershipPlanName || 'Pending Selection',
@@ -561,14 +597,147 @@ export const getCustomerReferralHistory = async (req: AuthRequest, res: Response
         rewardType: r.referrerRewardType,
         rewardAmount: r.referrerRewardAmount,
         rewardIssuedAt: r.referrerRewardIssuedAt,
+        registrationDate: r.createdAt,
         createdAt: r.createdAt
       };
     });
 
-    res.status(200).json({ success: true, history });
+    res.status(200).json({ success: true, history, referrals: history });
   } catch (err: any) {
     console.error('Error in getCustomerReferralHistory:', err);
     res.status(500).json({ success: false, message: 'Server error', error: err.message });
+  }
+};
+
+export const sendEmailInvite = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    const gymId = req.user?.gymId;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const { friendName, friendEmail, personalMessage } = req.body;
+
+    if (!friendEmail || !friendEmail.includes('@')) {
+      res.status(400).json({ success: false, message: 'A valid email address is required.' });
+      return;
+    }
+
+    const cleanEmail = friendEmail.trim().toLowerCase();
+    const cleanName = (friendName || 'Friend').trim();
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    // Ensure user has a referral code
+    if (!user.referralCode) {
+      user.referralCode = generateReferralCode(user.firstName || 'FIT');
+      await user.save();
+    }
+
+    // Prevent referring self
+    if (user.email && user.email.toLowerCase() === cleanEmail) {
+      res.status(400).json({ success: false, message: 'You cannot send a referral invitation to your own email address.' });
+      return;
+    }
+
+    // Get active campaign or latest gym campaign
+    let campaign = await ReferralCampaign.findOne({
+      gymId: gymId || user.gymId,
+      status: 'Active',
+      startDate: { $lte: new Date() },
+      endDate: { $gte: new Date() }
+    }).sort({ createdAt: -1 });
+
+    if (!campaign) {
+      campaign = await ReferralCampaign.findOne({
+        gymId: gymId || user.gymId
+      }).sort({ createdAt: -1 });
+    }
+
+    const gym = await Gym.findById(gymId || user.gymId).select('name');
+    const gymName = gym?.name || 'Our Fitness Club';
+
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const inviteLink = `${baseUrl}/register/customer?ref=${user.referralCode}&gymId=${gymId || user.gymId}&email=${encodeURIComponent(cleanEmail)}`;
+
+    const discountDetails = campaign
+      ? (campaign.refereeDiscountType === 'Percentage'
+          ? `${campaign.refereeRewardValue}% Discount`
+          : `₹${campaign.refereeRewardValue} Discount`)
+      : '₹200 Exclusive Discount';
+
+    // Send invitation email via email service
+    const emailResult = await sendReferralInvitationEmail(
+      cleanEmail,
+      cleanName,
+      `${user.firstName || 'Your Friend'} ${user.lastName || ''}`.trim(),
+      gymName,
+      user.referralCode,
+      inviteLink,
+      discountDetails,
+      personalMessage
+    );
+
+    if (emailResult && !emailResult.success) {
+      res.status(502).json({
+        success: false,
+        message: emailResult.error || 'Failed to deliver invitation email.',
+        error: emailResult.error
+      });
+      return;
+    }
+
+    // Save or update referral record with status 'Invited'
+    let referralRecord = await Referral.findOne({
+      gymId: gymId || user.gymId,
+      referrerId: user._id,
+      inviteeEmail: cleanEmail
+    });
+
+    if (referralRecord) {
+      referralRecord.inviteeName = cleanName;
+      referralRecord.inviteChannel = 'Email';
+      referralRecord.invitedAt = new Date();
+      if (referralRecord.status === 'Invited') {
+        referralRecord.referralCode = user.referralCode;
+      }
+      await referralRecord.save();
+    } else {
+      referralRecord = await Referral.create({
+        gymId: gymId || user.gymId,
+        campaignId: campaign?._id || new mongoose.Types.ObjectId(),
+        referrerId: user._id,
+        inviteeName: cleanName,
+        inviteeEmail: cleanEmail,
+        inviteChannel: 'Email',
+        invitedAt: new Date(),
+        referralCode: user.referralCode,
+        status: 'Invited',
+        referrerRewardStatus: 'Pending',
+        referrerRewardType: campaign?.referrerRewardType || 'Membership Credit',
+        referrerRewardAmount: campaign?.referrerRewardValue || 300,
+        refereeRewardStatus: 'Pending',
+        refereeRewardType: campaign?.refereeRewardType || 'Membership Discount',
+        refereeRewardAmount: campaign?.refereeRewardValue || 200,
+        notes: `Invited via direct email by ${user.firstName || 'member'}`
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Invitation email sent successfully to ${cleanEmail}!`,
+      referral: referralRecord,
+      emailResult
+    });
+  } catch (err: any) {
+    console.error('Error in sendEmailInvite:', err);
+    res.status(500).json({ success: false, message: 'Failed to send invite email', error: err.message });
   }
 };
 
@@ -694,64 +863,97 @@ export const validateReferralCode = async (req: Request, res: Response): Promise
       return;
     }
 
-    const targetGymId = queryGymId || referrer.gymId;
+    const targetGymId = referrer.gymId || queryGymId;
 
-    // 3. Find active campaign
-    const campaign = await ReferralCampaign.findOne({
-      gymId: targetGymId as any,
-      status: 'Active',
-      startDate: { $lte: new Date() },
-      endDate: { $gte: new Date() }
-    }).sort({ createdAt: -1 });
+    // 3. Find active campaign with safe ObjectId casting and fallback
+    let campaign = null;
+    if (targetGymId) {
+      try {
+        const gymObjId = new mongoose.Types.ObjectId(targetGymId.toString());
+        campaign = await ReferralCampaign.findOne({
+          gymId: gymObjId,
+          status: 'Active',
+          startDate: { $lte: new Date() },
+          endDate: { $gte: new Date() }
+        }).sort({ createdAt: -1 });
 
-    if (!campaign) {
-      res.status(400).json({
-        success: false,
-        valid: false,
-        message: 'No active referral campaign currently available for this gym.'
-      });
-      return;
+        // Fallback: check any active campaign for this gym
+        if (!campaign) {
+          campaign = await ReferralCampaign.findOne({
+            gymId: gymObjId,
+            status: 'Active'
+          }).sort({ createdAt: -1 });
+        }
+      } catch (castErr) {
+        console.warn('Notice querying campaign for gymId:', castErr);
+      }
     }
 
-    // 4. Check budget / limit
-    if (campaign.rewardBudget > 0 && campaign.budgetSpent >= campaign.rewardBudget) {
-      res.status(400).json({
-        success: false,
-        valid: false,
-        message: 'This referral campaign has reached its reward budget limit.'
-      });
-      return;
-    }
-
-    // 5. Check user-specific limit
-    if (campaign.maxReferralsPerUser > 0) {
-      const userReferralCount = await Referral.countDocuments({
-        referrerId: referrer._id,
-        campaignId: campaign._id,
-        status: { $in: ['Payment Verified', 'Reward Issued'] }
-      });
-      if (userReferralCount >= campaign.maxReferralsPerUser) {
+    // 4. Check budget / limit if a specific campaign is active
+    if (campaign) {
+      if (campaign.rewardBudget > 0 && campaign.budgetSpent >= campaign.rewardBudget) {
         res.status(400).json({
           success: false,
           valid: false,
-          message: 'The referring member has reached the maximum referral limit for this campaign.'
+          message: 'This referral campaign has reached its reward budget limit.'
         });
         return;
       }
+
+      if (campaign.maxReferralsPerUser > 0) {
+        const userReferralCount = await Referral.countDocuments({
+          referrerId: referrer._id,
+          campaignId: campaign._id,
+          status: { $in: ['Payment Verified', 'Reward Issued'] }
+        });
+        if (userReferralCount >= campaign.maxReferralsPerUser) {
+          res.status(400).json({
+            success: false,
+            valid: false,
+            message: 'The referring member has reached the maximum referral limit for this campaign.'
+          });
+          return;
+        }
+      }
     }
+
+    const effectiveCampaign = campaign ? {
+      _id: campaign._id,
+      campaignName: campaign.campaignName,
+      campaignDescription: campaign.campaignDescription,
+      refereeRewardType: campaign.refereeRewardType || 'Membership Discount',
+      refereeRewardValue: Number(campaign.refereeRewardValue) || 200,
+      refereeDiscountType: campaign.refereeDiscountType || 'Fixed',
+      referrerRewardType: campaign.referrerRewardType || 'Wallet Points',
+      referrerRewardValue: Number(campaign.referrerRewardValue) || 300,
+      minMembershipPurchase: campaign.minMembershipPurchase || 0,
+      eligiblePlans: campaign.eligiblePlans || []
+    } : {
+      _id: null,
+      campaignName: 'Friends & Family Referral Program',
+      campaignDescription: 'Special welcome discount for new joining members referred by our gym family.',
+      refereeRewardType: 'Membership Discount',
+      refereeRewardValue: 200,
+      refereeDiscountType: 'Fixed',
+      referrerRewardType: 'Wallet Points',
+      referrerRewardValue: 300,
+      minMembershipPurchase: 0,
+      eligiblePlans: []
+    };
 
     res.status(200).json({
       success: true,
       valid: true,
-      campaign: {
-        _id: campaign._id,
-        campaignName: campaign.campaignName,
-        campaignDescription: campaign.campaignDescription,
-        refereeRewardType: campaign.refereeRewardType,
-        refereeRewardValue: campaign.refereeRewardValue,
-        refereeDiscountType: campaign.refereeDiscountType,
-        minMembershipPurchase: campaign.minMembershipPurchase,
-        eligiblePlans: campaign.eligiblePlans
+      message: 'Referral code applied successfully!',
+      campaign: effectiveCampaign,
+      refereeReward: {
+        type: effectiveCampaign.refereeRewardType,
+        value: effectiveCampaign.refereeRewardValue,
+        discountType: effectiveCampaign.refereeDiscountType
+      },
+      referrerReward: {
+        type: effectiveCampaign.referrerRewardType,
+        value: effectiveCampaign.referrerRewardValue
       },
       referrer: {
         _id: referrer._id,

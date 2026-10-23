@@ -101,7 +101,7 @@ const MemberAttendance = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#167D78] via-[#167D78] to-[#167D78] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#6366F1] via-[#6366F1] to-[#6366F1] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-semibold text-emerald-200">
@@ -149,19 +149,19 @@ const MemberAttendance = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm text-center">
-          <p className="text-xs text-[#697778] font-medium uppercase tracking-wider">Total Booked</p>
-          <p className="text-2xl font-bold text-[#344B4A] mt-1">{totalSessions}</p>
+        <div className="bg-white border border-[#292940] rounded-2xl p-4 shadow-sm text-center">
+          <p className="text-xs text-[#A1A1AA] font-medium uppercase tracking-wider">Total Booked</p>
+          <p className="text-2xl font-bold text-[#11111F] mt-1">{totalSessions}</p>
         </div>
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm text-center">
+        <div className="bg-white border border-[#292940] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-green-700 font-medium uppercase tracking-wider">Attended Live</p>
           <p className="text-2xl font-bold text-green-700 mt-1">{attendedCount}</p>
         </div>
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm text-center">
+        <div className="bg-white border border-[#292940] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-blue-700 font-medium uppercase tracking-wider">Self-Learning</p>
           <p className="text-2xl font-bold text-blue-700 mt-1">{selfLearningCount}</p>
         </div>
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm text-center">
+        <div className="bg-white border border-[#292940] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-rose-700 font-medium uppercase tracking-wider">Missed / Absent</p>
           <p className="text-2xl font-bold text-rose-700 mt-1">{missedCount}</p>
         </div>
@@ -181,7 +181,7 @@ const MemberAttendance = () => {
                   Live Active Session Check-In
                 </span>
               </div>
-              <h3 className="font-extrabold text-[#344B4A] text-base mt-0.5">
+              <h3 className="font-extrabold text-[#11111F] text-base mt-0.5">
                 {ongoingSession.trainerId?.name || 'Personal Training Session'} ({ongoingSession.mode})
               </h3>
               <p className="text-xs text-emerald-800 mt-0.5">
@@ -198,7 +198,7 @@ const MemberAttendance = () => {
             type="button"
             onClick={() => handleCheckOut(ongoingSession._id)}
             disabled={actionLoading === ongoingSession._id + '-checkout'}
-            className="px-5 py-2.5 bg-gradient-to-r from-[#167D78] to-[#116660] hover:opacity-95 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50"
+            className="px-5 py-2.5 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] hover:opacity-95 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50"
           >
             {actionLoading === ongoingSession._id + '-checkout' ? (
               <Loader2 size={15} className="animate-spin" />
@@ -211,19 +211,19 @@ const MemberAttendance = () => {
       )}
 
       {!ongoingSession && nextEligibleSession && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-[#D8EAE7] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-[#17172A] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#167D78] to-[#116660] text-white flex items-center justify-center font-bold shadow-md shadow-teal-900/10 shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white flex items-center justify-center font-bold shadow-md shadow-teal-900/10 shrink-0">
               <LogIn size={22} />
             </div>
             <div>
-              <span className="text-[11px] font-extrabold uppercase text-[#167D78] tracking-wider block">
+              <span className="text-[11px] font-extrabold uppercase text-[#6366F1] tracking-wider block">
                 Scheduled Training Session
               </span>
-              <h3 className="font-extrabold text-[#344B4A] text-base mt-0.5">
+              <h3 className="font-extrabold text-[#11111F] text-base mt-0.5">
                 {nextEligibleSession.trainerId?.name || 'Assigned Trainer'} ({nextEligibleSession.mode})
               </h3>
-              <p className="text-xs text-[#697778] mt-0.5">
+              <p className="text-xs text-[#A1A1AA] mt-0.5">
                 {nextEligibleSession.date} &bull; {nextEligibleSession.startTime} - {nextEligibleSession.endTime}
               </p>
             </div>
@@ -246,29 +246,29 @@ const MemberAttendance = () => {
       )}
 
       {/* Attendance Log Table */}
-      <div className="bg-white border border-[#D9E2E3] rounded-2xl overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0]">
-          <h2 className="text-sm font-bold text-[#344B4A]">Session Attendance History</h2>
+      <div className="bg-white border border-[#292940] rounded-2xl overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12]">
+          <h2 className="text-sm font-bold text-[#11111F]">Session Attendance History</h2>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[#167D78]" size={32} />
+            <Loader2 className="animate-spin text-[#6366F1]" size={32} />
           </div>
         ) : sessions.length === 0 ? (
-          <div className="p-12 text-center text-[#697778] space-y-3">
+          <div className="p-12 text-center text-[#A1A1AA] space-y-3">
             <CalendarCheck size={36} className="mx-auto text-stone-600" />
             <p className="font-semibold text-sm">No session attendance records found yet.</p>
             <p className="text-xs text-gray-400">Book and attend your first online trainer session to view check-in history.</p>
             <Link
               to="/member/find-trainers"
-              className="inline-block mt-2 px-4 py-2 bg-[#167D78] text-white rounded-xl text-xs font-bold hover:bg-[#116660] transition"
+              className="inline-block mt-2 px-4 py-2 bg-[#6366F1] text-white rounded-xl text-xs font-bold hover:bg-[#4F46E5] transition"
             >
               Book Trainer Session
             </Link>
           </div>
         ) : (
-          <div className="divide-y divide-[#D9E2E3]">
+          <div className="divide-y divide-[#292940]">
             {sessions.map((session) => {
               const status = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : session.status);
               const checkedIn = Boolean(session.checkInTime);
@@ -282,14 +282,14 @@ const MemberAttendance = () => {
                   className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 transition"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold text-sm shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center font-bold text-sm shrink-0">
                       {session.mode === 'Online' ? <Video size={18} /> : <Dumbbell size={18} />}
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-[#344B4A]">
+                      <p className="font-bold text-sm text-[#11111F]">
                         {session.trainerId?.name || 'Assigned Trainer'}
                       </p>
-                      <p className="text-xs text-[#697778] mt-0.5">
+                      <p className="text-xs text-[#A1A1AA] mt-0.5">
                         {session.date} &bull; {session.startTime} - {session.endTime} ({session.mode})
                       </p>
                     </div>
@@ -329,7 +329,7 @@ const MemberAttendance = () => {
                         type="button"
                         onClick={() => handleCheckOut(session._id)}
                         disabled={isCheckingOut}
-                        className="px-3 py-1.5 bg-[#167D78] hover:bg-[#116660] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
+                        className="px-3 py-1.5 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
                       >
                         {isCheckingOut ? <Loader2 size={13} className="animate-spin" /> : <LogOut size={13} />}
                         <span>Check Out</span>

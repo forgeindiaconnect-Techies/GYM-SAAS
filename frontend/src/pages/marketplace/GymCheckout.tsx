@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Loader2, ShieldCheck, FileText, CreditCard,
   QrCode, Landmark, Banknote, CheckCircle2, Sparkles, Building2,
-  Gift, Tag, AlertCircle
+  Gift, Tag, AlertCircle, Mail, Receipt, ExternalLink
 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import api from '../../utils/api';
@@ -52,7 +52,6 @@ const GymCheckout = () => {
 
     // Expect state to be passed from GymDetails
     if (!location.state?.plan || !location.state?.gym) {
-      // Check session storage
       const savedIntent = sessionStorage.getItem('checkout_intent');
       if (savedIntent) {
         try {
@@ -152,7 +151,7 @@ const GymCheckout = () => {
     : 0;
   const referralDiscount = isFreeTrial ? 0 : Math.min(numPrice, Math.round(rawDiscount));
   const discountedPrice = Math.max(0, numPrice - referralDiscount);
-  const tax = isFreeTrial ? 0 : discountedPrice * 0.18; // 18% GST for paid plans
+  const tax = isFreeTrial ? 0 : Math.round(discountedPrice * 0.18); // 18% GST for paid plans
   const total = isFreeTrial ? 0 : Math.round(discountedPrice + tax);
 
   const handleCheckout = async () => {
@@ -170,13 +169,23 @@ const GymCheckout = () => {
 
     setIsProcessing(true);
     try {
-      // Simulate network processing
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Simulate gateway authorization
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      let featuresArray: string[] = [];
+      if (Array.isArray(plan.features)) {
+        featuresArray = plan.features;
+      } else if (typeof plan.features === 'string') {
+        featuresArray = plan.features.split(',').map((f: string) => f.trim()).filter(Boolean);
+      }
 
       const payload = {
         gymId: gym._id,
         branchId: branch?._id,
+        packageId: (plan._id && !plan._id.toString().startsWith('default')) ? plan._id : undefined,
         planName: plan.name,
+        packageDescription: plan.description || `${plan.name} Membership Package`,
+        features: featuresArray,
         duration: plan.duration || (isFreeTrial ? '1 Week' : '1 Month'),
         price: numPrice,
         discount: referralDiscount,
@@ -218,68 +227,108 @@ const GymCheckout = () => {
     }
   };
 
-  // Success Confirmation Screen
+  // Success Confirmation Screen (Pure Black & Charcoal Theme with Sand Gold Highlights)
   if (paymentSuccess) {
+    const mem = paymentSuccess.membership || {};
     return (
-      <div className="min-h-screen bg-[#E8EFF0] pt-24 pb-16 px-4">
-        <div className="max-w-xl mx-auto bg-white border border-[#D9E2E3] rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6">
-          <div className="w-20 h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-inner">
+      <div className="min-h-screen bg-[#050505] text-white pt-24 pb-16 px-4 flex items-center justify-center">
+        <div className="max-w-xl w-full bg-[#11111F] border border-[#292940] rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 relative overflow-hidden">
+          {/* Subtle Ambient Glow */}
+          <div className="absolute top-0 right-1/4 w-48 h-48 bg-[#6366F1]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-[#818CF8]/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto shadow-inner relative z-10">
             <CheckCircle2 size={44} />
           </div>
 
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              {isFreeTrial ? 'Free Trial Activated' : 'Membership Confirmed'}
+          <div className="relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#818CF8] bg-[#818CF8]/10 px-3.5 py-1.5 rounded-full border border-[#818CF8]/20 inline-flex items-center gap-1.5">
+              <Sparkles size={12} /> {isFreeTrial ? 'Trial Activated' : 'Payment Verified & Active'}
             </span>
-            <h1 className="text-3xl font-extrabold text-[#344B4A] mt-3 tracking-tight">
-              {isFreeTrial ? 'Welcome to Your Free Trial!' : 'Payment Successful!'}
+            <h1 className="text-3xl font-extrabold text-white mt-4 tracking-tight">
+              {isFreeTrial ? 'Welcome to Your Free Trial!' : 'Membership Confirmed!'}
             </h1>
-            <p className="text-[#697778] text-sm mt-2">
+            <p className="text-gray-400 text-sm mt-2 max-w-md mx-auto">
               {isFreeTrial
-                ? `You now have 1 week of free full access to ${paymentSuccess.gymName}.`
-                : `Your ${paymentSuccess.planName} membership has been activated.`}
+                ? `You now have 1 week of full complimentary access to ${paymentSuccess.gymName}.`
+                : `Your ${paymentSuccess.planName} package at ${paymentSuccess.gymName} is now active.`}
             </p>
           </div>
 
-          <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl p-5 text-left space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-[#697778]">Gym:</span>
-              <span className="font-bold text-[#344B4A]">{paymentSuccess.gymName}</span>
+          {/* Email Confirmation Notice Banner */}
+          <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-4 text-left flex items-start gap-3 relative z-10">
+            <div className="w-9 h-9 rounded-xl bg-[#6366F1]/15 text-[#6366F1] flex items-center justify-center shrink-0 mt-0.5">
+              <Mail size={18} />
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#697778]">Selected Plan:</span>
-              <span className="font-bold text-[#167D78]">{paymentSuccess.planName}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#697778]">Duration:</span>
-              <span className="font-medium text-[#344B4A]">{paymentSuccess.duration}</span>
-            </div>
-            <div className="flex justify-between border-t border-[#D9E2E3] pt-3">
-              <span className="text-[#697778]">Amount Paid:</span>
-              <span className="font-black text-lg text-[#167D78]">
-                {isFreeTrial ? '₹0 (Free Trial)' : `₹${paymentSuccess.amount.toLocaleString('en-IN')}`}
-              </span>
-            </div>
-            <div className="flex justify-between text-xs text-[#697778]">
-              <span>Payment Mode:</span>
-              <span className="font-semibold text-[#344B4A]">{paymentSuccess.paymentMethod}</span>
+            <div>
+              <p className="text-sm font-semibold text-white">Confirmation Email Dispatched</p>
+              <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">
+                A verified payment receipt with your membership ID, included features snapshot, and validity details has been sent to <span className="text-[#818CF8] font-medium">{user?.email || 'your registered email'}</span>.
+              </p>
             </div>
           </div>
 
-          <button
-            onClick={() => navigate('/member/dashboard')}
-            className="w-full py-4 bg-[#167D78] hover:bg-[#116660] text-white font-bold rounded-2xl transition-colors shadow-lg"
-          >
-            Go to Member Dashboard
-          </button>
+          {/* Membership & Payment Details Card */}
+          <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-5 text-left space-y-3 text-sm relative z-10">
+            {mem.membershipId && (
+              <div className="flex justify-between items-center pb-2.5 border-b border-[#292940]">
+                <span className="text-gray-400 text-xs flex items-center gap-1.5">
+                  <Receipt size={13} className="text-[#818CF8]" /> Membership ID:
+                </span>
+                <span className="font-mono text-xs font-bold text-[#818CF8] bg-[#818CF8]/10 px-2.5 py-1 rounded-md border border-[#818CF8]/20">
+                  {mem.membershipId}
+                </span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span className="text-gray-400">Gym Name:</span>
+              <span className="font-semibold text-white">{paymentSuccess.gymName}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Purchased Package:</span>
+              <span className="font-bold text-[#6366F1]">{paymentSuccess.planName}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Validity Duration:</span>
+              <span className="font-medium text-white">{paymentSuccess.duration}</span>
+            </div>
+            <div className="flex justify-between border-t border-[#292940] pt-3">
+              <span className="text-gray-400">Total Paid:</span>
+              <span className="font-black text-lg text-emerald-400">
+                {isFreeTrial ? '₹0 (Free Trial)' : `₹${paymentSuccess.amount.toLocaleString('en-IN')}`}
+              </span>
+            </div>
+            <div className="flex justify-between text-xs text-gray-400">
+              <span>Payment Mode:</span>
+              <span className="font-medium text-gray-200">{paymentSuccess.paymentMethod}</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 relative z-10">
+            <button
+              onClick={() => navigate('/member/subscription')}
+              className="flex-1 py-3.5 bg-[#6366F1] hover:bg-[#3651D4] text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>View My Membership</span>
+              <ExternalLink size={16} />
+            </button>
+            <button
+              onClick={() => navigate('/member/dashboard')}
+              className="py-3.5 px-6 bg-[#11111F] hover:bg-[#17172A] border border-[#292940] text-gray-300 font-semibold rounded-xl transition-all cursor-pointer"
+            >
+              Dashboard
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#E8EFF0] pt-24 pb-16 px-4 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(22,74,74,0.04)_0%,_transparent_60%)] pointer-events-none" />
+    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-16 px-4 relative overflow-hidden">
+      {/* Background Glow Accents */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#6366F1]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#818CF8]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col lg:flex-row gap-8">
         
@@ -287,34 +336,34 @@ const GymCheckout = () => {
         <div className="flex-1 space-y-6">
           <button
             onClick={() => navigate(-1)}
-            className="text-[#697778] hover:text-[#167D78] flex items-center gap-2 text-sm font-medium transition-colors mb-2"
+            className="text-gray-400 hover:text-white flex items-center gap-2 text-sm font-medium transition-colors mb-2 cursor-pointer"
           >
             <ArrowLeft size={16} /> Back to Gym Details
           </button>
           
-          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
-            <div className="border-b border-[#D9E2E3] pb-4 flex items-center justify-between">
+          <div className="bg-[#11111F] border border-[#292940] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="border-b border-[#292940] pb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-[#344B4A]">Checkout</h2>
-                <p className="text-xs text-[#697778] mt-0.5">
+                <h2 className="text-2xl font-bold text-white">Checkout</h2>
+                <p className="text-xs text-gray-400 mt-0.5">
                   {isFreeTrial ? 'Activate your complimentary 1-week free trial' : `Complete payment to activate ${plan.name}`}
                 </p>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isFreeTrial ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
+              <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isFreeTrial ? 'bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30' : 'bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30'}`}>
                 {isFreeTrial ? 'Free Trial' : `${plan.name} Plan`}
               </span>
             </div>
 
             {/* Free Trial Banner / Explanation */}
             {isFreeTrial ? (
-              <div className="text-center py-6 px-4 bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl space-y-4">
-                <div className="w-16 h-16 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto">
+              <div className="text-center py-6 px-4 bg-[#0B0B12] border border-[#292940] rounded-2xl space-y-4">
+                <div className="w-16 h-16 bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30 rounded-2xl flex items-center justify-center mx-auto">
                   <Sparkles size={32} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#344B4A]">1-Week Free Trial Access</h3>
-                  <p className="text-sm text-[#697778] max-w-md mx-auto mt-2 leading-relaxed">
-                    Enjoy 7 days of full gym access with zero upfront payment. You can upgrade to a paid subscription (like Silver Plan) at any time.
+                  <h3 className="text-xl font-bold text-white">1-Week Free Trial Access</h3>
+                  <p className="text-sm text-gray-400 max-w-md mx-auto mt-2 leading-relaxed">
+                    Enjoy 7 days of full gym access with zero upfront payment. You can upgrade to a regular membership at any time.
                   </p>
                 </div>
               </div>
@@ -322,8 +371,8 @@ const GymCheckout = () => {
               /* Paid Plan Payment Methods */
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-base font-bold text-[#344B4A] mb-3 flex items-center gap-2">
-                    <CreditCard size={18} className="text-[#167D78]" /> Select Payment Method
+                  <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                    <CreditCard size={18} className="text-[#6366F1]" /> Select Payment Method
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {PAYMENT_METHODS.map((method) => {
@@ -336,16 +385,16 @@ const GymCheckout = () => {
                           onClick={() => setPaymentMethod(method.id as any)}
                           className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 cursor-pointer ${
                             isSelected
-                              ? 'border-[#167D78] bg-[#167D78]/5 ring-1 ring-[#167D78]'
-                              : 'border-[#D9E2E3] bg-white hover:border-[#167D78]/40'
+                              ? 'border-[#6366F1] bg-[#6366F1]/10 ring-1 ring-[#6366F1]'
+                              : 'border-[#292940] bg-[#0B0B12] hover:border-[#6366F1]/50 hover:bg-[#1a1a1a]'
                           }`}
                         >
-                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#167D78] text-white' : 'bg-[#E8EFF0] text-[#697778]'}`}>
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#6366F1] text-white' : 'bg-[#17172A] text-gray-400'}`}>
                             <Icon size={18} />
                           </div>
                           <div className="min-w-0">
-                            <p className={`font-bold text-sm leading-tight ${isSelected ? 'text-[#167D78]' : 'text-[#344B4A]'}`}>{method.label}</p>
-                            <p className="text-[11px] text-[#697778] mt-0.5 leading-snug">{method.desc}</p>
+                            <p className={`font-bold text-sm leading-tight ${isSelected ? 'text-[#6366F1]' : 'text-white'}`}>{method.label}</p>
+                            <p className="text-[11px] text-gray-400 mt-0.5 leading-snug">{method.desc}</p>
                           </div>
                         </button>
                       );
@@ -355,79 +404,79 @@ const GymCheckout = () => {
 
                 {/* Sub-form based on selected payment method */}
                 {paymentMethod === 'UPI' && (
-                  <div className="p-5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl space-y-4">
+                  <div className="p-5 bg-[#0B0B12] border border-[#292940] rounded-2xl space-y-4">
                     <div className="flex flex-col sm:flex-row items-center gap-5">
-                      <div className="bg-white p-3 rounded-2xl border border-[#D9E2E3] shadow-sm shrink-0">
+                      <div className="bg-white p-3 rounded-2xl border border-gray-300 shadow-sm shrink-0">
                         <QRCode
                           value={`upi://pay?pa=aigym@icici&pn=${encodeURIComponent(gym.name)}&am=${total}&cu=INR`}
                           size={110}
                         />
                       </div>
                       <div className="space-y-2 text-center sm:text-left flex-1">
-                        <p className="text-xs font-bold uppercase tracking-wider text-[#167D78]">Scan QR Code</p>
-                        <p className="text-xs text-[#697778]">Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.</p>
-                        <div className="text-xs font-mono bg-white px-3 py-1.5 rounded-lg border border-[#D9E2E3] inline-block font-bold text-[#344B4A]">
-                          UPI ID: aigym@icici
+                        <p className="text-xs font-bold uppercase tracking-wider text-[#818CF8]">Scan QR Code</p>
+                        <p className="text-xs text-gray-400">Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.</p>
+                        <div className="text-xs font-mono bg-[#11111F] px-3 py-1.5 rounded-lg border border-[#292940] inline-block font-bold text-gray-200">
+                          UPI ID: <span className="text-[#818CF8]">aigym@icici</span>
                         </div>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#697778] mb-1">Or Enter Your UPI ID</label>
+                      <label className="block text-xs font-semibold text-gray-400 mb-1">Or Enter Your UPI ID</label>
                       <input
                         type="text"
                         value={upiId}
                         onChange={(e) => setUpiId(e.target.value)}
                         placeholder="yourname@okhdfcbank"
-                        className="w-full bg-white border border-[#D9E2E3] rounded-xl px-3.5 py-2.5 text-sm text-[#344B4A] outline-none focus:border-[#167D78]"
+                        className="w-full bg-[#11111F] border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#6366F1]"
                       />
                     </div>
                   </div>
                 )}
 
                 {paymentMethod === 'Card' && (
-                  <div className="p-5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl space-y-3">
+                  <div className="p-5 bg-[#0B0B12] border border-[#292940] rounded-2xl space-y-3">
                     <div>
-                      <label className="block text-xs font-semibold text-[#697778] mb-1">Cardholder Name</label>
+                      <label className="block text-xs font-semibold text-gray-400 mb-1">Cardholder Name</label>
                       <input
                         type="text"
                         value={cardDetails.name}
                         onChange={(e) => setCardDetails({ ...cardDetails, name: e.target.value })}
                         placeholder="Name on card"
-                        className="w-full bg-white border border-[#D9E2E3] rounded-xl px-3.5 py-2.5 text-sm text-[#344B4A] outline-none focus:border-[#167D78]"
+                        className="w-full bg-[#11111F] border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#6366F1]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#697778] mb-1">Card Number</label>
+                      <label className="block text-xs font-semibold text-gray-400 mb-1">Card Number</label>
                       <input
                         type="text"
                         value={cardDetails.number}
                         onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })}
                         placeholder="4532 •••• •••• 8901"
                         maxLength={19}
-                        className="w-full bg-white border border-[#D9E2E3] rounded-xl px-3.5 py-2.5 text-sm text-[#344B4A] outline-none focus:border-[#167D78] font-mono"
+                        className="w-full bg-[#11111F] border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#6366F1] font-mono"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-semibold text-[#697778] mb-1">Expiry Date</label>
+                        <label className="block text-xs font-semibold text-gray-400 mb-1">Expiry Date</label>
                         <input
                           type="text"
                           value={cardDetails.expiry}
                           onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value })}
                           placeholder="MM/YY"
                           maxLength={5}
-                          className="w-full bg-white border border-[#D9E2E3] rounded-xl px-3.5 py-2.5 text-sm text-[#344B4A] outline-none focus:border-[#167D78]"
+                          className="w-full bg-[#11111F] border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#6366F1]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-[#697778] mb-1">CVV</label>
+                        <label className="block text-xs font-semibold text-gray-400 mb-1">CVV</label>
                         <input
                           type="password"
                           value={cardDetails.cvv}
                           onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
                           placeholder="•••"
                           maxLength={4}
-                          className="w-full bg-white border border-[#D9E2E3] rounded-xl px-3.5 py-2.5 text-sm text-[#344B4A] outline-none focus:border-[#167D78]"
+                          className="w-full bg-[#11111F] border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#6366F1]"
                         />
                       </div>
                     </div>
@@ -435,12 +484,12 @@ const GymCheckout = () => {
                 )}
 
                 {paymentMethod === 'Net Banking' && (
-                  <div className="p-5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl space-y-3">
-                    <label className="block text-xs font-semibold text-[#697778] mb-1">Select Bank</label>
+                  <div className="p-5 bg-[#0B0B12] border border-[#292940] rounded-2xl space-y-3">
+                    <label className="block text-xs font-semibold text-gray-400 mb-1">Select Bank</label>
                     <select
                       value={bankName}
                       onChange={(e) => setBankName(e.target.value)}
-                      className="w-full bg-white border border-[#D9E2E3] rounded-xl px-3.5 py-2.5 text-sm text-[#344B4A] outline-none focus:border-[#167D78]"
+                      className="w-full bg-[#11111F] border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#6366F1]"
                     >
                       <option value="HDFC Bank">HDFC Bank</option>
                       <option value="State Bank of India">State Bank of India (SBI)</option>
@@ -453,9 +502,9 @@ const GymCheckout = () => {
                 )}
 
                 {paymentMethod === 'Cash at Gym' && (
-                  <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 space-y-1">
+                  <div className="p-4 bg-[#818CF8]/10 border border-[#818CF8]/30 rounded-2xl text-xs text-[#818CF8] space-y-1">
                     <p className="font-bold">Pay At Gym Counter</p>
-                    <p>Your membership plan will be pre-registered. You can pay via Cash, POS card machine, or UPI at the front desk.</p>
+                    <p className="text-gray-300">Your membership package will be pre-registered. You can pay via Cash, POS card machine, or UPI at the front desk upon arrival.</p>
                   </div>
                 )}
               </div>
@@ -466,8 +515,8 @@ const GymCheckout = () => {
               onClick={handleCheckout}
               className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center space-x-2 transition-all shadow-lg ${
                 isProcessing
-                  ? 'bg-[#D8EAE7] text-[#697778] cursor-not-allowed'
-                  : 'bg-[#167D78] text-white hover:bg-[#116660] cursor-pointer'
+                  ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                  : 'bg-[#6366F1] text-white hover:bg-[#3651D4] cursor-pointer'
               }`}
             >
               {isProcessing ? (
@@ -485,47 +534,49 @@ const GymCheckout = () => {
 
         {/* Right Column - Order Summary */}
         <div className="lg:w-1/3">
-          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-3xl p-6 h-fit sticky top-24 shadow-xl space-y-6">
-            <h3 className="text-lg font-bold text-[#344B4A] border-b border-[#D9E2E3] pb-3 flex items-center gap-2">
-              <FileText className="text-[#167D78]" size={19} />
+          <div className="bg-[#11111F] border border-[#292940] rounded-3xl p-6 h-fit sticky top-24 shadow-2xl space-y-6">
+            <h3 className="text-lg font-bold text-white border-b border-[#292940] pb-3 flex items-center gap-2">
+              <FileText className="text-[#6366F1]" size={19} />
               Order Summary
             </h3>
             
             <div className="space-y-3.5 text-sm">
               <div className="flex items-start gap-3">
-                <Building2 size={18} className="text-[#167D78] shrink-0 mt-0.5" />
+                <Building2 size={18} className="text-[#818CF8] shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-[#344B4A] truncate">{gym.name || 'Selected Gym'}</p>
-                  <p className="text-xs text-[#697778]">{branch?.branchName ? `${branch.branchName} • ` : ''}{gym.location?.city || 'India'}</p>
+                  <p className="font-bold text-white truncate">{gym.name || 'Selected Gym'}</p>
+                  <p className="text-xs text-gray-400">{branch?.branchName ? `${branch.branchName} • ` : ''}{gym.location?.city || 'India'}</p>
                 </div>
               </div>
               
-              <div className="w-full h-px bg-[#D8EAE7]"></div>
+              <div className="w-full h-px bg-[#292940]"></div>
               
-              <div className="bg-[#E8EFF0] p-3.5 rounded-2xl border border-[#D9E2E3]/60 space-y-1">
+              <div className="bg-[#0B0B12] p-3.5 rounded-2xl border border-[#292940] space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-[#344B4A]">{plan.name}</span>
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#167D78]/10 text-[#167D78]">
+                  <span className="font-bold text-sm text-white">{plan.name}</span>
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/20">
                     {plan.duration || (isFreeTrial ? '1 Week' : '1 Month')}
                   </span>
                 </div>
                 {plan.features && (
-                  <p className="text-[11px] text-[#697778] line-clamp-2 mt-1">{plan.features}</p>
+                  <p className="text-[11px] text-gray-400 line-clamp-2 mt-1">
+                    {Array.isArray(plan.features) ? plan.features.join(' • ') : plan.features}
+                  </p>
                 )}
               </div>
             </div>
 
             {/* Referral Code Coupon Input */}
             {!isFreeTrial && (
-              <div className="p-3 bg-[#E8EFF0]/70 rounded-2xl border border-[#D9E2E3] space-y-2">
-                <div className="flex items-center justify-between text-xs font-bold text-[#344B4A]">
-                  <span className="flex items-center gap-1.5"><Gift size={14} className="text-[#167D78]" /> Referral Code</span>
+              <div className="p-3.5 bg-[#0B0B12] rounded-2xl border border-[#292940] space-y-2.5">
+                <div className="flex items-center justify-between text-xs font-bold text-white">
+                  <span className="flex items-center gap-1.5"><Gift size={14} className="text-[#818CF8]" /> Referral Code</span>
                   {appliedReferral && (
-                    <span className="text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">Applied</span>
+                    <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-bold border border-emerald-500/20">Applied</span>
                   )}
                 </div>
 
-                <div className="flex gap-1.5">
+                <div className="flex gap-2">
                   <input
                     type="text"
                     value={referralCodeInput}
@@ -534,67 +585,67 @@ const GymCheckout = () => {
                       setRefError('');
                     }}
                     placeholder="Enter referral code"
-                    className="w-full bg-white border border-[#D9E2E3] rounded-xl px-3 py-1.5 text-xs text-[#344B4A] uppercase font-mono outline-none focus:border-[#167D78]"
+                    className="w-full bg-[#11111F] border border-[#292940] rounded-xl px-3 py-1.5 text-xs text-white uppercase font-mono outline-none focus:border-[#6366F1]"
                   />
                   <button
                     type="button"
                     disabled={!referralCodeInput || refChecking}
                     onClick={() => handleApplyReferral()}
-                    className="px-3 py-1.5 bg-[#167D78] hover:bg-[#116660] disabled:bg-[#D8EAE7] text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap"
+                    className="px-3.5 py-1.5 bg-[#6366F1] hover:bg-[#3651D4] disabled:bg-gray-800 disabled:text-gray-500 text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer"
                   >
                     {refChecking ? '...' : 'Apply'}
                   </button>
                 </div>
 
                 {appliedReferral && (
-                  <p className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
+                  <p className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
                     <Sparkles size={12} /> {appliedReferral.refereeReward?.discountType === 'Percentage' ? `${appliedReferral.refereeReward?.value}%` : `₹${appliedReferral.refereeReward?.value}`} discount applied from {appliedReferral.referrer?.name}!
                   </p>
                 )}
                 {refError && (
-                  <p className="text-[11px] text-rose-600 flex items-center gap-1">
+                  <p className="text-[11px] text-rose-400 flex items-center gap-1">
                     <AlertCircle size={12} /> {refError}
                   </p>
                 )}
               </div>
             )}
 
-            <div className="border-t border-[#D9E2E3] pt-4 space-y-2.5 text-sm">
+            <div className="border-t border-[#292940] pt-4 space-y-2.5 text-sm">
               <div className="flex justify-between text-xs">
-                <span className="text-[#697778]">Plan Price</span>
-                <span className="text-[#344B4A] font-medium">
+                <span className="text-gray-400">Package Price</span>
+                <span className="text-white font-medium">
                   {isFreeTrial ? '₹0' : `₹${numPrice.toLocaleString('en-IN')}`}
                 </span>
               </div>
               {referralDiscount > 0 && (
-                <div className="flex justify-between text-xs text-emerald-700 font-semibold">
+                <div className="flex justify-between text-xs text-emerald-400 font-semibold">
                   <span className="flex items-center gap-1"><Tag size={12} /> Referral Discount</span>
                   <span>- ₹{referralDiscount.toLocaleString('en-IN')}</span>
                 </div>
               )}
               {!isFreeTrial && (
                 <div className="flex justify-between text-xs">
-                  <span className="text-[#697778]">Taxes (18% GST)</span>
-                  <span className="text-[#344B4A] font-medium">₹{tax.toLocaleString('en-IN')}</span>
+                  <span className="text-gray-400">Taxes (18% GST)</span>
+                  <span className="text-white font-medium">₹{tax.toLocaleString('en-IN')}</span>
                 </div>
               )}
             </div>
 
-            <div className="border-t border-dashed border-[#D9E2E3] pt-4 flex justify-between items-end">
+            <div className="border-t border-dashed border-[#292940] pt-4 flex justify-between items-end">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#697778]">Total Payable</span>
-                {isFreeTrial && <p className="text-[11px] text-emerald-600 font-semibold">No Payment Required</p>}
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Total Payable</span>
+                {isFreeTrial && <p className="text-[11px] text-[#818CF8] font-semibold">No Payment Required</p>}
               </div>
               <div className="text-right">
-                <div className="text-2xl font-black text-[#167D78]">
+                <div className="text-2xl font-black text-white">
                   {isFreeTrial ? '₹0' : `₹${total.toLocaleString('en-IN')}`}
                 </div>
               </div>
             </div>
             
-            <div className="mt-4 flex items-start gap-2 text-[11px] text-[#697778] bg-[#E8EFF0] p-3 rounded-xl">
-              <ShieldCheck size={14} className="shrink-0 text-emerald-700 mt-0.5" />
-              <p>Safe & Encrypted checkout. Instant membership activation.</p>
+            <div className="mt-4 flex items-start gap-2 text-[11px] text-gray-400 bg-[#0B0B12] p-3 rounded-xl border border-[#292940]">
+              <ShieldCheck size={14} className="shrink-0 text-emerald-400 mt-0.5" />
+              <p>Safe & Encrypted checkout. Instant membership activation with automated confirmation email.</p>
             </div>
           </div>
         </div>

@@ -34,26 +34,26 @@ const Step5GymImages: React.FC<StepProps> = ({ form, set, errors }) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#D9E2E3]">
-        <div className="p-3 bg-[#167D78]/10 rounded-xl">
-          <ImageIcon className="text-[#167D78]" size={24} />
+      <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#292940]">
+        <div className="p-3 bg-[#6366F1]/10 rounded-xl">
+          <ImageIcon className="text-[#6366F1]" size={24} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#344B4A]">Gym Images</h2>
-          <p className="text-sm text-[#697778]">Add photos of your gym to showcase to customers</p>
+          <h2 className="text-xl font-bold text-[#11111F]">Gym Images</h2>
+          <p className="text-sm text-[#A1A1AA]">Add photos of your gym to showcase to customers</p>
         </div>
       </div>
 
       <div className="space-y-4">
-        <label className="block text-sm font-medium text-[#697778]">Upload Images</label>
+        <label className="block text-sm font-medium text-[#A1A1AA]">Upload Images</label>
         <div className="flex flex-col items-center gap-4">
           <label
             htmlFor="gym-images-upload"
-            className="w-full flex flex-col items-center justify-center border-2 border-dashed border-[#D9E2E3] rounded-xl px-6 py-10 text-center bg-[#E8EFF0]/50 cursor-pointer hover:border-[#167D78] hover:bg-[#E8EFF0] transition-colors"
+            className="w-full flex flex-col items-center justify-center border-2 border-dashed border-[#292940] rounded-xl px-6 py-10 text-center bg-[#0B0B12]/50 cursor-pointer hover:border-[#6366F1] hover:bg-[#0B0B12] transition-colors"
           >
-            <Upload className="text-[#167D78] mb-3" size={32} />
-            <p className="text-[#697778] font-medium text-sm">Click to upload images</p>
-            <p className="text-[#697778] text-xs mt-1">You can select multiple images at once</p>
+            <Upload className="text-[#6366F1] mb-3" size={32} />
+            <p className="text-[#A1A1AA] font-medium text-sm">Click to upload images</p>
+            <p className="text-[#A1A1AA] text-xs mt-1">You can select multiple images at once</p>
           </label>
           <input
             id="gym-images-upload"
@@ -64,13 +64,13 @@ const Step5GymImages: React.FC<StepProps> = ({ form, set, errors }) => {
             className="hidden"
           />
         </div>
-        {errors.images && <p className="text-[#D8EAE7] text-xs mt-1">{errors.images}</p>}
+        {errors.images && <p className="text-[#17172A] text-xs mt-1">{errors.images}</p>}
       </div>
 
       {form.images && form.images.length > 0 && (
         <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4">
           {form.images.map((url: string, index: number) => (
-            <div key={index} className="relative group rounded-xl overflow-hidden border border-[#D9E2E3] shadow-sm">
+            <div key={index} className="relative group rounded-xl overflow-hidden border border-[#292940] shadow-sm">
               <img 
                 src={url} 
                 alt={`Gym image ${index + 1}`} 
@@ -89,10 +89,10 @@ const Step5GymImages: React.FC<StepProps> = ({ form, set, errors }) => {
       )}
 
       {form.images && form.images.length === 0 && (
-        <div className="border-2 border-dashed border-[#D9E2E3] rounded-xl p-8 text-center bg-[#E8EFF0]/50 mt-6">
-          <ImageIcon className="mx-auto text-[#697778] mb-3" size={32} />
-          <p className="text-[#697778] font-medium text-sm">No images added yet</p>
-          <p className="text-[#697778] text-xs mt-1">Upload images above to add them to your gym profile</p>
+        <div className="border-2 border-dashed border-[#292940] rounded-xl p-8 text-center bg-[#0B0B12]/50 mt-6">
+          <ImageIcon className="mx-auto text-[#A1A1AA] mb-3" size={32} />
+          <p className="text-[#A1A1AA] font-medium text-sm">No images added yet</p>
+          <p className="text-[#A1A1AA] text-xs mt-1">Upload images above to add them to your gym profile</p>
         </div>
       )}
     </div>

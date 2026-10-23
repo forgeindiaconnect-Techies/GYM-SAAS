@@ -9,6 +9,10 @@ import ChallengeParticipant from '../models/ChallengeParticipant';
 import TrainerSession from '../models/TrainerSession';
 import User from '../models/User';
 import Notification from '../models/Notification';
+import StoreProduct from '../models/StoreProduct';
+import GymPackage from '../models/GymPackage';
+import WorkoutProgress from '../models/WorkoutProgress';
+import ProgressLog from '../models/ProgressLog';
 
 // Helper: Generate unique Claim Voucher Code (e.g. RWD-7K2X9P)
 const generateClaimCode = (): string => {
@@ -45,9 +49,38 @@ export const createReward = async (req: AuthRequest, res: Response): Promise<voi
       title,
       description,
       recipientType,
+      assignmentMethod,
       category,
       rewardType,
+      // Direct assignment targets
+      assignedUserId,
+      assignedUserIds,
+      // Category A: Personal Training
+      trainerId,
+      sessionCount,
+      sessionDuration,
+      // Category B: Discount Coupon
+      discountType,
+      discountValue,
+      applicableService,
+      minPurchaseAmount,
+      // Category C: Free Product / Gift
+      productId,
+      productName,
+      productQuantity,
+      // Category D: Free Membership / Extension
+      membershipDuration,
+      packageId,
+      packageName,
+      // Category E: Performance Award
+      awardReason,
+      achievementPeriod,
+      hasCertificate,
+      badgeIcon,
+      // Category F: Points-Based & Conditions
       requiredPoints,
+      redemptionBenefit,
+      eligibilityCondition,
       requiredChallengeId,
       minCompletedSessions,
       minAverageRating,
@@ -72,15 +105,65 @@ export const createReward = async (req: AuthRequest, res: Response): Promise<voi
       return;
     }
 
+    const method = assignmentMethod || (requiredPoints && Number(requiredPoints) > 0 ? 'Points' : 'Achievement');
+
+    // Validation for Direct Assignment
+    if (method === 'Direct' && !assignedUserId && (!assignedUserIds || assignedUserIds.length === 0)) {
+      res.status(400).json({
+        success: false,
+        message: 'Recipient selection is required for Direct Assignment'
+      });
+      return;
+    }
+
+    // Validation for Product / Gift Inventory Availability
+    if (productId) {
+      const storeProd = await StoreProduct.findOne({ _id: productId, gymId });
+      if (!storeProd) {
+        res.status(400).json({ success: false, message: 'Selected gym store product was not found' });
+        return;
+      }
+      const neededQty = productQuantity ? Number(productQuantity) : 1;
+      if (storeProd.stock < neededQty) {
+        res.status(400).json({
+          success: false,
+          message: `Cannot assign product reward: Insufficient stock. Available: ${storeProd.stock}, Requested: ${neededQty}`
+        });
+        return;
+      }
+    }
+
     const reward = await RewardDefinition.create({
       gymId,
       createdBy: userId,
       title: title.trim(),
       description: description.trim(),
       recipientType: recipientType || 'Customer',
+      assignmentMethod: method,
       category: category.trim(),
       rewardType: rewardType || 'Reward',
-      requiredPoints: requiredPoints !== undefined ? Number(requiredPoints) : 0,
+      assignedUserId: assignedUserId || undefined,
+      assignedUserIds: assignedUserIds || (assignedUserId ? [assignedUserId] : []),
+      trainerId: trainerId || undefined,
+      sessionCount: sessionCount !== undefined ? Number(sessionCount) : 0,
+      sessionDuration: sessionDuration?.trim(),
+      discountType: discountType || 'Percentage',
+      discountValue: discountValue !== undefined ? Number(discountValue) : 0,
+      applicableService: applicableService || 'All Services',
+      minPurchaseAmount: minPurchaseAmount !== undefined ? Number(minPurchaseAmount) : 0,
+      productId: productId || undefined,
+      productName: productName?.trim(),
+      productQuantity: productQuantity !== undefined ? Number(productQuantity) : 1,
+      membershipDuration: membershipDuration?.trim(),
+      packageId: packageId || undefined,
+      packageName: packageName?.trim(),
+      awardReason: awardReason?.trim(),
+      achievementPeriod: achievementPeriod?.trim(),
+      hasCertificate: Boolean(hasCertificate),
+      badgeIcon: badgeIcon?.trim(),
+      requiredPoints: method === 'Points' && requiredPoints !== undefined ? Number(requiredPoints) : 0,
+      redemptionBenefit: redemptionBenefit?.trim(),
+      eligibilityCondition: eligibilityCondition || 'points',
       requiredChallengeId: requiredChallengeId || undefined,
       minCompletedSessions: minCompletedSessions !== undefined ? Number(minCompletedSessions) : 0,
       minAverageRating: minAverageRating !== undefined ? Number(minAverageRating) : 0,
@@ -121,6 +204,10 @@ export const getOwnerRewards = async (req: AuthRequest, res: Response): Promise<
     const [rewards, claims] = await Promise.all([
       RewardDefinition.find({ gymId })
         .populate('requiredChallengeId', 'title challengeType')
+        .populate('assignedUserId', 'firstName lastName email phone role')
+        .populate('trainerId', 'firstName lastName email phone')
+        .populate('productId', 'name image stock sellingPrice')
+        .populate('packageId', 'name duration monthlyPrice')
         .sort({ createdAt: -1 }),
       RewardClaim.find({ gymId })
         .populate('rewardId')
@@ -153,9 +240,31 @@ export const updateReward = async (req: AuthRequest, res: Response): Promise<voi
       title,
       description,
       recipientType,
+      assignmentMethod,
       category,
       rewardType,
+      assignedUserId,
+      assignedUserIds,
+      trainerId,
+      sessionCount,
+      sessionDuration,
+      discountType,
+      discountValue,
+      applicableService,
+      minPurchaseAmount,
+      productId,
+      productName,
+      productQuantity,
+      membershipDuration,
+      packageId,
+      packageName,
+      awardReason,
+      achievementPeriod,
+      hasCertificate,
+      badgeIcon,
       requiredPoints,
+      redemptionBenefit,
+      eligibilityCondition,
       requiredChallengeId,
       minCompletedSessions,
       minAverageRating,
@@ -178,9 +287,31 @@ export const updateReward = async (req: AuthRequest, res: Response): Promise<voi
     if (title) reward.title = title.trim();
     if (description) reward.description = description.trim();
     if (recipientType) reward.recipientType = recipientType;
+    if (assignmentMethod) reward.assignmentMethod = assignmentMethod;
     if (category) reward.category = category.trim();
     if (rewardType) reward.rewardType = rewardType;
+    if (assignedUserId !== undefined) reward.assignedUserId = assignedUserId || undefined;
+    if (assignedUserIds !== undefined) reward.assignedUserIds = assignedUserIds;
+    if (trainerId !== undefined) reward.trainerId = trainerId || undefined;
+    if (sessionCount !== undefined) reward.sessionCount = Number(sessionCount);
+    if (sessionDuration !== undefined) reward.sessionDuration = sessionDuration;
+    if (discountType !== undefined) reward.discountType = discountType;
+    if (discountValue !== undefined) reward.discountValue = Number(discountValue);
+    if (applicableService !== undefined) reward.applicableService = applicableService;
+    if (minPurchaseAmount !== undefined) reward.minPurchaseAmount = Number(minPurchaseAmount);
+    if (productId !== undefined) reward.productId = productId || undefined;
+    if (productName !== undefined) reward.productName = productName;
+    if (productQuantity !== undefined) reward.productQuantity = Number(productQuantity);
+    if (membershipDuration !== undefined) reward.membershipDuration = membershipDuration;
+    if (packageId !== undefined) reward.packageId = packageId || undefined;
+    if (packageName !== undefined) reward.packageName = packageName;
+    if (awardReason !== undefined) reward.awardReason = awardReason;
+    if (achievementPeriod !== undefined) reward.achievementPeriod = achievementPeriod;
+    if (hasCertificate !== undefined) reward.hasCertificate = Boolean(hasCertificate);
+    if (badgeIcon !== undefined) reward.badgeIcon = badgeIcon;
     if (requiredPoints !== undefined) reward.requiredPoints = Number(requiredPoints);
+    if (redemptionBenefit !== undefined) reward.redemptionBenefit = redemptionBenefit;
+    if (eligibilityCondition !== undefined) reward.eligibilityCondition = eligibilityCondition;
     if (requiredChallengeId !== undefined) reward.requiredChallengeId = requiredChallengeId || undefined;
     if (minCompletedSessions !== undefined) reward.minCompletedSessions = Number(minCompletedSessions);
     if (minAverageRating !== undefined) reward.minAverageRating = Number(minAverageRating);
@@ -369,7 +500,10 @@ export const getMemberRewards = async (req: AuthRequest, res: Response): Promise
 
     const now = new Date();
 
-    const [rewards, wallet, transactions, claims] = await Promise.all([
+    // Fetch user's actual progress for achievement criteria
+    const [workoutsCount, userLogs, rawRewards, wallet, transactions, claims] = await Promise.all([
+      WorkoutProgress.countDocuments({ customerId: new mongoose.Types.ObjectId(userId), status: 'Completed' } as any),
+      ProgressLog.find({ customerId: userId, gymId }).select('loggedDate attendancePercentage workoutCompletionPercentage'),
       RewardDefinition.find({
         gymId,
         recipientType: { $in: ['Customer', 'Both'] },
@@ -377,20 +511,121 @@ export const getMemberRewards = async (req: AuthRequest, res: Response): Promise
         $or: [{ expiryDate: { $exists: false } }, { expiryDate: null }, { expiryDate: { $gte: now } }]
       })
         .populate('requiredChallengeId', 'title challengeType')
+        .populate('trainerId', 'firstName lastName')
+        .populate('productId', 'name image stock sellingPrice')
+        .populate('packageId', 'name duration monthlyPrice')
         .sort({ requiredPoints: 1 }),
       CustomerPointsWallet.findOne({ gymId, userId }),
       PointsTransaction.find({ gymId, userId }).sort({ createdAt: -1 }).limit(20),
       RewardClaim.find({ gymId, userId }).populate('rewardId').sort({ createdAt: -1 })
     ]);
 
+    const userVisitsCount = userLogs.length;
+    const currentPoints = wallet?.currentBalance || 0;
+
+    // Filter and compute dynamic status for each reward
+    const userClaimsMap: Record<string, number> = {};
+    const pendingClaimsMap: Record<string, boolean> = {};
+
+    claims.forEach(c => {
+      const rId = (c.rewardId as any)?._id?.toString() || c.rewardId?.toString();
+      if (rId && c.claimStatus !== 'Rejected') {
+        userClaimsMap[rId] = (userClaimsMap[rId] || 0) + 1;
+      }
+      if (rId && c.claimStatus === 'Pending') {
+        pendingClaimsMap[rId] = true;
+      }
+    });
+
+    const eligibleRewards = rawRewards.filter(r => {
+      // Direct Assignment: only show to assigned customer
+      if (r.assignmentMethod === 'Direct') {
+        const isAssigned =
+          (r.assignedUserId && r.assignedUserId.toString() === userId.toString()) ||
+          (r.assignedUserIds && r.assignedUserIds.some((id: any) => id.toString() === userId.toString()));
+        return isAssigned;
+      }
+      return true;
+    }).map(r => {
+      const rObj = r.toObject();
+      const rId = r._id.toString();
+      const claimCount = userClaimsMap[rId] || 0;
+      const isPending = !!pendingClaimsMap[rId];
+      const isExpired = r.expiryDate && new Date(r.expiryDate) < now;
+      const isOutOfStock = r.totalQuantity > 0 && r.claimedCount >= r.totalQuantity;
+
+      let memberStatus: 'Available' | 'Locked' | 'Claimed' | 'Expired' | 'Pending Approval' = 'Available';
+      let progressInfo: { current: number; required: number; label: string; met: boolean } = {
+        current: 0,
+        required: 0,
+        label: '',
+        met: true
+      };
+
+      if (isPending) {
+        memberStatus = 'Pending Approval';
+      } else if (claimCount >= (r.maxClaimsPerUser || 1)) {
+        memberStatus = 'Claimed';
+      } else if (isExpired) {
+        memberStatus = 'Expired';
+      } else if (isOutOfStock) {
+        memberStatus = 'Locked';
+      } else if (r.assignmentMethod === 'Direct') {
+        memberStatus = 'Available';
+      } else if (r.assignmentMethod === 'Points' || (r.requiredPoints && r.requiredPoints > 0)) {
+        const met = currentPoints >= (r.requiredPoints || 0);
+        memberStatus = met ? 'Available' : 'Locked';
+        progressInfo = {
+          current: currentPoints,
+          required: r.requiredPoints || 0,
+          label: 'Points Cost',
+          met
+        };
+      } else if (r.assignmentMethod === 'Achievement') {
+        if (r.minVerifiedVisits && r.minVerifiedVisits > 0) {
+          const met = userVisitsCount >= r.minVerifiedVisits;
+          memberStatus = met ? 'Available' : 'Locked';
+          progressInfo = {
+            current: userVisitsCount,
+            required: r.minVerifiedVisits,
+            label: 'Gym Visits',
+            met
+          };
+        } else if (r.minWorkoutCompletions && r.minWorkoutCompletions > 0) {
+          const met = workoutsCount >= r.minWorkoutCompletions;
+          memberStatus = met ? 'Available' : 'Locked';
+          progressInfo = {
+            current: workoutsCount,
+            required: r.minWorkoutCompletions,
+            label: 'Completed Workouts',
+            met
+          };
+        } else {
+          memberStatus = 'Available';
+        }
+      }
+
+      return {
+        ...rObj,
+        memberStatus,
+        progressInfo,
+        userClaimCount: claimCount
+      };
+    });
+
     res.status(200).json({
       success: true,
-      rewards,
+      rewards: eligibleRewards,
       wallet: wallet || {
         currentBalance: 0,
         totalEarned: 0,
         totalRedeemed: 0,
         badges: []
+      },
+      userPerformanceSnapshot: {
+        visits: userVisitsCount,
+        workouts: workoutsCount,
+        points: currentPoints
       },
       transactions,
       claims
@@ -442,6 +677,63 @@ export const claimReward = async (req: AuthRequest, res: Response): Promise<void
       return;
     }
 
+    // Direct Assignment Check: ensure only assigned user can claim
+    if (reward.assignmentMethod === 'Direct') {
+      const isDirectTarget =
+        (reward.assignedUserId && reward.assignedUserId.toString() === userId.toString()) ||
+        (reward.assignedUserIds && reward.assignedUserIds.some((id: any) => id.toString() === userId.toString()));
+
+      if (!isDirectTarget) {
+        res.status(403).json({
+          success: false,
+          message: 'Access denied: This reward was directly assigned to another specific member'
+        });
+        return;
+      }
+    }
+
+    // Achievement Eligibility Verification
+    if (reward.assignmentMethod === 'Achievement') {
+      if (reward.minVerifiedVisits && reward.minVerifiedVisits > 0) {
+        const visitLogs = await ProgressLog.countDocuments({ customerId: userId, gymId });
+        if (visitLogs < reward.minVerifiedVisits) {
+          res.status(400).json({
+            success: false,
+            message: `Eligibility not met: You have ${visitLogs} verified visits, but this reward requires ${reward.minVerifiedVisits}`
+          });
+          return;
+        }
+      }
+      if (reward.minWorkoutCompletions && reward.minWorkoutCompletions > 0) {
+        const completedWorkouts = await WorkoutProgress.countDocuments({
+          customerId: new mongoose.Types.ObjectId(userId),
+          status: 'Completed'
+        } as any);
+        if (completedWorkouts < reward.minWorkoutCompletions) {
+          res.status(400).json({
+            success: false,
+            message: `Eligibility not met: You have ${completedWorkouts} completed workouts, but this reward requires ${reward.minWorkoutCompletions}`
+          });
+          return;
+        }
+      }
+    }
+
+    // Physical product stock verification & reduction
+    if (reward.productId) {
+      const neededQty = reward.productQuantity || 1;
+      const product = await StoreProduct.findOne({ _id: reward.productId, gymId });
+      if (!product || product.stock < neededQty) {
+        res.status(400).json({
+          success: false,
+          message: 'Selected physical product reward is currently out of stock'
+        });
+        return;
+      }
+      // Decrement stock
+      await StoreProduct.findByIdAndUpdate(reward.productId, { $inc: { stock: -neededQty } });
+    }
+
     // Check user max claims
     const userClaimCount = await RewardClaim.countDocuments({
       rewardId,
@@ -449,7 +741,10 @@ export const claimReward = async (req: AuthRequest, res: Response): Promise<void
       claimStatus: { $ne: 'Rejected' }
     });
     if (userClaimCount >= (reward.maxClaimsPerUser || 1)) {
-      res.status(400).json({ success: false, message: `You have reached the limit of ${reward.maxClaimsPerUser} claim(s) for this reward` });
+      res.status(400).json({
+        success: false,
+        message: `You have reached the limit of ${reward.maxClaimsPerUser} claim(s) for this reward`
+      });
       return;
     }
 
@@ -469,7 +764,7 @@ export const claimReward = async (req: AuthRequest, res: Response): Promise<void
 
     // Points deduction validation if points required
     let pointsDeducted = 0;
-    if (reward.requiredPoints && reward.requiredPoints > 0) {
+    if (reward.assignmentMethod === 'Points' && reward.requiredPoints && reward.requiredPoints > 0) {
       const wallet = await CustomerPointsWallet.findOne({ gymId, userId });
       if (!wallet || wallet.currentBalance < reward.requiredPoints) {
         res.status(400).json({

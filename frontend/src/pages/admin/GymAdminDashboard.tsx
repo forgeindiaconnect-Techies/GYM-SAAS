@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Users, Dumbbell, Activity, CalendarCheck, TrendingUp, AlertCircle, ArrowRight, Loader2, CheckCircle2, MessageSquare, Bell, Clock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
@@ -85,14 +85,14 @@ const GymAdminDashboard = () => {
   };
 
   const cards = [
-    { title: 'Total Members', value: stats.members, icon: Users, color: 'text-[#344B4A]', bg: 'bg-[#D8EAE7]' },
-    { title: 'Active Trainers', value: stats.trainers, icon: Dumbbell, color: 'text-[#27845A]', bg: 'bg-[#27845A]/10' },
-    { title: 'Pending Bookings', value: stats.bookings, icon: CalendarCheck, color: 'text-[#D99A27]', bg: 'bg-[#D99A27]/10' },
-    { title: 'Store Revenue', value: `₹${stats.revenue.toLocaleString('en-IN')}`, icon: TrendingUp, color: 'text-[#344B4A]', bg: 'bg-[#D8EAE7]' }
+    { title: 'Total Members', value: stats.members, icon: Users, color: 'text-[#818CF8]', bg: 'bg-[#6366F1]/15 border border-[#6366F1]/30' },
+    { title: 'Active Trainers', value: stats.trainers, icon: Dumbbell, color: 'text-emerald-400', bg: 'bg-emerald-500/15 border border-emerald-500/30' },
+    { title: 'Pending Bookings', value: stats.bookings, icon: CalendarCheck, color: 'text-amber-400', bg: 'bg-amber-500/15 border border-amber-500/30' },
+    { title: 'Store Revenue', value: `₹${stats.revenue.toLocaleString('en-IN')}`, icon: TrendingUp, color: 'text-[#818CF8]', bg: 'bg-[#6366F1]/15 border border-[#6366F1]/30' }
   ];
 
   if (loading) {
-    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#167D78]" size={40} /></div>;
+    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#6366F1]" size={40} /></div>;
   }
 
   const unreadNotifsCount = notifications.filter(n => !n.isRead).length;
@@ -101,10 +101,10 @@ const GymAdminDashboard = () => {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">
+          <h1 className="text-3xl font-bold text-[#F8FAFC] tracking-tight">
             {user?.branchName || user?.branchId ? `${user?.branchName || 'Branch'} Dashboard` : 'Gym Dashboard'}
           </h1>
-          <p className="text-[#697778] mt-1">
+          <p className="text-[#A1A1AA] mt-1">
             Overview of {user?.branchName || user?.branchId ? `${user?.branchName || 'branch'}'s` : "your gym's"} performance, members, and bookings.
           </p>
         </div>
@@ -112,13 +112,13 @@ const GymAdminDashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {cards.map((c, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5 flex items-center space-x-4 shadow-sm hover:shadow-md transition-shadow">
+          <div key={i} className="bg-[#11111F] border border-[#292940] rounded-2xl p-5 flex items-center space-x-4 shadow-sm hover:border-[#6366F1]/50 transition-all">
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${c.bg} ${c.color}`}>
               <c.icon size={24} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[#697778] text-xs font-semibold uppercase tracking-wider truncate">{c.title}</p>
-              <h3 className="text-2xl font-bold text-[#344B4A] mt-0.5">{c.value}</h3>
+              <p className="text-[#A1A1AA] text-xs font-semibold uppercase tracking-wider truncate">{c.title}</p>
+              <h3 className="text-2xl font-bold text-[#F8FAFC] mt-0.5">{c.value}</h3>
             </div>
           </div>
         ))}
@@ -126,51 +126,51 @@ const GymAdminDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         {/* Quick Actions */}
-        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 flex flex-col h-full shadow-sm">
-          <div className="flex items-center justify-between mb-5 border-b border-[#D9E2E3] pb-4">
-            <h2 className="text-xl font-bold text-[#344B4A]">Quick Actions</h2>
-            <span className="text-xs text-[#697778] font-medium">Gym Management</span>
+        <div className="bg-[#11111F] border border-[#292940] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+          <div className="flex items-center justify-between mb-5 border-b border-[#292940] pb-4">
+            <h2 className="text-xl font-bold text-[#F8FAFC]">Quick Actions</h2>
+            <span className="text-xs text-[#A1A1AA] font-medium">Gym Management</span>
           </div>
           <div className="grid grid-cols-2 gap-4 flex-1">
-            <Link to="/admin/members" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl hover:border-[#167D78] hover:bg-[#D8EAE7]/30 transition-all text-center group">
-              <div className="w-12 h-12 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Link to="/admin/members" className="flex flex-col items-center justify-center p-5 bg-[#0B0B12] border border-[#292940] rounded-xl hover:border-[#6366F1] hover:bg-[#17172A] transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/30 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-xs">
                 <Users size={24} />
               </div>
-              <span className="font-semibold text-sm text-[#344B4A]">Add Member</span>
+              <span className="font-semibold text-sm text-[#F8FAFC]">Add Member</span>
             </Link>
-            <Link to="/admin/trainers" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl hover:border-[#167D78] hover:bg-[#D8EAE7]/30 transition-all text-center group">
-              <div className="w-12 h-12 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Link to="/admin/trainers" className="flex flex-col items-center justify-center p-5 bg-[#0B0B12] border border-[#292940] rounded-xl hover:border-[#6366F1] hover:bg-[#17172A] transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/30 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-xs">
                 <Dumbbell size={24} />
               </div>
-              <span className="font-semibold text-sm text-[#344B4A]">Hire Trainer</span>
+              <span className="font-semibold text-sm text-[#F8FAFC]">Hire Trainer</span>
             </Link>
-            <Link to="/admin/equipment" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl hover:border-[#167D78] hover:bg-[#D8EAE7]/30 transition-all text-center group">
-              <div className="w-12 h-12 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Link to="/admin/equipment" className="flex flex-col items-center justify-center p-5 bg-[#0B0B12] border border-[#292940] rounded-xl hover:border-[#6366F1] hover:bg-[#17172A] transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/30 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-xs">
                 <Activity size={24} />
               </div>
-              <span className="font-semibold text-sm text-[#344B4A]">Add Equipment</span>
+              <span className="font-semibold text-sm text-[#F8FAFC]">Add Equipment</span>
             </Link>
-            <Link to="/admin/session-bookings" className="flex flex-col items-center justify-center p-5 bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl hover:border-[#167D78] hover:bg-[#D8EAE7]/30 transition-all text-center group">
-              <div className="w-12 h-12 rounded-xl bg-[#D8EAE7] text-[#344B4A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Link to="/admin/session-bookings" className="flex flex-col items-center justify-center p-5 bg-[#0B0B12] border border-[#292940] rounded-xl hover:border-[#6366F1] hover:bg-[#17172A] transition-all text-center group">
+              <div className="w-12 h-12 rounded-xl bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/30 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-xs">
                 <CalendarCheck size={24} />
               </div>
-              <span className="font-semibold text-sm text-[#344B4A]">View Bookings</span>
+              <span className="font-semibold text-sm text-[#F8FAFC]">View Bookings</span>
             </Link>
           </div>
         </div>
 
         {/* Alerts & Notifications with proper workflow */}
-        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 flex flex-col h-full shadow-sm">
-          <div className="flex justify-between items-center mb-5 border-b border-[#D9E2E3] pb-4">
+        <div className="bg-[#11111F] border border-[#292940] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+          <div className="flex justify-between items-center mb-5 border-b border-[#292940] pb-4">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-[#344B4A]">Alerts & Notices</h2>
+              <h2 className="text-xl font-bold text-[#F8FAFC]">Alerts & Notices</h2>
               {unreadNotifsCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#167D78] text-white">
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#6366F1] text-white">
                   {unreadNotifsCount} new
                 </span>
               )}
             </div>
-            <Link to="/admin/notifications" className="text-xs text-[#167D78] font-semibold hover:underline flex items-center gap-1">
+            <Link to="/admin/notifications" className="text-xs text-[#818CF8] font-semibold hover:underline flex items-center gap-1">
               View All <ArrowRight size={13} />
             </Link>
           </div>
@@ -181,19 +181,19 @@ const GymAdminDashboard = () => {
                 const isAlert = notif.type === 'alert';
                 const isSuccess = notif.type === 'success';
                 const isMessage = notif.type === 'message';
-                const bgClass = isAlert ? 'bg-amber-50/80 border-amber-200/90 hover:bg-amber-100/70' :
-                                isSuccess ? 'bg-emerald-50/80 border-emerald-200/90 hover:bg-emerald-100/70' :
-                                isMessage ? 'bg-blue-50/80 border-blue-200/90 hover:bg-blue-100/70' :
-                                'bg-[#E8EFF0]/80 border-[#D9E2E3]/90 hover:bg-[#D8EAE7]/70';
-                const iconColor = isAlert ? 'text-amber-600' :
-                                  isSuccess ? 'text-emerald-600' :
-                                  isMessage ? 'text-[#167D78]' : 'text-[#167D78]';
+                const bgClass = isAlert ? 'bg-amber-950/20 border-amber-800/40 hover:bg-amber-900/30' :
+                                isSuccess ? 'bg-emerald-950/20 border-emerald-800/40 hover:bg-emerald-900/30' :
+                                isMessage ? 'bg-blue-950/20 border-[#6366F1]/30 hover:bg-blue-900/30' :
+                                'bg-[#0B0B12] border-[#292940] hover:border-[#6366F1]/50';
+                const iconColor = isAlert ? 'text-amber-400' :
+                                  isSuccess ? 'text-emerald-400' :
+                                  isMessage ? 'text-[#818CF8]' : 'text-[#818CF8]';
 
                 return (
                   <div
                     key={notif._id}
                     onClick={() => handleNotificationClick(notif)}
-                    className={`flex items-start space-x-3.5 p-3.5 border rounded-xl cursor-pointer transition-all ${bgClass} ${!notif.isRead ? 'ring-1 ring-[#167D78]/20 shadow-xs' : 'opacity-90'}`}
+                    className={`flex items-start space-x-3.5 p-3.5 border rounded-xl cursor-pointer transition-all ${bgClass} ${!notif.isRead ? 'ring-1 ring-[#6366F1]/30 shadow-xs' : 'opacity-90'}`}
                   >
                     <div className="shrink-0 mt-0.5">
                       {isAlert ? <AlertCircle size={20} className={iconColor} /> :
@@ -203,15 +203,15 @@ const GymAdminDashboard = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <h4 className="text-[#344B4A] font-bold text-sm truncate">{notif.title}</h4>
+                        <h4 className="text-[#F8FAFC] font-bold text-sm truncate">{notif.title}</h4>
                         {!notif.isRead && (
-                          <span className="w-2 h-2 rounded-full bg-[#167D78] shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-[#6366F1] shrink-0" />
                         )}
                       </div>
-                      <p className="text-[#697778] text-xs mt-0.5 line-clamp-2 leading-relaxed">{notif.message}</p>
-                      <div className="flex items-center justify-between mt-1 text-[11px] text-[#697778]">
+                      <p className="text-[#A1A1AA] text-xs mt-0.5 line-clamp-2 leading-relaxed">{notif.message}</p>
+                      <div className="flex items-center justify-between mt-1 text-[11px] text-[#A1A1AA]">
                         <span>{new Date(notif.createdAt).toLocaleDateString()}</span>
-                        <span className="text-[#167D78] font-semibold flex items-center gap-0.5 hover:underline">
+                        <span className="text-[#818CF8] font-semibold flex items-center gap-0.5 hover:underline">
                           Open <ArrowRight size={10} />
                         </span>
                       </div>
@@ -224,34 +224,34 @@ const GymAdminDashboard = () => {
                 {/* Fallback to live system alerts when no custom notifications exist */}
                 <div 
                   onClick={() => navigate('/admin/session-bookings')}
-                  className="flex items-start space-x-3.5 p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl cursor-pointer hover:bg-blue-100/50 transition-colors"
+                  className="flex items-start space-x-3.5 p-3.5 bg-[#0B0B12] border border-[#292940] rounded-xl cursor-pointer hover:border-[#6366F1] transition-colors"
                 >
-                  <CalendarCheck size={20} className="text-[#167D78] shrink-0 mt-0.5" />
+                  <CalendarCheck size={20} className="text-[#818CF8] shrink-0 mt-0.5" />
                   <div className="flex-1">
-                    <h4 className="text-[#344B4A] font-bold text-sm">Session Bookings</h4>
-                    <p className="text-[#697778] text-xs mt-0.5">You have {stats.bookings} session booking(s) pending trainer confirmation.</p>
+                    <h4 className="text-[#F8FAFC] font-bold text-sm">Session Bookings</h4>
+                    <p className="text-[#A1A1AA] text-xs mt-0.5">You have {stats.bookings} session booking(s) pending trainer confirmation.</p>
                   </div>
                 </div>
 
                 <div 
                   onClick={() => navigate('/admin/members')}
-                  className="flex items-start space-x-3.5 p-3.5 bg-emerald-50/70 border border-emerald-200/80 rounded-xl cursor-pointer hover:bg-emerald-100/50 transition-colors"
+                  className="flex items-start space-x-3.5 p-3.5 bg-[#0B0B12] border border-[#292940] rounded-xl cursor-pointer hover:border-[#6366F1] transition-colors"
                 >
-                  <Users size={20} className="text-emerald-600 shrink-0 mt-0.5" />
+                  <Users size={20} className="text-emerald-400 shrink-0 mt-0.5" />
                   <div className="flex-1">
-                    <h4 className="text-[#344B4A] font-bold text-sm">Active Memberships</h4>
-                    <p className="text-[#697778] text-xs mt-0.5">{stats.members} registered member(s) enrolled in your gym.</p>
+                    <h4 className="text-[#F8FAFC] font-bold text-sm">Active Memberships</h4>
+                    <p className="text-[#A1A1AA] text-xs mt-0.5">{stats.members} registered member(s) enrolled in your gym.</p>
                   </div>
                 </div>
 
                 <div 
                   onClick={() => navigate('/admin/store/sales')}
-                  className="flex items-start space-x-3.5 p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl cursor-pointer hover:bg-amber-100/50 transition-colors"
+                  className="flex items-start space-x-3.5 p-3.5 bg-[#0B0B12] border border-[#292940] rounded-xl cursor-pointer hover:border-[#6366F1] transition-colors"
                 >
-                  <TrendingUp size={20} className="text-amber-600 shrink-0 mt-0.5" />
+                  <TrendingUp size={20} className="text-amber-400 shrink-0 mt-0.5" />
                   <div className="flex-1">
-                    <h4 className="text-[#344B4A] font-bold text-sm">Store & Revenue</h4>
-                    <p className="text-[#697778] text-xs mt-0.5">₹{stats.revenue.toLocaleString('en-IN')} total revenue recorded from gym store sales.</p>
+                    <h4 className="text-[#F8FAFC] font-bold text-sm">Store & Revenue</h4>
+                    <p className="text-[#A1A1AA] text-xs mt-0.5">₹{stats.revenue.toLocaleString('en-IN')} total revenue recorded from gym store sales.</p>
                   </div>
                 </div>
               </>
@@ -261,27 +261,27 @@ const GymAdminDashboard = () => {
       </div>
 
       {/* Live Session Attendance & Check-outs Section */}
-      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#D9E2E3] pb-4">
+      <div className="bg-[#11111F] border border-[#292940] rounded-2xl p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#292940] pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-[#344B4A]">Session Attendance &amp; Check-outs</h2>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+              <h2 className="text-xl font-bold text-[#F8FAFC]">Session Attendance &amp; Check-outs</h2>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                 Live Status
               </span>
             </div>
-            <p className="text-xs text-[#697778] mt-1">Real-time attendance, check-in, and check-out tracking for trainer sessions</p>
+            <p className="text-xs text-[#A1A1AA] mt-1">Real-time attendance, check-in, and check-out tracking for trainer sessions</p>
           </div>
           <div className="flex items-center gap-2.5">
             <Link
               to="/admin/attendance"
-              className="text-xs font-bold text-[#167D78] bg-[#167D78]/10 hover:bg-[#167D78]/20 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1"
+              className="text-xs font-bold text-[#818CF8] bg-[#6366F1]/15 border border-[#6366F1]/30 hover:bg-[#6366F1]/25 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
             >
               View Full Attendance <ArrowRight size={12} />
             </Link>
             <Link
               to="/admin/session-bookings"
-              className="text-xs font-bold text-[#697778] bg-[#E8EFF0] hover:bg-[#D8EAE7] px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1"
+              className="text-xs font-bold text-[#A1A1AA] bg-[#0B0B12] border border-[#292940] hover:text-[#F8FAFC] hover:border-[#6366F1]/50 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
             >
               Session Bookings <ArrowRight size={12} />
             </Link>
@@ -289,8 +289,8 @@ const GymAdminDashboard = () => {
         </div>
 
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-sm text-[#697778] whitespace-nowrap">
-            <thead className="bg-[#E8EFF0] border-b border-[#D9E2E3] text-[#344B4A] text-xs">
+          <table className="w-full text-left text-sm text-[#A1A1AA] whitespace-nowrap">
+            <thead className="bg-[#0B0B12] border-b border-[#292940] text-[#A1A1AA] text-xs">
               <tr>
                 <th className="px-4 py-3 font-semibold">Member</th>
                 <th className="px-4 py-3 font-semibold">Assigned Trainer</th>
@@ -300,10 +300,10 @@ const GymAdminDashboard = () => {
                 <th className="px-4 py-3 font-semibold text-right">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D9E2E3] text-xs">
+            <tbody className="divide-y divide-[#292940] text-xs">
               {recentSessions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-[#697778]">
+                  <td colSpan={6} className="px-4 py-8 text-center text-[#A1A1AA]">
                     No session bookings or checkouts recorded yet.
                   </td>
                 </tr>
@@ -317,55 +317,55 @@ const GymAdminDashboard = () => {
                   const isCheckedIn = Boolean(session.checkInTime);
                   
                   return (
-                    <tr key={session._id} className="hover:bg-[#E8EFF0] transition-colors">
-                      <td className="px-4 py-3 font-semibold text-[#344B4A]">
+                    <tr key={session._id} className="hover:bg-[#17172A] transition-colors">
+                      <td className="px-4 py-3 font-semibold text-[#F8FAFC]">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold text-xs shrink-0">
+                          <div className="w-7 h-7 rounded-full bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/30 flex items-center justify-center font-bold text-xs shrink-0">
                             {session.customerId?.firstName?.charAt(0) || 'M'}
                           </div>
                           <div>
-                            <p className="font-bold text-[#344B4A]">{cName}</p>
-                            <p className="text-[11px] text-[#697778]">{session.customerId?.email || ''}</p>
+                            <p className="font-bold text-[#F8FAFC]">{cName}</p>
+                            <p className="text-[11px] text-[#A1A1AA]">{session.customerId?.email || ''}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-semibold text-[#344B4A]">{tName}</span>
-                        <span className="text-[10px] ml-2 px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-medium">
+                        <span className="font-semibold text-[#F8FAFC]">{tName}</span>
+                        <span className="text-[10px] ml-2 px-1.5 py-0.5 rounded bg-[#0B0B12] border border-[#292940] text-[#A1A1AA] font-medium">
                           {session.mode || 'In-Gym'}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="font-medium text-[#344B4A]">{session.date}</p>
-                        <p className="text-[11px] text-[#697778]">{session.startTime} - {session.endTime}</p>
+                        <p className="font-medium text-[#F8FAFC]">{session.date}</p>
+                        <p className="text-[11px] text-[#A1A1AA]">{session.startTime} - {session.endTime}</p>
                       </td>
                       <td className="px-4 py-3 font-medium">
                         {isCheckedIn ? (
-                          <span className="text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md font-semibold">
+                          <span className="text-[#818CF8] bg-[#6366F1]/15 border border-[#6366F1]/30 px-2 py-0.5 rounded-md font-semibold">
                             {new Date(session.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         ) : (
-                          <span className="text-gray-400">--:--</span>
+                          <span className="text-[#A1A1AA]">--:--</span>
                         )}
                       </td>
                       <td className="px-4 py-3 font-medium">
                         {isCheckedOut ? (
-                          <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1 w-fit">
+                          <span className="text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1 w-fit">
                             <CheckCircle2 size={11} /> {new Date(session.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         ) : isCheckedIn || session.status === 'In Progress' ? (
-                          <span className="text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1 w-fit">
+                          <span className="text-amber-400 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1 w-fit">
                             <Clock size={11} /> In Progress
                           </span>
                         ) : (
-                          <span className="text-gray-400">Not Checked Out</span>
+                          <span className="text-[#A1A1AA]">Not Checked Out</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${
-                          isCheckedOut ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                          isCheckedIn || session.status === 'In Progress' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                          'bg-blue-50 text-blue-700 border-blue-200'
+                          isCheckedOut ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' :
+                          isCheckedIn || session.status === 'In Progress' ? 'bg-amber-500/15 text-amber-400 border-amber-500/30' :
+                          'bg-[#6366F1]/15 text-[#818CF8] border-[#6366F1]/30'
                         }`}>
                           {isCheckedOut ? 'Completed' : (session.status || 'Active')}
                         </span>

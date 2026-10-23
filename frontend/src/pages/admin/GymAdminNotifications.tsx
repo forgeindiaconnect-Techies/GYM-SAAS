@@ -1,27 +1,28 @@
-﻿import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, AlertCircle, MessageSquare, Info, CheckCircle2, XCircle, CheckCheck, ArrowRight } from 'lucide-react';
+import {
+  Bell,
+  AlertCircle,
+  MessageSquare,
+  Info,
+  CheckCircle2,
+  X,
+  CheckCheck,
+  ArrowRight,
+  Trash2,
+  ExternalLink,
+  Users,
+  CreditCard
+} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
+import clsx from 'clsx';
 
-const getIcon = (type: string) => {
-  switch (type) {
-    case 'alert': return <AlertCircle size={20} className="text-rose-600" />;
-    case 'success': return <CheckCircle2 size={20} className="text-green-500" />;
-    case 'message': return <MessageSquare size={20} className="text-[#167D78]" />;
-    case 'info': return <Info size={20} className="text-[#167D78]" />;
-    default: return <Bell size={20} className="text-gray-500" />;
-  }
-};
-
-const getBg = (type: string) => {
-  switch (type) {
-    case 'alert': return 'bg-[#D8EAE7]/10 border-[#D8EAE7]/20';
-    case 'success': return 'bg-green-500/10 border-green-500/20';
-    case 'message': return 'bg-blue-500/10 border-[#D8EAE7]/20';
-    case 'info': return 'bg-[#167D78]/10 border-[#167D78]/20';
-    default: return 'bg-gray-500/10 border-gray-500/20';
-  }
+const TYPE_CONFIG: Record<string, { icon: any; color: string; bg: string; border: string }> = {
+  info: { icon: Info, color: 'text-[#6366F1]', bg: 'bg-[#6366F1]/15', border: 'border-[#6366F1]/30' },
+  success: { icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/15', border: 'border-emerald-500/30' },
+  alert: { icon: AlertCircle, color: 'text-rose-400', bg: 'bg-rose-500/15', border: 'border-rose-500/30' },
+  message: { icon: MessageSquare, color: 'text-[#818CF8]', bg: 'bg-[#818CF8]/15', border: 'border-[#818CF8]/30' },
 };
 
 const getNotificationLink = (notif: any) => {
@@ -35,19 +36,23 @@ const getNotificationLink = (notif: any) => {
   if (title.includes('booking') || msg.includes('booking') || title.includes('session')) return '/admin/session-bookings';
   if (title.includes('equipment') || msg.includes('equipment') || title.includes('maintenance')) return '/admin/equipment';
   if (title.includes('trainer') || msg.includes('trainer')) return '/admin/trainers';
+  if (title.includes('challenge') || msg.includes('challenge')) return '/admin/challenges';
+  if (title.includes('reward') || msg.includes('reward')) return '/admin/rewards';
+  if (title.includes('referral') || msg.includes('referral')) return '/admin/referrals';
   return null;
 };
 
-const GymAdminNotifications = () => {
+const GymAdminNotifications: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<'all' | 'unread' | 'alerts' | 'members' | 'billing'>('all');
   const [selected, setSelected] = useState<any>(null);
 
   const fetchNotifications = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
       const res = await api.get(`/notifications${branchParam}`);
       setNotifications(res.data.notifications || []);
@@ -62,7 +67,8 @@ const GymAdminNotifications = () => {
     fetchNotifications();
   }, [user?.branchId]);
 
-  const markAsRead = async (id: string) => {
+  const markAsRead = async (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     try {
       await api.put(`/notifications/${id}/read`);
       setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
@@ -80,157 +86,319 @@ const GymAdminNotifications = () => {
     }
   };
 
+  const deleteNotification = async (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    try {
+      await api.delete(`/notifications/${id}`);
+      setNotifications(prev => prev.filter(n => n._id !== id));
+      if (selected?._id === id) setSelected(null);
+    } catch (err) {
+      console.error('Failed to delete notification', err);
+    }
+  };
+
   const openNotification = (notif: any) => {
-    if (!notif.isRead) markAsRead(notif._id);
-    setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+    if (!notif.isRead) {
+      markAsRead(notif._id);
+    }
+    const link = getNotificationLink(notif);
+    if (link && !notif.isRead) {
+      // If user clicks, we can navigate directly or show modal
+    }
     setSelected(notif);
   };
 
-  useEffect(() => { fetchNotifications(); }, []);
-
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
+  const filteredNotifications = notifications.filter(notif => {
+    if (filter === 'unread') return !notif.isRead;
+    const text = `${notif.title} ${notif.message}`.toLowerCase();
+    if (filter === 'alerts') return notif.type === 'alert' || text.includes('alert') || text.includes('warning');
+    if (filter === 'members') return text.includes('member') || text.includes('enquiry') || text.includes('lead') || text.includes('trial');
+    if (filter === 'billing') return text.includes('payment') || text.includes('order') || text.includes('store') || text.includes('subscription') || text.includes('invoice');
+    return true;
+  });
+
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Notifications</h1>
-          <p className="text-[#697778] mt-1">System alerts, messages, and gym activity updates.</p>
+    <div className="space-y-6 max-w-5xl mx-auto pb-12 w-full">
+      {/* Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#11111F] via-[#151515] to-[#0B0B12] border border-[#292940] p-6 sm:p-8 shadow-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-[#6366F1]/15 border border-[#6366F1]/30 flex items-center justify-center text-[#6366F1] shadow-md shadow-[#6366F1]/10 shrink-0">
+            <Bell size={24} />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              System Notifications
+            </h1>
+            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-0.5">
+              Real-time activity alerts, member actions, payment verifications, and store updates.
+            </p>
+          </div>
         </div>
-        <div className="flex space-x-3 items-center">
-          <span className="text-xs text-[#697778]">{unreadCount} unread</span>
-          <button onClick={markAllAsRead} disabled={unreadCount === 0} className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] text-sm font-bold rounded-xl hover:bg-[#E8EFF0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-            <CheckCheck size={15} />
-            Mark all as read
+
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30">
+            {unreadCount} Unread
+          </span>
+          <button
+            onClick={markAllAsRead}
+            disabled={unreadCount === 0}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#17172A] hover:bg-[#292940] text-xs font-bold text-white border border-[#292940] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          >
+            <CheckCheck size={14} className="text-[#6366F1]" />
+            Mark all read
           </button>
         </div>
       </div>
 
+      {/* Filter Tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#292940] no-scrollbar">
+        <button
+          onClick={() => setFilter('all')}
+          className={clsx(
+            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
+            filter === 'all'
+              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
+              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+          )}
+        >
+          All ({notifications.length})
+        </button>
+
+        <button
+          onClick={() => setFilter('unread')}
+          className={clsx(
+            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
+            filter === 'unread'
+              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
+              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+          )}
+        >
+          Unread ({unreadCount})
+        </button>
+
+        <button
+          onClick={() => setFilter('alerts')}
+          className={clsx(
+            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
+            filter === 'alerts'
+              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
+              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+          )}
+        >
+          <AlertCircle size={13} className="text-rose-400" />
+          Alerts
+        </button>
+
+        <button
+          onClick={() => setFilter('members')}
+          className={clsx(
+            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
+            filter === 'members'
+              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
+              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+          )}
+        >
+          <Users size={13} className="text-[#818CF8]" />
+          Members & Enquiries
+        </button>
+
+        <button
+          onClick={() => setFilter('billing')}
+          className={clsx(
+            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
+            filter === 'billing'
+              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
+              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+          )}
+        >
+          <CreditCard size={13} className="text-emerald-400" />
+          Billing & Store
+        </button>
+      </div>
+
+      {/* Notifications List */}
       {loading ? (
-        <div className="flex items-center justify-center py-20 bg-white border border-[#D8EAE7] rounded-2xl">
-          <div className="w-8 h-8 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin" />
+        <div className="flex items-center justify-center py-20 bg-[#11111F] border border-[#292940] rounded-3xl">
+          <div className="w-8 h-8 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : filteredNotifications.length === 0 ? (
+        <div className="bg-[#11111F] border border-[#292940] rounded-3xl py-16 text-center shadow-xl">
+          <Bell size={40} className="mx-auto text-zinc-600 mb-3" />
+          <p className="text-white font-bold text-base">No notifications found</p>
+          <p className="text-[#A1A1AA] text-xs mt-1">
+            {filter === 'unread' ? "You're all caught up! No unread notifications." : "System alerts and gym events will appear here."}
+          </p>
         </div>
       ) : (
-        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden">
-          <div className="divide-y divide-[#D9E2E3]">
-            {notifications.map((notif) => (
-              <button
+        <div className="space-y-3">
+          {filteredNotifications.map((notif) => {
+            const config = TYPE_CONFIG[notif.type] || TYPE_CONFIG.info;
+            const Icon = config.icon;
+            const isUnread = !notif.isRead;
+            const link = getNotificationLink(notif);
+
+            return (
+              <div
                 key={notif._id}
                 onClick={() => openNotification(notif)}
-                className={`w-full text-left p-6 flex items-start space-x-4 transition-colors hover:bg-[#E8EFF0] ${selected?._id === notif._id ? 'bg-[#E8EFF0] ring-1 ring-[#167D78]/40' : !notif.isRead ? 'bg-[#FFFFFF]/50' : ''}`}
+                className={clsx(
+                  "w-full text-left p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 shadow-xl group",
+                  isUnread
+                    ? 'bg-[#11111F] border-l-4 border-l-[#6366F1] border-[#292940] hover:border-[#6366F1]/60'
+                    : 'bg-[#141414] border-[#292940] hover:border-[#383838] opacity-85'
+                )}
               >
-                <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center border ${getBg(notif.type)}`}>
-                  {getIcon(notif.type)}
+                <div className={clsx("w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border mt-0.5", config.bg, config.border, config.color)}>
+                  <Icon size={18} />
                 </div>
+
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start gap-3">
-                    <h3 className={`text-base truncate ${!notif.isRead ? 'font-bold text-[#344B4A]' : 'font-semibold text-[#697778]'}`}>{notif.title}</h3>
-                    <span className="text-xs text-[#697778] whitespace-nowrap">
-                      {notif.createdAt ? new Date(notif.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }) : ''}
+                  <div className="flex justify-between items-start mb-1 gap-3">
+                    <h4 className={clsx("text-sm sm:text-base truncate", isUnread ? 'font-bold text-white' : 'font-semibold text-zinc-300')}>
+                      {notif.title}
+                    </h4>
+                    <span className="text-[11px] text-zinc-500 whitespace-nowrap shrink-0">
+                      {notif.createdAt ? new Date(notif.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''}
                     </span>
                   </div>
-                  <p className={`mt-1 text-sm line-clamp-2 ${!notif.isRead ? 'text-[#344B4A]' : 'text-[#697778]'}`}>{notif.message}</p>
-                </div>
-                {!notif.isRead && (
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#167D78] shrink-0 self-center mt-1" />
-                )}
-              </button>
-            ))}
-          </div>
 
-          {notifications.length === 0 && (
-            <div className="p-12 text-center flex flex-col items-center justify-center">
-              <Bell size={48} className="text-[#116660] mb-4" />
-              <h3 className="text-lg font-bold text-[#344B4A]">All caught up!</h3>
-              <p className="text-[#697778] text-sm mt-1">You have no new notifications.</p>
-            </div>
-          )}
+                  <p className="text-xs sm:text-sm text-[#A1A1AA] line-clamp-2 leading-relaxed">
+                    {notif.message}
+                  </p>
+
+                  {link && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!notif.isRead) markAsRead(notif._id);
+                        navigate(link);
+                      }}
+                      className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#6366F1] hover:text-[#5E7BFF] transition cursor-pointer"
+                    >
+                      <span>Go to related section</span>
+                      <ArrowRight size={12} />
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 self-center">
+                  {isUnread && (
+                    <button
+                      onClick={(e) => markAsRead(notif._id, e)}
+                      title="Mark as read"
+                      className="p-1.5 rounded-lg hover:bg-white/10 text-[#6366F1] hover:text-white transition cursor-pointer"
+                    >
+                      <CheckCheck size={16} />
+                    </button>
+                  )}
+                  <button
+                    onClick={(e) => deleteNotification(notif._id, e)}
+                    title="Dismiss"
+                    className="p-1.5 rounded-lg hover:bg-rose-950/40 text-zinc-500 hover:text-rose-400 transition cursor-pointer"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
       {/* Details Modal */}
       {selected && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
           onClick={() => setSelected(null)}
         >
-          <div 
-            className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden border border-[#D9E2E3]"
-            onClick={(e) => e.stopPropagation()}
+          <div
+            className="bg-[#11111F] border border-[#292940] rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-fadeIn"
+            onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-5 border-b border-[#D9E2E3] bg-[#E8EFF0]">
+            <div className="flex items-center justify-between p-5 border-b border-[#292940]">
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${getBg(selected.type)}`}>
-                  {getIcon(selected.type)}
-                </div>
+                {(() => {
+                  const config = TYPE_CONFIG[selected.type] || TYPE_CONFIG.info;
+                  const Icon = config.icon;
+                  return (
+                    <div className={clsx("w-9 h-9 rounded-xl flex items-center justify-center border", config.bg, config.border, config.color)}>
+                      <Icon size={18} />
+                    </div>
+                  );
+                })()}
                 <div>
-                  <h3 className="font-bold text-[#344B4A] text-base">Notification Details</h3>
-                  <p className="text-xs text-[#697778]">Viewing details on this page</p>
+                  <h3 className="font-bold text-white text-base">Notification Details</h3>
+                  <p className="text-xs text-[#A1A1AA]">Admin Activity Log</p>
                 </div>
               </div>
-              <button 
-                onClick={() => setSelected(null)} 
-                className="text-[#697778] hover:text-[#344B4A] p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                title="Close"
+              <button
+                onClick={() => setSelected(null)}
+                className="p-1.5 rounded-lg hover:bg-white/10 text-zinc-400 hover:text-white transition cursor-pointer"
               >
-                <XCircle size={20} />
+                <X size={18} />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <div>
-                <p className="text-xs text-[#697778] uppercase tracking-wider font-semibold mb-1">Subject</p>
-                <p className="font-bold text-lg text-[#344B4A]">{selected.title}</p>
+                <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Subject</p>
+                <p className="font-bold text-white text-lg">{selected.title}</p>
               </div>
 
-              <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-4">
-                <p className="text-xs text-[#697778] uppercase tracking-wider font-semibold mb-2">Message</p>
-                <p className="text-sm text-[#344B4A] leading-relaxed whitespace-pre-wrap">{selected.message}</p>
+              <div>
+                <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Message</p>
+                <div className="bg-[#0B0B12] p-4 rounded-2xl border border-[#292940]">
+                  <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">{selected.message}</p>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-[#292940] text-xs">
                 <div>
-                  <p className="text-xs text-[#697778] uppercase tracking-wider font-semibold mb-1">Type</p>
-                  <p className="text-sm font-semibold text-[#344B4A] capitalize">{selected.type || 'info'}</p>
+                  <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Type</p>
+                  <span className="capitalize font-semibold text-white px-2 py-0.5 rounded-md bg-[#17172A] border border-[#292940]">
+                    {selected.type || 'info'}
+                  </span>
                 </div>
                 <div>
-                  <p className="text-xs text-[#697778] uppercase tracking-wider font-semibold mb-1">Status</p>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
+                  <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Status</p>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-semibold">
                     <CheckCircle2 size={12} />
                     Read
                   </span>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-xs text-[#697778] uppercase tracking-wider font-semibold mb-1">Received At</p>
-                  <p className="text-sm font-medium text-[#344B4A]">
+                  <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Timestamp</p>
+                  <span className="text-zinc-400">
                     {selected.createdAt ? new Date(selected.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}
-                  </p>
+                  </span>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center justify-between gap-3 p-4 bg-gray-50 border-t border-[#D9E2E3]">
-              <div>
-                {getNotificationLink(selected) && (
+              <div className="pt-2 flex items-center justify-between gap-3">
+                {getNotificationLink(selected) ? (
                   <button
                     onClick={() => {
                       const link = getNotificationLink(selected);
                       setSelected(null);
                       if (link) navigate(link);
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#167D78] hover:bg-orange-50 rounded-lg transition-colors border border-transparent hover:border-orange-200"
+                    className="flex-1 py-2.5 rounded-xl bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-bold transition shadow-md shadow-[#6366F1]/25 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <span>Go to related page</span>
-                    <ArrowRight size={13} />
+                    <span>Go to Related Page</span>
+                    <ExternalLink size={13} />
                   </button>
+                ) : (
+                  <div />
                 )}
+                <button
+                  onClick={() => setSelected(null)}
+                  className="px-5 py-2.5 bg-[#17172A] hover:bg-[#292940] text-white text-xs font-bold rounded-xl border border-[#292940] transition cursor-pointer"
+                >
+                  Close
+                </button>
               </div>
-              <button
-                onClick={() => setSelected(null)}
-                className="px-4 py-2 bg-[#344B4A] text-white text-sm font-bold rounded-xl hover:bg-black transition-colors"
-              >
-                Close
-              </button>
             </div>
           </div>
         </div>

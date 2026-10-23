@@ -131,8 +131,8 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       // Studio Radial lighting gradient
       const bgGrad = ctx.createRadialGradient(width / 2, height / 2 - 20, 30, width / 2, height / 2, width / 1.3);
-      bgGrad.addColorStop(0, '#344B4A');
-      bgGrad.addColorStop(0.5, '#344B4A');
+      bgGrad.addColorStop(0, '#11111F');
+      bgGrad.addColorStop(0.5, '#11111F');
       bgGrad.addColorStop(1, '#090D16');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
@@ -186,7 +186,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       }
 
       // Biomechanical Style Configuration
-      const mannequinColor = '#D9E2E3';
+      const mannequinColor = '#292940';
       const jointColor = '#38BDF8';
       const highlightColor = '#27845A'; // Emerald neon glow for active target muscles
       const accentGlow = '#06B6D4';
@@ -251,7 +251,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         ctx.rotate(rot);
 
         // Bar handle
-        ctx.strokeStyle = '#D9E2E3';
+        ctx.strokeStyle = '#292940';
         ctx.lineWidth = 3.5;
         ctx.beginPath();
         ctx.moveTo(-13, 0);
@@ -259,7 +259,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         ctx.stroke();
 
         // Hex plates
-        ctx.fillStyle = '#344B4A';
+        ctx.fillStyle = '#11111F';
         ctx.strokeStyle = '#06B6D4';
         ctx.lineWidth = 1.5;
 
@@ -273,7 +273,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       };
 
       const drawBarbell = (bx: number, by: number, widthPx: number = 210) => {
-        ctx.strokeStyle = '#D9E2E3';
+        ctx.strokeStyle = '#292940';
         ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(bx - widthPx / 2, by);
@@ -575,9 +575,9 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const baseFloor = isBenchPress ? floorY - 40 : floorY;
 
         if (isBenchPress) {
-          ctx.fillStyle = '#344B4A';
+          ctx.fillStyle = '#11111F';
           ctx.fillRect(centerX - 105, baseFloor + 12, 210, 16);
-          ctx.fillStyle = '#344B4A';
+          ctx.fillStyle = '#11111F';
           ctx.fillRect(centerX - 85, baseFloor + 28, 14, 22);
           ctx.fillRect(centerX + 70, baseFloor + 28, 14, 22);
         }
@@ -616,7 +616,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const barY = 38;
         const barX = centerX;
 
-        ctx.strokeStyle = '#697778';
+        ctx.strokeStyle = '#A1A1AA';
         ctx.lineWidth = 7;
         ctx.beginPath();
         ctx.moveTo(barX - 110, barY);
@@ -820,7 +820,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       ctx.font = 'bold 9px monospace';
       ctx.fillText(`1-MIN AI FORM VIDEO • ${formatTime(currentVideoTime)} / ${formatTime(totalDuration)}`, 22, 28);
 
-      ctx.fillStyle = '#E8EFF0';
+      ctx.fillStyle = '#0B0B12';
       ctx.font = 'bold 12px sans-serif';
       ctx.fillText(phaseLabel, 22, 48);
 
@@ -875,7 +875,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
   };
 
   return (
-    <div className={`relative rounded-2xl overflow-hidden bg-[#344B4A] border border-white/10 flex flex-col ${className}`}>
+    <div className={`relative rounded-2xl overflow-hidden bg-[#11111F] border border-white/10 flex flex-col ${className}`}>
       {/* 60fps Canvas Display */}
       <div className={`relative w-full bg-[#090D16] flex items-center justify-center overflow-hidden ${
         compact ? 'h-full' : 'aspect-video min-h-[220px] max-h-[360px]'
@@ -953,7 +953,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       {/* 1-Minute Video Scrubber & Playback HUD (Full Mode Only) */}
       {!compact && (
-        <div className="bg-[#344B4A]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
+        <div className="bg-[#11111F]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
           {/* Row 1: Interactive 1-Minute Scrubber Bar */}
           <div className="flex items-center gap-3">
             <div

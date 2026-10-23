@@ -13,7 +13,8 @@ import {
   getCustomerReferralHistory,
   getCustomerRewardsLedger,
   redeemCustomerReward,
-  validateReferralCode
+  validateReferralCode,
+  sendEmailInvite
 } from '../controllers/referralController';
 
 const router = Router();
@@ -36,6 +37,9 @@ router.get('/my-code', authenticate, getCustomerReferralCode);
 router.get('/my-stats', authenticate, getCustomerReferralStats);
 router.get('/my-history', authenticate, getCustomerReferralHistory);
 router.get('/my-rewards', authenticate, getCustomerRewardsLedger);
+router.get('/my-rewards-ledger', authenticate, getCustomerRewardsLedger);
 router.post('/redeem', authenticate, redeemCustomerReward);
+router.post('/my-rewards/redeem', authenticate, redeemCustomerReward);
+router.post('/invite-email', authenticate, sendEmailInvite);
 
 export default router;

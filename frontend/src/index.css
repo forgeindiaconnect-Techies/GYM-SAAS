@@ -1,44 +1,68 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+/* 
+  EXACT BLACK + INDIGO THEME
+  Main background:        #050505
+  Secondary background:   #0B0B12
+  Card background:        #11111F
+  Elevated surface:       #17172A
+  Primary Indigo:         #6366F1
+  Deep Indigo:            #4F46E5
+  Light Indigo:           #818CF8
+  Main text:              #FFFFFF
+  Heading text:           #F8FAFC
+  Body text:              #D1D5DB
+  Secondary text:         #A1A1AA
+  Border color:           #292940
+  Success status:         #22C55E
+  Warning status:         #F59E0B
+*/
+
 @theme {
-  --color-primary: #167D78;
-  --color-primary-hover: #116660;
-  --color-secondary: #D8EAE7;
-  --color-accent: #344B4A;
-  --color-background: #E8EFF0;
-  --color-sidebar: #FFFFFF;
-  --color-card: #FFFFFF;
-  --color-text: #344B4A;
-  --color-text-secondary: #697778;
-  --color-border: #D9E2E3;
-  --color-success: #27845A;
-  --color-warning: #D99A27;
-  --color-error: #C43D35;
-  --color-teal: #167D78;
-  --color-deep-teal: #344B4A;
-  --color-light-teal: #D8EAE7;
-  --color-mist-grey: #E8EFF0;
+  --color-primary: #6366F1;
+  --color-primary-hover: #4F46E5;
+  --color-secondary: #0B0B12;
+  --color-accent: #818CF8;
+  --color-background: #050505;
+  --color-sidebar: #0B0B12;
+  --color-card: #11111F;
+  --color-card-elevated: #17172A;
+  --color-text: #FFFFFF;
+  --color-heading: #F8FAFC;
+  --color-body: #D1D5DB;
+  --color-text-secondary: #A1A1AA;
+  --color-border: #292940;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+
+  --color-primary-indigo: #6366F1;
+  --color-deep-indigo: #4F46E5;
+  --color-light-indigo: #818CF8;
+  --color-dark-surface: #11111F;
+  --color-dark-elevated: #17172A;
 }
 
 :root {
-  --color-primary: #167D78;
-  --color-primary-hover: #116660;
-  --color-secondary: #D8EAE7;
-  --color-accent: #344B4A;
-  --color-background: #E8EFF0;
-  --color-sidebar: #FFFFFF;
-  --color-card: #FFFFFF;
-  --color-text: #344B4A;
-  --color-text-secondary: #697778;
-  --color-border: #D9E2E3;
-  --color-success: #27845A;
-  --color-warning: #D99A27;
-  --color-error: #C43D35;
-  --color-teal: #167D78;
-  --color-deep-teal: #344B4A;
-  --color-light-teal: #D8EAE7;
-  --color-mist-grey: #E8EFF0;
+  --color-primary: #6366F1;
+  --color-primary-hover: #4F46E5;
+  --color-secondary: #0B0B12;
+  --color-accent: #818CF8;
+  --color-background: #050505;
+  --color-sidebar: #0B0B12;
+  --color-card: #11111F;
+  --color-card-elevated: #17172A;
+  --color-text: #FFFFFF;
+  --color-heading: #F8FAFC;
+  --color-body: #D1D5DB;
+  --color-text-secondary: #A1A1AA;
+  --color-border: #292940;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+
+  --color-primary-indigo: #6366F1;
+  --color-deep-indigo: #4F46E5;
+  --color-light-indigo: #818CF8;
 }
 
 *, *::before, *::after {
@@ -47,38 +71,44 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  background-color: #E8EFF0;
-  color: #344B4A;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #050505 !important;
+  color: #D1D5DB !important;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
 }
 
-/* Custom Scrollbar — Teal + Mist Grey theme */
+h1, h2, h3, h4, h5, h6 {
+  color: #F8FAFC !important;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom Scrollbar — Pure Black & Indigo */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #050505;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #D9E2E3;
+  background-color: #292940;
   border-radius: 20px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #167D78;
+  background-color: #6366F1;
 }
 
 /* Sidebar mobile overlay */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(52, 75, 74, 0.4);
+  background: rgba(5, 5, 5, 0.85);
   z-index: 30;
   display: none;
 }
@@ -86,18 +116,105 @@ body {
   display: block;
 }
 
-/* Input/select global reset */
+/* Input, select, textarea global resets for Black + Indigo theme */
 input, select, textarea {
-  color: #344B4A;
-  background-color: #FFFFFF;
+  color: #FFFFFF !important;
+  background-color: #0B0B12 !important;
+  border: 1px solid #292940 !important;
 }
 
 input::placeholder, textarea::placeholder {
-  color: #697778;
+  color: #A1A1AA !important;
 }
 
-/* Focus ring — Teal */
+/* Focus ring — Indigo */
 input:focus, select:focus, textarea:focus, button:focus-visible {
-  outline: 2px solid #167D78;
+  outline: 2px solid #6366F1 !important;
   outline-offset: 2px;
+  border-color: #6366F1 !important;
+}
+
+/* Primary buttons — Indigo with white text */
+.btn-indigo, .btn-primary, .btn-electric-blue, .btn-slate-primary, .btn-primary-blue {
+  background-color: #6366F1 !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+}
+.btn-indigo:hover, .btn-primary:hover, .btn-electric-blue:hover, .btn-slate-primary:hover, .btn-primary-blue:hover {
+  background-color: #4F46E5 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* Secondary buttons — Dark with subtle indigo border */
+.btn-secondary, .btn-secondary-blue, .btn-charcoal-secondary, .btn-dark-navy {
+  background-color: #11111F !important;
+  color: #FFFFFF !important;
+  border: 1px solid #292940 !important;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+.btn-secondary:hover, .btn-secondary-blue:hover, .btn-charcoal-secondary:hover, .btn-dark-navy:hover {
+  background-color: #17172A !important;
+  border-color: #6366F1 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-light-indigo, .btn-sand-gold, .btn-light-cyan {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+  color: #818CF8 !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+.btn-light-indigo:hover, .btn-sand-gold:hover, .btn-light-cyan:hover {
+  background-color: rgba(99, 102, 241, 0.25) !important;
+  color: #FFFFFF !important;
+}
+
+/* Cards & Panels */
+.card-indigo, .card-navy, .card-charcoal {
+  background-color: #11111F !important;
+  border: 1px solid #292940 !important;
+  color: #D1D5DB !important;
+}
+
+.card-elevated, .card-dark-elevated {
+  background-color: #17172A !important;
+  border: 1px solid #292940 !important;
+  color: #D1D5DB !important;
+}
+
+.card-indigo-border, .card-charcoal-blue, .card-navy-blue {
+  background-color: #11111F !important;
+  border: 1px solid #6366F1 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+/* Badges */
+.badge-indigo, .badge-slate-blue, .badge-electric-blue {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+  color: #818CF8 !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+}
+
+.badge-light-indigo, .badge-sand-gold, .badge-light-cyan {
+  background-color: rgba(129, 140, 248, 0.15) !important;
+  color: #818CF8 !important;
+  border: 1px solid rgba(129, 140, 248, 0.3) !important;
+}
+
+/* Table element readability */
+table {
+  color: #D1D5DB !important;
+}
+th {
+  color: #F8FAFC !important;
+  background-color: #0B0B12 !important;
+}
+tr:hover {
+  background-color: rgba(99, 102, 241, 0.05) !important;
 }

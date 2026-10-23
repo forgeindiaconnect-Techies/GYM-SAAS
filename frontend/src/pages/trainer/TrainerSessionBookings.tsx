@@ -156,22 +156,22 @@ const TrainerSessionBookings = () => {
       <TrainerSchedulingTabs />
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Session Bookings</h1>
-          <p className="text-[#697778] mt-1 text-sm">Manage customer booking requests  -  approve or reject incoming sessions.</p>
+          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Session Bookings</h1>
+          <p className="text-[#A1A1AA] mt-1 text-sm">Manage customer booking requests  -  approve or reject incoming sessions.</p>
         </div>
         <button onClick={() => fetchBookings(true)} disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#167D78] border border-[#D9E2E3] rounded-xl hover:bg-[#E8EFF0] transition-colors disabled:opacity-50 self-start sm:self-auto">
+          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#6366F1] border border-[#292940] rounded-xl hover:bg-[#0B0B12] transition-colors disabled:opacity-50 self-start sm:self-auto">
           <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
           Refresh
         </button>
       </div>
 
-      <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl p-4 flex items-start gap-3">
-        <div className="p-2 bg-[#167D78]/10 rounded-xl shrink-0">
-          <Filter size={16} className="text-[#167D78]" />
+      <div className="bg-[#0B0B12] border border-[#17172A] rounded-2xl p-4 flex items-start gap-3">
+        <div className="p-2 bg-[#6366F1]/10 rounded-xl shrink-0">
+          <Filter size={16} className="text-[#6366F1]" />
         </div>
-        <div className="text-sm text-[#697778]">
-          <span className="font-bold text-[#344B4A]">Workflow: </span>
+        <div className="text-sm text-[#A1A1AA]">
+          <span className="font-bold text-[#11111F]">Workflow: </span>
           Customer books ? <span className="font-bold text-amber-700">Pending</span> ? You{' '}
           <span className="font-bold text-emerald-700">Approve</span> or <span className="font-bold text-rose-700">Reject</span> ?
           Approved online bookings appear automatically in <span className="font-bold text-blue-700">Online Sessions</span>.
@@ -182,11 +182,11 @@ const TrainerSessionBookings = () => {
         {STATUS_FILTERS.map(f => (
           <button key={f} onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 border ${
-              filter === f ? 'bg-[#167D78] text-white border-[#167D78] shadow-sm' : 'bg-white text-[#697778] border-[#D9E2E3] hover:bg-[#E8EFF0]'}`}>
+              filter === f ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-sm' : 'bg-white text-[#A1A1AA] border-[#292940] hover:bg-[#0B0B12]'}`}>
             {f}
             {(counts[f] || 0) > 0 && (
               <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center ${
-                filter === f ? 'bg-white/25 text-white' : 'bg-[#E8EFF0] text-[#697778]'}`}>
+                filter === f ? 'bg-white/25 text-white' : 'bg-[#0B0B12] text-[#A1A1AA]'}`}>
                 {counts[f]}
               </span>
             )}
@@ -196,16 +196,16 @@ const TrainerSessionBookings = () => {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 gap-3">
-          <Loader2 className="animate-spin text-[#167D78]" size={40} />
-          <p className="text-[#697778] text-sm font-medium">Loading bookings...</p>
+          <Loader2 className="animate-spin text-[#6366F1]" size={40} />
+          <p className="text-[#A1A1AA] text-sm font-medium">Loading bookings...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-16 text-center flex flex-col items-center gap-3 shadow-sm">
-          <div className="w-16 h-16 rounded-2xl bg-[#E8EFF0] flex items-center justify-center">
-            <CalendarIcon size={32} className="text-[#697778]" />
+        <div className="bg-white border border-[#292940] rounded-2xl p-16 text-center flex flex-col items-center gap-3 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-[#0B0B12] flex items-center justify-center">
+            <CalendarIcon size={32} className="text-[#A1A1AA]" />
           </div>
-          <h3 className="text-xl font-bold text-[#344B4A]">No {filter === 'All' ? '' : filter.toLowerCase()} bookings</h3>
-          <p className="text-[#697778] text-sm">
+          <h3 className="text-xl font-bold text-[#11111F]">No {filter === 'All' ? '' : filter.toLowerCase()} bookings</h3>
+          <p className="text-[#A1A1AA] text-sm">
             {filter === 'Pending' ? 'No new booking requests waiting for your approval.' : 'No sessions match this filter.'}
           </p>
         </div>
@@ -222,7 +222,7 @@ const TrainerSessionBookings = () => {
 
             return (
               <div key={booking._id}
-                className="bg-white border border-[#D9E2E3] rounded-2xl overflow-hidden hover:shadow-md hover:border-[#167D78]/30 transition-all flex flex-col relative">
+                className="bg-white border border-[#292940] rounded-2xl overflow-hidden hover:shadow-md hover:border-[#6366F1]/30 transition-all flex flex-col relative">
                 <div className={`h-1 w-full ${
                   normStatus === 'Pending' ? 'bg-amber-400' :
                   normStatus === 'Approved' ? 'bg-emerald-500' :
@@ -230,19 +230,19 @@ const TrainerSessionBookings = () => {
                   normStatus === 'Rejected' ? 'bg-rose-500' : 'bg-red-500'}`} />
                 {isDoingAction && (
                   <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-20 rounded-2xl">
-                    <Loader2 className="animate-spin text-[#167D78]" size={32} />
+                    <Loader2 className="animate-spin text-[#6366F1]" size={32} />
                   </div>
                 )}
                 <div className="p-5 flex flex-col gap-4 flex-1">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-full bg-[#167D78]/10 border border-[#D9E2E3] flex items-center justify-center shrink-0 overflow-hidden">
+                    <div className="w-11 h-11 rounded-full bg-[#6366F1]/10 border border-[#292940] flex items-center justify-center shrink-0 overflow-hidden">
                       {booking.customerId?.profilePhoto
                         ? <img src={booking.customerId.profilePhoto} alt="" className="w-full h-full object-cover" />
-                        : <span className="font-bold text-[#167D78] text-base">{booking.customerId?.firstName?.charAt(0) || 'U'}</span>}
+                        : <span className="font-bold text-[#6366F1] text-base">{booking.customerId?.firstName?.charAt(0) || 'U'}</span>}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-[#344B4A] truncate">{clientName}</h3>
-                      <p className="text-xs text-[#697778] truncate">{booking.customerId?.email || ''}</p>
+                      <h3 className="font-bold text-[#11111F] truncate">{clientName}</h3>
+                      <p className="text-xs text-[#A1A1AA] truncate">{booking.customerId?.email || ''}</p>
                     </div>
                   </div>
 
@@ -254,24 +254,24 @@ const TrainerSessionBookings = () => {
                       {booking.mode === 'Online' ? 'Online' : 'In-Gym'}
                     </span>
                     {booking.bookingId && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#E8EFF0] text-[#697778] border border-[#D9E2E3]">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#0B0B12] text-[#A1A1AA] border border-[#292940]">
                         #{booking.bookingId}
                       </span>
                     )}
                   </div>
 
-                  <div className="bg-[#E8EFF0] border border-[#E8EAED] rounded-xl p-3 space-y-1.5 text-sm">
+                  <div className="bg-[#0B0B12] border border-[#E8EAED] rounded-xl p-3 space-y-1.5 text-sm">
                     <div className="flex items-center gap-2">
-                      <CalendarIcon size={14} className="text-[#167D78] shrink-0" />
-                      <span className="font-semibold text-[#344B4A]">{formatDate(booking.date)}</span>
+                      <CalendarIcon size={14} className="text-[#6366F1] shrink-0" />
+                      <span className="font-semibold text-[#11111F]">{formatDate(booking.date)}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[#697778]">
-                      <Clock size={14} className="text-[#167D78] shrink-0" />
+                    <div className="flex items-center gap-2 text-[#A1A1AA]">
+                      <Clock size={14} className="text-[#6366F1] shrink-0" />
                       <span className="font-medium">{booking.startTime} - {booking.endTime}</span>
                     </div>
                     {booking.duration && (
-                      <div className="flex items-center gap-2 text-[#697778]">
-                        <Users size={14} className="text-[#167D78] shrink-0" />
+                      <div className="flex items-center gap-2 text-[#A1A1AA]">
+                        <Users size={14} className="text-[#6366F1] shrink-0" />
                         <span className="font-medium">{booking.duration} min session</span>
                       </div>
                     )}
@@ -291,13 +291,13 @@ const TrainerSessionBookings = () => {
                   )}
 
                   {booking.sessionNotes?.exercisesCompleted && (
-                    <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-[#697778]">
-                      <span className="font-bold text-[#344B4A]">Notes: </span>
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-[#A1A1AA]">
+                      <span className="font-bold text-[#11111F]">Notes: </span>
                       <span className="line-clamp-2">{booking.sessionNotes.exercisesCompleted}</span>
                     </div>
                   )}
 
-                  <div className="mt-auto pt-3 border-t border-[#D9E2E3] space-y-2">
+                  <div className="mt-auto pt-3 border-t border-[#292940] space-y-2">
                     {booking.status === 'Pending' && (
                       <div className="flex gap-2">
                         <button onClick={() => handleApprove(booking._id)} disabled={isDoingAction}
@@ -311,7 +311,7 @@ const TrainerSessionBookings = () => {
                           Reject
                         </button>
                         <button onClick={() => setDetailModal(booking)}
-                          className="px-3 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#344B4A] hover:bg-[#D8EAE7] transition-colors flex items-center gap-1"
+                          className="px-3 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs font-semibold text-[#11111F] hover:bg-[#17172A] transition-colors flex items-center gap-1"
                           title="View Details">
                           <Eye size={13} />
                         </button>
@@ -323,7 +323,7 @@ const TrainerSessionBookings = () => {
                         <button
                           onClick={() => handleCheckOut(booking._id)}
                           disabled={actionLoading === booking._id + '-checkout'}
-                          className="flex-1 py-2.5 bg-[#167D78] hover:bg-[#116660] text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50"
+                          className="flex-1 py-2.5 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50"
                         >
                           {actionLoading === booking._id + '-checkout' ? (
                             <Loader2 size={13} className="animate-spin" />
@@ -333,12 +333,12 @@ const TrainerSessionBookings = () => {
                           Checkout
                         </button>
                         <button onClick={() => setDetailModal(booking)}
-                          className="px-3 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#344B4A] hover:bg-[#D8EAE7] transition-colors flex items-center gap-1">
+                          className="px-3 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs font-semibold text-[#11111F] hover:bg-[#17172A] transition-colors flex items-center gap-1">
                           <Eye size={13} /> Details
                         </button>
                         <button
                           onClick={() => openNotesModal(booking)}
-                          className="px-3 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#697778] hover:bg-[#D8EAE7] transition-colors flex items-center gap-1"
+                          className="px-3 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs font-semibold text-[#A1A1AA] hover:bg-[#17172A] transition-colors flex items-center gap-1"
                         >
                           <FileText size={13} /> Notes
                         </button>
@@ -357,11 +357,11 @@ const TrainerSessionBookings = () => {
                         </div>
                         <div className="flex gap-2">
                           <button onClick={() => setDetailModal(booking)}
-                            className="flex-1 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#344B4A] hover:bg-[#D8EAE7] transition-colors flex items-center justify-center gap-1">
+                            className="flex-1 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs font-semibold text-[#11111F] hover:bg-[#17172A] transition-colors flex items-center justify-center gap-1">
                             <Eye size={13} /> View Details
                           </button>
                           <button onClick={() => openNotesModal(booking)}
-                            className="flex-1 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#697778] hover:bg-[#D8EAE7] transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                            className="flex-1 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs font-semibold text-[#A1A1AA] hover:bg-[#17172A] transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
                             <FileText size={13} /> {booking.sessionNotes?.exercisesCompleted ? 'Edit Notes' : 'Add Notes'}
                           </button>
                         </div>
@@ -373,11 +373,11 @@ const TrainerSessionBookings = () => {
                           <CheckCircle2 size={13} /> Completed
                         </div>
                         <button onClick={() => setDetailModal(booking)}
-                          className="px-3 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#344B4A] hover:bg-[#D8EAE7] transition-colors flex items-center gap-1">
+                          className="px-3 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs font-semibold text-[#11111F] hover:bg-[#17172A] transition-colors flex items-center gap-1">
                           <Eye size={13} /> View Details
                         </button>
                         <button onClick={() => openNotesModal(booking)}
-                          className="px-3 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#697778] hover:bg-[#D8EAE7] transition-colors flex items-center gap-1 cursor-pointer">
+                          className="px-3 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs font-semibold text-[#A1A1AA] hover:bg-[#17172A] transition-colors flex items-center gap-1 cursor-pointer">
                           <FileText size={13} /> Notes
                         </button>
                       </div>
@@ -388,7 +388,7 @@ const TrainerSessionBookings = () => {
                           Session {normStatus}
                         </div>
                         <button onClick={() => setDetailModal(booking)}
-                          className="px-3 py-2 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-xs font-semibold text-[#344B4A] hover:bg-[#D8EAE7] transition-colors flex items-center gap-1">
+                          className="px-3 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs font-semibold text-[#11111F] hover:bg-[#17172A] transition-colors flex items-center gap-1">
                           <Eye size={13} /> View Details
                         </button>
                       </div>
@@ -404,17 +404,17 @@ const TrainerSessionBookings = () => {
       {/* Details Modal */}
       {detailModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#D9E2E3]">
-            <div className="sticky top-0 bg-white border-b border-[#D9E2E3] px-6 py-4 flex items-center justify-between z-10">
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#292940]">
+            <div className="sticky top-0 bg-white border-b border-[#292940] px-6 py-4 flex items-center justify-between z-10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#167D78]/10 border border-[#D9E2E3] flex items-center justify-center shrink-0">
-                  <span className="font-bold text-[#167D78] text-sm">{detailModal.customerId?.firstName?.charAt(0) || 'C'}</span>
+                <div className="w-10 h-10 rounded-full bg-[#6366F1]/10 border border-[#292940] flex items-center justify-center shrink-0">
+                  <span className="font-bold text-[#6366F1] text-sm">{detailModal.customerId?.firstName?.charAt(0) || 'C'}</span>
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#344B4A]">
+                  <h3 className="text-base font-bold text-[#11111F]">
                     {detailModal.customerId?.firstName} {detailModal.customerId?.lastName}
                   </h3>
-                  <p className="text-xs text-[#697778]">{detailModal.customerId?.email || 'No email'}</p>
+                  <p className="text-xs text-[#A1A1AA]">{detailModal.customerId?.email || 'No email'}</p>
                 </div>
               </div>
               <button onClick={() => setDetailModal(null)} className="text-gray-400 hover:text-gray-600 p-1">
@@ -423,10 +423,10 @@ const TrainerSessionBookings = () => {
             </div>
 
             <div className="p-6 space-y-5">
-              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#E8EFF0] p-3 rounded-xl border border-[#E8EAED]">
+              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#0B0B12] p-3 rounded-xl border border-[#E8EAED]">
                 <div>
-                  <span className="text-xs text-[#697778] block">Booking Identifier</span>
-                  <span className="font-mono font-bold text-sm text-[#344B4A]">#{detailModal.bookingId || detailModal._id?.slice(-8)}</span>
+                  <span className="text-xs text-[#A1A1AA] block">Booking Identifier</span>
+                  <span className="font-mono font-bold text-sm text-[#11111F]">#{detailModal.bookingId || detailModal._id?.slice(-8)}</span>
                 </div>
                 <div className="flex gap-1.5">
                   <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${STATUS_BADGE[normalizeStatus(detailModal.status)] || 'bg-gray-100 text-gray-700'}`}>
@@ -439,24 +439,24 @@ const TrainerSessionBookings = () => {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Session Schedule & Fee</h4>
-                <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-3 space-y-2 text-sm">
+                <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Session Schedule & Fee</h4>
+                <div className="bg-[#0B0B12] border border-[#292940] rounded-xl p-3 space-y-2 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#697778] flex items-center gap-1.5"><CalendarIcon size={14} className="text-[#167D78]" /> Date</span>
-                    <span className="font-semibold text-[#344B4A]">{formatDate(detailModal.date)}</span>
+                    <span className="text-[#A1A1AA] flex items-center gap-1.5"><CalendarIcon size={14} className="text-[#6366F1]" /> Date</span>
+                    <span className="font-semibold text-[#11111F]">{formatDate(detailModal.date)}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#697778] flex items-center gap-1.5"><Clock size={14} className="text-[#167D78]" /> Time</span>
-                    <span className="font-semibold text-[#344B4A]">{detailModal.startTime} – {detailModal.endTime}</span>
+                    <span className="text-[#A1A1AA] flex items-center gap-1.5"><Clock size={14} className="text-[#6366F1]" /> Time</span>
+                    <span className="font-semibold text-[#11111F]">{detailModal.startTime} – {detailModal.endTime}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#697778] flex items-center gap-1.5"><Users size={14} className="text-[#167D78]" /> Duration</span>
-                    <span className="font-semibold text-[#344B4A]">{detailModal.duration || '60'} min</span>
+                    <span className="text-[#A1A1AA] flex items-center gap-1.5"><Users size={14} className="text-[#6366F1]" /> Duration</span>
+                    <span className="font-semibold text-[#11111F]">{detailModal.duration || '60'} min</span>
                   </div>
                   {detailModal.fee > 0 && (
                     <div className="flex items-center justify-between pt-1 border-t border-gray-100">
-                      <span className="text-[#697778]">Session Fee</span>
-                      <span className="font-bold text-[#167D78]">₹{detailModal.fee}</span>
+                      <span className="text-[#A1A1AA]">Session Fee</span>
+                      <span className="font-bold text-[#6366F1]">₹{detailModal.fee}</span>
                     </div>
                   )}
                 </div>
@@ -464,7 +464,7 @@ const TrainerSessionBookings = () => {
 
               {(detailModal.checkInTime || detailModal.checkOutTime) && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Attendance Records</h4>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Attendance Records</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {detailModal.checkInTime && (
                       <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-xs">
@@ -488,7 +488,7 @@ const TrainerSessionBookings = () => {
 
               {detailModal.rejectionReason && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Rejection Reason</h4>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Rejection Reason</h4>
                   <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs text-rose-700">
                     {detailModal.rejectionReason}
                   </div>
@@ -497,7 +497,7 @@ const TrainerSessionBookings = () => {
 
               {detailModal.customerRating && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Customer Rating</h4>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Customer Rating</h4>
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 space-y-1">
                     <div className="flex items-center gap-1 font-bold text-amber-700">
                       <Star size={16} className="fill-amber-400 text-amber-400" />
@@ -512,22 +512,22 @@ const TrainerSessionBookings = () => {
 
               {detailModal.sessionNotes?.exercisesCompleted && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Session Notes</h4>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Session Notes</h4>
                   <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs text-gray-800 space-y-1.5">
-                    <p><span className="font-bold text-[#697778]">Exercises:</span> {detailModal.sessionNotes.exercisesCompleted}</p>
+                    <p><span className="font-bold text-[#A1A1AA]">Exercises:</span> {detailModal.sessionNotes.exercisesCompleted}</p>
                     {detailModal.sessionNotes.customerPerformance && (
-                      <p><span className="font-bold text-[#697778]">Performance:</span> {detailModal.sessionNotes.customerPerformance}</p>
+                      <p><span className="font-bold text-[#A1A1AA]">Performance:</span> {detailModal.sessionNotes.customerPerformance}</p>
                     )}
                     {detailModal.sessionNotes.dietRecommendations && (
-                      <p><span className="font-bold text-[#697778]">Diet:</span> {detailModal.sessionNotes.dietRecommendations}</p>
+                      <p><span className="font-bold text-[#A1A1AA]">Diet:</span> {detailModal.sessionNotes.dietRecommendations}</p>
                     )}
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="sticky bottom-0 bg-white border-t border-[#D9E2E3] px-6 py-3 flex justify-end">
-              <button onClick={() => setDetailModal(null)} className="px-5 py-2 bg-[#167D78] text-white rounded-xl text-sm font-bold hover:bg-[#116660]">
+            <div className="sticky bottom-0 bg-white border-t border-[#292940] px-6 py-3 flex justify-end">
+              <button onClick={() => setDetailModal(null)} className="px-5 py-2 bg-[#6366F1] text-white rounded-xl text-sm font-bold hover:bg-[#4F46E5]">
                 Close
               </button>
             </div>
@@ -537,7 +537,7 @@ const TrainerSessionBookings = () => {
 
       {rejectModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#D9E2E3] overflow-hidden">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#292940] overflow-hidden">
             <div className="bg-rose-50 border-b border-rose-200 px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center">
@@ -548,11 +548,11 @@ const TrainerSessionBookings = () => {
               <button onClick={() => setRejectModal(null)} className="text-gray-400 hover:text-gray-600 p-1"><X size={18} /></button>
             </div>
             <div className="p-6 space-y-4">
-              <p className="text-sm text-[#697778]">
-                Declining the booking from <span className="font-bold text-[#344B4A]">{rejectModal.customerId?.firstName} {rejectModal.customerId?.lastName}</span> scheduled on <span className="font-semibold">{formatDate(rejectModal.date)}</span> at <span className="font-semibold">{rejectModal.startTime}</span>.
+              <p className="text-sm text-[#A1A1AA]">
+                Declining the booking from <span className="font-bold text-[#11111F]">{rejectModal.customerId?.firstName} {rejectModal.customerId?.lastName}</span> scheduled on <span className="font-semibold">{formatDate(rejectModal.date)}</span> at <span className="font-semibold">{rejectModal.startTime}</span>.
               </p>
               <div>
-                <label className="block text-xs font-bold text-[#697778] mb-1.5">Reason <span className="font-normal text-gray-400">(optional)</span></label>
+                <label className="block text-xs font-bold text-[#A1A1AA] mb-1.5">Reason <span className="font-normal text-gray-400">(optional)</span></label>
                 <textarea rows={3} value={rejectReason} onChange={e => setRejectReason(e.target.value)}
                   placeholder="e.g. Scheduling conflict, fully booked at this time..."
                   className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:border-rose-400 focus:outline-none resize-none" />
@@ -572,11 +572,11 @@ const TrainerSessionBookings = () => {
 
       {notesModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#D9E2E3]">
-            <div className="sticky top-0 bg-white border-b border-[#D9E2E3] px-6 py-4 flex items-center justify-between z-10">
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#292940]">
+            <div className="sticky top-0 bg-white border-b border-[#292940] px-6 py-4 flex items-center justify-between z-10">
               <div>
-                <h3 className="text-base font-bold text-[#344B4A]">Session Notes</h3>
-                <p className="text-xs text-[#697778]">{notesModal.customerId?.firstName} {notesModal.customerId?.lastName}   {formatDate(notesModal.date)}</p>
+                <h3 className="text-base font-bold text-[#11111F]">Session Notes</h3>
+                <p className="text-xs text-[#A1A1AA]">{notesModal.customerId?.firstName} {notesModal.customerId?.lastName}   {formatDate(notesModal.date)}</p>
               </div>
               <button onClick={() => setNotesModal(null)} className="text-gray-400 hover:text-gray-600 p-1"><X size={18} /></button>
             </div>
@@ -588,23 +588,23 @@ const TrainerSessionBookings = () => {
                 { label: 'Next Session Focus', key: 'nextSessionFocus', placeholder: 'e.g. Core stabilization' },
               ].map(field => (
                 <div key={field.key}>
-                  <label className="block text-xs font-bold text-[#697778] mb-1.5">{field.label}</label>
+                  <label className="block text-xs font-bold text-[#A1A1AA] mb-1.5">{field.label}</label>
                   {field.type === 'textarea'
-                    ? <textarea rows={2} value={(notesForm as any)[field.key]} onChange={e => setNotesForm({ ...notesForm, [field.key]: e.target.value })} placeholder={field.placeholder} className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:border-[#167D78] focus:outline-none resize-none" />
-                    : <input type="text" value={(notesForm as any)[field.key]} onChange={e => setNotesForm({ ...notesForm, [field.key]: e.target.value })} placeholder={field.placeholder} className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:border-[#167D78] focus:outline-none" />}
+                    ? <textarea rows={2} value={(notesForm as any)[field.key]} onChange={e => setNotesForm({ ...notesForm, [field.key]: e.target.value })} placeholder={field.placeholder} className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:border-[#6366F1] focus:outline-none resize-none" />
+                    : <input type="text" value={(notesForm as any)[field.key]} onChange={e => setNotesForm({ ...notesForm, [field.key]: e.target.value })} placeholder={field.placeholder} className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:border-[#6366F1] focus:outline-none" />}
                 </div>
               ))}
               <div>
-                <label className="block text-xs font-bold text-[#697778] mb-1.5">Customer Performance</label>
+                <label className="block text-xs font-bold text-[#A1A1AA] mb-1.5">Customer Performance</label>
                 <select value={notesForm.customerPerformance} onChange={e => setNotesForm({ ...notesForm, customerPerformance: e.target.value })}
-                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:border-[#167D78] focus:outline-none">
+                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:border-[#6366F1] focus:outline-none">
                   {['Excellent', 'Good', 'Average', 'Needs Improvement'].map(o => <option key={o}>{o}</option>)}
                 </select>
               </div>
               <div className="flex justify-end gap-3 pt-3 border-t border-gray-100">
                 <button onClick={() => setNotesModal(null)} className="px-5 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
                 <button onClick={handleSaveNotes} disabled={actionLoading === notesModal._id + '-notes'}
-                  className="px-5 py-2.5 bg-[#167D78] text-white rounded-xl text-sm font-bold hover:bg-[#116660] transition-colors flex items-center gap-2 disabled:opacity-50">
+                  className="px-5 py-2.5 bg-[#6366F1] text-white rounded-xl text-sm font-bold hover:bg-[#4F46E5] transition-colors flex items-center gap-2 disabled:opacity-50">
                   {actionLoading === notesModal._id + '-notes' && <Loader2 size={13} className="animate-spin" />}
                   Save Notes
                 </button>

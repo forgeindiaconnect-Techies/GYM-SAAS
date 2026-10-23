@@ -36,6 +36,9 @@ export interface ISubscription extends Document {
   amount: number;
   paymentMethod?: string;
   transactionId?: string;
+  actionType?: 'NEW' | 'RENEWAL' | 'UPGRADE' | 'SWITCH';
+  previousPlan?: string;
+  notes?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -55,6 +58,9 @@ const subscriptionSchema = new Schema<ISubscription>(
     amount: { type: Number, required: true },
     paymentMethod: { type: String, default: 'Manual' },
     transactionId: { type: String },
+    actionType: { type: String, enum: ['NEW', 'RENEWAL', 'UPGRADE', 'SWITCH'], default: 'NEW' },
+    previousPlan: { type: String },
+    notes: { type: String },
   },
   { timestamps: true }
 );

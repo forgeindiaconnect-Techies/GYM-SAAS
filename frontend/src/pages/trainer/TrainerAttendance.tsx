@@ -111,18 +111,18 @@ const TrainerAttendance = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#344B4A] flex items-center gap-2">
-            <CalendarCheck className="text-[#167D78]" size={28} />
+          <h1 className="text-2xl md:text-3xl font-bold text-[#11111F] flex items-center gap-2">
+            <CalendarCheck className="text-[#6366F1]" size={28} />
             Client Session Attendance
           </h1>
-          <p className="text-sm text-[#697778]">
+          <p className="text-sm text-[#A1A1AA]">
             Track member attendance, check-in timestamps, and self-learning excuses across online & offline sessions.
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => handleDownloadAttendanceReport('excel')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#E8EFF0] border border-[#D9E2E3] hover:bg-[#167D78] hover:text-white hover:border-[#167D78] text-[#344B4A] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0B0B12] border border-[#292940] hover:bg-[#6366F1] hover:text-white hover:border-[#6366F1] text-[#11111F] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
             title="Download Excel Attendance Report"
           >
             <Download size={16} />
@@ -130,7 +130,7 @@ const TrainerAttendance = () => {
           </button>
           <button
             onClick={() => handleDownloadAttendanceReport('pdf')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#167D78] hover:bg-[#116660] text-white font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
             title="Download PDF Attendance Report"
           >
             <Download size={16} />
@@ -141,30 +141,30 @@ const TrainerAttendance = () => {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-3.5 shadow-sm text-center">
-          <p className="text-[11px] text-[#697778] font-medium uppercase tracking-wider">Scheduled</p>
-          <p className="text-2xl font-bold text-[#344B4A] mt-0.5">{totalCount}</p>
+        <div className="bg-white border border-[#292940] rounded-2xl p-3.5 shadow-sm text-center">
+          <p className="text-[11px] text-[#A1A1AA] font-medium uppercase tracking-wider">Scheduled</p>
+          <p className="text-2xl font-bold text-[#11111F] mt-0.5">{totalCount}</p>
         </div>
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-3.5 shadow-sm text-center">
+        <div className="bg-white border border-[#292940] rounded-2xl p-3.5 shadow-sm text-center">
           <p className="text-[11px] text-green-700 font-medium uppercase tracking-wider">Present</p>
           <p className="text-2xl font-bold text-green-700 mt-0.5">{presentCount}</p>
         </div>
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-3.5 shadow-sm text-center">
+        <div className="bg-white border border-[#292940] rounded-2xl p-3.5 shadow-sm text-center">
           <p className="text-[11px] text-blue-700 font-medium uppercase tracking-wider">Self-Learning</p>
           <p className="text-2xl font-bold text-blue-700 mt-0.5">{selfLearningCount}</p>
         </div>
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-3.5 shadow-sm text-center">
+        <div className="bg-white border border-[#292940] rounded-2xl p-3.5 shadow-sm text-center">
           <p className="text-[11px] text-rose-700 font-medium uppercase tracking-wider">Absent</p>
           <p className="text-2xl font-bold text-rose-700 mt-0.5">{absentCount}</p>
         </div>
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-3.5 shadow-sm text-center">
-          <p className="text-[11px] text-[#167D78] font-medium uppercase tracking-wider">Attendance %</p>
-          <p className="text-2xl font-bold text-[#167D78] mt-0.5">{attendanceRate}%</p>
+        <div className="bg-white border border-[#292940] rounded-2xl p-3.5 shadow-sm text-center">
+          <p className="text-[11px] text-[#6366F1] font-medium uppercase tracking-wider">Attendance %</p>
+          <p className="text-2xl font-bold text-[#6366F1] mt-0.5">{attendanceRate}%</p>
         </div>
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
+      <div className="bg-white border border-[#292940] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           {/* Search */}
           <div className="relative w-full sm:w-56">
@@ -174,7 +174,7 @@ const TrainerAttendance = () => {
               placeholder="Search member..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-[#E8EFF0] rounded-xl text-xs outline-none focus:bg-white focus:border-[#167D78] border border-transparent"
+              className="w-full pl-8 pr-3 py-1.5 bg-[#0B0B12] rounded-xl text-xs outline-none focus:bg-white focus:border-[#6366F1] border border-transparent"
             />
           </div>
 
@@ -183,7 +183,7 @@ const TrainerAttendance = () => {
             <button
               onClick={() => setSelectedDate('')}
               className={`text-xs px-3 py-1.5 rounded-xl font-bold transition ${
-                !selectedDate ? 'bg-[#167D78] text-white shadow-sm' : 'bg-[#E8EFF0] text-[#697778] hover:bg-gray-200'
+                !selectedDate ? 'bg-[#6366F1] text-white shadow-sm' : 'bg-[#0B0B12] text-[#A1A1AA] hover:bg-gray-200'
               }`}
             >
               All Dates
@@ -191,7 +191,7 @@ const TrainerAttendance = () => {
             <button
               onClick={() => setSelectedDate(todayStr)}
               className={`text-xs px-3 py-1.5 rounded-xl font-bold transition ${
-                selectedDate === todayStr ? 'bg-[#167D78] text-white shadow-sm' : 'bg-[#E8EFF0] text-[#697778] hover:bg-gray-200'
+                selectedDate === todayStr ? 'bg-[#6366F1] text-white shadow-sm' : 'bg-[#0B0B12] text-[#A1A1AA] hover:bg-gray-200'
               }`}
             >
               Today
@@ -199,13 +199,13 @@ const TrainerAttendance = () => {
           </div>
 
           {/* Date Picker */}
-          <div className="flex items-center gap-2 bg-[#E8EFF0] px-3 py-1.5 rounded-xl border border-transparent focus-within:border-[#167D78]">
-            <Calendar size={15} className="text-[#697778]" />
+          <div className="flex items-center gap-2 bg-[#0B0B12] px-3 py-1.5 rounded-xl border border-transparent focus-within:border-[#6366F1]">
+            <Calendar size={15} className="text-[#A1A1AA]" />
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent text-xs font-semibold text-[#344B4A] outline-none"
+              className="bg-transparent text-xs font-semibold text-[#11111F] outline-none"
             />
           </div>
         </div>
@@ -218,8 +218,8 @@ const TrainerAttendance = () => {
               onClick={() => setStatusFilter(status)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                 statusFilter === status
-                  ? 'bg-[#167D78] text-white shadow-sm'
-                  : 'bg-[#E8EFF0] text-[#697778] hover:text-[#344B4A]'
+                  ? 'bg-[#6366F1] text-white shadow-sm'
+                  : 'bg-[#0B0B12] text-[#A1A1AA] hover:text-[#11111F]'
               }`}
             >
               {status}
@@ -229,14 +229,14 @@ const TrainerAttendance = () => {
       </div>
 
       {/* Attendance Roster Table */}
-      <div className="bg-white border border-[#D9E2E3] rounded-2xl overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0]">
-          <h2 className="text-sm font-bold text-[#344B4A]">
+      <div className="bg-white border border-[#292940] rounded-2xl overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12]">
+          <h2 className="text-sm font-bold text-[#11111F]">
             Roster {selectedDate ? `for ${selectedDate}` : '(All Dates)'} ({filteredSessions.length} session{filteredSessions.length === 1 ? '' : 's'})
           </h2>
           <button
             onClick={fetchAttendance}
-            className="text-xs text-[#167D78] font-bold hover:underline"
+            className="text-xs text-[#6366F1] font-bold hover:underline"
           >
             Refresh Roster
           </button>
@@ -244,10 +244,10 @@ const TrainerAttendance = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[#167D78]" size={32} />
+            <Loader2 className="animate-spin text-[#6366F1]" size={32} />
           </div>
         ) : filteredSessions.length === 0 ? (
-          <div className="p-12 text-center text-[#697778] space-y-3">
+          <div className="p-12 text-center text-[#A1A1AA] space-y-3">
             <CalendarCheck size={36} className="mx-auto text-stone-600" />
             <p className="font-semibold text-sm">
               {selectedDate
@@ -261,7 +261,7 @@ const TrainerAttendance = () => {
                 </p>
                 <button
                   onClick={() => setSelectedDate('')}
-                  className="px-4 py-2 bg-[#167D78] hover:bg-[#116660] text-[#344B4A] rounded-xl text-xs font-bold transition shadow-sm"
+                  className="px-4 py-2 bg-[#6366F1] hover:bg-[#4F46E5] text-[#11111F] rounded-xl text-xs font-bold transition shadow-sm"
                 >
                   View All Sessions ({sessions.length})
                 </button>
@@ -269,7 +269,7 @@ const TrainerAttendance = () => {
             )}
           </div>
         ) : (
-          <div className="divide-y divide-[#D9E2E3]">
+          <div className="divide-y divide-[#292940]">
             {filteredSessions.map((session) => {
               const currentStatus = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : 'Pending');
               return (
@@ -279,7 +279,7 @@ const TrainerAttendance = () => {
                 >
                   {/* Member Profile & Session Time */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-full bg-[#167D78] text-white flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-[#6366F1] text-white flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
                       {session.customerId?.profilePhoto ? (
                         <img src={session.customerId.profilePhoto} alt="profile" className="w-full h-full object-cover" />
                       ) : (
@@ -288,7 +288,7 @@ const TrainerAttendance = () => {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="font-bold text-sm text-[#344B4A] truncate">
+                        <p className="font-bold text-sm text-[#11111F] truncate">
                           {session.customerId
                             ? `${session.customerId.firstName} ${session.customerId.lastName}`
                             : 'Client'}
@@ -297,7 +297,7 @@ const TrainerAttendance = () => {
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             session.mode === 'Online'
                               ? 'bg-blue-100 text-blue-700'
-                              : 'bg-[#D8EAE7] text-[#167D78]'
+                              : 'bg-[#17172A] text-[#6366F1]'
                           }`}
                         >
                           {session.mode}
@@ -308,8 +308,8 @@ const TrainerAttendance = () => {
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-[#697778] flex flex-wrap items-center gap-2 mt-0.5">
-                        <span className="font-semibold text-[#344B4A]">{session.date}</span>
+                      <p className="text-xs text-[#A1A1AA] flex flex-wrap items-center gap-2 mt-0.5">
+                        <span className="font-semibold text-[#11111F]">{session.date}</span>
                         <span>•</span>
                         <span>{session.startTime} - {session.endTime}</span>
                         {session.checkInTime && (
@@ -318,7 +318,7 @@ const TrainerAttendance = () => {
                           </span>
                         )}
                         {session.checkOutTime && (
-                          <span className="text-[#167D78] font-semibold bg-[#E8EFF0] px-2 py-0.5 rounded-md">
+                          <span className="text-[#6366F1] font-semibold bg-[#0B0B12] px-2 py-0.5 rounded-md">
                             Check-out: {new Date(session.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         )}

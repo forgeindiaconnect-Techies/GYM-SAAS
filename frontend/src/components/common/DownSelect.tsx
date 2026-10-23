@@ -42,14 +42,14 @@ export const DownSelect: React.FC<DownSelectProps> = ({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-4 py-2 text-sm text-[#344B4A] font-semibold focus:border-[#167D78] outline-none flex items-center justify-between gap-3 shadow-xs hover:bg-white transition-colors cursor-pointer"
+        className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-4 py-2 text-sm text-[#11111F] font-semibold focus:border-[#6366F1] outline-none flex items-center justify-between gap-3 shadow-xs hover:bg-white transition-colors cursor-pointer"
       >
         <span className="truncate">{displayLabel}</span>
-        <ChevronDown size={16} className={`text-[#697778] shrink-0 transition-transform duration-200 ${open ? 'rotate-180 text-[#167D78]' : ''}`} />
+        <ChevronDown size={16} className={`text-[#A1A1AA] shrink-0 transition-transform duration-200 ${open ? 'rotate-180 text-[#6366F1]' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1.5 w-full min-w-[180px] bg-white border border-[#D9E2E3] rounded-2xl shadow-xl z-[150] max-h-64 overflow-y-auto py-1.5 animate-in fade-in slide-in-from-top-2 duration-150 custom-scrollbar">
+        <div className="absolute left-0 top-full mt-1.5 w-full min-w-[180px] bg-white border border-[#292940] rounded-2xl shadow-xl z-[150] max-h-64 overflow-y-auto py-1.5 animate-in fade-in slide-in-from-top-2 duration-150 custom-scrollbar">
           {options.map((opt) => {
             const isSelected = opt.value === value;
             return (
@@ -61,11 +61,11 @@ export const DownSelect: React.FC<DownSelectProps> = ({
                   setOpen(false);
                 }}
                 className={`w-full text-left px-4 py-2 text-sm font-medium flex items-center justify-between transition-colors cursor-pointer ${
-                  isSelected ? 'bg-[#E8EFF0] text-[#167D78] font-bold' : 'text-[#344B4A] hover:bg-[#E8EFF0]'
+                  isSelected ? 'bg-[#0B0B12] text-[#6366F1] font-bold' : 'text-[#11111F] hover:bg-[#0B0B12]'
                 }`}
               >
                 <span className="truncate">{opt.label}</span>
-                {isSelected && <Check size={16} className="text-[#167D78] shrink-0 ml-2" />}
+                {isSelected && <Check size={16} className="text-[#6366F1] shrink-0 ml-2" />}
               </button>
             );
           })}

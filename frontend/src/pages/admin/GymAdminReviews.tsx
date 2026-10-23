@@ -189,10 +189,10 @@ export default function GymAdminReviews() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-stone-200">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-gradient-to-tr from-[#167D78] to-[#FB923C] text-white shadow-md shadow-[#167D78]/20">
+            <span className="p-2 rounded-xl bg-gradient-to-tr from-[#6366F1] to-[#FB923C] text-white shadow-md shadow-[#6366F1]/20">
               <Star className="w-5 h-5 fill-white" />
             </span>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#344B4A] tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#11111F] tracking-tight">
               Review & Rating
             </h1>
           </div>
@@ -204,9 +204,9 @@ export default function GymAdminReviews() {
         <button
           onClick={() => fetchReviews(true)}
           disabled={refreshing || loading}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 text-stone-700 hover:text-[#167D78] hover:border-[#167D78]/40 rounded-xl font-medium text-sm transition-all shadow-sm active:scale-95 disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 text-stone-700 hover:text-[#6366F1] hover:border-[#6366F1]/40 rounded-xl font-medium text-sm transition-all shadow-sm active:scale-95 disabled:opacity-50"
         >
-          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-[#167D78]' : ''}`} />
+          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-[#6366F1]' : ''}`} />
           <span>{refreshing ? 'Refreshing...' : 'Refresh Data'}</span>
         </button>
       </div>
@@ -220,12 +220,12 @@ export default function GymAdminReviews() {
             <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">
               Gym Average Rating
             </span>
-            <span className="p-2 bg-orange-50 text-[#167D78] rounded-xl">
+            <span className="p-2 bg-orange-50 text-[#6366F1] rounded-xl">
               <Building2 className="w-4 h-4" />
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#344B4A]">{gymStats.averageRating || '0.0'}</span>
+            <span className="text-3xl font-black text-[#11111F]">{gymStats.averageRating || '0.0'}</span>
             <span className="text-sm font-semibold text-stone-400">/ 5.0</span>
           </div>
           <div className="mt-2 flex items-center gap-2">
@@ -246,7 +246,7 @@ export default function GymAdminReviews() {
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#344B4A]">{trainerStats.averageRating || '0.0'}</span>
+            <span className="text-3xl font-black text-[#11111F]">{trainerStats.averageRating || '0.0'}</span>
             <span className="text-sm font-semibold text-stone-400">/ 5.0</span>
           </div>
           <div className="mt-2 flex items-center gap-2">
@@ -267,7 +267,7 @@ export default function GymAdminReviews() {
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#344B4A]">{totalReviewsCount}</span>
+            <span className="text-3xl font-black text-[#11111F]">{totalReviewsCount}</span>
             <span className="text-xs font-medium text-stone-400">Total Entries</span>
           </div>
           <div className="mt-2 flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
@@ -283,12 +283,12 @@ export default function GymAdminReviews() {
             <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">
               Positive Feedback
             </span>
-            <span className="p-2 bg-[#E8EFF0] text-[#167D78] rounded-xl">
+            <span className="p-2 bg-[#0B0B12] text-[#6366F1] rounded-xl">
               <TrendingUp className="w-4 h-4" />
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#344B4A]">
+            <span className="text-3xl font-black text-[#11111F]">
               {totalReviewsCount > 0
                 ? `${Math.round(
                     (((gymStats.breakdown[5] || 0) +
@@ -302,7 +302,7 @@ export default function GymAdminReviews() {
             </span>
             <span className="text-xs font-medium text-stone-400">4★ & 5★ ratings</span>
           </div>
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#167D78] font-medium">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#6366F1] font-medium">
             <Sparkles className="w-3.5 h-3.5" />
             <span>High Satisfaction</span>
           </div>
@@ -319,7 +319,7 @@ export default function GymAdminReviews() {
             }}
             className={`flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
               activeTab === 'gym'
-                ? 'bg-gradient-to-r from-[#167D78] to-[#116660] text-white shadow-md shadow-[#167D78]/25'
+                ? 'bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white shadow-md shadow-[#6366F1]/25'
                 : 'text-stone-600 hover:text-stone-900 hover:bg-stone-200/50'
             }`}
           >
@@ -341,7 +341,7 @@ export default function GymAdminReviews() {
             }}
             className={`flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
               activeTab === 'trainer'
-                ? 'bg-gradient-to-r from-[#167D78] to-[#116660] text-white shadow-md shadow-[#167D78]/25'
+                ? 'bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white shadow-md shadow-[#6366F1]/25'
                 : 'text-stone-600 hover:text-stone-900 hover:bg-stone-200/50'
             }`}
           >
@@ -363,7 +363,7 @@ export default function GymAdminReviews() {
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value as any)}
-            className="text-xs font-semibold text-stone-700 bg-stone-50 border border-stone-200 rounded-lg px-2.5 py-2 outline-none focus:border-[#167D78]"
+            className="text-xs font-semibold text-stone-700 bg-stone-50 border border-stone-200 rounded-lg px-2.5 py-2 outline-none focus:border-[#6366F1]"
           >
             <option value="newest">Newest First</option>
             <option value="highest">Highest Rating (5★ → 1★)</option>
@@ -388,7 +388,7 @@ export default function GymAdminReviews() {
               }
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:border-[#167D78] transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:border-[#6366F1] transition-all"
             />
           </div>
 
@@ -413,7 +413,7 @@ export default function GymAdminReviews() {
                 onClick={() => setStarFilter(s)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   starFilter === s
-                    ? 'bg-[#167D78] text-white shadow-sm shadow-[#167D78]/20'
+                    ? 'bg-[#6366F1] text-white shadow-sm shadow-[#6366F1]/20'
                     : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                 }`}
               >
@@ -435,7 +435,7 @@ export default function GymAdminReviews() {
                 onClick={() => setStarFilter(starFilter === star ? 'all' : star)}
                 className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
                   starFilter === star
-                    ? 'border-[#167D78] bg-orange-50/50 ring-1 ring-[#167D78]'
+                    ? 'border-[#6366F1] bg-orange-50/50 ring-1 ring-[#6366F1]'
                     : 'border-stone-100 bg-stone-50/60 hover:border-stone-200'
                 }`}
               >
@@ -448,7 +448,7 @@ export default function GymAdminReviews() {
                 </div>
                 <div className="w-full h-1.5 bg-stone-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-amber-400 to-[#167D78] rounded-full transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-amber-400 to-[#6366F1] rounded-full transition-all duration-500"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -461,7 +461,7 @@ export default function GymAdminReviews() {
       {/* Loading State */}
       {loading ? (
         <div className="bg-white rounded-2xl p-16 border border-stone-100 shadow-sm flex flex-col items-center justify-center gap-3">
-          <div className="w-10 h-10 rounded-full border-4 border-[#167D78] border-t-transparent animate-spin" />
+          <div className="w-10 h-10 rounded-full border-4 border-[#6366F1] border-t-transparent animate-spin" />
           <p className="text-sm font-semibold text-stone-500">Loading reviews and ratings...</p>
         </div>
       ) : activeTab === 'gym' ? (
@@ -470,7 +470,7 @@ export default function GymAdminReviews() {
         /* ============================================================ */
         filteredGymReviews.length === 0 ? (
           <div className="bg-white rounded-2xl p-14 border border-stone-100 shadow-sm text-center space-y-3">
-            <div className="w-14 h-14 bg-orange-50 text-[#167D78] rounded-2xl flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 bg-orange-50 text-[#6366F1] rounded-2xl flex items-center justify-center mx-auto">
               <Building2 className="w-7 h-7" />
             </div>
             <h3 className="text-lg font-bold text-stone-800">No Gym Reviews Found</h3>
@@ -516,7 +516,7 @@ export default function GymAdminReviews() {
                           className="w-11 h-11 rounded-full object-cover border-2 border-orange-100"
                         />
                       ) : (
-                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#167D78] to-[#FB923C] text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#6366F1] to-[#FB923C] text-white font-bold flex items-center justify-center text-sm shadow-sm">
                           {initials}
                         </div>
                       )}
@@ -554,7 +554,7 @@ export default function GymAdminReviews() {
 
                   {/* Bottom Footer Badge */}
                   <div className="flex items-center justify-between text-xs pt-1 border-t border-stone-100 text-stone-500">
-                    <span className="flex items-center gap-1 text-[#167D78] font-semibold">
+                    <span className="flex items-center gap-1 text-[#6366F1] font-semibold">
                       <Building2 className="w-3.5 h-3.5" />
                       <span>{rev.gymName || data?.gym?.name || 'Perfect Fitness Studio'}</span>
                     </span>

@@ -183,7 +183,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
   }
 
   return (
-    <div className="flex items-center justify-between gap-2.5 w-full bg-[#E8EFF0] border-2 border-[#167D78] rounded-xl px-4 py-2.5 shadow-sm animate-in fade-in">
+    <div className="flex items-center justify-between gap-2.5 w-full bg-[#0B0B12] border-2 border-[#6366F1] rounded-xl px-4 py-2.5 shadow-sm animate-in fade-in">
       {recordingState === 'recording' ? (
         <>
           {/* Active Recording State */}
@@ -198,7 +198,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
             </div>
 
             {/* Live timer */}
-            <span className="text-sm font-extrabold text-[#344B4A] tabular-nums">
+            <span className="text-sm font-extrabold text-[#11111F] tabular-nums">
               {formatTime(recordDuration)}
             </span>
 
@@ -207,7 +207,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
               {[4, 8, 14, 20, 16, 24, 18, 12, 6, 16, 22, 10, 4].map((h, i) => (
                 <div
                   key={i}
-                  className="w-1 bg-[#167D78] rounded-full animate-pulse"
+                  className="w-1 bg-[#6366F1] rounded-full animate-pulse"
                   style={{ 
                     height: `${h}px`, 
                     animationDelay: `${i * 80}ms`,
@@ -234,7 +234,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
             <button
               type="button"
               onClick={stopRecording}
-              className="px-3 py-1.5 bg-[#167D78] text-white rounded-lg text-xs font-bold hover:bg-[#116660] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-3 py-1.5 bg-[#6366F1] text-white rounded-lg text-xs font-bold hover:bg-[#4F46E5] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
               title="Stop and preview voice message"
             >
               <Square size={13} className="fill-current" /> Stop
@@ -256,17 +256,17 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
             <button
               type="button"
               onClick={togglePreviewPlay}
-              className="w-8 h-8 rounded-full bg-[#167D78] text-white flex items-center justify-center shrink-0 hover:bg-[#116660] transition-transform active:scale-95 cursor-pointer shadow-xs"
+              className="w-8 h-8 rounded-full bg-[#6366F1] text-white flex items-center justify-center shrink-0 hover:bg-[#4F46E5] transition-transform active:scale-95 cursor-pointer shadow-xs"
               title={previewPlaying ? 'Pause' : 'Play preview'}
             >
               {previewPlaying ? <Pause size={14} className="fill-current" /> : <Play size={14} className="fill-current ml-0.5" />}
             </button>
 
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-[#344B4A] flex items-center gap-1.5">
-                <Mic size={13} className="text-[#167D78]" /> Voice Message Preview
+              <span className="text-xs font-bold text-[#11111F] flex items-center gap-1.5">
+                <Mic size={13} className="text-[#6366F1]" /> Voice Message Preview
               </span>
-              <span className="text-[11px] text-[#697778] font-semibold tabular-nums">
+              <span className="text-[11px] text-[#A1A1AA] font-semibold tabular-nums">
                 Duration: {formatTime(recordDuration)}
               </span>
             </div>
@@ -289,7 +289,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
               type="button"
               onClick={handleSendRecording}
               disabled={isUploading}
-              className="px-4 py-2 bg-gradient-to-r from-[#167D78] to-[#116660] text-white rounded-xl text-xs font-black hover:opacity-95 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
+              className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white rounded-xl text-xs font-black hover:opacity-95 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
             >
               {isUploading ? (
                 <>

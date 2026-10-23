@@ -273,12 +273,12 @@ const TrainerDietPlans = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A]">Diet Plans</h1>
-          <p className="text-[#697778]">Manage nutrition guidelines, macro splits, and approved customer meal plans</p>
+          <h1 className="text-3xl font-bold text-[#11111F]">Diet Plans</h1>
+          <p className="text-[#A1A1AA]">Manage nutrition guidelines, macro splits, and approved customer meal plans</p>
         </div>
         <button 
           onClick={() => setIsCreateModalOpen(true)}
-          className="px-5 py-2.5 bg-[#167D78] text-white rounded-xl font-bold flex items-center gap-2 hover:bg-[#116660] transition-all shadow-md active:scale-95"
+          className="px-5 py-2.5 bg-[#6366F1] text-white rounded-xl font-bold flex items-center gap-2 hover:bg-[#4F46E5] transition-all shadow-md active:scale-95"
         >
           <Plus size={18} /> Create Diet Plan
         </button>
@@ -289,7 +289,7 @@ const TrainerDietPlans = () => {
         <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-5 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-[#167D78] text-white flex items-center justify-center font-bold text-xs">
+              <span className="w-8 h-8 rounded-lg bg-[#6366F1] text-white flex items-center justify-center font-bold text-xs">
                 {pendingDietRequests.length}
               </span>
               <div>
@@ -314,7 +314,7 @@ const TrainerDietPlans = () => {
                       {new Date(req.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-xs font-semibold text-[#167D78] mt-0.5">{req.title}</p>
+                  <p className="text-xs font-semibold text-[#6366F1] mt-0.5">{req.title}</p>
                   <p className="text-xs text-stone-600 mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
                 </div>
 
@@ -344,44 +344,44 @@ const TrainerDietPlans = () => {
         {plans.map((plan, i) => (
           <div 
             key={i} 
-            className="bg-[#FFFFFF] border border-[#D9E2E3] hover:border-[#167D78]/50 transition-all rounded-2xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between"
+            className="bg-[#FFFFFF] border border-[#292940] hover:border-[#6366F1]/50 transition-all rounded-2xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between"
           >
             <div>
               <div className="flex justify-between items-start mb-4">
                 <div className="w-11 h-11 bg-orange-500/10 rounded-xl flex items-center justify-center text-orange-500 font-bold">
                   <Utensils size={22} />
                 </div>
-                <span className="text-xs font-semibold px-2.5 py-1 bg-[#E8EFF0] border border-[#D9E2E3] rounded-full text-[#697778]">
+                <span className="text-xs font-semibold px-2.5 py-1 bg-[#0B0B12] border border-[#292940] rounded-full text-[#A1A1AA]">
                   {plan.type}
                 </span>
               </div>
               
-              <h3 className="font-bold text-xl text-[#344B4A] mb-1">{plan.name}</h3>
+              <h3 className="font-bold text-xl text-[#11111F] mb-1">{plan.name}</h3>
               {plan.targetGoal && (
-                <p className="text-xs text-[#697778] mb-4">{plan.targetGoal}</p>
+                <p className="text-xs text-[#A1A1AA] mb-4">{plan.targetGoal}</p>
               )}
               
               <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-3xl font-extrabold text-[#167D78]">{plan.cals}</span>
-                <span className="text-sm font-medium text-[#697778]">kcal/day</span>
+                <span className="text-3xl font-extrabold text-[#6366F1]">{plan.cals}</span>
+                <span className="text-sm font-medium text-[#A1A1AA]">kcal/day</span>
               </div>
 
               {/* Macro Breakdown */}
-              <div className="grid grid-cols-3 gap-2 border-t border-[#D9E2E3] pt-4">
-                <div className="text-center p-2.5 bg-[#F9FAF9] rounded-xl border border-[#D9E2E3]/60">
+              <div className="grid grid-cols-3 gap-2 border-t border-[#292940] pt-4">
+                <div className="text-center p-2.5 bg-[#F9FAF9] rounded-xl border border-[#292940]/60">
                   <Leaf size={15} className="mx-auto text-emerald-600 mb-1" />
-                  <div className="font-bold text-sm text-[#344B4A]">{plan.p}</div>
-                  <div className="text-[10px] font-semibold text-[#697778] uppercase tracking-wider">PROTEIN</div>
+                  <div className="font-bold text-sm text-[#11111F]">{plan.p}</div>
+                  <div className="text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wider">PROTEIN</div>
                 </div>
-                <div className="text-center p-2.5 bg-[#F9FAF9] rounded-xl border border-[#D9E2E3]/60">
+                <div className="text-center p-2.5 bg-[#F9FAF9] rounded-xl border border-[#292940]/60">
                   <Flame size={15} className="mx-auto text-orange-500 mb-1" />
-                  <div className="font-bold text-sm text-[#344B4A]">{plan.c}</div>
-                  <div className="text-[10px] font-semibold text-[#697778] uppercase tracking-wider">CARBS</div>
+                  <div className="font-bold text-sm text-[#11111F]">{plan.c}</div>
+                  <div className="text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wider">CARBS</div>
                 </div>
-                <div className="text-center p-2.5 bg-[#F9FAF9] rounded-xl border border-[#D9E2E3]/60">
+                <div className="text-center p-2.5 bg-[#F9FAF9] rounded-xl border border-[#292940]/60">
                   <Droplets size={15} className="mx-auto text-amber-500 mb-1" />
-                  <div className="font-bold text-sm text-[#344B4A]">{plan.f}</div>
-                  <div className="text-[10px] font-semibold text-[#697778] uppercase tracking-wider">FATS</div>
+                  <div className="font-bold text-sm text-[#11111F]">{plan.f}</div>
+                  <div className="text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wider">FATS</div>
                 </div>
               </div>
             </div>
@@ -390,7 +390,7 @@ const TrainerDietPlans = () => {
             <div className="flex items-center gap-2 mt-6">
               <button 
                 onClick={() => setSelectedPlan(plan)}
-                className="flex-1 py-2.5 border border-[#D9E2E3] hover:border-[#167D78] hover:bg-orange-50/50 text-[#344B4A] rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98"
+                className="flex-1 py-2.5 border border-[#292940] hover:border-[#6366F1] hover:bg-orange-50/50 text-[#11111F] rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98"
               >
                 View Details
               </button>
@@ -409,9 +409,9 @@ const TrainerDietPlans = () => {
       {/* ===================== VIEW DETAILS MODAL ===================== */}
       {selectedPlan && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#D9E2E3] overflow-hidden my-auto max-h-[90vh] flex flex-col">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#292940] overflow-hidden my-auto max-h-[90vh] flex flex-col">
             {/* Modal Header */}
-            <div className="p-5 sm:p-6 border-b border-[#D9E2E3] flex justify-between items-center bg-gradient-to-r from-[#167D78] to-[#116660] text-white shrink-0">
+            <div className="p-5 sm:p-6 border-b border-[#292940] flex justify-between items-center bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-white">
                   <Utensils size={20} />
@@ -438,11 +438,11 @@ const TrainerDietPlans = () => {
             {/* Modal Body */}
             <div className="p-6 overflow-y-auto space-y-6">
               {/* Overview & Nutrition Target */}
-              <div className="bg-[#E8EFF0] rounded-xl p-4 border border-[#D9E2E3]">
-                <div className="flex items-center gap-2 text-sm font-bold text-[#167D78] mb-1.5">
+              <div className="bg-[#0B0B12] rounded-xl p-4 border border-[#292940]">
+                <div className="flex items-center gap-2 text-sm font-bold text-[#6366F1] mb-1.5">
                   <Info size={16} /> Plan Overview
                 </div>
-                <p className="text-sm text-[#697778] leading-relaxed">
+                <p className="text-sm text-[#A1A1AA] leading-relaxed">
                   {selectedPlan.description || 'Nutritionally balanced meal regimen designed for performance, stamina, and recovery.'}
                 </p>
                 {selectedPlan.hydration && (
@@ -454,11 +454,11 @@ const TrainerDietPlans = () => {
 
               {/* Macro Cards Summary */}
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#697778] mb-3">Daily Calorie & Macro Target</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#A1A1AA] mb-3">Daily Calorie & Macro Target</h4>
                 <div className="grid grid-cols-4 gap-3">
                   <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl text-center">
                     <span className="text-xs text-teal-800 font-semibold block">Total Energy</span>
-                    <span className="text-xl font-black text-[#167D78]">{selectedPlan.cals}</span>
+                    <span className="text-xl font-black text-[#6366F1]">{selectedPlan.cals}</span>
                     <span className="text-[10px] text-teal-700 block">kcal/day</span>
                   </div>
                   <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
@@ -483,18 +483,18 @@ const TrainerDietPlans = () => {
               {selectedPlan.meals && selectedPlan.meals.length > 0 && (
                 <div>
                   <div className="flex justify-between items-center mb-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#697778] flex items-center gap-1.5">
-                      <Clock size={14} className="text-[#167D78]" /> Daily Meal Breakdown & Schedule
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-1.5">
+                      <Clock size={14} className="text-[#6366F1]" /> Daily Meal Breakdown & Schedule
                     </h4>
-                    <span className="text-xs text-[#697778] font-medium">{selectedPlan.meals.length} Meals / Day</span>
+                    <span className="text-xs text-[#A1A1AA] font-medium">{selectedPlan.meals.length} Meals / Day</span>
                   </div>
 
                   <div className="space-y-3">
                     {selectedPlan.meals.map((m, idx) => (
-                      <div key={idx} className="p-3.5 bg-white border border-[#D9E2E3] rounded-xl hover:border-[#167D78]/40 transition-colors">
+                      <div key={idx} className="p-3.5 bg-white border border-[#292940] rounded-xl hover:border-[#6366F1]/40 transition-colors">
                         <div className="flex justify-between items-start gap-2 mb-1.5">
-                          <div className="font-bold text-sm text-[#344B4A] flex items-center gap-2">
-                            <span className="w-5 h-5 rounded-full bg-[#167D78]/10 text-[#167D78] text-xs flex items-center justify-center font-bold">
+                          <div className="font-bold text-sm text-[#11111F] flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-xs flex items-center justify-center font-bold">
                               {idx + 1}
                             </span>
                             {m.mealName}
@@ -510,7 +510,7 @@ const TrainerDietPlans = () => {
                             )}
                           </div>
                         </div>
-                        <p className="text-xs text-[#697778] pl-7">{m.items}</p>
+                        <p className="text-xs text-[#A1A1AA] pl-7">{m.items}</p>
                       </div>
                     ))}
                   </div>
@@ -520,12 +520,12 @@ const TrainerDietPlans = () => {
               {/* Guidelines / Recommendations */}
               {selectedPlan.guidelines && selectedPlan.guidelines.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#697778] mb-3 flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-[#167D78]" /> Trainer Guidelines & Tips
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#A1A1AA] mb-3 flex items-center gap-1.5">
+                    <Sparkles size={14} className="text-[#6366F1]" /> Trainer Guidelines & Tips
                   </h4>
-                  <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-4 space-y-2">
+                  <div className="bg-[#0B0B12] border border-[#292940] rounded-xl p-4 space-y-2">
                     {selectedPlan.guidelines.map((tip, idx) => (
-                      <div key={idx} className="flex items-start gap-2.5 text-xs text-[#697778]">
+                      <div key={idx} className="flex items-start gap-2.5 text-xs text-[#A1A1AA]">
                         <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" />
                         <span>{tip}</span>
                       </div>
@@ -536,11 +536,11 @@ const TrainerDietPlans = () => {
             </div>
 
             {/* Modal Footer Actions */}
-            <div className="p-4 sm:p-5 border-t border-[#D9E2E3] bg-[#E8EFF0] flex flex-wrap justify-between items-center gap-3 shrink-0">
+            <div className="p-4 sm:p-5 border-t border-[#292940] bg-[#0B0B12] flex flex-wrap justify-between items-center gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setAssignModalOpen(true)}
-                className="px-4 py-2 bg-[#167D78] hover:bg-[#116660] text-white rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm active:scale-95"
+                className="px-4 py-2 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm active:scale-95"
               >
                 <UserCheck size={16} /> Assign to Client
               </button>
@@ -549,7 +549,7 @@ const TrainerDietPlans = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedPlan(null)}
-                  className="px-5 py-2 rounded-xl text-sm font-bold text-[#697778] hover:bg-[#D8EAE7] transition-colors"
+                  className="px-5 py-2 rounded-xl text-sm font-bold text-[#A1A1AA] hover:bg-[#17172A] transition-colors"
                 >
                   Close
                 </button>
@@ -562,15 +562,15 @@ const TrainerDietPlans = () => {
       {/* ===================== ASSIGN TO CLIENT MODAL ===================== */}
       {assignModalOpen && selectedPlan && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#D9E2E3] overflow-hidden">
-            <div className="p-5 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0]">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#292940] overflow-hidden">
+            <div className="p-5 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={20} className="text-emerald-600" />
-                <h3 className="font-bold text-[#344B4A] text-base">Approve & Deliver Diet Plan</h3>
+                <h3 className="font-bold text-[#11111F] text-base">Approve & Deliver Diet Plan</h3>
               </div>
               <button 
                 onClick={() => setAssignModalOpen(false)}
-                className="p-1.5 text-[#697778] hover:text-[#344B4A] hover:bg-gray-100 rounded-lg"
+                className="p-1.5 text-[#A1A1AA] hover:text-[#11111F] hover:bg-gray-100 rounded-lg"
               >
                 <X size={18} />
               </button>
@@ -582,13 +582,13 @@ const TrainerDietPlans = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">
                   Select Customer / Gym Member *
                 </label>
                 <select
                   value={selectedClientId}
                   onChange={(e) => setSelectedClientId(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#167D78]"
+                  className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#6366F1]"
                   required
                 >
                   <option value="">-- Choose a customer --</option>
@@ -601,7 +601,7 @@ const TrainerDietPlans = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">
                   Coach Message & Nutritional Guidelines
                 </label>
                 <textarea
@@ -609,7 +609,7 @@ const TrainerDietPlans = () => {
                   value={coachNotes}
                   onChange={(e) => setCoachNotes(e.target.value)}
                   placeholder="e.g. Follow this meal routine strictly for the next 4 weeks. Stay consistent with your protein and water intake!"
-                  className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-3 text-xs outline-none focus:border-[#167D78] resize-none"
+                  className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-3 text-xs outline-none focus:border-[#6366F1] resize-none"
                 />
               </div>
 
@@ -619,11 +619,11 @@ const TrainerDietPlans = () => {
                 </div>
               )}
 
-              <div className="pt-3 flex justify-end gap-2 border-t border-[#D9E2E3]">
+              <div className="pt-3 flex justify-end gap-2 border-t border-[#292940]">
                 <button
                   type="button"
                   onClick={() => setAssignModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#697778] hover:bg-[#D8EAE7]"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#A1A1AA] hover:bg-[#17172A]"
                 >
                   Cancel
                 </button>
@@ -651,12 +651,12 @@ const TrainerDietPlans = () => {
       {/* ===================== CREATE DIET PLAN MODAL ===================== */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#D9E2E3] overflow-hidden">
-            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0]">
-              <h2 className="text-xl font-bold text-[#344B4A]">Create Diet Plan</h2>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#292940] overflow-hidden">
+            <div className="p-6 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12]">
+              <h2 className="text-xl font-bold text-[#11111F]">Create Diet Plan</h2>
               <button 
                 onClick={() => setIsCreateModalOpen(false)} 
-                className="p-2 text-[#697778] hover:text-[#344B4A] hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 text-[#A1A1AA] hover:text-[#11111F] hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <X size={22} />
               </button>
@@ -664,46 +664,46 @@ const TrainerDietPlans = () => {
             
             <form onSubmit={handleCreatePlan} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#697778] mb-1.5">Plan Name *</label>
+                <label className="block text-sm font-medium text-[#A1A1AA] mb-1.5">Plan Name *</label>
                 <input 
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. Lean Muscle Builder"
-                  className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#167D78]"
+                  className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#697778] mb-1.5">Target Objective / Subtitle</label>
+                <label className="block text-sm font-medium text-[#A1A1AA] mb-1.5">Target Objective / Subtitle</label>
                 <input 
                   type="text"
                   value={form.targetGoal}
                   onChange={(e) => setForm({ ...form, targetGoal: e.target.value })}
                   placeholder="e.g. High Protein Hypertrophy"
-                  className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#167D78]"
+                  className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#697778] mb-1.5">Daily Calories *</label>
+                  <label className="block text-sm font-medium text-[#A1A1AA] mb-1.5">Daily Calories *</label>
                   <input 
                     type="number"
                     value={form.cals}
                     onChange={(e) => setForm({ ...form, cals: e.target.value })}
                     placeholder="e.g. 2400"
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#167D78]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1]"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#697778] mb-1.5">Plan Type *</label>
+                  <label className="block text-sm font-medium text-[#A1A1AA] mb-1.5">Plan Type *</label>
                   <select 
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#167D78]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1]"
                     required
                   >
                     <option value="High Protein">High Protein</option>
@@ -717,51 +717,51 @@ const TrainerDietPlans = () => {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-[#697778] mb-1">Protein (g) *</label>
+                  <label className="block text-xs font-semibold text-[#A1A1AA] mb-1">Protein (g) *</label>
                   <input 
                     type="text"
                     value={form.p}
                     onChange={(e) => setForm({ ...form, p: e.target.value })}
                     placeholder="e.g. 150g"
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1]"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#697778] mb-1">Carbs (g) *</label>
+                  <label className="block text-xs font-semibold text-[#A1A1AA] mb-1">Carbs (g) *</label>
                   <input 
                     type="text"
                     value={form.c}
                     onChange={(e) => setForm({ ...form, c: e.target.value })}
                     placeholder="e.g. 200g"
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1]"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#697778] mb-1">Fat (g) *</label>
+                  <label className="block text-xs font-semibold text-[#A1A1AA] mb-1">Fat (g) *</label>
                   <input 
                     type="text"
                     value={form.f}
                     onChange={(e) => setForm({ ...form, f: e.target.value })}
                     placeholder="e.g. 60g"
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#167D78]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1]"
                     required
                   />
                 </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-[#D9E2E3]">
+              <div className="pt-4 flex justify-end gap-3 border-t border-[#292940]">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl font-bold text-[#697778] hover:bg-[#D8EAE7] transition-colors text-sm"
+                  className="px-5 py-2.5 rounded-xl font-bold text-[#A1A1AA] hover:bg-[#17172A] transition-colors text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl font-bold bg-[#167D78] text-white hover:bg-[#116660] transition-colors text-sm"
+                  className="px-5 py-2.5 rounded-xl font-bold bg-[#6366F1] text-white hover:bg-[#4F46E5] transition-colors text-sm"
                 >
                   Create Plan
                 </button>

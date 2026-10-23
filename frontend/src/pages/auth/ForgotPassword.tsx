@@ -92,18 +92,18 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E8EFF0] flex flex-col items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-[#0B0B12] flex flex-col items-center justify-center px-4 py-8">
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2 mb-10 group relative z-10">
-        <div className="w-9 h-9 bg-[#167D78] rounded-md flex items-center justify-center">
+        <div className="w-9 h-9 bg-[#6366F1] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#167D78]">Gymora</span>
+        <span className="text-2xl font-bold tracking-tight text-[#6366F1]">Gymora</span>
       </Link>
 
-      <div className="w-full max-w-md bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-8 shadow-2xl relative z-10">
-        <h1 className="text-2xl font-bold text-[#344B4A] mb-2">Reset Password</h1>
-        <p className="text-[#697778] text-sm mb-6">
+      <div className="w-full max-w-md bg-[#FFFFFF] border border-[#292940] rounded-2xl p-8 shadow-2xl relative z-10">
+        <h1 className="text-2xl font-bold text-[#11111F] mb-2">Reset Password</h1>
+        <p className="text-[#A1A1AA] text-sm mb-6">
           {!otpSent 
             ? "Enter your email address and we'll send you an OTP code to reset your password."
             : "Enter the 6-digit OTP code sent to your email and your new password."}
@@ -121,13 +121,13 @@ const ForgotPassword = () => {
             <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600">
               <CheckCircle size={32} />
             </div>
-            <h3 className="text-xl font-bold text-[#344B4A] mb-2">Password Reset Successful!</h3>
-            <p className="text-[#697778] text-sm mb-6">
+            <h3 className="text-xl font-bold text-[#11111F] mb-2">Password Reset Successful!</h3>
+            <p className="text-[#A1A1AA] text-sm mb-6">
               Your password has been updated. You can now log in with your new password.
             </p>
             <Link 
               to="/login"
-              className="inline-flex items-center justify-center w-full py-3.5 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors shadow-sm"
+              className="inline-flex items-center justify-center w-full py-3.5 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] transition-colors shadow-sm"
             >
               Return to Login
             </Link>
@@ -135,13 +135,13 @@ const ForgotPassword = () => {
         ) : !otpSent ? (
           <form onSubmit={handleSendOtp} noValidate className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-[#697778] mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Email Address</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setFieldError(''); setError(''); }}
                 placeholder="you@example.com"
-                className={`w-full bg-[#FFFFFF] border ${fieldError ? 'border-red-400' : 'border-[#D9E2E3]'} text-[#344B4A] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#167D78] transition-colors`}
+                className={`w-full bg-[#FFFFFF] border ${fieldError ? 'border-red-400' : 'border-[#292940]'} text-[#11111F] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors`}
               />
               {fieldError && <p className="text-red-500 text-xs mt-1">{fieldError}</p>}
             </div>
@@ -149,7 +149,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors disabled:opacity-60 flex items-center justify-center space-x-2"
+              className="w-full py-3.5 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] transition-colors disabled:opacity-60 flex items-center justify-center space-x-2"
             >
               {isLoading ? (
                 <><Loader2 size={18} className="animate-spin" /><span>Sending OTP...</span></>
@@ -161,51 +161,51 @@ const ForgotPassword = () => {
         ) : (
           <form onSubmit={handleResetPassword} noValidate className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#697778] mb-1">Email Address</label>
+              <label className="block text-xs font-semibold text-[#A1A1AA] mb-1">Email Address</label>
               <input
                 type="email"
                 value={email}
                 disabled
-                className="w-full bg-[#E8EFF0] border border-[#D9E2E3] text-[#697778] rounded-xl px-4 py-2.5 text-sm cursor-not-allowed"
+                className="w-full bg-[#0B0B12] border border-[#292940] text-[#A1A1AA] rounded-xl px-4 py-2.5 text-sm cursor-not-allowed"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#167D78] mb-1">6-Digit OTP Code *</label>
+              <label className="block text-xs font-semibold text-[#6366F1] mb-1">6-Digit OTP Code *</label>
               <input
                 type="text"
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="Enter 6-digit OTP"
-                className="w-full bg-[#E8EFF0] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#167D78]"
+                className="w-full bg-[#0B0B12] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#6366F1]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#697778] mb-1">New Password *</label>
+              <label className="block text-xs font-semibold text-[#A1A1AA] mb-1">New Password *</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#167D78] pr-10"
+                  className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] pr-10"
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#697778]">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A1A1AA]">
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#697778] mb-1">Confirm New Password *</label>
+              <label className="block text-xs font-semibold text-[#A1A1AA] mb-1">Confirm New Password *</label>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Re-enter new password"
-                className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#167D78]"
+                className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1]"
               />
             </div>
 
@@ -213,7 +213,7 @@ const ForgotPassword = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors disabled:opacity-60 flex items-center justify-center space-x-2"
+                className="w-full py-3.5 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] transition-colors disabled:opacity-60 flex items-center justify-center space-x-2"
               >
                 {isLoading ? (
                   <><Loader2 size={18} className="animate-spin" /><span>Resetting Password...</span></>
@@ -227,7 +227,7 @@ const ForgotPassword = () => {
               <button
                 type="button"
                 onClick={() => { setOtpSent(false); setError(''); }}
-                className="text-xs text-[#697778] hover:text-[#167D78] transition-colors"
+                className="text-xs text-[#A1A1AA] hover:text-[#6366F1] transition-colors"
               >
                 Change Email / Resend Code
               </button>
@@ -236,15 +236,15 @@ const ForgotPassword = () => {
         )}
 
         {!success && (
-          <div className="mt-6 text-center text-sm border-t border-[#D9E2E3] pt-4">
-            <Link to="/login" className="text-[#697778] hover:text-[#167D78] transition-colors">
+          <div className="mt-6 text-center text-sm border-t border-[#292940] pt-4">
+            <Link to="/login" className="text-[#A1A1AA] hover:text-[#6366F1] transition-colors">
               &larr; Back to Login
             </Link>
           </div>
         )}
       </div>
 
-      <p className="mt-8 text-xs text-[#697778] relative z-10">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
+      <p className="mt-8 text-xs text-[#A1A1AA] relative z-10">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
     </div>
   );
 };

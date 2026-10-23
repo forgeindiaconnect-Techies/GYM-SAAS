@@ -70,33 +70,33 @@ const GymStoreCategories = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Product Categories</h1>
-          <p className="text-[#697778] mt-1">Organise your store products into categories.</p>
+          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Product Categories</h1>
+          <p className="text-[#A1A1AA] mt-1">Organise your store products into categories.</p>
         </div>
-        <button onClick={openCreate} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#167D78] to-[#116660] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity">
+        <button onClick={openCreate} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity">
           <Plus size={18} /> Add Category
         </button>
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#167D78]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#6366F1]" size={40} /></div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {categories.map((c) => (
-            <div key={c._id} className="bg-white border border-[#D9E2E3] rounded-2xl p-5">
+            <div key={c._id} className="bg-white border border-[#292940] rounded-2xl p-5">
               <div className="flex items-start justify-between">
-                <div className="w-11 h-11 rounded-xl bg-[#167D78]/10 flex items-center justify-center">
-                  <Tag className="text-[#167D78]" size={22} />
+                <div className="w-11 h-11 rounded-xl bg-[#6366F1]/10 flex items-center justify-center">
+                  <Tag className="text-[#6366F1]" size={22} />
                 </div>
-                <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${c.status === 'Active' ? 'bg-[#D8EAE7]/10 text-[#167D78]' : 'bg-gray-100 text-gray-500'}`}>
+                <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${c.status === 'Active' ? 'bg-[#17172A]/10 text-[#6366F1]' : 'bg-gray-100 text-gray-500'}`}>
                   {c.status}
                 </span>
               </div>
-              <h3 className="font-bold text-[#344B4A] text-lg mt-3">{c.name}</h3>
-              {c.description && <p className="text-sm text-[#697778] mt-1 line-clamp-2">{c.description}</p>}
-              <p className="text-xs text-[#344B4A] font-medium font-bold mt-2">{c.productCount || 0} active product(s)</p>
-              <div className="mt-4 flex gap-2 pt-3 border-t border-[#E8EFF0]">
-                <button onClick={() => openEdit(c)} className="flex-1 px-3 py-1.5 bg-blue-50 text-[#167D78] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
+              <h3 className="font-bold text-[#11111F] text-lg mt-3">{c.name}</h3>
+              {c.description && <p className="text-sm text-[#A1A1AA] mt-1 line-clamp-2">{c.description}</p>}
+              <p className="text-xs text-[#11111F] font-medium font-bold mt-2">{c.productCount || 0} active product(s)</p>
+              <div className="mt-4 flex gap-2 pt-3 border-t border-[#0B0B12]">
+                <button onClick={() => openEdit(c)} className="flex-1 px-3 py-1.5 bg-blue-50 text-[#6366F1] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
                   <Pencil size={13} /> Edit
                 </button>
                 <button onClick={() => remove(c)} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-xs font-bold flex items-center justify-center gap-1">
@@ -114,35 +114,35 @@ const GymStoreCategories = () => {
             <button onClick={() => setModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
               <X size={22} />
             </button>
-            <h2 className="text-2xl font-bold text-[#344B4A] mb-6">{editing ? 'Edit Category' : 'Add Category'}</h2>
+            <h2 className="text-2xl font-bold text-[#11111F] mb-6">{editing ? 'Edit Category' : 'Add Category'}</h2>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[#697778] uppercase mb-1 block">Product Type *</label>
-                <select value={form.productType} onChange={(e) => setForm({ ...form, productType: e.target.value })} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none">
+                <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Product Type *</label>
+                <select value={form.productType} onChange={(e) => setForm({ ...form, productType: e.target.value })} className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none">
                   {['Supplements', 'Nutrition & Healthy Snacks', 'Fitness Drinks', 'Gym Accessories', 'Yoga & Recovery', 'Gym Clothing', 'Gym Merchandise', 'Fitness Monitoring', 'Personal Care', 'Healthy Meals', 'Other'].map(pt => (
                     <option key={pt} value={pt}>{pt}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-[#697778] uppercase mb-1 block">Category Name *</label>
-                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" placeholder="e.g., Supplements" />
+                <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Category Name *</label>
+                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" placeholder="e.g., Supplements" />
               </div>
               <div>
-                <label className="text-xs font-bold text-[#697778] uppercase mb-1 block">Description</label>
-                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none resize-none" rows={3} placeholder="Optional" />
+                <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Description</label>
+                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none resize-none" rows={3} placeholder="Optional" />
               </div>
               <div>
-                <label className="text-xs font-bold text-[#697778] uppercase mb-1 block">Status</label>
-                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none">
+                <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Status</label>
+                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none">
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                 </select>
               </div>
             </div>
             <div className="mt-6 flex gap-3">
-              <button onClick={() => setModalOpen(false)} className="flex-1 py-3 bg-gray-100 text-[#697778] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
-              <button onClick={save} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#167D78] to-[#116660] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+              <button onClick={() => setModalOpen(false)} className="flex-1 py-3 bg-gray-100 text-[#A1A1AA] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
+              <button onClick={save} disabled={saving} className="flex-1 py-3 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                 {saving && <Loader2 className="animate-spin" size={18} />}
                 {editing ? 'Update Category' : 'Create Category'}
               </button>
@@ -157,9 +157,9 @@ const GymStoreCategories = () => {
             <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <X size={24} />
             </div>
-            <h2 className="text-xl font-bold text-[#344B4A] mb-2">Action Prevented</h2>
-            <p className="text-[#697778] text-sm mb-6">{errorMsg}</p>
-            <button onClick={() => setErrorMsg('')} className="w-full py-3 bg-gray-100 text-[#697778] font-bold rounded-xl hover:bg-gray-200 transition-colors">
+            <h2 className="text-xl font-bold text-[#11111F] mb-2">Action Prevented</h2>
+            <p className="text-[#A1A1AA] text-sm mb-6">{errorMsg}</p>
+            <button onClick={() => setErrorMsg('')} className="w-full py-3 bg-gray-100 text-[#A1A1AA] font-bold rounded-xl hover:bg-gray-200 transition-colors">
               Got it
             </button>
           </div>

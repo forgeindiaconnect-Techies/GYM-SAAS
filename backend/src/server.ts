@@ -31,6 +31,7 @@ import gymPackageRoutes from './routes/gymPackageRoutes';
 import dietProgressRoutes from './routes/dietProgressRoutes';
 import challengeRoutes from './routes/challengeRoutes';
 import rewardRoutes from './routes/rewardRoutes';
+import awardRoutes from './routes/awardRoutes';
 import performanceRoutes from './routes/performanceRoutes';
 import referralRoutes from './routes/referralRoutes';
 
@@ -76,6 +77,7 @@ app.use('/api/gym-packages', gymPackageRoutes);
 app.use('/api/diet-progress', dietProgressRoutes);
 app.use('/api/challenges', challengeRoutes);
 app.use('/api/rewards', rewardRoutes);
+app.use('/api/awards', awardRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/referrals', referralRoutes);
 
@@ -99,6 +101,26 @@ const startServer = async () => {
   });
 
   await connectDB();
+
+  // Run membership expiry check worker on startup & every 1 hour
+  try {
+    const { runMembershipExpiryCheck } = require('./controllers/membershipController');
+    runMembershipExpiryCheck()
+      .then((res: any) => console.log(`[ExpiryWorker] Initial check complete: ${res.processed} memberships processed, ${res.remindersSent} reminders sent`))
+      .catch((e: any) => console.error('[ExpiryWorker] Initial check error:', e));
+
+    setInterval(() => {
+      runMembershipExpiryCheck()
+        .then((res: any) => {
+          if (res.remindersSent > 0) {
+            console.log(`[ExpiryWorker] Periodic check: ${res.remindersSent} reminder emails dispatched`);
+          }
+        })
+        .catch((e: any) => console.error('[ExpiryWorker] Periodic check error:', e));
+    }, 60 * 60 * 1000); // 1 hour
+  } catch (workerErr) {
+    console.error('[ExpiryWorker] Failed to initialize expiry scheduler:', workerErr);
+  }
 };
 
 startServer();

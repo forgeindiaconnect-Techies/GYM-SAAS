@@ -74,14 +74,14 @@ const SuperAdminGymsAll = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Building2 className="text-[#167D78]" size={32} />
+            <Building2 className="text-[#6366F1]" size={32} />
             {title}
           </h1>
-          <p className="text-[#697778] mt-2">{description}</p>
+          <p className="text-[#A1A1AA] mt-2">{description}</p>
         </div>
         <Link 
           to="/super-admin/gyms/add"
-          className="px-6 py-2.5 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors flex items-center gap-2 shrink-0"
+          className="px-6 py-2.5 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors flex items-center gap-2 shrink-0"
         >
           <Plus size={20} />
           <span>Add New Gym</span>
@@ -89,7 +89,7 @@ const SuperAdminGymsAll = ({
       </div>
       
       {error && (
-        <div className="bg-[#D8EAE7]/10 text-teal-400 p-4 rounded-xl text-sm border border-[#D8EAE7]/30">
+        <div className="bg-[#17172A]/10 text-teal-400 p-4 rounded-xl text-sm border border-[#17172A]/30">
           {error}
         </div>
       )}
@@ -97,13 +97,13 @@ const SuperAdminGymsAll = ({
       {/* Controls */}
       <div className="flex flex-col sm:flex-row justify-between gap-4">
         <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#697778]" size={20} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A1A1AA]" size={20} />
           <input 
             type="text" 
             placeholder="Search gyms by name or location..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-[#167D78] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
           />
         </div>
         {!fixedStatus && (
@@ -111,7 +111,7 @@ const SuperAdminGymsAll = ({
             <select 
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#167D78] transition-colors"
+              className="bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
             >
               <option value="">All Statuses</option>
               <option value="ACTIVE">Active</option>
@@ -123,10 +123,10 @@ const SuperAdminGymsAll = ({
         )}
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-[#697778]">
-            <thead className="text-xs text-[#697778] uppercase bg-[#FFFFFF] border-b border-[#D9E2E3]">
+          <table className="w-full text-left text-sm text-[#A1A1AA]">
+            <thead className="text-xs text-[#A1A1AA] uppercase bg-[#FFFFFF] border-b border-[#292940]">
               <tr>
                 <th className="px-6 py-4 font-bold">Gym</th>
                 <th className="px-6 py-4 font-bold">Location</th>
@@ -137,47 +137,47 @@ const SuperAdminGymsAll = ({
                 <th className="px-6 py-4 font-bold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D9E2E3]">
+            <tbody className="divide-y divide-[#292940]">
               {isLoading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-8 text-center">Loading gyms...</td>
                 </tr>
               ) : filteredGyms.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-[#697778]">No gyms found matching your criteria.</td>
+                  <td colSpan={7} className="px-6 py-8 text-center text-[#A1A1AA]">No gyms found matching your criteria.</td>
                 </tr>
               ) : (
                 filteredGyms.map((gym) => (
                   <tr key={gym._id} className="hover:bg-[#FFFFFF] transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#D8EAE7] flex items-center justify-center shrink-0 overflow-hidden border border-[#D9E2E3]">
+                        <div className="w-10 h-10 rounded-xl bg-[#17172A] flex items-center justify-center shrink-0 overflow-hidden border border-[#292940]">
                           {gym.logo ? (
                             <img src={gym.logo} alt={gym.name} className="w-full h-full object-cover" />
                           ) : (
-                            <Building2 className="text-[#697778]" size={20} />
+                            <Building2 className="text-[#A1A1AA]" size={20} />
                           )}
                         </div>
                         <div>
-                          <div className="font-bold text-[#344B4A] group-hover:text-[#167D78] transition transition-colors">
+                          <div className="font-bold text-[#11111F] group-hover:text-[#6366F1] transition transition-colors">
                             {gym.name}
                           </div>
-                          <div className="text-xs text-[#697778]">{gym.gymType}</div>
+                          <div className="text-xs text-[#A1A1AA]">{gym.gymType}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-[#344B4A]">{gym.location?.city}, {gym.location?.state}</div>
-                      <div className="text-xs text-[#697778] truncate max-w-[150px]">{gym.location?.address}</div>
+                      <div className="text-[#11111F]">{gym.location?.city}, {gym.location?.state}</div>
+                      <div className="text-xs text-[#A1A1AA] truncate max-w-[150px]">{gym.location?.address}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-[#344B4A]">{gym.ownerId?.firstName} {gym.ownerId?.lastName}</div>
-                      <div className="text-xs text-[#697778]">{gym.ownerId?.email}</div>
+                      <div className="text-[#11111F]">{gym.ownerId?.firstName} {gym.ownerId?.lastName}</div>
+                      <div className="text-xs text-[#A1A1AA]">{gym.ownerId?.email}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-[#344B4A]">{gym.subscription?.plan || 'N/A'}</div>
+                      <div className="font-medium text-[#11111F]">{gym.subscription?.plan || 'N/A'}</div>
                     </td>
-                    <td className="px-6 py-4 text-center font-bold text-[#344B4A]">
+                    <td className="px-6 py-4 text-center font-bold text-[#11111F]">
                       {/* Placeholder for member count until aggregation is implemented */}
                       -
                     </td>
@@ -187,28 +187,28 @@ const SuperAdminGymsAll = ({
                         onChange={(e) => handleStatusChange(e, gym._id)}
                         onClick={(e) => e.stopPropagation()}
                         className={`outline-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border appearance-none ${
-                          gym.status === 'ACTIVE' ? 'bg-[#167D78]/10 text-[#167D78] border-[#167D78]/20' :
+                          gym.status === 'ACTIVE' ? 'bg-[#6366F1]/10 text-[#6366F1] border-[#6366F1]/20' :
                           gym.status === 'PENDING' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
                           gym.status === 'INACTIVE' ? 'bg-gray-500/10 text-gray-400 border-gray-500/20' :
-                          'bg-[#D8EAE7]/10 text-[#116660] border-[#D8EAE7]/20'
+                          'bg-[#17172A]/10 text-[#4F46E5] border-[#17172A]/20'
                         }`}
                       >
-                        <option value="ACTIVE" className="bg-[#FFFFFF] text-[#344B4A]">Active</option>
-                        <option value="PENDING" className="bg-[#FFFFFF] text-[#344B4A]">Pending</option>
-                        <option value="SUSPENDED" className="bg-[#FFFFFF] text-[#344B4A]">Suspended</option>
-                        <option value="INACTIVE" className="bg-[#FFFFFF] text-[#344B4A]">Inactive</option>
-                        <option value="DELETED" className="bg-[#FFFFFF] text-[#344B4A]">Deleted</option>
+                        <option value="ACTIVE" className="bg-[#FFFFFF] text-[#11111F]">Active</option>
+                        <option value="PENDING" className="bg-[#FFFFFF] text-[#11111F]">Pending</option>
+                        <option value="SUSPENDED" className="bg-[#FFFFFF] text-[#11111F]">Suspended</option>
+                        <option value="INACTIVE" className="bg-[#FFFFFF] text-[#11111F]">Inactive</option>
+                        <option value="DELETED" className="bg-[#FFFFFF] text-[#11111F]">Deleted</option>
                       </select>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link to={`/super-admin/gyms/details?id=${gym._id}`} title="View Details" className="text-[#697778] hover:text-[#167D78] transition-colors">
+                        <Link to={`/super-admin/gyms/details?id=${gym._id}`} title="View Details" className="text-[#A1A1AA] hover:text-[#6366F1] transition-colors">
                           <ExternalLink size={18} />
                         </Link>
                         <Link 
                           to={`/super-admin/gyms/edit/${gym._id}`}
                           title="Edit Gym" 
-                          className="text-[#697778] hover:text-blue-400 transition-colors"
+                          className="text-[#A1A1AA] hover:text-blue-400 transition-colors"
                         >
                           <Edit2 size={18} />
                         </Link>
@@ -216,7 +216,7 @@ const SuperAdminGymsAll = ({
                         <button 
                           onClick={(e) => handleDelete(e, gym._id)}
                           title="Delete Gym" 
-                          className="text-[#697778] hover:text-[#167D78] transition-colors"
+                          className="text-[#A1A1AA] hover:text-[#6366F1] transition-colors"
                         >
                           <Trash2 size={18} />
                         </button>

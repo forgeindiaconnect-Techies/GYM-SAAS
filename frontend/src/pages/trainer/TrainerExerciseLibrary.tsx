@@ -202,36 +202,36 @@ const TrainerExerciseLibrary: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#167D78]/10 text-[#167D78] flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#6366F1]/10 text-[#6366F1] flex items-center gap-1">
               <Dumbbell size={13} /> Master Exercise Library
             </span>
-            <span className="text-xs text-[#697778]">• Gym Owner Managed</span>
+            <span className="text-xs text-[#A1A1AA]">• Gym Owner Managed</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#344B4A] tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[#11111F] tracking-tight">
             Exercise & Animation Library
           </h1>
-          <p className="text-sm text-[#697778] mt-1 max-w-2xl">
+          <p className="text-sm text-[#A1A1AA] mt-1 max-w-2xl">
             Browse verified gym exercises, approve exercises for client dashboards, or select exercises to build custom routines.
           </p>
         </div>
 
         {selectedExerciseIds.length > 0 && (
-          <div className="flex items-center gap-3 bg-[#D8EAE7]/50 p-2 rounded-xl border border-[#D9E2E3]">
-            <span className="text-xs font-bold text-[#167D78] pl-2">
+          <div className="flex items-center gap-3 bg-[#17172A]/50 p-2 rounded-xl border border-[#292940]">
+            <span className="text-xs font-bold text-[#6366F1] pl-2">
               {selectedExerciseIds.length} {selectedExerciseIds.length === 1 ? 'Exercise' : 'Exercises'} Selected
             </span>
             <button
               onClick={handleCreatePlanWithSelected}
-              className="px-4 py-2 bg-[#167D78] text-white rounded-lg text-xs font-bold hover:bg-[#116660] transition-colors flex items-center gap-1.5 shadow-sm"
+              className="px-4 py-2 bg-[#6366F1] text-white rounded-lg text-xs font-bold hover:bg-[#4F46E5] transition-colors flex items-center gap-1.5 shadow-sm"
             >
               <Plus size={14} /> Create Workout Plan
             </button>
             <button
               onClick={() => setSelectedExerciseIds([])}
-              className="text-xs text-[#697778] hover:text-[#344B4A] px-2 font-medium"
+              className="text-xs text-[#A1A1AA] hover:text-[#11111F] px-2 font-medium"
             >
               Clear
             </button>
@@ -244,7 +244,7 @@ const TrainerExerciseLibrary: React.FC = () => {
         <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-5 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-[#167D78] text-white flex items-center justify-center font-bold text-xs">
+              <span className="w-8 h-8 rounded-lg bg-[#6366F1] text-white flex items-center justify-center font-bold text-xs">
                 {pendingLibraryRequests.length}
               </span>
               <div>
@@ -269,7 +269,7 @@ const TrainerExerciseLibrary: React.FC = () => {
                       {new Date(req.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-xs font-semibold text-[#167D78] mt-0.5">{req.title}</p>
+                  <p className="text-xs font-semibold text-[#6366F1] mt-0.5">{req.title}</p>
                   <p className="text-xs text-stone-600 mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
                 </div>
 
@@ -295,33 +295,33 @@ const TrainerExerciseLibrary: React.FC = () => {
       )}
 
       {/* Info Banner */}
-      <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-4 flex items-start gap-3 text-xs text-[#697778]">
-        <Info size={18} className="text-[#167D78] shrink-0 mt-0.5" />
+      <div className="bg-[#0B0B12] border border-[#292940] rounded-xl p-4 flex items-start gap-3 text-xs text-[#A1A1AA]">
+        <Info size={18} className="text-[#6366F1] shrink-0 mt-0.5" />
         <p>
-          <strong className="text-[#344B4A]">Trainer Note:</strong> Exercises in this library are curated by the gym owner with pre-loaded videos and safety guidelines. When adding an exercise to a client&apos;s workout plan, you can customize sets, reps, rest time, duration, and personal notes without altering the master library.
+          <strong className="text-[#11111F]">Trainer Note:</strong> Exercises in this library are curated by the gym owner with pre-loaded videos and safety guidelines. When adding an exercise to a client&apos;s workout plan, you can customize sets, reps, rest time, duration, and personal notes without altering the master library.
         </p>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 shadow-sm space-y-3">
+      <div className="bg-white border border-[#292940] rounded-2xl p-4 shadow-sm space-y-3">
         <div className="flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#697778]" />
+            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A1A1AA]" />
             <input
               type="text"
               placeholder="Search exercise by name, muscle, equipment..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl text-sm outline-none focus:border-[#167D78] text-[#344B4A]"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm outline-none focus:border-[#6366F1] text-[#11111F]"
             />
           </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-[#697778] uppercase">Difficulty:</span>
+              <span className="text-xs font-bold text-[#A1A1AA] uppercase">Difficulty:</span>
               <select
                 value={difficultyFilter}
                 onChange={(e) => setDifficultyFilter(e.target.value)}
-                className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl px-3 py-2 text-xs font-medium text-[#344B4A] outline-none"
+                className="bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-xs font-medium text-[#11111F] outline-none"
               >
                 {DIFFICULTIES.map(d => (
                   <option key={d} value={d}>{d}</option>
@@ -333,15 +333,15 @@ const TrainerExerciseLibrary: React.FC = () => {
 
         {/* Category Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pt-1 no-scrollbar">
-          <span className="text-xs font-bold text-[#697778] uppercase mr-1">Category:</span>
+          <span className="text-xs font-bold text-[#A1A1AA] uppercase mr-1">Category:</span>
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
               className={`px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${
                 categoryFilter === cat
-                  ? 'bg-[#167D78] text-white'
-                  : 'bg-[#E8EFF0] text-[#697778] hover:bg-[#D8EAE7]'
+                  ? 'bg-[#6366F1] text-white'
+                  : 'bg-[#0B0B12] text-[#A1A1AA] hover:bg-[#17172A]'
               }`}
             >
               {cat}
@@ -352,15 +352,15 @@ const TrainerExerciseLibrary: React.FC = () => {
 
       {/* Grid */}
       {loading ? (
-        <div className="text-center py-20 text-[#697778]">
-          <div className="w-10 h-10 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <div className="text-center py-20 text-[#A1A1AA]">
+          <div className="w-10 h-10 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="font-semibold text-sm">Loading exercises from library...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-12 text-center">
-          <Dumbbell size={48} className="mx-auto text-[#697778] mb-3" />
-          <h3 className="text-base font-bold text-[#344B4A]">No exercises match your filters</h3>
-          <p className="text-xs text-[#697778] mt-1">Try clearing search terms or selecting another category.</p>
+        <div className="bg-white border border-[#292940] rounded-2xl p-12 text-center">
+          <Dumbbell size={48} className="mx-auto text-[#A1A1AA] mb-3" />
+          <h3 className="text-base font-bold text-[#11111F]">No exercises match your filters</h3>
+          <p className="text-xs text-[#A1A1AA] mt-1">Try clearing search terms or selecting another category.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -370,7 +370,7 @@ const TrainerExerciseLibrary: React.FC = () => {
               <div
                 key={ex._id}
                 className={`bg-white border rounded-2xl overflow-hidden shadow-sm transition-all hover:shadow-md flex flex-col justify-between ${
-                  isSelected ? 'border-[#167D78] ring-2 ring-[#167D78]/20' : 'border-[#D9E2E3]'
+                  isSelected ? 'border-[#6366F1] ring-2 ring-[#6366F1]/20' : 'border-[#292940]'
                 }`}
               >
                 {/* Media Preview Player banner */}
@@ -406,7 +406,7 @@ const TrainerExerciseLibrary: React.FC = () => {
                   </div>
 
                   {ex.videoUrl && (
-                    <div className="absolute top-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#167D78]/90 text-[#344B4A] flex items-center gap-1 backdrop-blur-sm">
+                    <div className="absolute top-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#6366F1]/90 text-[#11111F] flex items-center gap-1 backdrop-blur-sm">
                       <Video size={11} /> Video Demonstration
                     </div>
                   )}
@@ -420,31 +420,31 @@ const TrainerExerciseLibrary: React.FC = () => {
                 {/* Content */}
                 <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <p className="text-xs text-[#697778] line-clamp-2 mb-3">
+                    <p className="text-xs text-[#A1A1AA] line-clamp-2 mb-3">
                       {ex.description || ex.instructions}
                     </p>
 
-                    <div className="grid grid-cols-3 gap-2 py-2 px-2.5 bg-[#E8EFF0] rounded-xl border border-[#D9E2E3] text-center mb-3">
+                    <div className="grid grid-cols-3 gap-2 py-2 px-2.5 bg-[#0B0B12] rounded-xl border border-[#292940] text-center mb-3">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#697778] block">Sets</span>
-                        <span className="text-xs font-extrabold text-[#344B4A]">{ex.defaultSets} sets</span>
+                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Sets</span>
+                        <span className="text-xs font-extrabold text-[#11111F]">{ex.defaultSets} sets</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#697778] block">Reps</span>
-                        <span className="text-xs font-extrabold text-[#344B4A]">{ex.defaultRepetitions} reps</span>
+                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Reps</span>
+                        <span className="text-xs font-extrabold text-[#11111F]">{ex.defaultRepetitions} reps</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#697778] block">Rest</span>
-                        <span className="text-xs font-extrabold text-[#344B4A]">{ex.defaultRest}s</span>
+                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Rest</span>
+                        <span className="text-xs font-extrabold text-[#11111F]">{ex.defaultRest}s</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-[#D9E2E3]/60">
+                  <div className="flex items-center gap-2 pt-2 border-t border-[#292940]/60">
                     <button
                       onClick={() => setPreviewExercise(ex)}
-                      className="flex-1 py-2 px-2.5 bg-[#E8EFF0] hover:bg-orange-50 text-[#344B4A] text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1 border border-[#D9E2E3]"
+                      className="flex-1 py-2 px-2.5 bg-[#0B0B12] hover:bg-orange-50 text-[#11111F] text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1 border border-[#292940]"
                     >
                       <Eye size={13} /> View
                     </button>
@@ -459,8 +459,8 @@ const TrainerExerciseLibrary: React.FC = () => {
                       onClick={() => toggleSelect(ex._id)}
                       className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1 ${
                         isSelected
-                          ? 'bg-[#167D78] text-white hover:bg-[#116660]'
-                          : 'border border-[#167D78] text-[#167D78] hover:bg-[#167D78]/10'
+                          ? 'bg-[#6366F1] text-white hover:bg-[#4F46E5]'
+                          : 'border border-[#6366F1] text-[#6366F1] hover:bg-[#6366F1]/10'
                       }`}
                     >
                       {isSelected ? <Check size={13} /> : <Plus size={13} />}
@@ -477,23 +477,23 @@ const TrainerExerciseLibrary: React.FC = () => {
       {/* Exercise Preview Modal */}
       {previewExercise && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#D9E2E3] flex flex-col">
+          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#292940] flex flex-col">
             {/* Header */}
-            <div className="p-6 border-b border-[#D9E2E3] flex justify-between items-start sticky top-0 bg-white/95 backdrop-blur z-10">
+            <div className="p-6 border-b border-[#292940] flex justify-between items-start sticky top-0 bg-white/95 backdrop-blur z-10">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#167D78]/10 text-[#167D78]">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#6366F1]/10 text-[#6366F1]">
                     {previewExercise.category}
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-700">
                     {previewExercise.difficulty}
                   </span>
                 </div>
-                <h2 className="text-2xl font-extrabold text-[#344B4A]">{previewExercise.name}</h2>
+                <h2 className="text-2xl font-extrabold text-[#11111F]">{previewExercise.name}</h2>
               </div>
               <button
                 onClick={() => setPreviewExercise(null)}
-                className="p-2 text-[#697778] hover:text-[#344B4A] hover:bg-[#E8EFF0] rounded-xl transition-colors"
+                className="p-2 text-[#A1A1AA] hover:text-[#11111F] hover:bg-[#0B0B12] rounded-xl transition-colors"
               >
                 ✕
               </button>
@@ -503,8 +503,8 @@ const TrainerExerciseLibrary: React.FC = () => {
             <div className="p-6 space-y-6">
               {/* Animated / Video Demonstration */}
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider flex items-center gap-1.5">
-                  <Video size={14} className="text-[#167D78]" /> Animated Workout Video Demonstration
+                <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider flex items-center gap-1.5">
+                  <Video size={14} className="text-[#6366F1]" /> Animated Workout Video Demonstration
                 </h4>
                 <ExerciseVideoPlayer
                   videoUrl={previewExercise.videoUrl}
@@ -521,40 +521,40 @@ const TrainerExerciseLibrary: React.FC = () => {
 
               {/* Default Parameters */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="bg-[#E8EFF0] p-3 rounded-xl border border-[#D9E2E3]">
-                  <span className="text-[10px] font-bold text-[#697778] uppercase block">Target Muscle</span>
-                  <span className="text-xs font-bold text-[#344B4A]">{previewExercise.targetMuscle}</span>
+                <div className="bg-[#0B0B12] p-3 rounded-xl border border-[#292940]">
+                  <span className="text-[10px] font-bold text-[#A1A1AA] uppercase block">Target Muscle</span>
+                  <span className="text-xs font-bold text-[#11111F]">{previewExercise.targetMuscle}</span>
                 </div>
-                <div className="bg-[#E8EFF0] p-3 rounded-xl border border-[#D9E2E3]">
-                  <span className="text-[10px] font-bold text-[#697778] uppercase block">Equipment</span>
-                  <span className="text-xs font-bold text-[#344B4A]">{previewExercise.equipment}</span>
+                <div className="bg-[#0B0B12] p-3 rounded-xl border border-[#292940]">
+                  <span className="text-[10px] font-bold text-[#A1A1AA] uppercase block">Equipment</span>
+                  <span className="text-xs font-bold text-[#11111F]">{previewExercise.equipment}</span>
                 </div>
-                <div className="bg-[#E8EFF0] p-3 rounded-xl border border-[#D9E2E3]">
-                  <span className="text-[10px] font-bold text-[#697778] uppercase block">Default Sets & Reps</span>
-                  <span className="text-xs font-bold text-[#344B4A]">
+                <div className="bg-[#0B0B12] p-3 rounded-xl border border-[#292940]">
+                  <span className="text-[10px] font-bold text-[#A1A1AA] uppercase block">Default Sets & Reps</span>
+                  <span className="text-xs font-bold text-[#11111F]">
                     {previewExercise.defaultSets} sets × {previewExercise.defaultRepetitions} reps
                   </span>
                 </div>
-                <div className="bg-[#E8EFF0] p-3 rounded-xl border border-[#D9E2E3]">
-                  <span className="text-[10px] font-bold text-[#697778] uppercase block">Rest Period</span>
-                  <span className="text-xs font-bold text-[#344B4A]">{previewExercise.defaultRest} Seconds</span>
+                <div className="bg-[#0B0B12] p-3 rounded-xl border border-[#292940]">
+                  <span className="text-[10px] font-bold text-[#A1A1AA] uppercase block">Rest Period</span>
+                  <span className="text-xs font-bold text-[#11111F]">{previewExercise.defaultRest} Seconds</span>
                 </div>
               </div>
 
               {/* Description */}
               {previewExercise.description && (
                 <div>
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Overview</h4>
-                  <p className="text-sm text-[#697778] leading-relaxed">{previewExercise.description}</p>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Overview</h4>
+                  <p className="text-sm text-[#A1A1AA] leading-relaxed">{previewExercise.description}</p>
                 </div>
               )}
 
               {/* Step-by-Step Instructions */}
               <div>
-                <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-2">
+                <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">
                   Proper Form & Execution
                 </h4>
-                <div className="bg-[#E8EFF0] p-4 rounded-2xl border border-[#D9E2E3] text-sm text-[#344B4A] whitespace-pre-line leading-relaxed">
+                <div className="bg-[#0B0B12] p-4 rounded-2xl border border-[#292940] text-sm text-[#11111F] whitespace-pre-line leading-relaxed">
                   {previewExercise.instructions}
                 </div>
               </div>
@@ -573,14 +573,14 @@ const TrainerExerciseLibrary: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-[#D9E2E3] bg-[#E8EFF0] flex justify-between items-center">
-              <span className="text-xs text-[#697778]">
+            <div className="p-6 border-t border-[#292940] bg-[#0B0B12] flex justify-between items-center">
+              <span className="text-xs text-[#A1A1AA]">
                 Gym Owner Exercise • Reusable across client plans
               </span>
               <div className="flex gap-2">
                 <button
                   onClick={() => setPreviewExercise(null)}
-                  className="px-4 py-2 border border-[#D9E2E3] text-xs font-bold text-[#697778] rounded-xl hover:bg-[#D8EAE7]"
+                  className="px-4 py-2 border border-[#292940] text-xs font-bold text-[#A1A1AA] rounded-xl hover:bg-[#17172A]"
                 >
                   Close
                 </button>
@@ -591,7 +591,7 @@ const TrainerExerciseLibrary: React.FC = () => {
                     }
                     setPreviewExercise(null);
                   }}
-                  className="px-4 py-2 bg-[#167D78] text-white text-xs font-bold rounded-xl hover:bg-[#116660] transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 bg-[#6366F1] text-white text-xs font-bold rounded-xl hover:bg-[#4F46E5] transition-colors flex items-center gap-1.5"
                 >
                   <Plus size={14} /> Add to Selected
                 </button>
@@ -604,15 +604,15 @@ const TrainerExerciseLibrary: React.FC = () => {
       {/* ===================== APPROVE EXERCISE FOR CLIENT MODAL ===================== */}
       {approveModalExercise && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#D9E2E3] overflow-hidden">
-            <div className="p-5 border-b border-[#D9E2E3] flex justify-between items-center bg-[#E8EFF0]">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-[#292940] overflow-hidden">
+            <div className="p-5 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={20} className="text-emerald-600" />
-                <h3 className="font-bold text-[#344B4A] text-base">Approve & Send Exercise</h3>
+                <h3 className="font-bold text-[#11111F] text-base">Approve & Send Exercise</h3>
               </div>
               <button 
                 onClick={() => setApproveModalExercise(null)}
-                className="p-1.5 text-[#697778] hover:text-[#344B4A] hover:bg-gray-100 rounded-lg"
+                className="p-1.5 text-[#A1A1AA] hover:text-[#11111F] hover:bg-gray-100 rounded-lg"
               >
                 <X size={18} />
               </button>
@@ -624,13 +624,13 @@ const TrainerExerciseLibrary: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">
                   Select Customer / Gym Member *
                 </label>
                 <select
                   value={selectedClientId}
                   onChange={(e) => setSelectedClientId(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#167D78]"
+                  className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#6366F1]"
                   required
                 >
                   <option value="">-- Choose a customer --</option>
@@ -644,31 +644,31 @@ const TrainerExerciseLibrary: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Target Sets</label>
+                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Target Sets</label>
                   <input
                     type="number"
                     min={1}
                     max={10}
                     value={customSets}
                     onChange={(e) => setCustomSets(Number(e.target.value))}
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#167D78]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#6366F1]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-1">Target Reps</label>
+                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Target Reps</label>
                   <input
                     type="number"
                     min={1}
                     max={100}
                     value={customReps}
                     onChange={(e) => setCustomReps(Number(e.target.value))}
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#167D78]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#6366F1]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#697778] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">
                   Coach Guidance & Instructions
                 </label>
                 <textarea
@@ -676,7 +676,7 @@ const TrainerExerciseLibrary: React.FC = () => {
                   value={coachNotes}
                   onChange={(e) => setCoachNotes(e.target.value)}
                   placeholder="e.g. Keep spine neutral, squeeze core at peak, avoid momentum..."
-                  className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-3 text-xs outline-none focus:border-[#167D78] resize-none"
+                  className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-3 text-xs outline-none focus:border-[#6366F1] resize-none"
                 />
               </div>
 
@@ -686,11 +686,11 @@ const TrainerExerciseLibrary: React.FC = () => {
                 </div>
               )}
 
-              <div className="pt-3 flex justify-end gap-2 border-t border-[#D9E2E3]">
+              <div className="pt-3 flex justify-end gap-2 border-t border-[#292940]">
                 <button
                   type="button"
                   onClick={() => setApproveModalExercise(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#697778] hover:bg-[#D8EAE7]"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#A1A1AA] hover:bg-[#17172A]"
                 >
                   Cancel
                 </button>

@@ -110,7 +110,7 @@ export const verifyPayment = async (req: AuthRequest, res: Response): Promise<vo
         membership.status = CustomerMembershipStatus.ACTIVE;
         membership.startDate = new Date();
         
-        const duration = membership.duration.toLowerCase();
+        const duration = (membership.duration || '').toLowerCase();
         if (duration.includes('month')) {
           endDate.setMonth(endDate.getMonth() + (parseInt(duration) || 1));
         } else if (duration.includes('year')) {
@@ -119,9 +119,36 @@ export const verifyPayment = async (req: AuthRequest, res: Response): Promise<vo
           endDate.setDate(endDate.getDate() + (parseInt(duration) || 1));
         } else if (duration.includes('week')) {
           endDate.setDate(endDate.getDate() + ((parseInt(duration) || 1) * 7));
+        } else {
+          endDate.setMonth(endDate.getMonth() + 1);
         }
         membership.endDate = endDate;
+
+        if (!membership.membershipId) {
+          const dateSlug = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+          membership.membershipId = `MEM-${dateSlug}-${Math.floor(1000 + Math.random() * 9000)}`;
+          membership.receiptNumber = `REC-${dateSlug}-${Math.floor(1000 + Math.random() * 9000)}`;
+        }
+        if (!membership.features || membership.features.length === 0) {
+          membership.features = ['Full Gym Access', 'Strength & Cardio Training', 'AI Fitness Assistance'];
+        }
+
+        membership.paymentId = payment._id;
         await membership.save();
+
+        payment.membershipId = membership._id;
+        payment.receiptNumber = membership.receiptNumber;
+        await payment.save();
+
+        // Trigger confirmation email
+        try {
+          const { triggerMembershipConfirmationEmail } = require('./membershipController');
+          setImmediate(async () => {
+            await triggerMembershipConfirmationEmail(membership._id);
+          });
+        } catch (mailErr) {
+          console.error('Failed to trigger confirmation email in verifyPayment:', mailErr);
+        }
       } else {
          // Default to 1 month if no pending membership record found 
          endDate.setMonth(endDate.getMonth() + 1);
@@ -143,14 +170,14 @@ export const verifyPayment = async (req: AuthRequest, res: Response): Promise<vo
         recipientId: payment.customerId,
         recipientRole: 'MEMBER',
         gymId: payment.gymId,
-        title: 'Payment Approved!',
+        title: 'Payment Approved & Membership Active!',
         message: `Your payment of ₹${Number(payment.amount).toLocaleString('en-IN')} for ${payment.planName} has been approved. Your membership is now active!`,
         type: 'success',
         relatedRecordId: payment._id,
-        link: '/member/dashboard'
+        link: '/member/subscription'
       }).catch(err => console.error('Notif error:', err));
 
-      res.status(200).json({ success: true, message: 'Payment approved successfully', payment });
+      res.status(200).json({ success: true, message: 'Payment approved and membership activated successfully', payment });
       return;
     }
 
@@ -276,6 +303,7 @@ export const getGymPayments = async (req: AuthRequest, res: Response): Promise<v
       .populate('customerId', 'firstName lastName email mobile profilePhoto')
       .populate('gymId', 'name')
       .populate('branchId', 'branchName')
+      .populate('membershipId')
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, payments });

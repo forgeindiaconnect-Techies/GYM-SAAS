@@ -6,28 +6,28 @@ const AdminPayments = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <DollarSign className="text-[#167D78]" size={32} />
+            <DollarSign className="text-[#6366F1]" size={32} />
             Payments
           </h1>
-          <p className="text-[#697778] mt-2">Monitor incoming payments and gateway status.</p>
+          <p className="text-[#A1A1AA] mt-2">Monitor incoming payments and gateway status.</p>
         </div>
-        <button className="px-6 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors">
+        <button className="px-6 py-2 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors">
           Manage Payments
         </button>
       </div>
       
       
-      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl overflow-hidden">
         <table className="w-full text-left">
           <thead>
-            <tr className="bg-[#FFFFFF] text-[#697778] text-sm border-b border-[#D9E2E3]">
+            <tr className="bg-[#FFFFFF] text-[#A1A1AA] text-sm border-b border-[#292940]">
               <th className="p-4 font-medium">Payment ID</th>
               <th className="p-4 font-medium">User</th>
               <th className="p-4 font-medium">Amount</th>
               <th className="p-4 font-medium">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#D9E2E3] text-sm">
+          <tbody className="divide-y divide-[#292940] text-sm">
             {[1, 2, 3, 4, 5].map((row) => (
               <tr key={row} className="hover:bg-[#FFFFFF]">
                 <td className="p-4 font-mono text-xs">PAY_8923{row}XYZ</td>

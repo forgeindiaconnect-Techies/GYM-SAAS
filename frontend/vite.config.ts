@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
+// Theme updated to Black + Indigo (Pure)
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    host: true
+  }
 })

@@ -33,34 +33,34 @@ const Step5Pricing: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#D9E2E3] pb-2 flex justify-between items-center">
+      <div className="border-b border-[#292940] pb-2 flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold text-[#344B4A]">Membership & Pricing</h2>
-          <p className="text-sm text-[#697778]">Define your package plans for members.</p>
+          <h2 className="text-lg font-semibold text-[#11111F]">Membership & Pricing</h2>
+          <p className="text-sm text-[#A1A1AA]">Define your package plans for members.</p>
         </div>
         {!showAddPlan && (
-          <button type="button" onClick={() => setShowAddPlan(true)} className="px-3 py-1.5 bg-[#167D78]/10 text-[#167D78] text-sm font-medium rounded-lg hover:bg-[#167D78]/20 transition-colors flex items-center space-x-1">
+          <button type="button" onClick={() => setShowAddPlan(true)} className="px-3 py-1.5 bg-[#6366F1]/10 text-[#6366F1] text-sm font-medium rounded-lg hover:bg-[#6366F1]/20 transition-colors flex items-center space-x-1">
             <Plus size={16} /><span>Add Package Plan</span>
           </button>
         )}
       </div>
 
       {showAddPlan && (
-        <div className="bg-[#FFFFFF] border border-[#167D78]/30 rounded-xl p-5 space-y-4">
-          <h3 className="font-medium text-[#344B4A] text-sm">New Package Plan</h3>
+        <div className="bg-[#FFFFFF] border border-[#6366F1]/30 rounded-xl p-5 space-y-4">
+          <h3 className="font-medium text-[#11111F] text-sm">New Package Plan</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Package Name *</label>
+              <label className="block text-xs text-[#A1A1AA] mb-1">Package Name *</label>
               <input value={newPlan.name} onChange={e => setNewPlan({...newPlan, name: e.target.value})} placeholder="e.g. Monthly Pro" className={inputCls('planName')} />
             </div>
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Price *</label>
+              <label className="block text-xs text-[#A1A1AA] mb-1">Price *</label>
               <input type="number" value={newPlan.price} onChange={e => setNewPlan({...newPlan, price: e.target.value})} placeholder="e.g. 2999" className={inputCls('planPrice')} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Duration *</label>
+              <label className="block text-xs text-[#A1A1AA] mb-1">Duration *</label>
               <select value={newPlan.duration} onChange={e => setNewPlan({...newPlan, duration: e.target.value})} className={inputCls('planDuration')}>
                 <option value="">Select Duration</option>
                 <option value="1 Day">1 Day</option>
@@ -71,13 +71,13 @@ const Step5Pricing: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
               </select>
             </div>
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Features (comma separated)</label>
+              <label className="block text-xs text-[#A1A1AA] mb-1">Features (comma separated)</label>
               <input value={newPlan.features} onChange={e => setNewPlan({...newPlan, features: e.target.value})} placeholder="e.g. Cardio, Weights, AC" className={inputCls('planFeatures')} />
             </div>
           </div>
           <div className="flex justify-end space-x-3 pt-2">
-            <button type="button" onClick={() => setShowAddPlan(false)} className="px-4 py-2 text-sm text-[#697778] hover:text-[#167D78] transition-colors">Cancel</button>
-            <button type="button" onClick={addPlan} className="px-4 py-2 bg-[#167D78] text-white text-sm font-semibold rounded-lg hover:bg-[#116660] transition-colors">Save Plan</button>
+            <button type="button" onClick={() => setShowAddPlan(false)} className="px-4 py-2 text-sm text-[#A1A1AA] hover:text-[#6366F1] transition-colors">Cancel</button>
+            <button type="button" onClick={addPlan} className="px-4 py-2 bg-[#6366F1] text-white text-sm font-semibold rounded-lg hover:bg-[#4F46E5] transition-colors">Save Plan</button>
           </div>
         </div>
       )}
@@ -85,26 +85,26 @@ const Step5Pricing: React.FC<StepProps> = ({ form, set, errors, inputCls }) => {
       {errors.subscriptionPlans && <p className="text-teal-400 text-xs">{errors.subscriptionPlans}</p>}
 
       {plans.length === 0 && !showAddPlan ? (
-        <div className="text-center py-8 bg-[#FFFFFF] border border-[#D9E2E3] border-dashed rounded-xl">
-          <p className="text-[#697778] text-sm mb-3">No package plans added yet.</p>
-          <button type="button" onClick={() => setShowAddPlan(true)} className="px-4 py-2 bg-[#FFFFFF] text-[#344B4A] text-sm border border-[#D9E2E3] rounded-lg hover:border-[#167D78]/50 transition-colors">
+        <div className="text-center py-8 bg-[#FFFFFF] border border-[#292940] border-dashed rounded-xl">
+          <p className="text-[#A1A1AA] text-sm mb-3">No package plans added yet.</p>
+          <button type="button" onClick={() => setShowAddPlan(true)} className="px-4 py-2 bg-[#FFFFFF] text-[#11111F] text-sm border border-[#292940] rounded-lg hover:border-[#6366F1]/50 transition-colors">
             Create First Package Plan
           </button>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 gap-4">
           {plans.map((plan: any, i: number) => (
-            <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] p-5 rounded-xl flex flex-col h-full relative group">
-              <button type="button" onClick={() => removePlan(i)} className="absolute top-3 right-3 text-[#697778] hover:text-[#D8EAE7] opacity-0 group-hover:opacity-100 transition-opacity">
+            <div key={i} className="bg-[#FFFFFF] border border-[#292940] p-5 rounded-xl flex flex-col h-full relative group">
+              <button type="button" onClick={() => removePlan(i)} className="absolute top-3 right-3 text-[#A1A1AA] hover:text-[#17172A] opacity-0 group-hover:opacity-100 transition-opacity">
                 <Trash2 size={16} />
               </button>
-              <h3 className="text-lg font-bold text-[#344B4A] mb-1">{plan.name}</h3>
-              <div className="text-2xl font-bold text-[#167D78] mb-4">₹{plan.price} <span className="text-sm font-normal text-[#697778]">/ {plan.duration}</span></div>
+              <h3 className="text-lg font-bold text-[#11111F] mb-1">{plan.name}</h3>
+              <div className="text-2xl font-bold text-[#6366F1] mb-4">₹{plan.price} <span className="text-sm font-normal text-[#A1A1AA]">/ {plan.duration}</span></div>
               {plan.features && (
-                <div className="space-y-2 mt-auto pt-4 border-t border-[#D9E2E3]">
+                <div className="space-y-2 mt-auto pt-4 border-t border-[#292940]">
                   {plan.features.split(',').map((f: string, idx: number) => (
-                    <div key={idx} className="flex items-center space-x-2 text-xs text-[#697778]">
-                      <CheckCircle size={12} className="text-[#167D78]" />
+                    <div key={idx} className="flex items-center space-x-2 text-xs text-[#A1A1AA]">
+                      <CheckCircle size={12} className="text-[#6366F1]" />
                       <span>{f.trim()}</span>
                     </div>
                   ))}

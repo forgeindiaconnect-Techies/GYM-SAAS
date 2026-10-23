@@ -274,8 +274,8 @@ const TrainerAIReview = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-24 text-[#697778]">
-        <div className="w-10 h-10 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <div className="text-center py-24 text-[#A1A1AA]">
+        <div className="w-10 h-10 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
         <p className="font-semibold text-sm">Loading client assessment and AI output...</p>
       </div>
     );
@@ -285,9 +285,9 @@ const TrainerAIReview = () => {
     return (
       <div className="max-w-xl mx-auto text-center py-20">
         <AlertCircle size={48} className="text-red-500 mx-auto mb-3" />
-        <h2 className="text-xl font-bold text-[#344B4A]">AI Plan Not Found</h2>
-        <p className="text-sm text-[#697778] mt-1">This customer has not submitted a fitness assessment yet.</p>
-        <button onClick={() => navigate(-1)} className="mt-4 px-6 py-2.5 bg-[#167D78] text-white rounded-xl text-xs font-bold">
+        <h2 className="text-xl font-bold text-[#11111F]">AI Plan Not Found</h2>
+        <p className="text-sm text-[#A1A1AA] mt-1">This customer has not submitted a fitness assessment yet.</p>
+        <button onClick={() => navigate(-1)} className="mt-4 px-6 py-2.5 bg-[#6366F1] text-white rounded-xl text-xs font-bold">
           Go Back
         </button>
       </div>
@@ -323,10 +323,10 @@ const TrainerAIReview = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-24">
       {/* Top Bar Navigation & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8EAE7] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#17172A] pb-4">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center text-xs font-bold text-[#697778] hover:text-[#344B4A] transition-colors cursor-pointer"
+          className="flex items-center text-xs font-bold text-[#A1A1AA] hover:text-[#11111F] transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} className="mr-1" /> Back to Client List
         </button>
@@ -342,7 +342,7 @@ const TrainerAIReview = () => {
           </span>
 
           {modificationCount > 0 && (
-            <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-[#D8EAE7] text-[#116660] border border-[#D9E2E3]">
+            <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-[#17172A] text-[#4F46E5] border border-[#292940]">
               ✏️ {modificationCount} Trainer Edit(s)
             </span>
           )}
@@ -350,16 +350,16 @@ const TrainerAIReview = () => {
       </div>
 
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-[#D9E2E3] rounded-3xl p-6 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-[#292940] rounded-3xl p-6 shadow-sm">
         <div className="flex items-center space-x-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-[#167D78] to-teal-700 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md">
+          <div className="w-14 h-14 bg-gradient-to-br from-[#6366F1] to-teal-700 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md">
             {profile.fullName?.[0] || 'R'}
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#344B4A] tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#11111F] tracking-tight">
               Review &amp; Calibrate: {profile.fullName || 'Renugopal Y'}
             </h1>
-            <p className="text-xs text-[#697778] mt-1">
+            <p className="text-xs text-[#A1A1AA] mt-1">
               Review AI analysis draft, calibrate exercise sets/reps, adjust nutrition, and approve official customer plan.
             </p>
           </div>
@@ -379,7 +379,7 @@ const TrainerAIReview = () => {
           <button
             onClick={handleEditAndApprove}
             disabled={saving}
-            className="px-6 py-2.5 bg-[#167D78] hover:bg-[#116660] text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-teal-900/20 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-teal-900/20 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             title="Save your exercise and nutrition modifications separately and approve as official plan"
           >
             <Send size={16} /> Edit &amp; Approve
@@ -388,51 +388,51 @@ const TrainerAIReview = () => {
       </div>
 
       {/* CARD 1: Customer Information & Assessment Details */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-[#D8EAE7] pb-3">
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-[#17172A] pb-3">
           <div className="flex items-center gap-2">
-            <User size={20} className="text-[#167D78]" />
-            <h2 className="text-lg font-bold text-[#344B4A]">Customer Information &amp; Assessment</h2>
+            <User size={20} className="text-[#6366F1]" />
+            <h2 className="text-lg font-bold text-[#11111F]">Customer Information &amp; Assessment</h2>
           </div>
-          <span className="text-xs font-semibold text-[#697778]">
-            Goal: <strong className="text-[#167D78]">{profile.fitnessGoal || 'Weight Loss'}</strong>
+          <span className="text-xs font-semibold text-[#A1A1AA]">
+            Goal: <strong className="text-[#6366F1]">{profile.fitnessGoal || 'Weight Loss'}</strong>
           </span>
         </div>
 
         {/* Grid of Demographics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 text-center text-xs">
-          <div className="p-3 bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl">
-            <span className="text-[#697778] uppercase font-bold block text-[10px]">Age</span>
-            <strong className="text-[#344B4A] text-sm">{profile.age || '28'} yrs</strong>
+          <div className="p-3 bg-[#0B0B12] border border-[#17172A] rounded-xl">
+            <span className="text-[#A1A1AA] uppercase font-bold block text-[10px]">Age</span>
+            <strong className="text-[#11111F] text-sm">{profile.age || '28'} yrs</strong>
           </div>
-          <div className="p-3 bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl">
-            <span className="text-[#697778] uppercase font-bold block text-[10px]">Gender</span>
-            <strong className="text-[#344B4A] text-sm">{profile.gender || 'Male'}</strong>
+          <div className="p-3 bg-[#0B0B12] border border-[#17172A] rounded-xl">
+            <span className="text-[#A1A1AA] uppercase font-bold block text-[10px]">Gender</span>
+            <strong className="text-[#11111F] text-sm">{profile.gender || 'Male'}</strong>
           </div>
-          <div className="p-3 bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl">
-            <span className="text-[#697778] uppercase font-bold block text-[10px]">Height / Weight</span>
-            <strong className="text-[#344B4A] text-sm">{profile.height || '180'} cm / {profile.weight || '85'} kg</strong>
+          <div className="p-3 bg-[#0B0B12] border border-[#17172A] rounded-xl">
+            <span className="text-[#A1A1AA] uppercase font-bold block text-[10px]">Height / Weight</span>
+            <strong className="text-[#11111F] text-sm">{profile.height || '180'} cm / {profile.weight || '85'} kg</strong>
           </div>
-          <div className="p-3 bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl">
-            <span className="text-[#697778] uppercase font-bold block text-[10px]">Level</span>
-            <strong className="text-[#344B4A] text-sm">{profile.currentFitnessLevel || profile.experienceLevel || 'Beginner'}</strong>
+          <div className="p-3 bg-[#0B0B12] border border-[#17172A] rounded-xl">
+            <span className="text-[#A1A1AA] uppercase font-bold block text-[10px]">Level</span>
+            <strong className="text-[#11111F] text-sm">{profile.currentFitnessLevel || profile.experienceLevel || 'Beginner'}</strong>
           </div>
-          <div className="p-3 bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl">
-            <span className="text-[#697778] uppercase font-bold block text-[10px]">Target Days</span>
-            <strong className="text-[#344B4A] text-sm">{profile.availableWorkoutDays || '4 Days'}</strong>
+          <div className="p-3 bg-[#0B0B12] border border-[#17172A] rounded-xl">
+            <span className="text-[#A1A1AA] uppercase font-bold block text-[10px]">Target Days</span>
+            <strong className="text-[#11111F] text-sm">{profile.availableWorkoutDays || '4 Days'}</strong>
           </div>
-          <div className="p-3 bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl">
-            <span className="text-[#697778] uppercase font-bold block text-[10px]">Equipment</span>
-            <strong className="text-[#344B4A] text-sm truncate">{profile.equipmentAvailability || 'Full Commercial Gym'}</strong>
+          <div className="p-3 bg-[#0B0B12] border border-[#17172A] rounded-xl">
+            <span className="text-[#A1A1AA] uppercase font-bold block text-[10px]">Equipment</span>
+            <strong className="text-[#11111F] text-sm truncate">{profile.equipmentAvailability || 'Full Commercial Gym'}</strong>
           </div>
         </div>
 
         {/* Body Measurements Snapshot */}
         {measurements && Object.keys(measurements).length > 0 && (
-          <div className="p-3 bg-[#E8EFF0] rounded-xl text-xs flex flex-wrap items-center gap-3 border border-[#D8EAE7]/60">
-            <span className="font-bold text-[#697778] uppercase text-[11px]">Logged Body Measurements:</span>
+          <div className="p-3 bg-[#0B0B12] rounded-xl text-xs flex flex-wrap items-center gap-3 border border-[#17172A]/60">
+            <span className="font-bold text-[#A1A1AA] uppercase text-[11px]">Logged Body Measurements:</span>
             {Object.entries(measurements).map(([k, v]: any) => (
-              <span key={k} className="bg-white px-2.5 py-1 rounded-lg border border-[#D8EAE7] text-[#344B4A]">
+              <span key={k} className="bg-white px-2.5 py-1 rounded-lg border border-[#17172A] text-[#11111F]">
                 {k}: <strong>{v}</strong>
               </span>
             ))}
@@ -451,11 +451,11 @@ const TrainerAIReview = () => {
       </div>
 
       {/* CARD 2: AI Generated Analysis & Calorie Targets */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-[#D8EAE7] pb-3">
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-[#17172A] pb-3">
           <div className="flex items-center gap-2">
-            <Sparkles size={20} className="text-[#167D78]" />
-            <h2 className="text-lg font-bold text-[#344B4A]">AI Generated Assessment &amp; Health Analysis</h2>
+            <Sparkles size={20} className="text-[#6366F1]" />
+            <h2 className="text-lg font-bold text-[#11111F]">AI Generated Assessment &amp; Health Analysis</h2>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800">
               AI Output Reference
             </span>
@@ -464,31 +464,31 @@ const TrainerAIReview = () => {
           <button
             type="button"
             onClick={() => setShowOriginalDraft(!showOriginalDraft)}
-            className="text-xs font-bold text-[#167D78] hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer"
           >
             {showOriginalDraft ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             {showOriginalDraft ? 'Hide Deep AI Insights' : 'View Full AI Insights'}
           </button>
         </div>
 
-        <div className="p-4 bg-gradient-to-r from-[#E8EFF0] to-[#E8EFF0] border border-[#D8EAE7] rounded-2xl text-xs text-[#344B4A] leading-relaxed">
-          <strong className="text-[#167D78] uppercase tracking-wide block mb-1">AI Clinical Assessment:</strong>
+        <div className="p-4 bg-gradient-to-r from-[#0B0B12] to-[#0B0B12] border border-[#17172A] rounded-2xl text-xs text-[#11111F] leading-relaxed">
+          <strong className="text-[#6366F1] uppercase tracking-wide block mb-1">AI Clinical Assessment:</strong>
           {recommendation.aiAnalysis?.assessment || 
            `Client presents with primary goal of ${profile.fitnessGoal || 'Weight Loss'} at ${profile.currentFitnessLevel || 'Beginner'} experience level. A calibrated 7-day routine focusing on progressive overload, moderate volume, and balanced nutrition is recommended.`}
         </div>
 
         {showOriginalDraft && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fadeIn">
-            <div className="p-4 bg-white border border-[#D8EAE7] rounded-2xl space-y-2 text-xs">
-              <strong className="text-[#167D78] block uppercase tracking-wider text-[11px]">AI Goal &amp; Kinetic Analysis</strong>
-              <p className="text-[#697778] leading-relaxed">
+            <div className="p-4 bg-white border border-[#17172A] rounded-2xl space-y-2 text-xs">
+              <strong className="text-[#6366F1] block uppercase tracking-wider text-[11px]">AI Goal &amp; Kinetic Analysis</strong>
+              <p className="text-[#A1A1AA] leading-relaxed">
                 {recommendation.aiAnalysis?.goalAnalysis || 
                  'Structured caloric deficit with resistance training to maximize lean mass retention while accelerating metabolic expenditure.'}
               </p>
             </div>
-            <div className="p-4 bg-white border border-[#D8EAE7] rounded-2xl space-y-2 text-xs">
-              <strong className="text-[#167D78] block uppercase tracking-wider text-[11px]">Recommended Training Approach</strong>
-              <p className="text-[#697778] leading-relaxed">
+            <div className="p-4 bg-white border border-[#17172A] rounded-2xl space-y-2 text-xs">
+              <strong className="text-[#6366F1] block uppercase tracking-wider text-[11px]">Recommended Training Approach</strong>
+              <p className="text-[#A1A1AA] leading-relaxed">
                 {recommendation.aiAnalysis?.recommendedApproach || 
                  'Periodized 7-day schedule with dedicated hypertrophy, lower-body core stability, active recovery, and mobility restoration sessions.'}
               </p>
@@ -498,15 +498,15 @@ const TrainerAIReview = () => {
       </div>
 
       {/* CARD 3: AI-Generated 7-Day Workout Routine (Monday – Sunday) */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#D8EAE7] pb-4">
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#17172A] pb-4">
           <div className="flex items-center gap-2">
-            <Dumbbell size={22} className="text-[#167D78]" />
+            <Dumbbell size={22} className="text-[#6366F1]" />
             <div>
-              <h2 className="text-xl font-bold text-[#344B4A]">
+              <h2 className="text-xl font-bold text-[#11111F]">
                 AI Workout Plan (Monday – Sunday)
               </h2>
-              <p className="text-xs text-[#697778]">
+              <p className="text-xs text-[#A1A1AA]">
                 Calibrate sets, reps, and exercise selection for each day from Monday to Sunday.
               </p>
             </div>
@@ -522,7 +522,7 @@ const TrainerAIReview = () => {
         </div>
 
         {/* Day Selector Tabs (Monday to Sunday) */}
-        <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl p-2.5">
+        <div className="bg-[#0B0B12] border border-[#17172A] rounded-2xl p-2.5">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
             {daysOfWeek.map((day) => {
               const isActive = selectedWorkoutDay === day;
@@ -536,12 +536,12 @@ const TrainerAIReview = () => {
                   onClick={() => setSelectedWorkoutDay(day)}
                   className={`flex flex-col items-center justify-center min-w-[105px] sm:min-w-[125px] px-3.5 py-2 rounded-xl transition-all shrink-0 text-center cursor-pointer ${
                     isActive
-                      ? 'bg-[#167D78] text-white shadow-md shadow-[#167D78]/20 font-bold scale-[1.02]'
-                      : 'bg-white text-[#697778] hover:bg-[#E8EFF0] hover:text-[#167D78] border border-[#D8EAE7]/60 font-semibold'
+                      ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/20 font-bold scale-[1.02]'
+                      : 'bg-white text-[#A1A1AA] hover:bg-[#0B0B12] hover:text-[#6366F1] border border-[#17172A]/60 font-semibold'
                   }`}
                 >
                   <span className="text-xs sm:text-sm font-extrabold">{day}</span>
-                  <span className={`text-[10px] mt-0.5 ${isActive ? 'text-white/90' : 'text-[#697778]'}`}>
+                  <span className={`text-[10px] mt-0.5 ${isActive ? 'text-white/90' : 'text-[#A1A1AA]'}`}>
                     {exCount} Exercises
                   </span>
                 </button>
@@ -551,18 +551,18 @@ const TrainerAIReview = () => {
         </div>
 
         {/* Selected Day Focus & Info Card */}
-        <div className="p-4 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+        <div className="p-4 bg-[#0B0B12] border border-[#17172A] rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-black text-sm text-[#344B4A]">{selectedWorkoutDay} Split:</span>
-              <span className="font-extrabold text-[#167D78]">{activeWorkoutDayData.focus}</span>
+              <span className="font-black text-sm text-[#11111F]">{selectedWorkoutDay} Split:</span>
+              <span className="font-extrabold text-[#6366F1]">{activeWorkoutDayData.focus}</span>
             </div>
-            <p className="text-[#697778] mt-0.5">
+            <p className="text-[#A1A1AA] mt-0.5">
               <strong>Target Muscle Focus:</strong> {activeWorkoutDayData.targetMuscle} • <strong>Duration:</strong> {activeWorkoutDayData.duration}
             </p>
           </div>
 
-          <span className="px-3 py-1 bg-white border border-[#D8EAE7] text-stone-700 font-bold rounded-xl text-[11px] shrink-0 self-start md:self-auto">
+          <span className="px-3 py-1 bg-white border border-[#17172A] text-stone-700 font-bold rounded-xl text-[11px] shrink-0 self-start md:self-auto">
             {activeWorkoutDayData.exercises.length} Exercises Calibrated
           </span>
         </div>
@@ -570,12 +570,12 @@ const TrainerAIReview = () => {
         {/* Exercises List for Selected Day */}
         <div className="space-y-3">
           {activeWorkoutDayData.exercises.length === 0 ? (
-            <div className="p-8 text-center bg-[#E8EFF0] border border-dashed border-[#D9E2E3] rounded-2xl">
-              <p className="text-xs font-semibold text-[#697778]">No exercises configured for {selectedWorkoutDay}.</p>
+            <div className="p-8 text-center bg-[#0B0B12] border border-dashed border-[#292940] rounded-2xl">
+              <p className="text-xs font-semibold text-[#A1A1AA]">No exercises configured for {selectedWorkoutDay}.</p>
               <button
                 type="button"
                 onClick={addExercise}
-                className="mt-2 text-xs font-bold text-[#167D78] hover:underline"
+                className="mt-2 text-xs font-bold text-[#6366F1] hover:underline"
               >
                 + Add an exercise
               </button>
@@ -584,31 +584,31 @@ const TrainerAIReview = () => {
             activeWorkoutDayData.exercises.map((ex, idx) => (
               <div
                 key={idx}
-                className="border border-[#D8EAE7] bg-white rounded-2xl p-4 transition-all hover:shadow-xs space-y-3"
+                className="border border-[#17172A] bg-white rounded-2xl p-4 transition-all hover:shadow-xs space-y-3"
               >
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
                   {/* Exercise Index & Title */}
                   <div className="flex-1 w-full md:w-auto">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="w-6 h-6 rounded-lg bg-[#167D78] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                      <span className="w-6 h-6 rounded-lg bg-[#6366F1] text-white flex items-center justify-center font-bold text-xs shrink-0">
                         {idx + 1}
                       </span>
                       <input
                         type="text"
                         value={ex.name}
                         onChange={e => updateExercise(idx, 'name', e.target.value)}
-                        className="font-bold text-sm text-[#344B4A] bg-white border border-[#D9E2E3] px-3 py-1.5 rounded-lg w-full md:w-64 focus:border-[#167D78] outline-none"
+                        className="font-bold text-sm text-[#11111F] bg-white border border-[#292940] px-3 py-1.5 rounded-lg w-full md:w-64 focus:border-[#6366F1] outline-none"
                         placeholder="Exercise Name"
                       />
                     </div>
 
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[11px] text-[#697778] font-bold">Target Muscle:</span>
+                      <span className="text-[11px] text-[#A1A1AA] font-bold">Target Muscle:</span>
                       <input
                         type="text"
                         value={ex.targetMuscleGroup || ''}
                         onChange={e => updateExercise(idx, 'targetMuscleGroup', e.target.value)}
-                        className="text-xs text-[#167D78] bg-white border border-[#D8EAE7] px-2 py-0.5 rounded w-44"
+                        className="text-xs text-[#6366F1] bg-white border border-[#17172A] px-2 py-0.5 rounded w-44"
                         placeholder="Muscle group"
                       />
                     </div>
@@ -617,45 +617,45 @@ const TrainerAIReview = () => {
                   {/* Sets, Reps, Rest, Difficulty Inputs */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:w-auto text-xs">
                     <div>
-                      <label className="text-[10px] uppercase font-bold text-[#697778] block">Sets</label>
+                      <label className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Sets</label>
                       <input
                         type="number"
                         value={ex.sets}
                         onChange={e => updateExercise(idx, 'sets', Number(e.target.value))}
-                        className="w-16 px-2 py-1 bg-white border border-[#D9E2E3] rounded-lg font-bold text-[#344B4A] text-center"
+                        className="w-16 px-2 py-1 bg-white border border-[#292940] rounded-lg font-bold text-[#11111F] text-center"
                         min={1}
                         max={10}
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] uppercase font-bold text-[#697778] block">Reps</label>
+                      <label className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Reps</label>
                       <input
                         type="text"
                         value={ex.reps}
                         onChange={e => updateExercise(idx, 'reps', e.target.value)}
-                        className="w-20 px-2 py-1 bg-white border border-[#D9E2E3] rounded-lg font-bold text-[#344B4A] text-center"
+                        className="w-20 px-2 py-1 bg-white border border-[#292940] rounded-lg font-bold text-[#11111F] text-center"
                         placeholder="10 - 12"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] uppercase font-bold text-[#697778] block">Rest</label>
+                      <label className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Rest</label>
                       <input
                         type="text"
                         value={ex.rest || '60s'}
                         onChange={e => updateExercise(idx, 'rest', e.target.value)}
-                        className="w-16 px-2 py-1 bg-white border border-[#D9E2E3] rounded-lg text-[#344B4A] text-center font-medium"
+                        className="w-16 px-2 py-1 bg-white border border-[#292940] rounded-lg text-[#11111F] text-center font-medium"
                         placeholder="60s"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] uppercase font-bold text-[#697778] block">Difficulty</label>
+                      <label className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Difficulty</label>
                       <select
                         value={ex.difficulty || 'Beginner'}
                         onChange={e => updateExercise(idx, 'difficulty', e.target.value)}
-                        className="px-2 py-1 bg-white border border-[#D9E2E3] rounded-lg text-xs"
+                        className="px-2 py-1 bg-white border border-[#292940] rounded-lg text-xs"
                       >
                         <option value="Beginner">Beginner</option>
                         <option value="Intermediate">Intermediate</option>
@@ -669,7 +669,7 @@ const TrainerAIReview = () => {
                     <button
                       type="button"
                       onClick={() => setReplacingIndex(replacingIndex === idx ? null : idx)}
-                      className="px-2.5 py-1.5 bg-white border border-[#D9E2E3] text-[#167D78] rounded-lg text-xs font-semibold hover:bg-[#E8EFF0] cursor-pointer"
+                      className="px-2.5 py-1.5 bg-white border border-[#292940] text-[#6366F1] rounded-lg text-xs font-semibold hover:bg-[#0B0B12] cursor-pointer"
                       title="Replace unsuitable exercise with alternative"
                     >
                       <RefreshCw size={13} className="inline mr-1" /> Replace
@@ -688,8 +688,8 @@ const TrainerAIReview = () => {
 
                 {/* Preset Exercise Replacement Dropdown */}
                 {replacingIndex === idx && (
-                  <div className="pt-3 border-t border-[#D8EAE7] bg-[#E8EFF0] p-3 rounded-xl">
-                    <p className="text-xs font-bold text-[#344B4A] mb-2">
+                  <div className="pt-3 border-t border-[#17172A] bg-[#0B0B12] p-3 rounded-xl">
+                    <p className="text-xs font-bold text-[#11111F] mb-2">
                       Replace &quot;{ex.name}&quot; with approved gym alternative:
                     </p>
                     <div className="flex flex-wrap gap-2 text-xs">
@@ -709,7 +709,7 @@ const TrainerAIReview = () => {
                           key={sIdx}
                           type="button"
                           onClick={() => replaceExerciseWith(idx, sub.name, sub.muscle)}
-                          className="px-2.5 py-1 bg-white border border-[#D8EAE7] rounded-lg hover:bg-[#167D78] hover:text-white transition-colors cursor-pointer"
+                          className="px-2.5 py-1 bg-white border border-[#17172A] rounded-lg hover:bg-[#6366F1] hover:text-white transition-colors cursor-pointer"
                         >
                           + {sub.name}
                         </button>
@@ -724,15 +724,15 @@ const TrainerAIReview = () => {
       </div>
 
       {/* CARD 4: AI-Generated 7-Day Diet & Nutrition Plan (Monday – Sunday) */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#D8EAE7] pb-4">
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#17172A] pb-4">
           <div className="flex items-center gap-2">
-            <Utensils size={22} className="text-[#167D78]" />
+            <Utensils size={22} className="text-[#6366F1]" />
             <div>
-              <h2 className="text-xl font-bold text-[#344B4A]">
+              <h2 className="text-xl font-bold text-[#11111F]">
                 AI Diet Plan (Monday – Sunday)
               </h2>
-              <p className="text-xs text-[#697778]">
+              <p className="text-xs text-[#A1A1AA]">
                 Review calorie targets, macro splits, and daily scheduled meal nutrition.
               </p>
             </div>
@@ -740,7 +740,7 @@ const TrainerAIReview = () => {
         </div>
 
         {/* Diet Day Selector Tabs (Monday to Sunday) */}
-        <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl p-2.5">
+        <div className="bg-[#0B0B12] border border-[#17172A] rounded-2xl p-2.5">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
             {daysOfWeek.map((day) => {
               const isActive = selectedDietDay === day;
@@ -754,12 +754,12 @@ const TrainerAIReview = () => {
                   onClick={() => setSelectedDietDay(day)}
                   className={`flex flex-col items-center justify-center min-w-[105px] sm:min-w-[125px] px-3.5 py-2 rounded-xl transition-all shrink-0 text-center cursor-pointer ${
                     isActive
-                      ? 'bg-[#167D78] text-white shadow-md shadow-[#167D78]/20 font-bold scale-[1.02]'
-                      : 'bg-white text-[#697778] hover:bg-[#E8EFF0] hover:text-[#167D78] border border-[#D8EAE7]/60 font-semibold'
+                      ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/20 font-bold scale-[1.02]'
+                      : 'bg-white text-[#A1A1AA] hover:bg-[#0B0B12] hover:text-[#6366F1] border border-[#17172A]/60 font-semibold'
                   }`}
                 >
                   <span className="text-xs sm:text-sm font-extrabold">{day}</span>
-                  <span className={`text-[10px] mt-0.5 ${isActive ? 'text-white/90' : 'text-[#697778]'}`}>
+                  <span className={`text-[10px] mt-0.5 ${isActive ? 'text-white/90' : 'text-[#A1A1AA]'}`}>
                     ~{calories} kcal
                   </span>
                 </button>
@@ -769,54 +769,54 @@ const TrainerAIReview = () => {
         </div>
 
         {/* Daily Calorie & Macro Target Row */}
-        <div className="p-4 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl space-y-3">
+        <div className="p-4 bg-[#0B0B12] border border-[#17172A] rounded-2xl space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h4 className="font-extrabold text-sm text-[#344B4A]">
-                {selectedDietDay} Nutrition Focus: <span className="text-[#167D78]">{activeDietDayData.focus}</span>
+              <h4 className="font-extrabold text-sm text-[#11111F]">
+                {selectedDietDay} Nutrition Focus: <span className="text-[#6366F1]">{activeDietDayData.focus}</span>
               </h4>
             </div>
 
             <div className="flex items-center gap-2 text-xs">
-              <span className="font-bold text-[#697778]">Daily Calorie Target:</span>
+              <span className="font-bold text-[#A1A1AA]">Daily Calorie Target:</span>
               <input
                 type="number"
                 value={activeDietDayData.calories}
                 onChange={e => updateDietField('calories', Number(e.target.value))}
-                className="w-20 px-2 py-1 bg-white border border-[#D9E2E3] rounded-lg font-extrabold text-[#167D78] text-center"
+                className="w-20 px-2 py-1 bg-white border border-[#292940] rounded-lg font-extrabold text-[#6366F1] text-center"
               />
-              <span className="text-xs font-bold text-[#697778]">kcal</span>
+              <span className="text-xs font-bold text-[#A1A1AA]">kcal</span>
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3 text-xs pt-1">
-            <div className="p-2.5 bg-white border border-[#D8EAE7] rounded-xl flex items-center justify-between">
-              <span className="font-bold text-[#697778] text-[11px] uppercase">Protein</span>
+            <div className="p-2.5 bg-white border border-[#17172A] rounded-xl flex items-center justify-between">
+              <span className="font-bold text-[#A1A1AA] text-[11px] uppercase">Protein</span>
               <input
                 type="text"
                 value={activeDietDayData.macros?.protein || '155g'}
                 onChange={e => updateDietMacro('protein', e.target.value)}
-                className="w-16 px-1.5 py-0.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded font-bold text-center text-[#344B4A]"
+                className="w-16 px-1.5 py-0.5 bg-[#0B0B12] border border-[#292940] rounded font-bold text-center text-[#11111F]"
               />
             </div>
 
-            <div className="p-2.5 bg-white border border-[#D8EAE7] rounded-xl flex items-center justify-between">
-              <span className="font-bold text-[#697778] text-[11px] uppercase">Carbs</span>
+            <div className="p-2.5 bg-white border border-[#17172A] rounded-xl flex items-center justify-between">
+              <span className="font-bold text-[#A1A1AA] text-[11px] uppercase">Carbs</span>
               <input
                 type="text"
                 value={activeDietDayData.macros?.carbs || '210g'}
                 onChange={e => updateDietMacro('carbs', e.target.value)}
-                className="w-16 px-1.5 py-0.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded font-bold text-center text-[#344B4A]"
+                className="w-16 px-1.5 py-0.5 bg-[#0B0B12] border border-[#292940] rounded font-bold text-center text-[#11111F]"
               />
             </div>
 
-            <div className="p-2.5 bg-white border border-[#D8EAE7] rounded-xl flex items-center justify-between">
-              <span className="font-bold text-[#697778] text-[11px] uppercase">Fats</span>
+            <div className="p-2.5 bg-white border border-[#17172A] rounded-xl flex items-center justify-between">
+              <span className="font-bold text-[#A1A1AA] text-[11px] uppercase">Fats</span>
               <input
                 type="text"
                 value={activeDietDayData.macros?.fats || '58g'}
                 onChange={e => updateDietMacro('fats', e.target.value)}
-                className="w-16 px-1.5 py-0.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded font-bold text-center text-[#344B4A]"
+                className="w-16 px-1.5 py-0.5 bg-[#0B0B12] border border-[#292940] rounded font-bold text-center text-[#11111F]"
               />
             </div>
           </div>
@@ -825,21 +825,21 @@ const TrainerAIReview = () => {
         {/* 6 Structured Meals for Selected Day */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
           {/* Morning */}
-          <div className="p-3.5 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl space-y-1.5">
-            <div className="flex items-center gap-1.5 font-bold text-[#167D78]">
+          <div className="p-3.5 bg-[#0B0B12] border border-[#17172A] rounded-2xl space-y-1.5">
+            <div className="flex items-center gap-1.5 font-bold text-[#6366F1]">
               <Sun size={15} />
               <span>Morning Hydration</span>
             </div>
             <textarea
               value={activeDietDayData.morning || ''}
               onChange={e => updateDietField('morning', e.target.value)}
-              className="w-full p-2 bg-white border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78] min-h-[65px] text-xs text-[#344B4A]"
+              className="w-full p-2 bg-white border border-[#292940] rounded-xl outline-none focus:border-[#6366F1] min-h-[65px] text-xs text-[#11111F]"
               placeholder="e.g. Warm lemon water + soaked almonds"
             />
           </div>
 
           {/* Breakfast */}
-          <div className="p-3.5 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl space-y-1.5">
+          <div className="p-3.5 bg-[#0B0B12] border border-[#17172A] rounded-2xl space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-amber-700">
               <Coffee size={15} />
               <span>Breakfast</span>
@@ -847,13 +847,13 @@ const TrainerAIReview = () => {
             <textarea
               value={activeDietDayData.breakfast || ''}
               onChange={e => updateDietField('breakfast', e.target.value)}
-              className="w-full p-2 bg-white border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78] min-h-[65px] text-xs text-[#344B4A]"
+              className="w-full p-2 bg-white border border-[#292940] rounded-xl outline-none focus:border-[#6366F1] min-h-[65px] text-xs text-[#11111F]"
               placeholder="e.g. Oatmeal with whey protein & berries"
             />
           </div>
 
           {/* Mid-Morning */}
-          <div className="p-3.5 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl space-y-1.5">
+          <div className="p-3.5 bg-[#0B0B12] border border-[#17172A] rounded-2xl space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-emerald-700">
               <Apple size={15} />
               <span>Mid-Morning Snack</span>
@@ -861,13 +861,13 @@ const TrainerAIReview = () => {
             <textarea
               value={activeDietDayData.midMorning || ''}
               onChange={e => updateDietField('midMorning', e.target.value)}
-              className="w-full p-2 bg-white border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78] min-h-[65px] text-xs text-[#344B4A]"
+              className="w-full p-2 bg-white border border-[#292940] rounded-xl outline-none focus:border-[#6366F1] min-h-[65px] text-xs text-[#11111F]"
               placeholder="e.g. Fresh seasonal fruit + green tea"
             />
           </div>
 
           {/* Lunch */}
-          <div className="p-3.5 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl space-y-1.5">
+          <div className="p-3.5 bg-[#0B0B12] border border-[#17172A] rounded-2xl space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-teal-800">
               <Utensils size={15} />
               <span>Lunch</span>
@@ -875,13 +875,13 @@ const TrainerAIReview = () => {
             <textarea
               value={activeDietDayData.lunch || ''}
               onChange={e => updateDietField('lunch', e.target.value)}
-              className="w-full p-2 bg-white border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78] min-h-[65px] text-xs text-[#344B4A]"
+              className="w-full p-2 bg-white border border-[#292940] rounded-xl outline-none focus:border-[#6366F1] min-h-[65px] text-xs text-[#11111F]"
               placeholder="e.g. Grilled chicken / paneer bowl with quinoa & salad"
             />
           </div>
 
           {/* Evening */}
-          <div className="p-3.5 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl space-y-1.5">
+          <div className="p-3.5 bg-[#0B0B12] border border-[#17172A] rounded-2xl space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-orange-700">
               <Flame size={15} />
               <span>Evening Snack</span>
@@ -889,13 +889,13 @@ const TrainerAIReview = () => {
             <textarea
               value={activeDietDayData.evening || ''}
               onChange={e => updateDietField('evening', e.target.value)}
-              className="w-full p-2 bg-white border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78] min-h-[65px] text-xs text-[#344B4A]"
+              className="w-full p-2 bg-white border border-[#292940] rounded-xl outline-none focus:border-[#6366F1] min-h-[65px] text-xs text-[#11111F]"
               placeholder="e.g. Sprouted salad or boiled eggs"
             />
           </div>
 
           {/* Dinner */}
-          <div className="p-3.5 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl space-y-1.5">
+          <div className="p-3.5 bg-[#0B0B12] border border-[#17172A] rounded-2xl space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-indigo-700">
               <Moon size={15} />
               <span>Dinner</span>
@@ -903,7 +903,7 @@ const TrainerAIReview = () => {
             <textarea
               value={activeDietDayData.dinner || ''}
               onChange={e => updateDietField('dinner', e.target.value)}
-              className="w-full p-2 bg-white border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78] min-h-[65px] text-xs text-[#344B4A]"
+              className="w-full p-2 bg-white border border-[#292940] rounded-xl outline-none focus:border-[#6366F1] min-h-[65px] text-xs text-[#11111F]"
               placeholder="e.g. Steamed fish / grilled tofu with stir-fried greens"
             />
           </div>
@@ -911,95 +911,95 @@ const TrainerAIReview = () => {
       </div>
 
       {/* CARD 5: Recovery, Sleep & Hydration Protocol */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 border-b border-[#D8EAE7] pb-3">
-          <HeartPulse size={20} className="text-[#167D78]" />
-          <h2 className="text-lg font-bold text-[#344B4A]">AI Recovery &amp; Lifestyle Protocol</h2>
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+        <div className="flex items-center gap-2 border-b border-[#17172A] pb-3">
+          <HeartPulse size={20} className="text-[#6366F1]" />
+          <h2 className="text-lg font-bold text-[#11111F]">AI Recovery &amp; Lifestyle Protocol</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div>
-            <label className="font-bold text-[#697778] uppercase text-[10px] block mb-1">Nightly Sleep Target</label>
+            <label className="font-bold text-[#A1A1AA] uppercase text-[10px] block mb-1">Nightly Sleep Target</label>
             <input
               type="text"
               value={recoveryStructure.sleep || ''}
               onChange={e => setRecoveryStructure({ ...recoveryStructure, sleep: e.target.value })}
-              className="w-full p-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78]"
+              className="w-full p-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl outline-none focus:border-[#6366F1]"
             />
           </div>
 
           <div>
-            <label className="font-bold text-[#697778] uppercase text-[10px] block mb-1">Daily Hydration Target</label>
+            <label className="font-bold text-[#A1A1AA] uppercase text-[10px] block mb-1">Daily Hydration Target</label>
             <input
               type="text"
               value={recoveryStructure.hydration || ''}
               onChange={e => setRecoveryStructure({ ...recoveryStructure, hydration: e.target.value })}
-              className="w-full p-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78]"
+              className="w-full p-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl outline-none focus:border-[#6366F1]"
             />
           </div>
 
           <div>
-            <label className="font-bold text-[#697778] uppercase text-[10px] block mb-1">Active Recovery Guidelines</label>
+            <label className="font-bold text-[#A1A1AA] uppercase text-[10px] block mb-1">Active Recovery Guidelines</label>
             <input
               type="text"
               value={recoveryStructure.activeRecovery || ''}
               onChange={e => setRecoveryStructure({ ...recoveryStructure, activeRecovery: e.target.value })}
-              className="w-full p-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78]"
+              className="w-full p-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl outline-none focus:border-[#6366F1]"
             />
           </div>
 
           <div>
-            <label className="font-bold text-[#697778] uppercase text-[10px] block mb-1">Stretching &amp; Mobility Flow</label>
+            <label className="font-bold text-[#A1A1AA] uppercase text-[10px] block mb-1">Stretching &amp; Mobility Flow</label>
             <input
               type="text"
               value={recoveryStructure.stretchingMobility || ''}
               onChange={e => setRecoveryStructure({ ...recoveryStructure, stretchingMobility: e.target.value })}
-              className="w-full p-2.5 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl outline-none focus:border-[#167D78]"
+              className="w-full p-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl outline-none focus:border-[#6366F1]"
             />
           </div>
         </div>
       </div>
 
       {/* CARD 6: Trainer-Specific Recommendations & Personal Customer Notes */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 border-b border-[#D8EAE7] pb-3">
-          <FileEdit size={20} className="text-[#167D78]" />
-          <h2 className="text-lg font-bold text-[#344B4A]">Trainer Recommendations &amp; Direct Customer Notes</h2>
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+        <div className="flex items-center gap-2 border-b border-[#17172A] pb-3">
+          <FileEdit size={20} className="text-[#6366F1]" />
+          <h2 className="text-lg font-bold text-[#11111F]">Trainer Recommendations &amp; Direct Customer Notes</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-1.5">
-            <label className="font-bold text-xs text-[#344B4A] flex items-center gap-1.5">
-              <Sparkles size={14} className="text-[#167D78]" /> Trainer Specific Directives
+            <label className="font-bold text-xs text-[#11111F] flex items-center gap-1.5">
+              <Sparkles size={14} className="text-[#6366F1]" /> Trainer Specific Directives
             </label>
             <textarea
               value={trainerRecommendations}
               onChange={e => setTrainerRecommendations(e.target.value)}
               placeholder="e.g. Focus on progressive overload. Rest strictly 60s. Deload planned for Week 4."
-              className="w-full p-3 bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl text-xs text-[#344B4A] outline-none focus:border-[#167D78] min-h-[85px]"
+              className="w-full p-3 bg-[#0B0B12] border border-[#292940] rounded-2xl text-xs text-[#11111F] outline-none focus:border-[#6366F1] min-h-[85px]"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-bold text-xs text-[#344B4A] flex items-center gap-1.5">
-              <User size={14} className="text-[#167D78]" /> Personal Encouragement Note for Member
+            <label className="font-bold text-xs text-[#11111F] flex items-center gap-1.5">
+              <User size={14} className="text-[#6366F1]" /> Personal Encouragement Note for Member
             </label>
             <textarea
               value={trainerNotes}
               onChange={e => setTrainerNotes(e.target.value)}
               placeholder="e.g. Great baseline! I calibrated your squat reps to 3x10 to protect your lower back. Track your sets daily and message me with any questions!"
-              className="w-full p-3 bg-[#E8EFF0] border border-[#D9E2E3] rounded-2xl text-xs text-[#344B4A] outline-none focus:border-[#167D78] min-h-[85px]"
+              className="w-full p-3 bg-[#0B0B12] border border-[#292940] rounded-2xl text-xs text-[#11111F] outline-none focus:border-[#6366F1] min-h-[85px]"
             />
           </div>
         </div>
       </div>
 
       {/* Bottom Approval & Save Bar */}
-      <div className="bg-white border border-[#D8EAE7] rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs text-[#697778]">
+      <div className="bg-white border border-[#17172A] rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-xs text-[#A1A1AA]">
           {modificationCount > 0 ? (
             <span>
-              You have made <strong className="text-[#167D78]">{modificationCount} calibration change(s)</strong>.
+              You have made <strong className="text-[#6366F1]">{modificationCount} calibration change(s)</strong>.
               Click <strong>Edit &amp; Approve</strong> to publish this customized plan to the customer dashboard.
             </span>
           ) : (
@@ -1021,7 +1021,7 @@ const TrainerAIReview = () => {
           <button
             onClick={handleEditAndApprove}
             disabled={saving}
-            className="flex-1 sm:flex-initial px-7 py-3 bg-[#167D78] hover:bg-[#116660] text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-teal-900/20 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+            className="flex-1 sm:flex-initial px-7 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-teal-900/20 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
           >
             <Send size={16} /> Edit &amp; Approve
           </button>

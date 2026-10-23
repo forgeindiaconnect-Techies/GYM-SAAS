@@ -31,8 +31,8 @@ const GymAdminAIPlanDetails = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-24 text-[#697778]">
-        <div className="w-10 h-10 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <div className="text-center py-24 text-[#A1A1AA]">
+        <div className="w-10 h-10 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
         <p className="font-semibold text-sm">Loading audit and version tracking details...</p>
       </div>
     );
@@ -43,7 +43,7 @@ const GymAdminAIPlanDetails = () => {
       <div className="text-center py-20 text-red-600">
         <AlertCircle size={40} className="mx-auto mb-2" />
         <h2 className="text-xl font-bold">Plan Not Found</h2>
-        <button onClick={() => navigate('/admin/ai-plans')} className="mt-4 px-6 py-2 bg-[#167D78] text-white rounded-xl text-xs font-bold">
+        <button onClick={() => navigate('/admin/ai-plans')} className="mt-4 px-6 py-2 bg-[#6366F1] text-white rounded-xl text-xs font-bold">
           Back to Plans Monitor
         </button>
       </div>
@@ -97,20 +97,20 @@ const GymAdminAIPlanDetails = () => {
       {/* Top Back Navigation */}
       <button 
         onClick={() => navigate('/admin/ai-plans')}
-        className="flex items-center text-xs font-bold text-[#697778] hover:text-[#167D78] transition-colors"
+        className="flex items-center text-xs font-bold text-[#A1A1AA] hover:text-[#6366F1] transition-colors"
       >
         <ArrowLeft className="mr-1.5" size={16} /> Back to Plans Monitor
       </button>
 
       {/* Main Header */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-[#167D78] to-teal-700 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md">
+          <div className="w-14 h-14 bg-gradient-to-br from-[#6366F1] to-teal-700 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md">
             {customer.firstName?.[0] || 'C'}
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-1">
-              <span className="px-3 py-0.5 rounded-full text-xs font-extrabold bg-[#167D78]/10 text-[#167D78]">
+              <span className="px-3 py-0.5 rounded-full text-xs font-extrabold bg-[#6366F1]/10 text-[#6366F1]">
                 Version {recommendation.version || 1} Audit Trail
               </span>
               <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
@@ -121,26 +121,26 @@ const GymAdminAIPlanDetails = () => {
                 {recommendation.status}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#344B4A] tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#11111F] tracking-tight">
               {customer.firstName} {customer.lastName}&apos;s Fitness Workflow
             </h1>
-            <p className="text-xs text-[#697778] mt-0.5">
-              Target: <strong className="text-[#167D78]">{profile.fitnessGoal}</strong> • Assigned Coach: <strong className="text-[#344B4A]">{trainer.name || 'Unassigned'}</strong>
+            <p className="text-xs text-[#A1A1AA] mt-0.5">
+              Target: <strong className="text-[#6366F1]">{profile.fitnessGoal}</strong> • Assigned Coach: <strong className="text-[#11111F]">{trainer.name || 'Unassigned'}</strong>
             </p>
           </div>
         </div>
 
-        <div className="text-right text-xs text-[#697778] bg-[#E8EFF0] p-3 rounded-2xl border border-[#D8EAE7]">
+        <div className="text-right text-xs text-[#A1A1AA] bg-[#0B0B12] p-3 rounded-2xl border border-[#17172A]">
           <p>Assigned Date: <strong>{new Date(recommendation.createdAt).toLocaleDateString()}</strong></p>
           <p className="mt-0.5">Last Review Update: <strong>{new Date(recommendation.updatedAt).toLocaleDateString()}</strong></p>
         </div>
       </div>
 
       {/* WORKFLOW STATUS TIMELINE (Requirement 8) */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 shadow-sm">
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 shadow-sm">
         <div className="flex items-center gap-2 mb-4">
-          <Clock size={18} className="text-[#167D78]" />
-          <h2 className="text-sm font-extrabold uppercase tracking-wider text-[#344B4A]">
+          <Clock size={18} className="text-[#6366F1]" />
+          <h2 className="text-sm font-extrabold uppercase tracking-wider text-[#11111F]">
             Workflow Progression (Status Timeline)
           </h2>
         </div>
@@ -156,11 +156,11 @@ const GymAdminAIPlanDetails = () => {
                 className={`p-3.5 rounded-2xl border text-center transition-all ${
                   isCompleted 
                     ? 'bg-emerald-50/60 border-emerald-200 text-emerald-950' 
-                    : 'bg-[#E8EFF0] border-[#D8EAE7] text-[#697778]'
+                    : 'bg-[#0B0B12] border-[#17172A] text-[#A1A1AA]'
                 }`}
               >
                 <div className={`w-6 h-6 rounded-full mx-auto mb-2 flex items-center justify-center text-[10px] font-bold ${
-                  isCompleted ? 'bg-emerald-600 text-white' : 'bg-[#D8EAE7] text-[#697778]'
+                  isCompleted ? 'bg-emerald-600 text-white' : 'bg-[#17172A] text-[#A1A1AA]'
                 }`}>
                   {isCompleted ? <CheckCircle2 size={14} /> : idx + 1}
                 </div>
@@ -175,36 +175,36 @@ const GymAdminAIPlanDetails = () => {
       {/* CUSTOMER & TRAINER DETAILS OVERVIEW */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Customer Biometrics */}
-        <div className="md:col-span-2 bg-white border border-[#D9E2E3] rounded-3xl p-6 shadow-sm space-y-3">
-          <div className="flex items-center gap-2 border-b border-[#D8EAE7] pb-3">
-            <User size={18} className="text-[#167D78]" />
-            <h3 className="font-bold text-sm text-[#344B4A]">Customer Assessment Biometrics</h3>
+        <div className="md:col-span-2 bg-white border border-[#292940] rounded-3xl p-6 shadow-sm space-y-3">
+          <div className="flex items-center gap-2 border-b border-[#17172A] pb-3">
+            <User size={18} className="text-[#6366F1]" />
+            <h3 className="font-bold text-sm text-[#11111F]">Customer Assessment Biometrics</h3>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-center">
-            <div className="p-2.5 bg-[#E8EFF0] rounded-xl border border-[#D8EAE7]">
-              <span className="text-[#697778] uppercase text-[10px] font-bold block">Age / Gender</span>
+            <div className="p-2.5 bg-[#0B0B12] rounded-xl border border-[#17172A]">
+              <span className="text-[#A1A1AA] uppercase text-[10px] font-bold block">Age / Gender</span>
               <strong>{profile.age || '-'} yrs • {profile.gender}</strong>
             </div>
-            <div className="p-2.5 bg-[#E8EFF0] rounded-xl border border-[#D8EAE7]">
-              <span className="text-[#697778] uppercase text-[10px] font-bold block">Height / Weight</span>
+            <div className="p-2.5 bg-[#0B0B12] rounded-xl border border-[#17172A]">
+              <span className="text-[#A1A1AA] uppercase text-[10px] font-bold block">Height / Weight</span>
               <strong>{profile.height || '-'} cm / {profile.weight || '-'} kg</strong>
             </div>
-            <div className="p-2.5 bg-[#E8EFF0] rounded-xl border border-[#D8EAE7]">
-              <span className="text-[#697778] uppercase text-[10px] font-bold block">Level</span>
+            <div className="p-2.5 bg-[#0B0B12] rounded-xl border border-[#17172A]">
+              <span className="text-[#A1A1AA] uppercase text-[10px] font-bold block">Level</span>
               <strong>{profile.currentFitnessLevel || profile.experienceLevel || 'Beginner'}</strong>
             </div>
-            <div className="p-2.5 bg-[#E8EFF0] rounded-xl border border-[#D8EAE7]">
-              <span className="text-[#697778] uppercase text-[10px] font-bold block">Workout Days</span>
+            <div className="p-2.5 bg-[#0B0B12] rounded-xl border border-[#17172A]">
+              <span className="text-[#A1A1AA] uppercase text-[10px] font-bold block">Workout Days</span>
               <strong>{profile.availableWorkoutDays || '4 Days'}</strong>
             </div>
           </div>
 
           {measurements && Object.keys(measurements).length > 0 && (
-            <div className="p-3 bg-[#E8EFF0] rounded-xl text-xs flex flex-wrap items-center gap-3">
-              <span className="text-[11px] font-bold text-[#697778] uppercase">Measurements:</span>
+            <div className="p-3 bg-[#0B0B12] rounded-xl text-xs flex flex-wrap items-center gap-3">
+              <span className="text-[11px] font-bold text-[#A1A1AA] uppercase">Measurements:</span>
               {Object.entries(measurements).map(([k, v]: any) => (
-                <span key={k} className="bg-white px-2 py-0.5 rounded border border-[#D8EAE7]">
+                <span key={k} className="bg-white px-2 py-0.5 rounded border border-[#17172A]">
                   {k}: <strong>{v}</strong>
                 </span>
               ))}
@@ -213,58 +213,58 @@ const GymAdminAIPlanDetails = () => {
         </div>
 
         {/* Assigned Trainer Information */}
-        <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 shadow-sm space-y-3">
-          <div className="flex items-center gap-2 border-b border-[#D8EAE7] pb-3">
-            <ShieldCheck size={18} className="text-[#167D78]" />
-            <h3 className="font-bold text-sm text-[#344B4A]">Assigned Trainer Information</h3>
+        <div className="bg-white border border-[#292940] rounded-3xl p-6 shadow-sm space-y-3">
+          <div className="flex items-center gap-2 border-b border-[#17172A] pb-3">
+            <ShieldCheck size={18} className="text-[#6366F1]" />
+            <h3 className="font-bold text-sm text-[#11111F]">Assigned Trainer Information</h3>
           </div>
 
           {trainer.name ? (
             <div className="space-y-2 text-xs">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-full bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center font-bold">
                   {trainer.name[0]}
                 </div>
                 <div>
-                  <h4 className="font-extrabold text-sm text-[#344B4A]">{trainer.name}</h4>
-                  <p className="text-[11px] text-[#697778]">{trainer.specialization || 'Certified Trainer'}</p>
+                  <h4 className="font-extrabold text-sm text-[#11111F]">{trainer.name}</h4>
+                  <p className="text-[11px] text-[#A1A1AA]">{trainer.specialization || 'Certified Trainer'}</p>
                 </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-between border-t border-[#D8EAE7]">
-                <span className="text-[#697778]">Availability Status:</span>
+              <div className="pt-2 flex items-center justify-between border-t border-[#17172A]">
+                <span className="text-[#A1A1AA]">Availability Status:</span>
                 <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                   {trainer.availabilityStatus || 'Online'}
                 </span>
               </div>
             </div>
           ) : (
-            <p className="text-xs text-[#697778] italic py-4">No trainer currently assigned.</p>
+            <p className="text-xs text-[#A1A1AA] italic py-4">No trainer currently assigned.</p>
           )}
         </div>
       </div>
 
       {/* AUDIT & VERSION TRACKING HUB (Requirement 7 & 9) */}
-      <div className="bg-white border border-[#D9E2E3] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#D8EAE7] pb-4">
+      <div className="bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#17172A] pb-4">
           <div className="flex items-center gap-2">
-            <Layers size={20} className="text-[#167D78]" />
+            <Layers size={20} className="text-[#6366F1]" />
             <div>
-              <h2 className="text-xl font-bold text-[#344B4A]">
+              <h2 className="text-xl font-bold text-[#11111F]">
                 Audit &amp; Version Tracking: AI Baseline vs Trainer Modifications
               </h2>
-              <p className="text-xs text-[#697778]">
+              <p className="text-xs text-[#A1A1AA]">
                 Compares the original AI draft suggestions against trainer changes and the final published plan.
               </p>
             </div>
           </div>
 
           {/* Tab Controls */}
-          <div className="flex items-center gap-1.5 bg-[#E8EFF0] border border-[#D8EAE7] p-1.5 rounded-2xl">
+          <div className="flex items-center gap-1.5 bg-[#0B0B12] border border-[#17172A] p-1.5 rounded-2xl">
             <button
               onClick={() => setActiveTab('diff')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'diff' ? 'bg-[#167D78] text-white shadow-sm' : 'text-[#697778] hover:text-[#167D78]'
+                activeTab === 'diff' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-[#A1A1AA] hover:text-[#6366F1]'
               }`}
             >
               Side-by-Side Diff
@@ -272,7 +272,7 @@ const GymAdminAIPlanDetails = () => {
             <button
               onClick={() => setActiveTab('original')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'original' ? 'bg-[#167D78] text-white shadow-sm' : 'text-[#697778] hover:text-[#167D78]'
+                activeTab === 'original' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-[#A1A1AA] hover:text-[#6366F1]'
               }`}
             >
               Original AI Output
@@ -280,7 +280,7 @@ const GymAdminAIPlanDetails = () => {
             <button
               onClick={() => setActiveTab('modifications')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'modifications' ? 'bg-[#167D78] text-white shadow-sm' : 'text-[#697778] hover:text-[#167D78]'
+                activeTab === 'modifications' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-[#A1A1AA] hover:text-[#6366F1]'
               }`}
             >
               Trainer Changes
@@ -288,7 +288,7 @@ const GymAdminAIPlanDetails = () => {
             <button
               onClick={() => setActiveTab('final')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'final' ? 'bg-[#167D78] text-white shadow-sm' : 'text-[#697778] hover:text-[#167D78]'
+                activeTab === 'final' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-[#A1A1AA] hover:text-[#6366F1]'
               }`}
             >
               Final Approved Plan
@@ -300,65 +300,65 @@ const GymAdminAIPlanDetails = () => {
         {activeTab === 'diff' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Column 1: Original AI Draft */}
-            <div className="space-y-4 border border-[#D8EAE7] rounded-2xl p-4 bg-[#E8EFF0]">
-              <div className="flex items-center justify-between border-b border-[#D8EAE7] pb-2">
+            <div className="space-y-4 border border-[#17172A] rounded-2xl p-4 bg-[#0B0B12]">
+              <div className="flex items-center justify-between border-b border-[#17172A] pb-2">
                 <span className="text-xs font-extrabold uppercase text-blue-900 flex items-center gap-1.5">
                   <Bot size={15} /> 1. Original AI Suggestions
                 </span>
-                <span className="text-[10px] text-[#697778] font-bold">Unmodified</span>
+                <span className="text-[10px] text-[#A1A1AA] font-bold">Unmodified</span>
               </div>
 
               <div className="space-y-2.5 text-xs">
-                <p className="font-bold text-[#344B4A] mb-1">AI Exercises Suggested:</p>
+                <p className="font-bold text-[#11111F] mb-1">AI Exercises Suggested:</p>
                 {originalAi.workoutRecommendation?.exercises?.map((ex: any, idx: number) => (
-                  <div key={idx} className="p-2.5 bg-white border border-[#D8EAE7] rounded-xl">
-                    <p className="font-bold text-[#344B4A]">{ex.name}</p>
-                    <p className="text-[11px] text-[#697778]">
+                  <div key={idx} className="p-2.5 bg-white border border-[#17172A] rounded-xl">
+                    <p className="font-bold text-[#11111F]">{ex.name}</p>
+                    <p className="text-[11px] text-[#A1A1AA]">
                       {ex.sets} Sets × {ex.reps} Reps • {ex.duration}
                     </p>
                   </div>
                 ))}
               </div>
 
-              <div className="pt-2 border-t border-[#D8EAE7] text-xs">
-                <p className="font-bold text-[#344B4A] mb-1">AI Diet Guidelines:</p>
-                <p className="text-[#697778] line-clamp-3">{originalAi.dietRecommendation?.lunch}</p>
+              <div className="pt-2 border-t border-[#17172A] text-xs">
+                <p className="font-bold text-[#11111F] mb-1">AI Diet Guidelines:</p>
+                <p className="text-[#A1A1AA] line-clamp-3">{originalAi.dietRecommendation?.lunch}</p>
               </div>
             </div>
 
             {/* Column 2: Trainer Modifications & Changes */}
-            <div className="space-y-4 border border-[#D9E2E3] rounded-2xl p-4 bg-[#E8EFF0]/20">
-              <div className="flex items-center justify-between border-b border-[#D9E2E3] pb-2">
-                <span className="text-xs font-extrabold uppercase text-[#344B4A] flex items-center gap-1.5">
+            <div className="space-y-4 border border-[#292940] rounded-2xl p-4 bg-[#0B0B12]/20">
+              <div className="flex items-center justify-between border-b border-[#292940] pb-2">
+                <span className="text-xs font-extrabold uppercase text-[#11111F] flex items-center gap-1.5">
                   <FileEdit size={15} /> 2. Trainer Modifications
                 </span>
-                <span className="text-[10px] font-bold text-[#167D78]">
+                <span className="text-[10px] font-bold text-[#6366F1]">
                   {modifications.workoutModifications?.length || 0} change(s)
                 </span>
               </div>
 
               {hasModifications ? (
                 <div className="space-y-2.5 text-xs">
-                  <p className="font-bold text-[#344B4A] mb-1">Adjustments Made by Coach:</p>
+                  <p className="font-bold text-[#11111F] mb-1">Adjustments Made by Coach:</p>
                   {modifications.workoutModifications?.map((mod: any, idx: number) => (
-                    <div key={idx} className="p-2.5 bg-white border border-[#D9E2E3] rounded-xl text-[#344B4A]">
-                      <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-[#D8EAE7] text-[#116660] mr-1.5">
+                    <div key={idx} className="p-2.5 bg-white border border-[#292940] rounded-xl text-[#11111F]">
+                      <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-[#17172A] text-[#4F46E5] mr-1.5">
                         {mod.changeType}
                       </span>
                       <strong className="block mt-0.5">{mod.exerciseName}</strong>
-                      <p className="text-[11px] text-[#697778] mt-0.5">{mod.details}</p>
+                      <p className="text-[11px] text-[#A1A1AA] mt-0.5">{mod.details}</p>
                     </div>
                   ))}
 
                   {modifications.trainerNotes && (
-                    <div className="mt-3 p-2.5 bg-white border border-[#D9E2E3] rounded-xl">
-                      <strong className="text-[11px] block text-[#344B4A]">Trainer Note:</strong>
-                      <p className="text-[11px] text-[#697778]">{modifications.trainerNotes}</p>
+                    <div className="mt-3 p-2.5 bg-white border border-[#292940] rounded-xl">
+                      <strong className="text-[11px] block text-[#11111F]">Trainer Note:</strong>
+                      <p className="text-[11px] text-[#A1A1AA]">{modifications.trainerNotes}</p>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="p-6 text-center text-xs text-[#697778] bg-white rounded-xl border border-dashed border-[#D9E2E3]">
+                <div className="p-6 text-center text-xs text-[#A1A1AA] bg-white rounded-xl border border-dashed border-[#292940]">
                   <CheckCircle2 size={24} className="text-emerald-600 mx-auto mb-1" />
                   <p className="font-bold">No Changes Made</p>
                   <p className="text-[11px]">The trainer approved the original AI output without modifications.</p>
@@ -380,7 +380,7 @@ const GymAdminAIPlanDetails = () => {
                   <p className="font-bold text-emerald-950 mb-1">Final Customer Exercises:</p>
                   {(finalPlan.workoutPlan?.exercises || recommendation.workoutRecommendation?.exercises)?.map((ex: any, idx: number) => (
                     <div key={idx} className="p-2.5 bg-white border border-emerald-200 rounded-xl">
-                      <p className="font-bold text-[#344B4A]">{ex.name}</p>
+                      <p className="font-bold text-[#11111F]">{ex.name}</p>
                       <p className="text-[11px] text-emerald-800 font-semibold">
                         {ex.sets} Sets × {ex.reps} Reps • Rest: {ex.rest || '60s'}
                       </p>
@@ -389,15 +389,15 @@ const GymAdminAIPlanDetails = () => {
 
                   <div className="p-2.5 bg-white border border-emerald-200 rounded-xl mt-3">
                     <strong className="text-[11px] block text-emerald-900">Official Approval:</strong>
-                    <p className="text-[10px] text-[#697778]">
+                    <p className="text-[10px] text-[#A1A1AA]">
                       Approved by {trainer.name || 'Assigned Coach'} on {new Date(recommendation.updatedAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="p-6 text-center text-xs text-[#697778] bg-white rounded-xl border border-dashed border-emerald-200">
+                <div className="p-6 text-center text-xs text-[#A1A1AA] bg-white rounded-xl border border-dashed border-emerald-200">
                   <Clock size={24} className="text-amber-500 mx-auto mb-1 animate-pulse" />
-                  <p className="font-bold text-[#344B4A]">Awaiting Approval</p>
+                  <p className="font-bold text-[#11111F]">Awaiting Approval</p>
                   <p className="text-[11px]">Final customer output will be generated once trainer approves.</p>
                 </div>
               )}
@@ -408,17 +408,17 @@ const GymAdminAIPlanDetails = () => {
         {/* Tab 2: Original AI Output Detail */}
         {activeTab === 'original' && (
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-[#344B4A] uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-[#11111F] uppercase tracking-wider">
               Original AI Baseline Snapshot
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl">
-                <strong className="block text-[#167D78] mb-1">AI Assessment Summary:</strong>
-                <p className="text-[#344B4A]">{originalAi.aiAnalysis?.assessment}</p>
+              <div className="p-4 bg-[#0B0B12] border border-[#17172A] rounded-2xl">
+                <strong className="block text-[#6366F1] mb-1">AI Assessment Summary:</strong>
+                <p className="text-[#11111F]">{originalAi.aiAnalysis?.assessment}</p>
               </div>
-              <div className="p-4 bg-[#E8EFF0] border border-[#D8EAE7] rounded-2xl">
-                <strong className="block text-[#167D78] mb-1">Original Goal Analysis:</strong>
-                <p className="text-[#344B4A]">{originalAi.aiAnalysis?.goalAnalysis}</p>
+              <div className="p-4 bg-[#0B0B12] border border-[#17172A] rounded-2xl">
+                <strong className="block text-[#6366F1] mb-1">Original Goal Analysis:</strong>
+                <p className="text-[#11111F]">{originalAi.aiAnalysis?.goalAnalysis}</p>
               </div>
             </div>
           </div>
@@ -427,20 +427,20 @@ const GymAdminAIPlanDetails = () => {
         {/* Tab 3: Trainer Modifications Detail */}
         {activeTab === 'modifications' && (
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-[#344B4A] uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-[#11111F] uppercase tracking-wider">
               Trainer Modifications Audit Trail
             </h3>
             {hasModifications ? (
               <div className="space-y-3">
                 {modifications.workoutModifications?.map((mod: any, idx: number) => (
-                  <div key={idx} className="p-3 bg-[#E8EFF0]/50 border border-[#D9E2E3] rounded-xl text-xs">
-                    <span className="font-extrabold uppercase text-[#344B4A] mr-2">[{mod.changeType}]</span>
+                  <div key={idx} className="p-3 bg-[#0B0B12]/50 border border-[#292940] rounded-xl text-xs">
+                    <span className="font-extrabold uppercase text-[#11111F] mr-2">[{mod.changeType}]</span>
                     <strong>{mod.exerciseName}:</strong> {mod.details}
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[#697778]">No modifications made to the original AI draft.</p>
+              <p className="text-xs text-[#A1A1AA]">No modifications made to the original AI draft.</p>
             )}
           </div>
         )}
@@ -448,7 +448,7 @@ const GymAdminAIPlanDetails = () => {
         {/* Tab 4: Final Plan Detail */}
         {activeTab === 'final' && (
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-[#344B4A] uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-[#11111F] uppercase tracking-wider">
               Official Customer Plan Output
             </h3>
             <div className="p-4 bg-emerald-50/40 border border-emerald-200 rounded-2xl text-xs space-y-2">

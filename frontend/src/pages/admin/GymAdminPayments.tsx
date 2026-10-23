@@ -1,5 +1,8 @@
-﻿import { useState, useEffect } from 'react';
-import { IndianRupee, Download, Search, CheckCircle, XCircle, Loader2, FileText, RotateCcw } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import {
+  IndianRupee, Download, Search, CheckCircle, XCircle, Loader2,
+  FileText, RotateCcw, Mail, Send, Check
+} from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { exportToPDF } from '../../utils/export';
@@ -13,6 +16,8 @@ const GymAdminPayments = () => {
   const [selectedTrx, setSelectedTrx] = useState<any>(null);
   const [rejectingPaymentId, setRejectingPaymentId] = useState<string | null>(null);
   const [rejectionReasonInput, setRejectionReasonInput] = useState('');
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string>('');
 
   useEffect(() => {
     fetchPayments();
@@ -30,30 +35,62 @@ const GymAdminPayments = () => {
     }
   };
 
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 5000);
+  };
+
   const handleVerify = async (id: string, status: 'Approve' | 'Reject' | 'Pending', reason?: string) => {
     if (status !== 'Reject' && !window.confirm(`Are you sure you want to ${status.toLowerCase()} this payment?`)) return;
 
     try {
       await api.post(`/payments/verify/${id}`, { status, rejectionReason: reason || '' });
-      alert(`Payment ${status.toLowerCase()}d successfully.`);
+      showToast(`Payment ${status.toLowerCase()}d successfully.`);
       fetchPayments();
       setRejectingPaymentId(null);
       setRejectionReasonInput('');
+      if (selectedTrx && selectedTrx._id === id) {
+        setSelectedTrx(null);
+      }
     } catch (err: any) {
       console.error('Verification error:', err);
       alert(err.response?.data?.message || 'Verification failed');
     }
   };
 
+  const handleResendConfirmationEmail = async (membershipRecordId: string) => {
+    if (!membershipRecordId) {
+      alert('No customer membership record linked to this transaction.');
+      return;
+    }
+    try {
+      setResendingId(membershipRecordId);
+      const res = await api.post(`/memberships/${membershipRecordId}/resend-email`);
+      if (res.data?.success) {
+        showToast('Membership confirmation email dispatched to customer successfully!');
+        fetchPayments();
+      } else {
+        alert(res.data?.message || 'Failed to dispatch confirmation email');
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Error triggering email dispatch');
+    } finally {
+      setResendingId(null);
+    }
+  };
+
   const exportToCSV = () => {
-    const headers = ['Transaction ID', 'Customer', 'Plan', 'Date', 'Amount (₹)', 'Method', 'Status'];
+    const headers = ['Transaction ID', 'Customer', 'Email', 'Plan', 'Membership ID', 'Date', 'Amount (₹)', 'Method', 'Email Status', 'Status'];
     const rows = filtered.map(trx => [
       trx.transactionId || 'N/A',
-      `${trx.customerId?.firstName || ''} ${trx.customerId?.lastName || ''}`,
+      `${trx.customerId?.firstName || ''} ${trx.customerId?.lastName || ''}`.trim(),
+      trx.customerId?.email || 'N/A',
       trx.planName,
+      trx.membershipId?.membershipId || 'N/A',
       new Date(trx.paymentDate || trx.createdAt).toLocaleDateString(),
       trx.amount,
       trx.paymentMethod,
+      trx.membershipId?.confirmationEmailStatus || 'N/A',
       trx.status,
     ]);
 
@@ -80,10 +117,14 @@ const GymAdminPayments = () => {
 
     const s = search.toLowerCase();
     const fullName = `${trx.customerId?.firstName || ''} ${trx.customerId?.lastName || ''}`.toLowerCase();
+    const custEmail = (trx.customerId?.email || '').toLowerCase();
+    const memId = (trx.membershipId?.membershipId || '').toLowerCase();
     
     return (
       (trx.transactionId || '').toLowerCase().includes(s) ||
       fullName.includes(s) ||
+      custEmail.includes(s) ||
+      memId.includes(s) ||
       (trx.planName || '').toLowerCase().includes(s) ||
       (trx.status || '').toLowerCase().includes(s) ||
       (trx.paymentMethod || '').toLowerCase().includes(s) ||
@@ -93,17 +134,17 @@ const GymAdminPayments = () => {
   });
 
   const handleDownloadPDF = () => {
-    const columns = ['Date', 'Customer', 'Plan', 'Amount (INR)', 'Method', 'Transaction ID', 'Status'];
+    const columns = ['Date', 'Customer', 'Plan', 'Membership ID', 'Amount (INR)', 'Method', 'Status'];
     const data = filtered.map((p: any) => {
-      const customerName = `${p.customerId?.firstName || ''} ${p.customerId?.lastName || ''}`.trim() || p.customerBankDetails?.fullName || p.user?.name || 'Unknown';
+      const customerName = `${p.customerId?.firstName || ''} ${p.customerId?.lastName || ''}`.trim() || p.customerBankDetails?.fullName || 'Unknown';
       const isTrial = (p.planName || '').toLowerCase().includes('trial') || p.paymentMethod === 'Trial' || p.amount === 0;
       return [
         p.paymentDate || p.createdAt ? new Date(p.paymentDate || p.createdAt).toLocaleString('en-IN') : '-',
         customerName,
         p.planName || '-',
+        p.membershipId?.membershipId || 'N/A',
         isTrial ? 'Rs. 0 (Free Trial)' : `Rs. ${(p.amount || 0).toLocaleString('en-IN')}`,
         p.paymentMethod || '-',
-        p.transactionId || 'N/A',
         p.status || '-'
       ];
     });
@@ -116,308 +157,377 @@ const GymAdminPayments = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-[#FFFFFF]">
+      {toastMessage && (
+        <div className="p-4 bg-[#6366F1]/15 border border-[#6366F1]/50 text-white rounded-2xl text-xs font-semibold flex items-center justify-between shadow-md">
+          <div className="flex items-center gap-2">
+            <Check className="text-[#22C55E]" size={16} />
+            <span>{toastMessage}</span>
+          </div>
+          <button onClick={() => setToastMessage('')} className="text-[#A1A1AA] hover:text-white cursor-pointer"><XCircle size={16} /></button>
+        </div>
+      )}
+
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Membership Payments</h1>
-          <p className="text-[#697778] mt-1">Manage gym member membership payments, fee collections, and payment verification.</p>
+          <h1 className="text-3xl font-black text-[#FFFFFF] tracking-tight">Customer Membership Sales &amp; Payments</h1>
+          <p className="text-xs sm:text-sm text-[#A1A1AA] mt-1">
+            Track customer package payments, verify offline transactions, and monitor confirmation email delivery status.
+          </p>
         </div>
       </div>
 
-      <div className="flex border-b border-[#D9E2E3] space-x-8 mb-6">
-        <button 
-          onClick={() => setActiveTab('all')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'all' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}
-        >
-          All Payments ({payments.length})
-        </button>
-        <button 
-          onClick={() => setActiveTab('manual')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'manual' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}
-        >
-          Manual Payments
-        </button>
-        <button 
-          onClick={() => setActiveTab('qr')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'qr' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}
-        >
-          QR Code Payments
-        </button>
-        <button 
-          onClick={() => setActiveTab('trial')}
-          className={`py-3 font-semibold text-sm transition-colors border-b-2 ${activeTab === 'trial' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#344B4A]'}`}
-        >
-          Free Trials ({payments.filter(p => (p.planName || '').toLowerCase().includes('trial') || p.paymentMethod === 'Trial' || p.amount === 0).length})
-        </button>
+      {/* Navigation Tabs */}
+      <div className="flex border-b border-[#292940] space-x-6 overflow-x-auto pb-1 text-sm font-bold">
+        {[
+          { id: 'all', label: `All Transactions (${payments.length})` },
+          { id: 'manual', label: 'Bank Transfers' },
+          { id: 'qr', label: 'UPI / Online' },
+          { id: 'trial', label: `Free Trials (${payments.filter(p => (p.planName || '').toLowerCase().includes('trial') || p.paymentMethod === 'Trial' || p.amount === 0).length})` }
+        ].map(tab => (
+          <button 
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`py-3 transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
+              activeTab === tab.id
+                ? 'border-[#6366F1] text-[#FFFFFF]'
+                : 'border-transparent text-[#A1A1AA] hover:text-white'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       <div className="space-y-6">
-          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 relative overflow-hidden flex items-center justify-between">
-            <div>
-              <p className="text-[#697778] text-sm font-semibold mb-1">Total Member Revenue</p>
-              <h3 className="text-3xl font-black text-[#344B4A]">₹{payments.filter(p => p.status === 'Approved').reduce((acc, curr) => acc + (curr.amount || 0), 0).toLocaleString('en-IN')}</h3>
-            </div>
-            <IndianRupee size={48} className="text-[#167D78]/20" />
+        {/* Revenue Highlight Card */}
+        <div className="bg-[#11111F] border border-[#292940] rounded-2xl p-6 relative overflow-hidden flex items-center justify-between shadow-lg">
+          <div>
+            <p className="text-[#A1A1AA] text-xs font-bold uppercase tracking-wider mb-1">Total Customer Package Revenue</p>
+            <h3 className="text-3xl font-black text-[#818CF8]">
+              ₹{payments.filter(p => p.status === 'Approved').reduce((acc, curr) => acc + (curr.amount || 0), 0).toLocaleString('en-IN')}
+            </h3>
+            <p className="text-[11px] text-[#A1A1AA] mt-1">Verified earnings across active member packages</p>
           </div>
+          <IndianRupee size={48} className="text-[#6366F1]/20" />
+        </div>
 
-          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden">
-            <div className="p-6 border-b border-[#D9E2E3] flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h3 className="text-lg font-bold text-[#344B4A]">Member Payment Verification</h3>
-              <div className="flex gap-4 w-full md:w-auto">
-                <div className="relative flex-1 md:w-72">
-                  <input
-                    type="text"
-                    placeholder="Search transactions..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl pl-9 pr-4 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none"
-                  />
-                  <Search className="absolute left-2.5 top-2.5 text-[#697778]" size={16} />
-                </div>
-                <button
-                  onClick={handleDownloadPDF}
-                  className="px-4 py-2 bg-[#167D78] text-white font-bold rounded-xl hover:bg-[#116660] transition-colors flex items-center gap-2 text-sm shrink-0 cursor-pointer shadow-sm"
-                >
-                  <Download size={16} /> Download PDF
-                </button>
-                <button
-                  onClick={exportToCSV}
-                  className="px-4 py-2 bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] font-bold rounded-xl hover:bg-[#E8EFF0] transition-colors flex items-center gap-2 text-sm shrink-0 cursor-pointer"
-                >
-                  <Download size={16} /> Export CSV
-                </button>
-              </div>
-            </div>
+        {/* Filter and Table Container */}
+        <div className="bg-[#11111F] border border-[#292940] rounded-2xl overflow-hidden shadow-xl">
+          <div className="p-5 border-b border-[#292940] flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h3 className="text-base font-bold text-[#FFFFFF]">Membership Purchase Records</h3>
             
-            {loading ? (
-              <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#167D78]" size={40} /></div>
-            ) : (
-              <div className="overflow-x-auto custom-scrollbar">
-                <table className="w-full text-left text-sm text-[#697778] whitespace-nowrap">
-                  <thead className="bg-[#FFFFFF] border-b border-[#D9E2E3] text-[#344B4A]">
+            <div className="flex gap-3 w-full md:w-auto flex-wrap">
+              <div className="relative flex-1 md:w-72">
+                <input
+                  type="text"
+                  placeholder="Search customer, membership ID, TRX..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl pl-9 pr-4 py-2 text-xs text-[#FFFFFF] placeholder-[#71717A] focus:border-[#6366F1] outline-none"
+                />
+                <Search className="absolute left-3 top-2.5 text-[#71717A]" size={15} />
+              </div>
+
+              <button
+                onClick={handleDownloadPDF}
+                className="px-3.5 py-2 bg-[#0B0B12] border border-[#292940] text-white hover:border-[#6366F1] font-bold rounded-xl transition-colors flex items-center gap-1.5 text-xs shrink-0 cursor-pointer shadow-xs"
+              >
+                <Download size={14} className="text-[#6366F1]" /> PDF
+              </button>
+
+              <button
+                onClick={exportToCSV}
+                className="px-3.5 py-2 bg-[#0B0B12] border border-[#292940] text-white hover:border-[#6366F1] font-bold rounded-xl transition-colors flex items-center gap-1.5 text-xs shrink-0 cursor-pointer shadow-xs"
+              >
+                <Download size={14} className="text-[#818CF8]" /> CSV
+              </button>
+            </div>
+          </div>
+          
+          {loading ? (
+            <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#6366F1]" size={40} /></div>
+          ) : (
+            <div className="overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left text-xs whitespace-nowrap">
+                <thead className="bg-[#0B0B12] border-b border-[#292940] text-[#A1A1AA] uppercase tracking-wider font-extrabold text-[11px]">
+                  <tr>
+                    <th className="px-5 py-3.5">Payment Date</th>
+                    <th className="px-5 py-3.5">Customer &amp; Email</th>
+                    <th className="px-5 py-3.5">Membership &amp; Plan</th>
+                    <th className="px-5 py-3.5">Amount Paid</th>
+                    <th className="px-5 py-3.5">Email Delivery</th>
+                    <th className="px-5 py-3.5">Status</th>
+                    <th className="px-5 py-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#17172A]">
+                  {filtered.length === 0 ? (
                     <tr>
-                      <th className="px-6 py-4 font-semibold">Date</th>
-                      <th className="px-6 py-4 font-semibold">Customer</th>
-                      <th className="px-6 py-4 font-semibold">Plan & Amount</th>
-                      <th className="px-6 py-4 font-semibold">Method & TRX ID</th>
-                      <th className="px-6 py-4 font-semibold">Status</th>
-                      <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                      <td colSpan={7} className="px-6 py-12 text-center text-[#71717A]">No transactions match your search filter.</td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#D9E2E3]">
-                    {filtered.length === 0 ? (
-                      <tr>
-                        <td colSpan={7} className="px-6 py-8 text-center text-[#697778]">No transactions match your search.</td>
-                      </tr>
-                    ) : filtered.map((trx) => (
-                      <tr key={trx._id} className="hover:bg-[#E8EFF0] transition-colors">
-                        <td className="px-6 py-4">{new Date(trx.paymentDate || trx.createdAt).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 font-semibold text-[#344B4A]">{trx.customerId?.firstName} {trx.customerId?.lastName}</td>
-                        <td className="px-6 py-4">
+                  ) : filtered.map((trx) => {
+                    const isTrial = (trx.planName || '').toLowerCase().includes('trial') || trx.paymentMethod === 'Trial' || trx.amount === 0;
+                    const linkedMem = trx.membershipId;
+                    const emailStatus = linkedMem?.confirmationEmailStatus || (trx.status === 'Approved' ? 'Sent' : 'Pending');
+                    const memIdDisplay = linkedMem?.membershipId || (linkedMem?._id ? `MEM-${linkedMem._id.toString().slice(-6).toUpperCase()}` : 'N/A');
+
+                    return (
+                      <tr key={trx._id} className="hover:bg-[#151515] transition-colors">
+                        <td className="px-5 py-4 text-[#A1A1AA]">
+                          {new Date(trx.paymentDate || trx.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </td>
+
+                        <td className="px-5 py-4">
+                          <p className="font-bold text-white text-sm">
+                            {trx.customerId?.firstName} {trx.customerId?.lastName}
+                          </p>
+                          <p className="text-[11px] text-[#A1A1AA]">{trx.customerId?.email || 'No email'}</p>
+                        </td>
+
+                        <td className="px-5 py-4">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <p className="font-bold text-[#344B4A]">{trx.planName}</p>
-                            {((trx.planName || '').toLowerCase().includes('trial') || trx.paymentMethod === 'Trial' || trx.amount === 0) && (
-                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#D8EAE7] text-[#167D78] border border-[#D9E2E3]">
+                            <span className="font-bold text-white">{trx.planName}</span>
+                            {isTrial && (
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30">
                                 Trial
                               </span>
                             )}
                           </div>
-                          <p className="text-[#167D78] font-bold text-sm">
-                            {trx.amount === 0 || (trx.planName || '').toLowerCase().includes('trial') ? (
-                              <span className="text-[#167D78] font-bold">₹0 (Free Trial)</span>
-                            ) : (
-                              `₹${Number(trx.amount).toLocaleString('en-IN')}`
-                            )}
-                          </p>
+                          <span className="font-mono text-[11px] text-[#818CF8] block mt-0.5">
+                            {memIdDisplay}
+                          </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <p className="text-[#344B4A] font-medium">
-                            {trx.paymentMethod === 'Trial' ? (
-                              <span className="inline-flex items-center gap-1 text-[#167D78] font-semibold">
-                                Trial
-                              </span>
-                            ) : (
-                              trx.paymentMethod
-                            )}
-                          </p>
-                          <p className="font-mono text-xs text-gray-500">{trx.transactionId || 'N/A'}</p>
+
+                        <td className="px-5 py-4">
+                          <span className="font-bold text-white text-sm">
+                            {isTrial ? '₹0' : `₹${Number(trx.amount || 0).toLocaleString('en-IN')}`}
+                          </span>
+                          <p className="text-[11px] text-[#71717A] mt-0.5">{trx.paymentMethod}</p>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            trx.status === 'Approved' ? 'bg-[#D8EAE7]/10 text-[#167D78]' :
-                            trx.status === 'Rejected' ? 'bg-red-100 text-red-700' :
-                            'bg-yellow-100 text-yellow-700'
+
+                        <td className="px-5 py-4">
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border ${
+                            emailStatus === 'Sent'
+                              ? 'bg-emerald-950/60 text-emerald-400 border-emerald-500/40'
+                              : emailStatus === 'Failed'
+                              ? 'bg-red-950/60 text-red-400 border-red-500/40'
+                              : 'bg-amber-950/60 text-amber-300 border-amber-500/40'
+                          }`}>
+                            <Mail size={11} />
+                            {emailStatus === 'Sent' ? 'Email Sent' : emailStatus === 'Failed' ? 'Email Failed' : 'Pending'}
+                          </span>
+                        </td>
+
+                        <td className="px-5 py-4">
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
+                            trx.status === 'Approved' ? 'bg-emerald-950/60 text-emerald-400 border-emerald-500/40' :
+                            trx.status === 'Rejected' ? 'bg-red-950/60 text-red-400 border-red-500/40' :
+                            'bg-amber-950/60 text-amber-300 border-amber-500/40'
                           }`}>
                             {trx.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
+
+                        <td className="px-5 py-4 text-right">
                           <div className="flex justify-end gap-2 items-center">
+                            {linkedMem?._id && trx.status === 'Approved' && (
+                              <button
+                                type="button"
+                                disabled={resendingId === linkedMem._id}
+                                onClick={() => handleResendConfirmationEmail(linkedMem._id)}
+                                title="Resend confirmation email to customer"
+                                className="p-1.5 bg-[#0B0B12] hover:bg-[#17172A] border border-[#292940] hover:border-[#6366F1] text-[#6366F1] rounded-lg transition-colors cursor-pointer"
+                              >
+                                {resendingId === linkedMem._id ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
+                              </button>
+                            )}
+
                             <button 
                               onClick={() => setSelectedTrx(trx)}
-                              className="px-3 py-1.5 bg-blue-50 text-[#167D78] rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold whitespace-nowrap"
+                              className="px-3 py-1.5 bg-[#0B0B12] hover:bg-[#17172A] text-white border border-[#292940] hover:border-[#6366F1] rounded-lg transition-colors text-xs font-bold whitespace-nowrap cursor-pointer"
                             >
-                              View Details
+                              Details
                             </button>
-                            {trx.status === 'Pending Verification' ? (
+
+                            {trx.status === 'Pending Verification' && (
                               <>
-                                <button onClick={() => handleVerify(trx._id, 'Approve')} className="p-1.5 bg-green-50 text-[#167D78] rounded-lg hover:bg-green-100 transition-colors" title="Approve">
-                                  <CheckCircle size={18} />
+                                <button onClick={() => handleVerify(trx._id, 'Approve')} className="p-1.5 bg-emerald-950/60 text-emerald-400 border border-emerald-500/40 rounded-lg hover:bg-emerald-900 transition-colors cursor-pointer" title="Approve">
+                                  <CheckCircle size={16} />
                                 </button>
-                                <button onClick={() => setRejectingPaymentId(trx._id)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" title="Reject">
-                                  <XCircle size={18} />
+                                <button onClick={() => setRejectingPaymentId(trx._id)} className="p-1.5 bg-red-950/60 text-red-400 border border-red-500/40 rounded-lg hover:bg-red-900 transition-colors cursor-pointer" title="Reject">
+                                  <XCircle size={16} />
                                 </button>
                               </>
-                            ) : (
-                              <button onClick={() => handleVerify(trx._id, 'Pending')} className="p-1.5 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors" title="Revert to Pending">
-                                <RotateCcw size={18} />
-                              </button>
                             )}
                           </div>
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-          
-          {selectedTrx && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm">
-              <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto">
-                <button onClick={() => setSelectedTrx(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                  <XCircle size={24} />
-                </button>
-                <h2 className="text-2xl font-bold text-[#344B4A] mb-6 border-b pb-4">Transaction Details</h2>
-                
-                <div className="space-y-4">
-                  <div className="border border-[#D9E2E3] rounded-xl overflow-hidden divide-y divide-[#D9E2E3] bg-white shadow-sm">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Customer</span>
-                        <span className="font-bold text-sm text-[#344B4A]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</span>
-                      </div>
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Payment Date</span>
-                        <span className="font-semibold text-sm text-[#344B4A]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Membership Plan</span>
-                        <span className="font-bold text-sm text-[#344B4A]">{selectedTrx.planName}</span>
-                      </div>
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Amount</span>
-                        <span className="font-bold text-base text-[#167D78]">₹{selectedTrx.amount}</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Payment Method</span>
-                        <span className="font-semibold text-sm text-[#344B4A]">{selectedTrx.paymentMethod}</span>
-                      </div>
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Verification Status</span>
-                        <span className="inline-flex items-center">
-                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
-                            selectedTrx.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                            selectedTrx.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' :
-                            'bg-yellow-50 text-yellow-700 border-yellow-200'
-                          }`}>
-                            {selectedTrx.status}
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-
-                    {selectedTrx.paymentMethod === 'Bank Transfer' ? (
-                      <div className="p-3.5 bg-white flex flex-col">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-2">Customer Bank Details</span>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                          <div><span className="text-gray-500">Bank:</span> <span className="font-bold text-[#344B4A]">{selectedTrx.customerBankDetails?.bankName || 'N/A'}</span></div>
-                          <div><span className="text-gray-500">Account:</span> <span className="font-bold text-[#344B4A]">{selectedTrx.customerBankDetails?.accountNumber || 'N/A'}</span></div>
-                          <div><span className="text-gray-500">IFSC:</span> <span className="font-bold text-[#344B4A]">{selectedTrx.customerBankDetails?.ifscCode || 'N/A'}</span></div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Transaction ID / Reference</span>
-                        <span className="font-mono text-sm font-semibold text-[#344B4A] break-all">{selectedTrx.transactionId || 'Not Provided'}</span>
-                      </div>
-                    )}
-
-                    {selectedTrx.notes && (
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1">Additional Notes</span>
-                        <span className="text-sm text-[#344B4A] italic">{selectedTrx.notes}</span>
-                      </div>
-                    )}
-
-                    {selectedTrx.paymentMethod !== 'Bank Transfer' && (
-                      <div className="p-3.5 bg-white flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-2">Payment Proof</span>
-                        {selectedTrx.paymentProofUrl ? (
-                          <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-blue-50 text-[#167D78] font-bold rounded-lg hover:bg-blue-100 transition-colors w-fit text-xs border border-blue-200">
-                            <FileText size={16} className="mr-1.5"/> View Attached Proof Document
-                          </a>
-                        ) : (
-                          <span className="text-xs text-gray-400 italic">No proof document uploaded for this transaction.</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="mt-8 pt-6 border-t border-gray-100">
-                  <button 
-                    onClick={() => setSelectedTrx(null)} 
-                    className="w-full py-3 bg-gray-100 text-[#697778] font-bold rounded-xl hover:bg-gray-200 transition-colors"
-                  >
-                    Close Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {rejectingPaymentId && (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-              <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-                <h2 className="text-xl font-bold text-[#344B4A] mb-4">Reject Payment</h2>
-                <p className="text-[#697778] mb-4 text-sm">Please provide a reason for rejecting this payment (optional). This will be shown to the customer.</p>
-                <textarea
-                  value={rejectionReasonInput}
-                  onChange={(e) => setRejectionReasonInput(e.target.value)}
-                  placeholder="e.g., The payment screenshot is blurry or invalid."
-                  rows={4}
-                  className="w-full bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-3 text-[#344B4A] focus:border-red-500 outline-none resize-none mb-6 text-sm"
-                ></textarea>
-                <div className="flex gap-3">
-                  <button 
-                    onClick={() => {
-                      setRejectingPaymentId(null);
-                      setRejectionReasonInput('');
-                    }}
-                    className="flex-1 py-2.5 bg-gray-100 text-[#697778] font-bold rounded-xl hover:bg-gray-200 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    onClick={() => handleVerify(rejectingPaymentId, 'Reject', rejectionReasonInput)}
-                    className="flex-1 py-2.5 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
-                  >
-                    Confirm Rejection
-                  </button>
-                </div>
-              </div>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
+        
+        {/* Transaction Details Modal */}
+        {selectedTrx && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+            <div className="bg-[#11111F] rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[#292940] relative max-h-[88vh] overflow-y-auto text-[#FFFFFF]">
+              <button onClick={() => setSelectedTrx(null)} className="absolute top-5 right-5 text-[#A1A1AA] hover:text-white cursor-pointer">
+                <XCircle size={22} />
+              </button>
+              
+              <h2 className="text-xl font-black text-white mb-4 border-b border-[#292940] pb-3">Transaction &amp; Membership Details</h2>
+              
+              <div className="space-y-4 text-xs">
+                <div className="border border-[#292940] rounded-2xl overflow-hidden divide-y divide-[#292940] bg-[#0B0B12]">
+                  <div className="grid grid-cols-2 divide-x divide-[#292940]">
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Customer</span>
+                      <span className="font-bold text-sm text-white">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</span>
+                      <span className="text-[11px] text-[#A1A1AA] block">{selectedTrx.customerId?.email}</span>
+                    </div>
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Payment Date</span>
+                      <span className="font-semibold text-white">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
 
+                  <div className="grid grid-cols-2 divide-x divide-[#292940]">
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Plan Package</span>
+                      <span className="font-bold text-sm text-white">{selectedTrx.planName}</span>
+                    </div>
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Amount Paid</span>
+                      <span className="font-black text-base text-[#818CF8]">₹{selectedTrx.amount}</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 divide-x divide-[#292940]">
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Membership ID</span>
+                      <span className="font-mono text-xs font-bold text-[#818CF8]">
+                        {selectedTrx.membershipId?.membershipId || (selectedTrx.membershipId?._id ? `MEM-${selectedTrx.membershipId._id.toString().slice(-6).toUpperCase()}` : 'Not Linked')}
+                      </span>
+                    </div>
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Receipt Number</span>
+                      <span className="font-mono text-xs font-bold text-white">
+                        {selectedTrx.receiptNumber || selectedTrx.membershipId?.receiptNumber || selectedTrx.orderId || 'REC-CURRENT'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 divide-x divide-[#292940]">
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Payment Method</span>
+                      <span className="font-semibold text-white">{selectedTrx.paymentMethod}</span>
+                    </div>
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Verification Status</span>
+                      <span className="text-emerald-400 font-bold">{selectedTrx.status}</span>
+                    </div>
+                  </div>
+
+                  {/* Confirmation Email Delivery Status Card */}
+                  <div className="p-3.5">
+                    <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1.5 block">Confirmation Email Delivery</span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                          selectedTrx.membershipId?.confirmationEmailStatus === 'Sent'
+                            ? 'bg-emerald-950/60 text-emerald-400 border-emerald-500/40'
+                            : 'bg-amber-950/60 text-amber-300 border-amber-500/40'
+                        }`}>
+                          {selectedTrx.membershipId?.confirmationEmailStatus || 'Pending'}
+                        </span>
+                        {selectedTrx.membershipId?.confirmationEmailSentAt && (
+                          <span className="text-[11px] text-[#A1A1AA]">
+                            Sent: {new Date(selectedTrx.membershipId.confirmationEmailSentAt).toLocaleString('en-IN')}
+                          </span>
+                        )}
+                      </div>
+
+                      {selectedTrx.membershipId?._id && (
+                        <button
+                          type="button"
+                          disabled={resendingId === selectedTrx.membershipId._id}
+                          onClick={() => handleResendConfirmationEmail(selectedTrx.membershipId._id)}
+                          className="px-3 py-1.5 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        >
+                          {resendingId === selectedTrx.membershipId._id ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
+                          Resend Email
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-3.5">
+                    <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Transaction ID / Reference</span>
+                    <span className="font-mono text-xs text-white break-all">{selectedTrx.transactionId || 'Not Provided'}</span>
+                  </div>
+
+                  {selectedTrx.paymentProofUrl && (
+                    <div className="p-3.5">
+                      <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 block">Proof Document</span>
+                      <a href={selectedTrx.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="text-[#6366F1] hover:underline inline-flex items-center gap-1 font-bold">
+                        <FileText size={14} /> View Attached Payment Proof
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div className="mt-6 pt-4 border-t border-[#292940] flex justify-end">
+                <button 
+                  onClick={() => setSelectedTrx(null)} 
+                  className="px-6 py-2.5 bg-[#0B0B12] hover:bg-[#222] border border-[#292940] text-white font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Rejection Modal */}
+        {rejectingPaymentId && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+            <div className="bg-[#11111F] rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#292940] text-white">
+              <h2 className="text-xl font-bold text-white mb-2">Reject Payment</h2>
+              <p className="text-[#A1A1AA] mb-4 text-xs">Please provide a reason for rejecting this payment (optional). This will be notified to the customer.</p>
+              <textarea
+                value={rejectionReasonInput}
+                onChange={(e) => setRejectionReasonInput(e.target.value)}
+                placeholder="e.g., Transaction reference not found in bank statement."
+                rows={4}
+                className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl p-3 text-white text-xs focus:border-red-500 outline-none resize-none mb-5"
+              ></textarea>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => {
+                    setRejectingPaymentId(null);
+                    setRejectionReasonInput('');
+                  }}
+                  className="flex-1 py-2.5 bg-[#0B0B12] hover:bg-[#222] text-[#A1A1AA] border border-[#292940] font-bold rounded-xl text-xs cursor-pointer transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => handleVerify(rejectingPaymentId, 'Reject', rejectionReasonInput)}
+                  className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs cursor-pointer transition-colors shadow-lg shadow-red-900/30"
+                >
+                  Confirm Rejection
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -135,27 +135,27 @@ const MemberMyBookings = () => {
       <MemberTrainingTabs />
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A]">My Bookings &amp; Sessions</h1>
-          <p className="text-[#697778]">Manage your online training sessions, check in, view notes, and rate trainers.</p>
+          <h1 className="text-3xl font-bold text-[#11111F]">My Bookings &amp; Sessions</h1>
+          <p className="text-[#A1A1AA]">Manage your online training sessions, check in, view notes, and rate trainers.</p>
         </div>
         <button 
           onClick={() => navigate('/member/find-trainers')}
-          className="bg-[#167D78] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#116660] transition-colors shadow-sm"
+          className="bg-[#6366F1] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#4F46E5] transition-colors shadow-sm"
         >
           <Plus size={18} /> Book New Session
         </button>
       </div>
 
-      <div className="flex gap-4 border-b border-[#D9E2E3] pb-px">
+      <div className="flex gap-4 border-b border-[#292940] pb-px">
         <button 
           onClick={() => setActiveTab('Booked')}
-          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Booked' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#167D78]'}`}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'Booked' ? 'border-[#6366F1] text-[#6366F1]' : 'border-transparent text-[#A1A1AA] hover:text-[#6366F1]'}`}
         >
           Booked Session
         </button>
         <button 
           onClick={() => setActiveTab('History')}
-          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'History' ? 'border-[#167D78] text-[#167D78]' : 'border-transparent text-[#697778] hover:text-[#167D78]'}`}
+          className={`px-4 py-2 border-b-2 font-medium ${activeTab === 'History' ? 'border-[#6366F1] text-[#6366F1]' : 'border-transparent text-[#A1A1AA] hover:text-[#6366F1]'}`}
         >
           Session History &amp; Reviews
         </button>
@@ -163,13 +163,13 @@ const MemberMyBookings = () => {
 
       <div className="space-y-4">
         {loading ? (
-          <div className="text-center py-10 text-[#697778]">Loading bookings...</div>
+          <div className="text-center py-10 text-[#A1A1AA]">Loading bookings...</div>
         ) : filteredSessions.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-2xl border border-[#D9E2E3] p-8 space-y-3 shadow-sm">
-            <p className="text-base text-[#344B4A] font-semibold">
+          <div className="text-center py-12 bg-white rounded-2xl border border-[#292940] p-8 space-y-3 shadow-sm">
+            <p className="text-base text-[#11111F] font-semibold">
               {activeTab === 'Booked' ? 'No booked sessions found' : 'No session history found'}
             </p>
-            <p className="text-sm text-[#697778] max-w-md mx-auto">
+            <p className="text-sm text-[#A1A1AA] max-w-md mx-auto">
               {activeTab === 'Booked'
                 ? 'When you book a training session with a trainer, all your booking details, schedule, and check-in options will appear here.'
                 : 'Completed and past training sessions will be listed here along with attendance and trainer reviews.'}
@@ -177,7 +177,7 @@ const MemberMyBookings = () => {
             {activeTab === 'Booked' && (
               <button
                 onClick={() => navigate('/member/find-trainers')}
-                className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-[#167D78] text-white rounded-xl text-sm font-bold hover:bg-[#116660] transition-colors shadow-sm"
+                className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-[#6366F1] text-white rounded-xl text-sm font-bold hover:bg-[#4F46E5] transition-colors shadow-sm"
               >
                 <Plus size={16} /> Book New Session
               </button>
@@ -185,17 +185,17 @@ const MemberMyBookings = () => {
           </div>
         ) : (
           filteredSessions.map((session) => (
-            <div key={session._id} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+            <div key={session._id} className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl flex flex-col items-center justify-center shrink-0">
-                  <span className="text-xs text-[#697778] uppercase font-bold">{new Date(session.date).toLocaleString('default', { month: 'short' })}</span>
-                  <span className="text-xl font-bold text-[#167D78]">{new Date(session.date).getDate()}</span>
+                <div className="w-16 h-16 bg-[#0B0B12] border border-[#292940] rounded-xl flex flex-col items-center justify-center shrink-0">
+                  <span className="text-xs text-[#A1A1AA] uppercase font-bold">{new Date(session.date).toLocaleString('default', { month: 'short' })}</span>
+                  <span className="text-xl font-bold text-[#6366F1]">{new Date(session.date).getDate()}</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h3 className="font-bold text-lg text-[#344B4A]">{session.trainerId?.name || 'Assigned Trainer'}</h3>
+                    <h3 className="font-bold text-lg text-[#11111F]">{session.trainerId?.name || 'Assigned Trainer'}</h3>
                     {session.trainerId?.specialization && (
-                      <span className="text-xs text-[#697778] font-medium hidden sm:inline">
+                      <span className="text-xs text-[#A1A1AA] font-medium hidden sm:inline">
                         • {session.trainerId.specialization}
                       </span>
                     )}
@@ -207,7 +207,7 @@ const MemberMyBookings = () => {
                     <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
                       session.mode === 'Online'
                         ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                        : 'bg-[#D8EAE7] text-[#167D78] border border-[#D9E2E3]'
+                        : 'bg-[#17172A] text-[#6366F1] border border-[#292940]'
                     }`}>
                       {session.mode || 'Online'}
                     </span>
@@ -217,8 +217,8 @@ const MemberMyBookings = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-4 text-sm text-[#697778]">
-                    <span className="flex items-center gap-1 font-semibold"><Clock size={14} className="text-[#167D78]" /> {session.startTime} - {session.endTime}</span>
+                  <div className="flex flex-wrap gap-4 text-sm text-[#A1A1AA]">
+                    <span className="flex items-center gap-1 font-semibold"><Clock size={14} className="text-[#6366F1]" /> {session.startTime} - {session.endTime}</span>
                     {session.mode === 'Online' ? (
                       <span className="flex items-center gap-1 text-blue-700 font-semibold"><Video size={14} /> Online Virtual Session</span>
                     ) : (
@@ -239,7 +239,7 @@ const MemberMyBookings = () => {
                 {/* Checked In Badge */}
                 {session.checkInTime && (
                   <span className="text-xs bg-blue-50 text-blue-800 px-2.5 py-1 rounded-lg font-bold border border-blue-200 flex items-center gap-1">
-                    <CheckCircle2 size={13} className="text-[#167D78]" />
+                    <CheckCircle2 size={13} className="text-[#6366F1]" />
                     Checked In ({new Date(session.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })})
                   </span>
                 )}
@@ -278,7 +278,7 @@ const MemberMyBookings = () => {
                 {!session.checkOutTime && (session.checkInTime || session.status === 'In Progress' || session.attendanceStatus === 'Present') && !['Completed', 'Cancelled', 'Rejected'].includes(session.status) && (
                   <button
                     onClick={() => handleCheckOut(session._id)}
-                    className="px-3.5 py-1.5 bg-[#167D78] hover:bg-[#116660] text-white rounded-xl text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"
+                    className="px-3.5 py-1.5 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"
                   >
                     <LogOut size={13} /> Checkout
                   </button>
@@ -287,7 +287,7 @@ const MemberMyBookings = () => {
                 {/* View Details Button */}
                 <button
                   onClick={() => setSelectedSessionForDetails(session)}
-                  className="px-3.5 py-1.5 bg-[#E8EFF0] border border-[#D9E2E3] hover:bg-[#D8EAE7] text-[#344B4A] rounded-xl text-xs font-semibold transition-colors shadow-xs flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 bg-[#0B0B12] border border-[#292940] hover:bg-[#17172A] text-[#11111F] rounded-xl text-xs font-semibold transition-colors shadow-xs flex items-center gap-1.5"
                 >
                   <Eye size={14} /> View Details
                 </button>
@@ -306,7 +306,7 @@ const MemberMyBookings = () => {
                 {session.status === 'Completed' && !session.customerRating && (
                   <button
                     onClick={() => setSelectedSessionForRate(session)}
-                    className="px-3.5 py-1.5 bg-[#167D78] hover:bg-[#344B4A] text-white rounded-xl text-xs font-bold transition-colors shadow-sm"
+                    className="px-3.5 py-1.5 bg-[#6366F1] hover:bg-[#11111F] text-white rounded-xl text-xs font-bold transition-colors shadow-sm"
                   >
                     Rate Trainer
                   </button>
@@ -330,7 +330,7 @@ const MemberMyBookings = () => {
                 {bookedStatuses.includes(session.status) && session.status !== 'Pending' && (
                   <button 
                     onClick={() => handleReschedulePrompt(session._id)}
-                    className="p-2 border border-[#D9E2E3] hover:bg-[#D8EAE7] text-[#697778] rounded-xl transition-colors" 
+                    className="p-2 border border-[#292940] hover:bg-[#17172A] text-[#A1A1AA] rounded-xl transition-colors" 
                     title="Reschedule Session"
                   >
                     <RefreshCw size={16} />
@@ -355,17 +355,17 @@ const MemberMyBookings = () => {
       {/* View Details Modal for Member */}
       {selectedSessionForDetails && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#D9E2E3]">
-            <div className="sticky top-0 bg-white border-b border-[#D9E2E3] px-6 py-4 flex items-center justify-between z-10">
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#292940]">
+            <div className="sticky top-0 bg-white border-b border-[#292940] px-6 py-4 flex items-center justify-between z-10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#167D78]/10 border border-[#D9E2E3] flex items-center justify-center shrink-0">
-                  <span className="font-bold text-[#167D78] text-sm">{selectedSessionForDetails.trainerId?.name?.charAt(0) || 'T'}</span>
+                <div className="w-10 h-10 rounded-full bg-[#6366F1]/10 border border-[#292940] flex items-center justify-center shrink-0">
+                  <span className="font-bold text-[#6366F1] text-sm">{selectedSessionForDetails.trainerId?.name?.charAt(0) || 'T'}</span>
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#344B4A]">
+                  <h3 className="text-base font-bold text-[#11111F]">
                     {selectedSessionForDetails.trainerId?.name || 'Assigned Trainer'}
                   </h3>
-                  <p className="text-xs text-[#697778]">{selectedSessionForDetails.trainerId?.specialization || 'Personal Trainer'}</p>
+                  <p className="text-xs text-[#A1A1AA]">{selectedSessionForDetails.trainerId?.specialization || 'Personal Trainer'}</p>
                 </div>
               </div>
               <button onClick={() => setSelectedSessionForDetails(null)} className="text-gray-400 hover:text-gray-600 p-1">
@@ -374,10 +374,10 @@ const MemberMyBookings = () => {
             </div>
 
             <div className="p-6 space-y-5">
-              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#E8EFF0] p-3 rounded-xl border border-[#E8EAED]">
+              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#0B0B12] p-3 rounded-xl border border-[#E8EAED]">
                 <div>
-                  <span className="text-xs text-[#697778] block">Booking Identifier</span>
-                  <span className="font-mono font-bold text-sm text-[#344B4A]">{selectedSessionForDetails.bookingId || `#${selectedSessionForDetails._id?.slice(-8)}`}</span>
+                  <span className="text-xs text-[#A1A1AA] block">Booking Identifier</span>
+                  <span className="font-mono font-bold text-sm text-[#11111F]">{selectedSessionForDetails.bookingId || `#${selectedSessionForDetails._id?.slice(-8)}`}</span>
                 </div>
                 <span className={`text-xs px-3 py-1 rounded-full font-bold ${getStatusDisplay(selectedSessionForDetails.status).className}`}>
                   {getStatusDisplay(selectedSessionForDetails.status).label}
@@ -385,24 +385,24 @@ const MemberMyBookings = () => {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Session Schedule & Details</h4>
-                <div className="bg-[#E8EFF0] border border-[#D9E2E3] rounded-xl p-3 space-y-2 text-sm">
+                <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Session Schedule & Details</h4>
+                <div className="bg-[#0B0B12] border border-[#292940] rounded-xl p-3 space-y-2 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#697778] flex items-center gap-1.5"><Calendar size={14} className="text-[#167D78]" /> Date</span>
-                    <span className="font-semibold text-[#344B4A]">{new Date(selectedSessionForDetails.date).toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                    <span className="text-[#A1A1AA] flex items-center gap-1.5"><Calendar size={14} className="text-[#6366F1]" /> Date</span>
+                    <span className="font-semibold text-[#11111F]">{new Date(selectedSessionForDetails.date).toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' })}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#697778] flex items-center gap-1.5"><Clock size={14} className="text-[#167D78]" /> Time Slot</span>
-                    <span className="font-semibold text-[#344B4A]">{selectedSessionForDetails.startTime} – {selectedSessionForDetails.endTime}</span>
+                    <span className="text-[#A1A1AA] flex items-center gap-1.5"><Clock size={14} className="text-[#6366F1]" /> Time Slot</span>
+                    <span className="font-semibold text-[#11111F]">{selectedSessionForDetails.startTime} – {selectedSessionForDetails.endTime}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#697778] flex items-center gap-1.5"><Video size={14} className="text-[#167D78]" /> Training Mode</span>
+                    <span className="text-[#A1A1AA] flex items-center gap-1.5"><Video size={14} className="text-[#6366F1]" /> Training Mode</span>
                     <span className="font-semibold text-blue-700">{selectedSessionForDetails.mode || 'Online Virtual Session'}</span>
                   </div>
                   {selectedSessionForDetails.fee > 0 && (
                     <div className="flex items-center justify-between pt-1 border-t border-gray-100">
-                      <span className="text-[#697778]">Session Fee</span>
-                      <span className="font-bold text-[#167D78]">₹{selectedSessionForDetails.fee}</span>
+                      <span className="text-[#A1A1AA]">Session Fee</span>
+                      <span className="font-bold text-[#6366F1]">₹{selectedSessionForDetails.fee}</span>
                     </div>
                   )}
                 </div>
@@ -410,7 +410,7 @@ const MemberMyBookings = () => {
 
               {(selectedSessionForDetails.checkInTime || selectedSessionForDetails.checkOutTime) && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Attendance Activity</h4>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Attendance Activity</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {selectedSessionForDetails.checkInTime && (
                       <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-xs">
@@ -434,7 +434,7 @@ const MemberMyBookings = () => {
 
               {selectedSessionForDetails.mode === 'Online' && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Virtual Meeting Room</h4>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Virtual Meeting Room</h4>
                   <div className="flex items-center justify-between gap-2 bg-blue-50 border border-blue-200 rounded-xl p-3">
                     <span className="text-xs font-mono text-blue-800 truncate">
                       {selectedSessionForDetails.meetingLink || `meet.jit.si/aigym-session-${selectedSessionForDetails._id.substr(-6)}`}
@@ -453,7 +453,7 @@ const MemberMyBookings = () => {
 
               {selectedSessionForDetails.customerRating && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Your Rating & Review</h4>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Your Rating & Review</h4>
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 space-y-1">
                     <div className="flex items-center gap-1 font-bold text-amber-700">
                       <Star size={16} className="fill-amber-400 text-amber-400" />
@@ -468,25 +468,25 @@ const MemberMyBookings = () => {
 
               {selectedSessionForDetails.sessionNotes?.exercisesCompleted && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#697778] uppercase tracking-wider">Trainer Notes</h4>
+                  <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Trainer Notes</h4>
                   <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs text-gray-800 space-y-1.5">
-                    <p><span className="font-bold text-[#697778]">Exercises:</span> {selectedSessionForDetails.sessionNotes.exercisesCompleted}</p>
+                    <p><span className="font-bold text-[#A1A1AA]">Exercises:</span> {selectedSessionForDetails.sessionNotes.exercisesCompleted}</p>
                     {selectedSessionForDetails.sessionNotes.customerPerformance && (
-                      <p><span className="font-bold text-[#697778]">Performance:</span> {selectedSessionForDetails.sessionNotes.customerPerformance}</p>
+                      <p><span className="font-bold text-[#A1A1AA]">Performance:</span> {selectedSessionForDetails.sessionNotes.customerPerformance}</p>
                     )}
                     {selectedSessionForDetails.sessionNotes.dietRecommendations && (
-                      <p><span className="font-bold text-[#697778]">Diet:</span> {selectedSessionForDetails.sessionNotes.dietRecommendations}</p>
+                      <p><span className="font-bold text-[#A1A1AA]">Diet:</span> {selectedSessionForDetails.sessionNotes.dietRecommendations}</p>
                     )}
                     {selectedSessionForDetails.sessionNotes.nextSessionFocus && (
-                      <p><span className="font-bold text-[#697778]">Next Focus:</span> {selectedSessionForDetails.sessionNotes.nextSessionFocus}</p>
+                      <p><span className="font-bold text-[#A1A1AA]">Next Focus:</span> {selectedSessionForDetails.sessionNotes.nextSessionFocus}</p>
                     )}
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="sticky bottom-0 bg-white border-t border-[#D9E2E3] px-6 py-3 flex justify-end">
-              <button onClick={() => setSelectedSessionForDetails(null)} className="px-5 py-2 bg-[#167D78] text-white rounded-xl text-sm font-bold hover:bg-[#116660]">
+            <div className="sticky bottom-0 bg-white border-t border-[#292940] px-6 py-3 flex justify-end">
+              <button onClick={() => setSelectedSessionForDetails(null)} className="px-5 py-2 bg-[#6366F1] text-white rounded-xl text-sm font-bold hover:bg-[#4F46E5]">
                 Close
               </button>
             </div>
@@ -498,16 +498,16 @@ const MemberMyBookings = () => {
       {selectedSessionForNotes && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-            <h3 className="text-xl font-bold text-[#344B4A] border-b pb-3">Trainer Session Notes</h3>
-            <div className="space-y-3 text-sm text-[#344B4A]">
-              <p><span className="font-bold text-[#167D78]">Exercises Completed:</span> {selectedSessionForNotes.sessionNotes?.exercisesCompleted || 'N/A'}</p>
-              <p><span className="font-bold text-[#167D78]">Performance:</span> {selectedSessionForNotes.sessionNotes?.customerPerformance || 'N/A'}</p>
-              <p><span className="font-bold text-[#167D78]">Diet Recommendations:</span> {selectedSessionForNotes.sessionNotes?.dietRecommendations || 'N/A'}</p>
-              <p><span className="font-bold text-[#167D78]">Workout Modifications:</span> {selectedSessionForNotes.sessionNotes?.workoutModifications || 'N/A'}</p>
-              <p><span className="font-bold text-[#167D78]">Next Session Focus:</span> {selectedSessionForNotes.sessionNotes?.nextSessionFocus || 'N/A'}</p>
+            <h3 className="text-xl font-bold text-[#11111F] border-b pb-3">Trainer Session Notes</h3>
+            <div className="space-y-3 text-sm text-[#11111F]">
+              <p><span className="font-bold text-[#6366F1]">Exercises Completed:</span> {selectedSessionForNotes.sessionNotes?.exercisesCompleted || 'N/A'}</p>
+              <p><span className="font-bold text-[#6366F1]">Performance:</span> {selectedSessionForNotes.sessionNotes?.customerPerformance || 'N/A'}</p>
+              <p><span className="font-bold text-[#6366F1]">Diet Recommendations:</span> {selectedSessionForNotes.sessionNotes?.dietRecommendations || 'N/A'}</p>
+              <p><span className="font-bold text-[#6366F1]">Workout Modifications:</span> {selectedSessionForNotes.sessionNotes?.workoutModifications || 'N/A'}</p>
+              <p><span className="font-bold text-[#6366F1]">Next Session Focus:</span> {selectedSessionForNotes.sessionNotes?.nextSessionFocus || 'N/A'}</p>
             </div>
             <div className="pt-3 border-t flex justify-end">
-              <button onClick={() => setSelectedSessionForNotes(null)} className="px-5 py-2 bg-[#167D78] text-white rounded-xl font-bold text-sm">Close</button>
+              <button onClick={() => setSelectedSessionForNotes(null)} className="px-5 py-2 bg-[#6366F1] text-white rounded-xl font-bold text-sm">Close</button>
             </div>
           </div>
         </div>
@@ -517,8 +517,8 @@ const MemberMyBookings = () => {
       {selectedSessionForRate && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <h3 className="text-xl font-bold text-[#344B4A]">Rate &amp; Review Trainer</h3>
-            <p className="text-xs text-[#697778]">How was your live session with {selectedSessionForRate.trainerId?.name || 'your trainer'}?</p>
+            <h3 className="text-xl font-bold text-[#11111F]">Rate &amp; Review Trainer</h3>
+            <p className="text-xs text-[#A1A1AA]">How was your live session with {selectedSessionForRate.trainerId?.name || 'your trainer'}?</p>
             
             <div className="flex gap-2 justify-center py-2">
               {[1, 2, 3, 4, 5].map(star => (
@@ -538,12 +538,12 @@ const MemberMyBookings = () => {
               value={reviewVal}
               onChange={e => setReviewVal(e.target.value)}
               placeholder="Write your review or feedback..."
-              className="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:border-[#167D78]"
+              className="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:border-[#6366F1]"
             />
 
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={() => setSelectedSessionForRate(null)} className="px-4 py-2 border rounded-xl text-sm font-semibold">Cancel</button>
-              <button onClick={submitRating} disabled={submittingRate} className="px-5 py-2 bg-[#167D78] text-white rounded-xl text-sm font-bold disabled:opacity-50">
+              <button onClick={submitRating} disabled={submittingRate} className="px-5 py-2 bg-[#6366F1] text-white rounded-xl text-sm font-bold disabled:opacity-50">
                 {submittingRate ? 'Submitting...' : 'Submit Rating'}
               </button>
             </div>

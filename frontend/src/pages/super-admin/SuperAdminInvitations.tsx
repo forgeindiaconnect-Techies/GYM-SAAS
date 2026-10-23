@@ -355,12 +355,12 @@ const SuperAdminInvitations = () => {
       {/* Header and Add Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight">Gym Invitations</h1>
-          <p className="text-[#697778] mt-1">Track and manage invitations sent to potential gym partners.</p>
+          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Gym Invitations</h1>
+          <p className="text-[#A1A1AA] mt-1">Track and manage invitations sent to potential gym partners.</p>
         </div>
         <button
           onClick={() => navigate('/super-admin/gyms/add')}
-          className="flex items-center space-x-2 px-4 py-2.5 bg-[#167D78] text-white rounded-xl font-bold text-sm hover:bg-[#167D78]/90 transition-colors shadow-sm self-start sm:self-auto"
+          className="flex items-center space-x-2 px-4 py-2.5 bg-[#6366F1] text-white rounded-xl font-bold text-sm hover:bg-[#6366F1]/90 transition-colors shadow-sm self-start sm:self-auto"
         >
           <PlusCircle size={16} />
           <span>Send New Invitation</span>
@@ -375,8 +375,8 @@ const SuperAdminInvitations = () => {
             onClick={() => setStatusFilter('ALL')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
               statusFilter === 'ALL'
-                ? 'bg-[#167D78] text-white border-[#167D78] shadow-sm'
-                : 'bg-white text-[#697778] border-[#D9E2E3] hover:bg-slate-50'
+                ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-sm'
+                : 'bg-white text-[#A1A1AA] border-[#292940] hover:bg-slate-50'
             }`}
           >
             All Statuses ({invites.length})
@@ -428,7 +428,7 @@ const SuperAdminInvitations = () => {
         </div>
 
         {/* Search and Dropdown Bar */}
-        <div className="bg-white border border-[#D9E2E3] rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div className="bg-white border border-[#292940] rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
           <div className="relative flex-1 w-full">
             <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
@@ -436,7 +436,7 @@ const SuperAdminInvitations = () => {
               placeholder="Search by gym name, owner, or email..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-[#E8EFF0] border border-[#D9E2E3] text-[#344B4A] rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-[#D8EAE7] focus:bg-white transition-all"
+              className="w-full bg-[#0B0B12] border border-[#292940] text-[#11111F] rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-[#17172A] focus:bg-white transition-all"
             />
           </div>
           <div className="flex items-center space-x-2 w-full sm:w-auto">
@@ -444,7 +444,7 @@ const SuperAdminInvitations = () => {
               <select
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
-                className="w-full sm:w-auto appearance-none bg-[#E8EFF0] border border-[#D9E2E3] text-[#344B4A] font-semibold rounded-xl pl-3.5 pr-8 py-2 text-sm outline-none focus:border-[#D8EAE7] cursor-pointer"
+                className="w-full sm:w-auto appearance-none bg-[#0B0B12] border border-[#292940] text-[#11111F] font-semibold rounded-xl pl-3.5 pr-8 py-2 text-sm outline-none focus:border-[#17172A] cursor-pointer"
               >
                 <option value="ALL">All Statuses ({invites.length})</option>
                 <option value="Pending">Pending ({pendingCount})</option>
@@ -459,10 +459,10 @@ const SuperAdminInvitations = () => {
       </div>
 
       {/* Table Container */}
-      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-[#697778]">
-            <thead className="bg-[#E8EFF0] border-b border-[#D9E2E3] text-[#344B4A]">
+          <table className="w-full text-left text-sm text-[#A1A1AA]">
+            <thead className="bg-[#0B0B12] border-b border-[#292940] text-[#11111F]">
               <tr>
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Gym Name</th>
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Recipient</th>
@@ -472,25 +472,25 @@ const SuperAdminInvitations = () => {
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D9E2E3]">
+            <tbody className="divide-y divide-[#292940]">
               {filteredInvites.map(invite => (
-                <tr key={invite.id} className="hover:bg-[#E8EFF0] transition-colors">
+                <tr key={invite.id} className="hover:bg-[#0B0B12] transition-colors">
                   <td className="px-6 py-4">
-                    <div className="font-bold text-[#344B4A] flex items-center space-x-2">
-                      <div className="w-7 h-7 rounded-lg bg-[#D8EAE7]/15 flex items-center justify-center text-[#167D78] shrink-0">
+                    <div className="font-bold text-[#11111F] flex items-center space-x-2">
+                      <div className="w-7 h-7 rounded-lg bg-[#17172A]/15 flex items-center justify-center text-[#6366F1] shrink-0">
                         <Building2 size={14} />
                       </div>
                       <span>{invite.gymName}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-[#344B4A] font-semibold">{invite.owner || 'N/A'}</div>
-                    <div className="text-xs text-[#344B4A] font-semibold">{invite.email}</div>
+                    <div className="text-[#11111F] font-semibold">{invite.owner || 'N/A'}</div>
+                    <div className="text-xs text-[#11111F] font-semibold">{invite.email}</div>
                   </td>
-                  <td className="px-6 py-4 text-[#344B4A] font-medium">{formatDate(invite.date)}</td>
-                  <td className="px-6 py-4 text-[#697778]">
+                  <td className="px-6 py-4 text-[#11111F] font-medium">{formatDate(invite.date)}</td>
+                  <td className="px-6 py-4 text-[#A1A1AA]">
                     <div className="flex flex-col gap-1">
-                      <span className="inline-flex items-center gap-1 font-semibold text-[#344B4A]">
+                      <span className="inline-flex items-center gap-1 font-semibold text-[#11111F]">
                         <Clock size={13} className="text-slate-400" />
                         <span>{invite.expiry || '7 Days'}</span>
                       </span>
@@ -507,7 +507,7 @@ const SuperAdminInvitations = () => {
                       <select
                         value={invite.status || 'Pending'}
                         onChange={(e) => handleStatusChange(invite.id, e.target.value)}
-                        className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#167D78] ${getStatusBadgeClass(invite.status)}`}
+                        className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#6366F1] ${getStatusBadgeClass(invite.status)}`}
                       >
                         <option value="Pending" className="text-slate-800 bg-white">Pending</option>
                         <option value="Sent" className="text-slate-800 bg-white">Sent</option>
@@ -522,10 +522,10 @@ const SuperAdminInvitations = () => {
                       {/* View Details Button */}
                       <button
                         onClick={() => setViewInvite(invite)}
-                        className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-orange-50 text-[#116660] hover:bg-orange-100 border border-orange-200 font-bold text-xs transition-colors shadow-xs"
+                        className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-orange-50 text-[#4F46E5] hover:bg-orange-100 border border-orange-200 font-bold text-xs transition-colors shadow-xs"
                         title="View Details"
                       >
-                        <Eye size={14} className="text-[#167D78]" />
+                        <Eye size={14} className="text-[#6366F1]" />
                         <span>View Details</span>
                       </button>
 
@@ -535,7 +535,7 @@ const SuperAdminInvitations = () => {
                           const link = invite.link || `${window.location.origin}/register/gym-owner?invite=${invite.id}&email=${encodeURIComponent(invite.email)}&name=${encodeURIComponent(invite.owner || '')}&phone=${encodeURIComponent(invite.phone || '')}`;
                           handleCopyLink(link);
                         }}
-                        className="p-1.5 text-stone-600 hover:text-[#167D78] hover:bg-orange-50 rounded-lg transition-colors"
+                        className="p-1.5 text-stone-600 hover:text-[#6366F1] hover:bg-orange-50 rounded-lg transition-colors"
                         title="Copy Registration Link"
                       >
                         <Copy size={15} />
@@ -555,7 +555,7 @@ const SuperAdminInvitations = () => {
                       {/* Resend Invitation Button */}
                       <button
                         onClick={() => handleResend(invite)}
-                        className="p-1.5 text-[#167D78] hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-1.5 text-[#6366F1] hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Resend Invitation via Email"
                       >
                         <Send size={15} />
@@ -575,7 +575,7 @@ const SuperAdminInvitations = () => {
               ))}
               {filteredInvites.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="text-center py-12 text-[#697778]">
+                  <td colSpan={6} className="text-center py-12 text-[#A1A1AA]">
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <Send size={32} className="text-stone-600" />
                       <p className="font-semibold text-slate-600">No invitations found</p>
@@ -596,16 +596,16 @@ const SuperAdminInvitations = () => {
       {/* ─── View Details Modal ─── */}
       {viewInvite && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white border border-[#D9E2E3] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto max-h-[85vh] flex flex-col">
+          <div className="bg-white border border-[#292940] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto max-h-[85vh] flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#D9E2E3] bg-[#E8EFF0] shrink-0">
+            <div className="flex items-center justify-between p-6 border-b border-[#292940] bg-[#0B0B12] shrink-0">
               <div className="flex items-center space-x-3">
-                <div className="w-11 h-11 bg-[#167D78]/10 text-[#167D78] rounded-xl flex items-center justify-center">
+                <div className="w-11 h-11 bg-[#6366F1]/10 text-[#6366F1] rounded-xl flex items-center justify-center">
                   <Building2 size={22} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#344B4A]">{viewInvite.gymName}</h2>
-                  <p className="text-xs text-[#697778]">Invitation Details</p>
+                  <h2 className="text-xl font-bold text-[#11111F]">{viewInvite.gymName}</h2>
+                  <p className="text-xs text-[#A1A1AA]">Invitation Details</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -613,7 +613,7 @@ const SuperAdminInvitations = () => {
                   <select
                     value={viewInvite.status || 'Pending'}
                     onChange={(e) => handleStatusChange(viewInvite.id, e.target.value)}
-                    className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#167D78] ${getStatusBadgeClass(viewInvite.status)}`}
+                    className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#6366F1] ${getStatusBadgeClass(viewInvite.status)}`}
                   >
                     <option value="Pending" className="text-slate-800 bg-white">Pending</option>
                     <option value="Sent" className="text-slate-800 bg-white">Sent</option>
@@ -634,60 +634,60 @@ const SuperAdminInvitations = () => {
             {/* Modal Content */}
             <div className="p-6 space-y-5 overflow-y-auto flex-1">
               {/* Gym & Recipient Info */}
-              <div className="border border-[#D9E2E3] rounded-xl overflow-hidden divide-y divide-[#D9E2E3] bg-white shadow-sm">
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
+              <div className="border border-[#292940] rounded-xl overflow-hidden divide-y divide-[#292940] bg-white shadow-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#292940]">
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <User size={12} /> Recipient Name
                     </span>
-                    <span className="font-bold text-[#344B4A] text-sm">{viewInvite.owner || 'N/A'}</span>
+                    <span className="font-bold text-[#11111F] text-sm">{viewInvite.owner || 'N/A'}</span>
                   </div>
 
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Building2 size={12} /> Gym Type
                     </span>
-                    <span className="font-bold text-[#344B4A] text-sm">{viewInvite.type || 'Standard Gym'}</span>
+                    <span className="font-bold text-[#11111F] text-sm">{viewInvite.type || 'Standard Gym'}</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#292940]">
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Mail size={12} /> Email Address
                     </span>
-                    <span className="font-semibold text-[#344B4A] text-sm break-all" title={viewInvite.email}>
+                    <span className="font-semibold text-[#11111F] text-sm break-all" title={viewInvite.email}>
                       {viewInvite.email}
                     </span>
                   </div>
 
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Phone size={12} /> Phone Number
                     </span>
-                    <span className="font-semibold text-[#344B4A] text-sm">{viewInvite.phone || 'N/A'}</span>
+                    <span className="font-semibold text-[#11111F] text-sm">{viewInvite.phone || 'N/A'}</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#D9E2E3]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#292940]">
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Calendar size={12} /> Sent Date
                     </span>
-                    <span className="font-semibold text-[#344B4A] text-sm">{formatDate(viewInvite.date)}</span>
+                    <span className="font-semibold text-[#11111F] text-sm">{formatDate(viewInvite.date)}</span>
                   </div>
 
                   <div className="p-3.5 bg-white flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#697778] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Clock size={12} /> Link Expiry
                     </span>
-                    <span className="font-semibold text-[#344B4A] text-sm">{viewInvite.expiry || '7 Days'}</span>
+                    <span className="font-semibold text-[#11111F] text-sm">{viewInvite.expiry || '7 Days'}</span>
                   </div>
                 </div>
               </div>
 
               {/* Registration Link */}
-              <div className="p-4 bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl space-y-2">
+              <div className="p-4 bg-[#0B0B12] border border-[#17172A] rounded-xl space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-700">Invitation Registration Link</span>
                   {copiedLink && (
@@ -701,11 +701,11 @@ const SuperAdminInvitations = () => {
                     type="text"
                     readOnly
                     value={viewInvite.link || `${window.location.origin}/register/gym-owner?invite=${viewInvite.id}&email=${encodeURIComponent(viewInvite.email)}`}
-                    className="flex-1 bg-white border border-[#D9E2E3] text-[#344B4A] rounded-lg px-3 py-1.5 text-xs outline-none select-all"
+                    className="flex-1 bg-white border border-[#292940] text-[#11111F] rounded-lg px-3 py-1.5 text-xs outline-none select-all"
                   />
                   <button
                     onClick={() => handleCopyLink(viewInvite.link || `${window.location.origin}/register/gym-owner?invite=${viewInvite.id}&email=${encodeURIComponent(viewInvite.email)}`)}
-                    className="px-3 py-1.5 bg-[#167D78] text-white hover:bg-[#167D78]/90 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 bg-[#6366F1] text-white hover:bg-[#6366F1]/90 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
                   >
                     <Copy size={13} />
                     <span>Copy</span>
@@ -715,13 +715,13 @@ const SuperAdminInvitations = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-5 border-t border-[#D9E2E3] bg-white">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-5 border-t border-[#292940] bg-white">
               <button
                 onClick={() => {
                   setViewInvite(null);
                   navigate('/super-admin/gym-owners');
                 }}
-                className="w-full sm:w-auto flex items-center justify-center space-x-1.5 px-4 py-2 border border-[#167D78]/30 text-[#167D78] hover:bg-[#167D78]/10 rounded-xl text-xs font-bold transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center space-x-1.5 px-4 py-2 border border-[#6366F1]/30 text-[#6366F1] hover:bg-[#6366F1]/10 rounded-xl text-xs font-bold transition-colors"
               >
                 <ExternalLink size={13} />
                 <span>Go to Gym Owner Details</span>
@@ -730,7 +730,7 @@ const SuperAdminInvitations = () => {
               <div className="flex items-center space-x-2 w-full sm:w-auto">
                 <button
                   onClick={() => handleResend(viewInvite)}
-                  className="flex-1 sm:flex-initial flex items-center justify-center space-x-1 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#167D78] rounded-xl text-xs font-bold transition-colors"
+                  className="flex-1 sm:flex-initial flex items-center justify-center space-x-1 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#6366F1] rounded-xl text-xs font-bold transition-colors"
                 >
                   <Send size={13} />
                   <span>Resend</span>

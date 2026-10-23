@@ -27,19 +27,19 @@ export const AttachmentPreview: React.FC<AttachmentPreviewProps> = ({ attachment
   const renderIcon = (type: string) => {
     switch (type) {
       case 'image': return <ImageIcon size={18} className="text-orange-500" />;
-      case 'video': return <Video size={18} className="text-[#167D78]" />;
-      case 'audio': return <Music size={18} className="text-[#167D78]" />;
+      case 'video': return <Video size={18} className="text-[#6366F1]" />;
+      case 'audio': return <Music size={18} className="text-[#6366F1]" />;
       case 'document': return <FileText size={18} className="text-emerald-600" />;
       default: return <File size={18} className="text-stone-500" />;
     }
   };
 
   return (
-    <div className="flex items-center gap-2.5 p-2.5 bg-[#E8EFF0] border-b border-[#D9E2E3] overflow-x-auto">
+    <div className="flex items-center gap-2.5 p-2.5 bg-[#0B0B12] border-b border-[#292940] overflow-x-auto">
       {attachments.map((item, idx) => (
         <div
           key={idx}
-          className="relative flex items-center gap-2.5 bg-white border border-[#D9E2E3] rounded-xl p-2 pr-3 shrink-0 shadow-2xs group hover:border-[#167D78]/50 transition-all"
+          className="relative flex items-center gap-2.5 bg-white border border-[#292940] rounded-xl p-2 pr-3 shrink-0 shadow-2xs group hover:border-[#6366F1]/50 transition-all"
         >
           {/* Thumbnail / Icon */}
           <div className="w-10 h-10 rounded-lg overflow-hidden bg-stone-100 flex items-center justify-center shrink-0 border border-stone-200/60">
@@ -52,10 +52,10 @@ export const AttachmentPreview: React.FC<AttachmentPreviewProps> = ({ attachment
 
           {/* Details */}
           <div className="flex flex-col max-w-[140px] sm:max-w-[180px]">
-            <span className="text-xs font-bold text-[#344B4A] truncate" title={item.file.name}>
+            <span className="text-xs font-bold text-[#11111F] truncate" title={item.file.name}>
               {item.file.name}
             </span>
-            <span className="text-[10px] text-[#697778] font-semibold">
+            <span className="text-[10px] text-[#A1A1AA] font-semibold">
               {item.sizeFormatted}
             </span>
           </div>

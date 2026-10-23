@@ -31,41 +31,41 @@ export const Step7Trainers = ({ data, updateData }: any) => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#D9E2E3]">
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#292940]">
         <div className="flex items-center space-x-3">
-          <Users className="text-[#167D78]" size={24} />
+          <Users className="text-[#6366F1]" size={24} />
           <h2 className="text-xl font-bold">Trainer Setup</h2>
         </div>
         {!isAdding && (
-          <button onClick={() => setIsAdding(true)} className="px-4 py-2 bg-[#167D78] text-white rounded-xl font-bold flex items-center space-x-2 text-sm">
+          <button onClick={() => setIsAdding(true)} className="px-4 py-2 bg-[#6366F1] text-white rounded-xl font-bold flex items-center space-x-2 text-sm">
             <Plus size={16} /><span>Add Trainer</span>
           </button>
         )}
       </div>
 
       {data.trainers.length === 0 && !isAdding && (
-        <div className="text-center py-12 border-2 border-dashed border-[#D9E2E3] rounded-2xl">
-          <Users className="text-[#697778] mx-auto mb-3" size={40} />
-          <p className="text-[#697778]">No trainers added yet.</p>
-          <button onClick={() => setIsAdding(true)} className="mt-4 text-[#167D78] font-semibold hover:underline">Add your first trainer</button>
+        <div className="text-center py-12 border-2 border-dashed border-[#292940] rounded-2xl">
+          <Users className="text-[#A1A1AA] mx-auto mb-3" size={40} />
+          <p className="text-[#A1A1AA]">No trainers added yet.</p>
+          <button onClick={() => setIsAdding(true)} className="mt-4 text-[#6366F1] font-semibold hover:underline">Add your first trainer</button>
         </div>
       )}
 
       {data.trainers.length > 0 && !isAdding && (
         <div className="grid md:grid-cols-2 gap-4">
           {data.trainers.map((t: any) => (
-            <div key={t.id} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#D9E2E3] flex justify-between items-start">
+            <div key={t.id} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#292940] flex justify-between items-start">
               <div className="flex items-start space-x-3">
-                <div className="w-10 h-10 bg-[#D8EAE7] rounded-full flex items-center justify-center text-[#697778]">
+                <div className="w-10 h-10 bg-[#17172A] rounded-full flex items-center justify-center text-[#A1A1AA]">
                   <User size={20} />
                 </div>
                 <div>
-                  <h4 className="text-[#344B4A] font-bold">{t.name}</h4>
-                  <p className="text-sm text-[#167D78] font-medium">{t.specialization}</p>
-                  <p className="text-xs text-[#697778] mt-1">{t.email} • {t.experience} Years Exp.</p>
+                  <h4 className="text-[#11111F] font-bold">{t.name}</h4>
+                  <p className="text-sm text-[#6366F1] font-medium">{t.specialization}</p>
+                  <p className="text-xs text-[#A1A1AA] mt-1">{t.email} • {t.experience} Years Exp.</p>
                 </div>
               </div>
-              <button onClick={() => removeTrainer(t.id)} className="text-[#697778] hover:text-[#D8EAE7] transition-colors">
+              <button onClick={() => removeTrainer(t.id)} className="text-[#A1A1AA] hover:text-[#17172A] transition-colors">
                 <X size={18} />
               </button>
             </div>
@@ -74,36 +74,36 @@ export const Step7Trainers = ({ data, updateData }: any) => {
       )}
 
       {isAdding && (
-        <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#D9E2E3]">
+        <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#292940]">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-lg">Add New Trainer</h3>
-            <button onClick={() => setIsAdding(false)} className="text-[#697778] hover:text-[#344B4A]"><X size={20} /></button>
+            <button onClick={() => setIsAdding(false)} className="text-[#A1A1AA] hover:text-[#11111F]"><X size={20} /></button>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Full Name *</label>
-              <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" />
+              <label className="block text-xs text-[#A1A1AA] mb-1">Full Name *</label>
+              <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" />
             </div>
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Email *</label>
-              <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" />
+              <label className="block text-xs text-[#A1A1AA] mb-1">Email *</label>
+              <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" />
             </div>
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Phone *</label>
-              <input type="text" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '')})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" placeholder="10 digit number" />
+              <label className="block text-xs text-[#A1A1AA] mb-1">Phone *</label>
+              <input type="text" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '')})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" placeholder="10 digit number" />
             </div>
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Specialization *</label>
-              <input type="text" value={form.specialization} onChange={e => setForm({...form, specialization: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" placeholder="e.g. Yoga, Weightlifting" />
+              <label className="block text-xs text-[#A1A1AA] mb-1">Specialization *</label>
+              <input type="text" value={form.specialization} onChange={e => setForm({...form, specialization: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" placeholder="e.g. Yoga, Weightlifting" />
             </div>
             <div>
-              <label className="block text-xs text-[#697778] mb-1">Experience (Years)</label>
-              <input type="number" value={form.experience} onChange={e => setForm({...form, experience: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl px-3 py-2 text-sm text-[#344B4A] focus:border-[#167D78] outline-none" />
+              <label className="block text-xs text-[#A1A1AA] mb-1">Experience (Years)</label>
+              <input type="number" value={form.experience} onChange={e => setForm({...form, experience: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" />
             </div>
           </div>
           <div className="mt-6 flex justify-end space-x-3">
-            <button onClick={() => setIsAdding(false)} className="px-4 py-2 text-[#697778] hover:text-[#167D78] text-sm">Cancel</button>
-            <button onClick={handleAdd} className="px-6 py-2 bg-[#167D78] text-white rounded-xl font-bold text-sm">Save Trainer</button>
+            <button onClick={() => setIsAdding(false)} className="px-4 py-2 text-[#A1A1AA] hover:text-[#6366F1] text-sm">Cancel</button>
+            <button onClick={handleAdd} className="px-6 py-2 bg-[#6366F1] text-white rounded-xl font-bold text-sm">Save Trainer</button>
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import Gym, { GymStatus } from '../models/Gym';
 import User, { Role, ApprovalStatus } from '../models/User';
@@ -341,9 +342,15 @@ import Branch from '../models/Branch';
 
 export const getPublicGymById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      res.status(404).json({ success: false, message: 'Invalid gym ID' });
+      return;
+    }
     const gym = await Gym.findById(id).select('-subscription').populate('ownerId', 'firstName lastName email mobile subscriptionPlan');
-    if (!gym || (gym.status !== GymStatus.ACTIVE && (gym.status as string) !== 'APPROVED')) {
+    const statusUpper = (gym?.status || '').toUpperCase();
+    if (!gym || (statusUpper !== 'ACTIVE' && statusUpper !== 'APPROVED')) {
       res.status(404).json({ success: false, message: 'Gym not found or not active' });
       return;
     }

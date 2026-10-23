@@ -29,22 +29,33 @@ import {
   Coins,
   ShieldAlert,
   BarChart3,
-  CalendarCheck
+  CalendarCheck,
+  Trophy
 } from 'lucide-react';
 import api from '../../utils/api';
+import AwardsRecognitionSection from './AwardsRecognitionSection';
+
+export type MainRewardsTab = 'customer-rewards' | 'trainer-rewards' | 'performance-overview' | 'awards-recognition' | 'claims-history';
 
 export default function GymAdminRewardsPerformance() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialTab = (searchParams.get('tab') as any) || 'customer-performance';
+  const rawTab = (searchParams.get('tab') as any);
 
-  const [activeTab, setActiveTab] = useState<'customer-performance' | 'trainer-performance' | 'rewards-catalog' | 'claims-history'>(
-    ['customer-performance', 'trainer-performance', 'rewards-catalog', 'claims-history'].includes(initialTab)
-      ? initialTab
-      : 'customer-performance'
+  const initialTab: MainRewardsTab =
+    rawTab === 'trainer-rewards' ? 'trainer-rewards'
+    : rawTab === 'customer-rewards' || rawTab === 'rewards-catalog' ? 'customer-rewards'
+    : rawTab === 'awards-recognition' || rawTab === 'awards' ? 'awards-recognition'
+    : rawTab === 'claims-history' || rawTab === 'claims' ? 'claims-history'
+    : rawTab === 'performance-overview' || rawTab === 'customer-performance' || rawTab === 'trainer-performance' ? 'performance-overview'
+    : 'customer-rewards';
+
+  const [activeTab, setActiveTab] = useState<MainRewardsTab>(initialTab);
+  const [perfSubTab, setPerfSubTab] = useState<'customer' | 'trainer'>(
+    rawTab === 'trainer-performance' ? 'trainer' : 'customer'
   );
 
   // Sync tab with URL query parameter
-  const handleTabChange = (tab: 'customer-performance' | 'trainer-performance' | 'rewards-catalog' | 'claims-history') => {
+  const handleTabChange = (tab: MainRewardsTab) => {
     setActiveTab(tab);
     setSearchParams({ tab });
   };
@@ -104,20 +115,47 @@ export default function GymAdminRewardsPerformance() {
   // Notification Banner
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // Reward Form State
-  const [customerCriteriaType, setCustomerCriteriaType] = useState<'points' | 'visits' | 'workouts' | 'free'>('points');
+  // Dynamic Reward Form State & Dependencies
+  const [storeProducts, setStoreProducts] = useState<any[]>([]);
+  const [gymPackages, setGymPackages] = useState<any[]>([]);
+  const [customerSearchQuery, setCustomerSearchQuery] = useState('');
+  const [selectedCustomerObj, setSelectedCustomerObj] = useState<any | null>(null);
+  const [selectedTrainerObj, setSelectedTrainerObj] = useState<any | null>(null);
+  const [productStockError, setProductStockError] = useState<string>('');
+
+  const [customerCriteriaType, setCustomerCriteriaType] = useState<'points' | 'visits' | 'workouts' | 'streak' | 'goals' | 'free'>('points');
   const [rewardFormData, setRewardFormData] = useState({
     title: '',
     description: '',
-    recipientType: 'Customer',
+    recipientType: 'Customer' as 'Customer' | 'Trainer' | 'Both',
+    assignmentMethod: 'Points' as 'Direct' | 'Achievement' | 'Points',
     category: 'Discount Coupon',
     rewardType: 'Coupon',
+    assignedUserId: '',
+    trainerId: '',
+    sessionCount: 2,
+    sessionDuration: '45 mins',
+    discountType: 'Percentage' as 'Percentage' | 'Fixed',
+    discountValue: 15,
+    applicableService: 'All Services' as 'Membership' | 'Personal Training' | 'Products' | 'All Services',
+    minPurchaseAmount: 0,
+    productId: '',
+    productName: '',
+    productQuantity: 1,
+    membershipDuration: '1 Month',
+    packageId: '',
+    packageName: '',
+    awardReason: '',
+    achievementPeriod: 'This Month',
+    hasCertificate: true,
+    badgeIcon: 'Trophy',
+    achievementCondition: 'visits' as 'visits' | 'workouts' | 'streak' | 'goals' | 'milestone',
     requiredPoints: 100,
     requiredChallengeId: '',
-    minVerifiedVisits: 0,
-    minWorkoutCompletions: 0,
-    minStreakDays: 0,
-    minDietAdherenceDays: 0,
+    minVerifiedVisits: 10,
+    minWorkoutCompletions: 5,
+    minStreakDays: 7,
+    minDietAdherenceDays: 7,
     minCompletedSessions: 0,
     minAverageRating: 0,
     minReviewedPlans: 0,
@@ -125,9 +163,9 @@ export default function GymAdminRewardsPerformance() {
     currency: 'INR',
     startDate: new Date().toISOString().split('T')[0],
     expiryDate: '',
-    totalQuantity: 50,
+    totalQuantity: 0,
     maxClaimsPerUser: 1,
-    requireApproval: true,
+    requireApproval: false,
     termsAndConditions: 'Valid only at registered gym branch. Cannot be combined with other offers.',
     status: 'Active'
   });
@@ -166,19 +204,23 @@ export default function GymAdminRewardsPerformance() {
     }
   };
 
-  // Fetch Rewards and Claims
+  // Fetch Rewards, Claims, Store Products, and Gym Packages
   const fetchRewardsAndClaims = async () => {
     try {
       setLoadingRewards(true);
-      const [rwdRes, chRes] = await Promise.all([
+      const [rwdRes, chRes, prodRes, pkgRes] = await Promise.all([
         api.get('/rewards/owner'),
-        api.get('/challenges/owner').catch(() => ({ data: { challenges: [] } }))
+        api.get('/challenges/owner').catch(() => ({ data: { challenges: [] } })),
+        api.get('/store/admin/products').catch(() => ({ data: { products: [] } })),
+        api.get('/gym-packages').catch(() => ({ data: { packages: [] } }))
       ]);
       if (rwdRes.data?.success) {
         setRewards(rwdRes.data.rewards || []);
         setClaims(rwdRes.data.claims || []);
       }
       setChallenges(chRes.data?.challenges || []);
+      setStoreProducts(prodRes.data?.products || []);
+      setGymPackages(pkgRes.data?.packages || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -240,26 +282,54 @@ export default function GymAdminRewardsPerformance() {
   });
 
   // Handlers for Reward Creation/Edit
-  const openCreateRewardModal = () => {
+  const openCreateRewardModal = (defaultRecipient: 'Customer' | 'Trainer' = 'Customer') => {
     setIsEditMode(false);
     setSelectedRewardId(null);
     setCustomerCriteriaType('points');
+    setCustomerSearchQuery('');
+    setSelectedCustomerObj(null);
+    setSelectedTrainerObj(null);
+    setProductStockError('');
+
+    const defaultCat = defaultRecipient === 'Customer' ? 'Discount Coupon' : 'Performance Award';
+    const defaultMethod = defaultRecipient === 'Trainer' ? 'Direct' : 'Points';
+
     setRewardFormData({
       title: '',
       description: '',
-      recipientType: 'Customer',
-      category: 'Discount Coupon',
-      rewardType: 'Coupon',
+      recipientType: defaultRecipient,
+      assignmentMethod: defaultMethod,
+      category: defaultCat,
+      rewardType: defaultRecipient === 'Customer' ? 'Coupon' : 'Award',
+      assignedUserId: '',
+      trainerId: trainers.length > 0 ? trainers[0]._id : '',
+      sessionCount: 2,
+      sessionDuration: '45 mins',
+      discountType: 'Percentage',
+      discountValue: 15,
+      applicableService: 'All Services',
+      minPurchaseAmount: 0,
+      productId: storeProducts.length > 0 ? storeProducts[0]._id : '',
+      productName: storeProducts.length > 0 ? storeProducts[0].name : '',
+      productQuantity: 1,
+      membershipDuration: '1 Month',
+      packageId: gymPackages.length > 0 ? gymPackages[0]._id : '',
+      packageName: gymPackages.length > 0 ? gymPackages[0].name : '',
+      awardReason: '',
+      achievementPeriod: 'This Month',
+      hasCertificate: true,
+      badgeIcon: 'Trophy',
+      achievementCondition: 'visits',
       requiredPoints: 100,
       requiredChallengeId: '',
-      minVerifiedVisits: 0,
-      minWorkoutCompletions: 0,
-      minStreakDays: 0,
-      minDietAdherenceDays: 0,
-      minCompletedSessions: 0,
-      minAverageRating: 0,
+      minVerifiedVisits: 10,
+      minWorkoutCompletions: 5,
+      minStreakDays: 7,
+      minDietAdherenceDays: 7,
+      minCompletedSessions: defaultRecipient === 'Trainer' ? 15 : 0,
+      minAverageRating: defaultRecipient === 'Trainer' ? 4.5 : 0,
       minReviewedPlans: 0,
-      bonusAmount: 0,
+      bonusAmount: defaultRecipient === 'Trainer' ? 1500 : 0,
       currency: 'INR',
       startDate: new Date().toISOString().split('T')[0],
       expiryDate: '',
@@ -275,21 +345,66 @@ export default function GymAdminRewardsPerformance() {
   const openEditRewardModal = (r: any) => {
     setIsEditMode(true);
     setSelectedRewardId(r._id);
-    if ((r.requiredPoints || 0) > 0) {
+    setCustomerSearchQuery('');
+    setProductStockError('');
+
+    // Locate assigned customer if exists
+    if (r.assignedUserId) {
+      const cId = r.assignedUserId?._id || r.assignedUserId;
+      const foundCust = customers.find(c => c._id === cId);
+      setSelectedCustomerObj(foundCust || r.assignedUserId);
+    } else {
+      setSelectedCustomerObj(null);
+    }
+
+    if (r.trainerId) {
+      const tId = r.trainerId?._id || r.trainerId;
+      const foundTr = trainers.find(t => t._id === tId);
+      setSelectedTrainerObj(foundTr || r.trainerId);
+    } else {
+      setSelectedTrainerObj(null);
+    }
+
+    const method = r.assignmentMethod || ((r.requiredPoints || 0) > 0 ? 'Points' : 'Achievement');
+
+    if (method === 'Points' || (r.requiredPoints || 0) > 0) {
       setCustomerCriteriaType('points');
-    } else if ((r.minVerifiedVisits || 0) > 0 || (r.minStreakDays || 0) > 0) {
+    } else if (r.minVerifiedVisits > 0) {
       setCustomerCriteriaType('visits');
-    } else if ((r.minWorkoutCompletions || 0) > 0) {
+    } else if (r.minWorkoutCompletions > 0) {
       setCustomerCriteriaType('workouts');
+    } else if (r.minStreakDays > 0) {
+      setCustomerCriteriaType('streak');
     } else {
       setCustomerCriteriaType('free');
     }
+
     setRewardFormData({
-      title: r.title,
-      description: r.description,
-      recipientType: r.recipientType,
-      category: r.category,
-      rewardType: r.rewardType,
+      title: r.title || '',
+      description: r.description || '',
+      recipientType: r.recipientType || 'Customer',
+      assignmentMethod: method,
+      category: r.category || 'Discount Coupon',
+      rewardType: r.rewardType || 'Reward',
+      assignedUserId: r.assignedUserId?._id || r.assignedUserId || '',
+      trainerId: r.trainerId?._id || r.trainerId || '',
+      sessionCount: r.sessionCount || 2,
+      sessionDuration: r.sessionDuration || '45 mins',
+      discountType: r.discountType || 'Percentage',
+      discountValue: r.discountValue || 15,
+      applicableService: r.applicableService || 'All Services',
+      minPurchaseAmount: r.minPurchaseAmount || 0,
+      productId: r.productId?._id || r.productId || '',
+      productName: r.productName || r.productId?.name || '',
+      productQuantity: r.productQuantity || 1,
+      membershipDuration: r.membershipDuration || '1 Month',
+      packageId: r.packageId?._id || r.packageId || '',
+      packageName: r.packageName || r.packageId?.name || '',
+      awardReason: r.awardReason || '',
+      achievementPeriod: r.achievementPeriod || 'This Month',
+      hasCertificate: Boolean(r.hasCertificate),
+      badgeIcon: r.badgeIcon || 'Trophy',
+      achievementCondition: r.eligibilityCondition || 'visits',
       requiredPoints: r.requiredPoints || 0,
       requiredChallengeId: r.requiredChallengeId?._id || r.requiredChallengeId || '',
       minVerifiedVisits: r.minVerifiedVisits || 0,
@@ -307,7 +422,7 @@ export default function GymAdminRewardsPerformance() {
       maxClaimsPerUser: r.maxClaimsPerUser || 1,
       requireApproval: Boolean(r.requireApproval),
       termsAndConditions: r.termsAndConditions || '',
-      status: r.status
+      status: r.status || 'Active'
     });
     setIsRewardModalOpen(true);
   };
@@ -315,28 +430,74 @@ export default function GymAdminRewardsPerformance() {
   const handleRewardFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const payload: any = { ...rewardFormData };
-      if (rewardFormData.recipientType === 'Customer') {
-        if (customerCriteriaType === 'points') {
-          payload.requiredPoints = Number(rewardFormData.requiredPoints) || 100;
-          payload.minVerifiedVisits = 0;
-          payload.minWorkoutCompletions = 0;
-          payload.minStreakDays = 0;
-        } else if (customerCriteriaType === 'visits') {
-          payload.requiredPoints = 0;
+      // 1. Direct Assignment Validation
+      if (rewardFormData.assignmentMethod === 'Direct') {
+        if (!rewardFormData.assignedUserId) {
+          setMessage({
+            type: 'error',
+            text: `Please select a specific ${rewardFormData.recipientType === 'Trainer' ? 'trainer' : 'customer'} for Direct Assignment.`
+          });
+          return;
+        }
+      }
+
+      // 2. Product Inventory Stock Check
+      if (rewardFormData.category === 'Free Product / Gift' && rewardFormData.productId) {
+        const prod = storeProducts.find(p => p._id === rewardFormData.productId);
+        const reqQty = Number(rewardFormData.productQuantity) || 1;
+        if (prod && prod.stock < reqQty) {
+          setMessage({
+            type: 'error',
+            text: `Cannot create reward: requested quantity (${reqQty}) exceeds available inventory (${prod.stock}) for "${prod.name}".`
+          });
+          return;
+        }
+      }
+
+      const payload: any = {
+        ...rewardFormData,
+        totalQuantity: Number(rewardFormData.totalQuantity) || 0,
+        maxClaimsPerUser: rewardFormData.assignmentMethod === 'Direct' ? 1 : (Number(rewardFormData.maxClaimsPerUser) || 1),
+      };
+
+      // Set category-specific parameters & clean non-relevant data
+      if (rewardFormData.assignmentMethod === 'Direct') {
+        payload.requiredPoints = 0;
+        payload.minVerifiedVisits = 0;
+        payload.minWorkoutCompletions = 0;
+        payload.minStreakDays = 0;
+        payload.minDietAdherenceDays = 0;
+      } else if (rewardFormData.assignmentMethod === 'Points') {
+        payload.requiredPoints = Number(rewardFormData.requiredPoints) || 100;
+        payload.minVerifiedVisits = 0;
+        payload.minWorkoutCompletions = 0;
+        payload.minStreakDays = 0;
+        payload.minDietAdherenceDays = 0;
+      } else if (rewardFormData.assignmentMethod === 'Achievement') {
+        payload.requiredPoints = 0;
+        if (rewardFormData.achievementCondition === 'visits') {
           payload.minVerifiedVisits = Number(rewardFormData.minVerifiedVisits) || 10;
-          payload.minStreakDays = Number(rewardFormData.minStreakDays) || 0;
           payload.minWorkoutCompletions = 0;
-        } else if (customerCriteriaType === 'workouts') {
-          payload.requiredPoints = 0;
-          payload.minVerifiedVisits = 0;
           payload.minStreakDays = 0;
+          payload.minDietAdherenceDays = 0;
+        } else if (rewardFormData.achievementCondition === 'workouts') {
+          payload.minVerifiedVisits = 0;
           payload.minWorkoutCompletions = Number(rewardFormData.minWorkoutCompletions) || 5;
-        } else if (customerCriteriaType === 'free') {
-          payload.requiredPoints = 0;
-          payload.minVerifiedVisits = 0;
           payload.minStreakDays = 0;
+          payload.minDietAdherenceDays = 0;
+        } else if (rewardFormData.achievementCondition === 'streak') {
+          payload.minVerifiedVisits = 0;
           payload.minWorkoutCompletions = 0;
+          payload.minStreakDays = Number(rewardFormData.minStreakDays) || 7;
+          payload.minDietAdherenceDays = 0;
+        } else if (rewardFormData.achievementCondition === 'goals') {
+          payload.minVerifiedVisits = 0;
+          payload.minWorkoutCompletions = 0;
+          payload.minStreakDays = 0;
+          payload.minDietAdherenceDays = Number(rewardFormData.minDietAdherenceDays) || 7;
+        } else if (rewardFormData.achievementCondition === 'milestone') {
+          payload.minVerifiedVisits = Number(rewardFormData.minVerifiedVisits) || 20;
+          payload.minWorkoutCompletions = Number(rewardFormData.minWorkoutCompletions) || 15;
         }
       }
 
@@ -347,6 +508,7 @@ export default function GymAdminRewardsPerformance() {
         await api.post('/rewards', payload);
         setMessage({ type: 'success', text: 'Reward created successfully!' });
       }
+
       setIsRewardModalOpen(false);
       fetchRewardsAndClaims();
       fetchCustomerPerformance();
@@ -415,29 +577,38 @@ export default function GymAdminRewardsPerformance() {
   return (
     <div className="space-y-6 w-full pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-[#D9E2E3] shadow-xs">
-        <div className="flex items-center gap-3.5">
-          <div className="p-3 rounded-2xl bg-[#D8EAE7] text-[#167D78] shrink-0">
-            <Award className="w-7 h-7" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#11111F] border border-[#292940] p-6 rounded-3xl shadow-xl">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-[#6366F1]/15 border border-[#6366F1]/30 text-[#6366F1] flex items-center justify-center shrink-0">
+            <Award className="w-6 h-6 text-[#6366F1]" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-[#344B4A] tracking-tight">
-              Rewards & Performance
+            <h1 className="text-xl sm:text-2xl font-black text-[#FFFFFF] tracking-tight">
+              Rewards, Performance &amp; Awards
             </h1>
-            <p className="text-xs sm:text-sm text-[#697778] mt-0.5">
-              Comprehensive real-time tracking of customer adherence, trainer effectiveness, reward catalogs, and voucher redemptions.
+            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-0.5">
+              Comprehensive management of customer &amp; trainer rewards, verified performance records, awards honors, and claims audit.
             </p>
           </div>
         </div>
 
-        {activeTab === 'rewards-catalog' && (
+        {activeTab === 'customer-rewards' && (
           <button
-            onClick={openCreateRewardModal}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs sm:text-sm font-bold shadow-md shadow-[#167D78]/20 hover:bg-[#116660] transition-all shrink-0 cursor-pointer"
-            style={{ backgroundColor: '#167D78' }}
+            onClick={() => openCreateRewardModal('Customer')}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs sm:text-sm font-extrabold shadow-md shadow-[#6366F1]/25 transition-all shrink-0 cursor-pointer"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-            Create Reward
+            Create Customer Reward
+          </button>
+        )}
+
+        {activeTab === 'trainer-rewards' && (
+          <button
+            onClick={() => openCreateRewardModal('Trainer')}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs sm:text-sm font-extrabold shadow-md shadow-[#6366F1]/25 transition-all shrink-0 cursor-pointer"
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            Create Trainer Reward
           </button>
         )}
       </div>
@@ -447,72 +618,89 @@ export default function GymAdminRewardsPerformance() {
         <div
           className={`p-4 rounded-xl flex items-center justify-between border ${
             message.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border-red-200 text-red-800'
+              ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300'
+              : 'bg-red-950/40 border-red-800 text-red-300'
           }`}
         >
           <div className="flex items-center gap-2">
-            {message.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+            {message.type === 'success' ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : <AlertCircle className="w-5 h-5 text-red-400" />}
             <span className="text-sm font-medium">{message.text}</span>
           </div>
-          <button onClick={() => setMessage(null)} className="p-1 hover:bg-black/5 rounded cursor-pointer">
+          <button onClick={() => setMessage(null)} className="p-1 hover:bg-white/10 rounded cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Top Level 4-Tab Navigation */}
+      {/* Top Level 5-Tab Navigation — Performance Overview, Customer Rewards, Trainer Rewards, Awards, Claims */}
       <div className="w-full">
-        <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 bg-white border border-[#D9E2E3] rounded-2xl w-full sm:w-fit overflow-x-auto shadow-xs">
+        <div className="flex items-center gap-2 p-1.5 bg-[#11111F] border border-[#292940] rounded-2xl w-full overflow-x-auto no-scrollbar shadow-md">
+          {/* 1. Performance Overview */}
           <button
-            onClick={() => handleTabChange('customer-performance')}
-            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap shrink-0 cursor-pointer ${
-              activeTab === 'customer-performance'
-                ? 'bg-[#167D78] text-white font-bold shadow-xs'
-                : 'text-[#697778] hover:text-[#344B4A] hover:bg-[#E8EFF0] font-semibold'
+            onClick={() => handleTabChange('performance-overview')}
+            className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
+              activeTab === 'performance-overview'
+                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
+                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
             }`}
           >
-            <Users size={16} className={activeTab === 'customer-performance' ? 'text-white' : 'text-[#697778]'} />
-            <span>Customer Performance ({customerStats.totalCustomers || 0})</span>
+            <BarChart3 size={16} className={activeTab === 'performance-overview' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <span>Performance Overview</span>
           </button>
 
+          {/* 2. Customer Rewards */}
           <button
-            onClick={() => handleTabChange('trainer-performance')}
-            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap shrink-0 cursor-pointer ${
-              activeTab === 'trainer-performance'
-                ? 'bg-[#167D78] text-white font-bold shadow-xs'
-                : 'text-[#697778] hover:text-[#344B4A] hover:bg-[#E8EFF0] font-semibold'
+            onClick={() => handleTabChange('customer-rewards')}
+            className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
+              activeTab === 'customer-rewards'
+                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
+                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
             }`}
           >
-            <Dumbbell size={16} className={activeTab === 'trainer-performance' ? 'text-white' : 'text-[#697778]'} />
-            <span>Trainer Performance ({trainerStats.totalTrainers || 0})</span>
+            <Gift size={16} className={activeTab === 'customer-rewards' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <span>Customer Rewards ({rewards.filter(r => r.recipientType === 'Customer' || r.recipientType === 'Both').length})</span>
           </button>
 
+          {/* 3. Trainer Rewards */}
           <button
-            onClick={() => handleTabChange('rewards-catalog')}
-            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap shrink-0 cursor-pointer ${
-              activeTab === 'rewards-catalog'
-                ? 'bg-[#167D78] text-white font-bold shadow-xs'
-                : 'text-[#697778] hover:text-[#344B4A] hover:bg-[#E8EFF0] font-semibold'
+            onClick={() => handleTabChange('trainer-rewards')}
+            className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
+              activeTab === 'trainer-rewards'
+                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
+                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
             }`}
           >
-            <Gift size={16} className={activeTab === 'rewards-catalog' ? 'text-white' : 'text-[#697778]'} />
-            <span>Rewards Management ({rewards.length})</span>
+            <Dumbbell size={16} className={activeTab === 'trainer-rewards' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <span>Trainer Rewards ({rewards.filter(r => r.recipientType === 'Trainer' || r.recipientType === 'Both').length})</span>
           </button>
 
+          {/* 4. Awards & Recognition */}
+          <button
+            onClick={() => handleTabChange('awards-recognition')}
+            className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
+              activeTab === 'awards-recognition'
+                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
+                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
+            }`}
+          >
+            <Trophy size={16} className={activeTab === 'awards-recognition' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <span>Awards &amp; Recognition</span>
+          </button>
+
+          {/* 5. Claims & History */}
           <button
             onClick={() => handleTabChange('claims-history')}
-            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap shrink-0 cursor-pointer ${
+            className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
               activeTab === 'claims-history'
-                ? 'bg-[#167D78] text-white font-bold shadow-xs'
-                : 'text-[#697778] hover:text-[#344B4A] hover:bg-[#E8EFF0] font-semibold'
+                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
+                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
             }`}
           >
-            <Ticket size={16} className={activeTab === 'claims-history' ? 'text-white' : 'text-[#697778]'} />
-            <span>Reward Claims & History ({claims.length})</span>
+            <Ticket size={16} className={activeTab === 'claims-history' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <span>Claims &amp; History ({claims.length})</span>
             {claims.filter(c => c.claimStatus === 'Pending').length > 0 && (
-              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
-                activeTab === 'claims-history' ? 'bg-amber-400 text-stone-900' : 'bg-amber-500 text-white'
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black shrink-0 ${
+                activeTab === 'claims-history' ? 'bg-white text-[#6366F1]' : 'bg-[#6366F1] text-white'
               }`}>
                 {claims.filter(c => c.claimStatus === 'Pending').length}
               </span>
@@ -522,22 +710,381 @@ export default function GymAdminRewardsPerformance() {
       </div>
 
       {/* ======================================================== */}
-      {/* TAB 1: CUSTOMER PERFORMANCE                             */}
+      {/* SECTION 1: CUSTOMER REWARDS                              */}
       {/* ======================================================== */}
-      {activeTab === 'customer-performance' && (
+      {activeTab === 'customer-rewards' && (
         <div className="space-y-6">
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+                <span>Active Customer Perks</span>
+                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><Gift className="w-4 h-4" /></span>
+              </div>
+              <div className="text-3xl font-black mt-2 text-[#11111F]">
+                {rewards.filter(r => (r.recipientType === 'Customer' || r.recipientType === 'Both') && r.status === 'Active').length}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Available for gym members</p>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+                <span>Total Redemptions</span>
+                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><CheckCircle2 className="w-4 h-4" /></span>
+              </div>
+              <div className="text-3xl font-black mt-2 text-emerald-700">
+                {rewards.filter(r => r.recipientType === 'Customer' || r.recipientType === 'Both').reduce((sum, r) => sum + (r.claimedCount || 0), 0)}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Vouchers redeemed by customers</p>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+                <span>Points-Based Rewards</span>
+                <span className="p-2 rounded-lg bg-amber-50 text-amber-700"><Coins className="w-4 h-4" /></span>
+              </div>
+              <div className="text-3xl font-black mt-2 text-amber-700">
+                {rewards.filter(r => (r.recipientType === 'Customer' || r.recipientType === 'Both') && (r.requiredPoints || 0) > 0).length}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Redeemable with attendance points</p>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+                <span>Pending Claims</span>
+                <span className="p-2 rounded-lg bg-purple-50 text-purple-700"><Clock className="w-4 h-4" /></span>
+              </div>
+              <div className="text-3xl font-black mt-2 text-purple-700">
+                {claims.filter(c => c.userRole === 'MEMBER' && c.claimStatus === 'Pending').length}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Awaiting owner review</p>
+            </div>
+          </div>
+
+          {/* Search & Actions */}
+          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#292940' }}>
+            <div className="relative w-full md:w-80">
+              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search customer rewards..."
+                value={rewardSearch}
+                onChange={e => setRewardSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                style={{ borderColor: '#292940' }}
+              />
+            </div>
+
+            <button
+              onClick={() => openCreateRewardModal('Customer')}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#4F46E5] transition cursor-pointer"
+              style={{ backgroundColor: '#6366F1' }}
+            >
+              <Plus className="w-4 h-4" />
+              Create Customer Reward
+            </button>
+          </div>
+
+          {/* Customer Rewards Grid */}
+          {rewards.filter(r => (r.recipientType === 'Customer' || r.recipientType === 'Both') && (r.title.toLowerCase().includes(rewardSearch.toLowerCase()) || r.category.toLowerCase().includes(rewardSearch.toLowerCase()))).length === 0 ? (
+            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
+              <Gift className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+              <h3 className="text-base font-bold text-gray-700">No Customer Rewards Configured</h3>
+              <p className="text-sm text-gray-400 mt-1">Create discount coupons, free personal training sessions, or merchandise rewards for members.</p>
+              <button
+                onClick={() => openCreateRewardModal('Customer')}
+                className="mt-4 px-4 py-2 rounded-xl text-white text-xs font-semibold"
+                style={{ backgroundColor: '#6366F1' }}
+              >
+                Create Customer Reward
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {rewards.filter(r => (r.recipientType === 'Customer' || r.recipientType === 'Both') && (r.title.toLowerCase().includes(rewardSearch.toLowerCase()) || r.category.toLowerCase().includes(rewardSearch.toLowerCase()))).map(r => (
+                <div
+                  key={r._id}
+                  className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
+                  style={{ borderColor: '#292940' }}
+                >
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-50 text-emerald-800">
+                        {r.recipientType === 'Both' ? 'Customer & Trainer' : 'Customer Perk'}
+                      </span>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-700">
+                        {r.status}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-base text-gray-800">{r.title}</h3>
+                      <span className="text-xs text-gray-400 block mt-0.5">{r.category}</span>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{r.description}</p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1 border" style={{ borderColor: '#0B0B12' }}>
+                      {r.requiredPoints > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Points Cost:</span>
+                          <span className="font-bold text-[#6366F1]">{r.requiredPoints} pts</span>
+                        </div>
+                      )}
+                      {r.minVerifiedVisits > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Target Visits:</span>
+                          <span className="font-semibold">{r.minVerifiedVisits} gym visits</span>
+                        </div>
+                      )}
+                      {r.minWorkoutCompletions > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Target Workouts:</span>
+                          <span className="font-semibold">{r.minWorkoutCompletions} workouts</span>
+                        </div>
+                      )}
+                      {r.minStreakDays > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Target Streak:</span>
+                          <span className="font-semibold text-amber-600">🔥 {r.minStreakDays} days</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between pt-1 border-t border-gray-200">
+                        <span className="text-gray-500">Claims:</span>
+                        <span className="font-semibold">{r.claimedCount} redeemed / {r.totalQuantity === 0 ? 'Unlimited' : r.totalQuantity}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#292940' }}>
+                    <span className="text-gray-500">
+                      {r.requireApproval ? '🔒 Approval required' : '⚡ Instant claim'}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => openEditRewardModal(r)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 cursor-pointer">
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleDeleteReward(r._id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 cursor-pointer">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* SECTION 2: TRAINER REWARDS                              */}
+      {/* ======================================================== */}
+      {activeTab === 'trainer-rewards' && (
+        <div className="space-y-6">
+          {/* Trainer Rewards Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+                <span>Active Trainer Rewards</span>
+                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><Dumbbell className="w-4 h-4" /></span>
+              </div>
+              <div className="text-3xl font-black mt-2 text-[#11111F]">
+                {rewards.filter(r => (r.recipientType === 'Trainer' || r.recipientType === 'Both') && r.status === 'Active').length}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Available for gym coaches</p>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+                <span>Cash Bonuses Configured</span>
+                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><IndianRupee className="w-4 h-4" /></span>
+              </div>
+              <div className="text-3xl font-black mt-2 text-emerald-700">
+                ₹{rewards.filter(r => (r.recipientType === 'Trainer' || r.recipientType === 'Both')).reduce((sum, r) => sum + (r.bonusAmount || 0), 0).toLocaleString('en-IN')}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Across performance milestones</p>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+                <span>Trainer Claims</span>
+                <span className="p-2 rounded-lg bg-amber-50 text-amber-700"><Trophy className="w-4 h-4" /></span>
+              </div>
+              <div className="text-3xl font-black mt-2 text-amber-700">
+                {claims.filter(c => c.userRole === 'TRAINER').length}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Recorded trainer bonuses</p>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+                <span>Pending Payouts</span>
+                <span className="p-2 rounded-lg bg-purple-50 text-purple-700"><Clock className="w-4 h-4" /></span>
+              </div>
+              <div className="text-3xl font-black mt-2 text-purple-700">
+                {claims.filter(c => c.userRole === 'TRAINER' && (c.financialPayoutStatus === 'Pending' || c.financialPayoutStatus === 'Pending Approval' || c.financialPayoutStatus === 'Payment Pending')).length}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Awaiting financial transfer</p>
+            </div>
+          </div>
+
+          {/* Search & Actions */}
+          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#292940' }}>
+            <div className="relative w-full md:w-80">
+              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search trainer rewards & bonuses..."
+                value={rewardSearch}
+                onChange={e => setRewardSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                style={{ borderColor: '#292940' }}
+              />
+            </div>
+
+            <button
+              onClick={() => openCreateRewardModal('Trainer')}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#4F46E5] transition cursor-pointer"
+              style={{ backgroundColor: '#6366F1' }}
+            >
+              <Plus className="w-4 h-4" />
+              Create Trainer Reward
+            </button>
+          </div>
+
+          {/* Trainer Rewards Grid */}
+          {rewards.filter(r => (r.recipientType === 'Trainer' || r.recipientType === 'Both') && (r.title.toLowerCase().includes(rewardSearch.toLowerCase()) || r.category.toLowerCase().includes(rewardSearch.toLowerCase()))).length === 0 ? (
+            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
+              <Dumbbell className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+              <h3 className="text-base font-bold text-gray-700">No Trainer Rewards Configured</h3>
+              <p className="text-sm text-gray-400 mt-1">Create trainer milestone bonuses, coaching awards, and ratings incentives.</p>
+              <button
+                onClick={() => openCreateRewardModal('Trainer')}
+                className="mt-4 px-4 py-2 rounded-xl text-white text-xs font-semibold"
+                style={{ backgroundColor: '#6366F1' }}
+              >
+                Create Trainer Reward
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {rewards.filter(r => (r.recipientType === 'Trainer' || r.recipientType === 'Both') && (r.title.toLowerCase().includes(rewardSearch.toLowerCase()) || r.category.toLowerCase().includes(rewardSearch.toLowerCase()))).map(r => (
+                <div
+                  key={r._id}
+                  className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
+                  style={{ borderColor: '#292940' }}
+                >
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-purple-50 text-purple-700">
+                        {r.category}
+                      </span>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-700">
+                        {r.status}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-base text-gray-800">{r.title}</h3>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{r.description}</p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1.5 border" style={{ borderColor: '#0B0B12' }}>
+                      {r.bonusAmount > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Bonus Cash:</span>
+                          <span className="font-bold text-emerald-700">₹{r.bonusAmount} {r.currency}</span>
+                        </div>
+                      )}
+                      {r.minCompletedSessions > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Completed Sessions:</span>
+                          <span className="font-semibold">{r.minCompletedSessions} sessions</span>
+                        </div>
+                      )}
+                      {r.minAverageRating > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Min Rating:</span>
+                          <span className="font-semibold">{r.minAverageRating}⭐ rating</span>
+                        </div>
+                      )}
+                      {r.minReviewedPlans > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Reviewed Plans:</span>
+                          <span className="font-semibold">{r.minReviewedPlans} plans</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between pt-1 border-t border-gray-200">
+                        <span className="text-gray-500">Claims:</span>
+                        <span className="font-semibold">{r.claimedCount} claims</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#292940' }}>
+                    <span className="text-gray-500">
+                      {r.requireApproval ? '🔒 Approval required' : '⚡ Instant claim'}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => openEditRewardModal(r)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 cursor-pointer">
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleDeleteReward(r._id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 cursor-pointer">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* SECTION 3: PERFORMANCE OVERVIEW                          */}
+      {/* ======================================================== */}
+      {activeTab === 'performance-overview' && (
+        <div className="space-y-6">
+          {/* Sub Switcher */}
+          <div className="flex items-center gap-2 p-1.5 bg-white border border-[#292940] rounded-2xl w-fit shadow-xs">
+            <button
+              onClick={() => setPerfSubTab('customer')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
+                perfSubTab === 'customer'
+                  ? 'bg-[#6366F1] text-white shadow-xs'
+                  : 'text-[#A1A1AA] hover:text-[#11111F] hover:bg-[#0B0B12]'
+              }`}
+            >
+              <Users size={16} />
+              <span>Customer Performance ({customerStats.totalCustomers || 0})</span>
+            </button>
+            <button
+              onClick={() => setPerfSubTab('trainer')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
+                perfSubTab === 'trainer'
+                  ? 'bg-[#6366F1] text-white shadow-xs'
+                  : 'text-[#A1A1AA] hover:text-[#11111F] hover:bg-[#0B0B12]'
+              }`}
+            >
+              <Dumbbell size={16} />
+              <span>Trainer Performance ({trainerStats.totalTrainers || 0})</span>
+            </button>
+          </div>
+
+          {perfSubTab === 'customer' && (
+        <div className="space-y-6">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
               <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
                 <span>Total Gym Members</span>
-                <span className="p-2 rounded-lg bg-[#D8EAE7] text-[#167D78]"><Users className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><Users className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#344B4A]">{customerStats.totalCustomers}</div>
+              <div className="text-3xl font-black mt-2 text-[#11111F]">{customerStats.totalCustomers}</div>
               <p className="text-xs text-gray-400 mt-1">{customerStats.activeMembersCount} with active membership</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
               <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
                 <span>Avg Attendance Streak</span>
                 <span className="p-2 rounded-lg bg-amber-50 text-amber-600"><Flame className="w-4 h-4" /></span>
@@ -548,18 +1095,18 @@ export default function GymAdminRewardsPerformance() {
               <p className="text-xs text-gray-400 mt-1">Consecutive verified visits</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
               <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
                 <span>Avg Workout Completion</span>
-                <span className="p-2 rounded-lg bg-[#D8EAE7] text-[#167D78]"><TrendingUp className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><TrendingUp className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#167D78]">
+              <div className="text-3xl font-black mt-2 text-[#6366F1]">
                 {customerStats.averageWorkoutCompletionRate !== null ? `${customerStats.averageWorkoutCompletionRate}%` : 'Not Available'}
               </div>
               <p className="text-xs text-gray-400 mt-1">Based on logged workout sets</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
               <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
                 <span>Eligible For Rewards</span>
                 <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><Gift className="w-4 h-4" /></span>
@@ -572,7 +1119,7 @@ export default function GymAdminRewardsPerformance() {
           </div>
 
           {/* Search & Filters */}
-          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#D9E2E3' }}>
+          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#292940' }}>
             <div className="relative w-full md:w-80">
               <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
               <input
@@ -581,7 +1128,7 @@ export default function GymAdminRewardsPerformance() {
                 value={custSearch}
                 onChange={e => setCustSearch(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-                style={{ borderColor: '#D9E2E3' }}
+                style={{ borderColor: '#292940' }}
               />
             </div>
 
@@ -592,7 +1139,7 @@ export default function GymAdminRewardsPerformance() {
                   value={custMembershipFilter}
                   onChange={e => setCustMembershipFilter(e.target.value)}
                   className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-white focus:outline-none"
-                  style={{ borderColor: '#D9E2E3' }}
+                  style={{ borderColor: '#292940' }}
                 >
                   <option value="ALL">All Statuses</option>
                   <option value="Active">Active</option>
@@ -606,7 +1153,7 @@ export default function GymAdminRewardsPerformance() {
                   value={custTrainerFilter}
                   onChange={e => setCustTrainerFilter(e.target.value)}
                   className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-white focus:outline-none"
-                  style={{ borderColor: '#D9E2E3' }}
+                  style={{ borderColor: '#292940' }}
                 >
                   <option value="ALL">All Trainers</option>
                   {trainers.map(t => (
@@ -621,22 +1168,22 @@ export default function GymAdminRewardsPerformance() {
 
           {/* Customer Table */}
           {loadingCustomers ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto text-[#167D78]" />
+            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
+              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto text-[#6366F1]" />
               <p className="mt-2 text-xs text-gray-500">Evaluating customer records...</p>
             </div>
           ) : filteredCustomers.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
+            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
               <Users className="w-12 h-12 mx-auto text-gray-300 mb-3" />
               <h3 className="text-base font-bold text-gray-700">No Customers Match Filter</h3>
               <p className="text-sm text-gray-400 mt-1">Try resetting your search query or membership status filters.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-white rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: '#292940' }}>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-sm">
                   <thead>
-                    <tr className="border-b text-xs uppercase bg-gray-50 text-gray-500" style={{ borderColor: '#D9E2E3' }}>
+                    <tr className="border-b text-xs uppercase bg-gray-50 text-gray-500" style={{ borderColor: '#292940' }}>
                       <th className="py-3 px-4">Customer</th>
                       <th className="py-3 px-4">Membership</th>
                       <th className="py-3 px-4">Assigned Trainer</th>
@@ -647,7 +1194,7 @@ export default function GymAdminRewardsPerformance() {
                       <th className="py-3 px-4 text-right">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y" style={{ borderColor: '#D9E2E3' }}>
+                  <tbody className="divide-y" style={{ borderColor: '#292940' }}>
                     {filteredCustomers.map(c => {
                       const wPct = c.workoutSummary?.completionPercentage;
                       const dPct = c.dietSummary?.adherencePercentage;
@@ -687,7 +1234,7 @@ export default function GymAdminRewardsPerformance() {
                           <td className="py-3 px-4 text-xs">
                             {wPct !== null ? (
                               <div>
-                                <span className="font-bold text-[#167D78]">{wPct}%</span>
+                                <span className="font-bold text-[#6366F1]">{wPct}%</span>
                                 <span className="text-[11px] text-gray-400 block">
                                   {c.workoutSummary.completedWorkoutsCount} done / {c.workoutSummary.totalWorkoutsScheduled}
                                 </span>
@@ -741,8 +1288,8 @@ export default function GymAdminRewardsPerformance() {
                           <td className="py-3 px-4 text-right">
                             <button
                               onClick={() => setSelectedCustomer(c)}
-                              className="px-2.5 py-1 rounded-xl text-xs font-semibold border hover:bg-gray-50 text-[#167D78] flex items-center gap-1 ml-auto"
-                              style={{ borderColor: '#D9E2E3' }}
+                              className="px-2.5 py-1 rounded-xl text-xs font-semibold border hover:bg-gray-50 text-[#6366F1] flex items-center gap-1 ml-auto"
+                              style={{ borderColor: '#292940' }}
                             >
                               <Eye className="w-3.5 h-3.5" /> View
                             </button>
@@ -758,23 +1305,21 @@ export default function GymAdminRewardsPerformance() {
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* TAB 2: TRAINER PERFORMANCE                              */}
-      {/* ======================================================== */}
-      {activeTab === 'trainer-performance' && (
+      {/* TRAINER PERFORMANCE SUB-VIEW */}
+      {perfSubTab === 'trainer' && (
         <div className="space-y-6">
           {/* Trainer Stats Header */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
               <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
                 <span>Total Trainers</span>
-                <span className="p-2 rounded-lg bg-[#D8EAE7] text-[#167D78]"><Dumbbell className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><Dumbbell className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#344B4A]">{trainerStats.totalTrainers}</div>
+              <div className="text-3xl font-black mt-2 text-[#11111F]">{trainerStats.totalTrainers}</div>
               <p className="text-xs text-gray-400 mt-1">Gym trainers on staff</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
               <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
                 <span>Completed Sessions Across Gym</span>
                 <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><CheckCircle2 className="w-4 h-4" /></span>
@@ -785,7 +1330,7 @@ export default function GymAdminRewardsPerformance() {
               <p className="text-xs text-gray-400 mt-1">Online & in-person sessions</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
               <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
                 <span>Average Trainer Rating</span>
                 <span className="p-2 rounded-lg bg-amber-50 text-amber-600"><Star className="w-4 h-4 fill-amber-500 text-amber-500" /></span>
@@ -798,7 +1343,7 @@ export default function GymAdminRewardsPerformance() {
           </div>
 
           {/* Search */}
-          <div className="bg-white p-4 rounded-2xl border shadow-sm flex justify-between items-center" style={{ borderColor: '#D9E2E3' }}>
+          <div className="bg-white p-4 rounded-2xl border shadow-sm flex justify-between items-center" style={{ borderColor: '#292940' }}>
             <div className="relative w-full md:w-80">
               <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
               <input
@@ -807,19 +1352,19 @@ export default function GymAdminRewardsPerformance() {
                 value={trainerSearch}
                 onChange={e => setTrainerSearch(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-                style={{ borderColor: '#D9E2E3' }}
+                style={{ borderColor: '#292940' }}
               />
             </div>
           </div>
 
           {/* Trainer Grid */}
           {loadingTrainers ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto text-[#167D78]" />
+            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
+              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto text-[#6366F1]" />
               <p className="mt-2 text-xs text-gray-500">Loading trainer evaluations...</p>
             </div>
           ) : filteredTrainers.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
+            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
               <Dumbbell className="w-12 h-12 mx-auto text-gray-300 mb-3" />
               <h3 className="text-base font-bold text-gray-700">No Trainers Found</h3>
               <p className="text-sm text-gray-400 mt-1">No trainers match your active search.</p>
@@ -830,7 +1375,7 @@ export default function GymAdminRewardsPerformance() {
                 <div
                   key={t.trainerId}
                   className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                  style={{ borderColor: '#D9E2E3' }}
+                  style={{ borderColor: '#292940' }}
                 >
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -852,7 +1397,7 @@ export default function GymAdminRewardsPerformance() {
                     </div>
 
                     {/* Performance Metrics Box */}
-                    <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1.5 border" style={{ borderColor: '#E8EFF0' }}>
+                    <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1.5 border" style={{ borderColor: '#0B0B12' }}>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Sessions Completed:</span>
                         <span className="font-bold text-emerald-700">
@@ -869,7 +1414,7 @@ export default function GymAdminRewardsPerformance() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Client Workout Adherence:</span>
-                        <span className="font-bold text-[#167D78]">
+                        <span className="font-bold text-[#6366F1]">
                           {t.clientsSummary.averageClientWorkoutProgress !== null
                             ? `${t.clientsSummary.averageClientWorkoutProgress}%`
                             : 'Not recorded'}
@@ -886,7 +1431,7 @@ export default function GymAdminRewardsPerformance() {
                     )}
                   </div>
 
-                  <div className="pt-4 mt-3 border-t flex justify-between items-center" style={{ borderColor: '#D9E2E3' }}>
+                  <div className="pt-4 mt-3 border-t flex justify-between items-center" style={{ borderColor: '#292940' }}>
                     <span className="text-xs text-gray-400">
                       {t.rewardsSummary.paidBonusesCount} bonuses paid
                     </span>
@@ -895,8 +1440,8 @@ export default function GymAdminRewardsPerformance() {
                         setSelectedTrainer(t);
                         setTrainerModalTab('handled-customers');
                       }}
-                      className="px-3 py-1.5 rounded-xl text-xs font-semibold border text-[#167D78] hover:bg-gray-50 flex items-center gap-1 cursor-pointer"
-                      style={{ borderColor: '#D9E2E3' }}
+                      className="px-3 py-1.5 rounded-xl text-xs font-semibold border text-[#6366F1] hover:bg-gray-50 flex items-center gap-1 cursor-pointer"
+                      style={{ borderColor: '#292940' }}
                     >
                       <Eye className="w-3.5 h-3.5" /> Performance Report
                     </button>
@@ -907,146 +1452,14 @@ export default function GymAdminRewardsPerformance() {
           )}
         </div>
       )}
-
-      {/* ======================================================== */}
-      {/* TAB 3: REWARDS MANAGEMENT                               */}
-      {/* ======================================================== */}
-      {activeTab === 'rewards-catalog' && (
-        <div className="space-y-6">
-          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#D9E2E3' }}>
-            <div className="relative w-full md:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search rewards..."
-                value={rewardSearch}
-                onChange={e => setRewardSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-                style={{ borderColor: '#D9E2E3' }}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-gray-500">AUDIENCE:</span>
-              <select
-                value={recipientFilter}
-                onChange={e => setRecipientFilter(e.target.value)}
-                className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-white focus:outline-none"
-                style={{ borderColor: '#D9E2E3' }}
-              >
-                <option value="ALL">All Audiences</option>
-                <option value="Customer">Customers Only</option>
-                <option value="Trainer">Trainers Only</option>
-              </select>
-            </div>
-          </div>
-
-          {filteredRewards.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <Gift className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold text-gray-700">No Rewards Configured</h3>
-              <p className="text-sm text-gray-400 mt-1">Create discount coupons, free sessions, or trainer performance bonuses.</p>
-              <button
-                onClick={openCreateRewardModal}
-                className="mt-4 px-4 py-2 rounded-xl text-white text-xs font-semibold"
-                style={{ backgroundColor: '#167D78' }}
-              >
-                Create Reward
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredRewards.map(r => (
-                <div
-                  key={r._id}
-                  className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                  style={{ borderColor: '#D9E2E3' }}
-                >
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-50 text-emerald-800">
-                        {r.recipientType === 'Both' ? 'Customer & Trainer' : `${r.recipientType}s`}
-                      </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-700">
-                        {r.status}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h3 className="font-bold text-base text-gray-800">{r.title}</h3>
-                      <span className="text-xs text-gray-400 block mt-0.5">{r.category}</span>
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{r.description}</p>
-                    </div>
-
-                    {/* Criteria Rules Display */}
-                    <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1 border" style={{ borderColor: '#E8EFF0' }}>
-                      {r.requiredPoints > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Points Cost:</span>
-                          <span className="font-bold text-[#167D78]">{r.requiredPoints} pts</span>
-                        </div>
-                      )}
-                      {r.minVerifiedVisits > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Target Visits:</span>
-                          <span className="font-semibold">{r.minVerifiedVisits} gym visits</span>
-                        </div>
-                      )}
-                      {r.minWorkoutCompletions > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Target Workouts:</span>
-                          <span className="font-semibold">{r.minWorkoutCompletions} workouts</span>
-                        </div>
-                      )}
-                      {r.minStreakDays > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Target Streak:</span>
-                          <span className="font-semibold text-amber-600">🔥 {r.minStreakDays} days</span>
-                        </div>
-                      )}
-                      {r.bonusAmount > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Bonus Amount:</span>
-                          <span className="font-bold text-emerald-700">₹{r.bonusAmount} {r.currency}</span>
-                        </div>
-                      )}
-                      {r.minCompletedSessions > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Trainer Sessions Target:</span>
-                          <span className="font-semibold">{r.minCompletedSessions} sessions</span>
-                        </div>
-                      )}
-                      {r.minAverageRating > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Min Rating:</span>
-                          <span className="font-semibold">{r.minAverageRating}⭐ rating</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between pt-1 border-t border-gray-200">
-                        <span className="text-gray-500">Claims:</span>
-                        <span className="font-semibold">{r.claimedCount} redeemed / {r.totalQuantity === 0 ? 'Unlimited' : r.totalQuantity}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#D9E2E3' }}>
-                    <span className="text-gray-500">
-                      {r.requireApproval ? '🔒 Approval required' : '⚡ Instant claim'}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => openEditRewardModal(r)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600">
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDeleteReward(r._id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-600">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* SECTION 4: AWARDS & RECOGNITION                          */}
+      {/* ======================================================== */}
+      {activeTab === 'awards-recognition' && (
+        <AwardsRecognitionSection />
       )}
 
       {/* ======================================================== */}
@@ -1054,26 +1467,24 @@ export default function GymAdminRewardsPerformance() {
       {/* ======================================================== */}
       {activeTab === 'claims-history' && (
         <div className="space-y-6">
-          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#D9E2E3' }}>
-            <div className="relative w-full md:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+          <div className="bg-[#11111F] p-4 sm:p-5 rounded-2xl border border-[#292940] shadow-md flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search className="w-4 h-4 absolute left-3 top-3.5 text-[#737373]" />
               <input
                 type="text"
                 placeholder="Search voucher code, user name..."
                 value={rewardSearch}
                 onChange={e => setRewardSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-                style={{ borderColor: '#D9E2E3' }}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-[#050505] border border-[#292940] text-[#FFFFFF] placeholder-[#737373] focus:border-[#6366F1] focus:outline-none transition-colors"
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-gray-500">STATUS:</span>
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">STATUS:</span>
               <select
                 value={claimStatusFilter}
                 onChange={e => setClaimStatusFilter(e.target.value)}
-                className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-white focus:outline-none"
-                style={{ borderColor: '#D9E2E3' }}
+                className="px-3.5 py-2 rounded-xl text-xs font-bold border border-[#292940] bg-[#050505] text-[#FFFFFF] focus:border-[#6366F1] focus:outline-none cursor-pointer"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="Pending">Pending Approval</option>
@@ -1085,17 +1496,19 @@ export default function GymAdminRewardsPerformance() {
           </div>
 
           {filteredClaims.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#D9E2E3' }}>
-              <Ticket className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold text-gray-700">No Claim Records Found</h3>
-              <p className="text-sm text-gray-400 mt-1">Claimed vouchers and approval requests will appear here.</p>
+            <div className="text-center py-16 bg-[#11111F] rounded-2xl border border-[#292940] shadow-md space-y-3">
+              <div className="w-16 h-16 rounded-full bg-[#0B0B12] border border-[#292940] text-[#6366F1] flex items-center justify-center mx-auto mb-2">
+                <Ticket className="w-8 h-8" />
+              </div>
+              <h3 className="text-base font-bold text-[#FFFFFF]">No Claim Records Found</h3>
+              <p className="text-xs text-[#A1A1AA] max-w-sm mx-auto">Claimed vouchers and approval requests will appear here.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: '#D9E2E3' }}>
+            <div className="bg-[#11111F] rounded-2xl border border-[#292940] shadow-xl overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-sm">
+                <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="border-b text-xs uppercase bg-gray-50 text-gray-500" style={{ borderColor: '#D9E2E3' }}>
+                    <tr className="border-b border-[#292940] text-xs uppercase bg-[#0B0B12] text-[#A1A1AA] font-extrabold tracking-wider">
                       <th className="py-3 px-4">Recipient</th>
                       <th className="py-3 px-4">Reward</th>
                       <th className="py-3 px-4">Voucher Code</th>
@@ -1105,98 +1518,100 @@ export default function GymAdminRewardsPerformance() {
                       <th className="py-3 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y" style={{ borderColor: '#D9E2E3' }}>
+                  <tbody className="divide-y divide-[#17172A]">
                     {filteredClaims.map(c => {
                       const isTrainer = c.userRole === 'TRAINER';
                       const hasBonus = c.financialPayoutStatus !== 'Not Applicable';
 
                       return (
-                        <tr key={c._id} className="hover:bg-gray-50/50">
-                          <td className="py-3 px-4">
-                            <div className="font-semibold text-gray-800">
+                        <tr key={c._id} className="hover:bg-[#161616] transition-colors">
+                          <td className="py-3.5 px-4">
+                            <div className="font-bold text-[#F5F5F5]">
                               {c.userId?.firstName || 'User'} {c.userId?.lastName || ''}
                             </div>
-                            <span className={`text-[10px] px-1.5 py-0.2 rounded font-semibold ${isTrainer ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold inline-block mt-0.5 ${
+                              isTrainer ? 'bg-purple-950/60 text-purple-400 border border-purple-800/40' : 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/40'
+                            }`}>
                               {isTrainer ? 'Trainer' : 'Customer'}
                             </span>
                           </td>
 
-                          <td className="py-3 px-4 text-xs">
-                            <div className="font-medium text-gray-800">{c.rewardId?.title || 'Reward'}</div>
-                            <span className="text-[11px] text-gray-400">{c.rewardId?.category}</span>
+                          <td className="py-3.5 px-4">
+                            <div className="font-semibold text-[#F5F5F5]">{c.rewardId?.title || 'Reward'}</div>
+                            <span className="text-[11px] text-[#A6A6A6]">{c.rewardId?.category}</span>
                           </td>
 
-                          <td className="py-3 px-4">
-                            <span className="font-mono font-bold text-xs px-2 py-0.5 rounded bg-gray-100 border">
+                          <td className="py-3.5 px-4">
+                            <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-lg bg-[#050505] border border-[#292940] text-[#818CF8]">
                               {c.claimCode}
                             </span>
                           </td>
 
-                          <td className="py-3 px-4 text-xs font-semibold">
+                          <td className="py-3.5 px-4 font-bold">
                             {c.pointsDeducted > 0 ? (
-                              <span className="text-[#167D78]">-{c.pointsDeducted} pts</span>
+                              <span className="text-[#818CF8]">-{c.pointsDeducted} pts</span>
                             ) : (
-                              <span className="text-gray-400">0 pts</span>
+                              <span className="text-[#737373]">0 pts</span>
                             )}
                           </td>
 
-                          <td className="py-3 px-4 text-xs">
+                          <td className="py-3.5 px-4">
                             <span
-                              className={`px-2 py-0.5 rounded-full font-semibold ${
+                              className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
                                 c.claimStatus === 'Approved'
-                                  ? 'bg-emerald-100 text-emerald-800'
+                                  ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/50'
                                   : c.claimStatus === 'Pending'
-                                  ? 'bg-amber-100 text-amber-800'
+                                  ? 'bg-amber-950/60 text-amber-400 border border-amber-800/50'
                                   : c.claimStatus === 'Redeemed'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-red-100 text-red-800'
+                                  ? 'bg-sky-950/60 text-sky-400 border border-sky-800/50'
+                                  : 'bg-red-950/60 text-red-400 border border-red-800/50'
                               }`}
                             >
                               {c.claimStatus}
                             </span>
                             {c.rejectionReason && (
-                              <span className="block text-[11px] text-red-600 mt-1 max-w-[150px] truncate" title={c.rejectionReason}>
+                              <span className="block text-[11px] text-red-400 mt-1 max-w-[150px] truncate" title={c.rejectionReason}>
                                 {c.rejectionReason}
                               </span>
                             )}
                           </td>
 
-                          <td className="py-3 px-4 text-xs">
+                          <td className="py-3.5 px-4">
                             {hasBonus ? (
                               <div>
                                 <span
-                                  className={`px-2 py-0.5 rounded-full font-semibold ${
+                                  className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
                                     c.financialPayoutStatus === 'Paid'
-                                      ? 'bg-emerald-100 text-emerald-800'
-                                      : 'bg-amber-100 text-amber-800'
+                                      ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/50'
+                                      : 'bg-amber-950/60 text-amber-400 border border-amber-800/50'
                                   }`}
                                 >
                                   {c.financialPayoutStatus === 'Paid' ? 'Paid' : 'Pending Payment'}
                                 </span>
                                 {c.financialPayoutReference && (
-                                  <span className="block text-[10px] text-gray-400 font-mono mt-0.5">
+                                  <span className="block text-[10px] text-[#A6A6A6] font-mono mt-0.5">
                                     Ref: {c.financialPayoutReference}
                                   </span>
                                 )}
                               </div>
                             ) : (
-                              <span className="text-gray-400">—</span>
+                              <span className="text-[#737373]">—</span>
                             )}
                           </td>
 
-                          <td className="py-3 px-4 text-right">
+                          <td className="py-3.5 px-4 text-right">
                             <div className="flex items-center justify-end gap-1.5">
                               {c.claimStatus === 'Pending' && (
                                 <>
                                   <button
                                     onClick={() => openClaimAction(c, 'APPROVE')}
-                                    className="px-2 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                    className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#6366F1] hover:bg-[#4F46E5] text-white transition-colors cursor-pointer"
                                   >
                                     Approve
                                   </button>
                                   <button
                                     onClick={() => openClaimAction(c, 'REJECT')}
-                                    className="px-2 py-1 rounded text-xs font-semibold bg-red-50 text-red-700 hover:bg-red-100"
+                                    className="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-950/60 border border-red-800 text-red-300 hover:bg-red-900/60 transition-colors cursor-pointer"
                                   >
                                     Reject
                                   </button>
@@ -1206,7 +1621,7 @@ export default function GymAdminRewardsPerformance() {
                               {c.claimStatus === 'Approved' && (
                                 <button
                                   onClick={() => openClaimAction(c, 'REDEEM')}
-                                  className="px-2 py-1 rounded text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100"
+                                  className="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-950/60 border border-sky-800 text-sky-300 hover:bg-sky-900/60 transition-colors cursor-pointer"
                                 >
                                   Mark Redeemed
                                 </button>
@@ -1215,7 +1630,7 @@ export default function GymAdminRewardsPerformance() {
                               {hasBonus && c.financialPayoutStatus === 'Pending' && (
                                 <button
                                   onClick={() => openClaimAction(c, 'PAYOUT')}
-                                  className="px-2 py-1 rounded text-xs font-semibold bg-purple-50 text-purple-700 hover:bg-purple-100"
+                                  className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#6366F1] hover:bg-[#4F46E5] text-white transition-colors cursor-pointer"
                                 >
                                   Record Payout
                                 </button>
@@ -1238,10 +1653,10 @@ export default function GymAdminRewardsPerformance() {
       {/* ======================================================== */}
       {selectedCustomer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#D9E2E3' }}>
-            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#D9E2E3' }}>
+          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#292940' }}>
+            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#292940' }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#D8EAE7] text-[#167D78] font-bold">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#17172A] text-[#6366F1] font-bold">
                   {selectedCustomer.name.charAt(0)}
                 </div>
                 <div>
@@ -1269,7 +1684,7 @@ export default function GymAdminRewardsPerformance() {
                 </div>
                 <div className="p-3 rounded-xl bg-gray-50 border">
                   <span className="text-gray-400 block font-medium">WORKOUTS</span>
-                  <span className="font-bold text-[#167D78] text-sm">
+                  <span className="font-bold text-[#6366F1] text-sm">
                     {selectedCustomer.workoutSummary?.completionPercentage !== null ? `${selectedCustomer.workoutSummary.completionPercentage}%` : 'Not recorded'}
                   </span>
                   <span className="text-[11px] text-gray-500 block">{selectedCustomer.workoutSummary?.completedWorkoutsCount} completed</span>
@@ -1284,13 +1699,13 @@ export default function GymAdminRewardsPerformance() {
               {/* Attendance, Workout & Diet Status with Completed Lists */}
               <div className="space-y-4">
                 {/* 1. Attendance History & Verified Gym Visits */}
-                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#D9E2E3' }}>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#292940' }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                     <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                      <CalendarCheck className="w-4 h-4 text-[#167D78]" /> Verified Gym Attendance & Visit History
+                      <CalendarCheck className="w-4 h-4 text-[#6366F1]" /> Verified Gym Attendance & Visit History
                     </h4>
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#D8EAE7] text-[#167D78] text-xs">
+                      <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#17172A] text-[#6366F1] text-xs">
                         {selectedCustomer.attendanceSummary?.totalVerifiedVisits || 0} Verified Visits
                       </span>
                       {selectedCustomer.attendanceSummary?.attendanceStreak > 0 && (
@@ -1301,7 +1716,7 @@ export default function GymAdminRewardsPerformance() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#E8EFF0' }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#0B0B12' }}>
                     <div>
                       <span className="text-gray-400 block text-[11px] font-semibold">TOTAL VISITS</span>
                       <span className="font-bold text-gray-800">{selectedCustomer.attendanceSummary?.totalVerifiedVisits || 0} Check-ins Recorded</span>
@@ -1332,7 +1747,7 @@ export default function GymAdminRewardsPerformance() {
                         No attendance records logged yet for this member.
                       </div>
                     ) : (
-                      <div className="max-h-52 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#D9E2E3' }}>
+                      <div className="max-h-52 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#292940' }}>
                         <table className="w-full text-left border-collapse text-xs">
                           <thead className="bg-gray-50 text-gray-500 sticky top-0 border-b text-[11px] uppercase">
                             <tr>
@@ -1342,7 +1757,7 @@ export default function GymAdminRewardsPerformance() {
                               <th className="py-2 px-3 text-right">Attendance Status</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#E8EFF0' }}>
+                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
                             {selectedCustomer.attendanceSummary.attendanceLogs.map((log: any, idx: number) => (
                               <tr key={log._id || idx} className="hover:bg-gray-50/50">
                                 <td className="py-2 px-3 font-semibold text-gray-800">
@@ -1373,17 +1788,17 @@ export default function GymAdminRewardsPerformance() {
                 </div>
 
                 {/* 2. Assigned Workout Program & Completed Workouts */}
-                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#D9E2E3' }}>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#292940' }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                     <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                      <Dumbbell className="w-4 h-4 text-[#167D78]" /> Assigned Workout Program & Completed Sessions
+                      <Dumbbell className="w-4 h-4 text-[#6366F1]" /> Assigned Workout Program & Completed Sessions
                     </h4>
-                    <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#D8EAE7] text-[#167D78] text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#17172A] text-[#6366F1] text-xs">
                       {selectedCustomer.workoutSummary?.completedWorkoutsCount || 0} / {selectedCustomer.workoutSummary?.totalWorkoutsScheduled || 0} Completed ({selectedCustomer.workoutSummary?.completionPercentage !== null ? `${selectedCustomer.workoutSummary?.completionPercentage}%` : 'N/A'})
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#E8EFF0' }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#0B0B12' }}>
                     <div>
                       <span className="text-gray-400 block text-[11px] font-semibold">PLAN NAME</span>
                       <span className="font-bold text-gray-800">{selectedCustomer.workoutSummary?.assignedPlanName}</span>
@@ -1394,7 +1809,7 @@ export default function GymAdminRewardsPerformance() {
                     </div>
                     <div>
                       <span className="text-gray-400 block text-[11px] font-semibold">SCHEDULED WORKOUTS</span>
-                      <span className="font-bold text-[#167D78]">
+                      <span className="font-bold text-[#6366F1]">
                         {selectedCustomer.workoutSummary?.totalWorkoutsScheduled || 0} Total ({selectedCustomer.workoutSummary?.completedWorkoutsCount || 0} Done)
                       </span>
                     </div>
@@ -1412,7 +1827,7 @@ export default function GymAdminRewardsPerformance() {
                         No completed workout sessions logged yet for this member.
                       </div>
                     ) : (
-                      <div className="max-h-60 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#D9E2E3' }}>
+                      <div className="max-h-60 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#292940' }}>
                         <table className="w-full text-left border-collapse text-xs">
                           <thead className="bg-gray-50 text-gray-500 sticky top-0 border-b text-[11px] uppercase">
                             <tr>
@@ -1423,7 +1838,7 @@ export default function GymAdminRewardsPerformance() {
                               <th className="py-2 px-3 text-right">Status</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#E8EFF0' }}>
+                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
                             {selectedCustomer.workoutSummary.completedWorkoutsList.map((w: any, idx: number) => (
                               <tr key={w._id || idx} className="hover:bg-gray-50/50">
                                 <td className="py-2 px-3 font-semibold text-gray-800">
@@ -1456,8 +1871,8 @@ export default function GymAdminRewardsPerformance() {
                 </div>
 
                 {/* 2. Diet Plan & Completed Meal Check-ins */}
-                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#D9E2E3' }}>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#292940' }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                     <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
                       <Utensils className="w-4 h-4 text-amber-600" /> Diet Plan & Completed Meal Check-ins
                     </h4>
@@ -1466,7 +1881,7 @@ export default function GymAdminRewardsPerformance() {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#E8EFF0' }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#0B0B12' }}>
                     <div>
                       <span className="text-gray-400 block text-[11px] font-semibold">PLAN STATUS</span>
                       <span className="font-bold text-gray-800">
@@ -1497,7 +1912,7 @@ export default function GymAdminRewardsPerformance() {
                         No completed meal check-ins recorded yet for this member.
                       </div>
                     ) : (
-                      <div className="max-h-60 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#D9E2E3' }}>
+                      <div className="max-h-60 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#292940' }}>
                         <table className="w-full text-left border-collapse text-xs">
                           <thead className="bg-gray-50 text-gray-500 sticky top-0 border-b text-[11px] uppercase">
                             <tr>
@@ -1508,7 +1923,7 @@ export default function GymAdminRewardsPerformance() {
                               <th className="py-2 px-3 text-right">Status</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#E8EFF0' }}>
+                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
                             {selectedCustomer.dietSummary.completedMealsList.map((m: any, idx: number) => (
                               <tr key={m._id || idx} className="hover:bg-gray-50/50">
                                 <td className="py-2 px-3 font-semibold text-gray-800">
@@ -1595,11 +2010,11 @@ export default function GymAdminRewardsPerformance() {
       {/* ======================================================== */}
       {selectedTrainer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#D9E2E3' }}>
+          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#292940' }}>
             {/* Modal Header */}
-            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#D9E2E3' }}>
+            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#292940' }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#D8EAE7] text-[#167D78] font-bold text-base">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#17172A] text-[#6366F1] font-bold text-base">
                   {selectedTrainer.name.charAt(0)}
                 </div>
                 <div>
@@ -1768,7 +2183,7 @@ export default function GymAdminRewardsPerformance() {
 
                     <div className="p-3 rounded-xl bg-gray-50 border">
                       <span className="text-gray-400 block font-medium">WORKOUTS DONE</span>
-                      <span className="font-bold text-base text-[#167D78]">
+                      <span className="font-bold text-base text-[#6366F1]">
                         {trainerCompletedWorkouts.length}
                       </span>
                       <span className="text-[11px] text-gray-500 block truncate">
@@ -1814,7 +2229,7 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('handled-customers')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'handled-customers'
-                          ? 'bg-white text-[#167D78] shadow-xs'
+                          ? 'bg-white text-[#6366F1] shadow-xs'
                           : 'text-gray-500 hover:text-gray-800'
                       }`}
                     >
@@ -1827,7 +2242,7 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('workout-tracking')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'workout-tracking'
-                          ? 'bg-white text-[#167D78] shadow-xs'
+                          ? 'bg-white text-[#6366F1] shadow-xs'
                           : 'text-gray-500 hover:text-gray-800'
                       }`}
                     >
@@ -1840,7 +2255,7 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('diet-tracking')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'diet-tracking'
-                          ? 'bg-white text-[#167D78] shadow-xs'
+                          ? 'bg-white text-[#6366F1] shadow-xs'
                           : 'text-gray-500 hover:text-gray-800'
                       }`}
                     >
@@ -1853,7 +2268,7 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('sessions')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'sessions'
-                          ? 'bg-white text-[#167D78] shadow-xs'
+                          ? 'bg-white text-[#6366F1] shadow-xs'
                           : 'text-gray-500 hover:text-gray-800'
                       }`}
                     >
@@ -1866,7 +2281,7 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('reviews')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'reviews'
-                          ? 'bg-white text-[#167D78] shadow-xs'
+                          ? 'bg-white text-[#6366F1] shadow-xs'
                           : 'text-gray-500 hover:text-gray-800'
                       }`}
                     >
@@ -1879,7 +2294,7 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('rewards')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'rewards'
-                          ? 'bg-white text-[#167D78] shadow-xs'
+                          ? 'bg-white text-[#6366F1] shadow-xs'
                           : 'text-gray-500 hover:text-gray-800'
                       }`}
                     >
@@ -1891,9 +2306,9 @@ export default function GymAdminRewardsPerformance() {
                   {/* Sub-Tab 1: Handled Customers */}
                   {trainerModalTab === 'handled-customers' && (
                     <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                         <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                          <Users className="w-4 h-4 text-[#167D78]" />
+                          <Users className="w-4 h-4 text-[#6366F1]" />
                           Customers Handled by {selectedTrainer.name}
                         </h4>
                         <span className="text-[11px] text-gray-500">
@@ -1906,7 +2321,7 @@ export default function GymAdminRewardsPerformance() {
                           No customer clients currently assigned to this trainer.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#D9E2E3' }}>
+                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#292940' }}>
                           <table className="w-full text-left border-collapse text-xs">
                             <thead className="bg-gray-50 text-gray-500 border-b uppercase text-[11px]">
                               <tr>
@@ -1917,7 +2332,7 @@ export default function GymAdminRewardsPerformance() {
                                 <th className="py-2.5 px-3 text-right">Sessions Handled</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#E8EFF0' }}>
+                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
                               {selectedTrainer.handledClients.map((client: any) => (
                                 <tr key={client.customerId} className="hover:bg-gray-50/50">
                                   <td className="py-3 px-3">
@@ -1945,11 +2360,11 @@ export default function GymAdminRewardsPerformance() {
                                     <div className="flex items-center gap-2 mt-1">
                                       <div className="w-20 bg-gray-200 rounded-full h-1.5 overflow-hidden">
                                         <div
-                                          className="bg-[#167D78] h-1.5 rounded-full"
+                                          className="bg-[#6366F1] h-1.5 rounded-full"
                                           style={{ width: `${client.workoutTracking?.completionPercentage || 0}%` }}
                                         />
                                       </div>
-                                      <span className="font-bold text-[#167D78] text-[11px]">
+                                      <span className="font-bold text-[#6366F1] text-[11px]">
                                         {client.workoutTracking?.completionPercentage || 0}%
                                       </span>
                                       <span className="text-[10px] text-gray-400">
@@ -1994,10 +2409,10 @@ export default function GymAdminRewardsPerformance() {
                   {/* Sub-Tab 2: Workout Tracking (ONLY COMPLETED WORKOUTS) */}
                   {trainerModalTab === 'workout-tracking' && (
                     <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                         <div>
                           <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                            <Dumbbell className="w-4 h-4 text-[#167D78]" />
+                            <Dumbbell className="w-4 h-4 text-[#6366F1]" />
                             Completed Customer Workouts Managed by {selectedTrainer.name}
                           </h4>
                           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -2015,7 +2430,7 @@ export default function GymAdminRewardsPerformance() {
                           No completed workout sessions logged yet for this trainer's clients.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#D9E2E3' }}>
+                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#292940' }}>
                           <table className="w-full text-left border-collapse text-xs">
                             <thead className="bg-gray-50 text-gray-500 border-b uppercase text-[11px]">
                               <tr>
@@ -2027,7 +2442,7 @@ export default function GymAdminRewardsPerformance() {
                                 <th className="py-2.5 px-3 text-right">Status</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#E8EFF0' }}>
+                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
                               {trainerCompletedWorkouts.map((w: any, idx: number) => (
                                 <tr key={w._id || idx} className="hover:bg-gray-50/50">
                                   <td className="py-2.5 px-3">
@@ -2066,7 +2481,7 @@ export default function GymAdminRewardsPerformance() {
                   {/* Sub-Tab 3: Diet Tracking (ONLY COMPLETED DIET CHECK-INS) */}
                   {trainerModalTab === 'diet-tracking' && (
                     <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                         <div>
                           <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
                             <Utensils className="w-4 h-4 text-emerald-600" />
@@ -2087,7 +2502,7 @@ export default function GymAdminRewardsPerformance() {
                           No completed meal check-ins recorded yet for this trainer's clients.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#D9E2E3' }}>
+                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#292940' }}>
                           <table className="w-full text-left border-collapse text-xs">
                             <thead className="bg-gray-50 text-gray-500 border-b uppercase text-[11px]">
                               <tr>
@@ -2099,7 +2514,7 @@ export default function GymAdminRewardsPerformance() {
                                 <th className="py-2.5 px-3 text-right">Status</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#E8EFF0' }}>
+                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
                               {trainerCompletedMeals.map((m: any, idx: number) => (
                                 <tr key={m._id || idx} className="hover:bg-gray-50/50">
                                   <td className="py-2.5 px-3">
@@ -2150,10 +2565,10 @@ export default function GymAdminRewardsPerformance() {
                   {/* Sub-Tab 4: Training Sessions (ONLY COMPLETED SESSIONS) */}
                   {trainerModalTab === 'sessions' && (
                     <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                         <div>
                           <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                            <CalendarCheck className="w-4 h-4 text-[#167D78]" />
+                            <CalendarCheck className="w-4 h-4 text-[#6366F1]" />
                             Completed Training Sessions Conducted by {selectedTrainer.name}
                           </h4>
                           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -2171,7 +2586,7 @@ export default function GymAdminRewardsPerformance() {
                           No completed training sessions logged yet for this trainer.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#D9E2E3' }}>
+                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#292940' }}>
                           <table className="w-full text-left border-collapse text-xs">
                             <thead className="bg-gray-50 text-gray-500 border-b uppercase text-[11px]">
                               <tr>
@@ -2182,7 +2597,7 @@ export default function GymAdminRewardsPerformance() {
                                 <th className="py-2.5 px-3 text-right">Status</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#E8EFF0' }}>
+                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
                               {trainerCompletedSessions.map((s: any, idx: number) => (
                                 <tr key={s._id || idx} className="hover:bg-gray-50/50">
                                   <td className="py-2.5 px-3 font-semibold text-gray-800">
@@ -2216,7 +2631,7 @@ export default function GymAdminRewardsPerformance() {
               {/* Sub-Tab 5: Reviews */}
               {trainerModalTab === 'reviews' && (
                 <div className="space-y-3">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                     <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
                       <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                       Client Feedback &amp; Reviews for {selectedTrainer.name}
@@ -2252,7 +2667,7 @@ export default function GymAdminRewardsPerformance() {
               {/* Sub-Tab 6: Rewards & Bonuses */}
               {trainerModalTab === 'rewards' && (
                 <div className="space-y-3">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#D9E2E3' }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
                     <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
                       <Gift className="w-4 h-4 text-purple-600" />
                       Trainer Performance Bonuses &amp; Award Eligibility
@@ -2309,331 +2724,685 @@ export default function GymAdminRewardsPerformance() {
       )}
 
       {/* ======================================================== */}
-      {/* REWARD CREATE / EDIT MODAL                              */}
+      {/* CATEGORY-BASED DYNAMIC REWARD CREATE / EDIT MODAL        */}
       {/* ======================================================== */}
       {isRewardModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border my-8" style={{ borderColor: '#D9E2E3' }}>
-            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#D9E2E3' }}>
-              <div className="flex items-center gap-2">
-                <Gift className="w-5 h-5 text-[#167D78]" />
-                <h2 className="text-lg font-bold text-gray-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border my-8" style={{ borderColor: '#292940' }}>
+            {/* Header */}
+            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#292940' }}>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center">
+                  <Gift className="w-4 h-4" />
+                </div>
+                <h2 className="text-lg font-bold text-gray-900">
                   {isEditMode ? 'Edit Reward Definition' : 'Create Rewards & Performance Award'}
                 </h2>
               </div>
-              <button onClick={() => setIsRewardModalOpen(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400">
+              <button
+                type="button"
+                onClick={() => setIsRewardModalOpen(false)}
+                className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition cursor-pointer"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleRewardFormSubmit} className="p-6 space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-bold mb-1 text-gray-700">Recipient Audience *</label>
-                  <select
-                    value={rewardFormData.recipientType}
-                    onChange={e => {
-                      const newType = e.target.value as any;
-                      let newCat = rewardFormData.category;
-                      if (newType === 'Customer' && (newCat === 'Performance Bonus' || newCat === 'Best Trainer Award' || newCat === 'Client Retention Bonus')) {
-                        newCat = 'Discount Coupon';
-                      } else if (newType === 'Trainer' && (newCat === 'Discount Coupon' || newCat === 'Membership Renewal Discount' || newCat === 'Free Personal Training Session')) {
-                        newCat = 'Performance Bonus';
-                      }
-                      setRewardFormData({ ...rewardFormData, recipientType: newType, category: newCat });
-                    }}
-                    className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none focus:ring-1 focus:ring-[#167D78]"
-                  >
-                    <option value="Customer">Customers Only</option>
-                    <option value="Trainer">Trainers Only</option>
-                    <option value="Both">Both Customers &amp; Trainers</option>
-                  </select>
+            <form onSubmit={handleRewardFormSubmit} className="p-6 space-y-5 text-xs">
+              {/* SECTION 1: BASIC INFORMATION */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label className="block font-bold mb-1 text-gray-700">Recipient Audience *</label>
+                    <select
+                      value={rewardFormData.recipientType}
+                      onChange={e => {
+                        const newType = e.target.value as any;
+                        let newCat = rewardFormData.category;
+                        if (newType === 'Trainer') {
+                          newCat = 'Performance Award';
+                        } else if (newType === 'Customer' && (newCat === 'Session Milestone Bonus' || newCat === 'Client Retention Bonus')) {
+                          newCat = 'Discount Coupon';
+                        }
+                        setRewardFormData({
+                          ...rewardFormData,
+                          recipientType: newType,
+                          category: newCat,
+                          assignedUserId: ''
+                        });
+                        setSelectedCustomerObj(null);
+                        setSelectedTrainerObj(null);
+                      }}
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                    >
+                      <option value="Customer">Customers Only</option>
+                      <option value="Trainer">Trainers Only</option>
+                      <option value="Both">Both Customers &amp; Trainers</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1 text-gray-700">Reward Assignment Method *</label>
+                    <select
+                      value={rewardFormData.assignmentMethod}
+                      onChange={e => {
+                        const newMethod = e.target.value as any;
+                        setRewardFormData({
+                          ...rewardFormData,
+                          assignmentMethod: newMethod,
+                          assignedUserId: ''
+                        });
+                        setSelectedCustomerObj(null);
+                        setSelectedTrainerObj(null);
+                      }}
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                    >
+                      <option value="Direct">1. Direct Assignment (Specific Recipient)</option>
+                      <option value="Achievement">2. Achievement-Based Reward (Milestones)</option>
+                      <option value="Points">3. Points-Based Redemption (Spend Points)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label className="block font-bold mb-1 text-gray-700">Category *</label>
+                    <select
+                      value={rewardFormData.category}
+                      onChange={e => {
+                        const cat = e.target.value;
+                        setRewardFormData({ ...rewardFormData, category: cat });
+                      }}
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                    >
+                      {rewardFormData.recipientType !== 'Trainer' ? (
+                        <>
+                          <option value="Personal Training">Personal Training (Free Sessions)</option>
+                          <option value="Discount Coupon">Discount Coupon</option>
+                          <option value="Free Product / Gift">Free Product / Gift</option>
+                          <option value="Free Membership / Membership Extension">Free Membership / Extension</option>
+                          <option value="Performance Award">Performance Award</option>
+                          <option value="Points-Based Reward">Points-Based Reward</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="Performance Award">Performance Award</option>
+                          <option value="Session Milestone Bonus">Session Milestone Bonus</option>
+                          <option value="Client Retention Bonus">Client Retention Bonus</option>
+                          <option value="Recognition Badge">Recognition Badge</option>
+                        </>
+                      )}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1 text-gray-700">Reward Title *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. ₹200 Off Next Renewal or Free Shaker Bottle"
+                      value={rewardFormData.title}
+                      onChange={e => setRewardFormData({ ...rewardFormData, title: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block font-bold mb-1 text-gray-700">Category *</label>
-                  <select
-                    value={rewardFormData.category}
-                    onChange={e => setRewardFormData({ ...rewardFormData, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none focus:ring-1 focus:ring-[#167D78]"
-                  >
-                    {rewardFormData.recipientType === 'Customer' && (
-                      <>
-                        <option value="Discount Coupon">Discount Coupon</option>
-                        <option value="Membership Renewal Discount">Membership Renewal Discount</option>
-                        <option value="Free Personal Training Session">Free Personal Training Session</option>
-                        <option value="Gym Merchandise Voucher">Gym Merchandise / Gear</option>
-                        <option value="Protein Shake / Supplement Voucher">Protein Shake / Supplement Voucher</option>
-                        <option value="Free Guest Day Pass">Free Guest Day Pass</option>
-                      </>
-                    )}
-                    {rewardFormData.recipientType === 'Trainer' && (
-                      <>
-                        <option value="Performance Bonus">Performance Bonus (Cash / Payout)</option>
-                        <option value="Best Trainer Award">Best Trainer of the Month Award</option>
-                        <option value="Client Retention Bonus">Client Retention Bonus</option>
-                        <option value="Session Milestone Bonus">Session Milestone Bonus</option>
-                        <option value="Recognition Badge">Special Recognition Badge</option>
-                      </>
-                    )}
-                    {rewardFormData.recipientType === 'Both' && (
-                      <>
-                        <option value="Discount Coupon">Discount Coupon</option>
-                        <option value="Membership Renewal Discount">Membership Renewal Discount</option>
-                        <option value="Gym Merchandise Voucher">Gym Merchandise Voucher</option>
-                        <option value="Performance Bonus">Performance Bonus</option>
-                        <option value="Recognition Badge">Recognition Badge</option>
-                      </>
-                    )}
-                  </select>
+                  <label className="block font-bold mb-1 text-gray-700">Short Description *</label>
+                  <textarea
+                    required
+                    rows={2}
+                    placeholder="Detail reward guidelines and redemption rules..."
+                    value={rewardFormData.description}
+                    onChange={e => setRewardFormData({ ...rewardFormData, description: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                  />
                 </div>
               </div>
 
-              <div>
-                <label className="block font-bold mb-1 text-gray-700">Reward Title *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder={rewardFormData.recipientType === 'Customer' ? 'e.g. ₹200 Off Next Renewal or Free Shaker Bottle' : 'e.g. Q4 High-Performer Trainer Bonus'}
-                  value={rewardFormData.title}
-                  onChange={e => setRewardFormData({ ...rewardFormData, title: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-1 focus:ring-[#167D78]"
-                />
-              </div>
+              {/* SECTION 2: DIRECT RECIPIENT SEARCH (Shown only when Direct Assignment is selected) */}
+              {rewardFormData.assignmentMethod === 'Direct' && (
+                <div className="p-4 rounded-2xl border bg-emerald-50/50 space-y-3" style={{ borderColor: '#292940' }}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                      <User className="w-4 h-4" />
+                      Select {rewardFormData.recipientType === 'Trainer' ? 'Trainer' : 'Customer'} for Direct Assignment *
+                    </span>
+                    {selectedCustomerObj && (
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        Selected
+                      </span>
+                    )}
+                  </div>
 
-              <div>
-                <label className="block font-bold mb-1 text-gray-700">Description *</label>
-                <textarea
-                  required
-                  rows={2}
-                  placeholder="Detail reward guidelines and redemption rules..."
-                  value={rewardFormData.description}
-                  onChange={e => setRewardFormData({ ...rewardFormData, description: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl border text-sm focus:outline-none focus:ring-1 focus:ring-[#167D78]"
-                />
-              </div>
-
-              {/* Streamlined Customer Unlock Criteria */}
-              {rewardFormData.recipientType !== 'Trainer' && (
-                <div className="p-4 rounded-xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#D9E2E3' }}>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
+                  {rewardFormData.recipientType === 'Trainer' ? (
                     <div>
-                      <h4 className="font-bold text-[#167D78] flex items-center gap-1.5 text-xs">
-                        <Users className="w-4 h-4 text-[#167D78]" /> How Does a Member Unlock This Reward?
-                      </h4>
-                      <p className="text-[11px] text-gray-500 mt-0.5">
-                        Select one condition required for the member to unlock and claim this perk.
-                      </p>
+                      <select
+                        value={rewardFormData.assignedUserId}
+                        onChange={e => {
+                          const tId = e.target.value;
+                          const tr = trainers.find(t => t._id === tId);
+                          setRewardFormData({ ...rewardFormData, assignedUserId: tId, trainerId: tId });
+                          setSelectedTrainerObj(tr || null);
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-sm"
+                      >
+                        <option value="">-- Choose a Trainer --</option>
+                        {trainers.map(t => (
+                          <option key={t._id} value={t._id}>
+                            {t.name} ({t.email}) • Rating: {t.averageRating ? `${t.averageRating}⭐` : '5.0⭐'}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                  </div>
-
-                  {/* 4 Clear Condition Selector Buttons */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => setCustomerCriteriaType('points')}
-                      className={`p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
-                        customerCriteriaType === 'points'
-                          ? 'bg-white border-[#167D78] shadow-xs text-[#167D78]'
-                          : 'bg-white/70 border-gray-200 text-gray-600 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="font-bold text-xs flex items-center gap-1">
-                        <span>🪙</span> Points Cost
-                      </div>
-                      <span className="text-[10px] text-gray-400 mt-1">Spends reward points</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setCustomerCriteriaType('visits')}
-                      className={`p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
-                        customerCriteriaType === 'visits'
-                          ? 'bg-white border-[#167D78] shadow-xs text-[#167D78]'
-                          : 'bg-white/70 border-gray-200 text-gray-600 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="font-bold text-xs flex items-center gap-1">
-                        <span>📅</span> Gym Visits
-                      </div>
-                      <span className="text-[10px] text-gray-400 mt-1">Attendance milestone</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setCustomerCriteriaType('workouts')}
-                      className={`p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
-                        customerCriteriaType === 'workouts'
-                          ? 'bg-white border-[#167D78] shadow-xs text-[#167D78]'
-                          : 'bg-white/70 border-gray-200 text-gray-600 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="font-bold text-xs flex items-center gap-1">
-                        <span>🏋️</span> Workouts Done
-                      </div>
-                      <span className="text-[10px] text-gray-400 mt-1">Workout log count</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setCustomerCriteriaType('free')}
-                      className={`p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
-                        customerCriteriaType === 'free'
-                          ? 'bg-white border-[#167D78] shadow-xs text-[#167D78]'
-                          : 'bg-white/70 border-gray-200 text-gray-600 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="font-bold text-xs flex items-center gap-1">
-                        <span>🎁</span> Open / Free
-                      </div>
-                      <span className="text-[10px] text-gray-400 mt-1">All active members</span>
-                    </button>
-                  </div>
-
-                  {/* Single Clean Input Field Based on Selection */}
-                  <div className="bg-white p-3 rounded-xl border mt-2" style={{ borderColor: '#E8EFF0' }}>
-                    {customerCriteriaType === 'points' && (
-                      <div className="space-y-1">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                          <label className="font-bold text-gray-700">Points Cost to Redeem:</label>
-                          <div className="flex items-center gap-2">
+                  ) : (
+                    <div className="space-y-2">
+                      {selectedCustomerObj ? (
+                        <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border" style={{ borderColor: '#292940' }}>
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-full bg-[#6366F1]/15 text-[#6366F1] font-bold flex items-center justify-center text-xs">
+                              {selectedCustomerObj.name?.charAt(0) || 'C'}
+                            </div>
+                            <div>
+                              <p className="font-bold text-gray-800 text-xs">{selectedCustomerObj.name}</p>
+                              <p className="text-[10px] text-gray-500">{selectedCustomerObj.email} • {selectedCustomerObj.membership?.status || 'Active'}</p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedCustomerObj(null);
+                              setRewardFormData({ ...rewardFormData, assignedUserId: '' });
+                            }}
+                            className="px-2.5 py-1 text-[11px] font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                          >
+                            Change
+                          </button>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="relative mb-2">
+                            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-gray-400" />
                             <input
-                              type="number"
-                              min={1}
-                              required
-                              value={rewardFormData.requiredPoints || 100}
-                              onChange={e => setRewardFormData({ ...rewardFormData, requiredPoints: Number(e.target.value) })}
-                              className="w-28 px-3 py-1.5 rounded-lg border text-sm font-bold text-[#167D78] text-right"
+                              type="text"
+                              placeholder="Search customer by name, email, or mobile..."
+                              value={customerSearchQuery}
+                              onChange={e => setCustomerSearchQuery(e.target.value)}
+                              className="w-full pl-8 pr-3 py-2 rounded-xl border bg-white text-xs text-gray-800"
                             />
-                            <span className="font-bold text-gray-500">pts</span>
+                          </div>
+
+                          <div className="max-h-36 overflow-y-auto space-y-1 bg-white p-1 rounded-xl border" style={{ borderColor: '#292940' }}>
+                            {customers
+                              .filter(c =>
+                                !customerSearchQuery ||
+                                c.name.toLowerCase().includes(customerSearchQuery.toLowerCase()) ||
+                                c.email.toLowerCase().includes(customerSearchQuery.toLowerCase())
+                              )
+                              .slice(0, 15)
+                              .map(c => (
+                                <button
+                                  key={c._id}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedCustomerObj(c);
+                                    setRewardFormData({ ...rewardFormData, assignedUserId: c._id });
+                                  }}
+                                  className="w-full p-2 text-left hover:bg-gray-50 rounded-lg flex items-center justify-between text-xs transition cursor-pointer"
+                                >
+                                  <div>
+                                    <span className="font-bold text-gray-800">{c.name}</span>
+                                    <span className="text-[10px] text-gray-400 ml-2">{c.email}</span>
+                                  </div>
+                                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
+                                    {c.membership?.status || 'Active'}
+                                  </span>
+                                </button>
+                              ))}
                           </div>
                         </div>
-                        <p className="text-[11px] text-gray-400">
-                          Customer pays with points earned from daily attendance streaks and workout consistency.
-                        </p>
-                      </div>
-                    )}
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
 
-                    {customerCriteriaType === 'visits' && (
-                      <div className="space-y-2">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div>
-                            <label className="font-bold text-gray-700 block mb-1">Minimum Verified Visits:</label>
-                            <input
-                              type="number"
-                              min={1}
-                              required
-                              placeholder="e.g. 15"
-                              value={rewardFormData.minVerifiedVisits || 15}
-                              onChange={e => setRewardFormData({ ...rewardFormData, minVerifiedVisits: Number(e.target.value) })}
-                              className="w-full px-3 py-1.5 rounded-lg border text-sm font-bold text-gray-800"
-                            />
-                          </div>
-                          <div>
-                            <label className="font-semibold text-gray-600 block mb-1">Required Streak Days (Optional):</label>
-                            <input
-                              type="number"
-                              min={0}
-                              placeholder="0 = no streak required"
-                              value={rewardFormData.minStreakDays || 0}
-                              onChange={e => setRewardFormData({ ...rewardFormData, minStreakDays: Number(e.target.value) })}
-                              className="w-full px-3 py-1.5 rounded-lg border text-sm text-gray-700"
-                            />
-                          </div>
-                        </div>
-                        <p className="text-[11px] text-gray-400">
-                          Unlocks automatically once member achieves verified check-ins at the gym.
-                        </p>
-                      </div>
-                    )}
-
-                    {customerCriteriaType === 'workouts' && (
-                      <div className="space-y-1">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                          <label className="font-bold text-gray-700">Minimum Completed Workouts:</label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="number"
-                              min={1}
-                              required
-                              value={rewardFormData.minWorkoutCompletions || 10}
-                              onChange={e => setRewardFormData({ ...rewardFormData, minWorkoutCompletions: Number(e.target.value) })}
-                              className="w-28 px-3 py-1.5 rounded-lg border text-sm font-bold text-[#167D78] text-right"
-                            />
-                            <span className="font-bold text-gray-500">workouts</span>
-                          </div>
-                        </div>
-                        <p className="text-[11px] text-gray-400">
-                          Unlocks automatically when member completes this many logged workout sessions.
-                        </p>
-                      </div>
-                    )}
-
-                    {customerCriteriaType === 'free' && (
-                      <div className="flex items-center gap-2 py-1 text-emerald-800 text-xs">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>Open to all active gym members. No points, visits, or workout counts required!</span>
-                      </div>
-                    )}
+              {/* SECTION 3: DYNAMIC FIELDS BASED ON REWARD CATEGORY */}
+              {rewardFormData.category === 'Personal Training' && (
+                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
+                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                    <Dumbbell className="w-4 h-4 text-[#6366F1]" /> Personal Training Details
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Select Trainer</label>
+                      <select
+                        value={rewardFormData.trainerId}
+                        onChange={e => setRewardFormData({ ...rewardFormData, trainerId: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      >
+                        <option value="">Any Available Trainer</option>
+                        {trainers.map(t => (
+                          <option key={t._id} value={t._id}>{t.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Free Sessions Count</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={rewardFormData.sessionCount}
+                        onChange={e => setRewardFormData({ ...rewardFormData, sessionCount: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Session Duration</label>
+                      <select
+                        value={rewardFormData.sessionDuration}
+                        onChange={e => setRewardFormData({ ...rewardFormData, sessionDuration: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      >
+                        <option value="30 mins">30 mins</option>
+                        <option value="45 mins">45 mins</option>
+                        <option value="60 mins">60 mins</option>
+                        <option value="90 mins">90 mins</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* Performance Criteria: Trainer */}
-              {rewardFormData.recipientType !== 'Customer' && (
-                <div className="p-3.5 rounded-xl border bg-gray-50/70 space-y-2">
-                  <h4 className="font-bold text-[#167D78] flex items-center gap-1">
-                    <Dumbbell className="w-4 h-4" /> Trainer Performance Criteria
+              {rewardFormData.category === 'Discount Coupon' && (
+                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
+                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                    <Ticket className="w-4 h-4 text-[#6366F1]" /> Discount Coupon Configuration
                   </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Bonus Amount (₹)</label>
+                      <label className="block font-medium mb-1 text-gray-600">Discount Type</label>
+                      <select
+                        value={rewardFormData.discountType}
+                        onChange={e => setRewardFormData({ ...rewardFormData, discountType: e.target.value as any })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      >
+                        <option value="Percentage">Percentage (%)</option>
+                        <option value="Fixed">Fixed Amount (₹)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">
+                        Discount Value ({rewardFormData.discountType === 'Percentage' ? '%' : '₹'})
+                      </label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={rewardFormData.discountValue}
+                        onChange={e => setRewardFormData({ ...rewardFormData, discountValue: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs font-bold text-[#6366F1]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Applicable Service</label>
+                      <select
+                        value={rewardFormData.applicableService}
+                        onChange={e => setRewardFormData({ ...rewardFormData, applicableService: e.target.value as any })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      >
+                        <option value="All Services">All Eligible Services</option>
+                        <option value="Membership">Membership Packages Only</option>
+                        <option value="Personal Training">Personal Training Only</option>
+                        <option value="Products">Store Products Only</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block font-medium mb-1 text-gray-600">Minimum Purchase Amount (₹) (0 = No Minimum)</label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={rewardFormData.minPurchaseAmount}
+                      onChange={e => setRewardFormData({ ...rewardFormData, minPurchaseAmount: Number(e.target.value) })}
+                      className="w-48 px-3 py-1.5 rounded-xl border bg-white text-xs"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {rewardFormData.category === 'Free Product / Gift' && (
+                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
+                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                    <Gift className="w-4 h-4 text-[#6366F1]" /> Product &amp; Inventory Selection
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="block font-medium mb-1 text-gray-600">Select Store Product or Gift</label>
+                      <select
+                        value={rewardFormData.productId}
+                        onChange={e => {
+                          const pId = e.target.value;
+                          const prod = storeProducts.find(p => p._id === pId);
+                          setRewardFormData({
+                            ...rewardFormData,
+                            productId: pId,
+                            productName: prod ? prod.name : rewardFormData.productName
+                          });
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      >
+                        <option value="">-- Choose From Gym Store Inventory --</option>
+                        {storeProducts.map(p => (
+                          <option key={p._id} value={p._id}>
+                            {p.name} • Stock: {p.stock} units (₹{p.sellingPrice})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Gift Quantity</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={rewardFormData.productQuantity}
+                        onChange={e => setRewardFormData({ ...rewardFormData, productQuantity: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs font-bold"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Real-time Inventory Check Alert */}
+                  {(() => {
+                    const selProd = storeProducts.find(p => p._id === rewardFormData.productId);
+                    if (!selProd) return null;
+                    const isOutOfStock = selProd.stock < (Number(rewardFormData.productQuantity) || 1);
+                    return (
+                      <div className={`p-2.5 rounded-xl border text-xs flex items-center justify-between ${
+                        isOutOfStock ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                      }`}>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 shrink-0" />
+                          <span>
+                            Inventory Status: <strong>{selProd.stock}</strong> units available in store stock.
+                          </span>
+                        </div>
+                        {isOutOfStock && (
+                          <span className="font-bold text-rose-600 bg-white px-2 py-0.5 rounded-md border border-rose-200 text-[10px]">
+                            Insufficient Stock
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
+              {rewardFormData.category === 'Free Membership / Membership Extension' && (
+                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
+                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                    <Award className="w-4 h-4 text-[#6366F1]" /> Membership Grant Details
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Applicable Membership Plan</label>
+                      <select
+                        value={rewardFormData.packageId}
+                        onChange={e => {
+                          const pkgId = e.target.value;
+                          const pkg = gymPackages.find(p => p._id === pkgId);
+                          setRewardFormData({
+                            ...rewardFormData,
+                            packageId: pkgId,
+                            packageName: pkg ? pkg.name : rewardFormData.packageName,
+                            membershipDuration: pkg ? pkg.duration : rewardFormData.membershipDuration
+                          });
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      >
+                        <option value="">-- Choose Gym Package --</option>
+                        {gymPackages.map(pkg => (
+                          <option key={pkg._id} value={pkg._id}>
+                            {pkg.name} ({pkg.duration}) • ₹{pkg.monthlyPrice}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Extension Duration</label>
+                      <select
+                        value={rewardFormData.membershipDuration}
+                        onChange={e => setRewardFormData({ ...rewardFormData, membershipDuration: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      >
+                        <option value="7 Days">7 Days</option>
+                        <option value="15 Days">15 Days</option>
+                        <option value="1 Month">1 Month</option>
+                        <option value="3 Months">3 Months</option>
+                        <option value="6 Months">6 Months</option>
+                        <option value="1 Year">1 Year</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {rewardFormData.category === 'Performance Award' && (
+                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
+                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                    <Trophy className="w-4 h-4 text-[#6366F1]" /> Performance Award &amp; Recognition
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="block font-medium mb-1 text-gray-600">Achievement Reason</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 100% workout adherence and highest weight loss milestone"
+                        value={rewardFormData.awardReason}
+                        onChange={e => setRewardFormData({ ...rewardFormData, awardReason: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Achievement Period</label>
+                      <select
+                        value={rewardFormData.achievementPeriod}
+                        onChange={e => setRewardFormData({ ...rewardFormData, achievementPeriod: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                      >
+                        <option value="This Month">This Month</option>
+                        <option value="Last Month">Last Month</option>
+                        <option value="Quarterly">Quarterly</option>
+                        <option value="Annual">Annual</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600">Optional Cash Bonus (₹)</label>
                       <input
                         type="number"
                         min={0}
                         value={rewardFormData.bonusAmount}
                         onChange={e => setRewardFormData({ ...rewardFormData, bonusAmount: Number(e.target.value) })}
-                        className="w-full px-2 py-1.5 rounded-lg border bg-white"
+                        className="w-full px-3 py-1.5 rounded-xl border bg-white text-xs font-bold"
+                        placeholder="0 = Non-monetary recognition"
                       />
                     </div>
-                    <div>
-                      <label className="block font-medium mb-1 text-gray-600">Min Sessions</label>
-                      <input
-                        type="number"
-                        min={0}
-                        value={rewardFormData.minCompletedSessions}
-                        onChange={e => setRewardFormData({ ...rewardFormData, minCompletedSessions: Number(e.target.value) })}
-                        className="w-full px-2 py-1.5 rounded-lg border bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-medium mb-1 text-gray-600">Min Rating (⭐)</label>
-                      <input
-                        type="number"
-                        step={0.1}
-                        min={0}
-                        max={5}
-                        value={rewardFormData.minAverageRating}
-                        onChange={e => setRewardFormData({ ...rewardFormData, minAverageRating: Number(e.target.value) })}
-                        className="w-full px-2 py-1.5 rounded-lg border bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-medium mb-1 text-gray-600">Min Plans Reviewed</label>
-                      <input
-                        type="number"
-                        min={0}
-                        value={rewardFormData.minReviewedPlans}
-                        onChange={e => setRewardFormData({ ...rewardFormData, minReviewedPlans: Number(e.target.value) })}
-                        className="w-full px-2 py-1.5 rounded-lg border bg-white"
-                      />
+                    <div className="flex items-center pt-5">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={rewardFormData.hasCertificate}
+                          onChange={e => setRewardFormData({ ...rewardFormData, hasCertificate: e.target.checked })}
+                          className="rounded text-[#6366F1]"
+                        />
+                        <span className="font-semibold text-gray-700">Issue Verified Digital Certificate &amp; Badge</span>
+                      </label>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Inventory Limits and Expiry */}
-              <div className="p-3.5 rounded-xl border bg-gray-50/50 space-y-2.5" style={{ borderColor: '#E8EFF0' }}>
+              {/* SECTION 4: UNLOCK CONDITIONS (Points or Achievement based) */}
+              {rewardFormData.assignmentMethod === 'Points' && (
+                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-2" style={{ borderColor: '#292940' }}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                      <Coins className="w-4 h-4 text-[#6366F1]" /> Points Cost to Redeem
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min={1}
+                        required
+                        value={rewardFormData.requiredPoints}
+                        onChange={e => setRewardFormData({ ...rewardFormData, requiredPoints: Number(e.target.value) })}
+                        className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-[#6366F1] text-right bg-white"
+                      />
+                      <span className="font-bold text-gray-500">pts</span>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-gray-400">
+                    Customers pay with points earned from daily attendance streaks and workout consistency.
+                  </p>
+                </div>
+              )}
+
+              {rewardFormData.assignmentMethod === 'Achievement' && (
+                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
+                  <div>
+                    <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                      <Users className="w-4 h-4 text-[#6366F1]" /> How Does a Member Unlock This Reward?
+                    </h4>
+                    <p className="text-[11px] text-gray-500 mt-0.5">
+                      Select one condition required for the member to unlock and claim this perk.
+                    </p>
+                  </div>
+
+                  {/* 5 Milestone Condition Selector Buttons */}
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+                    {[
+                      { id: 'visits', label: 'Gym Visits', icon: '📅', desc: 'Attendance milestone' },
+                      { id: 'workouts', label: 'Workouts Done', icon: '🏋️', desc: 'Workout log count' },
+                      { id: 'streak', label: 'Streak Days', icon: '🔥', desc: 'Consecutive check-ins' },
+                      { id: 'goals', label: 'Diet & Goals', icon: '🥗', desc: 'Goal adherence' },
+                      { id: 'milestone', label: 'Top Milestone', icon: '🏆', desc: 'Elite consistency' },
+                    ].map(cond => {
+                      const isSel = rewardFormData.achievementCondition === cond.id;
+                      return (
+                        <button
+                          key={cond.id}
+                          type="button"
+                          onClick={() => setRewardFormData({ ...rewardFormData, achievementCondition: cond.id as any })}
+                          className={`p-2 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
+                            isSel
+                              ? 'bg-white border-[#6366F1] shadow-xs text-[#6366F1]'
+                              : 'bg-white/70 border-gray-200 text-gray-600 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="font-bold text-xs flex items-center gap-1">
+                            <span>{cond.icon}</span> {cond.label}
+                          </div>
+                          <span className="text-[10px] text-gray-400 mt-1">{cond.desc}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Dynamic Single Input for Selected Condition */}
+                  <div className="bg-white p-3 rounded-xl border mt-2" style={{ borderColor: '#0B0B12' }}>
+                    {rewardFormData.achievementCondition === 'visits' && (
+                      <div className="flex items-center justify-between">
+                        <label className="font-bold text-gray-700">Minimum Verified Gym Visits:</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={1}
+                            value={rewardFormData.minVerifiedVisits}
+                            onChange={e => setRewardFormData({ ...rewardFormData, minVerifiedVisits: Number(e.target.value) })}
+                            className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-right"
+                          />
+                          <span className="text-gray-500 font-medium">visits</span>
+                        </div>
+                      </div>
+                    )}
+                    {rewardFormData.achievementCondition === 'workouts' && (
+                      <div className="flex items-center justify-between">
+                        <label className="font-bold text-gray-700">Minimum Completed Workouts:</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={1}
+                            value={rewardFormData.minWorkoutCompletions}
+                            onChange={e => setRewardFormData({ ...rewardFormData, minWorkoutCompletions: Number(e.target.value) })}
+                            className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-right"
+                          />
+                          <span className="text-gray-500 font-medium">workouts</span>
+                        </div>
+                      </div>
+                    )}
+                    {rewardFormData.achievementCondition === 'streak' && (
+                      <div className="flex items-center justify-between">
+                        <label className="font-bold text-gray-700">Required Attendance Streak:</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={1}
+                            value={rewardFormData.minStreakDays}
+                            onChange={e => setRewardFormData({ ...rewardFormData, minStreakDays: Number(e.target.value) })}
+                            className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-right"
+                          />
+                          <span className="text-gray-500 font-medium">consecutive days</span>
+                        </div>
+                      </div>
+                    )}
+                    {rewardFormData.achievementCondition === 'goals' && (
+                      <div className="flex items-center justify-between">
+                        <label className="font-bold text-gray-700">Diet &amp; Workout Goals Met:</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={1}
+                            value={rewardFormData.minDietAdherenceDays}
+                            onChange={e => setRewardFormData({ ...rewardFormData, minDietAdherenceDays: Number(e.target.value) })}
+                            className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-right"
+                          />
+                          <span className="text-gray-500 font-medium">days</span>
+                        </div>
+                      </div>
+                    )}
+                    {rewardFormData.achievementCondition === 'milestone' && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-center justify-between">
+                          <label className="font-bold text-gray-700">Visits:</label>
+                          <input
+                            type="number"
+                            min={1}
+                            value={rewardFormData.minVerifiedVisits}
+                            onChange={e => setRewardFormData({ ...rewardFormData, minVerifiedVisits: Number(e.target.value) })}
+                            className="w-20 px-2 py-1 rounded-lg border text-sm font-bold text-right"
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <label className="font-bold text-gray-700">Workouts:</label>
+                          <input
+                            type="number"
+                            min={1}
+                            value={rewardFormData.minWorkoutCompletions}
+                            onChange={e => setRewardFormData({ ...rewardFormData, minWorkoutCompletions: Number(e.target.value) })}
+                            className="w-20 px-2 py-1 rounded-lg border text-sm font-bold text-right"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* SECTION 5: INVENTORY LIMITS & DATES (Conditional & Streamlined) */}
+              <div className="p-4 rounded-2xl border bg-gray-50/50 space-y-2.5" style={{ borderColor: '#0B0B12' }}>
                 <span className="font-bold text-gray-700 block text-xs">Inventory &amp; Claim Rules</span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
@@ -2646,16 +3415,18 @@ export default function GymAdminRewardsPerformance() {
                       className="w-full px-3 py-2 rounded-xl border text-sm bg-white"
                     />
                   </div>
-                  <div>
-                    <label className="block font-medium mb-1 text-gray-600 text-[11px]">Max Claims per Member</label>
-                    <input
-                      type="number"
-                      min={1}
-                      value={rewardFormData.maxClaimsPerUser}
-                      onChange={e => setRewardFormData({ ...rewardFormData, maxClaimsPerUser: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl border text-sm bg-white"
-                    />
-                  </div>
+                  {rewardFormData.assignmentMethod !== 'Direct' && (
+                    <div>
+                      <label className="block font-medium mb-1 text-gray-600 text-[11px]">Max Claims per Member</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={rewardFormData.maxClaimsPerUser}
+                        onChange={e => setRewardFormData({ ...rewardFormData, maxClaimsPerUser: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl border text-sm bg-white"
+                      />
+                    </div>
+                  )}
                   <div>
                     <label className="block font-medium mb-1 text-gray-600 text-[11px]">Expiry Date (Optional)</label>
                     <input
@@ -2668,13 +3439,45 @@ export default function GymAdminRewardsPerformance() {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center pt-3 border-t">
+              {/* SECTION 6: COMPACT PREVIEW SUMMARY BEFORE SUBMISSION */}
+              <div className="bg-[#6366F1]/5 border border-[#6366F1]/20 rounded-2xl p-3.5 space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#6366F1] flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Reward Preview Summary
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-gray-500">Recipient &amp; Assignment:</span>
+                    <p className="font-bold text-gray-800">
+                      {rewardFormData.assignmentMethod === 'Direct'
+                        ? `Direct to: ${selectedCustomerObj?.name || selectedTrainerObj?.name || 'Selected User'}`
+                        : rewardFormData.assignmentMethod === 'Achievement'
+                        ? `Achievement: Requires ${
+                            rewardFormData.achievementCondition === 'visits'
+                              ? `${rewardFormData.minVerifiedVisits} Gym Visits`
+                              : rewardFormData.achievementCondition === 'workouts'
+                              ? `${rewardFormData.minWorkoutCompletions} Workouts`
+                              : `${rewardFormData.minStreakDays} Streak Days`
+                          }`
+                        : `Points-Based: ${rewardFormData.requiredPoints} points redemption`}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Category &amp; Benefit:</span>
+                    <p className="font-bold text-gray-800">
+                      {rewardFormData.category} • {rewardFormData.title || 'New Reward'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* FOOTER ACTIONS */}
+              <div className="flex justify-between items-center pt-3 border-t" style={{ borderColor: '#292940' }}>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={rewardFormData.requireApproval}
                     onChange={e => setRewardFormData({ ...rewardFormData, requireApproval: e.target.checked })}
-                    className="rounded text-[#167D78]"
+                    className="rounded text-[#6366F1]"
                   />
                   <span className="font-semibold text-gray-700">Require Owner Approval before voucher grant</span>
                 </label>
@@ -2683,13 +3486,13 @@ export default function GymAdminRewardsPerformance() {
                   <button
                     type="button"
                     onClick={() => setIsRewardModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border text-gray-600 hover:bg-gray-50"
+                    className="px-4 py-2 rounded-xl border text-gray-600 hover:bg-gray-50 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl text-white font-bold bg-[#167D78] shadow"
+                    className="px-5 py-2 rounded-xl text-white font-bold bg-[#6366F1] hover:bg-[#4F46E5] shadow cursor-pointer transition"
                   >
                     {isEditMode ? 'Save Changes' : 'Create Reward'}
                   </button>
@@ -2703,7 +3506,7 @@ export default function GymAdminRewardsPerformance() {
       {/* CLAIM ACTION MODAL */}
       {claimActionModalOpen && selectedClaim && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl border" style={{ borderColor: '#D9E2E3' }}>
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl border" style={{ borderColor: '#292940' }}>
             <h3 className="text-base font-bold text-gray-800 mb-1">
               {actionType === 'APPROVE' && 'Approve Claim Request'}
               {actionType === 'REJECT' && 'Reject Claim Request'}
@@ -2771,7 +3574,7 @@ export default function GymAdminRewardsPerformance() {
                   type="button"
                   onClick={handleProcessClaim}
                   className={`px-5 py-2 rounded-xl text-white font-bold shadow ${
-                    actionType === 'REJECT' ? 'bg-red-600' : 'bg-[#167D78]'
+                    actionType === 'REJECT' ? 'bg-red-600' : 'bg-[#6366F1]'
                   }`}
                 >
                   Confirm Action

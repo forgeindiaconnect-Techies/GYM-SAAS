@@ -2,16 +2,16 @@
 
 export const Step7Review = ({ data, setStep }: any) => {
   const SectionHeader = ({ title, step }: { title: string, step: number }) => (
-    <div className="flex justify-between items-center border-b border-[#D9E2E3] pb-2 mb-4">
-      <h3 className="text-lg font-bold text-[#344B4A]">{title}</h3>
-      <button onClick={() => setStep(step)} className="text-xs font-bold text-[#167D78] hover:underline px-3 py-1 bg-[#167D78]/10 rounded-lg transition-colors">Edit</button>
+    <div className="flex justify-between items-center border-b border-[#292940] pb-2 mb-4">
+      <h3 className="text-lg font-bold text-[#11111F]">{title}</h3>
+      <button onClick={() => setStep(step)} className="text-xs font-bold text-[#6366F1] hover:underline px-3 py-1 bg-[#6366F1]/10 rounded-lg transition-colors">Edit</button>
     </div>
   );
 
   const DataRow = ({ label, value }: { label: string, value: any }) => (
     <div className="grid grid-cols-3 py-2 border-b border-[#FFFFFF]">
-      <span className="text-[#697778] text-sm">{label}</span>
-      <span className="col-span-2 text-[#344B4A] text-sm font-medium">{value || <span className="text-gray-600 italic">Not provided</span>}</span>
+      <span className="text-[#A1A1AA] text-sm">{label}</span>
+      <span className="col-span-2 text-[#11111F] text-sm font-medium">{value || <span className="text-gray-600 italic">Not provided</span>}</span>
     </div>
   );
 
@@ -28,7 +28,7 @@ export const Step7Review = ({ data, setStep }: any) => {
       <div className="grid md:grid-cols-2 gap-8">
         {/* Step 1 & 2 */}
         <div className="space-y-6">
-          <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#D9E2E3]">
+          <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#292940]">
             <SectionHeader title="Gym & Owner Info" step={1} />
             <DataRow label="Gym Name" value={data.gymName} />
             <DataRow label="Gym Type" value={data.type} />
@@ -40,7 +40,7 @@ export const Step7Review = ({ data, setStep }: any) => {
             </div>
           </section>
 
-          <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#D9E2E3]">
+          <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#292940]">
             <SectionHeader title="Location" step={3} />
             <DataRow label="City & State" value={`${data.city}, ${data.state}`} />
             <DataRow label="Address" value={data.address} />
@@ -51,13 +51,13 @@ export const Step7Review = ({ data, setStep }: any) => {
 
         {/* Step 4 & 5 */}
         <div className="space-y-6">
-          <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#D9E2E3]">
+          <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#292940]">
             <SectionHeader title="Admin Account" step={4} />
             <DataRow label="Admin Name" value={data.adminName} />
             <DataRow label="Admin Email" value={data.adminEmail} />
           </section>
 
-          <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#D9E2E3]">
+          <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#292940]">
             <SectionHeader title="Gym Details" step={5} />
             <DataRow label="Trainers" value={data.trainersCount} />
             <DataRow label="Members" value={data.membersCount} />
@@ -68,13 +68,13 @@ export const Step7Review = ({ data, setStep }: any) => {
         </div>
       </div>
 
-      <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#D9E2E3]">
+      <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#292940]">
         <SectionHeader title="Operating Hours" step={5} />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
           {data.operatingHours?.map((h: any) => (
             <div key={h.dayOfWeek} className="bg-[#FFFFFF] p-3 rounded-xl">
-              <span className="text-xs text-[#697778] block">{h.dayOfWeek}</span>
-              <span className={`text-sm font-bold ${h.isOpen ? 'text-[#344B4A]' : 'text-[#D8EAE7]'}`}>
+              <span className="text-xs text-[#A1A1AA] block">{h.dayOfWeek}</span>
+              <span className={`text-sm font-bold ${h.isOpen ? 'text-[#11111F]' : 'text-[#17172A]'}`}>
                 {h.isOpen ? (h.is24Hours ? '24 Hours' : `${h.openingTime} - ${h.closingTime}`) : 'Closed'}
               </span>
             </div>
@@ -82,20 +82,20 @@ export const Step7Review = ({ data, setStep }: any) => {
         </div>
       </section>
 
-      <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#D9E2E3]">
+      <section className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#292940]">
         <SectionHeader title="Subscription Plans" step={6} />
         <div className="grid md:grid-cols-3 gap-4 mt-4">
           {data.plans?.map((p: any) => (
-            <div key={p.id} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#D9E2E3]">
+            <div key={p.id} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#292940]">
               <div className="flex justify-between items-start">
-                <span className="font-bold text-[#344B4A]">{p.planName}</span>
+                <span className="font-bold text-[#11111F]">{p.planName}</span>
                 <span className="text-xs bg-green-500/20 text-green-500 px-2 rounded-full">{p.status}</span>
               </div>
-              <p className="text-[#C43D35] font-bold mt-2 flex items-center">₹{p.finalPrice} <span className="text-xs text-[#697778] font-normal ml-1">/ {p.duration} {p.durationUnit}</span></p>
+              <p className="text-[#C43D35] font-bold mt-2 flex items-center">₹{p.finalPrice} <span className="text-xs text-[#A1A1AA] font-normal ml-1">/ {p.duration} {p.durationUnit}</span></p>
             </div>
           ))}
           {!data.plans?.length && (
-            <div className="col-span-3 text-center py-4 text-[#697778] text-sm">No plans configured.</div>
+            <div className="col-span-3 text-center py-4 text-[#A1A1AA] text-sm">No plans configured.</div>
           )}
         </div>
       </section>

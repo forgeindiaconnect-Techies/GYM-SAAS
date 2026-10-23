@@ -11,7 +11,13 @@ export interface IPayment extends Document {
   customerId: mongoose.Types.ObjectId;
   gymId: mongoose.Types.ObjectId;
   branchId?: mongoose.Types.ObjectId;
+  membershipId?: mongoose.Types.ObjectId;
+  orderId?: string;
+  receiptNumber?: string;
   planName: string;
+  packagePrice?: number;
+  discount?: number;
+  tax?: number;
   amount: number;
   paymentMethod: string;
   transactionId?: string;
@@ -32,13 +38,19 @@ export interface IPayment extends Document {
 
 const paymentSchema = new Schema<IPayment>(
   {
-    customerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true },
+    customerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true, index: true },
     branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
+    membershipId: { type: Schema.Types.ObjectId, ref: 'CustomerMembership' },
+    orderId: { type: String, index: true },
+    receiptNumber: { type: String, index: true },
     planName: { type: String, required: true },
+    packagePrice: { type: Number },
+    discount: { type: Number, default: 0 },
+    tax: { type: Number, default: 0 },
     amount: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
-    transactionId: { type: String },
+    transactionId: { type: String, index: true },
     paymentProofUrl: { type: String },
     customerBankDetails: {
       bankName: { type: String },
@@ -49,6 +61,7 @@ const paymentSchema = new Schema<IPayment>(
       type: String,
       enum: Object.values(PaymentStatus),
       default: PaymentStatus.PENDING_VERIFICATION,
+      index: true,
     },
     rejectionReason: { type: String },
     paymentDate: { type: Date },

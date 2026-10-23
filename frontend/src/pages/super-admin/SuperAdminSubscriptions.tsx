@@ -18,8 +18,8 @@ const SAAS_PLANS = [
     tagline: 'Try Gymora risk-free',
     badge: '1 DAY',
     icon: Zap,
-    iconColor: 'text-[#167D78]',
-    iconBg: 'bg-[#E8EFF0]',
+    iconColor: 'text-[#6366F1]',
+    iconBg: 'bg-[#0B0B12]',
     priceMonthly: 0,
     priceAnnual: 0,
     savingsAnnual: 0,
@@ -49,7 +49,7 @@ const SAAS_PLANS = [
     tagline: 'Beginner package for growing gyms',
     badge: 'BEGINNER',
     icon: Star,
-    iconColor: 'text-[#167D78]',
+    iconColor: 'text-[#6366F1]',
     iconBg: 'bg-slate-100',
     priceMonthly: 799,
     priceAnnual: 7190,
@@ -81,8 +81,8 @@ const SAAS_PLANS = [
     badge: 'MOST POPULAR',
     popular: true,
     icon: Crown,
-    iconColor: 'text-[#167D78]',
-    iconBg: 'bg-[#167D78]/10',
+    iconColor: 'text-[#6366F1]',
+    iconBg: 'bg-[#6366F1]/10',
     priceMonthly: 1499,
     priceAnnual: 13490,
     savingsAnnual: 4498,
@@ -111,8 +111,8 @@ const SAAS_PLANS = [
     tagline: 'Enterprise-grade multi-branch scale',
     badge: 'ADVANCED',
     icon: Sparkles,
-    iconColor: 'text-[#167D78]',
-    iconBg: 'bg-[#D8EAE7]',
+    iconColor: 'text-[#6366F1]',
+    iconBg: 'bg-[#17172A]',
     priceMonthly: 2499,
     priceAnnual: 22490,
     savingsAnnual: 7498,
@@ -139,17 +139,17 @@ const SAAS_PLANS = [
 
 const PLAN_COLORS: Record<string, string> = {
   FREE_TRIAL: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
-  SILVER: 'bg-[#D8EAE7]/10 text-[#116660] border-[#D8EAE7]/30',
-  GOLD: 'bg-emerald-500/10 text-[#167D78] border-[#167D78]/30',
-  PREMIUM: 'bg-[#167D78]/10 text-[#167D78] border-[#167D78]/30',
+  SILVER: 'bg-[#17172A]/10 text-[#4F46E5] border-[#17172A]/30',
+  GOLD: 'bg-emerald-500/10 text-[#6366F1] border-[#6366F1]/30',
+  PREMIUM: 'bg-[#6366F1]/10 text-[#6366F1] border-[#6366F1]/30',
   BASIC: 'bg-slate-500/10 text-slate-500 border-slate-500/30',
 };
 
 const STATUS_COLORS: Record<string, string> = {
   Active: 'bg-green-500/10 text-green-400 border-green-500/20',
-  Expired: 'bg-[#D8EAE7]/10 text-teal-400 border-[#D8EAE7]/20',
-  Pending: 'bg-blue-500/10 text-blue-400 border-[#D8EAE7]/20',
-  Inactive: 'bg-[#333] text-[#697778] border-[#697778]',
+  Expired: 'bg-[#17172A]/10 text-teal-400 border-[#17172A]/20',
+  Pending: 'bg-blue-500/10 text-blue-400 border-[#17172A]/20',
+  Inactive: 'bg-[#333] text-[#A1A1AA] border-[#A1A1AA]',
   Rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
@@ -205,37 +205,37 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 sm:p-8 max-w-xl w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 sm:p-8 max-w-xl w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center space-x-3 mb-6">
           <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
             <Icon size={22} className={plan.iconColor} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#344B4A]">Edit {plan.name} Plan</h2>
-            <p className="text-[#697778] text-sm">{plan.tagline}</p>
+            <h2 className="text-xl font-bold text-[#11111F]">Edit {plan.name} Plan</h2>
+            <p className="text-[#A1A1AA] text-sm">{plan.tagline}</p>
           </div>
         </div>
 
         <div className="space-y-5">
-          <h3 className="text-[#344B4A] font-semibold text-sm uppercase tracking-wider border-b border-[#D9E2E3] pb-2">Pricing</h3>
+          <h3 className="text-[#11111F] font-semibold text-sm uppercase tracking-wider border-b border-[#292940] pb-2">Pricing</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-[#697778] mb-2">Monthly Price (₹)</label>
+              <label className="block text-xs font-medium text-[#A1A1AA] mb-2">Monthly Price (₹)</label>
               <input type="number" value={form.priceMonthly}
                 onChange={e => setForm(f => ({ ...f, priceMonthly: +e.target.value }))}
-                className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#697778] mb-2">Annual Price (₹)</label>
+              <label className="block text-xs font-medium text-[#A1A1AA] mb-2">Annual Price (₹)</label>
               <input type="number" value={form.priceAnnual}
                 onChange={e => setForm(f => ({ ...f, priceAnnual: +e.target.value }))}
-                className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
               />
             </div>
           </div>
 
-          <h3 className="text-[#344B4A] font-semibold text-sm uppercase tracking-wider border-b border-[#D9E2E3] pb-2 mt-4">Platform Limits</h3>
+          <h3 className="text-[#11111F] font-semibold text-sm uppercase tracking-wider border-b border-[#292940] pb-2 mt-4">Platform Limits</h3>
           <div className="grid grid-cols-2 gap-4">
             {[
               { key: 'members', label: 'Max Members (-1 = Unlimited)' },
@@ -244,10 +244,10 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
               { key: 'branches', label: 'Max Branches' },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs font-medium text-[#697778] mb-2">{label}</label>
+                <label className="block text-xs font-medium text-[#A1A1AA] mb-2">{label}</label>
                 <input type="number" value={(form as any)[key]}
                   onChange={e => setForm(f => ({ ...f, [key]: +e.target.value }))}
-                  className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                  className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
                 />
               </div>
             ))}
@@ -255,8 +255,8 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
         </div>
 
         <div className="flex space-x-3 mt-8">
-          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#344B4A] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Cancel</button>
-          <button onClick={handleSave} className="flex-1 py-3 bg-[#D8EAE7] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">Save Changes</button>
+          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#11111F] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Cancel</button>
+          <button onClick={handleSave} className="flex-1 py-3 bg-[#17172A] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm">Save Changes</button>
         </div>
       </div>
     </div>
@@ -268,33 +268,33 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
   const Icon = plan.icon;
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
               <Icon size={22} className={plan.iconColor} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#344B4A]">{plan.name} Plan</h2>
-              <p className="text-[#697778] text-sm">{plan.tagline}</p>
+              <h2 className="text-xl font-bold text-[#11111F]">{plan.name} Plan</h2>
+              <p className="text-[#A1A1AA] text-sm">{plan.tagline}</p>
             </div>
           </div>
           <span className="bg-green-500/10 text-green-400 border border-green-500/20 text-xs px-2.5 py-1 rounded-full font-bold">{plan.status}</span>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-4">
-            <p className="text-[#697778] text-xs uppercase tracking-widest font-bold mb-1">Monthly Price</p>
-            <p className="text-[#344B4A] font-bold text-xl">₹{plan.priceMonthly.toLocaleString('en-IN')}</p>
+          <div className="bg-[#FFFFFF] border border-[#292940] rounded-xl p-4">
+            <p className="text-[#A1A1AA] text-xs uppercase tracking-widest font-bold mb-1">Monthly Price</p>
+            <p className="text-[#11111F] font-bold text-xl">₹{plan.priceMonthly.toLocaleString('en-IN')}</p>
           </div>
-          <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-4">
-            <p className="text-[#697778] text-xs uppercase tracking-widest font-bold mb-1">Annual Price</p>
-            <p className="text-[#344B4A] font-bold text-xl">₹{plan.priceAnnual.toLocaleString('en-IN')}</p>
+          <div className="bg-[#FFFFFF] border border-[#292940] rounded-xl p-4">
+            <p className="text-[#A1A1AA] text-xs uppercase tracking-widest font-bold mb-1">Annual Price</p>
+            <p className="text-[#11111F] font-bold text-xl">₹{plan.priceAnnual.toLocaleString('en-IN')}</p>
           </div>
         </div>
 
-        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-4 mb-6">
-          <p className="text-[#697778] text-xs uppercase tracking-widest font-bold mb-3">Platform Limits</p>
+        <div className="bg-[#FFFFFF] border border-[#292940] rounded-xl p-4 mb-6">
+          <p className="text-[#A1A1AA] text-xs uppercase tracking-widest font-bold mb-3">Platform Limits</p>
           <div className="grid grid-cols-2 gap-3 text-sm">
             {[
               { label: 'Members', value: plan.limits.members, icon: Users },
@@ -304,31 +304,31 @@ const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) =>
             ].map(({ label, value, icon: LimitIcon }) => (
               <div key={label} className="flex items-center space-x-2">
                 <LimitIcon size={14} className="text-teal-400" />
-                <span className="text-[#697778]">{label}:</span>
-                <span className="text-[#344B4A] font-bold">{value === -1 ? '∞' : value}</span>
+                <span className="text-[#A1A1AA]">{label}:</span>
+                <span className="text-[#11111F] font-bold">{value === -1 ? '∞' : value}</span>
               </div>
             ))}
           </div>
         </div>
 
         <div className="mb-6">
-          <p className="text-[#697778] text-xs uppercase tracking-widest font-bold mb-3">Features</p>
+          <p className="text-[#A1A1AA] text-xs uppercase tracking-widest font-bold mb-3">Features</p>
           <ul className="space-y-2">
             {plan.features.map((f: any, i: number) => (
-              <li key={i} className={`flex items-center space-x-2 text-sm ${f.included ? 'text-[#C0C0C0]' : 'text-[#697778]'}`}>
-                {f.included ? <CheckCircle size={14} className="text-green-400 shrink-0" /> : <XCircle size={14} className="text-[#697778] shrink-0" />}
+              <li key={i} className={`flex items-center space-x-2 text-sm ${f.included ? 'text-[#C0C0C0]' : 'text-[#A1A1AA]'}`}>
+                {f.included ? <CheckCircle size={14} className="text-green-400 shrink-0" /> : <XCircle size={14} className="text-[#A1A1AA] shrink-0" />}
                 <span>{f.text}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="flex items-center justify-between bg-[#D8EAE7]/10 border border-[#D8EAE7]/20 rounded-xl p-4 mb-6">
-          <span className="text-[#697778] text-sm">Active Subscribers</span>
+        <div className="flex items-center justify-between bg-[#17172A]/10 border border-[#17172A]/20 rounded-xl p-4 mb-6">
+          <span className="text-[#A1A1AA] text-sm">Active Subscribers</span>
           <span className="text-teal-400 font-bold text-xl">{plan.subscribedGyms} Gyms</span>
         </div>
 
-        <button onClick={onClose} className="w-full py-3 bg-[#FFFFFF] text-[#344B4A] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Close</button>
+        <button onClick={onClose} className="w-full py-3 bg-[#FFFFFF] text-[#11111F] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Close</button>
       </div>
     </div>
   );
@@ -346,16 +346,16 @@ const ViewPaymentModal = ({
 }) => {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-white border border-[#D9E2E3] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl my-auto animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] overflow-y-auto">
+      <div className="bg-white border border-[#292940] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl my-auto animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#D9E2E3]">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#292940]">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center shrink-0">
-              <IndianRupee size={22} className="text-[#167D78]" />
+              <IndianRupee size={22} className="text-[#6366F1]" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#344B4A]">Payment Details</h2>
-              <p className="text-[#697778] text-xs font-medium mt-0.5">{payment.gymName || payment.name}</p>
+              <h2 className="text-xl font-bold text-[#11111F]">Payment Details</h2>
+              <p className="text-[#A1A1AA] text-xs font-medium mt-0.5">{payment.gymName || payment.name}</p>
             </div>
           </div>
           <button
@@ -367,31 +367,31 @@ const ViewPaymentModal = ({
         </div>
 
         {/* Contiguous Detail Table touching one by one */}
-        <div className="border border-[#D9E2E3] rounded-xl overflow-hidden divide-y divide-[#D9E2E3] bg-white shadow-sm mb-6">
+        <div className="border border-[#292940] rounded-xl overflow-hidden divide-y divide-[#292940] bg-white shadow-sm mb-6">
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#697778] text-xs font-semibold">Plan</span>
-            <span className="text-[#344B4A] font-bold text-sm">
+            <span className="text-[#A1A1AA] text-xs font-semibold">Plan</span>
+            <span className="text-[#11111F] font-bold text-sm">
               {payment.plan} <span className="text-slate-400 font-normal">({payment.billing})</span>
             </span>
           </div>
 
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#697778] text-xs font-semibold">Amount Paid</span>
-            <span className="text-[#167D78] font-extrabold text-base">{payment.amount}</span>
+            <span className="text-[#A1A1AA] text-xs font-semibold">Amount Paid</span>
+            <span className="text-[#6366F1] font-extrabold text-base">{payment.amount}</span>
           </div>
 
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#697778] text-xs font-semibold">Payment Method</span>
-            <span className="text-[#344B4A] font-bold text-sm capitalize">{payment.paymentMethod}</span>
+            <span className="text-[#A1A1AA] text-xs font-semibold">Payment Method</span>
+            <span className="text-[#11111F] font-bold text-sm capitalize">{payment.paymentMethod}</span>
           </div>
 
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#697778] text-xs font-semibold">Date</span>
-            <span className="text-[#344B4A] font-bold text-sm">{formatDate(payment.start)}</span>
+            <span className="text-[#A1A1AA] text-xs font-semibold">Date</span>
+            <span className="text-[#11111F] font-bold text-sm">{formatDate(payment.start)}</span>
           </div>
 
           <div className="flex justify-between items-center p-3.5 bg-white">
-            <span className="text-[#697778] text-xs font-semibold">Status</span>
+            <span className="text-[#A1A1AA] text-xs font-semibold">Status</span>
             <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${STATUS_COLORS[payment.status] || 'bg-gray-100 text-gray-500'}`}>
               {payment.status}
             </span>
@@ -399,12 +399,12 @@ const ViewPaymentModal = ({
         </div>
 
         {(payment.paymentMethod?.toLowerCase().includes('manual') || payment.paymentMethod?.toLowerCase().includes('qr') || payment.paymentMethod?.toLowerCase().includes('paytm') || payment.paymentMethod?.toLowerCase().includes('phonepe') || payment.paymentMethod?.toLowerCase().includes('google')) && (
-          <div className="bg-[#D8EAE7]/10 border border-[#D8EAE7]/30 rounded-xl p-4 mb-6">
+          <div className="bg-[#17172A]/10 border border-[#17172A]/30 rounded-xl p-4 mb-6">
             <h3 className="text-teal-700 font-bold text-xs mb-1.5 flex items-center gap-1.5">
               <CheckCircle size={14} className="text-teal-600" />
               <span>Manual / QR Payment Verification</span>
             </h3>
-            <p className="text-[#697778] text-xs leading-relaxed">
+            <p className="text-[#A1A1AA] text-xs leading-relaxed">
               This payment was completed via {payment.paymentMethod}. The transaction ID and screenshot have been verified by the billing team.
             </p>
           </div>
@@ -414,7 +414,7 @@ const ViewPaymentModal = ({
           {onOpenInvoice && (
             <button
               onClick={() => onOpenInvoice(payment)}
-              className="w-full py-2.5 bg-orange-50 hover:bg-orange-100 text-[#167D78] border border-orange-200 rounded-xl font-bold transition-all text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+              className="w-full py-2.5 bg-orange-50 hover:bg-orange-100 text-[#6366F1] border border-orange-200 rounded-xl font-bold transition-all text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs"
             >
               <FileText size={15} />
               <span>View & Download Tax Invoice</span>
@@ -535,21 +535,21 @@ const SubscriptionInvoiceModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-white border border-[#D9E2E3] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[90vh] my-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white border border-[#292940] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[90vh] my-auto animate-in fade-in zoom-in-95 duration-150">
         {/* Invoice Modal Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[#D9E2E3] bg-stone-50/50">
+        <div className="flex items-center justify-between p-5 border-b border-[#292940] bg-stone-50/50">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-orange-100 text-[#167D78] rounded-xl flex items-center justify-center font-black">
+            <div className="w-10 h-10 bg-orange-100 text-[#6366F1] rounded-xl flex items-center justify-center font-black">
               <FileText size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-extrabold text-[#344B4A]">Tax Invoice</h2>
+                <h2 className="text-lg font-extrabold text-[#11111F]">Tax Invoice</h2>
                 <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                   PAID
                 </span>
               </div>
-              <p className="text-[#697778] text-xs font-mono">{invoiceNumber}</p>
+              <p className="text-[#A1A1AA] text-xs font-mono">{invoiceNumber}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -562,7 +562,7 @@ const SubscriptionInvoiceModal = ({
             </button>
             <button
               onClick={handleDownloadPDF}
-              className="p-2 text-[#167D78] hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-[#6366F1] hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
               title="Download PDF Invoice"
             >
               <Download size={18} />
@@ -592,7 +592,7 @@ const SubscriptionInvoiceModal = ({
             {/* Customer Gym */}
             <div className="space-y-1 sm:text-right">
               <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Billed To (Subscriber):</span>
-              <strong className="text-sm font-extrabold text-[#167D78] block">{invoice.gymName}</strong>
+              <strong className="text-sm font-extrabold text-[#6366F1] block">{invoice.gymName}</strong>
               <p className="text-stone-700 font-medium">Owner: {invoice.owner}</p>
               <p className="text-stone-500">Plan: {invoice.plan} ({invoice.billing})</p>
               <p className="text-stone-500">Payment: {invoice.paymentMethod}</p>
@@ -657,7 +657,7 @@ const SubscriptionInvoiceModal = ({
               </div>
               <div className="flex justify-between w-56 pt-2 border-t border-stone-300 font-extrabold text-sm text-stone-900">
                 <span>Total Paid:</span>
-                <span className="text-[#167D78]">₹{numericAmount.toLocaleString('en-IN')}</span>
+                <span className="text-[#6366F1]">₹{numericAmount.toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
@@ -690,7 +690,7 @@ const SubscriptionInvoiceModal = ({
             </button>
             <button
               onClick={handleDownloadPDF}
-              className="px-4 py-2 bg-gradient-to-r from-[#167D78] to-[#116660] hover:from-[#116660] hover:to-[#167D78] text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+              className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] hover:from-[#4F46E5] hover:to-[#6366F1] text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
               <Download size={14} />
               <span>Download PDF Invoice</span>
@@ -722,7 +722,7 @@ const ICON_OPTIONS = [
   { label: 'Zap (Trial)', icon: Zap, color: 'text-slate-400', bg: 'bg-slate-400/10' },
   { label: 'Star (Silver)', icon: Star, color: 'text-stone-600', bg: 'bg-slate-300/10' },
   { label: 'Crown (Gold)', icon: Crown, color: 'text-teal-400', bg: 'bg-teal-400/10' },
-  { label: 'Sparkles (Premium)', icon: Sparkles, color: 'text-[#D8EAE7]', bg: 'bg-[#167D78]/10' },
+  { label: 'Sparkles (Premium)', icon: Sparkles, color: 'text-[#17172A]', bg: 'bg-[#6366F1]/10' },
   { label: 'Credit Card', icon: CreditCard, color: 'text-blue-400', bg: 'bg-blue-400/10' },
 ];
 
@@ -814,8 +814,8 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
           <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={36} className="text-green-400" />
           </div>
-          <h2 className="text-xl font-bold text-[#344B4A] mb-2">Plan Saved!</h2>
-          <p className="text-[#697778] text-sm">Your new plan has been added successfully.</p>
+          <h2 className="text-xl font-bold text-[#11111F] mb-2">Plan Saved!</h2>
+          <p className="text-[#A1A1AA] text-sm">Your new plan has been added successfully.</p>
         </div>
       </div>
     );
@@ -823,19 +823,19 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#D9E2E3] shrink-0 bg-white">
+        <div className="flex items-center justify-between p-6 border-b border-[#292940] shrink-0 bg-white">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-[#D8EAE7]/10 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#17172A]/10 rounded-xl flex items-center justify-center">
               <Plus size={20} className="text-teal-400" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#344B4A]">Create New Plan</h2>
-              <p className="text-[#697778] text-sm">Fill in the details to add a new subscription plan</p>
+              <h2 className="text-xl font-bold text-[#11111F]">Create New Plan</h2>
+              <p className="text-[#A1A1AA] text-sm">Fill in the details to add a new subscription plan</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#697778] hover:text-[#344B4A]">
+          <button onClick={onClose} className="text-[#A1A1AA] hover:text-[#11111F]">
             <XCircle size={20} />
           </button>
         </div>
@@ -846,26 +846,26 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Basic Info */}
             <div>
-              <h3 className="text-[#344B4A] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#D9E2E3]">Basic Information</h3>
+              <h3 className="text-[#11111F] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#292940]">Basic Information</h3>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-[#697778] mb-2">Plan Name *</label>
+                    <label className="block text-xs font-medium text-[#A1A1AA] mb-2">Plan Name *</label>
                     <input
                       type="text"
                       value={form.name}
                       onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: '' })); }}
                       placeholder="e.g. Enterprise"
-                      className={`w-full bg-[#FFFFFF] border ${errors.name ? 'border-[#D8EAE7]' : 'border-[#D9E2E3]'} text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7] transition-colors`}
+                      className={`w-full bg-[#FFFFFF] border ${errors.name ? 'border-[#17172A]' : 'border-[#292940]'} text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A] transition-colors`}
                     />
                     {errors.name && <p className="text-teal-400 text-xs mt-1">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[#697778] mb-2">Icon Style</label>
+                    <label className="block text-xs font-medium text-[#A1A1AA] mb-2">Icon Style</label>
                     <select
                       value={form.selectedIconIdx}
                       onChange={e => setForm(f => ({ ...f, selectedIconIdx: +e.target.value }))}
-                      className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                      className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
                     >
                       {ICON_OPTIONS.map((opt, i) => (
                         <option key={i} value={i}>{opt.label}</option>
@@ -874,13 +874,13 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#697778] mb-2">Tagline *</label>
+                  <label className="block text-xs font-medium text-[#A1A1AA] mb-2">Tagline *</label>
                   <input
                     type="text"
                     value={form.tagline}
                     onChange={e => { setForm(f => ({ ...f, tagline: e.target.value })); setErrors(er => ({ ...er, tagline: '' })); }}
                     placeholder="e.g. For large-scale gym chains"
-                    className={`w-full bg-[#FFFFFF] border ${errors.tagline ? 'border-[#D8EAE7]' : 'border-[#D9E2E3]'} text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]`}
+                    className={`w-full bg-[#FFFFFF] border ${errors.tagline ? 'border-[#17172A]' : 'border-[#292940]'} text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]`}
                   />
                   {errors.tagline && <p className="text-teal-400 text-xs mt-1">{errors.tagline}</p>}
                 </div>
@@ -889,24 +889,24 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Pricing */}
             <div>
-              <h3 className="text-[#344B4A] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#D9E2E3]">Pricing (₹)</h3>
+              <h3 className="text-[#11111F] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#292940]">Pricing (₹)</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#697778] mb-2">Monthly Price</label>
+                  <label className="block text-xs font-medium text-[#A1A1AA] mb-2">Monthly Price</label>
                   <input
                     type="number" min={0}
                     value={form.priceMonthly}
                     onChange={e => setForm(f => ({ ...f, priceMonthly: +e.target.value }))}
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#697778] mb-2">Annual Price</label>
+                  <label className="block text-xs font-medium text-[#A1A1AA] mb-2">Annual Price</label>
                   <input
                     type="number" min={0}
                     value={form.priceAnnual}
                     onChange={e => setForm(f => ({ ...f, priceAnnual: +e.target.value }))}
-                    className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                    className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
                   />
                 </div>
               </div>
@@ -919,7 +919,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Limits */}
             <div>
-              <h3 className="text-[#344B4A] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#D9E2E3]">Platform Limits <span className="text-[#697778] font-normal normal-case text-xs ml-2">(use -1 for Unlimited)</span></h3>
+              <h3 className="text-[#11111F] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#292940]">Platform Limits <span className="text-[#A1A1AA] font-normal normal-case text-xs ml-2">(use -1 for Unlimited)</span></h3>
               <div className="grid grid-cols-2 gap-4">
                 {[
                   { key: 'members', label: 'Max Members', icon: Users },
@@ -928,7 +928,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   { key: 'branches', label: 'Max Branches', icon: Building2 },
                 ].map(({ key, label, icon: LimitIcon }) => (
                   <div key={key}>
-                    <label className="flex items-center space-x-1.5 text-xs font-medium text-[#697778] mb-2">
+                    <label className="flex items-center space-x-1.5 text-xs font-medium text-[#A1A1AA] mb-2">
                       <LimitIcon size={12} className="text-teal-400" />
                       <span>{label}</span>
                     </label>
@@ -936,7 +936,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                       type="number"
                       value={(form as any)[key]}
                       onChange={e => setForm(f => ({ ...f, [key]: +e.target.value }))}
-                      className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                      className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
                     />
                   </div>
                 ))}
@@ -945,27 +945,27 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Features */}
             <div>
-              <h3 className="text-[#344B4A] font-bold text-sm uppercase tracking-wider mb-1 pb-2 border-b border-[#D9E2E3]">Features</h3>
-              <p className="text-[#697778] text-xs mb-4">✅ Check = Included &nbsp;|&nbsp; 🚫 Lock = Not available (shown as locked)</p>
+              <h3 className="text-[#11111F] font-bold text-sm uppercase tracking-wider mb-1 pb-2 border-b border-[#292940]">Features</h3>
+              <p className="text-[#A1A1AA] text-xs mb-4">✅ Check = Included &nbsp;|&nbsp; 🚫 Lock = Not available (shown as locked)</p>
               <div className="grid grid-cols-1 gap-2 mb-4">
                 {FEATURE_OPTIONS.map(feat => {
                   const isIncluded = selectedFeatures.includes(feat);
                   const isLocked = lockedFeatures.includes(feat);
                   return (
-                    <div key={feat} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-colors ${isIncluded ? 'bg-green-500/5 border-green-500/20' : isLocked ? 'bg-[#D8EAE7]/5 border-[#D8EAE7]/20' : 'bg-[#FFFFFF] border-[#D9E2E3]'}`}>
-                      <span className={isIncluded ? 'text-[#344B4A]' : isLocked ? 'text-[#697778] line-through' : 'text-[#697778]'}>{feat}</span>
+                    <div key={feat} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-colors ${isIncluded ? 'bg-green-500/5 border-green-500/20' : isLocked ? 'bg-[#17172A]/5 border-[#17172A]/20' : 'bg-[#FFFFFF] border-[#292940]'}`}>
+                      <span className={isIncluded ? 'text-[#11111F]' : isLocked ? 'text-[#A1A1AA] line-through' : 'text-[#A1A1AA]'}>{feat}</span>
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => toggleFeature(feat)}
                           title="Include feature"
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isIncluded ? 'bg-green-500 text-[#344B4A]' : 'bg-[#333] text-[#697778] hover:bg-green-500/20 hover:text-green-400'}`}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isIncluded ? 'bg-green-500 text-[#11111F]' : 'bg-[#333] text-[#A1A1AA] hover:bg-green-500/20 hover:text-green-400'}`}
                         >
                           <CheckCircle size={14} />
                         </button>
                         <button
                           onClick={() => toggleLocked(feat)}
                           title="Mark as locked/unavailable"
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isLocked ? 'bg-[#D8EAE7]/80 text-black' : 'bg-[#333] text-[#697778] hover:bg-[#D8EAE7]/20 hover:text-teal-400'}`}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isLocked ? 'bg-[#17172A]/80 text-black' : 'bg-[#333] text-[#A1A1AA] hover:bg-[#17172A]/20 hover:text-teal-400'}`}
                         >
                           <XCircle size={14} />
                         </button>
@@ -983,11 +983,11 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   onChange={e => setNewFeatureText(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addCustomFeature()}
                   placeholder="Add a custom feature..."
-                  className="flex-1 bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                  className="flex-1 bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
                 />
                 <button
                   onClick={addCustomFeature}
-                  className="px-4 py-2.5 bg-[#D8EAE7]/10 border border-[#D8EAE7]/30 text-teal-400 rounded-xl text-sm font-bold hover:bg-[#D8EAE7]/20 transition-colors"
+                  className="px-4 py-2.5 bg-[#17172A]/10 border border-[#17172A]/30 text-teal-400 rounded-xl text-sm font-bold hover:bg-[#17172A]/20 transition-colors"
                 >
                   + Add
                 </button>
@@ -996,12 +996,12 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Preview */}
             {(form.name || selectedFeatures.length > 0) && (
-              <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-xl p-4">
-                <p className="text-[#697778] text-xs uppercase tracking-wider font-bold mb-3">Preview</p>
-                <p className="text-[#344B4A] font-bold text-base">{form.name || 'Plan Name'}</p>
-                <p className="text-[#697778] text-xs mb-2">{form.tagline || 'Tagline'}</p>
+              <div className="bg-[#FFFFFF] border border-[#292940] rounded-xl p-4">
+                <p className="text-[#A1A1AA] text-xs uppercase tracking-wider font-bold mb-3">Preview</p>
+                <p className="text-[#11111F] font-bold text-base">{form.name || 'Plan Name'}</p>
+                <p className="text-[#A1A1AA] text-xs mb-2">{form.tagline || 'Tagline'}</p>
                 <p className="text-teal-400 font-bold">₹{form.priceMonthly.toLocaleString('en-IN')}/mo · ₹{form.priceAnnual.toLocaleString('en-IN')}/yr</p>
-                <div className="mt-2 text-xs text-[#697778]">
+                <div className="mt-2 text-xs text-[#A1A1AA]">
                   {selectedFeatures.length} included · {lockedFeatures.length} locked
                 </div>
               </div>
@@ -1010,11 +1010,11 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
         </div>
 
         {/* Footer */}
-        <div className="flex space-x-3 p-6 border-t border-[#D9E2E3] shrink-0 bg-white">
-          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#344B4A] rounded-xl font-bold border border-[#D9E2E3] hover:bg-slate-50 transition-colors text-sm">Cancel</button>
+        <div className="flex space-x-3 p-6 border-t border-[#292940] shrink-0 bg-white">
+          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#11111F] rounded-xl font-bold border border-[#292940] hover:bg-slate-50 transition-colors text-sm">Cancel</button>
           <button
             onClick={handleSave}
-            className="flex-1 py-3 bg-[#D8EAE7] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/30"
+            className="flex-1 py-3 bg-[#17172A] text-white rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/30"
           >
             <CheckCircle size={16} />
             <span>Save Plan</span>
@@ -1088,46 +1088,46 @@ const SuperAdminSubscriptions = () => {
       badge: 'bg-slate-100 text-slate-700 border-slate-200',
       headerBg: 'bg-slate-50',
       pricingBg: 'bg-slate-50 border border-slate-100',
-      limitsBg: 'bg-[#E8EFF0] border border-[#D8EAE7]',
+      limitsBg: 'bg-[#0B0B12] border border-[#17172A]',
       priceColor: 'text-slate-800',
       labelColor: 'text-slate-700',
-      checkColor: 'text-[#167D78]',
+      checkColor: 'text-[#6366F1]',
     },
     SILVER: {
-      border: 'border-[#D8EAE7]',
+      border: 'border-[#17172A]',
       glow: 'shadow-[0_0_25px_rgba(111,163,160,0.25)]',
       bg: 'bg-white',
       badge: 'bg-teal-50 text-teal-700 border-teal-200',
       headerBg: 'bg-teal-50/50',
       pricingBg: 'bg-teal-50/30 border border-teal-100',
-      limitsBg: 'bg-[#E8EFF0] border border-[#D8EAE7]',
-      priceColor: 'text-[#167D78]',
-      labelColor: 'text-[#167D78]',
-      checkColor: 'text-[#167D78]',
+      limitsBg: 'bg-[#0B0B12] border border-[#17172A]',
+      priceColor: 'text-[#6366F1]',
+      labelColor: 'text-[#6366F1]',
+      checkColor: 'text-[#6366F1]',
     },
     GOLD: {
-      border: 'border-[#167D78]',
+      border: 'border-[#6366F1]',
       glow: 'shadow-[0_0_35px_rgba(22,74,74,0.35)]',
       bg: 'bg-white',
-      badge: 'bg-[#167D78]/10 text-[#167D78] border-[#167D78]/25',
-      headerBg: 'bg-[#167D78]/10',
-      pricingBg: 'bg-[#167D78]/5 border border-[#167D78]/20',
-      limitsBg: 'bg-[#E8EFF0] border border-[#D8EAE7]',
-      priceColor: 'text-[#167D78]',
-      labelColor: 'text-[#167D78]',
-      checkColor: 'text-[#167D78]',
+      badge: 'bg-[#6366F1]/10 text-[#6366F1] border-[#6366F1]/25',
+      headerBg: 'bg-[#6366F1]/10',
+      pricingBg: 'bg-[#6366F1]/5 border border-[#6366F1]/20',
+      limitsBg: 'bg-[#0B0B12] border border-[#17172A]',
+      priceColor: 'text-[#6366F1]',
+      labelColor: 'text-[#6366F1]',
+      checkColor: 'text-[#6366F1]',
     },
     PREMIUM: {
-      border: 'border-[#D9E2E3]',
+      border: 'border-[#292940]',
       glow: 'shadow-[0_0_35px_rgba(168,85,247,0.25)]',
       bg: 'bg-white',
-      badge: 'bg-[#D8EAE7] text-[#167D78] border-[#D9E2E3]',
-      headerBg: 'bg-[#E8EFF0]',
-      pricingBg: 'bg-[#E8EFF0]/50 border border-[#D9E2E3]',
-      limitsBg: 'bg-[#E8EFF0] border border-[#D8EAE7]',
-      priceColor: 'text-[#167D78]',
-      labelColor: 'text-[#167D78]',
-      checkColor: 'text-[#167D78]',
+      badge: 'bg-[#17172A] text-[#6366F1] border-[#292940]',
+      headerBg: 'bg-[#0B0B12]',
+      pricingBg: 'bg-[#0B0B12]/50 border border-[#292940]',
+      limitsBg: 'bg-[#0B0B12] border border-[#17172A]',
+      priceColor: 'text-[#6366F1]',
+      labelColor: 'text-[#6366F1]',
+      checkColor: 'text-[#6366F1]',
     },
   };
 
@@ -1180,15 +1180,15 @@ const SuperAdminSubscriptions = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#344B4A] tracking-tight flex items-center space-x-3">
-            <CreditCard className="text-[#167D78]" size={30} />
+          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight flex items-center space-x-3">
+            <CreditCard className="text-[#6366F1]" size={30} />
             <span>Subscription Plans</span>
           </h1>
-          <p className="text-[#697778] mt-1">Manage SaaS plans for gym owners on the platform.</p>
+          <p className="text-[#A1A1AA] mt-1">Manage SaaS plans for gym owners on the platform.</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center space-x-2 px-5 py-2.5 bg-[#D8EAE7] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm shadow-lg shadow-amber-500/20"
+          className="flex items-center space-x-2 px-5 py-2.5 bg-[#17172A] text-black rounded-xl font-bold hover:bg-teal-600 transition-colors text-sm shadow-lg shadow-amber-500/20"
         >
           <Plus size={16} />
           <span>Create New Plan</span>
@@ -1211,12 +1211,12 @@ const SuperAdminSubscriptions = () => {
           { 
             label: 'Pending Gyms', 
             value: subscribedGyms.filter(g => g.status === 'Pending').length, 
-            icon: Clock, color: 'text-[#167D78]', bg: 'bg-blue-500/10' 
+            icon: Clock, color: 'text-[#6366F1]', bg: 'bg-blue-500/10' 
           },
           { 
             label: 'Rejected Gyms', 
             value: subscribedGyms.filter(g => g.status === 'Rejected').length, 
-            icon: AlertCircle, color: 'text-[#167D78]', bg: 'bg-red-500/10' 
+            icon: AlertCircle, color: 'text-[#6366F1]', bg: 'bg-red-500/10' 
           },
           { 
             label: 'Expired Gyms', 
@@ -1224,20 +1224,20 @@ const SuperAdminSubscriptions = () => {
             icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/10' 
           },
         ].map((stat, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-5 flex items-center space-x-4">
+          <div key={i} className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-5 flex items-center space-x-4">
             <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center`}>
               <stat.icon size={22} className={stat.color} />
             </div>
             <div>
-              <p className="text-[#697778] text-xs font-medium">{stat.label}</p>
-              <p className="text-[#344B4A] font-bold text-xl">{stat.value}</p>
+              <p className="text-[#A1A1AA] text-xs font-medium">{stat.label}</p>
+              <p className="text-[#11111F] font-bold text-xl">{stat.value}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-2 bg-[#FFFFFF] p-1.5 rounded-xl border border-[#D9E2E3] w-fit">
+      <div className="flex space-x-2 bg-[#FFFFFF] p-1.5 rounded-xl border border-[#292940] w-fit">
         {[
           { key: 'plans', label: 'Plan Management', icon: CreditCard },
           { key: 'subscribers', label: 'Subscribed Gyms', icon: Building2 },
@@ -1245,7 +1245,7 @@ const SuperAdminSubscriptions = () => {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as any)}
-            className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.key ? 'bg-[#D8EAE7] text-black shadow' : 'text-[#697778] hover:text-[#344B4A]'}`}
+            className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.key ? 'bg-[#17172A] text-black shadow' : 'text-[#A1A1AA] hover:text-[#11111F]'}`}
           >
             <tab.icon size={15} />
             <span>{tab.label}</span>
@@ -1270,34 +1270,34 @@ const SuperAdminSubscriptions = () => {
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <h3 className="text-[#344B4A] font-bold text-lg">{sp.name} Plan</h3>
+                      <h3 className="text-[#11111F] font-bold text-lg">{sp.name} Plan</h3>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border uppercase tracking-wider ${acc.badge}`}>Selected</span>
                     </div>
-                    <p className="text-[#697778] text-sm mt-0.5">{sp.tagline}</p>
+                    <p className="text-[#A1A1AA] text-sm mt-0.5">{sp.tagline}</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-4">
                   <div className="text-center">
-                    <p className="text-[#697778] text-[10px] uppercase tracking-wider font-bold">Monthly</p>
+                    <p className="text-[#A1A1AA] text-[10px] uppercase tracking-wider font-bold">Monthly</p>
                     <p className={`font-black text-lg ${acc.priceColor}`}>₹{sp.priceMonthly.toLocaleString('en-IN')}</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-[#697778] text-[10px] uppercase tracking-wider font-bold">Annual</p>
+                    <p className="text-[#A1A1AA] text-[10px] uppercase tracking-wider font-bold">Annual</p>
                     <p className={`font-black text-lg ${acc.priceColor}`}>₹{sp.priceAnnual.toLocaleString('en-IN')}</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-[#697778] text-[10px] uppercase tracking-wider font-bold">Members</p>
+                    <p className="text-[#A1A1AA] text-[10px] uppercase tracking-wider font-bold">Members</p>
                     <p className={`font-black text-lg ${acc.priceColor}`}>{sp.limits.members === -1 ? '∞' : sp.limits.members}</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-[#697778] text-[10px] uppercase tracking-wider font-bold">Subscribers</p>
+                    <p className="text-[#A1A1AA] text-[10px] uppercase tracking-wider font-bold">Subscribers</p>
                     <p className={`font-black text-lg ${acc.priceColor}`}>{sp.subscribedGyms}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <button onClick={() => setViewPlan(sp)} className={`px-4 py-2 rounded-xl text-sm font-bold border ${acc.badge} transition-colors`}>View Details</button>
                   <button onClick={() => setEditPlan(sp)} className={`px-4 py-2 rounded-xl text-sm font-bold ${acc.border.replace('border-', 'bg-').replace('400', '500')} text-black transition-colors`}>Edit Plan</button>
-                  <button onClick={() => setSelectedPlan(null)} className="px-3 py-2 rounded-xl text-xs text-[#697778] hover:text-[#167D78] transition-colors">✕</button>
+                  <button onClick={() => setSelectedPlan(null)} className="px-3 py-2 rounded-xl text-xs text-[#A1A1AA] hover:text-[#6366F1] transition-colors">✕</button>
                 </div>
               </div>
             );
@@ -1307,28 +1307,28 @@ const SuperAdminSubscriptions = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-orange-50/70 via-white to-amber-50/60 p-4 rounded-2xl border border-orange-200/70 shadow-xs mb-3">
             <div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#167D78]" />
-                <h3 className="font-extrabold text-[#344B4A] text-base">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#6366F1]" />
+                <h3 className="font-extrabold text-[#11111F] text-base">
                   Subscription Pricing Options: Monthly & Annually
                 </h3>
-                <span className="bg-[#167D78]/10 text-[#167D78] text-[10px] font-extrabold px-2 py-0.5 rounded-full border border-[#167D78]/20">
+                <span className="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-extrabold px-2 py-0.5 rounded-full border border-[#6366F1]/20">
                   DUAL BILLING
                 </span>
               </div>
-              <p className="text-xs text-[#697778] mt-0.5">
+              <p className="text-xs text-[#A1A1AA] mt-0.5">
                 Switch billing cycle to review pricing tiers, calculate annual savings, and manage SaaS gym owner plans.
               </p>
             </div>
 
             {/* Monthly vs Annually Toggle Switch */}
-            <div className="flex items-center bg-[#E8EFF0] p-1 rounded-xl border border-[#D9E2E3] shadow-inner shrink-0">
+            <div className="flex items-center bg-[#0B0B12] p-1 rounded-xl border border-[#292940] shadow-inner shrink-0">
               <button
                 type="button"
                 onClick={() => setBillingCycle('monthly')}
                 className={`px-4 py-2 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
                   billingCycle === 'monthly'
-                    ? 'bg-[#167D78] text-white shadow-xs'
-                    : 'text-[#697778] hover:text-[#344B4A]'
+                    ? 'bg-[#6366F1] text-white shadow-xs'
+                    : 'text-[#A1A1AA] hover:text-[#11111F]'
                 }`}
               >
                 Monthly Plans
@@ -1338,8 +1338,8 @@ const SuperAdminSubscriptions = () => {
                 onClick={() => setBillingCycle('annually')}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
                   billingCycle === 'annually'
-                    ? 'bg-[#167D78] text-white shadow-xs'
-                    : 'text-[#697778] hover:text-[#344B4A]'
+                    ? 'bg-[#6366F1] text-white shadow-xs'
+                    : 'text-[#A1A1AA] hover:text-[#11111F]'
                 }`}
               >
                 <span>Annually Plans</span>
@@ -1366,19 +1366,19 @@ const SuperAdminSubscriptions = () => {
                     isSelected
                       ? `border-2 ${acc.border} ${acc.glow} -translate-y-1 scale-[1.01]`
                       : plan.key === 'GOLD'
-                      ? 'border-2 border-[#167D78] shadow-md hover:-translate-y-1 hover:shadow-xl'
+                      ? 'border-2 border-[#6366F1] shadow-md hover:-translate-y-1 hover:shadow-xl'
                       : plan.key === 'PREMIUM'
-                      ? 'border-2 border-[#D9E2E3] hover:border-[#167D78] hover:-translate-y-1 hover:shadow-lg'
+                      ? 'border-2 border-[#292940] hover:border-[#6366F1] hover:-translate-y-1 hover:shadow-lg'
                       : plan.key === 'FREE_TRIAL'
                       ? 'border-2 border-dashed border-slate-300 hover:border-slate-400 hover:-translate-y-1 hover:shadow-lg'
-                      : 'border-2 border-slate-200 hover:border-[#D8EAE7] hover:-translate-y-1 hover:shadow-lg'
+                      : 'border-2 border-slate-200 hover:border-[#17172A] hover:-translate-y-1 hover:shadow-lg'
                   }
                   ${!isPlanActive ? 'opacity-60 grayscale' : ''}
                 `}
               >
                 {/* Gold Most Popular Ribbon */}
                 {plan.key === 'GOLD' && (
-                  <div className="bg-[#167D78] text-white text-[11px] font-extrabold py-2 px-4 flex items-center justify-center gap-1.5 uppercase tracking-widest shrink-0">
+                  <div className="bg-[#6366F1] text-white text-[11px] font-extrabold py-2 px-4 flex items-center justify-center gap-1.5 uppercase tracking-widest shrink-0">
                     <Star size={13} className="fill-amber-400 text-amber-400" />
                     <span>MOST POPULAR</span>
                   </div>
@@ -1387,7 +1387,7 @@ const SuperAdminSubscriptions = () => {
                 <div className="p-6 flex flex-col flex-1">
                   {/* Card Header: Name + Badge + Toggle */}
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl font-bold text-[#344B4A]">{plan.name}</h3>
+                    <h3 className="text-xl font-bold text-[#11111F]">{plan.name}</h3>
                     <div className="flex items-center space-x-2">
                       <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md border ${acc.badge}`}>
                         {plan.badge}
@@ -1413,14 +1413,14 @@ const SuperAdminSubscriptions = () => {
                   <div className="mb-3">
                     {/* Per-card Quick Option Pills */}
                     {plan.priceMonthly > 0 && (
-                      <div className="flex items-center gap-1 mb-2.5 bg-[#E8EFF0] p-0.5 rounded-lg border border-[#D9E2E3] w-fit text-[10px] font-bold">
+                      <div className="flex items-center gap-1 mb-2.5 bg-[#0B0B12] p-0.5 rounded-lg border border-[#292940] w-fit text-[10px] font-bold">
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); setBillingCycle('monthly'); }}
                           className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
                             billingCycle === 'monthly'
-                              ? 'bg-[#167D78] text-white shadow-xs font-black'
-                              : 'text-[#697778] hover:text-[#344B4A]'
+                              ? 'bg-[#6366F1] text-white shadow-xs font-black'
+                              : 'text-[#A1A1AA] hover:text-[#11111F]'
                           }`}
                         >
                           Monthly
@@ -1430,8 +1430,8 @@ const SuperAdminSubscriptions = () => {
                           onClick={(e) => { e.stopPropagation(); setBillingCycle('annually'); }}
                           className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
                             billingCycle === 'annually'
-                              ? 'bg-[#167D78] text-white shadow-xs font-black'
-                              : 'text-[#697778] hover:text-[#344B4A]'
+                              ? 'bg-[#6366F1] text-white shadow-xs font-black'
+                              : 'text-[#A1A1AA] hover:text-[#11111F]'
                           }`}
                         >
                           Annually (-25%)
@@ -1440,7 +1440,7 @@ const SuperAdminSubscriptions = () => {
                     )}
 
                     <div className="flex items-baseline space-x-1">
-                      <span className={`text-3xl font-extrabold tracking-tight ${plan.key === 'PREMIUM' ? 'text-[#167D78]' : plan.key === 'GOLD' ? 'text-[#167D78]' : plan.key === 'SILVER' ? 'text-[#167D78]' : 'text-slate-900'}`}>
+                      <span className={`text-3xl font-extrabold tracking-tight ${plan.key === 'PREMIUM' ? 'text-[#6366F1]' : plan.key === 'GOLD' ? 'text-[#6366F1]' : plan.key === 'SILVER' ? 'text-[#6366F1]' : 'text-slate-900'}`}>
                         {billingCycle === 'annually' && plan.priceAnnual > 0
                           ? `₹${plan.priceAnnual.toLocaleString('en-IN')}`
                           : (plan.priceDisplay || `₹${plan.priceMonthly.toLocaleString('en-IN')}`)}
@@ -1473,7 +1473,7 @@ const SuperAdminSubscriptions = () => {
                   </div>
 
                   {/* Platform Limits Box */}
-                  <div className="bg-[#E8EFF0] border border-[#D8EAE7] rounded-xl p-3 mb-5 text-center">
+                  <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3 mb-5 text-center">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">
                       PLATFORM LIMITS
                     </p>
@@ -1499,9 +1499,9 @@ const SuperAdminSubscriptions = () => {
                   </ul>
 
                   {/* Active Gyms Count */}
-                  <div className="pt-3 border-t border-[#D8EAE7] flex items-center justify-between mb-4">
+                  <div className="pt-3 border-t border-[#17172A] flex items-center justify-between mb-4">
                     <span className="text-slate-500 text-xs font-medium">Active Gyms</span>
-                    <span className="font-extrabold text-sm text-[#167D78] bg-[#167D78]/10 px-2.5 py-0.5 rounded-full">
+                    <span className="font-extrabold text-sm text-[#6366F1] bg-[#6366F1]/10 px-2.5 py-0.5 rounded-full">
                       {activeGymCount}
                     </span>
                   </div>
@@ -1517,7 +1517,7 @@ const SuperAdminSubscriptions = () => {
                     </button>
                     <button
                       onClick={e => { e.stopPropagation(); setEditPlan(plan); }}
-                      className="flex items-center justify-center space-x-1.5 py-2.5 border border-[#167D78]/20 rounded-xl text-xs font-semibold text-[#167D78] bg-[#167D78]/10 hover:bg-[#167D78]/15 transition-colors shadow-sm"
+                      className="flex items-center justify-center space-x-1.5 py-2.5 border border-[#6366F1]/20 rounded-xl text-xs font-semibold text-[#6366F1] bg-[#6366F1]/10 hover:bg-[#6366F1]/15 transition-colors shadow-sm"
                     >
                       <Edit3 size={13} />
                       <span>Edit</span>
@@ -1533,21 +1533,21 @@ const SuperAdminSubscriptions = () => {
 
       {/* ── Tab: Subscribed Gyms ── */}
       {activeTab === 'subscribers' && (
-        <div className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl overflow-hidden">
+        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl overflow-hidden">
           {/* Filters */}
-          <div className="p-5 border-b border-[#D9E2E3] flex flex-col md:flex-row md:items-center gap-3">
+          <div className="p-5 border-b border-[#292940] flex flex-col md:flex-row md:items-center gap-3">
             <div className="relative flex-1">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#697778]" />
+              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A1A1AA]" />
               <input
                 type="text"
                 placeholder="Search gym or owner..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]"
+                className="w-full bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#17172A]"
               />
             </div>
             <select value={filterPlan} onChange={e => setFilterPlan(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]">
+              className="bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]">
               <option value="ALL">All Plans</option>
               <option value="FREE_TRIAL">Free Trial</option>
               <option value="SILVER">Silver</option>
@@ -1555,7 +1555,7 @@ const SuperAdminSubscriptions = () => {
               <option value="PREMIUM">Premium</option>
             </select>
             <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#D9E2E3] text-[#344B4A] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#D8EAE7]">
+              className="bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#17172A]">
               <option value="ALL">All Statuses</option>
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
@@ -1568,23 +1568,23 @@ const SuperAdminSubscriptions = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#D9E2E3] bg-[#FFFFFF]">
+                <tr className="border-b border-[#292940] bg-[#FFFFFF]">
                   {['Gym Name', 'Owner', 'Plan', 'Billing', 'Amount', 'Payment Method', 'Start Date', 'Renewal Date', 'Status', 'Action'].map(h => (
-                    <th key={h} className="text-left text-xs font-bold text-[#697778] uppercase tracking-wider px-5 py-3.5">{h}</th>
+                    <th key={h} className="text-left text-xs font-bold text-[#A1A1AA] uppercase tracking-wider px-5 py-3.5">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#D9E2E3]">
+              <tbody className="divide-y divide-[#292940]">
                 {loadingGyms ? (
                   <tr><td colSpan={10} className="text-center py-16">
-                    <div className="flex flex-col items-center gap-3 text-[#697778]">
-                      <div className="w-8 h-8 border-2 border-[#D8EAE7] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex flex-col items-center gap-3 text-[#A1A1AA]">
+                      <div className="w-8 h-8 border-2 border-[#17172A] border-t-transparent rounded-full animate-spin"></div>
                       <span className="text-sm">Loading subscription data...</span>
                     </div>
                   </td></tr>
                 ) : filteredGyms.length === 0 ? (
                   <tr><td colSpan={10} className="text-center py-16">
-                    <div className="flex flex-col items-center gap-2 text-[#697778]">
+                    <div className="flex flex-col items-center gap-2 text-[#A1A1AA]">
                       <CreditCard size={40} className="opacity-30" />
                       <p>No subscriptions found.</p>
                     </div>
@@ -1593,27 +1593,27 @@ const SuperAdminSubscriptions = () => {
                   <tr key={gym.id} className="hover:bg-[#FFFFFF] transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-[#D8EAE7]/10 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-[#17172A]/10 rounded-lg flex items-center justify-center">
                           <Building2 size={14} className="text-teal-400" />
                         </div>
-                        <span className="text-[#344B4A] font-semibold text-sm">{gym.gymName}</span>
+                        <span className="text-[#11111F] font-semibold text-sm">{gym.gymName}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#697778] text-sm">{gym.owner}</td>
+                    <td className="px-5 py-4 text-[#A1A1AA] text-sm">{gym.owner}</td>
                     <td className="px-5 py-4">
                       <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${PLAN_COLORS[gym.plan]}`}>
                         {SAAS_PLANS.find(p => p.key === gym.plan)?.name || gym.plan}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#697778] text-sm">{gym.billing}</td>
-                    <td className="px-5 py-4 text-[#344B4A] font-bold text-sm">{gym.amount}</td>
+                    <td className="px-5 py-4 text-[#A1A1AA] text-sm">{gym.billing}</td>
+                    <td className="px-5 py-4 text-[#11111F] font-bold text-sm">{gym.amount}</td>
                     <td className="px-5 py-4">
-                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#D9E2E3] rounded-md text-xs text-[#697778]">
+                      <span className="px-2 py-1 bg-[#FFFFFF] border border-[#292940] rounded-md text-xs text-[#A1A1AA]">
                         {gym.paymentMethod}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#697778] text-sm whitespace-nowrap">{formatDate(gym.start)}</td>
-                    <td className="px-5 py-4 text-[#697778] text-sm whitespace-nowrap">{formatDate(gym.renewal)}</td>
+                    <td className="px-5 py-4 text-[#A1A1AA] text-sm whitespace-nowrap">{formatDate(gym.start)}</td>
+                    <td className="px-5 py-4 text-[#A1A1AA] text-sm whitespace-nowrap">{formatDate(gym.renewal)}</td>
                     <td className="px-5 py-4">
                       <select 
                         value={gym.status}
@@ -1633,8 +1633,8 @@ const SuperAdminSubscriptions = () => {
                         className={`outline-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border appearance-none ${STATUS_COLORS[gym.status] || 'bg-gray-100 text-gray-500'}`}
                       >
                         <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                        <option value="Inactive" className="bg-[#FFFFFF] text-[#697778]">Inactive</option>
-                        <option value="Pending" className="bg-[#FFFFFF] text-[#167D78]">Pending</option>
+                        <option value="Inactive" className="bg-[#FFFFFF] text-[#A1A1AA]">Inactive</option>
+                        <option value="Pending" className="bg-[#FFFFFF] text-[#6366F1]">Pending</option>
                         <option value="Rejected" className="bg-[#FFFFFF] text-rose-600 font-bold">Rejected</option>
                         <option value="Expired" className="bg-[#FFFFFF] text-teal-400">Expired</option>
                       </select>
@@ -1643,14 +1643,14 @@ const SuperAdminSubscriptions = () => {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => setViewPayment(gym)}
-                          className="p-1.5 bg-[#D8EAE7]/10 text-teal-600 rounded-lg hover:bg-[#D8EAE7]/20 transition-colors cursor-pointer"
+                          className="p-1.5 bg-[#17172A]/10 text-teal-600 rounded-lg hover:bg-[#17172A]/20 transition-colors cursor-pointer"
                           title="View Payment Details"
                         >
                           <Eye size={16} />
                         </button>
                         <button
                           onClick={() => setViewInvoice(gym)}
-                          className="p-1.5 bg-orange-500/10 text-[#167D78] rounded-lg hover:bg-orange-500/20 transition-colors cursor-pointer"
+                          className="p-1.5 bg-orange-500/10 text-[#6366F1] rounded-lg hover:bg-orange-500/20 transition-colors cursor-pointer"
                           title="Tax Invoice"
                         >
                           <FileText size={16} />

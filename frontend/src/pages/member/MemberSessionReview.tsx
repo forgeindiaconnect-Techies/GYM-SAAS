@@ -231,8 +231,8 @@ const MemberSessionReview = () => {
   if (loading && loadingGym) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <div className="w-10 h-10 rounded-full border-4 border-[#167D78] border-t-transparent animate-spin" />
-        <p className="text-[#697778] font-medium">Loading review and rating details...</p>
+        <div className="w-10 h-10 rounded-full border-4 border-[#6366F1] border-t-transparent animate-spin" />
+        <p className="text-[#A1A1AA] font-medium">Loading review and rating details...</p>
       </div>
     );
   }
@@ -241,28 +241,28 @@ const MemberSessionReview = () => {
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
 
       {/* Header with Separate Trainers & Gym Toggle Buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D9E2E3] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#292940] pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#344B4A] tracking-tight">Review & Ratings</h1>
-          <p className="text-[#697778] text-sm mt-1">Share your experience and reviews for your trainers and gym</p>
+          <h1 className="text-3xl font-extrabold text-[#11111F] tracking-tight">Review & Ratings</h1>
+          <p className="text-[#A1A1AA] text-sm mt-1">Share your experience and reviews for your trainers and gym</p>
         </div>
 
         {/* Separate Tab Buttons: Trainers and Gym */}
-        <div className="inline-flex items-center p-1.5 bg-stone-100/80 border border-[#D9E2E3] rounded-2xl shadow-sm gap-1.5 self-start sm:self-auto">
+        <div className="inline-flex items-center p-1.5 bg-stone-100/80 border border-[#292940] rounded-2xl shadow-sm gap-1.5 self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setActiveTab('trainers')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
               activeTab === 'trainers'
-                ? 'bg-[#167D78] text-white shadow-md shadow-teal-900/10'
-                : 'text-[#697778] hover:text-[#344B4A] hover:bg-white/60'
+                ? 'bg-[#6366F1] text-white shadow-md shadow-teal-900/10'
+                : 'text-[#A1A1AA] hover:text-[#11111F] hover:bg-white/60'
             }`}
           >
             <Dumbbell size={16} />
             <span>Trainers</span>
             {pendingReviews.length > 0 && (
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
-                activeTab === 'trainers' ? 'bg-white text-[#167D78]' : 'bg-orange-100 text-[#167D78]'
+                activeTab === 'trainers' ? 'bg-white text-[#6366F1]' : 'bg-orange-100 text-[#6366F1]'
               }`}>
                 {pendingReviews.length} new
               </span>
@@ -277,8 +277,8 @@ const MemberSessionReview = () => {
             }}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
               activeTab === 'gym'
-                ? 'bg-[#167D78] text-white shadow-md shadow-teal-900/10'
-                : 'text-[#697778] hover:text-[#344B4A] hover:bg-white/60'
+                ? 'bg-[#6366F1] text-white shadow-md shadow-teal-900/10'
+                : 'text-[#A1A1AA] hover:text-[#11111F] hover:bg-white/60'
             }`}
           >
             <Building2 size={16} />
@@ -302,7 +302,7 @@ const MemberSessionReview = () => {
           <div className="lg:col-span-2 space-y-3">
             {pendingReviews.length > 0 && (
               <div>
-                <h2 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-2 px-1">
+                <h2 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-2 px-1">
                   Awaiting Your Review ({pendingReviews.length})
                 </h2>
                 {pendingReviews.map(s => (
@@ -311,22 +311,22 @@ const MemberSessionReview = () => {
                     onClick={() => handleSelectSession(s)}
                     className={`w-full text-left p-4 rounded-xl border transition-all mb-2 ${
                       selectedSession?._id === s._id
-                        ? 'bg-[#167D78]/5 border-[#167D78] shadow'
-                        : 'bg-white border-[#D9E2E3] hover:border-[#D8EAE7] hover:shadow-sm'
+                        ? 'bg-[#6366F1]/5 border-[#6366F1] shadow'
+                        : 'bg-white border-[#292940] hover:border-[#17172A] hover:shadow-sm'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-sm text-[#344B4A]">
+                      <span className="font-bold text-sm text-[#11111F]">
                         {s.trainerId?.name || 'Your Trainer'}
                       </span>
-                      <ChevronRight size={14} className="text-[#697778]" />
+                      <ChevronRight size={14} className="text-[#A1A1AA]" />
                     </div>
-                    <p className="text-xs text-[#697778]">{s.trainerId?.specialization || 'Fitness Trainer'}</p>
-                    <div className="flex items-center gap-3 mt-2 text-xs text-[#697778]">
+                    <p className="text-xs text-[#A1A1AA]">{s.trainerId?.specialization || 'Fitness Trainer'}</p>
+                    <div className="flex items-center gap-3 mt-2 text-xs text-[#A1A1AA]">
                       <span className="flex items-center gap-1"><Calendar size={11} />{s.date}</span>
                       <span className="flex items-center gap-1"><Clock size={11} />{s.startTime}</span>
                       <span className={`px-1.5 py-0.5 rounded-full font-semibold text-[10px] ${
-                        s.mode === 'Online' ? 'bg-blue-50 text-[#167D78]' : 'bg-[#E8EFF0] text-[#697778]'
+                        s.mode === 'Online' ? 'bg-blue-50 text-[#6366F1]' : 'bg-[#0B0B12] text-[#A1A1AA]'
                       }`}>{s.mode}</span>
                     </div>
                   </button>
@@ -336,7 +336,7 @@ const MemberSessionReview = () => {
 
             {completedReviews.length > 0 && (
               <div>
-                <h2 className="text-xs font-bold text-[#697778] uppercase tracking-wider mb-2 px-1">
+                <h2 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-2 px-1">
                   Reviewed ({completedReviews.length})
                 </h2>
                 {completedReviews.map(s => (
@@ -345,12 +345,12 @@ const MemberSessionReview = () => {
                     onClick={() => handleSelectSession(s)}
                     className={`w-full text-left p-4 rounded-xl border transition-all mb-2 ${
                       selectedSession?._id === s._id
-                        ? 'bg-[#167D78]/5 border-[#167D78]'
-                        : 'bg-[#E8EFF0] border-[#D9E2E3] hover:border-[#D8EAE7]'
+                        ? 'bg-[#6366F1]/5 border-[#6366F1]'
+                        : 'bg-[#0B0B12] border-[#292940] hover:border-[#17172A]'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-sm text-[#344B4A]">
+                      <span className="font-bold text-sm text-[#11111F]">
                         {s.trainerId?.name || 'Your Trainer'}
                       </span>
                       <div className="flex gap-0.5">
@@ -359,7 +359,7 @@ const MemberSessionReview = () => {
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-[#697778]">
+                    <div className="flex items-center gap-2 mt-1 text-xs text-[#A1A1AA]">
                       <Calendar size={11} />
                       <span>{s.date}</span>
                       <CheckCircle2 size={11} className="text-emerald-500 ml-auto" />
@@ -371,10 +371,10 @@ const MemberSessionReview = () => {
             )}
 
             {sessions.length === 0 && (
-              <div className="bg-white border border-[#D9E2E3] rounded-2xl p-8 text-center shadow-sm">
-                <Calendar size={36} className="mx-auto text-[#697778] mb-3" />
-                <p className="font-bold text-[#697778]">No Completed Sessions</p>
-                <p className="text-xs text-[#697778] mt-1">Complete a training session first to leave a trainer review.</p>
+              <div className="bg-white border border-[#292940] rounded-2xl p-8 text-center shadow-sm">
+                <Calendar size={36} className="mx-auto text-[#A1A1AA] mb-3" />
+                <p className="font-bold text-[#A1A1AA]">No Completed Sessions</p>
+                <p className="text-xs text-[#A1A1AA] mt-1">Complete a training session first to leave a trainer review.</p>
               </div>
             )}
           </div>
@@ -382,26 +382,26 @@ const MemberSessionReview = () => {
           {/* Trainer Rating Form */}
           <div className="lg:col-span-3">
             {!selectedSession ? (
-              <div className="bg-white border border-[#D9E2E3] rounded-2xl p-12 text-center shadow-sm h-full flex flex-col items-center justify-center">
-                <Star size={48} className="text-[#D9E2E3] mb-4" />
-                <h3 className="text-lg font-bold text-[#697778] mb-2">Select a Session</h3>
-                <p className="text-sm text-[#697778]">Pick a completed session from the left to rate your trainer.</p>
+              <div className="bg-white border border-[#292940] rounded-2xl p-12 text-center shadow-sm h-full flex flex-col items-center justify-center">
+                <Star size={48} className="text-[#292940] mb-4" />
+                <h3 className="text-lg font-bold text-[#A1A1AA] mb-2">Select a Session</h3>
+                <p className="text-sm text-[#A1A1AA]">Pick a completed session from the left to rate your trainer.</p>
               </div>
             ) : (
-              <div className="bg-white border border-[#D9E2E3] rounded-2xl p-7 shadow-sm space-y-6">
+              <div className="bg-white border border-[#292940] rounded-2xl p-7 shadow-sm space-y-6">
 
                 {/* Trainer Info */}
-                <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#344B4A] to-[#167D78] rounded-xl text-white">
+                <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#11111F] to-[#6366F1] rounded-xl text-white">
                   <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-bold text-lg">
                     {selectedSession.trainerId?.name?.[0] || 'T'}
                   </div>
                   <div className="flex-1">
                     <p className="font-bold text-base">{selectedSession.trainerId?.name || 'Your Trainer'}</p>
-                    <p className="text-xs text-[#D9E2E3]">{selectedSession.trainerId?.specialization || 'Fitness Trainer'}</p>
+                    <p className="text-xs text-[#292940]">{selectedSession.trainerId?.specialization || 'Fitness Trainer'}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-[#D9E2E3]">{selectedSession.date}</p>
-                    <p className="text-xs text-[#D9E2E3]">{selectedSession.startTime} – {selectedSession.endTime}</p>
+                    <p className="text-xs text-[#292940]">{selectedSession.date}</p>
+                    <p className="text-xs text-[#292940]">{selectedSession.startTime} – {selectedSession.endTime}</p>
                     <span className="mt-1 inline-block px-2 py-0.5 bg-white/10 rounded-full text-[10px] font-semibold">
                       {selectedSession.mode}
                     </span>
@@ -421,12 +421,12 @@ const MemberSessionReview = () => {
 
                 {/* Star Rating */}
                 <div>
-                  <label className="block text-sm font-bold text-[#344B4A] mb-3">
+                  <label className="block text-sm font-bold text-[#11111F] mb-3">
                     How would you rate this session?
                   </label>
                   <StarRating value={rating} onChange={r => { setRating(r); setSuccess(false); }} size={36} />
                   {rating > 0 && (
-                    <p className="mt-2 text-sm font-semibold text-[#167D78]">
+                    <p className="mt-2 text-sm font-semibold text-[#6366F1]">
                       {ratingLabels[rating]}
                     </p>
                   )}
@@ -434,15 +434,15 @@ const MemberSessionReview = () => {
 
                 {/* Review Text */}
                 <div>
-                  <label className="block text-sm font-bold text-[#344B4A] mb-2">
-                    Write a review <span className="text-[#697778] font-normal">(optional)</span>
+                  <label className="block text-sm font-bold text-[#11111F] mb-2">
+                    Write a review <span className="text-[#A1A1AA] font-normal">(optional)</span>
                   </label>
                   <textarea
                     rows={4}
                     value={review}
                     onChange={e => { setReview(e.target.value); setSuccess(false); }}
                     placeholder="Share details about your experience — training quality, communication, punctuality..."
-                    className="w-full px-4 py-3 rounded-xl border border-[#D9E2E3] focus:outline-none focus:border-[#167D78] focus:ring-2 focus:ring-[#167D78]/10 text-sm text-[#344B4A] resize-none placeholder:text-[#697778] transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-[#292940] focus:outline-none focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 text-sm text-[#11111F] resize-none placeholder:text-[#A1A1AA] transition-all"
                   />
                 </div>
 
@@ -458,7 +458,7 @@ const MemberSessionReview = () => {
                   <button
                     onClick={handleSubmit}
                     disabled={submitting || rating === 0}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#167D78] to-[#116660] text-white font-bold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-teal-900/10 text-sm"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-bold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-teal-900/10 text-sm"
                   >
                     {submitting ? (
                       <><RefreshCw size={16} className="animate-spin" /> Submitting...</>
@@ -468,7 +468,7 @@ const MemberSessionReview = () => {
                   </button>
                   <button
                     onClick={() => navigate('/member/dashboard')}
-                    className="px-5 py-3 border border-[#D9E2E3] text-[#697778] font-semibold rounded-xl hover:bg-[#E8EFF0] transition-colors text-sm"
+                    className="px-5 py-3 border border-[#292940] text-[#A1A1AA] font-semibold rounded-xl hover:bg-[#0B0B12] transition-colors text-sm"
                   >
                     Back
                   </button>
@@ -484,22 +484,22 @@ const MemberSessionReview = () => {
         <div className="space-y-6 animate-fade-in">
           {loadingGym ? (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
-              <div className="w-9 h-9 rounded-full border-4 border-[#167D78] border-t-transparent animate-spin" />
-              <p className="text-[#697778] text-sm font-medium">Loading your gym details...</p>
+              <div className="w-9 h-9 rounded-full border-4 border-[#6366F1] border-t-transparent animate-spin" />
+              <p className="text-[#A1A1AA] text-sm font-medium">Loading your gym details...</p>
             </div>
           ) : !gym ? (
-            <div className="bg-white border border-[#D9E2E3] rounded-2xl p-10 text-center shadow-sm">
-              <Building2 size={42} className="mx-auto text-[#116660] mb-3" />
-              <h3 className="text-lg font-bold text-[#344B4A]">No Gym Assigned</h3>
-              <p className="text-xs text-[#697778] mt-1">You are not currently enrolled in a gym.</p>
+            <div className="bg-white border border-[#292940] rounded-2xl p-10 text-center shadow-sm">
+              <Building2 size={42} className="mx-auto text-[#4F46E5] mb-3" />
+              <h3 className="text-lg font-bold text-[#11111F]">No Gym Assigned</h3>
+              <p className="text-xs text-[#A1A1AA] mt-1">You are not currently enrolled in a gym.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
               {/* Gym Info Card (Left) */}
               <div className="lg:col-span-2 space-y-4">
-                <div className="bg-white border border-[#D9E2E3] rounded-2xl p-6 shadow-sm">
+                <div className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-[#167D78] font-black text-xl shrink-0 overflow-hidden">
+                    <div className="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-[#6366F1] font-black text-xl shrink-0 overflow-hidden">
                       {gym.logo ? (
                         <img src={gym.logo} alt={gym.name} className="w-full h-full object-cover" />
                       ) : (
@@ -507,32 +507,32 @@ const MemberSessionReview = () => {
                       )}
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-[#344B4A] leading-tight">{gym.name}</h3>
-                      <p className="text-xs text-[#697778] flex items-center gap-1 mt-0.5">
-                        <MapPin size={12} className="text-[#167D78]" /> {gym.location?.city || ''}, {gym.location?.state || ''}
+                      <h3 className="font-bold text-lg text-[#11111F] leading-tight">{gym.name}</h3>
+                      <p className="text-xs text-[#A1A1AA] flex items-center gap-1 mt-0.5">
+                        <MapPin size={12} className="text-[#6366F1]" /> {gym.location?.city || ''}, {gym.location?.state || ''}
                       </p>
                     </div>
                   </div>
 
                   <div className="p-3 bg-stone-50 rounded-xl border border-stone-200 mb-4 flex items-center justify-between">
-                    <span className="text-xs text-[#697778] font-semibold">Overall Rating</span>
-                    <div className="flex items-center gap-1.5 font-bold text-sm text-[#344B4A]">
+                    <span className="text-xs text-[#A1A1AA] font-semibold">Overall Rating</span>
+                    <div className="flex items-center gap-1.5 font-bold text-sm text-[#11111F]">
                       <Star size={14} className="fill-amber-500 text-amber-500" />
                       <span>{gym.rating ? Number(gym.rating).toFixed(1) : '4.5'}</span>
-                      <span className="text-xs font-normal text-[#697778]">({gym.reviewCount || gym.reviews?.length || 0} reviews)</span>
+                      <span className="text-xs font-normal text-[#A1A1AA]">({gym.reviewCount || gym.reviews?.length || 0} reviews)</span>
                     </div>
                   </div>
 
                   {gym.location?.address && (
-                    <div className="text-xs text-[#697778] mb-4">
-                      <span className="font-semibold text-[#344B4A] block mb-0.5">Address:</span>
+                    <div className="text-xs text-[#A1A1AA] mb-4">
+                      <span className="font-semibold text-[#11111F] block mb-0.5">Address:</span>
                       {gym.location.address}
                     </div>
                   )}
 
                   {gym.facilities?.length > 0 && (
                     <div>
-                      <span className="text-xs font-semibold text-[#344B4A] block mb-2">Amenities & Facilities:</span>
+                      <span className="text-xs font-semibold text-[#11111F] block mb-2">Amenities & Facilities:</span>
                       <div className="flex flex-wrap gap-1.5">
                         {gym.facilities.slice(0, 6).map((fac: string, idx: number) => (
                           <span key={idx} className="text-[11px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded-md font-medium">
@@ -565,12 +565,12 @@ const MemberSessionReview = () => {
 
               {/* Gym Review Form (Right) */}
               <div className="lg:col-span-3">
-                <div className="bg-white border border-[#D9E2E3] rounded-2xl p-7 shadow-sm space-y-6">
+                <div className="bg-white border border-[#292940] rounded-2xl p-7 shadow-sm space-y-6">
                   <div>
-                    <h3 className="text-lg font-bold text-[#344B4A]">
+                    <h3 className="text-lg font-bold text-[#11111F]">
                       {existingGymReview ? 'Update Your Gym Review' : 'Rate & Review Your Gym'}
                     </h3>
-                    <p className="text-xs text-[#697778] mt-0.5">
+                    <p className="text-xs text-[#A1A1AA] mt-0.5">
                       Share your experience regarding {gym.name}'s equipment, facilities, staff, and workout atmosphere.
                     </p>
                   </div>
@@ -587,12 +587,12 @@ const MemberSessionReview = () => {
 
                   {/* Star Rating */}
                   <div>
-                    <label className="block text-sm font-bold text-[#344B4A] mb-3">
+                    <label className="block text-sm font-bold text-[#11111F] mb-3">
                       How would you rate {gym.name}?
                     </label>
                     <StarRating value={gymRating} onChange={r => { setGymRating(r); setGymSuccess(false); }} size={36} />
                     {gymRating > 0 && (
-                      <p className="mt-2 text-sm font-semibold text-[#167D78]">
+                      <p className="mt-2 text-sm font-semibold text-[#6366F1]">
                         {ratingLabels[gymRating]}
                       </p>
                     )}
@@ -600,7 +600,7 @@ const MemberSessionReview = () => {
 
                   {/* Review Text */}
                   <div>
-                    <label className="block text-sm font-bold text-[#344B4A] mb-2">
+                    <label className="block text-sm font-bold text-[#11111F] mb-2">
                       Review Feedback
                     </label>
                     <textarea
@@ -608,7 +608,7 @@ const MemberSessionReview = () => {
                       value={gymReview}
                       onChange={e => { setGymReview(e.target.value); setGymSuccess(false); }}
                       placeholder="Share details about gym cleanliness, equipment quality, staff friendliness, air conditioning, and overall environment..."
-                      className="w-full px-4 py-3 rounded-xl border border-[#D9E2E3] focus:outline-none focus:border-[#167D78] focus:ring-2 focus:ring-[#167D78]/10 text-sm text-[#344B4A] resize-none placeholder:text-[#697778] transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-[#292940] focus:outline-none focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 text-sm text-[#11111F] resize-none placeholder:text-[#A1A1AA] transition-all"
                     />
                   </div>
 
@@ -624,7 +624,7 @@ const MemberSessionReview = () => {
                     <button
                       onClick={handleSubmitGymReview}
                       disabled={submittingGym || gymRating === 0}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#167D78] to-[#116660] text-white font-bold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-teal-900/10 text-sm"
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-bold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-teal-900/10 text-sm"
                     >
                       {submittingGym ? (
                         <><RefreshCw size={16} className="animate-spin" /> Submitting...</>
@@ -634,7 +634,7 @@ const MemberSessionReview = () => {
                     </button>
                     <button
                       onClick={() => navigate('/member/dashboard')}
-                      className="px-5 py-3 border border-[#D9E2E3] text-[#697778] font-semibold rounded-xl hover:bg-[#E8EFF0] transition-colors text-sm"
+                      className="px-5 py-3 border border-[#292940] text-[#A1A1AA] font-semibold rounded-xl hover:bg-[#0B0B12] transition-colors text-sm"
                     >
                       Back
                     </button>

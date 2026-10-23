@@ -49,7 +49,7 @@ export const exportToWord = ({ filename, columns, data, title }: ExportConfig) =
         body { font-family: Arial, sans-serif; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-        th { background-color: #167D78; color: #000; }
+        th { background-color: #6366F1; color: #000; }
       </style>
     </head>
     <body>

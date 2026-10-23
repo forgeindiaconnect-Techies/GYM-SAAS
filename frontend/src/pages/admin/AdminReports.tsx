@@ -6,12 +6,12 @@ const AdminReports = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <BarChart className="text-[#167D78]" size={32} />
+            <BarChart className="text-[#6366F1]" size={32} />
             Reports & Analytics
           </h1>
-          <p className="text-[#697778] mt-2">Generate custom CSV exports for accounting and BI.</p>
+          <p className="text-[#A1A1AA] mt-2">Generate custom CSV exports for accounting and BI.</p>
         </div>
-        <button className="px-6 py-2 bg-[#167D78] text-white rounded-xl font-bold hover:bg-[#116660] transition-colors">
+        <button className="px-6 py-2 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors">
           Manage Reports & Analytics
         </button>
       </div>
@@ -19,15 +19,15 @@ const AdminReports = () => {
       
       <div className="grid md:grid-cols-3 gap-6">
         {['Financial End-of-Month', 'User Growth & Retention', 'Trainer Payout Ledger', 'AI Token Usage', 'Gym Check-ins Report'].map((report, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#D9E2E3] rounded-2xl p-6 flex flex-col justify-between">
+          <div key={i} className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 flex flex-col justify-between">
             <div>
-              <div className="w-10 h-10 bg-[#D8EAE7] rounded-lg mb-4 flex items-center justify-center text-[#697778]">
+              <div className="w-10 h-10 bg-[#17172A] rounded-lg mb-4 flex items-center justify-center text-[#A1A1AA]">
                 <BarChart size={20} />
               </div>
               <h3 className="font-bold mb-2">{report}</h3>
-              <p className="text-sm text-[#697778] mb-6">Standard CSV export for BI tools.</p>
+              <p className="text-sm text-[#A1A1AA] mb-6">Standard CSV export for BI tools.</p>
             </div>
-            <button className="w-full py-2 bg-[#D8EAE7] hover:bg-[#333] rounded-lg text-sm">Generate .CSV</button>
+            <button className="w-full py-2 bg-[#17172A] hover:bg-[#333] rounded-lg text-sm">Generate .CSV</button>
           </div>
         ))}
       </div>

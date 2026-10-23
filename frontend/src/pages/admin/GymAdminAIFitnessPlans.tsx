@@ -43,7 +43,7 @@ const GymAdminAIFitnessPlans = () => {
       case 'Trainer Edited':
       case 'Trainer Modified':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#D8EAE7] text-[#116660] border border-[#D9E2E3] inline-flex items-center gap-1">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#17172A] text-[#4F46E5] border border-[#292940] inline-flex items-center gap-1">
             <FileEdit size={12} /> Trainer Edited
           </span>
         );
@@ -84,35 +84,35 @@ const GymAdminAIFitnessPlans = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-3xl font-bold text-[#344B4A]">AI Fitness Plans &amp; Trainer Review Monitor</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#167D78]/10 text-[#167D78]">
+            <h1 className="text-3xl font-bold text-[#11111F]">AI Fitness Plans &amp; Trainer Review Monitor</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#6366F1]/10 text-[#6366F1]">
               Owner Visibility Hub
             </span>
           </div>
-          <p className="text-sm text-[#697778]">
+          <p className="text-sm text-[#A1A1AA]">
             Audit customer AI analyses, assigned trainer reviews, modifications diff, and final approved plans.
           </p>
         </div>
       </div>
 
       {/* Search & Filter Toolbar */}
-      <div className="bg-white p-4 rounded-3xl border border-[#D9E2E3] shadow-sm flex flex-col sm:flex-row gap-4">
+      <div className="bg-white p-4 rounded-3xl border border-[#292940] shadow-sm flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#697778]" size={18} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A1A1AA]" size={18} />
           <input 
             type="text" 
             placeholder="Search customers by name or fitness goal..." 
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-[#D8EAE7] rounded-2xl outline-none focus:border-[#167D78] bg-[#E8EFF0] text-sm text-[#344B4A]"
+            className="w-full pl-10 pr-4 py-2.5 border border-[#17172A] rounded-2xl outline-none focus:border-[#6366F1] bg-[#0B0B12] text-sm text-[#11111F]"
           />
         </div>
         <div className="flex items-center gap-2">
-          <Filter className="text-[#697778]" size={18} />
+          <Filter className="text-[#A1A1AA]" size={18} />
           <select 
             value={filterStatus}
             onChange={e => setFilterStatus(e.target.value)}
-            className="border border-[#D8EAE7] rounded-2xl px-4 py-2.5 outline-none focus:border-[#167D78] bg-[#E8EFF0] text-xs font-bold text-[#344B4A]"
+            className="border border-[#17172A] rounded-2xl px-4 py-2.5 outline-none focus:border-[#6366F1] bg-[#0B0B12] text-xs font-bold text-[#11111F]"
           >
             <option value="All">All Workflow Statuses</option>
             <option value="Pending">Pending Trainer Review</option>
@@ -124,10 +124,10 @@ const GymAdminAIFitnessPlans = () => {
       </div>
 
       {/* Data Table (Requirement 9: Customer, Assigned Trainer, AI Status, Review Status, Approval, Modifications, Date) */}
-      <div className="bg-white rounded-3xl border border-[#D9E2E3] shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-[#292940] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-[#E8EFF0] text-[#697778] text-xs font-bold uppercase tracking-wider">
+            <thead className="bg-[#0B0B12] text-[#A1A1AA] text-xs font-bold uppercase tracking-wider">
               <tr>
                 <th className="px-6 py-4">Customer</th>
                 <th className="px-6 py-4">Fitness Goal</th>
@@ -139,19 +139,19 @@ const GymAdminAIFitnessPlans = () => {
                 <th className="px-6 py-4 text-right">Audit &amp; Plan</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D8EAE7]">
+            <tbody className="divide-y divide-[#17172A]">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-16 text-[#697778]">
-                    <div className="w-8 h-8 border-4 border-[#167D78] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                  <td colSpan={8} className="text-center py-16 text-[#A1A1AA]">
+                    <div className="w-8 h-8 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                     <p className="font-semibold text-xs">Loading plans...</p>
                   </td>
                 </tr>
               ) : filteredPlans.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-16 text-[#697778]">
-                    <Bot size={36} className="mx-auto text-[#D9E2E3] mb-2" />
-                    <p className="font-bold text-sm text-[#344B4A]">No customer plans found</p>
+                  <td colSpan={8} className="text-center py-16 text-[#A1A1AA]">
+                    <Bot size={36} className="mx-auto text-[#292940] mb-2" />
+                    <p className="font-bold text-sm text-[#11111F]">No customer plans found</p>
                   </td>
                 </tr>
               ) : (
@@ -163,11 +163,11 @@ const GymAdminAIFitnessPlans = () => {
                   const isApproved = rec.status === 'Trainer Approved' || rec.status === 'Published to Customer';
 
                   return (
-                    <tr key={plan._id} className="hover:bg-[#E8EFF0] transition-colors">
+                    <tr key={plan._id} className="hover:bg-[#0B0B12] transition-colors">
                       {/* Customer */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#167D78]/10 text-[#167D78] flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
                             {plan.customer?.profileImage || plan.customer?.profilePhoto ? (
                               <img src={plan.customer.profileImage || plan.customer.profilePhoto} alt="" className="w-full h-full object-cover" />
                             ) : (
@@ -175,17 +175,17 @@ const GymAdminAIFitnessPlans = () => {
                             )}
                           </div>
                           <div>
-                            <div className="font-bold text-sm text-[#344B4A]">
+                            <div className="font-bold text-sm text-[#11111F]">
                               {plan.customer?.firstName} {plan.customer?.lastName}
                             </div>
-                            <div className="text-xs text-[#697778]">{plan.customer?.email}</div>
+                            <div className="text-xs text-[#A1A1AA]">{plan.customer?.email}</div>
                           </div>
                         </div>
                       </td>
 
                       {/* Fitness Goal */}
                       <td className="px-6 py-4">
-                        <span className="text-sm font-semibold text-[#167D78]">
+                        <span className="text-sm font-semibold text-[#6366F1]">
                           {rec.fitnessProfile?.fitnessGoal || 'General Fitness'}
                         </span>
                       </td>
@@ -194,7 +194,7 @@ const GymAdminAIFitnessPlans = () => {
                       <td className="px-6 py-4">
                         {plan.trainer ? (
                           <div>
-                            <span className="text-sm font-bold text-[#344B4A] block">
+                            <span className="text-sm font-bold text-[#11111F] block">
                               {plan.trainer.name || `${plan.trainer.firstName} ${plan.trainer.lastName || ''}`}
                             </span>
                             <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold">
@@ -203,7 +203,7 @@ const GymAdminAIFitnessPlans = () => {
                             </span>
                           </div>
                         ) : (
-                          <span className="text-xs text-[#697778] italic">Unassigned</span>
+                          <span className="text-xs text-[#A1A1AA] italic">Unassigned</span>
                         )}
                       </td>
 
@@ -222,7 +222,7 @@ const GymAdminAIFitnessPlans = () => {
                       {/* Trainer Modifications */}
                       <td className="px-6 py-4">
                         {hasModifications ? (
-                          <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#D8EAE7] text-[#116660] border border-[#D9E2E3] inline-flex items-center gap-1">
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#17172A] text-[#4F46E5] border border-[#292940] inline-flex items-center gap-1">
                             <FileEdit size={11} /> {modCount} Edit(s) Made
                           </span>
                         ) : isApproved ? (
@@ -230,13 +230,13 @@ const GymAdminAIFitnessPlans = () => {
                             Approved as AI Draft
                           </span>
                         ) : (
-                          <span className="text-xs text-[#697778]">-</span>
+                          <span className="text-xs text-[#A1A1AA]">-</span>
                         )}
                       </td>
 
                       {/* Review Date */}
                       <td className="px-6 py-4">
-                        <span className="text-xs text-[#697778]">
+                        <span className="text-xs text-[#A1A1AA]">
                           {rec.updatedAt ? new Date(rec.updatedAt).toLocaleDateString() : '-'}
                         </span>
                       </td>
@@ -245,7 +245,7 @@ const GymAdminAIFitnessPlans = () => {
                       <td className="px-6 py-4 text-right">
                         <Link 
                           to={`/admin/ai-plans/${rec._id}`}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-[#D9E2E3] hover:border-[#167D78] text-[#167D78] rounded-xl text-xs font-bold hover:bg-[#E8EFF0] transition-colors shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-[#292940] hover:border-[#6366F1] text-[#6366F1] rounded-xl text-xs font-bold hover:bg-[#0B0B12] transition-colors shadow-sm"
                         >
                           <Eye size={14} /> View Audit
                         </Link>

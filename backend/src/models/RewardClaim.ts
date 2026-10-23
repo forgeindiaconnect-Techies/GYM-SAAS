@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export type ClaimStatusType = 'Pending' | 'Approved' | 'Rejected' | 'Redeemed' | 'Expired';
-export type FinancialPayoutStatusType = 'Not Applicable' | 'Pending' | 'Paid';
+export type FinancialPayoutStatusType = 'Not Applicable' | 'Pending Approval' | 'Approved' | 'Payment Pending' | 'Paid' | 'Pending';
 
 export interface IRewardClaim extends Document {
   gymId: mongoose.Types.ObjectId;
@@ -49,7 +49,7 @@ const rewardClaimSchema = new Schema<IRewardClaim>(
     redeemedAt: { type: Date },
     financialPayoutStatus: {
       type: String,
-      enum: ['Not Applicable', 'Pending', 'Paid'],
+      enum: ['Not Applicable', 'Pending Approval', 'Approved', 'Payment Pending', 'Paid', 'Pending'],
       default: 'Not Applicable'
     },
     financialPayoutReference: { type: String, trim: true },
