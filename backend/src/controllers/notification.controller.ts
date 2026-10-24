@@ -46,7 +46,7 @@ export const getNotifications = async (req: AuthRequest, res: Response) => {
     if (role === 'SUPER_ADMIN') {
       const count = await Notification.countDocuments({ recipientRole: 'SUPER_ADMIN' });
       if (count === 0) {
-        const adminId = req.user?._id || req.user?.id;
+        const adminId = req.user?.id;
         await Notification.insertMany([
           {
             recipientRole: 'SUPER_ADMIN',
