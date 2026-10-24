@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Calendar, Clock, Video, MapPin, CheckCircle, ArrowLeft } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -125,9 +125,9 @@ const MemberBookSession = () => {
     return (
       <div className="flex flex-col items-center justify-center h-96 space-y-4">
         <CheckCircle size={64} className="text-green-500" />
-        <h2 className="text-2xl font-bold text-[#11111F]">Booking Confirmed!</h2>
-        <p className="text-[#A1A1AA]">Your session request has been sent to the trainer.</p>
-        <p className="text-sm text-[#A1A1AA]">Redirecting to your bookings...</p>
+        <h2 className="text-2xl font-bold text-[#F5FAFA]">Booking Confirmed!</h2>
+        <p className="text-[#9AAEAE]">Your session request has been sent to the trainer.</p>
+        <p className="text-sm text-[#9AAEAE]">Redirecting to your bookings...</p>
       </div>
     );
   }
@@ -135,39 +135,39 @@ const MemberBookSession = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="p-2.5 bg-[#17172A]/50 hover:bg-[#17172A] text-[#11111F] rounded-full transition-colors">
+        <button onClick={() => navigate(-1)} className="p-2.5 bg-[#1B2728]/50 hover:bg-[#1B2728] text-[#F5FAFA] rounded-full transition-colors">
           <ArrowLeft size={22} />
         </button>
         <div>
-          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Book a Session</h1>
-          <p className="text-[#A1A1AA] mt-1">Schedule your next training session with an expert.</p>
+          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Book a Session</h1>
+          <p className="text-[#9AAEAE] mt-1">Schedule your next training session with an expert.</p>
         </div>
       </div>
 
-      <form onSubmit={handleBook} className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 md:p-8 space-y-6">
+      <form onSubmit={handleBook} className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 md:p-8 space-y-6 shadow-xl">
         
         {/* Trainer Selection */}
         <div className="space-y-3">
-          <label className="text-sm font-medium text-[#A1A1AA]">{initialTrainerId ? 'Selected Trainer' : 'Select Trainer'}</label>
+          <label className="text-sm font-medium text-[#9AAEAE]">{initialTrainerId ? 'Selected Trainer' : 'Select Trainer'}</label>
           
           {initialTrainerId ? (
             // Read-only view for pre-selected trainer
             trainers.filter(t => t._id === initialTrainerId).map(t => (
-              <div key={t._id} className="flex items-center justify-between p-4 border border-[#6366F1] bg-[#6366F1]/5 rounded-xl">
+              <div key={t._id} className="flex items-center justify-between p-4 border border-[#2DD4BF] bg-[#2DD4BF]/10 rounded-xl">
                 <div className="flex items-center">
                   {t.profilePhoto ? (
-                    <img src={t.profilePhoto} alt={t.name} className="w-12 h-12 rounded-full object-cover mr-4 border border-[#292940]" />
+                    <img src={t.profilePhoto} alt={t.name} className="w-12 h-12 rounded-full object-cover mr-4 border border-[#2A3A3A]" />
                   ) : (
-                    <div className="w-12 h-12 bg-[#17172A] rounded-full flex items-center justify-center text-[#6366F1] font-bold mr-4 text-lg">{t.name ? t.name.charAt(0) : '?'}</div>
+                    <div className="w-12 h-12 bg-[#1B2728] rounded-full flex items-center justify-center text-[#2DD4BF] font-bold mr-4 text-lg">{t.name ? t.name.charAt(0) : '?'}</div>
                   )}
                   <div>
-                    <p className="font-bold text-[#11111F] text-lg">{t.name}</p>
-                    <p className="text-sm text-[#A1A1AA] font-medium">{t.specialization || 'Trainer'}</p>
+                    <p className="font-bold text-[#F5FAFA] text-lg">{t.name}</p>
+                    <p className="text-sm text-[#9AAEAE] font-medium">{t.specialization || 'Trainer'}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-black text-[#6366F1] text-lg">₹{t.fee || 0}</p>
-                  <p className="text-xs text-[#A1A1AA]">{t.duration || 60} mins/session</p>
+                  <p className="font-black text-[#2DD4BF] text-lg">₹{t.fee || 0}</p>
+                  <p className="text-xs text-[#9AAEAE]">{t.duration || 60} mins/session</p>
                 </div>
               </div>
             ))
@@ -175,22 +175,22 @@ const MemberBookSession = () => {
             // Grid selection view if no trainer pre-selected
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {trainers.map(t => (
-                <label key={t._id} className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${formData.trainerId === t._id ? 'border-[#6366F1] bg-[#6366F1]/5' : 'border-[#292940] bg-[#FFFFFF] hover:border-[#6366F1]/50'}`}>
+                <label key={t._id} className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${formData.trainerId === t._id ? 'border-[#2DD4BF] bg-[#2DD4BF]/15' : 'border-[#2A3A3A] bg-[#0E1415] hover:border-[#2DD4BF]/50'}`}>
                   <div className="flex items-center">
                     <input type="radio" name="trainer" value={t._id} checked={formData.trainerId === t._id} onChange={() => setFormData({...formData, trainerId: t._id})} className="hidden" />
                     {t.profilePhoto ? (
-                      <img src={t.profilePhoto} alt={t.name} className="w-10 h-10 rounded-full object-cover mr-3 border border-[#292940]" />
+                      <img src={t.profilePhoto} alt={t.name} className="w-10 h-10 rounded-full object-cover mr-3 border border-[#2A3A3A]" />
                     ) : (
-                      <div className="w-10 h-10 bg-[#17172A] rounded-full flex items-center justify-center text-[#6366F1] font-bold mr-3">{t.name ? t.name.charAt(0) : '?'}</div>
+                      <div className="w-10 h-10 bg-[#1B2728] rounded-full flex items-center justify-center text-[#2DD4BF] font-bold mr-3">{t.name ? t.name.charAt(0) : '?'}</div>
                     )}
                     <div>
-                      <p className="font-semibold text-[#11111F]">{t.name}</p>
-                      <p className="text-xs text-[#A1A1AA]">{t.specialization || 'Trainer'}</p>
+                      <p className="font-semibold text-[#F5FAFA]">{t.name}</p>
+                      <p className="text-xs text-[#9AAEAE]">{t.specialization || 'Trainer'}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-[#6366F1]">₹{t.fee || 0}</p>
-                    <p className="text-[10px] text-[#A1A1AA]">{t.duration || 60} min</p>
+                    <p className="font-bold text-[#2DD4BF]">₹{t.fee || 0}</p>
+                    <p className="text-[10px] text-[#9AAEAE]">{t.duration || 60} min</p>
                   </div>
                 </label>
               ))}
@@ -206,14 +206,14 @@ const MemberBookSession = () => {
           if (tMode === 'both') {
             return (
               <div className="space-y-3">
-                <label className="text-sm font-medium text-[#A1A1AA]">Session Type</label>
+                <label className="text-sm font-medium text-[#9AAEAE]">Session Type</label>
                 <div className="flex space-x-4">
-                  <label className={`flex-1 flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all ${formData.type === 'Offline' ? 'border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]' : 'border-[#292940] bg-[#FFFFFF] text-[#A1A1AA] hover:border-[#6366F1]/50'}`}>
+                  <label className={`flex-1 flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all ${formData.type === 'Offline' ? 'border-[#2DD4BF] bg-[#2DD4BF]/15 text-[#2DD4BF]' : 'border-[#2A3A3A] bg-[#0E1415] text-[#9AAEAE] hover:border-[#2DD4BF]/50'}`}>
                     <input type="radio" name="type" value="Offline" checked={formData.type === 'Offline'} onChange={() => { setFormData({...formData, type: 'Offline'}) }} className="hidden" />
                     <MapPin size={24} className="mb-2" />
                     <span className="font-medium">In-Gym</span>
                   </label>
-                  <label className={`flex-1 flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all ${formData.type === 'Online' ? 'border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]' : 'border-[#292940] bg-[#FFFFFF] text-[#A1A1AA] hover:border-[#6366F1]/50'}`}>
+                  <label className={`flex-1 flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all ${formData.type === 'Online' ? 'border-[#2DD4BF] bg-[#2DD4BF]/15 text-[#2DD4BF]' : 'border-[#2A3A3A] bg-[#0E1415] text-[#9AAEAE] hover:border-[#2DD4BF]/50'}`}>
                     <input type="radio" name="type" value="Online" checked={formData.type === 'Online'} onChange={() => { setFormData({...formData, type: 'Online'}) }} className="hidden" />
                     <Video size={24} className="mb-2" />
                     <span className="font-medium">Online</span>
@@ -224,10 +224,10 @@ const MemberBookSession = () => {
           } else {
             return (
               <div className="space-y-3">
-                <label className="text-sm font-medium text-[#A1A1AA]">Session Type</label>
-                <div className="p-4 border border-[#292940] bg-[#0B0B12] rounded-xl flex items-center gap-3">
-                  {tMode === 'online' ? <Video size={20} className="text-[#6366F1]" /> : <MapPin size={20} className="text-[#6366F1]" />}
-                  <span className="font-semibold text-[#11111F] capitalize">{tMode} Only</span>
+                <label className="text-sm font-medium text-[#9AAEAE]">Session Type</label>
+                <div className="p-4 border border-[#2A3A3A] bg-[#0E1415] rounded-xl flex items-center gap-3">
+                  {tMode === 'online' ? <Video size={20} className="text-[#2DD4BF]" /> : <MapPin size={20} className="text-[#2DD4BF]" />}
+                  <span className="font-semibold text-[#F5FAFA] capitalize">{tMode} Only</span>
                 </div>
               </div>
             );
@@ -237,12 +237,12 @@ const MemberBookSession = () => {
         {/* Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-3">
-            <label className="text-sm font-medium text-[#A1A1AA] flex items-center gap-2"><Calendar size={16}/> Select Date</label>
-            <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} min={new Date().toISOString().split('T')[0]} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-4 py-3 text-[#11111F] focus:border-[#6366F1] focus:ring-1 focus:ring-[#C43D35] transition-all" />
+            <label className="text-sm font-medium text-[#9AAEAE] flex items-center gap-2"><Calendar size={16}/> Select Date</label>
+            <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} min={new Date().toISOString().split('T')[0]} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-3 text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF]/30 transition-all outline-none" />
           </div>
           <div className="space-y-3">
-            <label className="text-sm font-medium text-[#A1A1AA] flex items-center gap-2"><Clock size={16}/> Select Time</label>
-            <select required value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-4 py-3 text-[#11111F] focus:border-[#6366F1] focus:ring-1 focus:ring-[#C43D35] transition-all">
+            <label className="text-sm font-medium text-[#9AAEAE] flex items-center gap-2"><Clock size={16}/> Select Time</label>
+            <select required value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-3 text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF]/30 transition-all outline-none">
               <option value="">Choose a slot</option>
               <option value="09:00 AM">09:00 AM</option>
               <option value="10:00 AM">10:00 AM</option>
@@ -254,7 +254,7 @@ const MemberBookSession = () => {
           </div>
         </div>
 
-        <button type="submit" disabled={isSubmitting || !formData.trainerId || !formData.date || !formData.time} className="w-full py-4 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-8">
+        <button type="submit" disabled={isSubmitting || !formData.trainerId || !formData.date || !formData.time} className="w-full py-4 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-8">
           {isSubmitting ? 'Sending Request...' : 'Send Booking Request'}
         </button>
       </form>

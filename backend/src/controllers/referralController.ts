@@ -1126,7 +1126,7 @@ export const processReferralOnPayment = async (params: {
       await PointsTransaction.create({
         gymId,
         userId: referral.referrerId,
-        type: 'EARN_BONUS',
+        type: 'EARN_REFERRAL',
         amount: referrerRewardValue,
         balanceAfter: wallet.currentBalance,
         description: `Earned ${referrerRewardValue} points from referral of ${user.firstName || 'a member'}`

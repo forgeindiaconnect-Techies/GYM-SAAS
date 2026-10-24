@@ -1,7 +1,7 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Video, Users, Calendar, Clock, Plus, Search,
-  CheckCircle2, X, Copy, RefreshCw
+  CheckCircle2, X, Copy
 } from 'lucide-react';
 import api from '../../utils/api';
 
@@ -170,98 +170,88 @@ const GymAdminOnlineSessions = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-black text-[#11111F] tracking-tight">Online Sessions</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#6366F1]/10 text-[#6366F1]">
+            <h1 className="text-3xl font-black text-[#F5FAFA] tracking-tight">Online Sessions</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#2DD4BF]/10 text-[#2DD4BF]">
               Live & Virtual Classes
             </span>
           </div>
-          <p className="text-[#A1A1AA] mt-1 text-sm">
+          <p className="text-[#9AAEAE] mt-1 text-sm">
             Host live streaming workouts, virtual masterclasses, and group training sessions.
           </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => fetchSessions()}
-            className="p-2.5 rounded-xl border border-[#292940] bg-white hover:bg-gray-50 text-[#A1A1AA] transition-colors"
-            title="Refresh"
-          >
-            <RefreshCw size={18} />
-          </button>
-
         </div>
       </div>
 
       {/* Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-sm">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Total Classes</span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#6366F1] flex items-center justify-center">
+            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Total Classes</span>
+            <div className="w-9 h-9 rounded-xl bg-[#1B2728] text-[#2DD4BF] flex items-center justify-center">
               <Calendar size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#11111F] mt-2">{totalSessions}</h3>
-          <p className="text-xs text-[#A1A1AA] mt-0.5">Live & recorded classes</p>
+          <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{totalSessions}</h3>
+          <p className="text-xs text-[#9AAEAE] mt-0.5">Live & recorded classes</p>
         </div>
 
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-sm">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Scheduled / Upcoming</span>
+            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Scheduled / Upcoming</span>
             <div className="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
               <Clock size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#11111F] mt-2">{upcomingCount}</h3>
+          <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{upcomingCount}</h3>
           <p className="text-xs text-green-600 font-medium mt-0.5">Ready for members</p>
         </div>
 
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-sm">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Total Registrations</span>
-            <div className="w-9 h-9 rounded-xl bg-[#0B0B12] text-[#6366F1] flex items-center justify-center">
+            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Total Registrations</span>
+            <div className="w-9 h-9 rounded-xl bg-[#0E1415] text-[#2DD4BF] flex items-center justify-center">
               <Users size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#11111F] mt-2">{totalAttendees}</h3>
-          <p className="text-xs text-[#A1A1AA] mt-0.5">Active participants</p>
+          <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{totalAttendees}</h3>
+          <p className="text-xs text-[#9AAEAE] mt-0.5">Active participants</p>
         </div>
 
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-sm">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Streaming Mode</span>
+            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Streaming Mode</span>
             <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <Video size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#11111F] mt-2">HD Virtual</h3>
+          <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">HD Virtual</h3>
           <p className="text-xs text-amber-600 font-medium mt-0.5">WebRTC & Meet ready</p>
         </div>
       </div>
 
       {/* Featured Live / Upcoming Session Banner */}
       {sessions.length > 0 && (
-        <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-3xl p-6 sm:p-8 text-[#06201D] font-bold shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-3 max-w-xl">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping" />
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-black tracking-wider uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                <span className="w-2.5 h-2.5 bg-[#0D5C58] rounded-full animate-ping" />
+                <span className="px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-white text-[#0D5C58] shadow-sm">
                   Featured Masterclass
                 </span>
-                <span className="text-xs text-stone-600 font-medium">· {sessions[0].category}</span>
+                <span className="text-xs text-[#06201D] font-extrabold">· {sessions[0].category}</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight">{sessions[0].title}</h2>
-              <p className="text-sm text-stone-600 line-clamp-2">{sessions[0].description}</p>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-gray-200">
-                <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
-                  <Calendar size={14} /> {sessions[0].date} at {sessions[0].time}
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#06201D]">{sessions[0].title}</h2>
+              <p className="text-sm text-[#06201D] font-semibold line-clamp-2">{sessions[0].description}</p>
+              <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-[#06201D]">
+                <span className="flex items-center gap-1.5 bg-white/60 px-3 py-1.5 rounded-lg border border-white/70 shadow-xs text-[#06201D]">
+                  <Calendar size={14} className="text-[#0D5C58]" /> {sessions[0].date} at {sessions[0].time}
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
-                  <Clock size={14} /> {sessions[0].duration} Mins
+                <span className="flex items-center gap-1.5 bg-white/60 px-3 py-1.5 rounded-lg border border-white/70 shadow-xs text-[#06201D]">
+                  <Clock size={14} className="text-[#0D5C58]" /> {sessions[0].duration} Mins
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
-                  <Users size={14} /> {sessions[0].attendeesCount} / {sessions[0].maxCapacity} Registered
+                <span className="flex items-center gap-1.5 bg-white/60 px-3 py-1.5 rounded-lg border border-white/70 shadow-xs text-[#06201D]">
+                  <Users size={14} className="text-[#0D5C58]" /> {sessions[0].attendeesCount} / {sessions[0].maxCapacity} Registered
                 </span>
               </div>
             </div>
@@ -271,15 +261,15 @@ const GymAdminOnlineSessions = () => {
                 href={sessions[0].meetingLink}
                 target="_blank"
                 rel="noreferrer"
-                className="px-6 py-3.5 bg-white text-[#6366F1] hover:bg-gray-100 font-black rounded-xl text-sm transition-all shadow-lg flex items-center justify-center gap-2"
+                className="px-6 py-3.5 bg-white text-[#0D5C58] hover:bg-slate-50 font-black rounded-xl text-sm transition-all shadow-lg flex items-center justify-center gap-2"
               >
-                <Video size={18} /> Launch Live Studio
+                <Video size={18} className="text-[#0D5C58]" /> Launch Live Studio
               </a>
               <button
                 onClick={() => handleCopyLink(sessions[0].meetingLink, sessions[0]._id)}
-                className="px-4 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-sm transition-all border border-white/20 flex items-center justify-center gap-2"
+                className="px-4 py-3.5 bg-white/60 hover:bg-white/80 text-[#06201D] font-black rounded-xl text-sm transition-all border border-white/80 flex items-center justify-center gap-2 shadow-xs"
               >
-                {copiedId === sessions[0]._id ? <CheckCircle2 size={16} className="text-emerald-400" /> : <Copy size={16} />}
+                {copiedId === sessions[0]._id ? <CheckCircle2 size={16} className="text-[#0D5C58]" /> : <Copy size={16} className="text-[#06201D]" />}
                 {copiedId === sessions[0]._id ? 'Link Copied!' : 'Invite Link'}
               </button>
             </div>
@@ -290,13 +280,13 @@ const GymAdminOnlineSessions = () => {
       {/* Filters and Search */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-3.5 text-[#A1A1AA]" size={18} />
+          <Search className="absolute left-3.5 top-3.5 text-[#9AAEAE]" size={18} />
           <input
             type="text"
             placeholder="Search online classes by title, trainer or category..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#292940] rounded-xl text-sm text-[#11111F] focus:border-[#6366F1] outline-none transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none transition-colors"
           />
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
@@ -306,8 +296,8 @@ const GymAdminOnlineSessions = () => {
               onClick={() => setStatusFilter(tab)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 statusFilter === tab
-                  ? 'bg-[#6366F1] text-white shadow-sm'
-                  : 'bg-white border border-[#292940] text-[#A1A1AA] hover:bg-gray-50'
+                  ? 'bg-[#2DD4BF] text-white shadow-sm'
+                  : 'bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] hover:bg-[#0E1415]'
               }`}
             >
               {tab}
@@ -318,22 +308,22 @@ const GymAdminOnlineSessions = () => {
 
       {/* Sessions Grid */}
       {loading ? (
-        <div className="bg-white border border-[#292940] rounded-2xl p-16 text-center">
-          <div className="w-10 h-10 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm text-[#A1A1AA] font-medium">Loading online sessions...</p>
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-16 text-center">
+          <div className="w-10 h-10 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-[#9AAEAE] font-medium">Loading online sessions...</p>
         </div>
       ) : filteredSessions.length === 0 ? (
-        <div className="bg-white border border-[#292940] rounded-2xl p-12 text-center space-y-3">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mx-auto">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-12 text-center space-y-3">
+          <div className="w-12 h-12 rounded-full bg-[#1B2728] flex items-center justify-center text-[#9AAEAE] mx-auto">
             <Video size={24} />
           </div>
-          <h3 className="font-bold text-[#11111F] text-base">No Online Sessions Found</h3>
-          <p className="text-sm text-[#A1A1AA] max-w-sm mx-auto">
+          <h3 className="font-bold text-[#F5FAFA] text-base">No Online Sessions Found</h3>
+          <p className="text-sm text-[#9AAEAE] max-w-sm mx-auto">
             No virtual classes match your current search or filter. Schedule a new live session to get started.
           </p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="mt-2 px-4 py-2 bg-[#6366F1] text-white text-xs font-bold rounded-xl hover:bg-[#6366F1] transition-all inline-flex items-center gap-1.5"
+            className="mt-2 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold text-xs font-bold rounded-xl hover:bg-[#2DD4BF] transition-all inline-flex items-center gap-1.5"
           >
             <Plus size={14} /> Schedule Now
           </button>
@@ -345,73 +335,73 @@ const GymAdminOnlineSessions = () => {
             return (
               <div
                 key={session._id}
-                className="bg-white border border-[#292940] hover:border-[#6366F1]/40 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex flex-col justify-between"
+                className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#0B0B12] text-[#6366F1]">
+                    <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#0E1415] text-[#2DD4BF]">
                       {session.category}
                     </span>
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                         isCompleted
-                          ? 'bg-gray-100 text-gray-600'
+                          ? 'bg-[#1B2728] text-[#C1D0D0]'
                           : session.status === 'Live Now'
                           ? 'bg-red-100 text-red-600 animate-pulse'
-                          : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]'
                       }`}
                     >
                       {session.status}
                     </span>
                   </div>
 
-                  <h3 className="font-black text-lg text-[#11111F] line-clamp-1">{session.title}</h3>
-                  <p className="text-xs text-[#A1A1AA] mt-1 line-clamp-2 leading-relaxed">
+                  <h3 className="font-black text-lg text-[#F5FAFA] line-clamp-1">{session.title}</h3>
+                  <p className="text-xs text-[#9AAEAE] mt-1 line-clamp-2 leading-relaxed">
                     {session.description || 'Virtual training session.'}
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-gray-100 space-y-2 text-xs text-[#A1A1AA]">
+                  <div className="mt-4 pt-3 border-t border-[#2A3A3A] space-y-2 text-xs text-[#9AAEAE]">
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-[#11111F] font-semibold">
-                        <Users size={14} className="text-[#6366F1]" /> {session.trainerName}
+                      <span className="flex items-center gap-1.5 text-[#F5FAFA] font-semibold">
+                        <Users size={14} className="text-[#2DD4BF]" /> {session.trainerName}
                       </span>
-                      <span className="text-gray-400">{session.specialization}</span>
+                      <span className="text-[#9AAEAE]">{session.specialization}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <Calendar size={14} className="text-[#6366F1]" /> {session.date}
+                        <Calendar size={14} className="text-[#2DD4BF]" /> {session.date}
                       </span>
-                      <span className="flex items-center gap-1.5 font-medium text-[#11111F]">
-                        <Clock size={14} className="text-[#6366F1]" /> {session.time} ({session.duration}m)
+                      <span className="flex items-center gap-1.5 font-medium text-[#F5FAFA]">
+                        <Clock size={14} className="text-[#2DD4BF]" /> {session.time} ({session.duration}m)
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <span>Attendees:</span>
-                      <span className="font-bold text-[#6366F1]">
+                      <span className="font-bold text-[#2DD4BF]">
                         {session.attendeesCount} / {session.maxCapacity} Booked
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-5 pt-3 border-t border-gray-100 flex items-center gap-2">
+                <div className="mt-5 pt-3 border-t border-[#2A3A3A] flex items-center gap-2">
                   <a
                     href={session.meetingLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 py-2 bg-[#6366F1] hover:bg-[#6366F1] text-white text-xs font-bold rounded-xl transition-all text-center flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2 bg-[#2DD4BF] hover:bg-[#2DD4BF] text-[#06201D] font-bold text-xs font-bold rounded-xl transition-all text-center flex items-center justify-center gap-1.5"
                   >
                     <Video size={14} /> Join Studio
                   </a>
                   <button
                     onClick={() => handleCopyLink(session.meetingLink, session._id)}
-                    className="p-2 border border-[#292940] hover:bg-gray-50 text-[#A1A1AA] rounded-xl transition-colors shrink-0"
+                    className="p-2 border border-[#2A3A3A] hover:bg-[#0E1415] text-[#9AAEAE] rounded-xl transition-colors shrink-0"
                     title="Copy Meeting Link"
                   >
                     {copiedId === session._id ? (
-                      <CheckCircle2 size={16} className="text-emerald-600" />
+                      <CheckCircle2 size={16} className="text-[#2DD4BF]" />
                     ) : (
                       <Copy size={16} />
                     )}
@@ -426,27 +416,27 @@ const GymAdminOnlineSessions = () => {
       {/* Schedule Online Session Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative border border-gray-100 animate-in zoom-in-95 duration-200">
+          <div className="bg-[#141D1E] rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative border border-[#2A3A3A] animate-in zoom-in-95 duration-200">
             <button
               onClick={() => setShowCreateModal(false)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100"
+              className="absolute top-5 right-5 text-[#9AAEAE] hover:text-[#C1D0D0] p-1 rounded-full hover:bg-[#1B2728]"
             >
               <X size={20} />
             </button>
 
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
                 <Video size={22} />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#11111F]">Schedule Online Session</h2>
-                <p className="text-xs text-[#A1A1AA]">Create a new live stream or virtual group class</p>
+                <h2 className="text-xl font-black text-[#F5FAFA]">Schedule Online Session</h2>
+                <p className="text-xs text-[#9AAEAE]">Create a new live stream or virtual group class</p>
               </div>
             </div>
 
             <form onSubmit={handleCreateSession} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                   Session Title *
                 </label>
                 <input
@@ -455,19 +445,19 @@ const GymAdminOnlineSessions = () => {
                   placeholder="e.g. Virtual Core & Abs Blast"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                     Assigned Trainer
                   </label>
                   <select
                     value={newTrainer}
                     onChange={(e) => setNewTrainer(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                   >
                     <option value="">Select Trainer</option>
                     {trainers.map((t: any) => (
@@ -479,13 +469,13 @@ const GymAdminOnlineSessions = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                     Category
                   </label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                   >
                     <option value="HIIT">HIIT & Cardio</option>
                     <option value="Yoga & Flexibility">Yoga & Flexibility</option>
@@ -499,7 +489,7 @@ const GymAdminOnlineSessions = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                     Date *
                   </label>
                   <input
@@ -507,11 +497,11 @@ const GymAdminOnlineSessions = () => {
                     required
                     value={newDate}
                     onChange={(e) => setNewDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                     Time *
                   </label>
                   <input
@@ -519,11 +509,11 @@ const GymAdminOnlineSessions = () => {
                     required
                     value={newTime}
                     onChange={(e) => setNewTime(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                     Duration (mins)
                   </label>
                   <input
@@ -532,14 +522,14 @@ const GymAdminOnlineSessions = () => {
                     step="5"
                     value={newDuration}
                     onChange={(e) => setNewDuration(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                     Max Capacity
                   </label>
                   <input
@@ -547,12 +537,12 @@ const GymAdminOnlineSessions = () => {
                     min="1"
                     value={newCapacity}
                     onChange={(e) => setNewCapacity(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                     placeholder="25"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                     Price (₹) - 0 for Free
                   </label>
                   <input
@@ -560,14 +550,14 @@ const GymAdminOnlineSessions = () => {
                     min="0"
                     value={newPrice}
                     onChange={(e) => setNewPrice(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                     placeholder="0"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                   Custom Video/Meeting URL (Optional)
                 </label>
                 <input
@@ -575,12 +565,12 @@ const GymAdminOnlineSessions = () => {
                   placeholder="Auto-generated if left blank (e.g. Google Meet / Zoom link)"
                   value={newLink}
                   onChange={(e) => setNewLink(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
                   Description
                 </label>
                 <textarea
@@ -588,22 +578,22 @@ const GymAdminOnlineSessions = () => {
                   placeholder="Brief details about the workout, equipment required..."
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm focus:border-[#6366F1] outline-none resize-none"
+                  className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none resize-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#2A3A3A]">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-bold text-[#A1A1AA] hover:bg-gray-50"
+                  className="px-5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm font-bold text-[#9AAEAE] hover:bg-[#0E1415]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#6366F1] text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center gap-2"
+                  className="px-6 py-2.5 bg-[#2DD4BF] hover:bg-[#2DD4BF] text-[#06201D] font-bold text-sm font-bold rounded-xl transition-all shadow-md flex items-center gap-2"
                 >
                   <Plus size={16} /> Schedule Session
                 </button>

@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export type AwardRecipientType = 'Customer' | 'Trainer';
-export type AwardPeriodType = 'Monthly' | 'Quarterly' | 'Annual' | 'Custom';
+export type AwardPeriodType = 'Daily' | 'Weekly' | 'Monthly' | 'Quarterly' | 'Annual' | 'Custom';
 export type AwardStatusType = 'Draft' | 'Active' | 'Under Review' | 'Published' | 'Archived';
 export type WinnerSelectionType = 'AUTOMATIC_TOP_PERFORMER' | 'OWNER_CONFIRMATION';
 
@@ -52,7 +52,7 @@ const awardRecognitionSchema = new Schema<IAwardRecognition>(
     badgeIcon: { type: String, default: 'Trophy', trim: true },
     awardPeriod: {
       type: String,
-      enum: ['Monthly', 'Quarterly', 'Annual', 'Custom'],
+      enum: ['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Annual', 'Custom'],
       default: 'Monthly'
     },
     startDate: { type: Date },

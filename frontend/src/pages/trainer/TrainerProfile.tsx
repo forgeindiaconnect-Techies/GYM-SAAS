@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { User, Mail, Phone, Edit3, Award, IndianRupee, Save, X, CheckCircle, Dumbbell, Calendar } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -98,7 +98,7 @@ const TrainerProfile = () => {
     }
   };
 
-  const inputCls = 'w-full bg-white border border-[#292940] rounded-xl px-4 py-3 text-[#11111F] outline-none focus:border-[#6366F1] transition-colors text-sm';
+  const inputCls = 'w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-4 py-3 text-[#F5FAFA] outline-none focus:border-[#2DD4BF] transition-colors text-sm';
 
   // Helper: show field value or fallback
   const val = (primary: any, fallback: any = null, unit = '') => {
@@ -134,7 +134,7 @@ const TrainerProfile = () => {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto flex items-center justify-center h-64">
-        <div className="text-[#A1A1AA]">Loading profile...</div>
+        <div className="text-[#9AAEAE]">Loading profile...</div>
       </div>
     );
   }
@@ -144,34 +144,34 @@ const TrainerProfile = () => {
 
       {/* Success Banner */}
       {saveSuccess && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl font-semibold flex items-center gap-2">
+        <div className="bg-[#1B2728] border border-[#2A3A3A] text-[#2DD4BF] px-4 py-3 rounded-xl font-semibold flex items-center gap-2">
           <CheckCircle size={18} /> Profile updated successfully!
         </div>
       )}
 
       {/* Header Card */}
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#6366F1]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#2DD4BF]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10">
           {/* Avatar */}
-          <div className="w-24 h-24 bg-[#FFFFFF] rounded-full border-2 border-[#6366F1] flex items-center justify-center text-[#6366F1] text-3xl font-bold shadow-[0_0_15px_rgba(22,125,120,0.15)] shrink-0">
+          <div className="w-24 h-24 bg-[#0E1415] rounded-full border-2 border-[#2DD4BF] flex items-center justify-center text-[#2DD4BF] text-3xl font-bold shadow-[0_0_15px_rgba(45,212,191,0.25)] shrink-0">
             {displayName.charAt(0).toUpperCase()}
           </div>
 
           {/* Info */}
           <div className="flex-1">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-3xl font-bold text-[#11111F]">{displayName}</h1>
+              <h1 className="text-3xl font-bold text-[#F5FAFA]">{displayName}</h1>
               <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                displayStatus === 'Active' ? 'bg-[#6366F1]/10 text-[#6366F1] border-[#6366F1]/20' :
-                displayStatus === 'Pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
-                'bg-red-50 text-rose-600 border-red-500/20'
+                displayStatus === 'Active' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border-[#2DD4BF]/20' :
+                displayStatus === 'Pending' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border-[#2A3A3A]/20' :
+                'bg-red-500/10 text-rose-400 border-red-500/20'
               }`}>{displayStatus}</span>
             </div>
             {displaySpecialization && (
-              <p className="text-[#6366F1] font-semibold mt-1 capitalize">{displaySpecialization}</p>
+              <p className="text-[#2DD4BF] font-semibold mt-1 capitalize">{displaySpecialization}</p>
             )}
-            <div className="flex flex-wrap gap-4 text-sm text-[#A1A1AA] mt-3">
+            <div className="flex flex-wrap gap-4 text-sm text-[#9AAEAE] mt-3">
               <div className="flex items-center gap-1.5"><Mail size={15} /> {displayEmail}</div>
               {displayPhone && <div className="flex items-center gap-1.5"><Phone size={15} /> {displayPhone}</div>}
               <div className="flex items-center gap-1.5 capitalize"><Dumbbell size={15} /> {displayMode} Training</div>
@@ -181,75 +181,73 @@ const TrainerProfile = () => {
           {/* Edit Button */}
           <button
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#11111F] hover:bg-[#11111F] text-white font-bold rounded-xl transition-colors shadow-lg text-sm shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#0E1415] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] text-[#F5FAFA] font-bold rounded-xl transition-all shadow-lg text-sm shrink-0 cursor-pointer"
           >
-            <Edit3 size={16} /> Edit Profile
+            <Edit3 size={16} className="text-[#2DD4BF]" /> Edit Profile
           </button>
         </div>
       </div>
 
       {/* Empty profile prompt */}
       {isProfileEmpty && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center gap-4">
-          <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-500 shrink-0">
+        <div className="bg-[#141D1E] border border-amber-500/30 rounded-2xl p-5 flex items-center gap-4">
+          <div className="w-10 h-10 bg-amber-500/15 rounded-xl flex items-center justify-center text-amber-400 shrink-0">
             <User size={20} />
           </div>
           <div className="flex-1">
-            <p className="font-bold text-amber-800">Complete your profile</p>
-            <p className="text-sm text-amber-700 mt-0.5">Add your specialization, qualifications, fee, and availability so members can find you.</p>
+            <p className="font-bold text-[#F5FAFA]">Complete your profile</p>
+            <p className="text-sm text-[#9AAEAE] mt-0.5">Add your specialization, qualifications, fee, and availability so members can find you.</p>
           </div>
-          <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-sm hover:bg-amber-600 transition-colors">
+          <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl text-sm hover:bg-[#5EEAD4] transition-colors">
             Fill Profile →
           </button>
         </div>
       )}
 
-
-
       {/* Main Sections */}
       <div className="grid md:grid-cols-2 gap-6">
 
         {/* Professional Details */}
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 space-y-5">
-          <h2 className="text-xl font-bold flex items-center gap-2 text-[#11111F]">
-            <Award size={20} className="text-[#6366F1]" /> Professional Details
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 space-y-5">
+          <h2 className="text-xl font-bold flex items-center gap-2 text-[#F5FAFA]">
+            <Award size={20} className="text-[#2DD4BF]" /> Professional Details
           </h2>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-              <p className="text-xs text-[#A1A1AA] font-medium mb-1">Specialization</p>
-              <p className="font-semibold text-[#11111F] text-sm">{displaySpecialization || 'Not set'}</p>
+            <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+              <p className="text-xs text-[#9AAEAE] font-medium mb-1">Specialization</p>
+              <p className="font-semibold text-[#F5FAFA] text-sm">{displaySpecialization || 'Not set'}</p>
             </div>
-            <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-              <p className="text-xs text-[#A1A1AA] font-medium mb-1">Experience</p>
-              <p className="font-semibold text-[#11111F] text-sm">{displayExperience ? `${displayExperience} Years` : 'Not set'}</p>
+            <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+              <p className="text-xs text-[#9AAEAE] font-medium mb-1">Experience</p>
+              <p className="font-semibold text-[#F5FAFA] text-sm">{displayExperience ? `${displayExperience} Years` : 'Not set'}</p>
             </div>
-            <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-              <p className="text-xs text-[#A1A1AA] font-medium mb-1">Qualifications</p>
-              <p className="font-semibold text-[#11111F] text-sm">{displayQualifications || 'Not set'}</p>
+            <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+              <p className="text-xs text-[#9AAEAE] font-medium mb-1">Qualifications</p>
+              <p className="font-semibold text-[#F5FAFA] text-sm">{displayQualifications || 'Not set'}</p>
             </div>
-            <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-              <p className="text-xs text-[#A1A1AA] font-medium mb-1">Training Mode</p>
-              <p className="font-semibold text-[#11111F] text-sm capitalize">{displayMode}</p>
+            <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+              <p className="text-xs text-[#9AAEAE] font-medium mb-1">Training Mode</p>
+              <p className="font-semibold text-[#F5FAFA] text-sm capitalize">{displayMode}</p>
             </div>
             {displayCertifications && (
-              <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3 col-span-2">
-                <p className="text-xs text-[#A1A1AA] font-medium mb-1">Certifications</p>
-                <p className="font-semibold text-[#11111F] text-sm">{displayCertifications}</p>
+              <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3 col-span-2">
+                <p className="text-xs text-[#9AAEAE] font-medium mb-1">Certifications</p>
+                <p className="font-semibold text-[#F5FAFA] text-sm">{displayCertifications}</p>
               </div>
             )}
             {displayExpertise && (
-              <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3 col-span-2">
-                <p className="text-xs text-[#A1A1AA] font-medium mb-1">Expertise</p>
-                <p className="font-semibold text-[#11111F] text-sm">{displayExpertise}</p>
+              <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3 col-span-2">
+                <p className="text-xs text-[#9AAEAE] font-medium mb-1">Expertise</p>
+                <p className="font-semibold text-[#F5FAFA] text-sm">{displayExpertise}</p>
               </div>
             )}
           </div>
 
           {displayBio && (
             <div>
-              <h3 className="font-bold text-[#11111F] mb-2 text-sm">Bio</h3>
-              <p className="text-sm text-[#A1A1AA] leading-relaxed bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
+              <h3 className="font-bold text-[#F5FAFA] mb-2 text-sm">Bio</h3>
+              <p className="text-sm text-[#9AAEAE] leading-relaxed bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
                 {displayBio}
               </p>
             </div>
@@ -258,42 +256,42 @@ const TrainerProfile = () => {
 
         {/* Availability & Fee */}
         <div className="space-y-6">
-          <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-[#11111F] mb-4">
-              <Calendar size={20} className="text-[#6366F1]" /> Availability
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6">
+            <h2 className="text-xl font-bold flex items-center gap-2 text-[#F5FAFA] mb-4">
+              <Calendar size={20} className="text-[#2DD4BF]" /> Availability
             </h2>
             <div className="space-y-3">
-              <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-                <p className="text-xs text-[#A1A1AA] font-medium mb-1">Available Days</p>
-                <p className="font-semibold text-[#11111F] text-sm">{displayAvailableDays || 'Not set'}</p>
+              <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+                <p className="text-xs text-[#9AAEAE] font-medium mb-1">Available Days</p>
+                <p className="font-semibold text-[#F5FAFA] text-sm">{displayAvailableDays || 'Not set'}</p>
               </div>
-              <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-                <p className="text-xs text-[#A1A1AA] font-medium mb-1">Timings</p>
-                <p className="font-semibold text-[#11111F] text-sm">
+              <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+                <p className="text-xs text-[#9AAEAE] font-medium mb-1">Timings</p>
+                <p className="font-semibold text-[#F5FAFA] text-sm">
                   {displayStartTime && displayEndTime ? `${displayStartTime} → ${displayEndTime}` : 'Not set'}
                 </p>
               </div>
               {displaySlot && (
-                <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-                  <p className="text-xs text-[#A1A1AA] font-medium mb-1">Slot Duration</p>
-                  <p className="font-semibold text-[#11111F] text-sm">{displaySlot} min</p>
+                <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+                  <p className="text-xs text-[#9AAEAE] font-medium mb-1">Slot Duration</p>
+                  <p className="font-semibold text-[#F5FAFA] text-sm">{displaySlot} min</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-[#11111F] mb-4">
-              <IndianRupee size={20} className="text-[#6366F1]" /> Fee & Payment
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6">
+            <h2 className="text-xl font-bold flex items-center gap-2 text-[#F5FAFA] mb-4">
+              <IndianRupee size={20} className="text-[#2DD4BF]" /> Fee & Payment
             </h2>
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-                <p className="text-xs text-[#A1A1AA] font-medium mb-1">Fee</p>
-                <p className="font-semibold text-[#11111F] text-sm">{displayFee ? `₹${displayFee}` : 'Not set'}</p>
+              <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+                <p className="text-xs text-[#9AAEAE] font-medium mb-1">Fee</p>
+                <p className="font-semibold text-[#F5FAFA] text-sm">{displayFee ? `₹${displayFee}` : 'Not set'}</p>
               </div>
-              <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-3">
-                <p className="text-xs text-[#A1A1AA] font-medium mb-1">Payment Type</p>
-                <p className="font-semibold text-[#11111F] text-sm">{displayPaymentType || 'Not set'}</p>
+              <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-3">
+                <p className="text-xs text-[#9AAEAE] font-medium mb-1">Payment Type</p>
+                <p className="font-semibold text-[#F5FAFA] text-sm">{displayPaymentType || 'Not set'}</p>
               </div>
             </div>
           </div>
@@ -303,11 +301,11 @@ const TrainerProfile = () => {
       {/* Edit Profile Modal */}
       {isEditing && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-[#292940] mt-10 mb-10">
+          <div className="bg-[#141D1E] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#2A3A3A] mt-10 mb-10">
             {/* Modal Header */}
-            <div className="p-6 border-b border-[#292940] flex justify-between items-center bg-gradient-to-r from-[#0B0B12] to-white rounded-t-2xl">
-              <h2 className="text-xl font-bold text-[#11111F]">Edit Profile</h2>
-              <button onClick={() => setIsEditing(false)} className="text-[#A1A1AA] hover:text-[#11111F]">
+            <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415] rounded-t-2xl">
+              <h2 className="text-xl font-bold text-[#F5FAFA]">Edit Profile</h2>
+              <button onClick={() => setIsEditing(false)} className="text-[#9AAEAE] hover:text-[#FFFFFF]">
                 <X size={20} />
               </button>
             </div>
@@ -316,10 +314,10 @@ const TrainerProfile = () => {
 
               {/* Contact */}
               <div>
-                <h3 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-3">Contact</h3>
+                <h3 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-3">Contact</h3>
                 <div className="grid grid-cols-1 gap-3">
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Phone Number</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Phone Number</label>
                     <input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} maxLength={10} className={inputCls} placeholder="10-digit number" />
                   </div>
                 </div>
@@ -327,18 +325,18 @@ const TrainerProfile = () => {
 
               {/* Professional */}
               <div>
-                <h3 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-3">Professional Details</h3>
+                <h3 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-3">Professional Details</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Specialization</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Specialization</label>
                     <input value={form.specialization} onChange={e => setForm({...form, specialization: e.target.value})} className={inputCls} placeholder="e.g. Weight Loss, Yoga" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Experience (Years)</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Experience (Years)</label>
                     <input type="number" value={form.experience} onChange={e => setForm({...form, experience: e.target.value})} className={inputCls} placeholder="e.g. 5" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Training Mode</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Training Mode</label>
                     <select value={form.trainingMode} onChange={e => setForm({...form, trainingMode: e.target.value})} className={inputCls}>
                       <option value="offline">Offline</option>
                       <option value="online">Online</option>
@@ -346,19 +344,19 @@ const TrainerProfile = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Qualifications</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Qualifications</label>
                     <input value={form.qualifications} onChange={e => setForm({...form, qualifications: e.target.value})} className={inputCls} placeholder="e.g. ACE Certified" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Certifications</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Certifications</label>
                     <input value={form.certifications} onChange={e => setForm({...form, certifications: e.target.value})} className={inputCls} placeholder="e.g. CPT, RYT-200" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Expertise</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Expertise</label>
                     <input value={form.expertise} onChange={e => setForm({...form, expertise: e.target.value})} className={inputCls} placeholder="e.g. HIIT, Strength" />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Bio</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Bio</label>
                     <textarea value={form.bio} onChange={e => setForm({...form, bio: e.target.value})} rows={3} className={`${inputCls} resize-none`} placeholder="Tell clients about yourself..." />
                   </div>
                 </div>
@@ -366,14 +364,14 @@ const TrainerProfile = () => {
 
               {/* Fee */}
               <div>
-                <h3 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-3">Fee & Payment</h3>
+                <h3 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-3">Fee & Payment</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Fee (₹)</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Fee (₹)</label>
                     <input type="number" value={form.fee} onChange={e => setForm({...form, fee: e.target.value})} className={inputCls} placeholder="e.g. 3000" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Payment Type</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Payment Type</label>
                     <select value={form.paymentType} onChange={e => setForm({...form, paymentType: e.target.value})} className={inputCls}>
                       <option value="Per Month">Per Month</option>
                       <option value="Per Week">Per Week</option>
@@ -384,22 +382,22 @@ const TrainerProfile = () => {
 
               {/* Availability */}
               <div>
-                <h3 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-3">Availability</h3>
+                <h3 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-3">Availability</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Available Days</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Available Days</label>
                     <input value={form.availableDays} onChange={e => setForm({...form, availableDays: e.target.value})} className={inputCls} placeholder="e.g. Monday to Friday" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Start Time</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Start Time</label>
                     <input value={form.availableStartTime} onChange={e => setForm({...form, availableStartTime: e.target.value})} className={inputCls} placeholder="e.g. 06:00 AM" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">End Time</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">End Time</label>
                     <input value={form.availableEndTime} onChange={e => setForm({...form, availableEndTime: e.target.value})} className={inputCls} placeholder="e.g. 08:00 PM" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#A1A1AA] mb-1">Slot Duration (minutes)</label>
+                    <label className="block text-sm font-semibold text-[#9AAEAE] mb-1">Slot Duration (minutes)</label>
                     <input type="number" value={form.availableSlot} onChange={e => setForm({...form, availableSlot: e.target.value})} className={inputCls} placeholder="e.g. 60" />
                   </div>
                 </div>
@@ -407,11 +405,11 @@ const TrainerProfile = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-[#292940] bg-[#0B0B12] flex justify-end gap-3 rounded-b-2xl">
-              <button onClick={() => setIsEditing(false)} disabled={isSaving} className="px-6 py-2.5 bg-white border border-[#17172A] text-[#A1A1AA] font-bold rounded-xl hover:bg-[#0B0B12] transition-colors disabled:opacity-50">
+            <div className="p-4 border-t border-[#2A3A3A] bg-[#0E1415] flex justify-end gap-3 rounded-b-2xl">
+              <button onClick={() => setIsEditing(false)} disabled={isSaving} className="px-6 py-2.5 bg-[#141D1E] border border-[#1B2728] text-[#9AAEAE] font-bold rounded-xl hover:bg-[#0E1415] transition-colors disabled:opacity-50">
                 Cancel
               </button>
-              <button onClick={handleSave} disabled={isSaving} className="px-6 py-2.5 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] transition-colors flex items-center gap-2 shadow-lg shadow-[#6366F1]/20 disabled:opacity-70">
+              <button onClick={handleSave} disabled={isSaving} className="px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors flex items-center gap-2 shadow-lg shadow-[#2DD4BF]/20 disabled:opacity-70">
                 <Save size={16} /> {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>

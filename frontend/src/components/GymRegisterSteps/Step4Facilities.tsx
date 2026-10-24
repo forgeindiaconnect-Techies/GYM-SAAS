@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Check } from 'lucide-react';
 
 interface StepProps {
@@ -28,9 +28,9 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#292940] pb-2">
-        <h2 className="text-lg font-semibold text-[#11111F]">Gym Facilities</h2>
-        <p className="text-sm text-[#A1A1AA]">Select all the amenities available at your gym.</p>
+      <div className="border-b border-[#E2E8F0] pb-2">
+        <h2 className="text-lg font-bold text-[#0F172A]">Gym Facilities</h2>
+        <p className="text-sm text-[#64748B]">Select all the amenities available at your gym.</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -41,21 +41,21 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
               key={facility}
               type="button"
               onClick={() => toggleFacility(facility)}
-              className={`flex items-center space-x-2 p-3 rounded-xl border text-left transition-colors ${
+              className={`flex items-center space-x-2.5 p-3 rounded-xl border text-left transition-all cursor-pointer ${
                 isSelected 
-                  ? 'bg-[#6366F1]/10 border-[#6366F1] text-[#11111F]' 
-                  : 'bg-[#FFFFFF] border-[#292940] text-[#A1A1AA] hover:border-[#6366F1]/50'
+                  ? 'bg-[#F0FDFA] border-[#2DD4BF] text-[#0F172A] shadow-xs' 
+                  : 'bg-[#FFFFFF] border-[#CBD5E1] text-[#334155] hover:border-[#2DD4BF] hover:bg-[#F8FAFC]'
               }`}
             >
-              <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border ${isSelected ? 'bg-[#6366F1] border-[#6366F1]' : 'border-[#A1A1AA]'}`}>
-                {isSelected && <Check size={14} className="text-black" />}
+              <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border ${isSelected ? 'bg-[#2DD4BF] border-[#2DD4BF]' : 'border-[#CBD5E1]'}`}>
+                {isSelected && <Check size={14} className="text-[#06201D]" />}
               </div>
-              <span className="text-xs font-medium leading-tight">{facility}</span>
+              <span className="text-xs font-semibold leading-tight">{facility}</span>
             </button>
           );
         })}
       </div>
-      {errors.facilities && <p className="text-teal-400 text-xs mt-2">{errors.facilities}</p>}
+      {errors.facilities && <p className="text-red-500 text-xs mt-2">{errors.facilities}</p>}
     </div>
   );
 };

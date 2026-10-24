@@ -5,7 +5,7 @@ const MemberOffers = () => {
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Exclusive Offers</h1>
-        <p className="text-[#A1A1AA]">Deals and discounts just for you</p>
+        <p className="text-[#9AAEAE]">Deals and discounts just for you</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -13,18 +13,18 @@ const MemberOffers = () => {
           { title: '20% Off Supplements', desc: 'Get 20% off all protein powders and vitamins at the gym store this week.', code: 'PROTEIN20', exp: 'Oct 15' },
           { title: 'Bring a Friend for Free', desc: 'Bring a friend to any group class for free this weekend.', code: 'FRIENDPASS', exp: 'Oct 20' },
         ].map((offer, i) => (
-          <div key={i} className="bg-gradient-to-br from-[#FFFFFF] to-[#FFFFFF] border border-[#6366F1]/30 rounded-2xl p-6 relative overflow-hidden group">
-            <div className="absolute -right-6 -top-6 text-[#6366F1]/5 group-hover:scale-110 transition-transform">
+          <div key={i} className="bg-gradient-to-br from-[#FFFFFF] to-[#FFFFFF] border border-[#2DD4BF]/30 rounded-2xl p-6 relative overflow-hidden group">
+            <div className="absolute -right-6 -top-6 text-[#2DD4BF]/5 group-hover:scale-110 transition-transform">
               <Gift size={120} />
             </div>
             <div className="relative z-10">
-              <span className="px-2 py-1 bg-[#6366F1]/20 text-[#6366F1] text-xs font-bold rounded mb-4 inline-block">Valid till {offer.exp}</span>
+              <span className="px-2 py-1 bg-[#2DD4BF]/20 text-[#2DD4BF] text-xs font-bold rounded mb-4 inline-block">Valid till {offer.exp}</span>
               <h3 className="text-xl font-bold mb-2">{offer.title}</h3>
-              <p className="text-sm text-[#A1A1AA] mb-6">{offer.desc}</p>
+              <p className="text-sm text-[#9AAEAE] mb-6">{offer.desc}</p>
               
-              <div className="bg-[#0B0B12] border border-[#292940] rounded-lg p-3 flex justify-between items-center">
-                <span className="font-mono text-[#6366F1] tracking-wider">{offer.code}</span>
-                <button className="text-xs font-bold uppercase hover:text-[#6366F1] transition transition-colors">Copy Code</button>
+              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-lg p-3 flex justify-between items-center">
+                <span className="font-mono text-[#2DD4BF] tracking-wider">{offer.code}</span>
+                <button className="text-xs font-bold uppercase hover:text-[#2DD4BF] transition transition-colors">Copy Code</button>
               </div>
             </div>
           </div>

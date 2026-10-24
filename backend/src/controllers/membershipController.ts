@@ -5,6 +5,9 @@ import User, { Role, ApprovalStatus, SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
 import Notification from '../models/Notification';
 import Payment, { PaymentStatus } from '../models/Payment';
+import GymRewardSettings from '../models/GymRewardSettings';
+import CustomerPointsWallet from '../models/CustomerPointsWallet';
+import PointsTransaction from '../models/PointsTransaction';
 import {
   sendMembershipConfirmationEmail,
   sendMembershipExpiryReminderEmail
@@ -236,7 +239,52 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     const numPrice = verifiedPrice !== null ? verifiedPrice : (Number(price) || 0);
     const memDuration = verifiedDuration || duration || (numPrice === 0 ? '1 Week' : '1 Month');
     const isFreeTrial = numPrice === 0 || (planName && planName.toLowerCase().includes('trial'));
-    const appliedDiscount = Number(discount) || 0;
+
+    // Handle points redemption for membership discount
+    const requestedPoints = Math.max(0, Number(req.body.pointsToRedeem) || 0);
+    let pointsDiscount = 0;
+    let customerWallet: any = null;
+    let rewardSettings: any = null;
+
+    if (requestedPoints > 0 && !isFreeTrial) {
+      rewardSettings = await GymRewardSettings.findOne({ gymId });
+      if (!rewardSettings || !rewardSettings.enableMembershipDiscount) {
+        res.status(400).json({ success: false, message: 'Membership Plan points redemption is currently disabled by this gym.' });
+        return;
+      }
+      if (requestedPoints < (rewardSettings.minPointsForRedemption || 0)) {
+        res.status(400).json({ success: false, message: `Minimum ${rewardSettings.minPointsForRedemption} points required for redemption.` });
+        return;
+      }
+      customerWallet = await CustomerPointsWallet.findOne({ gymId, userId });
+      if (!customerWallet || customerWallet.currentBalance < requestedPoints) {
+        res.status(400).json({
+          success: false,
+          message: `Insufficient points. Available: ${customerWallet?.currentBalance || 0} pts, Requested: ${requestedPoints} pts.`
+        });
+        return;
+      }
+
+      if (rewardSettings.eligibleMembershipPlans?.length > 0 && planName) {
+        const eligibleNames = rewardSettings.eligibleMembershipPlans.map((p: string) => p.toLowerCase());
+        const isEligible = eligibleNames.includes(planName.toLowerCase());
+        if (!isEligible) {
+          res.status(400).json({
+            success: false,
+            message: `The plan "${planName}" is not eligible for points discount.`
+          });
+          return;
+        }
+      }
+
+      const rate = (rewardSettings.currencyValuePerUnit || 50) / (rewardSettings.pointsPerConversionUnit || 100);
+      pointsDiscount = Math.round(requestedPoints * rate);
+      if (rewardSettings.maxDiscountPerTransaction > 0 && pointsDiscount > rewardSettings.maxDiscountPerTransaction) {
+        pointsDiscount = rewardSettings.maxDiscountPerTransaction;
+      }
+    }
+
+    const appliedDiscount = Math.min(numPrice, (Number(discount) || 0) + pointsDiscount);
     const discountedPrice = Math.max(0, numPrice - appliedDiscount);
     const calculatedTax = isFreeTrial ? 0 : Math.round(discountedPrice * 0.18);
     const finalAmount = isFreeTrial ? 0 : Math.round(discountedPrice + calculatedTax);
@@ -337,6 +385,26 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
 
       membership.paymentId = paymentRecord._id;
       await membership.save();
+
+      // Atomically deduct redeemed points if used
+      if (requestedPoints > 0 && customerWallet) {
+        customerWallet.currentBalance -= requestedPoints;
+        customerWallet.totalRedeemed += requestedPoints;
+        customerWallet.lastUpdated = new Date();
+        await customerWallet.save();
+
+        await PointsTransaction.create({
+          gymId: gym._id,
+          userId,
+          type: 'REDEEM_MEMBERSHIP',
+          amount: -requestedPoints,
+          balanceAfter: customerWallet.currentBalance,
+          description: `Redeemed ${requestedPoints} points for ₹${pointsDiscount} discount on ${planName || 'Membership'} (${receiptNumberCode})`,
+          conversionRateUsed: rewardSettings ? `${rewardSettings.pointsPerConversionUnit} pts = ₹${rewardSettings.currencyValuePerUnit}` : '100 pts = ₹50',
+          discountAmount: pointsDiscount,
+          orderReference: receiptNumberCode
+        });
+      }
     } catch (payErr) {
       console.error('Failed to create payment record in joinGym:', payErr);
     }

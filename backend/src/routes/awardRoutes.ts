@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   createAward,
+  updateAward,
   getOwnerAwards,
   getEligibleCandidates,
   confirmAwardWinner,
@@ -18,6 +19,7 @@ router.use(authenticate);
 // Owner operations
 router.post('/', createAward);
 router.get('/owner', getOwnerAwards);
+router.put('/:awardId', updateAward);
 router.get('/:awardId/candidates', getEligibleCandidates);
 router.put('/:awardId/confirm-winner', confirmAwardWinner);
 router.put('/:awardId/publish', publishAward);

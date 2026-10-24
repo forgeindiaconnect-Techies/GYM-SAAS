@@ -3,24 +3,24 @@
 const SuperAdminGymsEquipment = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex justify-between items-end mb-8 border-b border-[#292940] pb-6">
+      <div className="flex justify-between items-end mb-8 border-b border-[#2A3A3A] pb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Building2 className="text-[#6366F1]" size={32} />
+            <Building2 className="text-[#2DD4BF]" size={32} />
             Gym Equipment Inventory
           </h1>
-          <p className="text-[#A1A1AA] mt-2 font-mono text-sm">Global view of hardware and machines deployed at gyms.</p>
+          <p className="text-[#9AAEAE] mt-2 font-mono text-sm">Global view of hardware and machines deployed at gyms.</p>
         </div>
       </div>
       
       
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl overflow-hidden">
         <table className="w-full text-left font-mono text-sm">
-          <tbody className="divide-y divide-[#292940]">
+          <tbody className="divide-y divide-[#2A3A3A]">
             {['Treadmill Series X', 'Squat Rack Pro', 'Dumbbell Set (5-100)', 'Cable Crossover'].map((item, i) => (
               <tr key={i} className="hover:bg-[#FFFFFF]">
-                <td className="p-4 font-bold text-[#11111F]">{item}</td>
-                <td className="p-4 text-[#A1A1AA]">Qty: {2 + i * 2}</td>
+                <td className="p-4 font-bold text-[#F5FAFA]">{item}</td>
+                <td className="p-4 text-[#9AAEAE]">Qty: {2 + i * 2}</td>
                 <td className="p-4 text-green-500">Operational</td>
               </tr>
             ))}

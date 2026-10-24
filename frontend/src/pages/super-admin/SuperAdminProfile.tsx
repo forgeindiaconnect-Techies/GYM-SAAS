@@ -60,43 +60,43 @@ const SuperAdminProfile = () => {
     }
   };
 
-  const inputCls = "w-full bg-[#FFFFFF] border border-[#292940] rounded-xl px-4 py-3 text-[#11111F] outline-none focus:border-[#17172A] transition-colors";
+  const inputCls = "w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl px-4 py-3 text-[#F5FAFA] outline-none focus:border-[#1B2728] transition-colors";
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Super Admin Profile</h1>
-        <p className="text-[#A1A1AA] mt-1">Manage your administrative account details.</p>
+        <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Super Admin Profile</h1>
+        <p className="text-[#9AAEAE] mt-1">Manage your administrative account details.</p>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 md:p-8 flex items-center space-x-6">
-        <div className="w-24 h-24 bg-[#FFFFFF] border-2 border-[#17172A] rounded-full flex items-center justify-center text-[#4F46E5] text-3xl font-bold relative overflow-hidden group">
+      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 md:p-8 flex items-center space-x-6">
+        <div className="w-24 h-24 bg-[#FFFFFF] border-2 border-[#1B2728] rounded-full flex items-center justify-center text-[#5EEAD4] text-3xl font-bold relative overflow-hidden group">
           <span>{form.firstName?.[0] || 'S'}</span>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-[#11111F]">{form.firstName} {form.lastName}</h2>
-          <p className="text-[#4F46E5] font-semibold">{user?.role || 'SUPER ADMIN'}</p>
+          <h2 className="text-2xl font-bold text-[#F5FAFA]">{form.firstName} {form.lastName}</h2>
+          <p className="text-[#5EEAD4] font-semibold">{user?.role || 'SUPER ADMIN'}</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 md:p-8 space-y-6">
-        <h2 className="text-xl font-bold text-[#11111F] mb-4 border-b border-[#292940] pb-2">Personal Information</h2>
+      <form onSubmit={handleSubmit} className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 md:p-8 space-y-6">
+        <h2 className="text-xl font-bold text-[#F5FAFA] mb-4 border-b border-[#2A3A3A] pb-2">Personal Information</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm text-[#A1A1AA] mb-2">First Name</label>
+            <label className="block text-sm text-[#9AAEAE] mb-2">First Name</label>
             <input required value={form.firstName} onChange={e => setForm({...form, firstName: e.target.value})} className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm text-[#A1A1AA] mb-2">Last Name</label>
+            <label className="block text-sm text-[#9AAEAE] mb-2">Last Name</label>
             <input required value={form.lastName} onChange={e => setForm({...form, lastName: e.target.value})} className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm text-[#A1A1AA] mb-2">Email Address</label>
+            <label className="block text-sm text-[#9AAEAE] mb-2">Email Address</label>
             <input type="email" required value={form.email} onChange={e => setForm({...form, email: e.target.value})} className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm text-[#A1A1AA] mb-2">Phone Number</label>
+            <label className="block text-sm text-[#9AAEAE] mb-2">Phone Number</label>
             <input required value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} className={inputCls} placeholder="10 digit number" />
           </div>
         </div>
@@ -105,7 +105,7 @@ const SuperAdminProfile = () => {
           <button 
             type="submit" 
             disabled={isSaving}
-            className="px-6 py-3 bg-[#17172A] text-[#11111F] font-bold rounded-xl hover:bg-teal-600 flex items-center gap-2 transition-colors disabled:opacity-50"
+            className="px-6 py-3 bg-[#1B2728] text-[#F5FAFA] font-bold rounded-xl hover:bg-[#5EEAD4] flex items-center gap-2 transition-colors disabled:opacity-50"
           >
             {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>

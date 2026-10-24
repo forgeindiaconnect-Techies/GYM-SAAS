@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Gift, Share2, Copy, Check, MessageCircle, Users, Award,
-  Sparkles, ArrowUpRight, Clock, CheckCircle2, AlertCircle,
-  TrendingUp, CreditCard, ShieldCheck, ChevronRight,
-  Coins, HelpCircle, FileText, Mail, Send, Smartphone, QrCode,
-  ExternalLink, CheckCircle, Info
+  Clock, CheckCircle2, AlertCircle, Sparkles, TrendingUp,
+  Tag, ChevronRight, Coins, Mail, Send, Smartphone, QrCode,
+  CheckCircle, RefreshCw, X, CreditCard, ShoppingBag, HelpCircle,
+  DollarSign, ArrowDownRight, Eye
 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import api from '../../utils/api';
@@ -39,22 +40,75 @@ interface CustomerReferralItem {
   rewardIssuedAt?: string;
 }
 
-interface RewardTransaction {
+interface PointsTx {
   _id: string;
-  rewardType: string;
-  amount: number;
-  status: 'Pending' | 'Available' | 'Redeemed' | 'Reversed' | 'Expired';
-  sourceEvent: string;
-  issuedAt: string;
-  expiryDate?: string;
+  transactionType: 'EARN_REFERRAL' | 'REDEEM_MEMBERSHIP' | 'REDEEM_STORE' | 'REDEEM_CUSTOM' | 'ADMIN_ADJUST' | 'REFUND_POINTS';
+  points: number;
+  balanceAfter: number;
+  conversionRateUsed?: {
+    points: number;
+    currencyValue: number;
+  };
+  discountAmount?: number;
+  reason?: string;
+  orderReference?: string;
+  status: 'COMPLETED' | 'PENDING' | 'REVERSED';
+  createdAt: string;
+}
+
+interface CustomRewardClaim {
+  _id: string;
+  rewardId: any;
+  rewardTitle: string;
+  pointsCost: number;
+  voucherCode: string;
+  status: 'PENDING' | 'APPROVED' | 'REDEEMED' | 'REJECTED';
+  claimedAt: string;
+  reviewNotes?: string;
+}
+
+interface RewardSettings {
+  pointsPerConversionUnit: number;
+  currencyValuePerUnit: number;
+  minPointsForRedemption: number;
+  maxDiscountPerTransaction: number;
+  enableMembershipDiscount: boolean;
+  enableStorePurchase: boolean;
+  enableCustomRewards: boolean;
+  eligibleMembershipPlans: string[];
+  eligibleStoreProducts: string[];
+  storeRedemptionScope: 'ALL' | 'SELECTED';
+  pointsExpiryDays: number;
+  rewardInstructions: string;
+  termsAndConditions?: string;
+}
+
+interface CustomRewardItem {
+  _id: string;
+  title: string;
+  description: string;
+  pointsRequired: number;
+  category: string;
+  validityDays: number;
+  redemptionLimitPerUser: number;
+  requiresApproval: boolean;
+  terms?: string;
+  status: 'ACTIVE' | 'INACTIVE';
 }
 
 const MemberReferrals: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // Page Sub-Tab: 'invite' (Refer & Earn) vs 'redemption' (Points & Redemption)
+  const [activeSubTab, setActiveSubTab] = useState<'invite' | 'redemption'>('invite');
+
+  // Referral states
   const [referralCode, setReferralCode] = useState<string>('');
   const [shareLink, setShareLink] = useState<string>('');
   const [networkShareLink, setNetworkShareLink] = useState<string>('');
   const [gymName, setGymName] = useState<string>('Our Gym');
+  const [gymDetails, setGymDetails] = useState<any>(null);
   const [activeCampaign, setActiveCampaign] = useState<any>(null);
   const [stats, setStats] = useState<CustomerReferralStats>({
     totalInvited: 0,
@@ -65,14 +119,55 @@ const MemberReferrals: React.FC = () => {
     totalEarned: 0,
     totalRedeemed: 0,
     availableBalance: 0,
-    rewardType: 'Membership Credit'
+    rewardType: 'Points'
   });
   const [referrals, setReferrals] = useState<CustomerReferralItem[]>([]);
-  const [transactions, setTransactions] = useState<RewardTransaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
-  const [redeemLoading, setRedeemLoading] = useState<boolean>(false);
+
+  // Rewards & Points System States
+  const [rewardSettings, setRewardSettings] = useState<RewardSettings>({
+    pointsPerConversionUnit: 100,
+    currencyValuePerUnit: 50,
+    minPointsForRedemption: 100,
+    maxDiscountPerTransaction: 1000,
+    enableMembershipDiscount: true,
+    enableStorePurchase: true,
+    enableCustomRewards: true,
+    eligibleMembershipPlans: [],
+    eligibleStoreProducts: [],
+    storeRedemptionScope: 'ALL',
+    pointsExpiryDays: 0,
+    rewardInstructions: 'Earn points by inviting friends. Redeem points during membership renewals, gym store checkouts, or custom gym rewards.'
+  });
+
+  const [wallet, setWallet] = useState<{
+    currentBalance: number;
+    totalEarned: number;
+    totalRedeemed: number;
+  }>({
+    currentBalance: 0,
+    totalEarned: 0,
+    totalRedeemed: 0
+  });
+
+  const [pointsHistory, setPointsHistory] = useState<PointsTx[]>([]);
+  const [customClaims, setCustomClaims] = useState<CustomRewardClaim[]>([]);
+  const [availableCustomRewards, setAvailableCustomRewards] = useState<CustomRewardItem[]>([]);
+  const [selectedTxForDetails, setSelectedTxForDetails] = useState<any | null>(null);
+
+  // Redemption Dropdown / Modal state
+  const [showRedeemModal, setShowRedeemModal] = useState<boolean>(false);
+  const [selectedRedeemChannel, setSelectedRedeemChannel] = useState<'MEMBERSHIP' | 'STORE' | 'CUSTOM' | null>(null);
+
+  // Option A: Membership Discount interactive calculator
+  const [selectedPlanForDiscount, setSelectedPlanForDiscount] = useState<any>(null);
+  const [pointsToRedeemInput, setPointsToRedeemInput] = useState<number>(0);
+
+  // Option C: Claim Custom Reward
+  const [claimingRewardId, setClaimingRewardId] = useState<string | null>(null);
+  const [claimFeedback, setClaimFeedback] = useState<{ type: 'success' | 'error'; message: string; voucher?: string } | null>(null);
 
   // Email Referral Form State
   const [inviteName, setInviteName] = useState<string>('');
@@ -83,17 +178,32 @@ const MemberReferrals: React.FC = () => {
   const [sendingInvite, setSendingInvite] = useState<boolean>(false);
   const [inviteFeedback, setInviteFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  // Modal / View controls
+  // QR Modal
   const [showQrModal, setShowQrModal] = useState<boolean>(false);
 
-  const fetchReferralData = async () => {
+  // Conversion rate helper
+  const pointRate = useMemo(() => {
+    const pts = rewardSettings.pointsPerConversionUnit || 100;
+    const val = rewardSettings.currencyValuePerUnit || 50;
+    return val / pts;
+  }, [rewardSettings]);
+
+  const equivalentRupeeValue = useMemo(() => {
+    return Math.floor(wallet.currentBalance * pointRate);
+  }, [wallet.currentBalance, pointRate]);
+
+  // Load All Referral & Points Data
+  const fetchAllData = async () => {
     try {
       setLoading(true);
-      const [codeRes, statsRes, histRes, ledgerRes] = await Promise.all([
-        api.get('/referrals/my-code'),
-        api.get('/referrals/my-stats'),
-        api.get('/referrals/my-history'),
-        api.get('/referrals/my-rewards-ledger').catch(() => ({ data: { success: true, transactions: [] } }))
+      const [codeRes, statsRes, histRes, detailedRes, settingsRes, customRes, gymRes] = await Promise.all([
+        api.get('/referrals/my-code').catch(() => ({ data: { success: false } })),
+        api.get('/referrals/my-stats').catch(() => ({ data: { success: false } })),
+        api.get('/referrals/my-history').catch(() => ({ data: { success: false } })),
+        api.get('/referrals/my-detailed-history').catch(() => ({ data: { success: false } })),
+        api.get('/referrals/settings').catch(() => ({ data: { success: false } })),
+        api.get('/referrals/custom-rewards').catch(() => ({ data: { success: false } })),
+        user?.gymId ? api.get(`/gyms/${user.gymId}`).catch(() => ({ data: { gym: null } })) : Promise.resolve({ data: { gym: null } })
       ]);
 
       if (codeRes.data?.success) {
@@ -103,10 +213,14 @@ const MemberReferrals: React.FC = () => {
         setGymName(codeRes.data.gymName || user?.gymName || 'Our Gym');
         setActiveCampaign(codeRes.data.campaign);
       } else {
-        // Fallback referral code generation if API gave blank
         const fallbackCode = `${(user?.firstName || 'MEMBER').toUpperCase().slice(0, 5)}${Math.floor(1000 + Math.random() * 9000)}`;
         setReferralCode(fallbackCode);
         setShareLink(`${window.location.origin}/register/customer?ref=${fallbackCode}`);
+      }
+
+      if (gymRes.data?.gym) {
+        setGymDetails(gymRes.data.gym);
+        if (gymRes.data.gym.name) setGymName(gymRes.data.gym.name);
       }
 
       if (statsRes.data?.success) {
@@ -120,7 +234,7 @@ const MemberReferrals: React.FC = () => {
           totalEarned: s.totalEarned ?? s.totalRewardsEarned ?? 0,
           totalRedeemed: s.totalRedeemed ?? s.totalRewardsRedeemed ?? 0,
           availableBalance: s.availableBalance ?? s.creditsBalance ?? 0,
-          rewardType: s.rewardType || 'Membership Credit'
+          rewardType: s.rewardType || 'Points'
         });
       }
 
@@ -128,25 +242,39 @@ const MemberReferrals: React.FC = () => {
         setReferrals(histRes.data.history || histRes.data.referrals || []);
       }
 
-      if (ledgerRes.data?.success) {
-        setTransactions(ledgerRes.data.transactions || []);
+      if (detailedRes.data?.success) {
+        if (detailedRes.data.wallet) {
+          setWallet({
+            currentBalance: detailedRes.data.wallet.currentBalance ?? 0,
+            totalEarned: detailedRes.data.wallet.totalEarned ?? 0,
+            totalRedeemed: detailedRes.data.wallet.totalRedeemed ?? 0
+          });
+        }
+        if (detailedRes.data.transactions) {
+          setPointsHistory(detailedRes.data.transactions);
+        }
+        if (detailedRes.data.customClaims) {
+          setCustomClaims(detailedRes.data.customClaims);
+        }
+      }
+
+      if (settingsRes.data?.success && settingsRes.data.settings) {
+        setRewardSettings(settingsRes.data.settings);
+      }
+
+      if (customRes.data?.success && customRes.data.rewards) {
+        setAvailableCustomRewards(customRes.data.rewards);
       }
     } catch (err) {
       console.error('Failed to load referral data', err);
-      // Fallback referral code for immediate usability
-      if (!referralCode) {
-        const fallbackCode = `${(user?.firstName || 'MEMBER').toUpperCase().slice(0, 5)}${Math.floor(1000 + Math.random() * 9000)}`;
-        setReferralCode(fallbackCode);
-        setShareLink(`${window.location.origin}/register/customer?ref=${fallbackCode}`);
-      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchReferralData();
-  }, []);
+    fetchAllData();
+  }, [user]);
 
   const handleCopyCode = () => {
     if (!referralCode) return;
@@ -170,19 +298,16 @@ const MemberReferrals: React.FC = () => {
 
   const defaultShareText = `Hey! I workout at ${gymName || 'our gym'}. Use my referral code ${referralCode} to get ${friendBenefit} on your membership! Join here: ${shareLink}`;
 
-  // 1. WhatsApp Share
   const handleWhatsAppShare = () => {
     const text = encodeURIComponent(defaultShareText);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
-  // 2. SMS Share
   const handleSmsShare = () => {
     const text = encodeURIComponent(defaultShareText);
     window.open(`sms:?body=${text}`, '_blank');
   };
 
-  // 3. Mail Client (mailto:)
   const handleMailtoClient = () => {
     const subject = encodeURIComponent(`Invitation to workout together at ${gymName}!`);
     const body = encodeURIComponent(
@@ -191,7 +316,6 @@ const MemberReferrals: React.FC = () => {
     window.open(`mailto:${inviteEmail}?subject=${subject}&body=${body}`, '_blank');
   };
 
-  // 4. Native Device Share
   const handleNativeShare = async () => {
     if (navigator.share) {
       try {
@@ -201,49 +325,27 @@ const MemberReferrals: React.FC = () => {
           url: shareLink
         });
       } catch (err) {
-        console.log('Share dismissed');
+        console.error('Share cancelled or failed', err);
       }
     } else {
       handleCopyLink();
     }
   };
 
-  // Share QR Code URL
-  const handleShareQrCode = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Scan QR Code to Join ${gymName}!`,
-          text: `Scan or click this QR link to join ${gymName} with my referral code (${referralCode}) for an exclusive discount!`,
-          url: targetRegistrationUrl
-        });
-        return;
-      } catch (err) {
-        console.log('Share dismissed');
-      }
-    }
-    navigator.clipboard.writeText(targetRegistrationUrl);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
-  };
-
-  // 5. Send Direct Email Invite via Backend API
-  const handleSendEmailInvite = async (e: React.FormEvent) => {
+  const handleSendInvite = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inviteEmail || !inviteEmail.includes('@')) {
+    if (!inviteEmail) {
       setInviteFeedback({ type: 'error', message: 'Please enter a valid email address.' });
       return;
     }
-
     try {
       setSendingInvite(true);
       setInviteFeedback(null);
-      const res = await api.post('/referrals/invite-email', {
-        friendName: inviteName,
-        friendEmail: inviteEmail,
+      const res = await api.post('/referrals/invite', {
+        inviteeName: inviteName,
+        inviteeEmail: inviteEmail,
         personalMessage: inviteMessage
       });
-
       if (res.data?.success) {
         setInviteFeedback({
           type: 'success',
@@ -251,7 +353,7 @@ const MemberReferrals: React.FC = () => {
         });
         setInviteName('');
         setInviteEmail('');
-        fetchReferralData();
+        fetchAllData();
       } else {
         setInviteFeedback({
           type: 'error',
@@ -268,637 +370,1772 @@ const MemberReferrals: React.FC = () => {
     }
   };
 
-  const handleRedeemBalance = async () => {
-    if (stats.availableBalance <= 0) {
-      alert('You have no available reward balance to redeem.');
+  // Option A calculation: Membership Plan Discount
+  const gymPlans = useMemo(() => {
+    const list = gymDetails?.subscriptionPlans || [];
+    if (list.length > 0) return list;
+    return [
+      { name: '1 Month Standard Plan', price: 1500, duration: '1 month' },
+      { name: '3 Months Pro Plan', price: 3800, duration: '3 months' },
+      { name: '6 Months Elite Plan', price: 7000, duration: '6 months' },
+      { name: '12 Months Annual VIP', price: 12000, duration: '12 months' }
+    ];
+  }, [gymDetails]);
+
+  const isPlanEligible = (planName: string) => {
+    if (!rewardSettings.enableMembershipDiscount) return false;
+    if (!rewardSettings.eligibleMembershipPlans || rewardSettings.eligibleMembershipPlans.length === 0) {
+      return true;
+    }
+    return rewardSettings.eligibleMembershipPlans.includes(planName);
+  };
+
+  const maxRedeemablePointsForSelectedPlan = useMemo(() => {
+    if (!selectedPlanForDiscount) return 0;
+    const planPrice = Number(selectedPlanForDiscount.price || 0);
+    const maxDiscountLimit = rewardSettings.maxDiscountPerTransaction || 1000;
+    const effectiveMaxDiscount = Math.min(planPrice, maxDiscountLimit);
+    const maxPointsByDiscount = Math.floor(effectiveMaxDiscount / pointRate);
+    return Math.min(wallet.currentBalance, maxPointsByDiscount);
+  }, [selectedPlanForDiscount, rewardSettings, pointRate, wallet.currentBalance]);
+
+  const previewDiscountAmount = useMemo(() => {
+    return Math.floor(pointsToRedeemInput * pointRate);
+  }, [pointsToRedeemInput, pointRate]);
+
+  const previewFinalPrice = useMemo(() => {
+    if (!selectedPlanForDiscount) return 0;
+    const original = Number(selectedPlanForDiscount.price || 0);
+    return Math.max(0, original - previewDiscountAmount);
+  }, [selectedPlanForDiscount, previewDiscountAmount]);
+
+  const handleProceedMembershipCheckout = () => {
+    if (!selectedPlanForDiscount) {
+      alert('Please select an eligible membership plan.');
       return;
     }
-    if (!window.confirm(`Do you want to apply ₹${stats.availableBalance} credit towards your gym membership renewal?`)) {
+    if (wallet.currentBalance < rewardSettings.minPointsForRedemption) {
+      alert(`Minimum points required for redemption is ${rewardSettings.minPointsForRedemption} points.`);
       return;
     }
+    if (pointsToRedeemInput <= 0) {
+      alert('Please specify points to redeem.');
+      return;
+    }
+
+    const gymObj = gymDetails || {
+      _id: user?.gymId,
+      name: gymName,
+      branches: []
+    };
+    const intentPayload = {
+      gym: gymObj,
+      plan: selectedPlanForDiscount,
+      branch: gymObj.branches?.[0] || null
+    };
+
+    sessionStorage.setItem('checkout_intent', JSON.stringify(intentPayload));
+    sessionStorage.setItem('redeem_membership_points', String(pointsToRedeemInput));
+
+    setShowRedeemModal(false);
+    navigate('/gym-checkout', {
+      state: {
+        ...intentPayload,
+        pointsToRedeem: pointsToRedeemInput
+      }
+    });
+  };
+
+  const handleClaimCustomReward = async (reward: CustomRewardItem) => {
+    if (wallet.currentBalance < reward.pointsRequired) {
+      alert(`You need ${reward.pointsRequired} points for this reward. Available: ${wallet.currentBalance} points.`);
+      return;
+    }
+
+    const confirmMsg = reward.requiresApproval
+      ? `Redeem "${reward.title}" for ${reward.pointsRequired} points? This reward requires gym owner confirmation.`
+      : `Redeem "${reward.title}" for ${reward.pointsRequired} points? Your voucher will be generated immediately.`;
+
+    if (!window.confirm(confirmMsg)) return;
+
     try {
-      setRedeemLoading(true);
-      const res = await api.post('/referrals/redeem', {
-        amount: stats.availableBalance,
-        redemptionNote: 'Applied to next membership invoice'
-      });
-      alert(res.data?.message || 'Reward redeemed successfully!');
-      fetchReferralData();
+      setClaimingRewardId(reward._id);
+      setClaimFeedback(null);
+      const res = await api.post(`/referrals/custom-rewards/${reward._id}/redeem`);
+      if (res.data?.success) {
+        setClaimFeedback({
+          type: 'success',
+          message: res.data.message || 'Reward claimed successfully!',
+          voucher: res.data.claim?.voucherCode
+        });
+        fetchAllData();
+      } else {
+        setClaimFeedback({
+          type: 'error',
+          message: res.data?.message || 'Failed to redeem reward.'
+        });
+      }
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to redeem reward');
+      setClaimFeedback({
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to claim reward. Please check your points balance.'
+      });
     } finally {
-      setRedeemLoading(false);
+      setClaimingRewardId(null);
     }
   };
 
-  // Target Customer Registration URL for QR Code and direct links
-  const targetRegistrationUrl = (() => {
-    // If backend provided a LAN IP network link and we are on localhost, prioritize it so phone camera scans work across Wi-Fi
-    if (networkShareLink && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      return networkShareLink;
-    }
-    if (shareLink && !shareLink.includes('localhost') && !shareLink.includes('127.0.0.1')) {
-      return shareLink;
-    }
-    const code = referralCode || (user?.firstName ? `${user.firstName.toUpperCase().slice(0, 5)}2026` : 'MEMBER2026');
-    const gymId = user?.gymId ? `&gymId=${user.gymId}` : '';
-    return `${window.location.origin}/register/customer?ref=${code}${gymId}`;
-  })();
-
   return (
-    <div className="min-h-screen bg-[#050505] text-[#FFFFFF] p-4 sm:p-6 lg:p-8 space-y-8">
-      {/* Top Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#11111F] via-[#151515] to-[#0B0B12] border border-[#292940] p-6 sm:p-8 shadow-2xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,_rgba(99, 102, 241,0.12)_0%,_transparent_70%)] pointer-events-none" />
-        
-        <div className="max-w-3xl space-y-3 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#818CF8]/15 border border-[#818CF8]/30 rounded-full text-xs font-bold uppercase tracking-wider text-[#818CF8]">
-            <Gift size={14} className="text-[#818CF8]" />
-            Refer & Earn Rewards
-          </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#FFFFFF]">
-            Invite Friends & Family, <span className="text-[#818CF8]">Get Rewarded Together!</span>
-          </h1>
-          <p className="text-[#A1A1AA] text-sm sm:text-base leading-relaxed">
-            Give your friends an exclusive gym membership discount at <strong className="text-[#FFFFFF]">{gymName}</strong>, 
-            and earn membership credits or rewards for every friend who joins!
-          </p>
+    <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] p-4 sm:p-6 lg:p-8 space-y-6">
+      {/* Top Bar with Referral Sub-Tabs and Redeem Points Action */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#2A3A3A] pb-4">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('invite')}
+            className={`flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+              activeSubTab === 'invite'
+                ? 'bg-[#2DD4BF] text-[#06201D] shadow-lg shadow-[#2DD4BF]/20'
+                : 'bg-[#141D1E] text-[#9AAEAE] hover:text-[#F5FAFA] border border-[#2A3A3A]'
+            }`}
+          >
+            <Gift size={18} />
+            Refer & Earn Friends
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('redemption')}
+            className={`flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+              activeSubTab === 'redemption'
+                ? 'bg-[#2DD4BF] text-[#06201D] shadow-lg shadow-[#2DD4BF]/20'
+                : 'bg-[#141D1E] text-[#9AAEAE] hover:text-[#F5FAFA] border border-[#2A3A3A]'
+            }`}
+          >
+            <Coins size={18} />
+            Points & Redemption ({wallet.currentBalance} Pts)
+          </button>
         </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setSelectedRedeemChannel(null);
+            setShowRedeemModal(true);
+          }}
+          className="flex items-center gap-2 px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-extrabold text-sm rounded-2xl transition-all shadow-lg shadow-[#2DD4BF]/20 cursor-pointer"
+        >
+          <Sparkles size={16} />
+          Redeem Points
+        </button>
       </div>
 
-      {/* Main 2-Column Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left Column (2 Cols wide): Referral Code, Share Links, and Email Invitation Form */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {/* 1. Referral Code & Quick Share Bar */}
-          <div className="bg-[#11111F] rounded-3xl border border-[#292940] p-6 sm:p-8 space-y-6 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#292940] pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#6366F1]/15 text-[#6366F1] flex items-center justify-center border border-[#6366F1]/30">
-                  <Share2 size={20} />
+      {activeSubTab === 'invite' ? (
+        /* ========================================================================= */
+        /* SUB-TAB 1: REFER & EARN (INVITATION WORKFLOW)                            */
+        /* ========================================================================= */
+        <div className="space-y-6">
+          {/* Top Header Banner */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#141D1E] via-[#101819] to-[#0E1415] border border-[#2A3A3A] p-6 sm:p-8 shadow-2xl">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,_rgba(45,212,191,0.12)_0%,_transparent_70%)] pointer-events-none" />
+            
+            <div className="max-w-3xl space-y-3 relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 rounded-full text-xs font-bold uppercase tracking-wider text-[#2DD4BF]">
+                <Gift size={14} className="text-[#2DD4BF]" />
+                Refer & Earn Rewards
+              </div>
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#F5FAFA]">
+                Invite Friends & Family, <span className="text-[#2DD4BF]">Get Rewarded Together!</span>
+              </h1>
+              <p className="text-[#9AAEAE] text-sm sm:text-base leading-relaxed">
+                Give your friends an exclusive gym membership discount at <strong className="text-[#F5FAFA]">{gymName}</strong>, 
+                and earn referral points for every friend who joins and activates a membership!
+              </p>
+            </div>
+          </div>
+
+          {/* Main 2-Column Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column (2 Cols): Code, Share Bar, Email Invite */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Unique Referral Invite */}
+              <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] p-6 sm:p-8 space-y-6 shadow-xl">
+                <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF]/15 text-[#2DD4BF] flex items-center justify-center border border-[#2DD4BF]/30">
+                      <Share2 size={20} />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-[#F5FAFA]">Your Unique Referral Invite</h2>
+                      <p className="text-xs text-[#9AAEAE]">Share with friends via link, mail, QR, or chat apps.</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-lg font-bold text-[#FFFFFF]">Your Unique Referral Invite</h2>
-                  <p className="text-xs text-[#A1A1AA]">Share with friends via link, mail, QR, or chat apps.</p>
+
+                {/* Referral Code Box */}
+                <div className="p-5 bg-[#101819] border border-[#2A3A3A] rounded-2xl space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <span className="text-xs uppercase font-bold text-[#9AAEAE] tracking-wider">Your Referral Code</span>
+                      <div className="text-2xl sm:text-3xl font-black text-[#2DD4BF] tracking-wider font-mono mt-0.5">
+                        {referralCode || 'GENERATING...'}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={handleCopyCode}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] rounded-xl text-xs font-bold transition-all shadow-md shadow-[#2DD4BF]/20 cursor-pointer"
+                      >
+                        {copiedCode ? <Check size={16} /> : <Copy size={16} />}
+                        {copiedCode ? 'Copied Code!' : 'Copy Code'}
+                      </button>
+                      <button
+                        onClick={() => setShowQrModal(true)}
+                        className="flex items-center gap-2 px-3 py-2.5 bg-[#1B2728] hover:bg-[#2A3A3A] text-[#F5FAFA] rounded-xl text-xs font-bold transition-all border border-[#2A3A3A] cursor-pointer"
+                        title="Display QR Code"
+                      >
+                        <QrCode size={16} className="text-[#2DD4BF]" />
+                        QR
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Share Link Input */}
+                  <div className="space-y-1.5 pt-2 border-t border-[#2A3A3A]/60">
+                    <span className="text-[11px] font-medium text-[#9AAEAE]">Direct Referral Registration Link</span>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={shareLink}
+                        className="flex-1 bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3.5 py-2 text-xs text-[#9AAEAE] font-mono select-all focus:outline-none"
+                      />
+                      <button
+                        onClick={handleCopyLink}
+                        className="px-4 py-2 bg-[#1B2728] hover:bg-[#2A3A3A] text-[#F5FAFA] rounded-xl text-xs font-bold transition-all border border-[#2A3A3A] shrink-0 cursor-pointer"
+                      >
+                        {copiedLink ? 'Copied Link!' : 'Copy Link'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Quick Share Buttons Bar */}
+                <div className="space-y-3">
+                  <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Instant Sharing Channels</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button
+                      onClick={handleWhatsAppShare}
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] border border-[#25D366]/30 rounded-2xl text-xs font-bold transition-all cursor-pointer"
+                    >
+                      <MessageCircle size={16} />
+                      WhatsApp
+                    </button>
+                    <button
+                      onClick={handleMailtoClient}
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-purple-500/15 hover:bg-purple-500/25 text-purple-400 border border-purple-500/30 rounded-2xl text-xs font-bold transition-all cursor-pointer"
+                    >
+                      <Mail size={16} />
+                      Mail App
+                    </button>
+                    <button
+                      onClick={handleNativeShare}
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-[#2DD4BF]/15 hover:bg-[#2DD4BF]/25 text-[#2DD4BF] border border-[#2DD4BF]/30 rounded-2xl text-xs font-bold transition-all cursor-pointer"
+                    >
+                      <Share2 size={16} />
+                      More Apps
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Email Referral Invitation Form */}
+              <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] p-6 sm:p-8 space-y-6 shadow-xl">
+                <div className="flex items-center gap-3 border-b border-[#2A3A3A] pb-4">
+                  <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF] text-[#06201D] flex items-center justify-center font-bold">
+                    <Mail size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-[#F5FAFA]">Send Personalized Email Invitation</h3>
+                    <p className="text-xs text-[#9AAEAE]">
+                      We'll dispatch an official email invitation to your friend with your promo code attached.
+                    </p>
+                  </div>
+                </div>
+
+                {inviteFeedback && (
+                  <div
+                    className={`p-4 rounded-2xl text-xs font-medium flex items-center gap-3 ${
+                      inviteFeedback.type === 'success'
+                        ? 'bg-[#34D399]/15 border border-[#34D399]/30 text-[#34D399]'
+                        : 'bg-[#F87171]/15 border border-[#F87171]/30 text-[#F87171]'
+                    }`}
+                  >
+                    {inviteFeedback.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+                    <span>{inviteFeedback.message}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleSendInvite} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-[#9AAEAE]">Friend's Name</label>
+                      <input
+                        type="text"
+                        value={inviteName}
+                        onChange={(e) => setInviteName(e.target.value)}
+                        placeholder="e.g. Alex Sharma"
+                        className="w-full bg-[#101819] border border-[#2A3A3A] rounded-xl px-4 py-2.5 text-xs text-[#F5FAFA] placeholder-[#9AAEAE] focus:outline-none focus:border-[#2DD4BF]"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-[#9AAEAE]">
+                        Friend's Email Address <span className="text-[#2DD4BF]">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                        placeholder="friend@example.com"
+                        className="w-full bg-[#101819] border border-[#2A3A3A] rounded-xl px-4 py-2.5 text-xs text-[#F5FAFA] placeholder-[#9AAEAE] focus:outline-none focus:border-[#2DD4BF]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-[#9AAEAE]">Personal Note (Optional)</label>
+                    <textarea
+                      rows={2}
+                      value={inviteMessage}
+                      onChange={(e) => setInviteMessage(e.target.value)}
+                      className="w-full bg-[#101819] border border-[#2A3A3A] rounded-xl p-3 text-xs text-[#F5FAFA] placeholder-[#9AAEAE] focus:outline-none focus:border-[#2DD4BF] resize-none"
+                    />
+                  </div>
+
+                  <div className="flex justify-end pt-2">
+                    <button
+                      type="submit"
+                      disabled={sendingInvite}
+                      className="flex items-center gap-2 px-6 py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-2xl text-xs transition-all shadow-md shadow-[#2DD4BF]/20 cursor-pointer disabled:opacity-50"
+                    >
+                      {sendingInvite ? <RefreshCw className="animate-spin" size={16} /> : <Send size={16} />}
+                      {sendingInvite ? 'Sending...' : 'Send Referral Invitation'}
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
 
-            {/* Referral Code Box */}
-            <div className="p-5 bg-[#0B0B12] border border-[#292940] rounded-2xl space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">
-                  Your Referral Promo Code
-                </span>
-                <span className="text-[11px] text-[#22C55E] font-medium flex items-center gap-1">
-                  <ShieldCheck size={13} /> Active & Verified
-                </span>
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                <div className="flex-1 w-full bg-[#050505] border border-[#292940] rounded-2xl px-5 py-3 text-center sm:text-left font-mono font-extrabold text-2xl tracking-widest text-[#818CF8] shadow-inner select-all">
-                  {referralCode || (loading ? 'FETCHING...' : 'FITCLUB2026')}
+            {/* Right Column: Reward Rules & Summary */}
+            <div className="space-y-6">
+              {/* Dual Reward Benefits Card */}
+              <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] p-6 space-y-5 shadow-xl">
+                <div className="flex items-center gap-3 border-b border-[#2A3A3A] pb-4">
+                  <div className="w-10 h-10 rounded-2xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
+                    <Award size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-[#F5FAFA]">Dual Reward Benefit</h3>
+                    <p className="text-xs text-[#9AAEAE]">Both you & your friend benefit!</p>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <button
-                    onClick={handleCopyCode}
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-2xl text-xs font-bold transition-all shadow-md shadow-[#6366F1]/25 cursor-pointer"
-                  >
-                    {copiedCode ? <Check size={16} /> : <Copy size={16} />}
-                    {copiedCode ? 'Copied!' : 'Copy Code'}
-                  </button>
+                <div className="space-y-4 text-xs">
+                  <div className="p-4 bg-[#101819] border border-[#2A3A3A] rounded-2xl space-y-1">
+                    <div className="flex items-center justify-between text-[#2DD4BF] font-bold">
+                      <span>FOR YOUR FRIEND</span>
+                      <Tag size={14} />
+                    </div>
+                    <div className="text-base font-extrabold text-[#F5FAFA]">{friendBenefit}</div>
+                    <p className="text-[11px] text-[#9AAEAE]">
+                      Instant discount applied during checkout when they register with your code.
+                    </p>
+                  </div>
 
-                  <button
-                    onClick={handleCopyLink}
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-3 bg-[#11111F] border border-[#292940] hover:border-[#6366F1] text-[#FFFFFF] hover:text-[#6366F1] rounded-2xl text-xs font-bold transition-all cursor-pointer"
-                  >
-                    {copiedLink ? <Check size={16} /> : <Share2 size={16} />}
-                    {copiedLink ? 'Link Copied!' : 'Copy Link'}
-                  </button>
+                  <div className="p-4 bg-[#101819] border border-[#2A3A3A] rounded-2xl space-y-1">
+                    <div className="flex items-center justify-between text-[#34D399] font-bold">
+                      <span>FOR YOU (REFERRER)</span>
+                      <Coins size={14} />
+                    </div>
+                    <div className="text-base font-extrabold text-[#F5FAFA]">
+                      {activeCampaign?.referrerRewardValue ? `${activeCampaign.referrerRewardValue} Points` : 'Points Reward'}
+                    </div>
+                    <p className="text-[11px] text-[#9AAEAE]">
+                      Credited directly into your points balance upon confirmed payment.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Multi-channel Quick Action Sharing Buttons */}
-              <div className="pt-2">
-                <p className="text-[11px] text-[#A1A1AA] font-semibold uppercase tracking-wider mb-2">
-                  Instant Sharing Options
+              {/* 3 Simple Steps */}
+              <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] p-6 space-y-4 shadow-xl">
+                <h4 className="text-sm font-bold text-[#F5FAFA]">How It Works</h4>
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
+                      1
+                    </div>
+                    <div>
+                      <p className="font-bold text-[#F5FAFA]">Share Your Code</p>
+                      <p className="text-[11px] text-[#9AAEAE] mt-0.5">Send your code or link to friends.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
+                      2
+                    </div>
+                    <div>
+                      <p className="font-bold text-[#F5FAFA]">Friend Joins & Pays</p>
+                      <p className="text-[11px] text-[#9AAEAE] mt-0.5">They receive an instant promo discount on signup.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
+                      3
+                    </div>
+                    <div>
+                      <p className="font-bold text-[#F5FAFA]">Earn Your Points</p>
+                      <p className="text-[11px] text-[#9AAEAE] mt-0.5">Your points balance is automatically credited.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Referral Statistics Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-md space-y-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#9AAEAE]">Total Invited</span>
+              <div className="text-2xl font-black text-[#F5FAFA]">{stats.totalInvited}</div>
+              <span className="text-[11px] text-[#9AAEAE]">Friends signed up or invited</span>
+            </div>
+
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-md space-y-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#9AAEAE]">Pending Payments</span>
+              <div className="text-2xl font-black text-[#FBBF24]">{stats.pendingPaymentCount}</div>
+              <span className="text-[11px] text-[#9AAEAE]">Awaiting plan purchase</span>
+            </div>
+
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-md space-y-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#9AAEAE]">Successful Referrals</span>
+              <div className="text-2xl font-black text-[#34D399]">{stats.successfulCount}</div>
+              <span className="text-[11px] text-[#34D399] font-medium">Paid members confirmed</span>
+            </div>
+
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-md space-y-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#9AAEAE]">Rewards Issued</span>
+              <div className="text-2xl font-black text-[#2DD4BF]">
+                {wallet.totalEarned > 0 ? `${wallet.totalEarned} Pts` : '0 Pts'}
+              </div>
+              <span className="text-[11px] text-[#2DD4BF] font-medium">Total earned</span>
+            </div>
+          </div>
+
+          {/* Referral History & Step-by-Step Progress Tracker */}
+          <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] p-6 sm:p-8 shadow-xl space-y-6">
+            <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-[#F5FAFA]">My Referral History & Progress Tracker</h2>
+                <p className="text-xs text-[#9AAEAE]">
+                  Track your invitations step-by-step from invitation to verified member reward.
                 </p>
-                <div className="grid grid-cols-3 gap-2.5">
-                  {/* WhatsApp */}
+              </div>
+              <span className="text-xs font-bold text-[#06201D] bg-[#2DD4BF] px-3 py-1 rounded-full">
+                {referrals.length} Total Invites
+              </span>
+            </div>
+
+            {referrals.length === 0 ? (
+              <div className="py-12 text-center space-y-3">
+                <div className="w-16 h-16 rounded-full bg-[#101819] border border-[#2A3A3A] text-[#9AAEAE] flex items-center justify-center mx-auto">
+                  <Users size={28} className="text-[#2DD4BF]" />
+                </div>
+                <h3 className="text-base font-bold text-[#F5FAFA]">No Referrals Recorded Yet</h3>
+                <p className="text-xs text-[#9AAEAE] max-w-sm mx-auto">
+                  Use the email form above or share your code <strong className="text-[#2DD4BF]">{referralCode}</strong> with friends to earn your first reward!
+                </p>
+                <div className="flex justify-center gap-3 pt-2">
                   <button
                     onClick={handleWhatsAppShare}
-                    className="py-2.5 px-3 bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-700/50 text-emerald-400 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                    className="px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
                   >
-                    <MessageCircle size={15} />
-                    WhatsApp
-                  </button>
-
-                  {/* QR Code */}
-                  <button
-                    onClick={() => setShowQrModal(!showQrModal)}
-                    className="py-2.5 px-3 bg-[#0B0B12] hover:bg-[#17172A] border border-[#292940] hover:border-[#6366F1] text-[#FFFFFF] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <QrCode size={15} className="text-[#818CF8]" />
-                    {showQrModal ? 'Hide QR' : 'Show QR'}
-                  </button>
-
-                  {/* Device Native Share */}
-                  <button
-                    onClick={handleNativeShare}
-                    className="py-2.5 px-3 bg-[#0B0B12] hover:bg-[#17172A] border border-[#292940] hover:border-[#6366F1] text-[#FFFFFF] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <ArrowUpRight size={15} className="text-[#6366F1]" />
-                    Share More
+                    Share on WhatsApp
                   </button>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-4">
+                {referrals.map((item) => {
+                  const displayName = item.refereeName || item.referredName || item.inviteeEmail || 'Invited Friend';
+                  const displayDate = item.registrationDate || item.createdAt;
 
-            {/* QR Code Inline Preview (if toggled) */}
-            {showQrModal && (
-              <div className="p-5 bg-[#0B0B12] border border-[#6366F1]/40 rounded-2xl flex flex-col sm:flex-row items-center gap-5 shadow-xl">
-                <div className="bg-white p-3 rounded-xl shrink-0 shadow-lg">
-                  <QRCode value={targetRegistrationUrl} size={135} />
-                </div>
-                <div className="space-y-2.5 text-center sm:text-left flex-1 min-w-0">
-                  <div className="flex items-center justify-center sm:justify-start gap-2">
-                    <span className="text-xs font-bold text-[#818CF8] uppercase tracking-wider flex items-center gap-1.5">
-                      <QrCode size={14} className="text-[#818CF8]" /> In-Person Scan to Join
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                      Customer Registration
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#A1A1AA] leading-relaxed">
-                    Show this QR code to a friend or relative. When scanned with their phone camera, it will instantly open the Customer Registration page with your referral code (<strong className="text-white">{referralCode}</strong>) pre-filled!
-                  </p>
-                  <div className="pt-1 flex flex-wrap items-center gap-3 justify-center sm:justify-start">
-                    <button
-                      type="button"
-                      onClick={handleShareQrCode}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-bold transition shadow-md shadow-[#6366F1]/25 cursor-pointer"
-                    >
-                      <Share2 size={13} />
-                      <span>{copiedLink ? 'Link Copied!' : 'Share QR Code'}</span>
-                    </button>
-                    <a
-                      href={targetRegistrationUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs text-[#A1A1AA] hover:text-[#6366F1] transition inline-flex items-center gap-1 font-semibold"
-                    >
-                      <ExternalLink size={12} />
-                      <span>Preview Form</span>
-                    </a>
-                    <button
-                      onClick={() => setShowQrModal(false)}
-                      className="text-xs text-[#A1A1AA] hover:text-white font-semibold cursor-pointer"
-                    >
-                      Close QR View
-                    </button>
-                  </div>
-                </div>
+                  return (
+                    <div key={item._id} className="p-5 bg-[#101819] border border-[#2A3A3A] rounded-2xl space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 text-[#2DD4BF] flex items-center justify-center font-bold text-sm">
+                            {displayName.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-sm font-bold text-[#F5FAFA]">{displayName}</h4>
+                              {item.inviteChannel && (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE]">
+                                  via {item.inviteChannel}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-[#9AAEAE]">
+                              {displayDate ? `Date: ${new Date(displayDate).toLocaleDateString()}` : 'Recently Invited'}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-left sm:text-right">
+                          <span className="text-xs font-bold text-[#2DD4BF]">
+                            Reward: +{item.rewardAmount || 300} Points
+                          </span>
+                          <div className="text-[11px] text-[#9AAEAE] mt-0.5">
+                            Status:{' '}
+                            <span
+                              className={`font-semibold ${
+                                item.status === 'Reward Issued'
+                                  ? 'text-[#2DD4BF]'
+                                  : item.status === 'Payment Verified'
+                                  ? 'text-[#34D399]'
+                                  : item.status === 'Invited'
+                                  ? 'text-[#FBBF24]'
+                                  : 'text-sky-400'
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Step-by-Step Progress Timeline */}
+                      <div className="pt-2">
+                        <div className="flex items-center justify-between text-[11px] font-semibold text-[#9AAEAE] mb-2 overflow-x-auto gap-2">
+                          {['Invited', 'Registered', 'Membership Pending', 'Payment Verified', 'Reward Issued'].map(
+                            (stage, idx) => {
+                              const isComplete =
+                                stage === 'Invited' ||
+                                (stage === 'Registered' && item.status !== 'Invited') ||
+                                (stage === 'Membership Pending' &&
+                                  ['Membership Pending', 'Payment Verified', 'Reward Pending', 'Reward Issued'].includes(
+                                    item.status
+                                  )) ||
+                                (stage === 'Payment Verified' &&
+                                  ['Payment Verified', 'Reward Pending', 'Reward Issued'].includes(item.status)) ||
+                                (stage === 'Reward Issued' && item.status === 'Reward Issued');
+
+                              return (
+                                <div key={stage} className="flex items-center gap-1.5 shrink-0">
+                                  <div
+                                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                                      isComplete
+                                        ? 'bg-[#2DD4BF] text-[#06201D]'
+                                        : 'bg-[#1B2728] text-[#9AAEAE] border border-[#2A3A3A]'
+                                    }`}
+                                  >
+                                    {isComplete ? <Check size={11} /> : idx + 1}
+                                  </div>
+                                  <span className={isComplete ? 'text-[#F5FAFA] font-bold' : 'text-[#9AAEAE]'}>
+                                    {stage}
+                                  </span>
+                                </div>
+                              );
+                            }
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
-
-          {/* 2. Direct Email Invitation Form (The User's Core Request) */}
-          <div className="bg-[#11111F] rounded-3xl border border-[#292940] p-6 sm:p-8 space-y-6 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#292940] pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#6366F1]/15 text-[#6366F1] flex items-center justify-center border border-[#6366F1]/30">
-                  <Mail size={20} />
+        </div>
+      ) : (
+        /* ========================================================================= */
+        /* SUB-TAB 2: POINTS & REDEMPTION (DETAILS THAT USER SPECIFIED)              */
+        /* ========================================================================= */
+        <div className="space-y-6">
+          {/* Header Banner */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#141D1E] via-[#101819] to-[#0E1415] border border-[#2A3A3A] p-6 sm:p-8 shadow-2xl">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,_rgba(45,212,191,0.15)_0%,_transparent_70%)] pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+              <div className="max-w-2xl space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 rounded-full text-xs font-bold uppercase tracking-wider text-[#2DD4BF]">
+                  <Coins size={14} className="text-[#2DD4BF]" />
+                  Referral Points Balance
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#FFFFFF]">Send Invitation Link to Email</h3>
-                  <p className="text-xs text-[#A1A1AA]">
-                    Directly deliver a branded invitation with your referral link and discount coupon to their inbox.
-                  </p>
+                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#F5FAFA]">
+                  My Referral Points & Redemption
+                </h1>
+                <p className="text-[#9AAEAE] text-sm leading-relaxed">
+                  Earned from your referred friends at <strong className="text-[#F5FAFA]">{gymName}</strong>. 
+                  Redeem directly towards membership renewals, gym store gear, or special training sessions.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedRedeemChannel(null);
+                  setShowRedeemModal(true);
+                }}
+                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-black text-sm rounded-2xl transition-all shadow-xl shadow-[#2DD4BF]/30 cursor-pointer shrink-0"
+              >
+                <Coins size={18} />
+                Redeem Points Now
+              </button>
+            </div>
+          </div>
+
+          {/* Reward Summary 4-Grid Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 1. Available Points */}
+            <div className="bg-[#141D1E] p-6 rounded-3xl border border-[#2A3A3A] shadow-lg space-y-2 relative overflow-hidden group hover:border-[#2DD4BF]/50 transition">
+              <div className="flex items-center justify-between text-[#9AAEAE]">
+                <span className="text-xs font-bold uppercase tracking-wider">Available Points</span>
+                <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                  <Coins size={20} />
                 </div>
               </div>
-              <span className="hidden sm:inline-flex px-2.5 py-1 bg-[#6366F1]/10 border border-[#6366F1]/20 text-white text-[11px] font-bold rounded-full">
-                Auto-Tracked
+              <div className="text-3xl sm:text-4xl font-black text-[#F5FAFA]">
+                {wallet.currentBalance.toLocaleString()}
+              </div>
+              <div className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1.5 pt-1">
+                <span>Supports 5,000+ balances</span>
+              </div>
+            </div>
+
+            {/* 2. Equivalent Discount Value */}
+            <div className="bg-[#141D1E] p-6 rounded-3xl border border-[#2A3A3A] shadow-lg space-y-2 relative overflow-hidden group hover:border-[#34D399]/50 transition">
+              <div className="flex items-center justify-between text-[#9AAEAE]">
+                <span className="text-xs font-bold uppercase tracking-wider">Equivalent Value</span>
+                <div className="w-10 h-10 rounded-2xl bg-[#34D399]/10 text-[#34D399] flex items-center justify-center">
+                  <DollarSign size={20} />
+                </div>
+              </div>
+              <div className="text-3xl sm:text-4xl font-black text-[#34D399]">
+                ₹{equivalentRupeeValue.toLocaleString()}
+              </div>
+              <div className="text-xs text-[#9AAEAE] pt-1">
+                Rate: {rewardSettings.pointsPerConversionUnit} pts = ₹{rewardSettings.currencyValuePerUnit}
+              </div>
+            </div>
+
+            {/* 3. Total Points Earned */}
+            <div className="bg-[#141D1E] p-6 rounded-3xl border border-[#2A3A3A] shadow-lg space-y-2 relative overflow-hidden group hover:border-purple-500/50 transition">
+              <div className="flex items-center justify-between text-[#9AAEAE]">
+                <span className="text-xs font-bold uppercase tracking-wider">Total Earned</span>
+                <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                  <TrendingUp size={20} />
+                </div>
+              </div>
+              <div className="text-3xl sm:text-4xl font-black text-purple-300">
+                {wallet.totalEarned.toLocaleString()}
+              </div>
+              <div className="text-xs text-[#9AAEAE] pt-1">
+                From successful referrals & bonuses
+              </div>
+            </div>
+
+            {/* 4. Total Points Redeemed */}
+            <div className="bg-[#141D1E] p-6 rounded-3xl border border-[#2A3A3A] shadow-lg space-y-2 relative overflow-hidden group hover:border-amber-500/50 transition">
+              <div className="flex items-center justify-between text-[#9AAEAE]">
+                <span className="text-xs font-bold uppercase tracking-wider">Total Redeemed</span>
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                  <ArrowDownRight size={20} />
+                </div>
+              </div>
+              <div className="text-3xl sm:text-4xl font-black text-amber-300">
+                {wallet.totalRedeemed.toLocaleString()}
+              </div>
+              <div className="text-xs text-[#9AAEAE] pt-1">
+                Redeemed on plans & gym store
+              </div>
+            </div>
+          </div>
+
+          {/* Available Redemption Channels */}
+          <div className="bg-[#141D1E] p-6 rounded-3xl border border-[#2A3A3A] shadow-lg space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-extrabold text-[#F5FAFA]">Available Redemption Channels</h3>
+                <p className="text-xs text-[#9AAEAE]">Choose how to use your referral points today.</p>
+              </div>
+              <span className="text-xs text-[#2DD4BF] font-bold bg-[#2DD4BF]/10 px-3 py-1 rounded-full border border-[#2DD4BF]/20">
+                Min. {rewardSettings.minPointsForRedemption} pts required
               </span>
             </div>
 
-            <form onSubmit={handleSendEmailInvite} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Friend's Name */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">
-                    Friend or Relative's Name
-                  </label>
-                  <input
-                    type="text"
-                    value={inviteName}
-                    onChange={(e) => setInviteName(e.target.value)}
-                    placeholder="e.g. Rahul Sharma"
-                    className="w-full px-4 py-3 bg-[#050505] border border-[#292940] focus:border-[#6366F1] rounded-xl text-sm text-[#FFFFFF] placeholder-[#737373] focus:outline-none transition-colors"
-                  />
-                </div>
-
-                {/* Friend's Email */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">
-                    Friend's Email Address <span className="text-[#6366F1]">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="e.g. friend@gmail.com"
-                    className="w-full px-4 py-3 bg-[#050505] border border-[#292940] focus:border-[#6366F1] rounded-xl text-sm text-[#FFFFFF] placeholder-[#737373] focus:outline-none transition-colors"
-                  />
-                </div>
-              </div>
-
-              {/* Personal Message */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">
-                    Personal Message (Optional)
-                  </label>
-                  <span className="text-[11px] text-[#737373]">Included in invitation email</span>
-                </div>
-                <textarea
-                  rows={2}
-                  value={inviteMessage}
-                  onChange={(e) => setInviteMessage(e.target.value)}
-                  placeholder="Add a personal encouragement..."
-                  className="w-full px-4 py-2.5 bg-[#050505] border border-[#292940] focus:border-[#6366F1] rounded-xl text-xs text-[#FFFFFF] placeholder-[#737373] focus:outline-none transition-colors resize-none"
-                />
-              </div>
-
-              {/* Feedback Alert */}
-              {inviteFeedback && (
-                <div
-                  className={`p-3.5 rounded-xl border text-xs font-medium flex items-center gap-2 ${
-                    inviteFeedback.type === 'success'
-                      ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300'
-                      : 'bg-red-950/40 border-red-800 text-red-300'
-                  }`}
-                >
-                  {inviteFeedback.type === 'success' ? (
-                    <CheckCircle2 size={16} className="shrink-0 text-emerald-400" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              {/* Option A: Membership */}
+              <div
+                onClick={() => {
+                  if (rewardSettings.enableMembershipDiscount) {
+                    setSelectedRedeemChannel('MEMBERSHIP');
+                    setShowRedeemModal(true);
+                  }
+                }}
+                className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
+                  rewardSettings.enableMembershipDiscount
+                    ? 'bg-[#101819] border-[#2A3A3A] hover:border-[#2DD4BF] hover:bg-[#1B2728]'
+                    : 'bg-[#101819]/50 border-red-500/20 opacity-60 cursor-not-allowed'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#2DD4BF]/15 text-[#2DD4BF] flex items-center justify-center">
+                    <CreditCard size={20} />
+                  </div>
+                  {rewardSettings.enableMembershipDiscount ? (
+                    <span className="text-[10px] font-bold text-[#34D399] bg-[#34D399]/10 px-2 py-0.5 rounded-full border border-[#34D399]/20">
+                      Active
+                    </span>
                   ) : (
-                    <AlertCircle size={16} className="shrink-0 text-red-400" />
+                    <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full">
+                      Disabled by Gym
+                    </span>
                   )}
-                  <span>{inviteFeedback.message}</span>
                 </div>
-              )}
-
-              {/* Form Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-                <button
-                  type="submit"
-                  disabled={sendingInvite}
-                  className="w-full sm:flex-1 py-3 px-5 bg-[#6366F1] hover:bg-[#4F46E5] disabled:opacity-50 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md shadow-[#6366F1]/25 cursor-pointer"
-                >
-                  <Send size={15} className={sendingInvite ? 'animate-pulse' : ''} />
-                  {sendingInvite ? 'Sending Invitation...' : 'Send Invitation Email'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleMailtoClient}
-                  className="w-full sm:w-auto py-3 px-4 bg-[#0B0B12] hover:bg-[#17172A] border border-[#292940] hover:border-[#6366F1] text-[#FFFFFF] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                  title="Open draft in your local mail client (Gmail, Outlook, etc.)"
-                >
-                  <ExternalLink size={14} className="text-[#A1A1AA]" />
-                  Open in Your Mail App
-                </button>
+                <h4 className="font-bold text-sm text-[#F5FAFA]">1. Membership Plan Discount</h4>
+                <p className="text-xs text-[#9AAEAE] mt-1 leading-relaxed">
+                  Apply your points directly during membership renewal or upgrade checkout for instant rupee discounts.
+                </p>
+                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#2DD4BF]">
+                  <span>Calculate discount</span>
+                  <ChevronRight size={14} />
+                </div>
               </div>
-            </form>
+
+              {/* Option B: Gym Store */}
+              <div
+                onClick={() => {
+                  if (rewardSettings.enableStorePurchase) {
+                    setSelectedRedeemChannel('STORE');
+                    setShowRedeemModal(true);
+                  }
+                }}
+                className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
+                  rewardSettings.enableStorePurchase
+                    ? 'bg-[#101819] border-[#2A3A3A] hover:border-[#2DD4BF] hover:bg-[#1B2728]'
+                    : 'bg-[#101819]/50 border-red-500/20 opacity-60 cursor-not-allowed'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
+                    <ShoppingBag size={20} />
+                  </div>
+                  {rewardSettings.enableStorePurchase ? (
+                    <span className="text-[10px] font-bold text-[#34D399] bg-[#34D399]/10 px-2 py-0.5 rounded-full border border-[#34D399]/20">
+                      Active
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full">
+                      Disabled by Gym
+                    </span>
+                  )}
+                </div>
+                <h4 className="font-bold text-sm text-[#F5FAFA]">2. Gym Store Purchases</h4>
+                <p className="text-xs text-[#9AAEAE] mt-1 leading-relaxed">
+                  Redeem points against protein supplements, gym apparel, and accessories in the official Gym Store.
+                </p>
+                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#2DD4BF]">
+                  <span>Explore store products</span>
+                  <ChevronRight size={14} />
+                </div>
+              </div>
+
+              {/* Option C: Custom Rewards */}
+              <div
+                onClick={() => {
+                  if (rewardSettings.enableCustomRewards) {
+                    setSelectedRedeemChannel('CUSTOM');
+                    setShowRedeemModal(true);
+                  }
+                }}
+                className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
+                  rewardSettings.enableCustomRewards
+                    ? 'bg-[#101819] border-[#2A3A3A] hover:border-[#2DD4BF] hover:bg-[#1B2728]'
+                    : 'bg-[#101819]/50 border-red-500/20 opacity-60 cursor-not-allowed'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                    <Award size={20} />
+                  </div>
+                  {rewardSettings.enableCustomRewards ? (
+                    <span className="text-[10px] font-bold text-[#34D399] bg-[#34D399]/10 px-2 py-0.5 rounded-full border border-[#34D399]/20">
+                      {availableCustomRewards.length} Available
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full">
+                      Disabled by Gym
+                    </span>
+                  )}
+                </div>
+                <h4 className="font-bold text-sm text-[#F5FAFA]">3. Other Custom Rewards</h4>
+                <p className="text-xs text-[#9AAEAE] mt-1 leading-relaxed">
+                  Claim Personal Training Sessions, workout vouchers, and exclusive gym perks crafted by your gym owner.
+                </p>
+                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#2DD4BF]">
+                  <span>Browse vouchers</span>
+                  <ChevronRight size={14} />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* 3. Current Campaign Perks Breakdown Banner */}
-          {activeCampaign && (
-            <div className="p-6 bg-gradient-to-r from-[#11111F] to-[#141414] border border-[#292940] rounded-3xl space-y-4 shadow-md">
-              <h3 className="text-xs font-bold text-[#818CF8] uppercase tracking-wider flex items-center gap-2">
-                <Sparkles size={16} className="text-[#818CF8]" />
-                Current Active Referral Campaign Perks
-              </h3>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="p-4 bg-[#0B0B12] rounded-2xl border border-[#292940] space-y-1">
-                  <p className="text-[#A1A1AA]">You Earn (When Friend Joins):</p>
-                  <p className="text-xl font-black text-[#818CF8]">
-                    {activeCampaign.referrerRewardType === 'Membership Credit' ? '₹' : ''}
-                    {activeCampaign.referrerRewardValue}
-                    {activeCampaign.referrerRewardType === 'Wallet Points' ? ' Points' : ''}
-                    {activeCampaign.referrerRewardType === 'Free Membership Days' ? ' Free Days' : ''}
+          {/* Customer Instructions — Must Be Clearly Visible */}
+          <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] p-6 sm:p-8 shadow-xl space-y-6">
+            <div className="flex items-center gap-3 border-b border-[#2A3A3A] pb-4">
+              <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF]/15 text-[#2DD4BF] flex items-center justify-center">
+                <HelpCircle size={22} />
+              </div>
+              <div>
+                <h2 className="text-lg font-extrabold text-[#F5FAFA]">How to Use Your Referral Points</h2>
+                <p className="text-xs text-[#9AAEAE]">
+                  Simple step-by-step instructions and important policy terms for your referral points.
+                </p>
+              </div>
+            </div>
+
+            {/* 7 Steps List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-3.5">
+                <div className="flex items-start gap-3 p-3.5 bg-[#101819] rounded-2xl border border-[#2A3A3A]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#2DD4BF] text-[#06201D] flex items-center justify-center text-xs font-bold shrink-0">
+                    1
+                  </div>
+                  <p className="text-xs text-[#C1D0D0] leading-relaxed pt-0.5">
+                    <strong>Earn points</strong> when your referred friend completes an eligible membership payment.
                   </p>
-                  <span className="text-[11px] text-[#22C55E] font-medium block">
-                    Credited directly to your gym account
-                  </span>
                 </div>
 
-                <div className="p-4 bg-[#0B0B12] rounded-2xl border border-[#292940] space-y-1">
-                  <p className="text-[#A1A1AA]">Your Friend Gets:</p>
-                  <p className="text-xl font-black text-[#22C55E]">
-                    {activeCampaign.refereeDiscountType === 'Percentage'
-                      ? `${activeCampaign.refereeRewardValue}% Discount`
-                      : `₹${activeCampaign.refereeRewardValue} Discount`}
+                <div className="flex items-start gap-3 p-3.5 bg-[#101819] rounded-2xl border border-[#2A3A3A]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#2DD4BF] text-[#06201D] flex items-center justify-center text-xs font-bold shrink-0">
+                    2
+                  </div>
+                  <p className="text-xs text-[#C1D0D0] leading-relaxed pt-0.5">
+                    Open <strong>Points & Redemption</strong> to check your available points balance and equivalent rupee value.
                   </p>
-                  <span className="text-[11px] text-[#A1A1AA] font-medium block">
-                    Applied instantly at membership checkout
-                  </span>
+                </div>
+
+                <div className="flex items-start gap-3 p-3.5 bg-[#101819] rounded-2xl border border-[#2A3A3A]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#2DD4BF] text-[#06201D] flex items-center justify-center text-xs font-bold shrink-0">
+                    3
+                  </div>
+                  <p className="text-xs text-[#C1D0D0] leading-relaxed pt-0.5">
+                    Click <strong>Redeem Points</strong> and select <em>Membership Plan Discount</em>, <em>Gym Store Purchase</em>, or another available reward.
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3 p-3.5 bg-[#101819] rounded-2xl border border-[#2A3A3A]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#2DD4BF] text-[#06201D] flex items-center justify-center text-xs font-bold shrink-0">
+                    4
+                  </div>
+                  <p className="text-xs text-[#C1D0D0] leading-relaxed pt-0.5">
+                    Review the required points, discount value, and eligibility rules before confirming your redemption.
+                  </p>
                 </div>
               </div>
 
-              {activeCampaign.termsAndConditions && (
-                <div className="text-[11px] text-[#A1A1AA] flex items-start gap-1.5 pt-1 border-t border-[#17172A]">
-                  <FileText size={13} className="shrink-0 mt-0.5 text-[#818CF8]" />
-                  <span><strong>Terms & Conditions:</strong> {activeCampaign.termsAndConditions}</span>
+              <div className="space-y-3.5">
+                <div className="flex items-start gap-3 p-3.5 bg-[#101819] rounded-2xl border border-[#2A3A3A]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#2DD4BF] text-[#06201D] flex items-center justify-center text-xs font-bold shrink-0">
+                    5
+                  </div>
+                  <p className="text-xs text-[#C1D0D0] leading-relaxed pt-0.5">
+                    Apply your points during eligible checkout or submit your custom reward voucher request.
+                  </p>
                 </div>
-              )}
+
+                <div className="flex items-start gap-3 p-3.5 bg-[#101819] rounded-2xl border border-[#2A3A3A]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#2DD4BF] text-[#06201D] flex items-center justify-center text-xs font-bold shrink-0">
+                    6
+                  </div>
+                  <p className="text-xs text-[#C1D0D0] leading-relaxed pt-0.5">
+                    For purchases, points are deducted only after successful payment. For custom rewards, follow the displayed confirmation and approval status.
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3 p-3.5 bg-[#101819] rounded-2xl border border-[#2A3A3A]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#2DD4BF] text-[#06201D] flex items-center justify-center text-xs font-bold shrink-0">
+                    7
+                  </div>
+                  <p className="text-xs text-[#C1D0D0] leading-relaxed pt-0.5">
+                    Check your <strong>Points History</strong> and <strong>Redemption History</strong> below to track every transaction.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Important Notes Box (Dynamic from Gym Owner's Settings) */}
+            <div className="p-5 bg-[#101819] rounded-2xl border border-[#2A3A3A] space-y-3">
+              <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
+                <AlertCircle size={16} />
+                <span>Important Notes (Configured by {gymName})</span>
+              </div>
+              <ul className="text-xs text-[#9AAEAE] space-y-2 list-disc list-inside leading-relaxed">
+                <li>
+                  The conversion rate is dynamically set by your gym owner:{' '}
+                  <strong className="text-[#F5FAFA]">
+                    {rewardSettings.pointsPerConversionUnit} points = ₹{rewardSettings.currencyValuePerUnit}
+                  </strong>{' '}
+                  (₹{pointRate.toFixed(2)} per point).
+                </li>
+                <li>
+                  Minimum points required for redemption:{' '}
+                  <strong className="text-[#F5FAFA]">{rewardSettings.minPointsForRedemption} points</strong>.
+                </li>
+                <li>
+                  Maximum discount allowed per transaction:{' '}
+                  <strong className="text-[#F5FAFA]">₹{rewardSettings.maxDiscountPerTransaction}</strong>.
+                </li>
+                <li>
+                  Unused points remain available for future eligible redemptions:{' '}
+                  <strong className="text-[#F5FAFA]">
+                    {rewardSettings.pointsExpiryDays > 0 ? `${rewardSettings.pointsExpiryDays} days validity` : 'No expiry date'}
+                  </strong>.
+                </li>
+                <li>Redemption is available only for eligible plans, products, and custom rewards enabled by your gym.</li>
+                <li>Points cannot be transferred to another customer or withdrawn as cash.</li>
+                <li>Failed payments or cancelled orders will never permanently deduct points; your balance is safely refunded.</li>
+                {rewardSettings.rewardInstructions && (
+                  <li className="text-[#2DD4BF]">
+                    <strong>Special Gym Note:</strong> {rewardSettings.rewardInstructions}
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+
+          {/* Points Transaction History Ledger */}
+          <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] p-6 sm:p-8 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2A3A3A] pb-4">
+              <div>
+                <h3 className="text-base font-extrabold text-[#F5FAFA]">Points Transaction History</h3>
+                <p className="text-xs text-[#9AAEAE]">
+                  Complete ledger of earned, redeemed, refunded, and adjusted points.
+                </p>
+              </div>
+              <span className="text-xs font-bold text-[#9AAEAE] bg-[#101819] px-3 py-1 rounded-full border border-[#2A3A3A]">
+                {pointsHistory.length} Recorded Transactions
+              </span>
+            </div>
+
+            {pointsHistory.length === 0 ? (
+              <div className="py-10 text-center space-y-2">
+                <Coins size={32} className="mx-auto text-[#2DD4BF]/50" />
+                <p className="text-sm font-semibold text-[#9AAEAE]">No points transactions yet</p>
+                <p className="text-xs text-[#9AAEAE]">Invite friends or make eligible purchases to earn points.</p>
+              </div>
+            ) : (
+              <>
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-[#0E1415] text-[#9AAEAE] uppercase text-[10px] tracking-wider border-b border-[#2A3A3A]">
+                      <tr>
+                        <th className="py-3 px-4">Date</th>
+                        <th className="py-3 px-4">Transaction Type</th>
+                        <th className="py-3 px-4">Points</th>
+                        <th className="py-3 px-4">Discount Value</th>
+                        <th className="py-3 px-4">Reason / Notes</th>
+                        <th className="py-3 px-4">Balance After</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 text-center">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y border-[#2A3A3A]">
+                      {pointsHistory.map((tx: any) => {
+                        const txType = tx.transactionType || tx.type || 'EARN_BONUS';
+                        const txPoints = tx.points !== undefined ? tx.points : Math.abs(tx.amount || 0);
+                        const isPositive = ['EARN_REFERRAL', 'EARN_BONUS', 'EARN_ACTIVITY', 'REFUND_POINTS'].includes(txType) || (txType === 'ADMIN_ADJUST' && ((tx.amount || tx.points || 0) > 0));
+                        const txStatus = tx.status || 'COMPLETED';
+                        const txNote = tx.reason || tx.description || tx.orderReference || 'Reward points transaction';
+
+                        return (
+                          <tr key={tx._id} className="hover:bg-[#1B2728]/50 transition">
+                            <td className="py-3 px-4 text-[#9AAEAE] whitespace-nowrap">
+                              {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString() : 'Today'} {tx.createdAt ? new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                            </td>
+                            <td className="py-3 px-4 font-bold text-[#F5FAFA]">
+                              <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#101819] border border-[#2A3A3A]">
+                                {String(txType).replace(/_/g, ' ')}
+                              </span>
+                            </td>
+                            <td className={`py-3 px-4 font-black ${isPositive ? 'text-[#34D399]' : 'text-amber-400'}`}>
+                              {isPositive ? `+${txPoints}` : `-${txPoints}`}
+                            </td>
+                            <td className="py-3 px-4 font-semibold text-[#2DD4BF]">
+                              {tx.discountAmount ? `₹${tx.discountAmount}` : '—'}
+                            </td>
+                            <td className="py-3 px-4 text-[#C1D0D0] max-w-xs truncate">
+                              {txNote}
+                            </td>
+                            <td className="py-3 px-4 font-bold text-[#F5FAFA]">
+                              {tx.balanceAfter !== undefined ? `${tx.balanceAfter} pts` : '—'}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                txStatus === 'COMPLETED' ? 'bg-[#34D399]/15 text-[#34D399] border border-[#34D399]/30' :
+                                txStatus === 'PENDING' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' : 'bg-red-500/15 text-red-400 border border-red-500/30'
+                              }`}>
+                                {txStatus}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-center">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedTxForDetails(tx)}
+                                className="px-3 py-1.5 bg-[#2DD4BF]/15 hover:bg-[#2DD4BF]/25 text-[#2DD4BF] hover:text-white border border-[#2DD4BF]/30 hover:border-[#2DD4BF] rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 mx-auto cursor-pointer shadow-xs whitespace-nowrap"
+                                title="View complete transaction breakdown"
+                              >
+                                <Eye size={13} />
+                                <span>View Details</span>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile-Friendly Transaction Cards (visible on phones < md) */}
+                <div className="md:hidden space-y-3">
+                  {pointsHistory.map((tx: any) => {
+                    const txType = tx.transactionType || tx.type || 'EARN_BONUS';
+                    const txPoints = tx.points !== undefined ? tx.points : Math.abs(tx.amount || 0);
+                    const isPositive = ['EARN_REFERRAL', 'EARN_BONUS', 'EARN_ACTIVITY', 'REFUND_POINTS'].includes(txType) || (txType === 'ADMIN_ADJUST' && ((tx.amount || tx.points || 0) > 0));
+                    const txStatus = tx.status || 'COMPLETED';
+                    const txNote = tx.reason || tx.description || tx.orderReference || 'Reward points transaction';
+
+                    return (
+                      <div key={tx._id} className="p-4 bg-[#101819] rounded-2xl border border-[#2A3A3A] space-y-3 shadow-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] text-[#9AAEAE] font-medium">
+                            {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today'} • {tx.createdAt ? new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            txStatus === 'COMPLETED' ? 'bg-[#34D399]/15 text-[#34D399] border border-[#34D399]/30' :
+                            txStatus === 'PENDING' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' : 'bg-red-500/15 text-red-400 border border-red-500/30'
+                          }`}>
+                            {txStatus}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="space-y-1 min-w-0">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#141D1E] text-[#2DD4BF] border border-[#2A3A3A] inline-block">
+                              {String(txType).replace(/_/g, ' ')}
+                            </span>
+                            <p className="text-xs text-[#C1D0D0] font-medium line-clamp-1">
+                              {txNote}
+                            </p>
+                          </div>
+                          <div className={`text-right text-lg font-black shrink-0 ${isPositive ? 'text-[#34D399]' : 'text-amber-400'}`}>
+                            {isPositive ? `+${txPoints}` : `-${txPoints}`}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs pt-2 border-t border-[#2A3A3A]/60">
+                          <span className="text-[#9AAEAE]">Balance after: <strong className="text-[#F5FAFA]">{tx.balanceAfter !== undefined ? `${tx.balanceAfter} pts` : '—'}</strong></span>
+                          {tx.discountAmount ? (
+                            <span className="text-[#2DD4BF] font-semibold">Value: ₹{tx.discountAmount}</span>
+                          ) : null}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setSelectedTxForDetails(tx)}
+                          className="w-full py-2 bg-[#2DD4BF]/15 hover:bg-[#2DD4BF]/25 text-[#2DD4BF] hover:text-white border border-[#2DD4BF]/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                        >
+                          <Eye size={13} />
+                          <span>View Details</span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Custom Reward Claims & Vouchers */}
+          {customClaims.length > 0 && (
+            <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] p-6 sm:p-8 shadow-xl space-y-4">
+              <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
+                <h3 className="text-base font-extrabold text-[#F5FAFA]">My Claimed Reward Vouchers</h3>
+                <span className="text-xs font-bold text-[#06201D] bg-[#2DD4BF] px-3 py-1 rounded-full">
+                  {customClaims.length} Vouchers
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {customClaims.map((claim) => (
+                  <div key={claim._id} className="p-4 bg-[#101819] rounded-2xl border border-[#2A3A3A] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-[#F5FAFA]">{claim.rewardTitle}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        claim.status === 'APPROVED' ? 'bg-[#34D399]/10 text-[#34D399]' :
+                        claim.status === 'REDEEMED' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF]' :
+                        claim.status === 'PENDING' ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400'
+                      }`}>
+                        {claim.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <span className="text-[#9AAEAE]">Voucher Code:</span>
+                      <span className="font-mono font-bold text-[#2DD4BF] bg-[#141D1E] px-2 py-0.5 rounded border border-[#2A3A3A]">
+                        {claim.voucherCode}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[#9AAEAE]">Points Cost:</span>
+                      <span className="font-semibold text-[#F5FAFA]">{claim.pointsCost} points</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[#9AAEAE]">Claim Date:</span>
+                      <span className="text-[#9AAEAE]">{new Date(claim.claimedAt).toLocaleDateString()}</span>
+                    </div>
+                    {claim.reviewNotes && (
+                      <p className="text-[11px] text-[#2DD4BF] bg-[#1B2728] p-2 rounded-xl mt-1">
+                        <strong>Gym Note:</strong> {claim.reviewNotes}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
+      )}
 
-        {/* Right Column (1 Col wide): Rewards Wallet & How It Works */}
-        <div className="space-y-6">
-          
-          {/* Rewards Balance Wallet Card */}
-          <div className="bg-[#11111F] rounded-3xl border border-[#292940] p-6 shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-[#292940] pb-3">
-              <div className="flex items-center gap-2">
-                <Award size={20} className="text-[#818CF8]" />
-                <h3 className="text-base font-bold text-[#FFFFFF]">My Rewards Balance</h3>
+      {/* Redemption Modal: "How would you like to use your points?" */}
+      {showRedeemModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-[#2A3A3A] flex items-center justify-between bg-[#101819]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF]/15 text-[#2DD4BF] flex items-center justify-center">
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-[#F5FAFA]">How would you like to use your points?</h3>
+                  <p className="text-xs text-[#9AAEAE]">
+                    Available Balance: <strong className="text-[#2DD4BF]">{wallet.currentBalance} points</strong> (₹{equivalentRupeeValue})
+                  </p>
+                </div>
               </div>
-              <span className="text-[11px] font-bold px-2.5 py-0.5 bg-[#818CF8]/15 border border-[#818CF8]/30 text-[#818CF8] rounded-full">
-                {stats.rewardType}
-              </span>
-            </div>
-
-            <div className="p-6 bg-gradient-to-br from-[#0B0B12] via-[#151515] to-[#050505] rounded-2xl border border-[#292940] text-center space-y-1.5">
-              <span className="text-xs text-[#A1A1AA] font-semibold uppercase tracking-wider">
-                Available To Redeem
-              </span>
-              <div className="text-4xl font-black text-[#818CF8] tracking-tight">
-                {stats.rewardType === 'Wallet Points' ? `${stats.availableBalance} Pts` : `₹${stats.availableBalance}`}
-              </div>
-              <p className="text-[11px] text-[#A1A1AA]">
-                Ready to apply towards your gym membership renewals
-              </p>
-            </div>
-
-            <div className="space-y-2.5 text-xs">
-              <div className="flex justify-between items-center py-1 border-b border-[#17172A] text-[#A1A1AA]">
-                <span>Total Earned:</span>
-                <span className="font-bold text-[#FFFFFF]">₹{stats.totalEarned}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b border-[#17172A] text-[#A1A1AA]">
-                <span>Total Redeemed:</span>
-                <span className="font-bold text-[#FFFFFF]">₹{stats.totalRedeemed}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 text-[#A1A1AA]">
-                <span>Pending Approvals:</span>
-                <span className="font-bold text-amber-500">{stats.pendingRewardsCount}</span>
-              </div>
-            </div>
-
-            <div className="pt-2">
               <button
-                onClick={handleRedeemBalance}
-                disabled={stats.availableBalance <= 0 || redeemLoading}
-                className={`w-full py-3 rounded-2xl text-xs font-bold transition-all shadow-md ${
-                  stats.availableBalance > 0
-                    ? 'bg-[#6366F1] hover:bg-[#4F46E5] text-white shadow-[#6366F1]/25 cursor-pointer'
-                    : 'bg-[#17172A] text-[#737373] cursor-not-allowed border border-[#292940]'
-                }`}
+                type="button"
+                onClick={() => {
+                  setShowRedeemModal(false);
+                  setSelectedRedeemChannel(null);
+                  setClaimFeedback(null);
+                }}
+                className="w-8 h-8 rounded-full bg-[#1B2728] text-[#9AAEAE] hover:text-white flex items-center justify-center cursor-pointer"
               >
-                {redeemLoading ? 'Redeeming Reward...' : 'Redeem Available Balance'}
+                <X size={18} />
               </button>
             </div>
-          </div>
 
-          {/* Quick How It Works Card */}
-          <div className="bg-[#11111F] rounded-3xl border border-[#292940] p-6 shadow-xl space-y-4">
-            <h4 className="text-sm font-bold text-[#FFFFFF] flex items-center gap-2">
-              <HelpCircle size={17} className="text-[#6366F1]" />
-              How Referral Rewards Work
-            </h4>
-
-            <div className="space-y-3.5 text-xs">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
-                  1
-                </div>
-                <div>
-                  <p className="font-bold text-[#FFFFFF]">Share Code or Send Mail</p>
-                  <p className="text-[11px] text-[#A1A1AA] mt-0.5">
-                    Send the link to your friend's email, WhatsApp, or let them scan your QR code.
+            {/* Modal Body */}
+            <div className="p-6 space-y-6 flex-1">
+              {!selectedRedeemChannel && (
+                <div className="space-y-4">
+                  <p className="text-xs text-[#9AAEAE]">
+                    Select a redemption destination below. Only options enabled by <strong className="text-[#F5FAFA]">{gymName}</strong> are active:
                   </p>
+
+                  {/* 1. Membership Plan Discount */}
+                  <div
+                    onClick={() => {
+                      if (rewardSettings.enableMembershipDiscount) {
+                        setSelectedRedeemChannel('MEMBERSHIP');
+                        if (gymPlans.length > 0) {
+                          setSelectedPlanForDiscount(gymPlans[0]);
+                          setPointsToRedeemInput(Math.min(wallet.currentBalance, 200));
+                        }
+                      }
+                    }}
+                    className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
+                      rewardSettings.enableMembershipDiscount
+                        ? 'bg-[#101819] border-[#2A3A3A] hover:border-[#2DD4BF] hover:bg-[#1B2728]'
+                        : 'bg-[#101819]/40 border-red-500/20 opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-[#2DD4BF]/15 text-[#2DD4BF] flex items-center justify-center">
+                          <CreditCard size={20} />
+                        </div>
+                        <div>
+                          <h4 className="font-extrabold text-sm text-[#F5FAFA]">1. Membership Plan Discount</h4>
+                          <p className="text-xs text-[#9AAEAE]">
+                            Apply points to renew or upgrade your gym membership with instant rupee discounts.
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight size={18} className="text-[#2DD4BF]" />
+                    </div>
+                    {!rewardSettings.enableMembershipDiscount && (
+                      <p className="text-[11px] text-red-400 mt-2 font-medium">
+                        Currently disabled by your gym owner in reward settings.
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 2. Gym Store Purchase */}
+                  <div
+                    onClick={() => {
+                      if (rewardSettings.enableStorePurchase) {
+                        setSelectedRedeemChannel('STORE');
+                      }
+                    }}
+                    className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
+                      rewardSettings.enableStorePurchase
+                        ? 'bg-[#101819] border-[#2A3A3A] hover:border-[#2DD4BF] hover:bg-[#1B2728]'
+                        : 'bg-[#101819]/40 border-red-500/20 opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
+                          <ShoppingBag size={20} />
+                        </div>
+                        <div>
+                          <h4 className="font-extrabold text-sm text-[#F5FAFA]">2. Gym Store Purchase</h4>
+                          <p className="text-xs text-[#9AAEAE]">
+                            Use points at Gym Store checkout on protein, supplements, and gym accessories.
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight size={18} className="text-[#2DD4BF]" />
+                    </div>
+                    {!rewardSettings.enableStorePurchase && (
+                      <p className="text-[11px] text-red-400 mt-2 font-medium">
+                        Currently disabled by your gym owner in reward settings.
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 3. Other Custom Rewards */}
+                  <div
+                    onClick={() => {
+                      if (rewardSettings.enableCustomRewards) {
+                        setSelectedRedeemChannel('CUSTOM');
+                      }
+                    }}
+                    className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
+                      rewardSettings.enableCustomRewards
+                        ? 'bg-[#101819] border-[#2A3A3A] hover:border-[#2DD4BF] hover:bg-[#1B2728]'
+                        : 'bg-[#101819]/40 border-red-500/20 opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                          <Award size={20} />
+                        </div>
+                        <div>
+                          <h4 className="font-extrabold text-sm text-[#F5FAFA]">3. Other Custom Rewards</h4>
+                          <p className="text-xs text-[#9AAEAE]">
+                            Redeem points for Personal Training sessions, workout gear, or vouchers.
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight size={18} className="text-[#2DD4BF]" />
+                    </div>
+                    {!rewardSettings.enableCustomRewards && (
+                      <p className="text-[11px] text-red-400 mt-2 font-medium">
+                        Currently disabled by your gym owner in reward settings.
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
-                  2
+              {/* VIEW A: MEMBERSHIP PLAN DISCOUNT INTERFACE */}
+              {selectedRedeemChannel === 'MEMBERSHIP' && (
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedRedeemChannel(null)}
+                      className="text-xs font-bold text-[#2DD4BF] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      ← Back to Options
+                    </button>
+                    <span className="text-xs font-bold text-[#34D399] bg-[#34D399]/10 px-2.5 py-0.5 rounded-full border border-[#34D399]/20">
+                      Option A: Membership Plan Discount
+                    </span>
+                  </div>
+
+                  {wallet.currentBalance < rewardSettings.minPointsForRedemption ? (
+                    <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-xs text-amber-300 space-y-1">
+                      <div className="font-bold flex items-center gap-2">
+                        <AlertCircle size={16} />
+                        <span>Minimum Points Required: {rewardSettings.minPointsForRedemption}</span>
+                      </div>
+                      <p>
+                        You currently have {wallet.currentBalance} points. Refer friends to earn more points before redeeming!
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {/* Plan Selector */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-[#9AAEAE] uppercase">
+                      Select Eligible Membership Plan
+                    </label>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {gymPlans.map((plan: any, idx: number) => {
+                        const eligible = isPlanEligible(plan.name);
+                        const isSelected = selectedPlanForDiscount?.name === plan.name;
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              if (eligible) {
+                                setSelectedPlanForDiscount(plan);
+                                const maxAllowed = Math.min(
+                                  wallet.currentBalance,
+                                  Math.floor((Number(plan.price || 0)) / pointRate)
+                                );
+                                setPointsToRedeemInput(Math.min(maxAllowed, wallet.currentBalance));
+                              }
+                            }}
+                            className={`p-3.5 rounded-2xl border transition flex items-center justify-between cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#1B2728] border-[#2DD4BF]'
+                                : eligible
+                                ? 'bg-[#101819] border-[#2A3A3A] hover:border-[#2DD4BF]/50'
+                                : 'bg-[#101819]/40 border-red-500/20 opacity-50 cursor-not-allowed'
+                            }`}
+                          >
+                            <div>
+                              <div className="font-bold text-sm text-[#F5FAFA]">{plan.name}</div>
+                              <div className="text-xs text-[#9AAEAE]">Duration: {plan.duration || 'Standard'}</div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-extrabold text-sm text-[#F5FAFA]">₹{plan.price}</div>
+                              {eligible ? (
+                                <span className="text-[10px] text-[#34D399] font-bold">Eligible</span>
+                              ) : (
+                                <span className="text-[10px] text-red-400 font-bold">Ineligible</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Points Slider / Input */}
+                  {selectedPlanForDiscount && (
+                    <div className="p-5 bg-[#101819] rounded-2xl border border-[#2A3A3A] space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#9AAEAE] uppercase">
+                          Points to Redeem (Max: {maxRedeemablePointsForSelectedPlan})
+                        </span>
+                        <span className="font-extrabold text-[#2DD4BF] text-base">
+                          {pointsToRedeemInput} Points
+                        </span>
+                      </div>
+
+                      <input
+                        type="range"
+                        min={rewardSettings.minPointsForRedemption}
+                        max={Math.max(rewardSettings.minPointsForRedemption, maxRedeemablePointsForSelectedPlan)}
+                        step={10}
+                        value={pointsToRedeemInput}
+                        onChange={(e) => setPointsToRedeemInput(Number(e.target.value))}
+                        disabled={maxRedeemablePointsForSelectedPlan < rewardSettings.minPointsForRedemption}
+                        className="w-full accent-[#2DD4BF] cursor-pointer"
+                      />
+
+                      {/* Calculation Breakdown Preview */}
+                      <div className="pt-3 border-t border-[#2A3A3A] space-y-1.5 text-xs">
+                        <div className="flex justify-between text-[#9AAEAE]">
+                          <span>Original Membership Price:</span>
+                          <span className="font-bold text-[#F5FAFA]">₹{selectedPlanForDiscount.price}</span>
+                        </div>
+                        <div className="flex justify-between text-[#9AAEAE]">
+                          <span>Conversion Rate:</span>
+                          <span>{rewardSettings.pointsPerConversionUnit} pts = ₹{rewardSettings.currencyValuePerUnit}</span>
+                        </div>
+                        <div className="flex justify-between text-[#34D399] font-bold">
+                          <span>Discount Applied ({pointsToRedeemInput} pts):</span>
+                          <span>- ₹{previewDiscountAmount}</span>
+                        </div>
+                        <div className="flex justify-between text-sm font-black text-[#F5FAFA] pt-1 border-t border-[#2A3A3A]">
+                          <span>Final Payable Price:</span>
+                          <span className="text-[#2DD4BF]">₹{previewFinalPrice}</span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleProceedMembershipCheckout}
+                        disabled={pointsToRedeemInput < rewardSettings.minPointsForRedemption}
+                        className="w-full py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-extrabold text-sm rounded-xl transition shadow-lg shadow-[#2DD4BF]/20 cursor-pointer disabled:opacity-50"
+                      >
+                        Apply ₹{previewDiscountAmount} Discount & Proceed to Checkout →
+                      </button>
+                      <p className="text-[11px] text-[#9AAEAE] text-center">
+                        Points are deducted only after payment confirmation.
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <p className="font-bold text-[#FFFFFF]">Friend Gets Instant Discount</p>
-                  <p className="text-[11px] text-[#A1A1AA] mt-0.5">
-                    Your friend gets {friendBenefit} applied automatically during registration and checkout.
-                  </p>
-                </div>
-              </div>
+              )}
 
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
-                  3
-                </div>
-                <div>
-                  <p className="font-bold text-[#FFFFFF]">You Receive Member Credits</p>
-                  <p className="text-[11px] text-[#A1A1AA] mt-0.5">
-                    Once their membership payment is confirmed, rewards are credited straight to your balance.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+              {/* VIEW B: GYM STORE PURCHASE INTERFACE */}
+              {selectedRedeemChannel === 'STORE' && (
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedRedeemChannel(null)}
+                      className="text-xs font-bold text-[#2DD4BF] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      ← Back to Options
+                    </button>
+                    <span className="text-xs font-bold text-purple-400 bg-purple-500/10 px-2.5 py-0.5 rounded-full border border-purple-500/20">
+                      Option B: Gym Store Purchase
+                    </span>
+                  </div>
 
-      {/* Referral Statistics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-md space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#A1A1AA]">Total Invited</span>
-          <div className="text-2xl font-black text-[#FFFFFF]">{stats.totalInvited}</div>
-          <span className="text-[11px] text-[#A1A1AA]">Friends signed up or invited</span>
-        </div>
-
-        <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-md space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#A1A1AA]">Pending Payments</span>
-          <div className="text-2xl font-black text-amber-500">{stats.pendingPaymentCount}</div>
-          <span className="text-[11px] text-[#A1A1AA]">Awaiting plan purchase</span>
-        </div>
-
-        <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-md space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#A1A1AA]">Successful Referrals</span>
-          <div className="text-2xl font-black text-[#22C55E]">{stats.successfulCount}</div>
-          <span className="text-[11px] text-[#22C55E] font-medium">Paid members confirmed</span>
-        </div>
-
-        <div className="bg-[#11111F] p-5 rounded-2xl border border-[#292940] shadow-md space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#A1A1AA]">Rewards Issued</span>
-          <div className="text-2xl font-black text-[#818CF8]">
-            {stats.totalEarned > 0 ? `₹${stats.totalEarned}` : '₹0'}
-          </div>
-          <span className="text-[11px] text-[#818CF8] font-medium">Earned incentives</span>
-        </div>
-      </div>
-
-      {/* Referral History & Step-by-Step Progress Tracker */}
-      <div className="bg-[#11111F] rounded-3xl border border-[#292940] p-6 sm:p-8 shadow-xl space-y-6">
-        <div className="flex items-center justify-between border-b border-[#292940] pb-4">
-          <div>
-            <h2 className="text-lg font-bold text-[#FFFFFF]">My Referral History & Progress Tracker</h2>
-            <p className="text-xs text-[#A1A1AA]">
-              Track your invitations step-by-step from email/invite link to verified member reward.
-            </p>
-          </div>
-          <span className="text-xs font-bold text-[#FFFFFF] bg-[#6366F1]/20 border border-[#6366F1]/40 px-3 py-1 rounded-full">
-            {referrals.length} Total Invites
-          </span>
-        </div>
-
-        {referrals.length === 0 ? (
-          <div className="py-12 text-center space-y-3">
-            <div className="w-16 h-16 rounded-full bg-[#0B0B12] border border-[#292940] text-[#A1A1AA] flex items-center justify-center mx-auto">
-              <Users size={28} className="text-[#6366F1]" />
-            </div>
-            <h3 className="text-base font-bold text-[#FFFFFF]">No Referrals Recorded Yet</h3>
-            <p className="text-xs text-[#A1A1AA] max-w-sm mx-auto">
-              Use the email form above or share your code <strong className="text-[#818CF8]">{referralCode}</strong> with friends to earn your first reward!
-            </p>
-            <div className="flex justify-center gap-3 pt-2">
-              <button
-                onClick={handleWhatsAppShare}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
-              >
-                Share on WhatsApp
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {referrals.map((item) => {
-              const displayName = item.refereeName || item.referredName || item.inviteeEmail || 'Invited Friend';
-              const displayDate = item.registrationDate || item.createdAt;
-
-              return (
-                <div key={item._id} className="p-5 bg-[#0B0B12] border border-[#292940] rounded-2xl space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="p-5 bg-[#101819] rounded-2xl border border-[#2A3A3A] space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#6366F1]/15 border border-[#6366F1]/30 text-[#6366F1] flex items-center justify-center font-bold text-sm">
-                        {displayName.charAt(0).toUpperCase()}
+                      <div className="w-12 h-12 rounded-2xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
+                        <ShoppingBag size={24} />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-bold text-[#FFFFFF]">{displayName}</h4>
-                          {item.inviteChannel && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#11111F] border border-[#292940] text-[#A1A1AA]">
-                              via {item.inviteChannel}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[11px] text-[#A1A1AA]">
-                          {displayDate ? `Date: ${new Date(displayDate).toLocaleDateString()}` : 'Recently Invited'}
+                        <h4 className="font-extrabold text-base text-[#F5FAFA]">Shop the Official Gym Store</h4>
+                        <p className="text-xs text-[#9AAEAE]">
+                          Redeem your referral points directly at store checkout.
                         </p>
                       </div>
                     </div>
 
-                    <div className="text-left sm:text-right">
-                      <span className="text-xs font-bold text-[#818CF8]">
-                        Reward: +₹{item.rewardAmount || 300} ({item.rewardType || 'Credit'})
-                      </span>
-                      <div className="text-[11px] text-[#A1A1AA] mt-0.5">
-                        Status:{' '}
-                        <span
-                          className={`font-semibold ${
-                            item.status === 'Reward Issued'
-                              ? 'text-[#818CF8]'
-                              : item.status === 'Payment Verified'
-                              ? 'text-[#22C55E]'
-                              : item.status === 'Invited'
-                              ? 'text-amber-500'
-                              : 'text-sky-400'
-                          }`}
-                        >
-                          {item.status}
-                        </span>
+                    <div className="space-y-2 text-xs text-[#C1D0D0] bg-[#1B2728] p-4 rounded-xl border border-[#2A3A3A]">
+                      <div className="flex justify-between">
+                        <span>Your Available Points:</span>
+                        <strong className="text-[#2DD4BF]">{wallet.currentBalance} points</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Equivalent Store Discount:</span>
+                        <strong className="text-[#34D399]">Up to ₹{equivalentRupeeValue}</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Conversion Rate:</span>
+                        <span>{rewardSettings.pointsPerConversionUnit} pts = ₹{rewardSettings.currencyValuePerUnit}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Max Discount Per Order:</span>
+                        <span>₹{rewardSettings.maxDiscountPerTransaction}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Product Eligibility:</span>
+                        <span>{rewardSettings.storeRedemptionScope === 'ALL' ? 'All Store Products' : 'Selected Products'}</span>
                       </div>
                     </div>
+
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Simply browse products in the Gym Store, add them to your cart, and check <strong>"Redeem Referral Points"</strong> during checkout. Your points will automatically reduce the order total!
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowRedeemModal(false);
+                        navigate('/member/store');
+                      }}
+                      className="w-full py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-extrabold text-sm rounded-xl transition shadow-lg cursor-pointer"
+                    >
+                      Go to Gym Store & Shop Now →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* VIEW C: OTHER CUSTOM REWARDS INTERFACE */}
+              {selectedRedeemChannel === 'CUSTOM' && (
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedRedeemChannel(null)}
+                      className="text-xs font-bold text-[#2DD4BF] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      ← Back to Options
+                    </button>
+                    <span className="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                      Option C: Custom Rewards & Vouchers
+                    </span>
                   </div>
 
-                  {/* Step-by-Step Progress Timeline */}
-                  <div className="pt-2">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-[#A1A1AA] mb-2 overflow-x-auto gap-2">
-                      {['Invited', 'Registered', 'Membership Pending', 'Payment Verified', 'Reward Issued'].map(
-                        (stage, idx) => {
-                          const isComplete =
-                            stage === 'Invited' ||
-                            (stage === 'Registered' && item.status !== 'Invited') ||
-                            (stage === 'Membership Pending' &&
-                              ['Membership Pending', 'Payment Verified', 'Reward Pending', 'Reward Issued'].includes(
-                                item.status
-                              )) ||
-                            (stage === 'Payment Verified' &&
-                              ['Payment Verified', 'Reward Pending', 'Reward Issued'].includes(item.status)) ||
-                            (stage === 'Reward Issued' && item.status === 'Reward Issued');
-
-                          return (
-                            <div key={stage} className="flex items-center gap-1.5 shrink-0">
-                              <div
-                                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                                  isComplete
-                                    ? 'bg-[#6366F1] text-white'
-                                    : 'bg-[#17172A] text-[#737373] border border-[#292940]'
-                                }`}
-                              >
-                                {isComplete ? <Check size={11} /> : idx + 1}
-                              </div>
-                              <span className={isComplete ? 'text-[#FFFFFF] font-bold' : 'text-[#737373]'}>
-                                {stage}
-                              </span>
-                            </div>
-                          );
-                        }
+                  {claimFeedback && (
+                    <div
+                      className={`p-4 rounded-2xl text-xs font-medium space-y-1 ${
+                        claimFeedback.type === 'success'
+                          ? 'bg-[#34D399]/15 border border-[#34D399]/30 text-[#34D399]'
+                          : 'bg-red-500/15 border border-red-500/30 text-red-400'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 font-bold">
+                        {claimFeedback.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                        <span>{claimFeedback.message}</span>
+                      </div>
+                      {claimFeedback.voucher && (
+                        <p className="text-xs text-[#F5FAFA]">
+                          Voucher Code:{' '}
+                          <span className="font-mono font-bold text-[#2DD4BF] bg-[#101819] px-2 py-0.5 rounded">
+                            {claimFeedback.voucher}
+                          </span>
+                        </p>
                       )}
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                  )}
 
-      {/* Rewards Ledger History (if transactions exist) */}
-      {transactions.length > 0 && (
-        <div className="bg-[#11111F] rounded-3xl border border-[#292940] p-6 shadow-xl space-y-4">
-          <h3 className="text-base font-bold text-[#FFFFFF]">Reward Transactions Ledger</h3>
-          <div className="divide-y divide-[#292940]">
-            {transactions.map((tx) => (
-              <div key={tx._id} className="py-3 flex items-center justify-between text-xs">
-                <div>
-                  <p className="font-semibold text-[#FFFFFF]">{tx.sourceEvent}</p>
-                  <p className="text-[11px] text-[#A1A1AA]">{new Date(tx.issuedAt).toLocaleDateString()}</p>
+                  {availableCustomRewards.length === 0 ? (
+                    <div className="py-10 text-center space-y-2 bg-[#101819] rounded-2xl border border-[#2A3A3A] p-6">
+                      <Award size={32} className="mx-auto text-amber-400/50" />
+                      <p className="text-sm font-semibold text-[#9AAEAE]">No Custom Rewards Currently Listed</p>
+                      <p className="text-xs text-[#9AAEAE]">
+                        Your gym owner has not added any custom rewards yet. Check back soon!
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3 max-h-72 overflow-y-auto">
+                      {availableCustomRewards.map((reward) => {
+                        const canAfford = wallet.currentBalance >= reward.pointsRequired;
+                        const isClaiming = claimingRewardId === reward._id;
+                        return (
+                          <div
+                            key={reward._id}
+                            className="p-4 bg-[#101819] rounded-2xl border border-[#2A3A3A] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <h5 className="font-extrabold text-sm text-[#F5FAFA]">{reward.title}</h5>
+                                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#1B2728] text-[#2DD4BF] rounded-full border border-[#2A3A3A]">
+                                  {reward.category}
+                                </span>
+                              </div>
+                              <p className="text-xs text-[#9AAEAE] line-clamp-2">{reward.description}</p>
+                              <div className="flex items-center gap-3 text-[11px] text-[#9AAEAE] pt-1">
+                                <span>Valid for {reward.validityDays} days</span>
+                                {reward.requiresApproval && (
+                                  <span className="text-amber-400 font-medium">• Requires Gym Owner Approval</span>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="text-left sm:text-right shrink-0 space-y-2">
+                              <div className="text-base font-black text-[#2DD4BF]">
+                                {reward.pointsRequired} Points
+                              </div>
+                              <button
+                                type="button"
+                                disabled={!canAfford || isClaiming}
+                                onClick={() => handleClaimCustomReward(reward)}
+                                className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                                  canAfford
+                                    ? 'bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] shadow'
+                                    : 'bg-[#1B2728] text-[#9AAEAE] cursor-not-allowed border border-[#2A3A3A]'
+                                }`}
+                              >
+                                {isClaiming ? <RefreshCw className="animate-spin" size={14} /> : <Gift size={14} />}
+                                {canAfford ? 'Claim Reward' : 'Insufficient Points'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-                <div className="text-right">
-                  <span className={`font-bold ${tx.status === 'Redeemed' ? 'text-amber-500' : 'text-[#22C55E]'}`}>
-                    {tx.status === 'Redeemed' ? '-' : '+'} ₹{tx.amount}
-                  </span>
-                  <p className="text-[10px] text-[#A1A1AA]">{tx.status}</p>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-[#2A3A3A] bg-[#101819] flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowRedeemModal(false);
+                  setSelectedRedeemChannel(null);
+                  setClaimFeedback(null);
+                }}
+                className="px-5 py-2.5 bg-[#1B2728] hover:bg-[#2A3A3A] text-white text-xs font-bold rounded-xl transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* QR Code Modal */}
+      {showQrModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl max-w-sm w-full p-6 text-center space-y-5 shadow-2xl relative">
+            <button
+              onClick={() => setShowQrModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#1B2728] text-[#9AAEAE] hover:text-white flex items-center justify-center cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="space-y-1">
+              <h3 className="text-base font-extrabold text-[#F5FAFA]">Scan to Join with Referral</h3>
+              <p className="text-xs text-[#9AAEAE]">
+                Scan with any phone camera to register with promo discount at <strong className="text-[#F5FAFA]">{gymName}</strong>.
+              </p>
+            </div>
+
+            <div className="p-5 bg-white rounded-2xl mx-auto w-fit shadow-inner">
+              <QRCode value={shareLink} size={180} />
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[11px] text-[#9AAEAE]">Promo Code</span>
+              <div className="text-lg font-mono font-black text-[#2DD4BF]">{referralCode}</div>
+            </div>
+
+            <button
+              onClick={() => setShowQrModal(false)}
+              className="w-full py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] text-xs font-bold rounded-xl transition cursor-pointer"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Transaction Details Modal ── */}
+      {selectedTxForDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
+            {/* Header */}
+            <div className="p-5 border-b border-[#2A3A3A] flex items-center justify-between bg-[#0E1415] shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-[#2DD4BF]/15 rounded-xl text-[#2DD4BF]">
+                  <Coins size={18} />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-[#F5FAFA]">Points Transaction Details</h3>
+                  <p className="text-xs text-[#9AAEAE]">ID: <span className="font-mono text-[11px] text-[#2DD4BF]">{selectedTxForDetails._id || 'TXN-REF'}</span></p>
                 </div>
               </div>
-            ))}
+              <button
+                type="button"
+                onClick={() => setSelectedTxForDetails(null)}
+                className="p-2 rounded-xl text-[#9AAEAE] hover:text-[#F5FAFA] hover:bg-[#1B2728] transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1">
+              {/* Top Banner with Points & Type */}
+              <div className="p-4 rounded-2xl bg-[#0E1415] border border-[#2A3A3A] flex items-center justify-between">
+                <div>
+                  <span className="text-xs text-[#9AAEAE] block mb-1 font-medium">Transaction Type</span>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#141D1E] text-[#2DD4BF] border border-[#2DD4BF]/30 inline-block">
+                    {String(selectedTxForDetails.transactionType || selectedTxForDetails.type || 'EARN_BONUS').replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-[#9AAEAE] block mb-1 font-medium">Points Change</span>
+                  {(() => {
+                    const txType = selectedTxForDetails.transactionType || selectedTxForDetails.type || 'EARN_BONUS';
+                    const txPoints = selectedTxForDetails.points !== undefined ? selectedTxForDetails.points : Math.abs(selectedTxForDetails.amount || 0);
+                    const isPositive = ['EARN_REFERRAL', 'EARN_BONUS', 'EARN_ACTIVITY', 'REFUND_POINTS'].includes(txType) || (txType === 'ADMIN_ADJUST' && ((selectedTxForDetails.amount || selectedTxForDetails.points || 0) > 0));
+                    return (
+                      <span className={`text-2xl font-black ${isPositive ? 'text-[#34D399]' : 'text-amber-400'}`}>
+                        {isPositive ? `+${txPoints}` : `-${txPoints}`} pts
+                      </span>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* Grid of Key Details */}
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A] space-y-1">
+                  <span className="text-[#9AAEAE] font-medium block">Status</span>
+                  <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    (selectedTxForDetails.status || 'COMPLETED') === 'COMPLETED' ? 'bg-[#34D399]/15 text-[#34D399] border border-[#34D399]/30' :
+                    (selectedTxForDetails.status || 'COMPLETED') === 'PENDING' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' : 'bg-red-500/15 text-red-400 border border-red-500/30'
+                  }`}>
+                    {selectedTxForDetails.status || 'COMPLETED'}
+                  </span>
+                </div>
+
+                <div className="p-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A] space-y-1">
+                  <span className="text-[#9AAEAE] font-medium block">Discount Value</span>
+                  <span className="text-sm font-bold text-[#2DD4BF]">
+                    {selectedTxForDetails.discountAmount ? `₹${selectedTxForDetails.discountAmount}` : '—'}
+                  </span>
+                </div>
+
+                <div className="p-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A] space-y-1">
+                  <span className="text-[#9AAEAE] font-medium block">Balance After</span>
+                  <span className="text-sm font-bold text-[#F5FAFA]">
+                    {selectedTxForDetails.balanceAfter !== undefined ? `${selectedTxForDetails.balanceAfter} pts` : '—'}
+                  </span>
+                </div>
+
+                <div className="p-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A] space-y-1">
+                  <span className="text-[#9AAEAE] font-medium block">Date & Time</span>
+                  <span className="text-xs font-semibold text-[#F5FAFA] block">
+                    {selectedTxForDetails.createdAt ? new Date(selectedTxForDetails.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'Today'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Reason / Notes */}
+              <div className="p-4 bg-[#0E1415] rounded-xl border border-[#2A3A3A] space-y-1.5">
+                <span className="text-xs font-semibold text-[#9AAEAE] block">Reason / Description</span>
+                <p className="text-xs text-[#F5FAFA] leading-relaxed font-medium">
+                  {selectedTxForDetails.reason || selectedTxForDetails.description || selectedTxForDetails.orderReference || 'Reward points transaction credited to your member account.'}
+                </p>
+              </div>
+
+              {/* Order Reference or Additional Meta */}
+              {selectedTxForDetails.orderReference && (
+                <div className="p-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A] flex items-center justify-between text-xs">
+                  <span className="text-[#9AAEAE]">Order / Claim Reference:</span>
+                  <span className="font-mono font-bold text-[#2DD4BF]">{selectedTxForDetails.orderReference}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-[#2A3A3A] bg-[#0E1415] flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedTxForDetails(null)}
+                className="px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] text-xs font-bold rounded-xl transition cursor-pointer shadow-xs"
+              >
+                Close Details
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -15,6 +15,9 @@ import StorePaymentTransaction, { StorePaymentTransactionStatus } from '../model
 import StoreOfflineSale from '../models/StoreOfflineSale';
 import StoreInventoryTransaction, { StoreInventoryTransactionType } from '../models/StoreInventoryTransaction';
 import Notification from '../models/Notification';
+import GymRewardSettings from '../models/GymRewardSettings';
+import CustomerPointsWallet from '../models/CustomerPointsWallet';
+import PointsTransaction from '../models/PointsTransaction';
 import {
   isStoreEnabledForUser,
   isStoreEnabledForGym,
@@ -996,7 +999,7 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
     const gymId = user.gymId!;
-    const { fulfilmentType, deliveryDetails, paymentMethod = 'UPI', bankName, discount = 0 } = req.body;
+    const { fulfilmentType, deliveryDetails, paymentMethod = 'UPI', bankName, discount = 0, pointsToRedeem = 0 } = req.body;
 
     const cart = await StoreCart.findOne({ customerId: user._id, gymId });
     if (!cart || cart.items.length === 0) {
@@ -1034,9 +1037,51 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
       }
     }
 
+    // Handle referral points redemption for store
+    let pointsDiscount = 0;
+    const requestedPoints = Math.max(0, Number(pointsToRedeem) || 0);
+    let customerWallet: any = null;
+    let rewardSettings: any = null;
+
+    if (requestedPoints > 0) {
+      rewardSettings = await GymRewardSettings.findOne({ gymId });
+      if (!rewardSettings || !rewardSettings.enableStorePurchase) {
+        res.status(400).json({ success: false, message: 'Points redemption for Gym Store is currently disabled by the gym.' });
+        return;
+      }
+      if (requestedPoints < (rewardSettings.minPointsForRedemption || 0)) {
+        res.status(400).json({ success: false, message: `Minimum ${rewardSettings.minPointsForRedemption} points required for redemption.` });
+        return;
+      }
+      customerWallet = await CustomerPointsWallet.findOne({ gymId, userId: user._id });
+      if (!customerWallet || customerWallet.currentBalance < requestedPoints) {
+        res.status(400).json({
+          success: false,
+          message: `Insufficient points. You have ${customerWallet?.currentBalance || 0} points, requested ${requestedPoints}.`
+        });
+        return;
+      }
+
+      if (rewardSettings.storeRedemptionScope === 'SELECTED' && rewardSettings.eligibleStoreProducts?.length > 0) {
+        const eligibleNames = rewardSettings.eligibleStoreProducts.map((p: string) => p.toLowerCase());
+        const hasEligibleProduct = built.items!.some((it: any) => eligibleNames.includes((it.name || '').toLowerCase()));
+        if (!hasEligibleProduct) {
+          res.status(400).json({ success: false, message: 'None of the items in your cart are eligible for points redemption.' });
+          return;
+        }
+      }
+
+      const rate = (rewardSettings.currencyValuePerUnit || 50) / (rewardSettings.pointsPerConversionUnit || 100);
+      pointsDiscount = Math.round(requestedPoints * rate);
+      if (rewardSettings.maxDiscountPerTransaction > 0 && pointsDiscount > rewardSettings.maxDiscountPerTransaction) {
+        pointsDiscount = rewardSettings.maxDiscountPerTransaction;
+      }
+    }
+
     const subtotal = built.subtotal!;
-    const disc = Math.min(Number(discount) || 0, subtotal);
-    const total = subtotal - disc;
+    const directDisc = Number(discount) || 0;
+    const totalDisc = Math.min(directDisc + pointsDiscount, subtotal);
+    const total = Math.max(0, subtotal - totalDisc);
 
     const order = await StoreOrder.create({
       orderNumber: createOrderNumber(),
@@ -1044,7 +1089,9 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
       customerId: user._id,
       items: built.items!,
       subtotal,
-      discount: disc,
+      discount: totalDisc,
+      pointsRedeemed: requestedPoints,
+      pointsDiscount: pointsDiscount,
       total,
       paymentStatus: StoreOrderPaymentStatus.PAID,
       paymentMethod,
@@ -1145,6 +1192,26 @@ export const checkout = async (req: AuthRequest, res: Response): Promise<void> =
 
     await StoreCart.updateOne({ customerId: user._id, gymId }, { $set: { items: [] } });
 
+    // Atomically deduct redeemed points and log transaction upon successful order creation
+    if (requestedPoints > 0 && customerWallet) {
+      customerWallet.currentBalance -= requestedPoints;
+      customerWallet.totalRedeemed += requestedPoints;
+      customerWallet.lastUpdated = new Date();
+      await customerWallet.save();
+
+      await PointsTransaction.create({
+        gymId,
+        userId: user._id,
+        type: 'REDEEM_STORE',
+        amount: -requestedPoints,
+        balanceAfter: customerWallet.currentBalance,
+        description: `Redeemed ${requestedPoints} points for ₹${pointsDiscount} discount on Store Order #${order.orderNumber}`,
+        conversionRateUsed: rewardSettings ? `${rewardSettings.pointsPerConversionUnit} pts = ₹${rewardSettings.currencyValuePerUnit}` : '100 pts = ₹50',
+        discountAmount: pointsDiscount,
+        orderReference: order.orderNumber
+      });
+    }
+
     const gym = await Gym.findById(gymId);
     const owner = gym ? await User.findById(gym.ownerId) : null;
     if (owner) {
@@ -1227,6 +1294,31 @@ const restockOrderItems = async (order: IStoreOrder): Promise<void> => {
         sourceType: 'manual',
         referenceId: order._id,
         note: `Restock on ${order.status === StoreOrderStatus.REFUNDED ? 'refund' : 'cancellation'} of ${order.orderNumber}`,
+      });
+    }
+  }
+
+  // Safely refund redeemed points back to customer wallet upon order cancellation or refund
+  if (order.pointsRedeemed && order.pointsRedeemed > 0) {
+    const pts = order.pointsRedeemed;
+    const wallet = await CustomerPointsWallet.findOne({ gymId: order.gymId, userId: order.customerId });
+    if (wallet) {
+      wallet.currentBalance += pts;
+      if (wallet.totalRedeemed >= pts) {
+        wallet.totalRedeemed -= pts;
+      }
+      wallet.lastUpdated = new Date();
+      await wallet.save();
+
+      await PointsTransaction.create({
+        gymId: order.gymId,
+        userId: order.customerId,
+        type: 'REFUND_POINTS',
+        amount: pts,
+        balanceAfter: wallet.currentBalance,
+        description: `Refunded ${pts} points from cancelled/refunded Store Order #${order.orderNumber}`,
+        orderReference: order.orderNumber,
+        reason: order.cancellationReason || 'Store order cancelled/refunded'
       });
     }
   }

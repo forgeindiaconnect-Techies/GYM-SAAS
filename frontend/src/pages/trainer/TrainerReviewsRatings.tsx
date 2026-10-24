@@ -37,7 +37,7 @@ const StarDisplay = ({ rating, size = 16 }: { rating: number; size?: number }) =
         key={s}
         size={size}
         fill={s <= rating ? '#D99A27' : 'none'}
-        stroke={s <= rating ? '#D99A27' : '#D1D5DB'}
+        stroke={s <= rating ? '#D99A27' : '#C1D0D0'}
         strokeWidth={1.5}
       />
     ))}
@@ -81,7 +81,7 @@ const TrainerReviewsRatings = () => {
     });
 
   const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return 'text-emerald-600';
+    if (rating >= 4.5) return 'text-[#2DD4BF]';
     if (rating >= 3.5) return 'text-yellow-600';
     return 'text-red-500';
   };
@@ -95,8 +95,8 @@ const TrainerReviewsRatings = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <div className="w-10 h-10 rounded-full border-4 border-[#6366F1] border-t-transparent animate-spin" />
-        <p className="text-[#A1A1AA] font-medium">Loading reviews...</p>
+        <div className="w-10 h-10 rounded-full border-4 border-[#2DD4BF] border-t-transparent animate-spin" />
+        <p className="text-[#9AAEAE] font-medium">Loading reviews...</p>
       </div>
     );
   }
@@ -107,12 +107,12 @@ const TrainerReviewsRatings = () => {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Reviews & Ratings</h1>
-          <p className="text-[#A1A1AA] text-sm mt-1">Customer feedback from your completed sessions</p>
+          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Reviews & Ratings</h1>
+          <p className="text-[#9AAEAE] text-sm mt-1">Customer feedback from your completed sessions</p>
         </div>
         <button
           onClick={fetchReviews}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-[#292940] rounded-xl text-sm font-medium text-[#A1A1AA] hover:bg-[#0B0B12] transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-sm font-medium text-[#9AAEAE] hover:bg-[#0E1415] transition-colors shadow-sm"
         >
           <RefreshCw size={15} />
           Refresh
@@ -129,44 +129,44 @@ const TrainerReviewsRatings = () => {
       {summary && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Overall Rating */}
-          <div className="bg-gradient-to-br from-[#11111F] to-[#6366F1] rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-10 -mt-10" />
+          <div className="bg-gradient-to-br from-[#141D1E] to-[#2DD4BF] rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[#141D1E]/5 rounded-full -mr-10 -mt-10" />
             <Award size={22} className="text-yellow-300 mb-3" />
             <div className={`text-5xl font-black mb-1 ${summary.avgRating >= 4 ? 'text-yellow-300' : 'text-white'}`}>
               {summary.avgRating > 0 ? summary.avgRating.toFixed(1) : '—'}
             </div>
             <StarDisplay rating={Math.round(summary.avgRating)} size={18} />
-            <p className="text-[#292940] text-sm mt-2">Average Rating</p>
+            <p className="text-[#2A3A3A] text-sm mt-2">Average Rating</p>
           </div>
 
           {/* Total Reviews */}
-          <div className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
-            <MessageSquare size={22} className="text-[#6366F1] mb-3" />
-            <div className="text-4xl font-black text-[#11111F] mb-1">{summary.totalReviews}</div>
-            <p className="text-[#A1A1AA] text-sm font-medium">Total Reviews</p>
-            <p className="text-xs text-[#A1A1AA] mt-1">From completed sessions</p>
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 shadow-sm">
+            <MessageSquare size={22} className="text-[#2DD4BF] mb-3" />
+            <div className="text-4xl font-black text-[#F5FAFA] mb-1">{summary.totalReviews}</div>
+            <p className="text-[#9AAEAE] text-sm font-medium">Total Reviews</p>
+            <p className="text-xs text-[#9AAEAE] mt-1">From completed sessions</p>
           </div>
 
           {/* Star Breakdown */}
-          <div className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm">
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp size={18} className="text-[#6366F1]" />
-              <span className="text-sm font-bold text-[#11111F]">Rating Breakdown</span>
+              <TrendingUp size={18} className="text-[#2DD4BF]" />
+              <span className="text-sm font-bold text-[#F5FAFA]">Rating Breakdown</span>
             </div>
             <div className="space-y-2">
               {summary.ratingBreakdown.map(({ star, count }) => {
                 const pct = summary.totalReviews > 0 ? Math.round((count / summary.totalReviews) * 100) : 0;
                 return (
                   <div key={star} className="flex items-center gap-2 text-xs">
-                    <span className="w-4 text-[#A1A1AA] font-semibold">{star}</span>
+                    <span className="w-4 text-[#9AAEAE] font-semibold">{star}</span>
                     <Star size={11} fill="#D99A27" stroke="#D99A27" />
-                    <div className="flex-1 bg-[#0B0B12] rounded-full h-2 overflow-hidden">
+                    <div className="flex-1 bg-[#0E1415] rounded-full h-2 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 transition-all duration-700"
                         style={{ width: `${pct}%` }}
                       />
                     </div>
-                    <span className="w-6 text-right text-[#A1A1AA] font-medium">{count}</span>
+                    <span className="w-6 text-right text-[#9AAEAE] font-medium">{count}</span>
                   </div>
                 );
               })}
@@ -176,17 +176,17 @@ const TrainerReviewsRatings = () => {
       )}
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3 bg-white border border-[#292940] rounded-2xl px-5 py-4 shadow-sm">
-        <Filter size={15} className="text-[#A1A1AA] shrink-0" />
-        <span className="text-sm font-semibold text-[#A1A1AA] mr-1">Filter:</span>
+      <div className="flex flex-wrap items-center gap-3 bg-[#141D1E] border border-[#2A3A3A] rounded-2xl px-5 py-4 shadow-sm">
+        <Filter size={15} className="text-[#9AAEAE] shrink-0" />
+        <span className="text-sm font-semibold text-[#9AAEAE] mr-1">Filter:</span>
         {(['all', 5, 4, 3, 2, 1] as const).map(s => (
           <button
             key={s}
             onClick={() => setFilterStar(s)}
             className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
               filterStar === s
-                ? 'bg-[#6366F1] text-white border-[#6366F1] shadow'
-                : 'bg-[#0B0B12] text-[#A1A1AA] border-[#292940] hover:border-[#6366F1] hover:text-[#6366F1]'
+                ? 'bg-[#2DD4BF] text-white border-[#2DD4BF] shadow'
+                : 'bg-[#0E1415] text-[#9AAEAE] border-[#2A3A3A] hover:border-[#2DD4BF] hover:text-[#2DD4BF]'
             }`}
           >
             {s === 'all' ? 'All Stars' : (
@@ -195,11 +195,11 @@ const TrainerReviewsRatings = () => {
           </button>
         ))}
         <div className="ml-auto flex items-center gap-2">
-          <ChevronDown size={14} className="text-[#A1A1AA]" />
+          <ChevronDown size={14} className="text-[#9AAEAE]" />
           <select
             value={sortOrder}
             onChange={e => setSortOrder(e.target.value as any)}
-            className="text-xs font-medium text-[#A1A1AA] bg-transparent border-none outline-none cursor-pointer"
+            className="text-xs font-medium text-[#9AAEAE] bg-transparent border-none outline-none cursor-pointer"
           >
             <option value="newest">Newest First</option>
             <option value="highest">Highest Rated</option>
@@ -210,12 +210,12 @@ const TrainerReviewsRatings = () => {
 
       {/* Reviews List */}
       {filteredReviews.length === 0 ? (
-        <div className="bg-white border border-[#292940] rounded-2xl p-12 text-center shadow-sm">
-          <div className="w-16 h-16 bg-[#0B0B12] rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Star size={32} className="text-[#A1A1AA]" />
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-12 text-center shadow-sm">
+          <div className="w-16 h-16 bg-[#0E1415] rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Star size={32} className="text-[#9AAEAE]" />
           </div>
-          <h3 className="text-lg font-bold text-[#A1A1AA] mb-2">No Reviews Yet</h3>
-          <p className="text-[#A1A1AA] text-sm max-w-sm mx-auto">
+          <h3 className="text-lg font-bold text-[#9AAEAE] mb-2">No Reviews Yet</h3>
+          <p className="text-[#9AAEAE] text-sm max-w-sm mx-auto">
             Once customers complete a session and leave a rating, it will appear here.
           </p>
         </div>
@@ -224,23 +224,23 @@ const TrainerReviewsRatings = () => {
           {filteredReviews.map(review => (
             <div
               key={review._id}
-              className="bg-white border border-[#292940] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start gap-4">
                 {/* Avatar */}
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#6366F1] to-[#4F46E5] flex items-center justify-center text-white font-bold text-base shrink-0 shadow">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] flex items-center justify-center text-[#06201D] font-bold font-bold text-base shrink-0 shadow">
                   {review.customerId ? getInitials(review) : <User size={20} />}
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                     <div>
-                      <p className="font-bold text-[#11111F] text-base">
+                      <p className="font-bold text-[#F5FAFA] text-base">
                         {review.customerId
                           ? `${review.customerId.firstName} ${review.customerId.lastName}`
                           : 'Anonymous Member'}
                       </p>
-                      <p className="text-xs text-[#A1A1AA]">{review.customerId?.email || ''}</p>
+                      <p className="text-xs text-[#9AAEAE]">{review.customerId?.email || ''}</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <StarDisplay rating={review.customerRating} size={16} />
@@ -252,27 +252,27 @@ const TrainerReviewsRatings = () => {
 
                   {/* Review text */}
                   {review.customerReview && (
-                    <div className="bg-[#0B0B12] border border-[#292940] rounded-xl p-4 mb-3">
-                      <p className="text-sm text-[#11111F] leading-relaxed italic">
+                    <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-xl p-4 mb-3">
+                      <p className="text-sm text-[#F5FAFA] leading-relaxed italic">
                         "{review.customerReview}"
                       </p>
                     </div>
                   )}
 
                   {/* Session meta */}
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-[#A1A1AA]">
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-[#9AAEAE]">
                     <span className="flex items-center gap-1">
                       <Calendar size={12} />
                       {review.date} · {review.startTime}–{review.endTime}
                     </span>
                     <span className={`px-2 py-0.5 rounded-full font-semibold border text-[10px] ${
                       review.mode === 'Online'
-                        ? 'bg-blue-50 border-blue-200 text-blue-700'
-                        : 'bg-[#0B0B12] border-[#292940] text-[#A1A1AA]'
+                        ? 'bg-[#1B2728] border-[#2A3A3A] text-[#2DD4BF]'
+                        : 'bg-[#0E1415] border-[#2A3A3A] text-[#9AAEAE]'
                     }`}>
                       {review.mode}
                     </span>
-                    <span className="ml-auto text-[#A1A1AA]">
+                    <span className="ml-auto text-[#9AAEAE]">
                       Rated on {new Date(review.updatedAt).toLocaleDateString('en-IN', {
                         day: 'numeric', month: 'short', year: 'numeric'
                       })}

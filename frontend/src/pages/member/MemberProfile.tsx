@@ -1,4 +1,4 @@
-﻿import { Mail, Phone, MapPin, Edit3, X, Save } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit3, X, Save } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import api from '../../utils/api';
@@ -30,7 +30,7 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
   }, []);
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-full p-12 text-[#A1A1AA]">Loading profile...</div>;
+    return <div className="flex items-center justify-center h-full p-12 text-[#9AAEAE]">Loading profile...</div>;
   }
 
   // Fallback to authUser if full profile fetch fails
@@ -70,75 +70,79 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#6366F1]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10">
-          <div className="w-24 h-24 bg-[#FFFFFF] rounded-full border-2 border-[#6366F1] flex items-center justify-center text-[#6366F1] text-3xl font-bold shadow-[0_0_15px_rgba(212,255,0,0.2)]">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 sm:p-8 relative overflow-hidden shadow-xl">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#2DD4BF]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+        <div className="flex flex-col sm:flex-row items-center sm:items-start md:items-center gap-5 sm:gap-6 relative z-10 text-center sm:text-left">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#0E1415] rounded-full border-2 border-[#2DD4BF] flex items-center justify-center text-[#2DD4BF] text-2xl sm:text-3xl font-bold shadow-[0_0_15px_rgba(45,212,191,0.2)] shrink-0">
             {displayUser?.firstName?.[0] || 'U'}
           </div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-[#11111F] mb-1">{displayUser?.firstName || 'User'} {displayUser?.lastName || ''}</h1>
-            <p className="text-[#6366F1] font-medium capitalize mb-4">{displayUser?.subscriptionPlan || 'Member'} Plan</p>
-            <div className="flex flex-wrap gap-4 text-sm text-[#A1A1AA]">
-              <div className="flex items-center gap-2"><Mail size={16} /> {displayUser?.email || 'user@example.com'}</div>
-              <div className="flex items-center gap-2"><Phone size={16} /> {displayUser?.mobile || 'Not provided'}</div>
-              <div className="flex items-center gap-2"><MapPin size={16} /> {displayUser?.city ? `${displayUser.city}${displayUser.pinCode ? `, ${displayUser.pinCode}` : ''}` : 'Location not provided'}</div>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA] mb-1 truncate">{displayUser?.firstName || 'User'} {displayUser?.lastName || ''}</h1>
+            <p className="text-[#2DD4BF] font-semibold capitalize mb-3 text-sm sm:text-base">{displayUser?.subscriptionPlan || 'Member'} Plan</p>
+            <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 text-xs sm:text-sm text-[#9AAEAE]">
+              <div className="flex items-center gap-1.5"><Mail size={15} className="text-[#2DD4BF] shrink-0" /> <span className="truncate">{displayUser?.email || 'user@example.com'}</span></div>
+              <div className="flex items-center gap-1.5"><Phone size={15} className="text-[#2DD4BF] shrink-0" /> <span>{displayUser?.mobile || 'Not provided'}</span></div>
+              <div className="flex items-center gap-1.5"><MapPin size={15} className="text-[#2DD4BF] shrink-0" /> <span className="truncate">{displayUser?.city ? `${displayUser.city}${displayUser.pinCode ? `, ${displayUser.pinCode}` : ''}` : 'Location not provided'}</span></div>
             </div>
           </div>
           {!hideEdit && (
             <button 
               onClick={handleEditClick}
-              className="flex items-center gap-2 px-4 py-2 bg-[#0B0B12] text-[#11111F] font-semibold hover:bg-[#17172A] rounded-xl transition-colors"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0E1415] text-[#F5FAFA] font-bold hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-xl transition-all cursor-pointer shadow-sm text-sm shrink-0"
             >
-              <Edit3 size={16} /> Edit Profile
+              <Edit3 size={15} /> Edit Profile
             </button>
           )}
         </div>
       </div>
       
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-4">Personal Details</h2>
-          <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 sm:p-6 shadow-lg">
+          <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#F5FAFA] flex items-center gap-2">
+            <span>Personal Details</span>
+          </h2>
+          <div className="space-y-3">
             {[
               { label: 'Gender', value: displayUser?.gender || 'Not provided' },
               { label: 'Height', value: displayUser?.height ? `${displayUser.height} cm` : 'Not provided' },
               { label: 'Weight', value: displayUser?.weight ? `${displayUser.weight} kg` : 'Not provided' },
               { label: 'Emergency Contact', value: displayUser?.emergencyContact?.mobile || 'Not provided' }
             ].map((item, i) => (
-              <div key={i} className="flex justify-between py-2 border-b border-[#292940] last:border-0">
-                <span className="text-[#A1A1AA]">{item.label}</span>
-                <span className="font-medium">{item.value}</span>
+              <div key={i} className="flex justify-between items-center py-2.5 border-b border-[#2A3A3A] last:border-0 text-xs sm:text-sm">
+                <span className="text-[#9AAEAE] font-medium">{item.label}</span>
+                <span className="font-semibold text-[#F5FAFA] text-right">{item.value}</span>
               </div>
             ))}
           </div>
         </div>
         
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-4">Fitness Goals</h2>
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 sm:p-6 shadow-lg">
+          <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#F5FAFA] flex items-center gap-2">
+            <span>Fitness Goals</span>
+          </h2>
           <div className="space-y-4">
             {displayUser?.fitnessGoal ? (
-              <div className="p-4 bg-[#FFFFFF] rounded-xl border border-[#292940]">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium text-[#6366F1]">Current Goal</span>
+              <div className="p-4 bg-[#0E1415] rounded-xl border border-[#2A3A3A]">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="font-bold text-xs uppercase tracking-wider text-[#2DD4BF]">Current Goal</span>
                 </div>
-                <p className="text-lg text-[#11111F] font-semibold">{displayUser.fitnessGoal}</p>
-                <p className="text-sm text-[#A1A1AA] mt-2">Target set during onboarding.</p>
+                <p className="text-base sm:text-lg text-[#F5FAFA] font-bold">{displayUser.fitnessGoal}</p>
+                <p className="text-xs text-[#9AAEAE] mt-1.5">Target set during onboarding.</p>
               </div>
             ) : (
-              <div className="p-4 bg-[#0B0B12] rounded-xl border border-dashed border-[#292940] text-center">
-                <p className="text-[#A1A1AA] mb-2">No specific fitness goal set.</p>
-                {!hideEdit && <button onClick={handleEditClick} className="text-sm text-[#6366F1] font-bold hover:underline">Set Your Goal</button>}
+              <div className="p-5 bg-[#0E1415] rounded-xl border border-dashed border-[#2A3A3A] text-center">
+                <p className="text-xs sm:text-sm text-[#9AAEAE] mb-2">No specific fitness goal set.</p>
+                {!hideEdit && <button onClick={handleEditClick} className="text-xs sm:text-sm text-[#2DD4BF] font-bold hover:underline cursor-pointer">Set Your Goal</button>}
               </div>
             )}
             
             {displayUser?.experienceLevel && (
-              <div className="p-4 bg-[#FFFFFF] rounded-xl border border-[#292940]">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium text-[#11111F]">Experience Level</span>
+              <div className="p-4 bg-[#0E1415] rounded-xl border border-[#2A3A3A]">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-bold text-xs uppercase tracking-wider text-[#9AAEAE]">Experience Level</span>
                 </div>
-                <p className="text-sm text-[#A1A1AA] mt-1 font-medium">{displayUser.experienceLevel}</p>
+                <p className="text-sm sm:text-base text-[#F5FAFA] font-semibold capitalize">{displayUser.experienceLevel}</p>
               </div>
             )}
           </div>
@@ -147,55 +151,55 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
 
       {/* Edit Profile Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl border border-[#292940] overflow-hidden flex flex-col max-h-[85vh] my-auto">
-            <div className="bg-white p-6 border-b border-[#292940] flex justify-between items-center shrink-0">
-              <h2 className="text-2xl font-bold text-[#11111F]">Edit Profile</h2>
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-[100] flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">
+          <div className="bg-[#141D1E] rounded-2xl w-full max-w-2xl shadow-2xl border border-[#2A3A3A] overflow-hidden flex flex-col max-h-[90vh] my-auto">
+            <div className="bg-[#141D1E] p-4 sm:p-6 border-b border-[#2A3A3A] flex justify-between items-center shrink-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#F5FAFA]">Edit Profile</h2>
               <button 
                 onClick={() => setIsEditing(false)}
-                className="p-2 hover:bg-[#0B0B12] rounded-full transition-colors text-[#A1A1AA] hover:text-[#11111F]"
+                className="p-2 hover:bg-[#0E1415] rounded-full transition-colors text-[#9AAEAE] hover:text-[#FFFFFF] cursor-pointer"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
             
-            <form onSubmit={handleSave} className="p-6 space-y-6 overflow-y-auto flex-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSave} className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 <div>
-                  <label className="block text-sm font-semibold text-[#11111F] mb-2">First Name</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">First Name</label>
                   <input
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                    className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#11111F] mb-2">Last Name</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">Last Name</label>
                   <input
                     type="text"
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                    className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#11111F] mb-2">Mobile</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">Mobile</label>
                   <input
                     type="tel"
                     value={formData.mobile}
                     onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, '').slice(0, 10) })}
                     maxLength={10}
                     placeholder="10-digit number"
-                    className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                    className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#11111F] mb-2">Gender</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">Gender</label>
                   <select
                     value={formData.gender}
                     onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                    className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                    className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                   >
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
@@ -203,74 +207,74 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
                     <option value="Other">Other</option>
                   </select>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-3 sm:gap-4 sm:col-span-2">
                   <div className="flex-1">
-                    <label className="block text-sm font-semibold text-[#11111F] mb-2">Height (cm)</label>
+                    <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">Height (cm)</label>
                     <input
                       type="number"
                       value={formData.height}
                       onChange={(e) => setFormData({ ...formData, height: e.target.value })}
-                      className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-sm font-semibold text-[#11111F] mb-2">Weight (kg)</label>
+                    <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">Weight (kg)</label>
                     <input
                       type="number"
                       value={formData.weight}
                       onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                      className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#11111F] mb-2">City</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">City</label>
                   <input
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                    className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#11111F] mb-2">Pincode</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">Pincode</label>
                   <input
                     type="text"
                     value={formData.pinCode}
                     onChange={(e) => setFormData({ ...formData, pinCode: e.target.value })}
-                    className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                    className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                   />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-[#11111F] mb-2">Fitness Goal</label>
+                <div className="sm:col-span-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-[#F5FAFA] mb-1.5">Fitness Goal</label>
                   <input
                     type="text"
                     value={formData.fitnessGoal}
                     onChange={(e) => setFormData({ ...formData, fitnessGoal: e.target.value })}
-                    className="w-full bg-[#0B0B12] border border-[#17172A] rounded-xl px-4 py-3 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 outline-none transition-all"
+                    className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#F5FAFA] focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 outline-none transition-all"
                     placeholder="e.g. Lose 5kg, Build Muscle, Increase Stamina"
                   />
                 </div>
               </div>
               
-              <div className="pt-6 border-t border-[#17172A] flex justify-end gap-4">
+              <div className="pt-4 border-t border-[#2A3A3A] flex flex-col-reverse sm:flex-row justify-end gap-3">
                 <button 
                   type="button"
                   onClick={() => setIsEditing(false)}
-                  className="px-6 py-3 bg-[#0B0B12] text-[#11111F] font-bold rounded-xl hover:bg-[#17172A] transition-colors"
+                  className="w-full sm:w-auto px-5 py-2.5 bg-[#0E1415] text-[#F5FAFA] font-bold rounded-xl hover:bg-[#1B2728] border border-[#2A3A3A] transition-colors cursor-pointer text-xs sm:text-sm"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
                   disabled={isSaving}
-                  className="flex items-center gap-2 px-6 py-3 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] transition-colors shadow-lg shadow-teal-900/10 disabled:opacity-70"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors shadow-lg shadow-[#2DD4BF]/15 disabled:opacity-70 cursor-pointer text-xs sm:text-sm"
                 >
                   {isSaving ? (
                     'Saving...'
                   ) : (
                     <>
-                      <Save size={20} />
+                      <Save size={16} />
                       Save Changes
                     </>
                   )}

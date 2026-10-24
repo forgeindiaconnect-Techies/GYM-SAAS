@@ -84,11 +84,11 @@ const MemberWorkoutVideos = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#6366F1] via-[#6366F1] to-[#6366F1] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-gradient-to-r from-[#2DD4BF] via-[#2DD4BF] to-[#2DD4BF] rounded-3xl p-6 md:p-8 text-[#06201D] font-bold shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#141D1E]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-semibold text-emerald-200">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#141D1E]/15 backdrop-blur-md rounded-full text-xs font-semibold text-[#2DD4BF]">
               <Sparkles size={13} />
               Trainer Guided Self-Learning
             </span>
@@ -99,18 +99,18 @@ const MemberWorkoutVideos = () => {
           </div>
 
           {/* Quick Stats Card */}
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shrink-0 min-w-[200px] text-center">
+          <div className="bg-[#141D1E]/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shrink-0 min-w-[200px] text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <Award className="text-amber-300" size={20} />
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-100">Completion</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#2DD4BF]">Completion</span>
             </div>
             <p className="text-3xl font-black">{completionPercentage}%</p>
             <p className="text-xs text-white/70 mt-1">
               {completedCount} of {totalCount} completed
             </p>
-            <div className="w-full bg-white/20 h-2 rounded-full mt-3 overflow-hidden">
+            <div className="w-full bg-[#141D1E]/20 h-2 rounded-full mt-3 overflow-hidden">
               <div
-                className="bg-emerald-400 h-full rounded-full transition-all duration-500"
+                className="bg-[#2DD4BF] h-full rounded-full transition-all duration-500"
                 style={{ width: `${completionPercentage}%` }}
               />
             </div>
@@ -119,7 +119,7 @@ const MemberWorkoutVideos = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center justify-between border-b border-[#292940] pb-3">
+      <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
         <div className="flex items-center gap-2">
           {[
             { id: 'all', label: 'All Videos', count: totalCount },
@@ -131,14 +131,14 @@ const MemberWorkoutVideos = () => {
               onClick={() => setFilter(tab.id as any)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
                 filter === tab.id
-                  ? 'bg-[#6366F1] text-white shadow-sm'
-                  : 'bg-white border border-[#292940] text-[#A1A1AA] hover:text-[#11111F]'
+                  ? 'bg-[#2DD4BF] text-white shadow-sm'
+                  : 'bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] hover:text-[#FFFFFF]'
               }`}
             >
               <span>{tab.label}</span>
               <span
                 className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                  filter === tab.id ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
+                  filter === tab.id ? 'bg-[#141D1E]/20 text-white' : 'bg-[#1B2728] text-[#C1D0D0]'
                 }`}
               >
                 {tab.count}
@@ -149,7 +149,7 @@ const MemberWorkoutVideos = () => {
 
         <Link
           to="/member/online-sessions"
-          className="text-xs text-[#6366F1] font-bold hover:underline hidden sm:flex items-center gap-1"
+          className="text-xs text-[#2DD4BF] font-bold hover:underline hidden sm:flex items-center gap-1"
         >
           <span>View Live Sessions</span>
           <ArrowRight size={14} />
@@ -159,26 +159,26 @@ const MemberWorkoutVideos = () => {
       {/* Content Area */}
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="animate-spin text-[#6366F1]" size={36} />
+          <Loader2 className="animate-spin text-[#2DD4BF]" size={36} />
         </div>
       ) : filteredVideos.length === 0 ? (
-        <div className="bg-white border border-[#292940] rounded-2xl p-12 text-center shadow-sm">
-          <div className="w-16 h-16 bg-[#6366F1]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Video size={28} className="text-[#6366F1]" />
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-12 text-center shadow-sm">
+          <div className="w-16 h-16 bg-[#2DD4BF]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Video size={28} className="text-[#2DD4BF]" />
           </div>
-          <h3 className="text-lg font-bold text-[#11111F] mb-1">
+          <h3 className="text-lg font-bold text-[#F5FAFA] mb-1">
             {filter === 'completed'
               ? 'No completed videos yet'
               : filter === 'pending'
               ? 'No pending videos to watch'
               : 'No Workout Videos Assigned'}
           </h3>
-          <p className="text-sm text-[#A1A1AA] max-w-md mx-auto mb-6">
+          <p className="text-sm text-[#9AAEAE] max-w-md mx-auto mb-6">
             When your online trainer assigns workout tutorials or self-learning videos, they will appear here.
           </p>
           <Link
             to="/member/find-trainers"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#6366F1] text-white rounded-xl font-semibold text-sm hover:bg-[#4F46E5] transition shadow"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-semibold text-sm hover:bg-[#5EEAD4] transition shadow"
           >
             <span>Book Online Trainer</span>
             <ChevronRight size={16} />
@@ -189,18 +189,18 @@ const MemberWorkoutVideos = () => {
           {filteredVideos.map((video) => (
             <div
               key={video._id}
-              className={`bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between ${
-                video.status === 'Completed' ? 'border-green-200' : 'border-[#292940]'
+              className={`bg-[#141D1E] border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between ${
+                video.status === 'Completed' ? 'border-green-200' : 'border-[#2A3A3A]'
               }`}
             >
               <div>
                 {/* Header Video Graphic */}
-                <div className="bg-gradient-to-br from-slate-900 via-[#6366F1] to-slate-900 p-5 text-white relative">
+                <div className="bg-gradient-to-br from-slate-900 via-[#2DD4BF] to-slate-900 p-5 text-white relative">
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span
                       className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
                         video.difficultyLevel === 'Beginner'
-                          ? 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/40'
+                          ? 'bg-[#2DD4BF]/30 text-[#2DD4BF] border border-[#2A3A3A]/40'
                           : video.difficultyLevel === 'Intermediate'
                           ? 'bg-amber-500/30 text-amber-600 border border-amber-400/40'
                           : 'bg-rose-500/30 text-rose-200 border border-rose-400/40'
@@ -212,7 +212,7 @@ const MemberWorkoutVideos = () => {
                       className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
                         video.status === 'Completed'
                           ? 'bg-green-500 text-white shadow-sm'
-                          : 'bg-white/20 text-white backdrop-blur-sm'
+                          : 'bg-[#141D1E]/20 text-white backdrop-blur-sm'
                       }`}
                     >
                       {video.status}
@@ -226,25 +226,25 @@ const MemberWorkoutVideos = () => {
                 <div className="p-4 space-y-3">
                   {/* Trainer badge */}
                   {video.trainerId && (
-                    <div className="flex items-center gap-2 text-xs text-[#A1A1AA]">
-                      <span className="font-semibold text-[#11111F]">Assigned by:</span>
-                      <span className="text-[#6366F1] font-bold">{video.trainerId.name}</span>
+                    <div className="flex items-center gap-2 text-xs text-[#9AAEAE]">
+                      <span className="font-semibold text-[#F5FAFA]">Assigned by:</span>
+                      <span className="text-[#2DD4BF] font-bold">{video.trainerId.name}</span>
                     </div>
                   )}
 
                   {/* Workout Specs */}
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                    <div className="bg-[#0B0B12] rounded-xl p-2">
-                      <span className="text-[#A1A1AA] block text-[10px]">Sets</span>
-                      <span className="font-bold text-[#11111F] text-sm">{video.sets}</span>
+                    <div className="bg-[#0E1415] rounded-xl p-2">
+                      <span className="text-[#9AAEAE] block text-[10px]">Sets</span>
+                      <span className="font-bold text-[#F5FAFA] text-sm">{video.sets}</span>
                     </div>
-                    <div className="bg-[#0B0B12] rounded-xl p-2">
-                      <span className="text-[#A1A1AA] block text-[10px]">Reps</span>
-                      <span className="font-bold text-[#11111F] text-sm">{video.reps}</span>
+                    <div className="bg-[#0E1415] rounded-xl p-2">
+                      <span className="text-[#9AAEAE] block text-[10px]">Reps</span>
+                      <span className="font-bold text-[#F5FAFA] text-sm">{video.reps}</span>
                     </div>
-                    <div className="bg-[#0B0B12] rounded-xl p-2">
-                      <span className="text-[#A1A1AA] block text-[10px]">Duration</span>
-                      <span className="font-bold text-[#11111F] text-sm">{video.duration}</span>
+                    <div className="bg-[#0E1415] rounded-xl p-2">
+                      <span className="text-[#9AAEAE] block text-[10px]">Duration</span>
+                      <span className="font-bold text-[#F5FAFA] text-sm">{video.duration}</span>
                     </div>
                   </div>
 
@@ -269,7 +269,7 @@ const MemberWorkoutVideos = () => {
               <div className="p-4 pt-0 space-y-2">
                 <button
                   onClick={() => setActiveVideo(video)}
-                  className="w-full py-2.5 bg-[#6366F1] hover:bg-[#4F46E5] text-[#11111F] font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow"
+                  className="w-full py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#F5FAFA] font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow"
                 >
                   <Play size={14} />
                   <span>Watch Video & Instructions</span>
@@ -279,12 +279,12 @@ const MemberWorkoutVideos = () => {
                   <button
                     onClick={() => handleMarkComplete(video._id)}
                     disabled={updatingId === video._id}
-                    className="w-full py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    className="w-full py-2 bg-[#1B2728] hover:bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 disabled:opacity-50"
                   >
                     {updatingId === video._id ? (
                       <Loader2 size={13} className="animate-spin" />
                     ) : (
-                      <CheckCircle2 size={14} className="text-emerald-600" />
+                      <CheckCircle2 size={14} className="text-[#2DD4BF]" />
                     )}
                     <span>Mark Workout as Completed</span>
                   </button>
@@ -298,15 +298,15 @@ const MemberWorkoutVideos = () => {
       {/* Video Modal Player */}
       {activeVideo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative border border-[#292940] space-y-4 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between pb-3 border-b border-[#292940]">
+          <div className="bg-[#141D1E] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative border border-[#2A3A3A] space-y-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-[#2A3A3A]">
               <div>
-                <h3 className="text-lg font-bold text-[#11111F]">{activeVideo.title}</h3>
-                <p className="text-xs text-[#A1A1AA]">{activeVideo.exerciseName} • {activeVideo.duration}</p>
+                <h3 className="text-lg font-bold text-[#F5FAFA]">{activeVideo.title}</h3>
+                <p className="text-xs text-[#9AAEAE]">{activeVideo.exerciseName} • {activeVideo.duration}</p>
               </div>
               <button
                 onClick={() => setActiveVideo(null)}
-                className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg"
+                className="text-[#9AAEAE] hover:text-[#C1D0D0] p-1.5 rounded-lg"
               >
                 ✕
               </button>
@@ -333,7 +333,7 @@ const MemberWorkoutVideos = () => {
                     href={activeVideo.videoUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-lg"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl text-xs font-bold transition shadow-lg"
                   >
                     <span>Open External Video Player</span>
                     <ExternalLink size={15} />
@@ -344,24 +344,24 @@ const MemberWorkoutVideos = () => {
 
             {/* Exercise Instructions & Details */}
             <div className="grid grid-cols-3 gap-3 text-center text-xs">
-              <div className="bg-[#0B0B12] p-2.5 rounded-xl">
-                <span className="text-[#A1A1AA] block text-[11px]">Recommended Sets</span>
-                <span className="font-bold text-sm text-[#11111F]">{activeVideo.sets}</span>
+              <div className="bg-[#0E1415] p-2.5 rounded-xl">
+                <span className="text-[#9AAEAE] block text-[11px]">Recommended Sets</span>
+                <span className="font-bold text-sm text-[#F5FAFA]">{activeVideo.sets}</span>
               </div>
-              <div className="bg-[#0B0B12] p-2.5 rounded-xl">
-                <span className="text-[#A1A1AA] block text-[11px]">Reps per Set</span>
-                <span className="font-bold text-sm text-[#11111F]">{activeVideo.reps}</span>
+              <div className="bg-[#0E1415] p-2.5 rounded-xl">
+                <span className="text-[#9AAEAE] block text-[11px]">Reps per Set</span>
+                <span className="font-bold text-sm text-[#F5FAFA]">{activeVideo.reps}</span>
               </div>
-              <div className="bg-[#0B0B12] p-2.5 rounded-xl">
-                <span className="text-[#A1A1AA] block text-[11px]">Difficulty</span>
-                <span className="font-bold text-sm text-[#11111F]">{activeVideo.difficultyLevel}</span>
+              <div className="bg-[#0E1415] p-2.5 rounded-xl">
+                <span className="text-[#9AAEAE] block text-[11px]">Difficulty</span>
+                <span className="font-bold text-sm text-[#F5FAFA]">{activeVideo.difficultyLevel}</span>
               </div>
             </div>
 
             {activeVideo.instructions && (
-              <div className="bg-[#0B0B12] p-3.5 rounded-2xl text-xs">
-                <span className="font-bold text-[#11111F] block mb-1">Technique Instructions:</span>
-                <p className="text-[#A1A1AA] leading-relaxed">{activeVideo.instructions}</p>
+              <div className="bg-[#0E1415] p-3.5 rounded-2xl text-xs">
+                <span className="font-bold text-[#F5FAFA] block mb-1">Technique Instructions:</span>
+                <p className="text-[#9AAEAE] leading-relaxed">{activeVideo.instructions}</p>
               </div>
             )}
 
@@ -373,10 +373,10 @@ const MemberWorkoutVideos = () => {
             )}
 
             {/* Modal Bottom Actions */}
-            <div className="flex items-center justify-between pt-3 border-t border-[#292940]">
+            <div className="flex items-center justify-between pt-3 border-t border-[#2A3A3A]">
               <button
                 onClick={() => setActiveVideo(null)}
-                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-xl transition"
+                className="px-4 py-2 bg-[#1B2728] hover:bg-gray-200 text-[#C1D0D0] font-semibold text-xs rounded-xl transition"
               >
                 Close
               </button>
@@ -385,7 +385,7 @@ const MemberWorkoutVideos = () => {
                 <button
                   onClick={() => handleMarkComplete(activeVideo._id)}
                   disabled={updatingId === activeVideo._id}
-                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition shadow flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-bold text-xs rounded-xl transition shadow flex items-center gap-2 disabled:opacity-50"
                 >
                   {updatingId === activeVideo._id && <Loader2 size={14} className="animate-spin" />}
                   <CheckCircle2 size={16} />

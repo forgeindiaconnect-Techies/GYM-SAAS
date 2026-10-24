@@ -83,10 +83,10 @@ const SuperAdminLeads = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Gym Leads</h1>
-          <p className="text-[#A1A1AA] mt-1">Manage prospective gym partners and send invitations.</p>
+          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Gym Leads</h1>
+          <p className="text-[#9AAEAE] mt-1">Manage prospective gym partners and send invitations.</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center space-x-2 px-4 py-2 bg-[#17172A] text-white rounded-xl font-semibold hover:bg-teal-600 transition-colors">
+        <button onClick={() => setShowAddModal(true)} className="flex items-center space-x-2 px-4 py-2 bg-[#1B2728] text-white rounded-xl font-semibold hover:bg-[#5EEAD4] transition-colors">
           <UserPlus size={20} />
           <span>Add Lead</span>
         </button>
@@ -99,15 +99,15 @@ const SuperAdminLeads = () => {
             placeholder="Search leads..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl pl-10 pr-4 py-2 text-[#11111F] focus:border-[#17172A] transition-all outline-none"
+            className="w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl pl-10 pr-4 py-2 text-[#F5FAFA] focus:border-[#1B2728] transition-all outline-none"
           />
-          <Search className="absolute left-3 top-2.5 text-[#A1A1AA]" size={18} />
+          <Search className="absolute left-3 top-2.5 text-[#9AAEAE]" size={18} />
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl overflow-hidden">
-        <table className="w-full text-left text-sm text-[#A1A1AA]">
-          <thead className="bg-[#FFFFFF] border-b border-[#292940] text-[#11111F]">
+      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl overflow-hidden">
+        <table className="w-full text-left text-sm text-[#9AAEAE]">
+          <thead className="bg-[#FFFFFF] border-b border-[#2A3A3A] text-[#F5FAFA]">
             <tr>
               <th className="px-6 py-4 font-medium">Gym Name</th>
               <th className="px-6 py-4 font-medium">Owner & Contact</th>
@@ -116,12 +116,12 @@ const SuperAdminLeads = () => {
               <th className="px-6 py-4 font-medium">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#292940]">
+          <tbody className="divide-y divide-[#2A3A3A]">
             {filtered.map(lead => (
-              <tr key={lead.id} className="hover:bg-[#0B0B12] transition-colors">
-                <td className="px-6 py-4 font-semibold text-[#11111F]">{lead.gymName}</td>
+              <tr key={lead.id} className="hover:bg-[#0E1415] transition-colors">
+                <td className="px-6 py-4 font-semibold text-[#F5FAFA]">{lead.gymName}</td>
                 <td className="px-6 py-4">
-                  <div className="text-[#11111F]">{lead.owner}</div>
+                  <div className="text-[#F5FAFA]">{lead.owner}</div>
                   <div className="text-xs">{lead.email} | {lead.phone}</div>
                 </td>
                 <td className="px-6 py-4">{lead.location}</td>
@@ -129,23 +129,23 @@ const SuperAdminLeads = () => {
                   <select 
                     value={lead.status} 
                     onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                    className={`px-2 py-1 rounded-xl text-xs font-semibold outline-none cursor-pointer border border-[#292940] ${
-                      lead.status === 'New' ? 'bg-blue-500/10 text-[#6366F1]' : 
+                    className={`px-2 py-1 rounded-xl text-xs font-semibold outline-none cursor-pointer border border-[#2A3A3A] ${
+                      lead.status === 'New' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF]' : 
                       lead.status === 'Active' ? 'bg-green-500/10 text-green-500' : 
-                      lead.status === 'Inactive' ? 'bg-[#17172A]/10 text-[#4F46E5]' :
+                      lead.status === 'Inactive' ? 'bg-[#1B2728]/10 text-[#5EEAD4]' :
                       'bg-yellow-500/10 text-yellow-500'
                     }`}
                   >
-                    <option value="New" className="bg-[#FFFFFF] text-[#6366F1]">New</option>
+                    <option value="New" className="bg-[#FFFFFF] text-[#2DD4BF]">New</option>
                     <option value="Contacted" className="bg-[#FFFFFF] text-yellow-500">Contacted</option>
                     <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                    <option value="Inactive" className="bg-[#FFFFFF] text-stone-600 font-bold">Inactive</option>
+                    <option value="Inactive" className="bg-[#FFFFFF] text-[#9AAEAE] font-bold">Inactive</option>
                   </select>
                 </td>
                 <td className="px-6 py-4 flex space-x-3">
-                  <button onClick={() => { setSelectedLead(lead); setShowViewModal(true); }} className="text-[#A1A1AA] hover:text-[#11111F]" title="View"><Eye size={18} /></button>
-                  <button onClick={() => { setSelectedLead(lead); setInviteSuccess(false); setShowInviteModal(true); }} className="text-[#4F46E5] hover:text-teal-400" title="Send Invite"><Send size={18} /></button>
-                  <button onClick={() => { deleteItem('gymLeads', lead.id); setLeads(leads.filter(l => l.id !== lead.id)); }} className="text-[#A1A1AA] hover:text-[#6366F1]" title="Delete"><Trash2 size={18} /></button>
+                  <button onClick={() => { setSelectedLead(lead); setShowViewModal(true); }} className="text-[#9AAEAE] hover:text-[#FFFFFF]" title="View"><Eye size={18} /></button>
+                  <button onClick={() => { setSelectedLead(lead); setInviteSuccess(false); setShowInviteModal(true); }} className="text-[#5EEAD4] hover:text-[#2DD4BF]" title="Send Invite"><Send size={18} /></button>
+                  <button onClick={() => { deleteItem('gymLeads', lead.id); setLeads(leads.filter(l => l.id !== lead.id)); }} className="text-[#9AAEAE] hover:text-[#2DD4BF]" title="Delete"><Trash2 size={18} /></button>
                 </td>
               </tr>
             ))}
@@ -156,33 +156,33 @@ const SuperAdminLeads = () => {
 
       {showInviteModal && selectedLead && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-            <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#292940] flex items-center space-x-3">
-              <Send className="text-[#6366F1]" size={24} />
-              <h2 className="text-xl font-bold text-[#11111F]">Send Invitation</h2>
+          <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#2A3A3A] flex items-center space-x-3">
+              <Send className="text-[#2DD4BF]" size={24} />
+              <h2 className="text-xl font-bold text-[#F5FAFA]">Send Invitation</h2>
             </div>
             {!inviteSuccess ? (
               <form onSubmit={handleSendInvite} className="p-6 space-y-5">
-                <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#292940] mb-2">
-                  <p className="text-sm text-[#A1A1AA]">Sending to:</p>
-                  <p className="text-[#11111F] font-semibold text-lg">{selectedLead.gymName}</p>
-                  <p className="text-sm text-[#11111F]">{selectedLead.email}</p>
+                <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#2A3A3A] mb-2">
+                  <p className="text-sm text-[#9AAEAE]">Sending to:</p>
+                  <p className="text-[#F5FAFA] font-semibold text-lg">{selectedLead.gymName}</p>
+                  <p className="text-sm text-[#F5FAFA]">{selectedLead.email}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Personal Message</label>
-                  <textarea rows={3} value={inviteForm.message} onChange={e => setInviteForm({...inviteForm, message: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-4 text-[#11111F] outline-none focus:border-[#17172A] transition-colors resize-none" />
+                  <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Personal Message</label>
+                  <textarea rows={3} value={inviteForm.message} onChange={e => setInviteForm({...inviteForm, message: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-4 text-[#F5FAFA] outline-none focus:border-[#1B2728] transition-colors resize-none" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Link Expiry</label>
-                  <select value={inviteForm.expiry} onChange={e => setInviteForm({...inviteForm, expiry: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-4 text-[#11111F] outline-none focus:border-[#17172A] transition-colors cursor-pointer appearance-none">
+                  <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Link Expiry</label>
+                  <select value={inviteForm.expiry} onChange={e => setInviteForm({...inviteForm, expiry: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-4 text-[#F5FAFA] outline-none focus:border-[#1B2728] transition-colors cursor-pointer appearance-none">
                     <option>3 Days</option>
                     <option>7 Days</option>
                     <option>14 Days</option>
                   </select>
                 </div>
-                <div className="flex justify-end space-x-3 mt-8 border-t border-[#292940] pt-6">
-                  <button type="button" onClick={closeInviteModal} className="px-6 py-2 text-[#A1A1AA] hover:text-[#6366F1] transition-colors font-medium">Cancel</button>
-                  <button type="submit" className="px-6 py-2 bg-[#17172A] text-white rounded-xl font-bold hover:bg-teal-600 transition-all flex items-center space-x-2 shadow-lg shadow-amber-500/20">
+                <div className="flex justify-end space-x-3 mt-8 border-t border-[#2A3A3A] pt-6">
+                  <button type="button" onClick={closeInviteModal} className="px-6 py-2 text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors font-medium">Cancel</button>
+                  <button type="submit" className="px-6 py-2 bg-[#1B2728] text-white rounded-xl font-bold hover:bg-[#5EEAD4] transition-all flex items-center space-x-2 shadow-lg shadow-amber-500/20">
                     <span>Send Invitation</span>
                     <Send size={16} />
                   </button>
@@ -193,23 +193,23 @@ const SuperAdminLeads = () => {
                 <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-2">
                   <CheckCircle2 className="text-green-500" size={32} />
                 </div>
-                <h3 className="text-2xl font-bold text-[#11111F]">Invitation Sent!</h3>
-                <p className="text-[#A1A1AA]">An email with the registration link has been automatically dispatched to <span className="text-[#11111F] font-medium">{selectedLead.email}</span>.</p>
+                <h3 className="text-2xl font-bold text-[#F5FAFA]">Invitation Sent!</h3>
+                <p className="text-[#9AAEAE]">An email with the registration link has been automatically dispatched to <span className="text-[#F5FAFA] font-medium">{selectedLead.email}</span>.</p>
                 
                 <div className="w-full mt-6 text-left">
-                  <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Manual Invite Link (Optional)</label>
+                  <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Manual Invite Link (Optional)</label>
                   <div className="flex space-x-2">
-                    <input readOnly value={generatedLink} className="flex-1 bg-[#FFFFFF] border border-[#292940] rounded-xl p-3 text-[#11111F] text-sm outline-none" />
-                    <button onClick={() => navigator.clipboard.writeText(generatedLink)} className="px-4 py-2 bg-[#17172A] hover:bg-[#333] text-white rounded-xl transition-colors flex items-center space-x-2">
+                    <input readOnly value={generatedLink} className="flex-1 bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-3 text-[#F5FAFA] text-sm outline-none" />
+                    <button onClick={() => navigator.clipboard.writeText(generatedLink)} className="px-4 py-2 bg-[#1B2728] hover:bg-[#333] text-white rounded-xl transition-colors flex items-center space-x-2">
                       <Copy size={16} />
                       <span>Copy</span>
                     </button>
                   </div>
-                  <p className="text-xs text-[#A1A1AA] mt-2">You can copy this link and send it manually via WhatsApp or SMS if needed.</p>
+                  <p className="text-xs text-[#9AAEAE] mt-2">You can copy this link and send it manually via WhatsApp or SMS if needed.</p>
                 </div>
 
-                <div className="w-full mt-6 pt-6 border-t border-[#292940]">
-                  <button onClick={closeInviteModal} className="w-full py-3 bg-[#17172A] hover:bg-teal-600 text-white rounded-xl font-bold transition-all shadow-lg shadow-amber-500/20">Done</button>
+                <div className="w-full mt-6 pt-6 border-t border-[#2A3A3A]">
+                  <button onClick={closeInviteModal} className="w-full py-3 bg-[#1B2728] hover:bg-[#5EEAD4] text-white rounded-xl font-bold transition-all shadow-lg shadow-amber-500/20">Done</button>
                 </div>
               </div>
             )}
@@ -219,37 +219,37 @@ const SuperAdminLeads = () => {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-            <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#292940] flex items-center space-x-3">
-              <Sparkles className="text-[#6366F1]" size={24} />
-              <h2 className="text-xl font-bold text-[#11111F]">Add New Gym Lead</h2>
+          <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#2A3A3A] flex items-center space-x-3">
+              <Sparkles className="text-[#2DD4BF]" size={24} />
+              <h2 className="text-xl font-bold text-[#F5FAFA]">Add New Gym Lead</h2>
             </div>
             <form onSubmit={handleAddLead} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-1">Gym Name *</label>
-                <input required type="text" value={newLeadForm.gymName} onChange={e => setNewLeadForm({...newLeadForm, gymName: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-3 text-[#11111F] outline-none focus:border-[#17172A]" />
+                <label className="block text-sm text-[#9AAEAE] mb-1">Gym Name *</label>
+                <input required type="text" value={newLeadForm.gymName} onChange={e => setNewLeadForm({...newLeadForm, gymName: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-3 text-[#F5FAFA] outline-none focus:border-[#1B2728]" />
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-1">Owner Name *</label>
-                <input required type="text" value={newLeadForm.owner} onChange={e => setNewLeadForm({...newLeadForm, owner: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-3 text-[#11111F] outline-none focus:border-[#17172A]" />
+                <label className="block text-sm text-[#9AAEAE] mb-1">Owner Name *</label>
+                <input required type="text" value={newLeadForm.owner} onChange={e => setNewLeadForm({...newLeadForm, owner: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-3 text-[#F5FAFA] outline-none focus:border-[#1B2728]" />
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-1">Email *</label>
-                <input required type="email" value={newLeadForm.email} onChange={e => setNewLeadForm({...newLeadForm, email: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-3 text-[#11111F] outline-none focus:border-[#17172A]" />
+                <label className="block text-sm text-[#9AAEAE] mb-1">Email *</label>
+                <input required type="email" value={newLeadForm.email} onChange={e => setNewLeadForm({...newLeadForm, email: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-3 text-[#F5FAFA] outline-none focus:border-[#1B2728]" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#A1A1AA] mb-1">Phone</label>
-                  <input type="tel" pattern="[0-9]{10}" maxLength={10} minLength={10} title="Phone number must be exactly 10 digits" value={newLeadForm.phone} onChange={e => setNewLeadForm({...newLeadForm, phone: e.target.value.replace(/[^0-9]/g, '')})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-3 text-[#11111F] outline-none focus:border-[#17172A]" />
+                  <label className="block text-sm text-[#9AAEAE] mb-1">Phone</label>
+                  <input type="tel" pattern="[0-9]{10}" maxLength={10} minLength={10} title="Phone number must be exactly 10 digits" value={newLeadForm.phone} onChange={e => setNewLeadForm({...newLeadForm, phone: e.target.value.replace(/[^0-9]/g, '')})} className="w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-3 text-[#F5FAFA] outline-none focus:border-[#1B2728]" />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#A1A1AA] mb-1">Location</label>
-                  <input type="text" value={newLeadForm.location} onChange={e => setNewLeadForm({...newLeadForm, location: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl p-3 text-[#11111F] outline-none focus:border-[#17172A]" />
+                  <label className="block text-sm text-[#9AAEAE] mb-1">Location</label>
+                  <input type="text" value={newLeadForm.location} onChange={e => setNewLeadForm({...newLeadForm, location: e.target.value})} className="w-full bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-3 text-[#F5FAFA] outline-none focus:border-[#1B2728]" />
                 </div>
               </div>
               <div className="flex justify-end space-x-3 mt-6">
-                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 text-[#A1A1AA] hover:text-[#11111F]">Cancel</button>
-                <button type="submit" className="px-6 py-2 bg-[#17172A] text-white rounded-xl font-bold hover:bg-teal-600">Add Lead</button>
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 text-[#9AAEAE] hover:text-[#FFFFFF]">Cancel</button>
+                <button type="submit" className="px-6 py-2 bg-[#1B2728] text-white rounded-xl font-bold hover:bg-[#5EEAD4]">Add Lead</button>
               </div>
             </form>
           </div>
@@ -258,41 +258,41 @@ const SuperAdminLeads = () => {
 
       {showViewModal && selectedLead && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#292940]">
-              <h2 className="text-xl font-bold text-[#11111F] flex items-center space-x-2">
-                <Sparkles className="text-[#6366F1]" size={20} />
+          <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-r from-teal-500/20 to-transparent p-6 border-b border-[#2A3A3A]">
+              <h2 className="text-xl font-bold text-[#F5FAFA] flex items-center space-x-2">
+                <Sparkles className="text-[#2DD4BF]" size={20} />
                 <span>Lead Details</span>
               </h2>
             </div>
             <div className="p-6 space-y-6">
               <div className="flex items-start space-x-4">
-                <div className="p-2 bg-[#17172A]/10 rounded-xl text-[#4F46E5] mt-1">
+                <div className="p-2 bg-[#1B2728]/10 rounded-xl text-[#5EEAD4] mt-1">
                   <Building2 size={20} />
                 </div>
                 <div>
-                  <label className="text-xs text-[#A1A1AA] uppercase tracking-wider font-semibold">Gym Name</label>
-                  <p className="text-[#11111F] font-bold text-lg leading-tight">{selectedLead.gymName}</p>
+                  <label className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold">Gym Name</label>
+                  <p className="text-[#F5FAFA] font-bold text-lg leading-tight">{selectedLead.gymName}</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="p-2 bg-blue-500/10 rounded-xl text-[#6366F1] mt-1">
+                <div className="p-2 bg-[#2DD4BF]/10 rounded-xl text-[#2DD4BF] mt-1">
                   <User size={20} />
                 </div>
                 <div>
-                  <label className="text-xs text-[#A1A1AA] uppercase tracking-wider font-semibold">Owner Name</label>
-                  <p className="text-[#11111F] font-medium">{selectedLead.owner}</p>
+                  <label className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold">Owner Name</label>
+                  <p className="text-[#F5FAFA] font-medium">{selectedLead.owner}</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="p-2 bg-[#6366F1]/10 rounded-xl text-[#6366F1] mt-1">
+                <div className="p-2 bg-[#2DD4BF]/10 rounded-xl text-[#2DD4BF] mt-1">
                   <Mail size={20} />
                 </div>
                 <div>
-                  <label className="text-xs text-[#A1A1AA] uppercase tracking-wider font-semibold">Email</label>
-                  <p className="text-[#11111F] font-medium">{selectedLead.email}</p>
+                  <label className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold">Email</label>
+                  <p className="text-[#F5FAFA] font-medium">{selectedLead.email}</p>
                 </div>
               </div>
 
@@ -302,8 +302,8 @@ const SuperAdminLeads = () => {
                     <Phone size={18} />
                   </div>
                   <div>
-                    <label className="text-xs text-[#A1A1AA] uppercase tracking-wider font-semibold block">Phone</label>
-                    <span className="text-[#11111F] text-sm">{selectedLead.phone || 'N/A'}</span>
+                    <label className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold block">Phone</label>
+                    <span className="text-[#F5FAFA] text-sm">{selectedLead.phone || 'N/A'}</span>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
@@ -311,14 +311,14 @@ const SuperAdminLeads = () => {
                     <MapPin size={18} />
                   </div>
                   <div>
-                    <label className="text-xs text-[#A1A1AA] uppercase tracking-wider font-semibold block">Location</label>
-                    <span className="text-[#11111F] text-sm">{selectedLead.location || 'N/A'}</span>
+                    <label className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold block">Location</label>
+                    <span className="text-[#F5FAFA] text-sm">{selectedLead.location || 'N/A'}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="p-4 border-t border-[#292940] flex justify-end bg-[#FFFFFF]">
-              <button onClick={() => setShowViewModal(false)} className="px-6 py-2 bg-white text-black hover:bg-gray-200 rounded-xl font-bold transition-colors">Close</button>
+            <div className="p-4 border-t border-[#2A3A3A] flex justify-end bg-[#FFFFFF]">
+              <button onClick={() => setShowViewModal(false)} className="px-6 py-2 bg-[#141D1E] text-black hover:bg-gray-200 rounded-xl font-bold transition-colors">Close</button>
             </div>
           </div>
         </div>

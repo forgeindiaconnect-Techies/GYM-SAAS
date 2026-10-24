@@ -1,30 +1,30 @@
-﻿import { Video, PlayCircle } from 'lucide-react';
+import { Video, PlayCircle } from 'lucide-react';
 
 const MemberOnlineTraining = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Online Training</h1>
-        <p className="text-[#A1A1AA]">Access live streams and recorded sessions</p>
+        <p className="text-[#9AAEAE]">Access live streams and recorded sessions</p>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl overflow-hidden relative group cursor-pointer">
-        <div className="aspect-video w-full bg-[#FFFFFF] relative flex items-center justify-center border-b border-[#292940]">
+      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl overflow-hidden relative group cursor-pointer">
+        <div className="aspect-video w-full bg-[#0E1415] relative flex items-center justify-center border-b border-[#2A3A3A]">
           {/* Mock Video Thumbnail */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
-          <div className="w-16 h-16 bg-[#6366F1] rounded-full flex items-center justify-center z-20 group-hover:scale-110 transition-transform">
+          <div className="w-16 h-16 bg-[#2DD4BF] rounded-full flex items-center justify-center z-20 group-hover:scale-110 transition-transform">
             <PlayCircle size={32} className="text-black ml-1" fill="currentColor" />
           </div>
-          <span className="absolute top-4 left-4 z-20 px-3 py-1 bg-[#17172A] text-white text-xs font-bold rounded flex items-center gap-2">
-            <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
+          <span className="absolute top-4 left-4 z-20 px-3 py-1 bg-[#1B2728] text-white text-xs font-bold rounded flex items-center gap-2">
+            <span className="w-2 h-2 bg-[#141D1E] rounded-full animate-pulse"></span> LIVE
           </span>
         </div>
         <div className="p-6 relative z-20">
           <h2 className="text-2xl font-bold mb-2">High Intensity Interval Training (HIIT) - Live Class</h2>
-          <p className="text-[#A1A1AA] mb-4">Join Coach Sarah for a 45-minute intense full body workout. No equipment needed.</p>
+          <p className="text-[#9AAEAE] mb-4">Join Coach Sarah for a 45-minute intense full body workout. No equipment needed.</p>
           <div className="flex items-center gap-4 text-sm font-medium">
-            <span className="text-[#6366F1]">342 watching now</span>
-            <span className="text-[#A1A1AA]">Started 10 mins ago</span>
+            <span className="text-[#2DD4BF]">342 watching now</span>
+            <span className="text-[#9AAEAE]">Started 10 mins ago</span>
           </div>
         </div>
       </div>
@@ -36,13 +36,13 @@ const MemberOnlineTraining = () => {
           { title: 'Yoga for Beginners', dur: '45m', cat: 'Yoga' },
           { title: 'Dumbbell Only Full Body', dur: '60m', cat: 'Strength' },
         ].map((vid, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#292940] rounded-xl overflow-hidden group cursor-pointer">
-            <div className="aspect-video bg-[#17172A] relative flex items-center justify-center">
-              <Video size={32} className="text-[#A1A1AA] group-hover:text-[#6366F1] transition transition-colors" />
-              <span className="absolute bottom-2 right-2 px-2 py-1 bg-black/80 text-[#11111F] text-xs rounded">{vid.dur}</span>
+          <div key={i} className="bg-[#141D1E] border border-[#2A3A3A] rounded-xl overflow-hidden group cursor-pointer">
+            <div className="aspect-video bg-[#1B2728] relative flex items-center justify-center">
+              <Video size={32} className="text-[#9AAEAE] group-hover:text-[#2DD4BF] transition transition-colors" />
+              <span className="absolute bottom-2 right-2 px-2 py-1 bg-black/80 text-[#F5FAFA] text-xs rounded">{vid.dur}</span>
             </div>
             <div className="p-4">
-              <span className="text-xs text-[#6366F1] mb-1 block">{vid.cat}</span>
+              <span className="text-xs text-[#2DD4BF] mb-1 block">{vid.cat}</span>
               <h4 className="font-bold line-clamp-1">{vid.title}</h4>
             </div>
           </div>

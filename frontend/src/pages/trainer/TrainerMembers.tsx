@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, Search, MoreVertical, X, User, Download } from 'lucide-react';
 import api from '../../utils/api';
@@ -111,8 +111,8 @@ const TrainerMembers = () => {
       <TrainerClientsTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#11111F]">Assigned Users</h1>
-          <p className="text-[#A1A1AA]">
+          <h1 className="text-3xl font-bold text-[#F5FAFA]">Assigned Users</h1>
+          <p className="text-[#9AAEAE]">
             {searchTerm.trim()
               ? `Showing ${filteredClients.length} of ${clients.length} active clients`
               : `Manage your ${clients.length} active clients`}
@@ -120,18 +120,18 @@ const TrainerMembers = () => {
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A1A1AA]" />
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEAE]" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search clients..."
-              className="w-full bg-[#FFFFFF] border border-[#292940] rounded-xl pl-10 pr-10 py-2 text-sm focus:outline-none focus:border-[#6366F1] transition-colors text-[#11111F]"
+              className="w-full bg-[#101819] border border-[#2A3A3A] rounded-xl pl-10 pr-10 py-2 text-sm focus:outline-none focus:border-[#2DD4BF] transition-colors text-[#F5FAFA] placeholder:text-[#9AAEAE]"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#11111F]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#FFFFFF]"
                 title="Clear search"
               >
                 <X size={16} />
@@ -141,7 +141,7 @@ const TrainerMembers = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleDownloadReport('excel')}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0B0B12] border border-[#292940] hover:bg-[#6366F1] hover:text-white hover:border-[#6366F1] text-[#11111F] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0E1415] border border-[#2A3A3A] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold hover:border-[#2DD4BF] text-[#F5FAFA] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
               title="Download Excel Report"
             >
               <Download size={16} />
@@ -149,7 +149,7 @@ const TrainerMembers = () => {
             </button>
             <button
               onClick={() => handleDownloadReport('pdf')}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
               title="Download PDF Report"
             >
               <Download size={16} />
@@ -160,18 +160,18 @@ const TrainerMembers = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#A1A1AA]">Loading clients...</div>
+        <div className="text-center py-12 text-[#9AAEAE]">Loading clients...</div>
       ) : filteredClients.length === 0 ? (
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-12 text-center">
-          <Users size={48} className="mx-auto text-[#A1A1AA] mb-3" />
-          <h3 className="text-lg font-bold text-[#11111F]">No clients found</h3>
-          <p className="text-sm text-[#A1A1AA] mt-1">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-12 text-center">
+          <Users size={48} className="mx-auto text-[#9AAEAE] mb-3" />
+          <h3 className="text-lg font-bold text-[#F5FAFA]">No clients found</h3>
+          <p className="text-sm text-[#9AAEAE] mt-1">
             {searchTerm ? `No active clients matching "${searchTerm}".` : 'You have no assigned clients yet.'}
           </p>
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="mt-4 px-4 py-2 bg-[#6366F1] text-white font-medium text-sm rounded-xl hover:bg-[#4F46E5] transition-colors"
+              className="mt-4 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold font-medium text-sm rounded-xl hover:bg-[#5EEAD4] transition-colors"
             >
               Clear Search
             </button>
@@ -182,11 +182,11 @@ const TrainerMembers = () => {
           {filteredClients.map((client) => (
             <div
               key={client.id}
-              className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-5 hover:shadow-sm transition-shadow flex flex-col relative"
+              className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 hover:border-[#2DD4BF]/40 transition-all flex flex-col relative shadow-lg"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-[#0B0B12] rounded-full flex items-center justify-center font-bold text-[#6366F1] border border-[#292940] overflow-hidden">
+                  <div className="w-12 h-12 bg-[#0E1415] rounded-full flex items-center justify-center font-bold text-[#2DD4BF] border border-[#2A3A3A] overflow-hidden">
                     {client.profilePhoto ? (
                       <img src={client.profilePhoto} alt={client.name} className="w-full h-full object-cover" />
                     ) : (
@@ -194,12 +194,12 @@ const TrainerMembers = () => {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#11111F] leading-tight">{client.name}</h3>
+                    <h3 className="font-bold text-[#F5FAFA] leading-tight">{client.name}</h3>
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full inline-block mt-1 font-medium ${
                         client.status === 'Active'
                           ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-600'
+                          : 'bg-[#1B2728] text-[#C1D0D0]'
                       }`}
                     >
                       {client.status}
@@ -209,21 +209,21 @@ const TrainerMembers = () => {
                 <div className="relative">
                   <button 
                     onClick={() => setOpenMenu(openMenu === client.id ? null : client.id)}
-                    className="text-[#A1A1AA] hover:text-[#11111F] transition-colors"
+                    className="text-[#9AAEAE] hover:text-[#FFFFFF] transition-colors"
                   >
                     <MoreVertical size={18} />
                   </button>
                   {openMenu === client.id && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-[#292940] rounded-xl shadow-lg overflow-hidden z-10">
+                    <div className="absolute right-0 mt-2 w-48 bg-[#141D1E] border border-[#2A3A3A] rounded-xl shadow-lg overflow-hidden z-10">
                       <button 
                         onClick={() => { navigate('/trainer/session-bookings'); setOpenMenu(null); }}
-                        className="w-full text-left px-4 py-3 text-sm text-[#11111F] hover:bg-[#0B0B12] transition-colors"
+                        className="w-full text-left px-4 py-3 text-sm text-[#F5FAFA] hover:bg-[#0E1415] transition-colors"
                       >
                         View Sessions
                       </button>
                       <button 
                         onClick={() => { alert('Assign Workout Plan feature coming soon!'); setOpenMenu(null); }}
-                        className="w-full text-left px-4 py-3 text-sm text-[#11111F] hover:bg-[#0B0B12] transition-colors border-t border-[#292940]"
+                        className="w-full text-left px-4 py-3 text-sm text-[#F5FAFA] hover:bg-[#0E1415] transition-colors border-t border-[#2A3A3A]"
                       >
                         Assign Workout Plan
                       </button>
@@ -234,19 +234,19 @@ const TrainerMembers = () => {
 
               <div className="space-y-3 mb-6 flex-1">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#A1A1AA]">Goal:</span>
-                  <span className="font-medium text-[#11111F]">{client.goal}</span>
+                  <span className="text-[#9AAEAE]">Goal:</span>
+                  <span className="font-medium text-[#F5FAFA]">{client.goal}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#A1A1AA]">Next Session:</span>
-                  <span className="font-medium text-[#6366F1]">{client.nextSession}</span>
+                  <span className="text-[#9AAEAE]">Next Session:</span>
+                  <span className="font-medium text-[#2DD4BF]">{client.nextSession}</span>
                 </div>
               </div>
 
-              <div className="mt-auto pt-4 border-t border-[#292940]">
+              <div className="mt-auto pt-4 border-t border-[#2A3A3A]">
                 <button
                   onClick={() => setOpenDetailsModal(client)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-white text-[#6366F1] text-sm font-semibold rounded-xl border border-[#6366F1] hover:bg-[#6366F1] hover:text-white transition-all shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#141D1E] text-[#2DD4BF] text-sm font-semibold rounded-xl border border-[#2DD4BF] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold transition-all shadow-sm"
                 >
                   <User size={16} /> View Details
                 </button>
@@ -259,15 +259,15 @@ const TrainerMembers = () => {
       {/* Member Details Modal */}
       {openDetailsModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl border border-[#292940] my-auto">
-            <div className="px-6 py-5 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12]">
+          <div className="bg-[#141D1E] rounded-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl border border-[#2A3A3A] my-auto">
+            <div className="px-6 py-5 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415]">
               <div>
-                <h2 className="text-xl font-bold text-[#11111F]">Member Details</h2>
-                <p className="text-xs text-[#A1A1AA] mt-0.5">Comprehensive member overview and profile information</p>
+                <h2 className="text-xl font-bold text-[#F5FAFA]">Member Details</h2>
+                <p className="text-xs text-[#9AAEAE] mt-0.5">Comprehensive member overview and profile information</p>
               </div>
               <button 
                 onClick={() => setOpenDetailsModal(null)} 
-                className="w-9 h-9 flex items-center justify-center rounded-full text-[#A1A1AA] hover:text-[#11111F] hover:bg-[#17172A] transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-full text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#1B2728] transition-colors"
               >
                 <X size={20} />
               </button>
@@ -275,8 +275,8 @@ const TrainerMembers = () => {
             
             <div className="p-6 sm:p-7 overflow-y-auto space-y-6">
               {/* Member Profile Header Card */}
-              <div className="flex items-center space-x-4 bg-[#0B0B12] p-4 rounded-2xl border border-[#292940]">
-                <div className="w-16 h-16 bg-[#6366F1]/10 text-[#6366F1] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#6366F1]/20 uppercase overflow-hidden shrink-0 shadow-sm">
+              <div className="flex items-center space-x-4 bg-[#0E1415] p-4 rounded-2xl border border-[#2A3A3A]">
+                <div className="w-16 h-16 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#2DD4BF]/20 uppercase overflow-hidden shrink-0 shadow-sm">
                   {openDetailsModal.profilePhoto ? (
                     <img src={openDetailsModal.profilePhoto} alt={openDetailsModal.name} className="w-full h-full object-cover" />
                   ) : (
@@ -284,17 +284,17 @@ const TrainerMembers = () => {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-2xl font-bold text-[#11111F] mb-1 capitalize truncate">{openDetailsModal.name}</h3>
+                  <h3 className="text-2xl font-bold text-[#F5FAFA] mb-1 capitalize truncate">{openDetailsModal.name}</h3>
                   <div className="flex items-center gap-2">
                     <span className={`px-3 py-0.5 rounded-full text-xs font-semibold ${
                       openDetailsModal.status === 'Active' 
-                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
-                        : 'bg-gray-100 text-gray-700 border border-gray-200'
+                        ? 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]' 
+                        : 'bg-[#1B2728] text-[#C1D0D0] border border-[#2A3A3A]'
                     }`}>
                       {openDetailsModal.status}
                     </span>
                     {openDetailsModal.goal && (
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
                         {openDetailsModal.goal}
                       </span>
                     )}
@@ -304,62 +304,62 @@ const TrainerMembers = () => {
               
               {/* Member Info Contiguous Grid Touching One by One */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Profile Information</h4>
-                <div className="border border-[#292940] rounded-xl overflow-hidden divide-y divide-[#292940] bg-white shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#292940]">
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Email</p>
-                      <p className="font-semibold text-sm text-[#11111F] break-all">{openDetailsModal.email || 'Not specified'}</p>
+                <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Profile Information</h4>
+                <div className="border border-[#2A3A3A] rounded-xl overflow-hidden divide-y divide-[#2A3A3A] bg-[#141D1E] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Email</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA] break-all">{openDetailsModal.email || 'Not specified'}</p>
                     </div>
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Phone</p>
-                      <p className="font-semibold text-sm text-[#11111F]">{openDetailsModal.phone || 'Not specified'}</p>
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Phone</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA]">{openDetailsModal.phone || 'Not specified'}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#292940]">
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Membership Plan</p>
-                      <p className="font-semibold text-sm text-[#6366F1]">{openDetailsModal.originalUser?.subscriptionPlan || 'Standard Plan'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Membership Plan</p>
+                      <p className="font-semibold text-sm text-[#2DD4BF]">{openDetailsModal.originalUser?.subscriptionPlan || 'Standard Plan'}</p>
                     </div>
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Join Date</p>
-                      <p className="font-semibold text-sm text-[#11111F]">
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Join Date</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA]">
                         {openDetailsModal.originalUser?.createdAt ? new Date(openDetailsModal.originalUser.createdAt).toLocaleDateString() : 'Not specified'}
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#292940]">
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Gender</p>
-                      <p className="font-semibold text-sm text-[#11111F] capitalize">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Gender</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA] capitalize">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
                     </div>
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Renewal Date</p>
-                      <p className="font-semibold text-sm text-[#11111F]">
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Renewal Date</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA]">
                         {openDetailsModal.originalUser?.subscriptionExpiry ? new Date(openDetailsModal.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#292940]">
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Height / Weight</p>
-                      <p className="font-semibold text-sm text-[#11111F]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Height / Weight</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA]">
                         {openDetailsModal.originalUser?.height ? `${openDetailsModal.originalUser.height} cm` : '--'} / {openDetailsModal.originalUser?.weight ? `${openDetailsModal.originalUser.weight} kg` : '--'}
                       </p>
                     </div>
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Experience Level</p>
-                      <p className="font-semibold text-sm text-[#11111F] capitalize">{openDetailsModal.originalUser?.experienceLevel || 'Intermediate'}</p>
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Experience Level</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA] capitalize">{openDetailsModal.originalUser?.experienceLevel || 'Intermediate'}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#292940]">
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Pref. Training</p>
-                      <p className="font-semibold text-sm text-[#11111F]">{openDetailsModal.originalUser?.preferredTraining || 'General Fitness'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Pref. Training</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA]">{openDetailsModal.originalUser?.preferredTraining || 'General Fitness'}</p>
                     </div>
-                    <div className="p-3.5 bg-white">
-                      <p className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Pref. Workout Time</p>
-                      <p className="font-semibold text-sm text-[#11111F]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Morning'}</p>
+                    <div className="p-3.5 bg-[#141D1E]">
+                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Pref. Workout Time</p>
+                      <p className="font-semibold text-sm text-[#F5FAFA]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Morning'}</p>
                     </div>
                   </div>
                 </div>
@@ -367,33 +367,33 @@ const TrainerMembers = () => {
               
               {/* Recent Sessions */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Recent Bookings</h4>
+                <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Recent Bookings</h4>
                 {openDetailsModal.sessions && openDetailsModal.sessions.length > 0 ? (
                   <div className="space-y-2.5">
                     {openDetailsModal.sessions.slice(0, 3).map((s: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center p-3.5 bg-[#0B0B12] border border-[#292940] rounded-xl">
+                      <div key={idx} className="flex justify-between items-center p-3.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl">
                         <div className="space-y-0.5">
-                          <p className="font-bold text-sm text-[#11111F]">{new Date(s.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                          <p className="text-xs text-[#A1A1AA]">{s.startTime} - {s.endTime} <span className="font-semibold text-blue-700">({s.mode || 'Online'})</span></p>
+                          <p className="font-bold text-sm text-[#F5FAFA]">{new Date(s.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                          <p className="text-xs text-[#9AAEAE]">{s.startTime} - {s.endTime} <span className="font-semibold text-[#2DD4BF]">({s.mode || 'Online'})</span></p>
                         </div>
-                        <span className="text-[11px] font-bold uppercase px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        <span className="text-[11px] font-bold uppercase px-2.5 py-1 rounded-full bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
                           {s.status}
                         </span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-4 bg-[#0B0B12] border border-[#292940] rounded-xl text-center">
-                    <p className="text-xs text-[#A1A1AA]">No session history available for this member.</p>
+                  <div className="p-4 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-center">
+                    <p className="text-xs text-[#9AAEAE]">No session history available for this member.</p>
                   </div>
                 )}
               </div>
             </div>
             
-            <div className="p-4 px-6 border-t border-[#292940] bg-[#0B0B12] flex justify-end">
+            <div className="p-4 px-6 border-t border-[#2A3A3A] bg-[#0E1415] flex justify-end">
               <button 
                 onClick={() => setOpenDetailsModal(null)}
-                className="px-6 py-2.5 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors shadow-sm text-sm"
+                className="px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors shadow-sm text-sm"
               >
                 Close
               </button>

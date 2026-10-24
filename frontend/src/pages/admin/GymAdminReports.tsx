@@ -7,12 +7,12 @@ import api from '../../utils/api';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const PLAN_COLORS = [
-  'bg-[#6366F1]',
-  'bg-[#11111F]',
-  'bg-[#17172A]',
-  'bg-[#4F46E5]',
-  'bg-[#A1A1AA]',
-  'bg-[#292940]'
+  'bg-[#2DD4BF]',
+  'bg-[#141D1E]',
+  'bg-[#1B2728]',
+  'bg-[#5EEAD4]',
+  'bg-[#9AAEAE]',
+  'bg-[#2A3A3A]'
 ];
 
 const GymAdminReports = () => {
@@ -231,8 +231,8 @@ const GymAdminReports = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-28 space-y-4">
-        <Loader2 className="w-10 h-10 text-[#6366F1] animate-spin" />
-        <p className="text-sm font-semibold text-[#A1A1AA]">Loading real-time gym analytics & reports...</p>
+        <Loader2 className="w-10 h-10 text-[#2DD4BF] animate-spin" />
+        <p className="text-sm font-semibold text-[#9AAEAE]">Loading real-time gym analytics & reports...</p>
       </div>
     );
   }
@@ -242,25 +242,25 @@ const GymAdminReports = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Analytics & Reports</h1>
-          <p className="text-[#A1A1AA] mt-1">Deep insights into your gym's performance, member retention, and revenue.</p>
+          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Analytics & Reports</h1>
+          <p className="text-[#9AAEAE] mt-1">Deep insights into your gym's performance, member retention, and revenue.</p>
         </div>
         <div className="flex items-center space-x-3">
           <div className="relative">
             <select
               value={timeframe}
               onChange={(e) => setTimeframe(e.target.value as any)}
-              className="px-4 py-2.5 bg-white border border-[#292940] text-[#11111F] text-sm font-bold rounded-xl hover:border-[#6366F1] transition-colors outline-none cursor-pointer appearance-none pr-8 shadow-xs"
+              className="px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] text-[#F5FAFA] text-sm font-bold rounded-xl hover:border-[#2DD4BF] transition-colors outline-none cursor-pointer appearance-none pr-8 shadow-xs"
             >
               <option value="1week">One Week</option>
               <option value="1month">One Month</option>
               <option value="1year">One Year</option>
             </select>
-            <Calendar className="w-4 h-4 text-[#A1A1AA] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Calendar className="w-4 h-4 text-[#9AAEAE] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
           <button
             onClick={handleExportPDF}
-            className="px-4 py-2.5 bg-[#6366F1] text-white text-sm font-bold rounded-xl hover:bg-[#4F46E5] transition-colors flex items-center gap-2 shadow-md shadow-[#6366F1]/20 cursor-pointer"
+            className="px-4 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold text-sm font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors flex items-center gap-2 shadow-md shadow-[#2DD4BF]/20 cursor-pointer"
           >
             <Download size={16} /> Export PDF
           </button>
@@ -270,49 +270,49 @@ const GymAdminReports = () => {
       {/* Top 4 KPI Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Members */}
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 hover:border-[#6366F1]/30 transition-all shadow-xs">
-          <div className="w-12 h-12 bg-blue-500/10 text-[#6366F1] rounded-xl flex items-center justify-center mb-4">
+        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 hover:border-[#2DD4BF]/30 transition-all shadow-xs">
+          <div className="w-12 h-12 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-xl flex items-center justify-center mb-4">
             <Users size={24} />
           </div>
-          <p className="text-[#A1A1AA] font-semibold text-xs uppercase tracking-wider mb-1">Total Members</p>
-          <h3 className="text-3xl font-black text-[#11111F]">{metrics.totalMembers.toLocaleString('en-IN')}</h3>
-          <p className="text-emerald-700 text-xs font-bold mt-2 flex items-center gap-1">
+          <p className="text-[#9AAEAE] font-semibold text-xs uppercase tracking-wider mb-1">Total Members</p>
+          <h3 className="text-3xl font-black text-[#F5FAFA]">{metrics.totalMembers.toLocaleString('en-IN')}</h3>
+          <p className="text-[#2DD4BF] text-xs font-bold mt-2 flex items-center gap-1">
             <TrendingUp size={14} /> {metrics.activeMembers} Active · {metrics.inactiveMembers} Inactive
           </p>
         </div>
 
         {/* Retention Rate */}
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 hover:border-[#6366F1]/30 transition-all shadow-xs">
-          <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
+        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 hover:border-[#2DD4BF]/30 transition-all shadow-xs">
+          <div className="w-12 h-12 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-xl flex items-center justify-center mb-4">
             <BarChart3 size={24} />
           </div>
-          <p className="text-[#A1A1AA] font-semibold text-xs uppercase tracking-wider mb-1">Retention Rate</p>
-          <h3 className="text-3xl font-black text-[#11111F]">{metrics.retentionRate}%</h3>
-          <p className="text-emerald-700 text-xs font-bold mt-2 flex items-center gap-1">
+          <p className="text-[#9AAEAE] font-semibold text-xs uppercase tracking-wider mb-1">Retention Rate</p>
+          <h3 className="text-3xl font-black text-[#F5FAFA]">{metrics.retentionRate}%</h3>
+          <p className="text-[#2DD4BF] text-xs font-bold mt-2 flex items-center gap-1">
             <TrendingUp size={14} /> Active member ratio
           </p>
         </div>
 
         {/* Churn Rate */}
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 hover:border-[#6366F1]/30 transition-all shadow-xs">
+        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 hover:border-[#2DD4BF]/30 transition-all shadow-xs">
           <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-xl flex items-center justify-center mb-4">
             <UserMinus size={24} />
           </div>
-          <p className="text-[#A1A1AA] font-semibold text-xs uppercase tracking-wider mb-1">Churn Rate</p>
-          <h3 className="text-3xl font-black text-[#11111F]">{metrics.churnRate}%</h3>
-          <p className="text-[#A1A1AA] text-xs font-medium mt-2">
+          <p className="text-[#9AAEAE] font-semibold text-xs uppercase tracking-wider mb-1">Churn Rate</p>
+          <h3 className="text-3xl font-black text-[#F5FAFA]">{metrics.churnRate}%</h3>
+          <p className="text-[#9AAEAE] text-xs font-medium mt-2">
             Non-renewing / inactive members
           </p>
         </div>
 
         {/* Avg Lifetime Value */}
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 hover:border-[#6366F1]/30 transition-all shadow-xs">
-          <div className="w-12 h-12 bg-[#6366F1]/10 text-[#6366F1] rounded-xl flex items-center justify-center mb-4">
+        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 hover:border-[#2DD4BF]/30 transition-all shadow-xs">
+          <div className="w-12 h-12 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-xl flex items-center justify-center mb-4">
             <IndianRupee size={24} />
           </div>
-          <p className="text-[#A1A1AA] font-semibold text-xs uppercase tracking-wider mb-1">Avg. Lifetime Value</p>
-          <h3 className="text-3xl font-black text-[#11111F]">₹{metrics.avgLifetimeValue.toLocaleString('en-IN')}</h3>
-          <p className="text-[#6366F1] text-xs font-bold mt-2 flex items-center gap-1">
+          <p className="text-[#9AAEAE] font-semibold text-xs uppercase tracking-wider mb-1">Avg. Lifetime Value</p>
+          <h3 className="text-3xl font-black text-[#F5FAFA]">₹{metrics.avgLifetimeValue.toLocaleString('en-IN')}</h3>
+          <p className="text-[#2DD4BF] text-xs font-bold mt-2 flex items-center gap-1">
             Total Revenue: ₹{metrics.totalRevenue.toLocaleString('en-IN')}
           </p>
         </div>
@@ -322,11 +322,11 @@ const GymAdminReports = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Membership Growth Bar Chart */}
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between border-b border-[#292940] pb-3 mb-6">
-              <h3 className="text-lg font-bold text-[#11111F]">Membership Growth ({new Date().getFullYear()})</h3>
-              <span className="text-xs font-semibold text-[#A1A1AA]">
+            <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3 mb-6">
+              <h3 className="text-lg font-bold text-[#F5FAFA]">Membership Growth ({new Date().getFullYear()})</h3>
+              <span className="text-xs font-semibold text-[#9AAEAE]">
                 {metrics.newMembersInPeriod} new in selected period
               </span>
             </div>
@@ -335,37 +335,37 @@ const GymAdminReports = () => {
               {monthlyGrowth.map((item, idx) => (
                 <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
                   {/* Tooltip */}
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#11111F] text-white text-xs px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20 shadow-md">
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#141D1E] text-white text-xs px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20 shadow-md">
                     {item.month}: {item.count} member(s)
                   </div>
                   
                   {/* Bar */}
                   <div
                     className={`w-full rounded-t-md transition-all duration-300 ${
-                      item.count > 0 ? 'bg-[#6366F1] group-hover:bg-[#4F46E5]' : 'bg-[#17172A]/60'
+                      item.count > 0 ? 'bg-[#2DD4BF] group-hover:bg-[#5EEAD4]' : 'bg-[#1B2728]/60'
                     }`}
                     style={{ height: `${item.heightPercent}%` }}
                   />
                   
                   {/* Label */}
-                  <span className="text-[11px] font-semibold text-[#A1A1AA] mt-2 block group-hover:text-[#11111F]">
+                  <span className="text-[11px] font-semibold text-[#9AAEAE] mt-2 block group-hover:text-[#FFFFFF]">
                     {item.month}
                   </span>
                 </div>
               ))}
             </div>
           </div>
-          <p className="text-xs text-[#A1A1AA] mt-2 text-center">
+          <p className="text-xs text-[#9AAEAE] mt-2 text-center">
             Monthly member registrations throughout {new Date().getFullYear()}
           </p>
         </div>
 
         {/* Revenue & Member Share by Plan Type */}
-        <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between border-b border-[#292940] pb-3 mb-6">
-              <h3 className="text-lg font-bold text-[#11111F]">Members by Plan Type</h3>
-              <span className="text-xs font-semibold text-[#A1A1AA]">
+            <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3 mb-6">
+              <h3 className="text-lg font-bold text-[#F5FAFA]">Members by Plan Type</h3>
+              <span className="text-xs font-semibold text-[#9AAEAE]">
                 {planDistribution.length} Active Plan(s)
               </span>
             </div>
@@ -376,13 +376,13 @@ const GymAdminReports = () => {
                 return (
                   <div key={plan.name} className="space-y-1.5">
                     <div className="flex justify-between text-sm">
-                      <span className="font-bold text-[#11111F] capitalize">
+                      <span className="font-bold text-[#F5FAFA] capitalize">
                         {plan.name}
-                        <span className="text-xs text-[#A1A1AA] font-normal ml-2">({plan.count} members)</span>
+                        <span className="text-xs text-[#9AAEAE] font-normal ml-2">({plan.count} members)</span>
                       </span>
-                      <span className="font-bold text-[#6366F1]">{plan.percentage}%</span>
+                      <span className="font-bold text-[#2DD4BF]">{plan.percentage}%</span>
                     </div>
-                    <div className="w-full bg-[#0B0B12] rounded-full h-3 overflow-hidden">
+                    <div className="w-full bg-[#0E1415] rounded-full h-3 overflow-hidden">
                       <div
                         className={`${colorClass} h-3 rounded-full transition-all duration-500`}
                         style={{ width: `${Math.max(5, plan.percentage)}%` }}
@@ -394,7 +394,7 @@ const GymAdminReports = () => {
             </div>
           </div>
 
-          <div className="pt-4 mt-6 border-t border-[#292940] flex justify-between text-xs text-[#A1A1AA]">
+          <div className="pt-4 mt-6 border-t border-[#2A3A3A] flex justify-between text-xs text-[#9AAEAE]">
             <span>Store Sales Revenue: <strong>₹{metrics.storeRevenue.toLocaleString('en-IN')}</strong></span>
             <span>Membership Revenue: <strong>₹{metrics.membershipRevenue.toLocaleString('en-IN')}</strong></span>
           </div>

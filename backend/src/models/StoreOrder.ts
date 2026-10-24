@@ -64,6 +64,8 @@ export interface IStoreOrder extends Document {
   status: StoreOrderStatus;
   statusHistory: IStoreOrderStatusEvent[];
   cancellationReason?: string;
+  pointsRedeemed?: number;
+  pointsDiscount?: number;
   refundDetails?: {
     amount: number;
     reason: string;
@@ -126,6 +128,8 @@ const storeOrderSchema = new Schema<IStoreOrder>(
       },
     ],
     cancellationReason: { type: String },
+    pointsRedeemed: { type: Number, default: 0, min: 0 },
+    pointsDiscount: { type: Number, default: 0, min: 0 },
     refundDetails: {
       amount: { type: Number },
       reason: { type: String },

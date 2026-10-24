@@ -242,37 +242,37 @@ const SuperAdminGymsAdd = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Link to="/super-admin/gyms/all" className="p-2 bg-[#FFFFFF] hover:bg-[#17172A] rounded-xl transition-colors">
+          <Link to="/super-admin/gyms/all" className="p-2 bg-[#FFFFFF] hover:bg-[#1B2728] rounded-xl transition-colors">
             <ArrowLeft size={20} />
           </Link>
           <div>
             <h1 className="text-2xl font-bold">Gym Setup Wizard</h1>
-            <p className="text-[#A1A1AA] text-sm">Step {currentStep} of 10</p>
+            <p className="text-[#9AAEAE] text-sm">Step {currentStep} of 10</p>
           </div>
         </div>
-        <button onClick={() => alert('Draft Saved!')} className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] hover:bg-[#17172A] rounded-xl transition-colors text-sm font-medium text-[#A1A1AA]">
+        <button onClick={() => alert('Draft Saved!')} className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] hover:bg-[#1B2728] rounded-xl transition-colors text-sm font-medium text-[#9AAEAE]">
           <Save size={16} />
           <span>Save Draft</span>
         </button>
       </div>
 
       {/* Progress Bar */}
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6">
+      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6">
         <div className="relative pt-1">
           <div className="flex mb-2 items-center justify-between">
             <div>
-              <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-[#6366F1] bg-[#6366F1]/10">
+              <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-[#2DD4BF] bg-[#2DD4BF]/10">
                 Setup Progress
               </span>
             </div>
             <div className="text-right">
-              <span className="text-xs font-semibold inline-block text-[#6366F1]">
+              <span className="text-xs font-semibold inline-block text-[#2DD4BF]">
                 {Math.round(progressPercentage)}%
               </span>
             </div>
           </div>
           <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[#FFFFFF]">
-            <div style={{ width: `${progressPercentage}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-[#11111F] justify-center bg-[#6366F1] transition-all duration-500"></div>
+            <div style={{ width: `${progressPercentage}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-[#F5FAFA] justify-center bg-[#2DD4BF] transition-all duration-500"></div>
           </div>
         </div>
         
@@ -281,12 +281,12 @@ const SuperAdminGymsAdd = () => {
           {STEPS.map((step) => (
             <div 
               key={step.id} 
-              className={`flex flex-col items-center cursor-pointer ${currentStep === step.id ? 'text-[#6366F1]' : step.id < currentStep ? 'text-green-500' : 'text-[#A1A1AA]'}`}
+              className={`flex flex-col items-center cursor-pointer ${currentStep === step.id ? 'text-[#2DD4BF]' : step.id < currentStep ? 'text-green-500' : 'text-[#9AAEAE]'}`}
               onClick={() => step.id < currentStep && setCurrentStep(step.id)}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 mb-2 transition-colors
-                ${currentStep === step.id ? 'border-[#6366F1] bg-[#6366F1]/10' : 
-                  step.id < currentStep ? 'border-green-500 bg-green-500/10' : 'border-[#292940] bg-[#FFFFFF]'}`}
+                ${currentStep === step.id ? 'border-[#2DD4BF] bg-[#2DD4BF]/10' : 
+                  step.id < currentStep ? 'border-green-500 bg-green-500/10' : 'border-[#2A3A3A] bg-[#FFFFFF]'}`}
               >
                 {step.id < currentStep ? <CheckCircle2 size={16} /> : step.id}
               </div>
@@ -297,16 +297,16 @@ const SuperAdminGymsAdd = () => {
       </div>
 
       {/* Form Content */}
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6 md:p-8 min-h-[400px]">
+      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 md:p-8 min-h-[400px]">
         {renderStep()}
       </div>
 
       {/* Navigation Footer */}
-      <div className="flex justify-between items-center bg-[#FFFFFF] border border-[#292940] rounded-2xl p-4">
+      <div className="flex justify-between items-center bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-4">
         <button
           onClick={prevStep}
           disabled={currentStep === 1}
-          className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-bold transition-all ${currentStep === 1 ? 'opacity-50 cursor-not-allowed bg-[#FFFFFF] text-[#A1A1AA]' : 'bg-[#FFFFFF] text-[#11111F] hover:bg-[#17172A]'}`}
+          className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-bold transition-all ${currentStep === 1 ? 'opacity-50 cursor-not-allowed bg-[#FFFFFF] text-[#9AAEAE]' : 'bg-[#FFFFFF] text-[#F5FAFA] hover:bg-[#1B2728]'}`}
         >
           <ChevronLeft size={18} />
           <span>Previous</span>
@@ -315,7 +315,7 @@ const SuperAdminGymsAdd = () => {
         {currentStep < 10 ? (
           <button
             onClick={nextStep}
-            className="flex items-center space-x-2 px-6 py-3 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-all shadow-lg shadow-[#6366F1]/20"
+            className="flex items-center space-x-2 px-6 py-3 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-all shadow-lg shadow-[#2DD4BF]/20"
           >
             <span>Next Step</span>
             <ChevronRight size={18} />

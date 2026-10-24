@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Wind } from 'lucide-react';
 
 interface StepProps {
@@ -31,33 +31,37 @@ const Step3ACDetails: React.FC<StepProps> = ({ form, set, errors, selBtnCls }) =
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-[#11111F] border-b border-[#292940] pb-2 flex items-center gap-2">
-          <Wind className="text-[#6366F1]" size={20} />
+        <h2 className="text-lg font-bold text-[#0F172A] border-b border-[#E2E8F0] pb-2 flex items-center gap-2">
+          <Wind className="text-[#2DD4BF]" size={20} />
           <span>Air Conditioning Details</span>
         </h2>
         
         <div>
-          <label className="block text-sm text-[#A1A1AA] mb-3">Gym AC Type *</label>
+          <label className="block text-sm font-semibold text-[#334155] mb-3">Gym AC Type *</label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {AC_TYPES.map(t => (
               <button 
                 key={t} 
                 type="button" 
                 onClick={() => handleTypeChange(t)} 
-                className={`py-3 px-2 rounded-xl text-xs font-medium border transition-colors ${currentType === t ? 'bg-[#6366F1] text-white border-[#6366F1]' : 'bg-[#FFFFFF] border-[#292940] text-[#A1A1AA] hover:border-[#6366F1]/50'}`}
+                className={`py-3 px-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                  currentType === t 
+                    ? 'bg-[#2DD4BF] text-[#06201D] border-[#2DD4BF] shadow-xs' 
+                    : 'bg-[#FFFFFF] border-[#CBD5E1] text-[#334155] hover:border-[#2DD4BF] hover:bg-[#F8FAFC]'
+                }`}
               >
                 {t}
               </button>
             ))}
           </div>
-          {errors['acDetails.type'] && <p className="text-teal-400 text-xs mt-2">{errors['acDetails.type']}</p>}
+          {errors['acDetails.type'] && <p className="text-red-500 text-xs mt-2">{errors['acDetails.type']}</p>}
         </div>
       </div>
 
       {currentType && currentType !== 'Non-AC' && currentType !== 'Fully AC' && (
-        <div className="space-y-4 bg-[#FFFFFF] p-6 rounded-xl border border-[#292940]">
+        <div className="space-y-4 bg-[#F8FAFC] p-6 rounded-xl border border-[#E2E8F0]">
           <div>
-            <label className="block text-sm text-[#A1A1AA] mb-3">Specify Areas with AC *</label>
+            <label className="block text-sm font-semibold text-[#334155] mb-3">Specify Areas with AC *</label>
             <div className="flex flex-wrap gap-2">
               {AC_AREAS.map(area => (
                 <button 
@@ -70,7 +74,7 @@ const Step3ACDetails: React.FC<StepProps> = ({ form, set, errors, selBtnCls }) =
                 </button>
               ))}
             </div>
-            {errors['acDetails.areas'] && <p className="text-teal-400 text-xs mt-2">{errors['acDetails.areas']}</p>}
+            {errors['acDetails.areas'] && <p className="text-red-500 text-xs mt-2">{errors['acDetails.areas']}</p>}
           </div>
         </div>
       )}

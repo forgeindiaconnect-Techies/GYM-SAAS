@@ -441,3 +441,67 @@ export const deleteAward = async (req: AuthRequest, res: Response): Promise<void
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+// 9. Update Award Details
+export const updateAward = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { awardId } = req.params;
+    const userId = req.user?.id;
+    const user = await User.findById(userId).select('gymId');
+    const gymId = req.user?.gymId || user?.gymId;
+
+    if (!gymId) {
+      res.status(404).json({ success: false, message: 'Gym not found' });
+      return;
+    }
+
+    const {
+      title,
+      recipientType,
+      category,
+      description,
+      badgeIcon,
+      awardPeriod,
+      startDate,
+      endDate,
+      announcementDate,
+      criteriaMetric,
+      minCriteriaValue,
+      winnerSelectionMethod,
+      prizeBonusAmount,
+      prizeDescription,
+      allowDuplicateWinner,
+      status
+    } = req.body;
+
+    const award = await AwardRecognition.findOne({ _id: awardId, gymId });
+    if (!award) {
+      res.status(404).json({ success: false, message: 'Award not found' });
+      return;
+    }
+
+    if (title !== undefined) award.title = title.trim();
+    if (recipientType !== undefined) award.recipientType = recipientType;
+    if (category !== undefined) award.category = category.trim();
+    if (description !== undefined) award.description = description.trim();
+    if (badgeIcon !== undefined) award.badgeIcon = badgeIcon;
+    if (awardPeriod !== undefined) award.awardPeriod = awardPeriod;
+    if (startDate !== undefined) award.startDate = startDate ? new Date(startDate) : undefined;
+    if (endDate !== undefined) award.endDate = endDate ? new Date(endDate) : undefined;
+    if (announcementDate !== undefined) award.announcementDate = announcementDate ? new Date(announcementDate) : undefined;
+    if (criteriaMetric !== undefined) award.criteriaMetric = criteriaMetric;
+    if (minCriteriaValue !== undefined) award.minCriteriaValue = Number(minCriteriaValue) || 0;
+    if (winnerSelectionMethod !== undefined) award.winnerSelectionMethod = winnerSelectionMethod;
+    if (prizeBonusAmount !== undefined) award.prizeBonusAmount = Number(prizeBonusAmount) || 0;
+    if (prizeDescription !== undefined) award.prizeDescription = prizeDescription?.trim();
+    if (allowDuplicateWinner !== undefined) award.allowDuplicateWinner = Boolean(allowDuplicateWinner);
+    if (status !== undefined) award.status = status;
+
+    await award.save();
+
+    res.status(200).json({ success: true, award, message: 'Award updated successfully!' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+

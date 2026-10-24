@@ -78,16 +78,16 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
   if (submitted) {
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center relative shadow-2xl border border-[#292940] my-auto animate-in fade-in zoom-in-95 duration-150">
-          <button onClick={onClose} className="absolute right-4 top-4 text-[#A1A1AA] hover:bg-[#0B0B12] p-2 rounded-full transition-colors">
+        <div className="bg-[#141D1E] rounded-2xl p-8 max-w-md w-full text-center relative shadow-2xl border border-[#2A3A3A] my-auto animate-in fade-in zoom-in-95 duration-150">
+          <button onClick={onClose} className="absolute right-4 top-4 text-[#9AAEAE] hover:bg-[#0E1415] p-2 rounded-full transition-colors">
             <X size={20} />
           </button>
-          <div className="w-16 h-16 bg-green-100 text-[#6366F1] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-green-100 text-[#2DD4BF] rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
           </div>
-          <h2 className="text-2xl font-bold text-[#11111F] mb-2">Enquiry Submitted</h2>
-          <p className="text-[#A1A1AA] mb-6">Your enquiry has been submitted successfully. The {gymName} team will contact you soon.</p>
-          <button onClick={onClose} className="w-full bg-[#6366F1] text-white py-3 rounded-xl font-bold hover:bg-[#6366F1]/90 transition-colors shadow-sm">
+          <h2 className="text-2xl font-bold text-[#F5FAFA] mb-2">Enquiry Submitted</h2>
+          <p className="text-[#9AAEAE] mb-6">Your enquiry has been submitted successfully. The {gymName} team will contact you soon.</p>
+          <button onClick={onClose} className="w-full bg-[#2DD4BF] text-[#06201D] font-bold py-3 rounded-xl font-bold hover:bg-[#2DD4BF]/90 transition-colors shadow-sm">
             Close
           </button>
         </div>
@@ -97,18 +97,18 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl border border-[#292940] overflow-hidden my-auto max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-[#141D1E] rounded-2xl w-full max-w-2xl shadow-2xl border border-[#2A3A3A] overflow-hidden my-auto max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
         {/* Pinned Modal Header */}
-        <div className="p-5 sm:p-6 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12] shrink-0">
+        <div className="p-5 sm:p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415] shrink-0">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#11111F]">Enquire Now</h2>
-            <p className="text-[#A1A1AA] text-xs sm:text-sm mt-0.5 flex items-center gap-1.5 font-medium">
-              <Building2 size={15} className="text-[#6366F1]" /> {gymName}
+            <h2 className="text-xl sm:text-2xl font-bold text-[#F5FAFA]">Enquire Now</h2>
+            <p className="text-[#9AAEAE] text-xs sm:text-sm mt-0.5 flex items-center gap-1.5 font-medium">
+              <Building2 size={15} className="text-[#2DD4BF]" /> {gymName}
             </p>
           </div>
           <button 
             onClick={onClose} 
-            className="p-1.5 text-[#A1A1AA] hover:text-[#11111F] hover:bg-slate-200 rounded-lg transition-colors"
+            className="p-1.5 text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-slate-200 rounded-lg transition-colors"
             title="Close"
           >
             <X size={20} />
@@ -120,19 +120,19 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
           <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1 custom-scrollbar">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Full Name *</label>
+                <label className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={formData.customerName}
                   onChange={e => setFormData({ ...formData, customerName: e.target.value })}
-                  className="w-full bg-[#0B0B12] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 outline-none focus:border-[#6366F1] focus:bg-white text-sm transition-all"
+                  className="w-full bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#141D1E] text-sm transition-all"
                   placeholder="John Doe"
                 />
               </div>
               
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Mobile Number *</label>
+                <label className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Mobile Number *</label>
                 <input
                   type="tel"
                   required
@@ -143,20 +143,20 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
                     const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                     setFormData({ ...formData, mobileNumber: val });
                   }}
-                  className="w-full bg-[#0B0B12] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 outline-none focus:border-[#6366F1] focus:bg-white text-sm transition-all"
+                  className="w-full bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#141D1E] text-sm transition-all"
                   placeholder="9876543210"
                 />
               </div>
 
               <div className="space-y-1 md:col-span-2">
-                <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Email Address *</label>
+                <label className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Email Address *</label>
                 <input
                   type="email"
                   required
                   pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
                   value={formData.email}
                   onChange={e => setFormData({ ...formData, email: e.target.value.replace(/\s/g, '').toLowerCase() })}
-                  className="w-full bg-[#0B0B12] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 outline-none focus:border-[#6366F1] focus:bg-white text-sm transition-all"
+                  className="w-full bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#141D1E] text-sm transition-all"
                   placeholder="john@example.com"
                   title="Please enter a valid email address"
                 />
@@ -165,11 +165,11 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Enquiry Type *</label>
+                <label className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Enquiry Type *</label>
                 <select
                   value={formData.enquiryType}
                   onChange={e => setFormData({ ...formData, enquiryType: e.target.value })}
-                  className="w-full bg-[#0B0B12] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 outline-none focus:border-[#6366F1] focus:bg-white text-sm transition-all"
+                  className="w-full bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#141D1E] text-sm transition-all"
                 >
                   <option value="Membership">Membership</option>
                   <option value="Pricing">Pricing</option>
@@ -185,11 +185,11 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Preferred Contact Method</label>
+                <label className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Preferred Contact Method</label>
                 <select
                   value={formData.preferredContactMethod}
                   onChange={e => setFormData({ ...formData, preferredContactMethod: e.target.value })}
-                  className="w-full bg-[#0B0B12] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 outline-none focus:border-[#6366F1] focus:bg-white text-sm transition-all"
+                  className="w-full bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#141D1E] text-sm transition-all"
                 >
                   <option value="Phone Call">Phone Call</option>
                   <option value="Email">Email</option>
@@ -200,21 +200,21 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
 
             {branches.length > 0 && (
               <div className="space-y-2">
-                <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Select Branch *</label>
+                <label className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Select Branch *</label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {branches.map(b => (
-                    <label key={b._id} className={`flex items-start p-3 border rounded-xl cursor-pointer transition-colors ${formData.branchId === b._id ? 'border-[#6366F1] bg-[#6366F1]/5' : 'border-[#292940] bg-[#0B0B12] hover:border-[#17172A]'}`}>
+                    <label key={b._id} className={`flex items-start p-3 border rounded-xl cursor-pointer transition-colors ${formData.branchId === b._id ? 'border-[#2DD4BF] bg-[#2DD4BF]/5' : 'border-[#2A3A3A] bg-[#0E1415] hover:border-[#1B2728]'}`}>
                       <input
                         type="radio"
                         name="branch"
                         value={b._id}
                         checked={formData.branchId === b._id}
                         onChange={() => setFormData({ ...formData, branchId: b._id })}
-                        className="mt-1 mr-3 text-[#6366F1] focus:ring-[#6366F1]"
+                        className="mt-1 mr-3 text-[#2DD4BF] focus:ring-[#2DD4BF]"
                       />
                       <div>
-                        <div className="font-semibold text-[#11111F] text-sm">{b.name}</div>
-                        <div className="text-xs text-[#A1A1AA] flex items-center gap-1 mt-0.5"><MapPin size={11} /> {b.address?.area || b.address?.city}</div>
+                        <div className="font-semibold text-[#F5FAFA] text-sm">{b.name}</div>
+                        <div className="text-xs text-[#9AAEAE] flex items-center gap-1 mt-0.5"><MapPin size={11} /> {b.address?.area || b.address?.city}</div>
                       </div>
                     </label>
                   ))}
@@ -223,31 +223,31 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
             )}
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Message *</label>
+              <label className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Message *</label>
               <textarea
                 required
                 rows={3}
                 value={formData.message}
                 onChange={e => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-[#0B0B12] border border-[#292940] text-[#11111F] rounded-xl px-4 py-2.5 outline-none focus:border-[#6366F1] focus:bg-white text-sm transition-all resize-none"
+                className="w-full bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#141D1E] text-sm transition-all resize-none"
                 placeholder="Tell us what you would like to know..."
               />
             </div>
           </div>
 
           {/* Pinned Modal Footer */}
-          <div className="p-4 sm:p-5 flex gap-3 border-t border-[#292940] bg-[#0B0B12] shrink-0">
+          <div className="p-4 sm:p-5 flex gap-3 border-t border-[#2A3A3A] bg-[#0E1415] shrink-0">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 px-4 bg-white border border-[#292940] text-[#A1A1AA] font-bold rounded-xl hover:bg-slate-100 transition-colors text-sm"
+              className="flex-1 py-2.5 px-4 bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] font-bold rounded-xl hover:bg-[#1B2728] transition-colors text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || fetchingBranches}
-              className="flex-1 py-2.5 px-4 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#6366F1]/90 transition-colors flex items-center justify-center disabled:opacity-70 text-sm shadow-sm"
+              className="flex-1 py-2.5 px-4 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#2DD4BF]/90 transition-colors flex items-center justify-center disabled:opacity-70 text-sm shadow-sm"
             >
               {loading ? <><Loader2 className="animate-spin mr-2" size={18} /> Submitting...</> : 'Submit Enquiry'}
             </button>

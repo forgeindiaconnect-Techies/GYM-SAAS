@@ -272,6 +272,8 @@ function App() {
             <Route path="challenges" element={<MemberChallenges />} />
             <Route path="referrals" element={<MemberReferrals />} />
             <Route path="refer-earn" element={<MemberReferrals />} />
+            <Route path="rewards" element={<MemberChallenges />} />
+            <Route path="my-rewards" element={<MemberChallenges />} />
           </Route>
 
           {/* Trainer Routes */}

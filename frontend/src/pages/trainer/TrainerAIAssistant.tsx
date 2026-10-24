@@ -53,26 +53,26 @@ const TrainerAIAssistant = () => {
         );
       case 'Under Trainer Review':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-300">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
             <Clock size={12} /> Under Review
           </span>
         );
       case 'Trainer Edited':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-[#17172A] text-[#4F46E5] border border-[#292940]">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-[#1B2728] text-[#5EEAD4] border border-[#2A3A3A]">
             <FileEdit size={12} /> Trainer Edited
           </span>
         );
       case 'Trainer Approved':
       case 'Published to Customer':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
             <CheckCircle2 size={12} /> Trainer Approved
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#1B2728] text-[#C1D0D0]">
             <UserCheck size={12} /> {status || 'No Data'}
           </span>
         );
@@ -84,12 +84,12 @@ const TrainerAIAssistant = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-teal-700 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-900/20 text-white">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-2xl flex items-center justify-center shadow-lg shadow-teal-900/20 text-[#06201D] font-bold">
             <Bot size={26} />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">AI Analysis Review Hub</h1>
-            <p className="text-[#A1A1AA] mt-1 text-sm">
+            <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">AI Analysis Review Hub</h1>
+            <p className="text-[#9AAEAE] mt-1 text-sm">
               Review customer assessments, adjust exercises, calibrate sets & reps, and approve final customer plans.
             </p>
           </div>
@@ -97,19 +97,19 @@ const TrainerAIAssistant = () => {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[#A1A1AA]" size={18} />
+          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[#9AAEAE]" size={18} />
           <input
             type="text"
             placeholder="Search clients by name or goal..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full md:w-72 pl-10 pr-4 py-2.5 bg-white border border-[#17172A] rounded-xl focus:border-[#6366F1] transition-all outline-none text-sm text-[#11111F]"
+            className="w-full md:w-72 pl-10 pr-4 py-2.5 bg-[#141D1E] border border-[#1B2728] rounded-xl focus:border-[#2DD4BF] transition-all outline-none text-sm text-[#F5FAFA]"
           />
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#17172A] pb-2 overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2 border-b border-[#1B2728] pb-2 overflow-x-auto no-scrollbar">
         {[
           { key: 'All', label: 'All Clients' },
           { key: 'Pending', label: 'Pending Trainer Review' },
@@ -120,8 +120,8 @@ const TrainerAIAssistant = () => {
             onClick={() => setStatusFilter(tab.key)}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
               statusFilter === tab.key
-                ? 'bg-[#6366F1] text-white shadow-sm'
-                : 'bg-white text-[#A1A1AA] hover:bg-[#0B0B12] border border-[#17172A]'
+                ? 'bg-[#2DD4BF] text-white shadow-sm'
+                : 'bg-[#141D1E] text-[#9AAEAE] hover:bg-[#0E1415] border border-[#1B2728]'
             }`}
           >
             {tab.label}
@@ -130,11 +130,11 @@ const TrainerAIAssistant = () => {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white border border-[#292940] rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-[#0B0B12] border-b border-[#17172A] text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">
+              <tr className="bg-[#0E1415] border-b border-[#1B2728] text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">
                 <th className="px-6 py-4">Client Name</th>
                 <th className="px-6 py-4">Fitness Goal</th>
                 <th className="px-6 py-4">Fitness Level</th>
@@ -143,28 +143,28 @@ const TrainerAIAssistant = () => {
                 <th className="px-6 py-4 text-right">Review Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#17172A]">
+            <tbody className="divide-y divide-[#1B2728]">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-16 text-center text-[#A1A1AA]">
-                    <div className="w-8 h-8 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                    <p className="font-semibold text-xs text-[#A1A1AA]">Loading clients...</p>
+                  <td colSpan={6} className="px-6 py-16 text-center text-[#9AAEAE]">
+                    <div className="w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    <p className="font-semibold text-xs text-[#9AAEAE]">Loading clients...</p>
                   </td>
                 </tr>
               ) : filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-16 text-center text-[#A1A1AA]">
-                    <Bot size={36} className="mx-auto text-[#292940] mb-2" />
-                    <p className="font-bold text-sm text-[#11111F]">No clients found</p>
-                    <p className="text-xs text-[#A1A1AA] mt-1">No customer assessment records matching this filter.</p>
+                  <td colSpan={6} className="px-6 py-16 text-center text-[#9AAEAE]">
+                    <Bot size={36} className="mx-auto text-[#2A3A3A] mb-2" />
+                    <p className="font-bold text-sm text-[#F5FAFA]">No clients found</p>
+                    <p className="text-xs text-[#9AAEAE] mt-1">No customer assessment records matching this filter.</p>
                   </td>
                 </tr>
               ) : (
                 filteredCustomers.map((customer) => (
-                  <tr key={customer._id} className="hover:bg-[#0B0B12] transition-colors">
+                  <tr key={customer._id} className="hover:bg-[#0E1415] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-[#6366F1]/10 text-[#6366F1] rounded-full flex items-center justify-center font-bold text-sm shrink-0">
+                        <div className="w-10 h-10 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-full flex items-center justify-center font-bold text-sm shrink-0">
                           {customer.profilePhoto ? (
                             <img src={customer.profilePhoto} alt="profile" className="w-full h-full object-cover rounded-full" />
                           ) : (
@@ -172,16 +172,16 @@ const TrainerAIAssistant = () => {
                           )}
                         </div>
                         <div>
-                          <p className="font-bold text-sm text-[#11111F]">{customer.firstName} {customer.lastName}</p>
-                          <p className="text-xs text-[#A1A1AA]">{customer.email}</p>
+                          <p className="font-bold text-sm text-[#F5FAFA]">{customer.firstName} {customer.lastName}</p>
+                          <p className="text-xs text-[#9AAEAE]">{customer.email}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm font-semibold text-[#6366F1]">{customer.goal}</span>
+                      <span className="text-sm font-semibold text-[#2DD4BF]">{customer.goal}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xs font-semibold text-[#A1A1AA] bg-[#0B0B12] px-2.5 py-1 rounded-lg">
+                      <span className="text-xs font-semibold text-[#9AAEAE] bg-[#0E1415] px-2.5 py-1 rounded-lg">
                         {customer.level}
                       </span>
                     </td>
@@ -189,7 +189,7 @@ const TrainerAIAssistant = () => {
                       {getStatusBadge(customer.aiStatus)}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xs text-[#A1A1AA]">
+                      <span className="text-xs text-[#9AAEAE]">
                         {customer.lastUpdated ? new Date(customer.lastUpdated).toLocaleDateString() : '-'}
                       </span>
                     </td>
@@ -198,10 +198,10 @@ const TrainerAIAssistant = () => {
                         to={`/trainer/ai-review/${customer._id}`}
                         className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm ${
                           customer.aiStatus === 'No Data' 
-                            ? 'bg-gray-100 text-gray-400 pointer-events-none'
+                            ? 'bg-[#1B2728] text-[#9AAEAE] pointer-events-none'
                             : customer.aiStatus === 'Trainer Approved' || customer.aiStatus === 'Published to Customer'
-                            ? 'bg-white border border-[#292940] text-[#6366F1] hover:bg-[#0B0B12]'
-                            : 'bg-[#6366F1] text-white hover:bg-[#4F46E5]'
+                            ? 'bg-[#141D1E] border border-[#2A3A3A] text-[#2DD4BF] hover:bg-[#0E1415]'
+                            : 'bg-[#2DD4BF] text-white hover:bg-[#5EEAD4]'
                         }`}
                       >
                         <FileEdit size={14} /> 

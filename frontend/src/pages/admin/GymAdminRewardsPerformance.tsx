@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import api from '../../utils/api';
 import AwardsRecognitionSection from './AwardsRecognitionSection';
+import CustomerDailyCalendarView from './CustomerDailyCalendarView';
 
 export type MainRewardsTab = 'customer-rewards' | 'trainer-rewards' | 'performance-overview' | 'awards-recognition' | 'claims-history';
 
@@ -50,8 +51,8 @@ export default function GymAdminRewardsPerformance() {
     : 'customer-rewards';
 
   const [activeTab, setActiveTab] = useState<MainRewardsTab>(initialTab);
-  const [perfSubTab, setPerfSubTab] = useState<'customer' | 'trainer'>(
-    rawTab === 'trainer-performance' ? 'trainer' : 'customer'
+  const [perfSubTab, setPerfSubTab] = useState<'customer' | 'trainer' | 'calendar'>(
+    rawTab === 'trainer-performance' ? 'trainer' : rawTab === 'customer-calendar' ? 'calendar' : 'customer'
   );
 
   // Sync tab with URL query parameter
@@ -75,6 +76,9 @@ export default function GymAdminRewardsPerformance() {
   const [custMembershipFilter, setCustMembershipFilter] = useState('ALL');
   const [custTrainerFilter, setCustTrainerFilter] = useState('ALL');
   const [selectedCustomer, setSelectedCustomer] = useState<any | null>(null);
+  const [calendarModalCustomer, setCalendarModalCustomer] = useState<any | null>(null);
+  const [selectedCalCustomerId, setSelectedCalCustomerId] = useState<string | null>(null);
+  const [customerModalView, setCustomerModalView] = useState<'overview' | 'calendar'>('overview');
 
   // ==========================================
   // STATE: TRAINER PERFORMANCE
@@ -577,16 +581,16 @@ export default function GymAdminRewardsPerformance() {
   return (
     <div className="space-y-6 w-full pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#11111F] border border-[#292940] p-6 rounded-3xl shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#141D1E] border border-[#2A3A3A] p-6 rounded-3xl shadow-xl">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#6366F1]/15 border border-[#6366F1]/30 text-[#6366F1] flex items-center justify-center shrink-0">
-            <Award className="w-6 h-6 text-[#6366F1]" />
+          <div className="w-12 h-12 rounded-2xl bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 text-[#2DD4BF] flex items-center justify-center shrink-0">
+            <Award className="w-6 h-6 text-[#2DD4BF]" />
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-black text-[#FFFFFF] tracking-tight">
               Rewards, Performance &amp; Awards
             </h1>
-            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-0.5">
+            <p className="text-xs sm:text-sm text-[#9AAEAE] mt-0.5">
               Comprehensive management of customer &amp; trainer rewards, verified performance records, awards honors, and claims audit.
             </p>
           </div>
@@ -595,7 +599,7 @@ export default function GymAdminRewardsPerformance() {
         {activeTab === 'customer-rewards' && (
           <button
             onClick={() => openCreateRewardModal('Customer')}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs sm:text-sm font-extrabold shadow-md shadow-[#6366F1]/25 transition-all shrink-0 cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm font-extrabold shadow-md shadow-[#2DD4BF]/25 transition-all shrink-0 cursor-pointer"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             Create Customer Reward
@@ -605,7 +609,7 @@ export default function GymAdminRewardsPerformance() {
         {activeTab === 'trainer-rewards' && (
           <button
             onClick={() => openCreateRewardModal('Trainer')}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs sm:text-sm font-extrabold shadow-md shadow-[#6366F1]/25 transition-all shrink-0 cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm font-extrabold shadow-md shadow-[#2DD4BF]/25 transition-all shrink-0 cursor-pointer"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             Create Trainer Reward
@@ -618,7 +622,7 @@ export default function GymAdminRewardsPerformance() {
         <div
           className={`p-4 rounded-xl flex items-center justify-between border ${
             message.type === 'success'
-              ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300'
+              ? 'bg-[#0E1415]/40 border-[#2A3A3A] text-[#2DD4BF]'
               : 'bg-red-950/40 border-red-800 text-red-300'
           }`}
         >
@@ -626,7 +630,7 @@ export default function GymAdminRewardsPerformance() {
             {message.type === 'success' ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : <AlertCircle className="w-5 h-5 text-red-400" />}
             <span className="text-sm font-medium">{message.text}</span>
           </div>
-          <button onClick={() => setMessage(null)} className="p-1 hover:bg-white/10 rounded cursor-pointer">
+          <button onClick={() => setMessage(null)} className="p-1 hover:bg-[#141D1E]/10 rounded cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -634,17 +638,17 @@ export default function GymAdminRewardsPerformance() {
 
       {/* Top Level 5-Tab Navigation — Performance Overview, Customer Rewards, Trainer Rewards, Awards, Claims */}
       <div className="w-full">
-        <div className="flex items-center gap-2 p-1.5 bg-[#11111F] border border-[#292940] rounded-2xl w-full overflow-x-auto no-scrollbar shadow-md">
+        <div className="flex items-center gap-2 p-1.5 bg-[#141D1E] border border-[#2A3A3A] rounded-2xl w-full overflow-x-auto no-scrollbar shadow-md">
           {/* 1. Performance Overview */}
           <button
             onClick={() => handleTabChange('performance-overview')}
             className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
               activeTab === 'performance-overview'
-                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
-                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
+                ? 'bg-[#2DD4BF] text-white font-extrabold shadow-sm'
+                : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#0E1415] font-semibold'
             }`}
           >
-            <BarChart3 size={16} className={activeTab === 'performance-overview' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <BarChart3 size={16} className={activeTab === 'performance-overview' ? 'text-white shrink-0' : 'text-[#9AAEAE] shrink-0'} />
             <span>Performance Overview</span>
           </button>
 
@@ -653,11 +657,11 @@ export default function GymAdminRewardsPerformance() {
             onClick={() => handleTabChange('customer-rewards')}
             className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
               activeTab === 'customer-rewards'
-                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
-                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
+                ? 'bg-[#2DD4BF] text-white font-extrabold shadow-sm'
+                : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#0E1415] font-semibold'
             }`}
           >
-            <Gift size={16} className={activeTab === 'customer-rewards' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <Gift size={16} className={activeTab === 'customer-rewards' ? 'text-white shrink-0' : 'text-[#9AAEAE] shrink-0'} />
             <span>Customer Rewards ({rewards.filter(r => r.recipientType === 'Customer' || r.recipientType === 'Both').length})</span>
           </button>
 
@@ -666,11 +670,11 @@ export default function GymAdminRewardsPerformance() {
             onClick={() => handleTabChange('trainer-rewards')}
             className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
               activeTab === 'trainer-rewards'
-                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
-                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
+                ? 'bg-[#2DD4BF] text-white font-extrabold shadow-sm'
+                : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#0E1415] font-semibold'
             }`}
           >
-            <Dumbbell size={16} className={activeTab === 'trainer-rewards' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <Dumbbell size={16} className={activeTab === 'trainer-rewards' ? 'text-white shrink-0' : 'text-[#9AAEAE] shrink-0'} />
             <span>Trainer Rewards ({rewards.filter(r => r.recipientType === 'Trainer' || r.recipientType === 'Both').length})</span>
           </button>
 
@@ -679,11 +683,11 @@ export default function GymAdminRewardsPerformance() {
             onClick={() => handleTabChange('awards-recognition')}
             className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
               activeTab === 'awards-recognition'
-                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
-                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
+                ? 'bg-[#2DD4BF] text-white font-extrabold shadow-sm'
+                : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#0E1415] font-semibold'
             }`}
           >
-            <Trophy size={16} className={activeTab === 'awards-recognition' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <Trophy size={16} className={activeTab === 'awards-recognition' ? 'text-white shrink-0' : 'text-[#9AAEAE] shrink-0'} />
             <span>Awards &amp; Recognition</span>
           </button>
 
@@ -692,15 +696,15 @@ export default function GymAdminRewardsPerformance() {
             onClick={() => handleTabChange('claims-history')}
             className={`flex-1 min-w-max flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all text-center cursor-pointer whitespace-nowrap ${
               activeTab === 'claims-history'
-                ? 'bg-[#6366F1] text-white font-extrabold shadow-sm'
-                : 'text-[#A1A1AA] hover:text-[#FFFFFF] hover:bg-[#0B0B12] font-semibold'
+                ? 'bg-[#2DD4BF] text-white font-extrabold shadow-sm'
+                : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#0E1415] font-semibold'
             }`}
           >
-            <Ticket size={16} className={activeTab === 'claims-history' ? 'text-white shrink-0' : 'text-[#A1A1AA] shrink-0'} />
+            <Ticket size={16} className={activeTab === 'claims-history' ? 'text-white shrink-0' : 'text-[#9AAEAE] shrink-0'} />
             <span>Claims &amp; History ({claims.length})</span>
             {claims.filter(c => c.claimStatus === 'Pending').length > 0 && (
               <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black shrink-0 ${
-                activeTab === 'claims-history' ? 'bg-white text-[#6366F1]' : 'bg-[#6366F1] text-white'
+                activeTab === 'claims-history' ? 'bg-[#141D1E] text-[#2DD4BF]' : 'bg-[#2DD4BF] text-white'
               }`}>
                 {claims.filter(c => c.claimStatus === 'Pending').length}
               </span>
@@ -716,69 +720,69 @@ export default function GymAdminRewardsPerformance() {
         <div className="space-y-6">
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-medium">
                 <span>Active Customer Perks</span>
-                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><Gift className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#2DD4BF]"><Gift className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#11111F]">
+              <div className="text-3xl font-black mt-2 text-[#F5FAFA]">
                 {rewards.filter(r => (r.recipientType === 'Customer' || r.recipientType === 'Both') && r.status === 'Active').length}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Available for gym members</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Available for gym members</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-medium">
                 <span>Total Redemptions</span>
-                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><CheckCircle2 className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#2DD4BF]"><CheckCircle2 className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-emerald-700">
+              <div className="text-3xl font-black mt-2 text-[#2DD4BF]">
                 {rewards.filter(r => r.recipientType === 'Customer' || r.recipientType === 'Both').reduce((sum, r) => sum + (r.claimedCount || 0), 0)}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Vouchers redeemed by customers</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Vouchers redeemed by customers</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-medium">
                 <span>Points-Based Rewards</span>
                 <span className="p-2 rounded-lg bg-amber-50 text-amber-700"><Coins className="w-4 h-4" /></span>
               </div>
               <div className="text-3xl font-black mt-2 text-amber-700">
                 {rewards.filter(r => (r.recipientType === 'Customer' || r.recipientType === 'Both') && (r.requiredPoints || 0) > 0).length}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Redeemable with attendance points</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Redeemable with attendance points</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-medium">
                 <span>Pending Claims</span>
                 <span className="p-2 rounded-lg bg-purple-50 text-purple-700"><Clock className="w-4 h-4" /></span>
               </div>
               <div className="text-3xl font-black mt-2 text-purple-700">
                 {claims.filter(c => c.userRole === 'MEMBER' && c.claimStatus === 'Pending').length}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Awaiting owner review</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Awaiting owner review</p>
             </div>
           </div>
 
           {/* Search & Actions */}
-          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#292940' }}>
+          <div className="bg-[#141D1E] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#2A3A3A' }}>
             <div className="relative w-full md:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <Search className="w-4 h-4 absolute left-3 top-3 text-[#9AAEAE]" />
               <input
                 type="text"
                 placeholder="Search customer rewards..."
                 value={rewardSearch}
                 onChange={e => setRewardSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
-                style={{ borderColor: '#292940' }}
+                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]"
+                style={{ borderColor: '#2A3A3A' }}
               />
             </div>
 
             <button
               onClick={() => openCreateRewardModal('Customer')}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#4F46E5] transition cursor-pointer"
-              style={{ backgroundColor: '#6366F1' }}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#5EEAD4] transition cursor-pointer"
+              style={{ backgroundColor: '#2DD4BF' }}
             >
               <Plus className="w-4 h-4" />
               Create Customer Reward
@@ -787,14 +791,14 @@ export default function GymAdminRewardsPerformance() {
 
           {/* Customer Rewards Grid */}
           {rewards.filter(r => (r.recipientType === 'Customer' || r.recipientType === 'Both') && (r.title.toLowerCase().includes(rewardSearch.toLowerCase()) || r.category.toLowerCase().includes(rewardSearch.toLowerCase()))).length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
+            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border" style={{ borderColor: '#2A3A3A' }}>
               <Gift className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold text-gray-700">No Customer Rewards Configured</h3>
-              <p className="text-sm text-gray-400 mt-1">Create discount coupons, free personal training sessions, or merchandise rewards for members.</p>
+              <h3 className="text-base font-bold text-[#C1D0D0]">No Customer Rewards Configured</h3>
+              <p className="text-sm text-[#9AAEAE] mt-1">Create discount coupons, free personal training sessions, or merchandise rewards for members.</p>
               <button
                 onClick={() => openCreateRewardModal('Customer')}
                 className="mt-4 px-4 py-2 rounded-xl text-white text-xs font-semibold"
-                style={{ backgroundColor: '#6366F1' }}
+                style={{ backgroundColor: '#2DD4BF' }}
               >
                 Create Customer Reward
               </button>
@@ -804,63 +808,63 @@ export default function GymAdminRewardsPerformance() {
               {rewards.filter(r => (r.recipientType === 'Customer' || r.recipientType === 'Both') && (r.title.toLowerCase().includes(rewardSearch.toLowerCase()) || r.category.toLowerCase().includes(rewardSearch.toLowerCase()))).map(r => (
                 <div
                   key={r._id}
-                  className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                  style={{ borderColor: '#292940' }}
+                  className="bg-[#141D1E] rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
+                  style={{ borderColor: '#2A3A3A' }}
                 >
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-50 text-emerald-800">
+                      <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-[#1B2728] text-[#2DD4BF]">
                         {r.recipientType === 'Both' ? 'Customer & Trainer' : 'Customer Perk'}
                       </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-700">
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-[#1B2728] text-[#C1D0D0]">
                         {r.status}
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="font-bold text-base text-gray-800">{r.title}</h3>
-                      <span className="text-xs text-gray-400 block mt-0.5">{r.category}</span>
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{r.description}</p>
+                      <h3 className="font-bold text-base text-[#F5FAFA]">{r.title}</h3>
+                      <span className="text-xs text-[#9AAEAE] block mt-0.5">{r.category}</span>
+                      <p className="text-xs text-[#9AAEAE] mt-1 line-clamp-2">{r.description}</p>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1 border" style={{ borderColor: '#0B0B12' }}>
+                    <div className="p-3 rounded-xl bg-[#0E1415] text-xs space-y-1 border" style={{ borderColor: '#0E1415' }}>
                       {r.requiredPoints > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Points Cost:</span>
-                          <span className="font-bold text-[#6366F1]">{r.requiredPoints} pts</span>
+                          <span className="text-[#9AAEAE]">Points Cost:</span>
+                          <span className="font-bold text-[#2DD4BF]">{r.requiredPoints} pts</span>
                         </div>
                       )}
                       {r.minVerifiedVisits > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Target Visits:</span>
+                          <span className="text-[#9AAEAE]">Target Visits:</span>
                           <span className="font-semibold">{r.minVerifiedVisits} gym visits</span>
                         </div>
                       )}
                       {r.minWorkoutCompletions > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Target Workouts:</span>
+                          <span className="text-[#9AAEAE]">Target Workouts:</span>
                           <span className="font-semibold">{r.minWorkoutCompletions} workouts</span>
                         </div>
                       )}
                       {r.minStreakDays > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Target Streak:</span>
+                          <span className="text-[#9AAEAE]">Target Streak:</span>
                           <span className="font-semibold text-amber-600">🔥 {r.minStreakDays} days</span>
                         </div>
                       )}
-                      <div className="flex justify-between pt-1 border-t border-gray-200">
-                        <span className="text-gray-500">Claims:</span>
+                      <div className="flex justify-between pt-1 border-t border-[#2A3A3A]">
+                        <span className="text-[#9AAEAE]">Claims:</span>
                         <span className="font-semibold">{r.claimedCount} redeemed / {r.totalQuantity === 0 ? 'Unlimited' : r.totalQuantity}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#292940' }}>
-                    <span className="text-gray-500">
+                  <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#2A3A3A' }}>
+                    <span className="text-[#9AAEAE]">
                       {r.requireApproval ? '🔒 Approval required' : '⚡ Instant claim'}
                     </span>
                     <div className="flex items-center gap-1">
-                      <button onClick={() => openEditRewardModal(r)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 cursor-pointer">
+                      <button onClick={() => openEditRewardModal(r)} className="p-1.5 rounded-lg hover:bg-[#1B2728] text-[#C1D0D0] cursor-pointer">
                         <Edit className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleDeleteReward(r._id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 cursor-pointer">
@@ -882,69 +886,69 @@ export default function GymAdminRewardsPerformance() {
         <div className="space-y-6">
           {/* Trainer Rewards Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-medium">
                 <span>Active Trainer Rewards</span>
-                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><Dumbbell className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#2DD4BF]"><Dumbbell className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#11111F]">
+              <div className="text-3xl font-black mt-2 text-[#F5FAFA]">
                 {rewards.filter(r => (r.recipientType === 'Trainer' || r.recipientType === 'Both') && r.status === 'Active').length}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Available for gym coaches</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Available for gym coaches</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-medium">
                 <span>Cash Bonuses Configured</span>
-                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><IndianRupee className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#2DD4BF]"><IndianRupee className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-emerald-700">
+              <div className="text-3xl font-black mt-2 text-[#2DD4BF]">
                 ₹{rewards.filter(r => (r.recipientType === 'Trainer' || r.recipientType === 'Both')).reduce((sum, r) => sum + (r.bonusAmount || 0), 0).toLocaleString('en-IN')}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Across performance milestones</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Across performance milestones</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-medium">
                 <span>Trainer Claims</span>
                 <span className="p-2 rounded-lg bg-amber-50 text-amber-700"><Trophy className="w-4 h-4" /></span>
               </div>
               <div className="text-3xl font-black mt-2 text-amber-700">
                 {claims.filter(c => c.userRole === 'TRAINER').length}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Recorded trainer bonuses</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Recorded trainer bonuses</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-medium">
                 <span>Pending Payouts</span>
                 <span className="p-2 rounded-lg bg-purple-50 text-purple-700"><Clock className="w-4 h-4" /></span>
               </div>
               <div className="text-3xl font-black mt-2 text-purple-700">
                 {claims.filter(c => c.userRole === 'TRAINER' && (c.financialPayoutStatus === 'Pending' || c.financialPayoutStatus === 'Pending Approval' || c.financialPayoutStatus === 'Payment Pending')).length}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Awaiting financial transfer</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Awaiting financial transfer</p>
             </div>
           </div>
 
           {/* Search & Actions */}
-          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#292940' }}>
+          <div className="bg-[#141D1E] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#2A3A3A' }}>
             <div className="relative w-full md:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <Search className="w-4 h-4 absolute left-3 top-3 text-[#9AAEAE]" />
               <input
                 type="text"
                 placeholder="Search trainer rewards & bonuses..."
                 value={rewardSearch}
                 onChange={e => setRewardSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
-                style={{ borderColor: '#292940' }}
+                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]"
+                style={{ borderColor: '#2A3A3A' }}
               />
             </div>
 
             <button
               onClick={() => openCreateRewardModal('Trainer')}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#4F46E5] transition cursor-pointer"
-              style={{ backgroundColor: '#6366F1' }}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#5EEAD4] transition cursor-pointer"
+              style={{ backgroundColor: '#2DD4BF' }}
             >
               <Plus className="w-4 h-4" />
               Create Trainer Reward
@@ -953,14 +957,14 @@ export default function GymAdminRewardsPerformance() {
 
           {/* Trainer Rewards Grid */}
           {rewards.filter(r => (r.recipientType === 'Trainer' || r.recipientType === 'Both') && (r.title.toLowerCase().includes(rewardSearch.toLowerCase()) || r.category.toLowerCase().includes(rewardSearch.toLowerCase()))).length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
+            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border" style={{ borderColor: '#2A3A3A' }}>
               <Dumbbell className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold text-gray-700">No Trainer Rewards Configured</h3>
-              <p className="text-sm text-gray-400 mt-1">Create trainer milestone bonuses, coaching awards, and ratings incentives.</p>
+              <h3 className="text-base font-bold text-[#C1D0D0]">No Trainer Rewards Configured</h3>
+              <p className="text-sm text-[#9AAEAE] mt-1">Create trainer milestone bonuses, coaching awards, and ratings incentives.</p>
               <button
                 onClick={() => openCreateRewardModal('Trainer')}
                 className="mt-4 px-4 py-2 rounded-xl text-white text-xs font-semibold"
-                style={{ backgroundColor: '#6366F1' }}
+                style={{ backgroundColor: '#2DD4BF' }}
               >
                 Create Trainer Reward
               </button>
@@ -970,62 +974,62 @@ export default function GymAdminRewardsPerformance() {
               {rewards.filter(r => (r.recipientType === 'Trainer' || r.recipientType === 'Both') && (r.title.toLowerCase().includes(rewardSearch.toLowerCase()) || r.category.toLowerCase().includes(rewardSearch.toLowerCase()))).map(r => (
                 <div
                   key={r._id}
-                  className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                  style={{ borderColor: '#292940' }}
+                  className="bg-[#141D1E] rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
+                  style={{ borderColor: '#2A3A3A' }}
                 >
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-purple-50 text-purple-700">
                         {r.category}
                       </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-700">
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-[#1B2728] text-[#C1D0D0]">
                         {r.status}
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="font-bold text-base text-gray-800">{r.title}</h3>
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{r.description}</p>
+                      <h3 className="font-bold text-base text-[#F5FAFA]">{r.title}</h3>
+                      <p className="text-xs text-[#9AAEAE] mt-1 line-clamp-2">{r.description}</p>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1.5 border" style={{ borderColor: '#0B0B12' }}>
+                    <div className="p-3 rounded-xl bg-[#0E1415] text-xs space-y-1.5 border" style={{ borderColor: '#0E1415' }}>
                       {r.bonusAmount > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Bonus Cash:</span>
-                          <span className="font-bold text-emerald-700">₹{r.bonusAmount} {r.currency}</span>
+                          <span className="text-[#9AAEAE]">Bonus Cash:</span>
+                          <span className="font-bold text-[#2DD4BF]">₹{r.bonusAmount} {r.currency}</span>
                         </div>
                       )}
                       {r.minCompletedSessions > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Completed Sessions:</span>
+                          <span className="text-[#9AAEAE]">Completed Sessions:</span>
                           <span className="font-semibold">{r.minCompletedSessions} sessions</span>
                         </div>
                       )}
                       {r.minAverageRating > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Min Rating:</span>
+                          <span className="text-[#9AAEAE]">Min Rating:</span>
                           <span className="font-semibold">{r.minAverageRating}⭐ rating</span>
                         </div>
                       )}
                       {r.minReviewedPlans > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Reviewed Plans:</span>
+                          <span className="text-[#9AAEAE]">Reviewed Plans:</span>
                           <span className="font-semibold">{r.minReviewedPlans} plans</span>
                         </div>
                       )}
-                      <div className="flex justify-between pt-1 border-t border-gray-200">
-                        <span className="text-gray-500">Claims:</span>
+                      <div className="flex justify-between pt-1 border-t border-[#2A3A3A]">
+                        <span className="text-[#9AAEAE]">Claims:</span>
                         <span className="font-semibold">{r.claimedCount} claims</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#292940' }}>
-                    <span className="text-gray-500">
+                  <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#2A3A3A' }}>
+                    <span className="text-[#9AAEAE]">
                       {r.requireApproval ? '🔒 Approval required' : '⚡ Instant claim'}
                     </span>
                     <div className="flex items-center gap-1">
-                      <button onClick={() => openEditRewardModal(r)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 cursor-pointer">
+                      <button onClick={() => openEditRewardModal(r)} className="p-1.5 rounded-lg hover:bg-[#1B2728] text-[#C1D0D0] cursor-pointer">
                         <Edit className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleDeleteReward(r._id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 cursor-pointer">
@@ -1046,13 +1050,13 @@ export default function GymAdminRewardsPerformance() {
       {activeTab === 'performance-overview' && (
         <div className="space-y-6">
           {/* Sub Switcher */}
-          <div className="flex items-center gap-2 p-1.5 bg-white border border-[#292940] rounded-2xl w-fit shadow-xs">
+          <div className="flex items-center gap-2 p-1.5 bg-[#141D1E] border border-[#2A3A3A] rounded-2xl w-fit shadow-xs">
             <button
               onClick={() => setPerfSubTab('customer')}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
                 perfSubTab === 'customer'
-                  ? 'bg-[#6366F1] text-white shadow-xs'
-                  : 'text-[#A1A1AA] hover:text-[#11111F] hover:bg-[#0B0B12]'
+                  ? 'bg-[#2DD4BF] text-white shadow-xs'
+                  : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#1B2728]'
               }`}
             >
               <Users size={16} />
@@ -1062,12 +1066,23 @@ export default function GymAdminRewardsPerformance() {
               onClick={() => setPerfSubTab('trainer')}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
                 perfSubTab === 'trainer'
-                  ? 'bg-[#6366F1] text-white shadow-xs'
-                  : 'text-[#A1A1AA] hover:text-[#11111F] hover:bg-[#0B0B12]'
+                  ? 'bg-[#2DD4BF] text-white shadow-xs'
+                  : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#1B2728]'
               }`}
             >
               <Dumbbell size={16} />
               <span>Trainer Performance ({trainerStats.totalTrainers || 0})</span>
+            </button>
+            <button
+              onClick={() => setPerfSubTab('calendar')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
+                perfSubTab === 'calendar'
+                  ? 'bg-[#2DD4BF] text-white shadow-xs'
+                  : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#1B2728]'
+              }`}
+            >
+              <Calendar size={16} />
+              <span>Customer Calendar ({customerStats.totalCustomers || customers.length || 0})</span>
             </button>
           </div>
 
@@ -1075,71 +1090,69 @@ export default function GymAdminRewardsPerformance() {
         <div className="space-y-6">
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-semibold uppercase tracking-wider">
                 <span>Total Gym Members</span>
-                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><Users className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]"><Users className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#11111F]">{customerStats.totalCustomers}</div>
-              <p className="text-xs text-gray-400 mt-1">{customerStats.activeMembersCount} with active membership</p>
+              <div className="text-3xl font-black mt-2 text-[#F5FAFA]">{customerStats.totalCustomers}</div>
+              <p className="text-xs text-[#9AAEAE] mt-1">{customerStats.activeMembersCount} with active membership</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-semibold uppercase tracking-wider">
                 <span>Avg Attendance Streak</span>
-                <span className="p-2 rounded-lg bg-amber-50 text-amber-600"><Flame className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#FBBF24] border border-[#2A3A3A]"><Flame className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-amber-600">
+              <div className="text-3xl font-black mt-2 text-[#FBBF24]">
                 {customerStats.averageAttendanceStreak} <span className="text-base font-normal">days</span>
               </div>
-              <p className="text-xs text-gray-400 mt-1">Consecutive verified visits</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Consecutive verified visits</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-semibold uppercase tracking-wider">
                 <span>Avg Workout Completion</span>
-                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><TrendingUp className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]"><TrendingUp className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#6366F1]">
+              <div className="text-3xl font-black mt-2 text-[#2DD4BF]">
                 {customerStats.averageWorkoutCompletionRate !== null ? `${customerStats.averageWorkoutCompletionRate}%` : 'Not Available'}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Based on logged workout sets</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Based on logged workout sets</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-semibold uppercase tracking-wider">
                 <span>Eligible For Rewards</span>
-                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><Gift className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#34D399] border border-[#2A3A3A]"><Gift className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-emerald-700">
+              <div className="text-3xl font-black mt-2 text-[#34D399]">
                 {customers.filter(c => c.rewardsSummary?.eligibleRewardsCount > 0).length}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Members meeting target rules</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Members meeting target rules</p>
             </div>
           </div>
 
           {/* Search & Filters */}
-          <div className="bg-white p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#292940' }}>
+          <div className="bg-[#141D1E] p-4 rounded-2xl border border-[#2A3A3A] shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="relative w-full md:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <Search className="w-4 h-4 absolute left-3 top-3 text-[#9AAEAE]" />
               <input
                 type="text"
                 placeholder="Search member by name, email, phone..."
                 value={custSearch}
                 onChange={e => setCustSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-                style={{ borderColor: '#292940' }}
+                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border border-[#2A3A3A] bg-[#0E1415] text-[#F5FAFA] placeholder-[#9AAEAE] focus:outline-none focus:border-[#2DD4BF]"
               />
             </div>
 
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-gray-500">MEMBERSHIP:</span>
+                <span className="text-xs font-semibold text-[#9AAEAE]">MEMBERSHIP:</span>
                 <select
                   value={custMembershipFilter}
                   onChange={e => setCustMembershipFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-white focus:outline-none"
-                  style={{ borderColor: '#292940' }}
+                  className="px-3 py-1.5 rounded-xl text-xs font-medium border border-[#2A3A3A] bg-[#0E1415] text-[#F5FAFA] focus:outline-none"
                 >
                   <option value="ALL">All Statuses</option>
                   <option value="Active">Active</option>
@@ -1148,12 +1161,11 @@ export default function GymAdminRewardsPerformance() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-gray-500">TRAINER:</span>
+                <span className="text-xs font-semibold text-[#9AAEAE]">TRAINER:</span>
                 <select
                   value={custTrainerFilter}
                   onChange={e => setCustTrainerFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-white focus:outline-none"
-                  style={{ borderColor: '#292940' }}
+                  className="px-3 py-1.5 rounded-xl text-xs font-medium border border-[#2A3A3A] bg-[#0E1415] text-[#F5FAFA] focus:outline-none"
                 >
                   <option value="ALL">All Trainers</option>
                   {trainers.map(t => (
@@ -1163,27 +1175,36 @@ export default function GymAdminRewardsPerformance() {
                   ))}
                 </select>
               </div>
+
+              <button
+                onClick={() => setPerfSubTab('calendar')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-[#2A3A3A] bg-[#0E1415] hover:bg-[#1B2728] text-[#2DD4BF] cursor-pointer ml-auto sm:ml-0 transition"
+                title="Switch to Customer Daily Workout & Diet Calendar"
+              >
+                <Calendar className="w-3.5 h-3.5 text-[#2DD4BF]" />
+                Calendar View
+              </button>
             </div>
           </div>
 
           {/* Customer Table */}
           {loadingCustomers ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
-              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto text-[#6366F1]" />
-              <p className="mt-2 text-xs text-gray-500">Evaluating customer records...</p>
+            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border border-[#2A3A3A]">
+              <div className="w-8 h-8 border-4 border-t-transparent border-[#2DD4BF] rounded-full animate-spin mx-auto" />
+              <p className="mt-2 text-xs text-[#9AAEAE]">Evaluating customer records...</p>
             </div>
           ) : filteredCustomers.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
-              <Users className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold text-gray-700">No Customers Match Filter</h3>
-              <p className="text-sm text-gray-400 mt-1">Try resetting your search query or membership status filters.</p>
+            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border border-[#2A3A3A]">
+              <Users className="w-12 h-12 mx-auto text-[#9AAEAE]/50 mb-3" />
+              <h3 className="text-base font-bold text-[#F5FAFA]">No Customers Match Filter</h3>
+              <p className="text-sm text-[#9AAEAE] mt-1">Try resetting your search query or membership status filters.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: '#292940' }}>
+            <div className="bg-[#141D1E] rounded-2xl border border-[#2A3A3A] shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-sm">
                   <thead>
-                    <tr className="border-b text-xs uppercase bg-gray-50 text-gray-500" style={{ borderColor: '#292940' }}>
+                    <tr className="border-b border-[#2A3A3A] text-xs uppercase bg-[#0E1415] text-[#9AAEAE]">
                       <th className="py-3 px-4">Customer</th>
                       <th className="py-3 px-4">Membership</th>
                       <th className="py-3 px-4">Assigned Trainer</th>
@@ -1194,16 +1215,16 @@ export default function GymAdminRewardsPerformance() {
                       <th className="py-3 px-4 text-right">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y" style={{ borderColor: '#292940' }}>
+                  <tbody className="divide-y divide-[#2A3A3A]">
                     {filteredCustomers.map(c => {
                       const wPct = c.workoutSummary?.completionPercentage;
                       const dPct = c.dietSummary?.adherencePercentage;
 
                       return (
-                        <tr key={c.customerId} className="hover:bg-gray-50/50">
+                        <tr key={c.customerId} className="hover:bg-[#1B2728] transition-colors">
                           <td className="py-3 px-4">
-                            <div className="font-semibold text-gray-800">{c.name}</div>
-                            <div className="text-xs text-gray-400">
+                            <div className="font-semibold text-[#F5FAFA]">{c.name}</div>
+                            <div className="text-xs text-[#9AAEAE]">
                               {c.email}{c.phone ? ` • ${c.phone}` : ''}
                             </div>
                           </td>
@@ -1212,35 +1233,35 @@ export default function GymAdminRewardsPerformance() {
                             <span
                               className={`px-2 py-0.5 rounded-full font-semibold ${
                                 c.membership.status === 'Active'
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : 'bg-gray-100 text-gray-600'
+                                  ? 'bg-[#2DD4BF]/15 text-[#34D399] border border-[#2A3A3A]/30'
+                                  : 'bg-[#1B2728] text-[#9AAEAE] border border-[#2A3A3A]'
                               }`}
                             >
                               {c.membership.status}
                             </span>
-                            <span className="block text-[11px] text-gray-500 mt-0.5 truncate max-w-[120px]">
+                            <span className="block text-[11px] text-[#9AAEAE] mt-0.5 truncate max-w-[120px]">
                               {c.membership.planName}
                             </span>
                           </td>
 
                           <td className="py-3 px-4 text-xs">
                             {c.assignedTrainer ? (
-                              <span className="font-medium text-gray-800">{c.assignedTrainer.name}</span>
+                              <span className="font-medium text-[#F5FAFA]">{c.assignedTrainer.name}</span>
                             ) : (
-                              <span className="text-gray-400">None assigned</span>
+                              <span className="text-[#9AAEAE]">None assigned</span>
                             )}
                           </td>
 
                           <td className="py-3 px-4 text-xs">
                             {wPct !== null ? (
                               <div>
-                                <span className="font-bold text-[#6366F1]">{wPct}%</span>
-                                <span className="text-[11px] text-gray-400 block">
+                                <span className="font-bold text-[#2DD4BF]">{wPct}%</span>
+                                <span className="text-[11px] text-[#9AAEAE] block">
                                   {c.workoutSummary.completedWorkoutsCount} done / {c.workoutSummary.totalWorkoutsScheduled}
                                 </span>
                               </div>
                             ) : (
-                              <span className="text-gray-400">Not recorded</span>
+                              <span className="text-[#9AAEAE]">Not recorded</span>
                             )}
                           </td>
 
@@ -1248,51 +1269,60 @@ export default function GymAdminRewardsPerformance() {
                             {c.dietSummary?.plan ? (
                               <div>
                                 <span
-                                  className={`px-1.5 py-0.2 rounded font-semibold text-[10px] ${
+                                  className={`px-2 py-0.5 rounded-full font-semibold text-[10px] ${
                                     c.dietSummary.plan.status === 'Approved'
-                                      ? 'bg-emerald-50 text-emerald-700'
-                                      : 'bg-amber-50 text-amber-700'
+                                      ? 'bg-[#2DD4BF]/15 text-[#34D399] border border-[#2A3A3A]/30'
+                                      : 'bg-amber-500/15 text-[#FBBF24] border border-amber-500/30'
                                   }`}
                                 >
                                   {c.dietSummary.plan.status}
                                 </span>
-                                <span className="block text-[11px] text-gray-500 mt-0.5">
+                                <span className="block text-[11px] text-[#9AAEAE] mt-0.5">
                                   {dPct !== null ? `${dPct}% check-in` : 'No meal logs'}
                                 </span>
                               </div>
                             ) : (
-                              <span className="text-gray-400">No diet plan</span>
+                              <span className="text-[#9AAEAE]">No diet plan</span>
                             )}
                           </td>
 
                           <td className="py-3 px-4 text-xs">
-                            <div className="font-bold text-gray-800">
+                            <div className="font-bold text-[#F5FAFA]">
                               {c.attendanceSummary.totalVerifiedVisits} visits
                             </div>
-                            <span className="text-amber-600 font-semibold text-[11px]">
-                              🔥 {c.attendanceSummary.attendanceStreak}d streak
+                            <span className="text-[#FBBF24] font-semibold text-[11px] flex items-center gap-1 mt-0.5">
+                              <Flame className="w-3 h-3 text-[#FBBF24]" /> {c.attendanceSummary.attendanceStreak}d streak
                             </span>
                           </td>
 
-
                           <td className="py-3 px-4 text-xs">
                             {c.rewardsSummary?.eligibleRewardsCount > 0 ? (
-                              <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">
+                              <span className="px-2 py-0.5 rounded-full font-bold bg-[#2DD4BF]/15 text-[#34D399] border border-[#2A3A3A]/30">
                                 {c.rewardsSummary.eligibleRewardsCount} Eligible
                               </span>
                             ) : (
-                              <span className="text-gray-400 font-medium">In Progress</span>
+                              <span className="text-[#9AAEAE] font-medium">In Progress</span>
                             )}
                           </td>
 
                           <td className="py-3 px-4 text-right">
-                            <button
-                              onClick={() => setSelectedCustomer(c)}
-                              className="px-2.5 py-1 rounded-xl text-xs font-semibold border hover:bg-gray-50 text-[#6366F1] flex items-center gap-1 ml-auto"
-                              style={{ borderColor: '#292940' }}
-                            >
-                              <Eye className="w-3.5 h-3.5" /> View
-                            </button>
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                onClick={() => {
+                                  setCalendarModalCustomer(c);
+                                }}
+                                className="px-2.5 py-1 rounded-xl text-xs font-semibold border border-[#2A3A3A] bg-[#0E1415] hover:bg-[#1B2728] text-[#2DD4BF] hover:text-[#FFFFFF] hover:border-[#2DD4BF] flex items-center gap-1 cursor-pointer transition shadow-xs"
+                                title="Open member's daily workout, diet and attendance calendar"
+                              >
+                                <Calendar className="w-3.5 h-3.5 text-[#2DD4BF]" /> Calendar
+                              </button>
+                              <button
+                                onClick={() => setSelectedCustomer(c)}
+                                className="px-2.5 py-1 rounded-xl text-xs font-semibold border border-[#2A3A3A] bg-[#0E1415] hover:bg-[#1B2728] text-[#F5FAFA] flex items-center gap-1 cursor-pointer transition"
+                              >
+                                <Eye className="w-3.5 h-3.5 text-[#2DD4BF]" /> View
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -1310,111 +1340,109 @@ export default function GymAdminRewardsPerformance() {
         <div className="space-y-6">
           {/* Trainer Stats Header */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-semibold uppercase tracking-wider">
                 <span>Total Trainers</span>
-                <span className="p-2 rounded-lg bg-[#17172A] text-[#6366F1]"><Dumbbell className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]"><Dumbbell className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-[#11111F]">{trainerStats.totalTrainers}</div>
-              <p className="text-xs text-gray-400 mt-1">Gym trainers on staff</p>
+              <div className="text-3xl font-black mt-2 text-[#F5FAFA]">{trainerStats.totalTrainers}</div>
+              <p className="text-xs text-[#9AAEAE] mt-1">Gym trainers on staff</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-semibold uppercase tracking-wider">
                 <span>Completed Sessions Across Gym</span>
-                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700"><CheckCircle2 className="w-4 h-4" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#34D399] border border-[#2A3A3A]"><CheckCircle2 className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-emerald-700">
+              <div className="text-3xl font-black mt-2 text-[#34D399]">
                 {trainerStats.totalCompletedSessionsAcrossTrainers}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Online & in-person sessions</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">Online & in-person sessions</p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#292940' }}>
-              <div className="flex justify-between items-center text-xs text-gray-500 font-medium">
+            <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
+              <div className="flex justify-between items-center text-xs text-[#9AAEAE] font-semibold uppercase tracking-wider">
                 <span>Average Trainer Rating</span>
-                <span className="p-2 rounded-lg bg-amber-50 text-amber-600"><Star className="w-4 h-4 fill-amber-500 text-amber-500" /></span>
+                <span className="p-2 rounded-lg bg-[#1B2728] text-[#FBBF24] border border-[#2A3A3A]"><Star className="w-4 h-4 fill-amber-500 text-amber-500" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-amber-600">
+              <div className="text-3xl font-black mt-2 text-[#FBBF24]">
                 {trainerStats.averageGymTrainerRating} ⭐
               </div>
-              <p className="text-xs text-gray-400 mt-1">From real client feedback reviews</p>
+              <p className="text-xs text-[#9AAEAE] mt-1">From real client feedback reviews</p>
             </div>
           </div>
 
           {/* Search */}
-          <div className="bg-white p-4 rounded-2xl border shadow-sm flex justify-between items-center" style={{ borderColor: '#292940' }}>
+          <div className="bg-[#141D1E] p-4 rounded-2xl border border-[#2A3A3A] shadow-sm flex justify-between items-center">
             <div className="relative w-full md:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <Search className="w-4 h-4 absolute left-3 top-3 text-[#9AAEAE]" />
               <input
                 type="text"
                 placeholder="Search trainer by name, email..."
                 value={trainerSearch}
                 onChange={e => setTrainerSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-                style={{ borderColor: '#292940' }}
+                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border border-[#2A3A3A] bg-[#0E1415] text-[#F5FAFA] placeholder-[#9AAEAE] focus:outline-none focus:border-[#2DD4BF]"
               />
             </div>
           </div>
 
           {/* Trainer Grid */}
           {loadingTrainers ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
-              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto text-[#6366F1]" />
-              <p className="mt-2 text-xs text-gray-500">Loading trainer evaluations...</p>
+            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border" style={{ borderColor: '#2A3A3A' }}>
+              <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto text-[#2DD4BF]" />
+              <p className="mt-2 text-xs text-[#9AAEAE]">Loading trainer evaluations...</p>
             </div>
           ) : filteredTrainers.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border" style={{ borderColor: '#292940' }}>
+            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border" style={{ borderColor: '#2A3A3A' }}>
               <Dumbbell className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold text-gray-700">No Trainers Found</h3>
-              <p className="text-sm text-gray-400 mt-1">No trainers match your active search.</p>
+              <h3 className="text-base font-bold text-[#C1D0D0]">No Trainers Found</h3>
+              <p className="text-sm text-[#9AAEAE] mt-1">No trainers match your active search.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTrainers.map(t => (
                 <div
                   key={t.trainerId}
-                  className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                  style={{ borderColor: '#292940' }}
+                  className="bg-[#141D1E] rounded-2xl border border-[#2A3A3A] shadow-sm p-5 flex flex-col justify-between hover:border-[#2DD4BF]/50 transition"
                 >
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-50 text-emerald-800">
+                      <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-[#2DD4BF]/15 text-[#34D399] border border-[#2A3A3A]/30">
                         {t.activeStatus}
                       </span>
-                      <span className="font-bold text-xs text-amber-600 flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                      <span className="font-bold text-xs text-[#FBBF24] flex items-center gap-1">
+                        <Star className="w-3.5 h-3.5 fill-amber-500 text-[#FBBF24]" />
                         {t.feedbackSummary?.averageRating} ⭐ ({t.feedbackSummary?.totalRatingsCount} reviews)
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="font-bold text-base text-gray-800">{t.name}</h3>
-                      <div className="text-xs text-gray-400">{t.email}</div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Experience: {t.experience} • Clients: <span className="font-bold text-gray-800">{t.clientsSummary?.totalAssignedCustomers}</span>
+                      <h3 className="font-bold text-base text-[#F5FAFA]">{t.name}</h3>
+                      <div className="text-xs text-[#9AAEAE]">{t.email}</div>
+                      <div className="text-xs text-[#9AAEAE] mt-1">
+                        Experience: {t.experience} • Clients: <span className="font-bold text-[#F5FAFA]">{t.clientsSummary?.totalAssignedCustomers}</span>
                       </div>
                     </div>
 
                     {/* Performance Metrics Box */}
-                    <div className="p-3 rounded-xl bg-gray-50 text-xs space-y-1.5 border" style={{ borderColor: '#0B0B12' }}>
+                    <div className="p-3 rounded-xl bg-[#0E1415] text-xs space-y-1.5 border border-[#2A3A3A]">
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Sessions Completed:</span>
-                        <span className="font-bold text-emerald-700">
+                        <span className="text-[#9AAEAE]">Sessions Completed:</span>
+                        <span className="font-bold text-[#34D399]">
                           {t.sessionsSummary.completed} sessions ({t.sessionsSummary.onlineCount} online / {t.sessionsSummary.inPersonCount} in-person)
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Punctuality:</span>
-                        <span className="font-medium text-gray-700">{t.sessionsSummary.punctuality}</span>
+                        <span className="text-[#9AAEAE]">Punctuality:</span>
+                        <span className="font-medium text-[#C1D0D0]">{t.sessionsSummary.punctuality}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Workout Plans Reviewed:</span>
-                        <span className="font-semibold text-gray-800">{t.plansSummary.totalReviewedOrApproved} plans</span>
+                        <span className="text-[#9AAEAE]">Workout Plans Reviewed:</span>
+                        <span className="font-semibold text-[#F5FAFA]">{t.plansSummary.totalReviewedOrApproved} plans</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Client Workout Adherence:</span>
-                        <span className="font-bold text-[#6366F1]">
+                        <span className="text-[#9AAEAE]">Client Workout Adherence:</span>
+                        <span className="font-bold text-[#2DD4BF]">
                           {t.clientsSummary.averageClientWorkoutProgress !== null
                             ? `${t.clientsSummary.averageClientWorkoutProgress}%`
                             : 'Not recorded'}
@@ -1424,15 +1452,15 @@ export default function GymAdminRewardsPerformance() {
 
                     {/* Eligible Bonuses Banner */}
                     {t.rewardsSummary?.eligibleBonusesCount > 0 && (
-                      <div className="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-xs text-purple-800 flex items-center gap-2">
-                        <Award className="w-4 h-4 text-purple-600 shrink-0" />
+                      <div className="p-2.5 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 text-xs text-[#2DD4BF] flex items-center gap-2">
+                        <Award className="w-4 h-4 text-[#2DD4BF] shrink-0" />
                         <span>Eligible for {t.rewardsSummary.eligibleBonusesCount} performance awards!</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="pt-4 mt-3 border-t flex justify-between items-center" style={{ borderColor: '#292940' }}>
-                    <span className="text-xs text-gray-400">
+                  <div className="pt-4 mt-3 border-t border-[#2A3A3A] flex justify-between items-center">
+                    <span className="text-xs text-[#9AAEAE]">
                       {t.rewardsSummary.paidBonusesCount} bonuses paid
                     </span>
                     <button
@@ -1440,8 +1468,7 @@ export default function GymAdminRewardsPerformance() {
                         setSelectedTrainer(t);
                         setTrainerModalTab('handled-customers');
                       }}
-                      className="px-3 py-1.5 rounded-xl text-xs font-semibold border text-[#6366F1] hover:bg-gray-50 flex items-center gap-1 cursor-pointer"
-                      style={{ borderColor: '#292940' }}
+                      className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#2A3A3A] bg-[#0E1415] hover:bg-[#1B2728] text-[#2DD4BF] flex items-center gap-1 cursor-pointer transition"
                     >
                       <Eye className="w-3.5 h-3.5" /> Performance Report
                     </button>
@@ -1451,6 +1478,16 @@ export default function GymAdminRewardsPerformance() {
             </div>
           )}
         </div>
+      )}
+
+      {/* CUSTOMER DAILY CALENDAR SUB-VIEW */}
+      {perfSubTab === 'calendar' && (
+        <CustomerDailyCalendarView
+          customers={customers}
+          selectedCustomerId={selectedCalCustomerId}
+          onSelectCustomer={(c) => setSelectedCalCustomerId(c.customerId || c._id)}
+          trainers={trainers}
+        />
       )}
         </div>
       )}
@@ -1467,24 +1504,24 @@ export default function GymAdminRewardsPerformance() {
       {/* ======================================================== */}
       {activeTab === 'claims-history' && (
         <div className="space-y-6">
-          <div className="bg-[#11111F] p-4 sm:p-5 rounded-2xl border border-[#292940] shadow-md flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+          <div className="bg-[#141D1E] p-4 sm:p-5 rounded-2xl border border-[#2A3A3A] shadow-md flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 absolute left-3 top-3.5 text-[#737373]" />
+              <Search className="w-4 h-4 absolute left-3 top-3.5 text-[#9AAEAE]" />
               <input
                 type="text"
                 placeholder="Search voucher code, user name..."
                 value={rewardSearch}
                 onChange={e => setRewardSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-[#050505] border border-[#292940] text-[#FFFFFF] placeholder-[#737373] focus:border-[#6366F1] focus:outline-none transition-colors"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-[#080B0C] border border-[#2A3A3A] text-[#FFFFFF] placeholder-[#737373] focus:border-[#2DD4BF] focus:outline-none transition-colors"
               />
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
-              <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">STATUS:</span>
+              <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">STATUS:</span>
               <select
                 value={claimStatusFilter}
                 onChange={e => setClaimStatusFilter(e.target.value)}
-                className="px-3.5 py-2 rounded-xl text-xs font-bold border border-[#292940] bg-[#050505] text-[#FFFFFF] focus:border-[#6366F1] focus:outline-none cursor-pointer"
+                className="px-3.5 py-2 rounded-xl text-xs font-bold border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] focus:border-[#2DD4BF] focus:outline-none cursor-pointer"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="Pending">Pending Approval</option>
@@ -1496,19 +1533,19 @@ export default function GymAdminRewardsPerformance() {
           </div>
 
           {filteredClaims.length === 0 ? (
-            <div className="text-center py-16 bg-[#11111F] rounded-2xl border border-[#292940] shadow-md space-y-3">
-              <div className="w-16 h-16 rounded-full bg-[#0B0B12] border border-[#292940] text-[#6366F1] flex items-center justify-center mx-auto mb-2">
+            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border border-[#2A3A3A] shadow-md space-y-3">
+              <div className="w-16 h-16 rounded-full bg-[#0E1415] border border-[#2A3A3A] text-[#2DD4BF] flex items-center justify-center mx-auto mb-2">
                 <Ticket className="w-8 h-8" />
               </div>
               <h3 className="text-base font-bold text-[#FFFFFF]">No Claim Records Found</h3>
-              <p className="text-xs text-[#A1A1AA] max-w-sm mx-auto">Claimed vouchers and approval requests will appear here.</p>
+              <p className="text-xs text-[#9AAEAE] max-w-sm mx-auto">Claimed vouchers and approval requests will appear here.</p>
             </div>
           ) : (
-            <div className="bg-[#11111F] rounded-2xl border border-[#292940] shadow-xl overflow-hidden">
+            <div className="bg-[#141D1E] rounded-2xl border border-[#2A3A3A] shadow-xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="border-b border-[#292940] text-xs uppercase bg-[#0B0B12] text-[#A1A1AA] font-extrabold tracking-wider">
+                    <tr className="border-b border-[#2A3A3A] text-xs uppercase bg-[#0E1415] text-[#9AAEAE] font-extrabold tracking-wider">
                       <th className="py-3 px-4">Recipient</th>
                       <th className="py-3 px-4">Reward</th>
                       <th className="py-3 px-4">Voucher Code</th>
@@ -1518,7 +1555,7 @@ export default function GymAdminRewardsPerformance() {
                       <th className="py-3 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#17172A]">
+                  <tbody className="divide-y divide-[#1B2728]">
                     {filteredClaims.map(c => {
                       const isTrainer = c.userRole === 'TRAINER';
                       const hasBonus = c.financialPayoutStatus !== 'Not Applicable';
@@ -1530,7 +1567,7 @@ export default function GymAdminRewardsPerformance() {
                               {c.userId?.firstName || 'User'} {c.userId?.lastName || ''}
                             </div>
                             <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold inline-block mt-0.5 ${
-                              isTrainer ? 'bg-purple-950/60 text-purple-400 border border-purple-800/40' : 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/40'
+                              isTrainer ? 'bg-purple-950/60 text-purple-400 border border-purple-800/40' : 'bg-[#0E1415]/60 text-emerald-400 border border-[#2A3A3A]/40'
                             }`}>
                               {isTrainer ? 'Trainer' : 'Customer'}
                             </span>
@@ -1542,16 +1579,16 @@ export default function GymAdminRewardsPerformance() {
                           </td>
 
                           <td className="py-3.5 px-4">
-                            <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-lg bg-[#050505] border border-[#292940] text-[#818CF8]">
+                            <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-lg bg-[#080B0C] border border-[#2A3A3A] text-[#2DD4BF]">
                               {c.claimCode}
                             </span>
                           </td>
 
                           <td className="py-3.5 px-4 font-bold">
                             {c.pointsDeducted > 0 ? (
-                              <span className="text-[#818CF8]">-{c.pointsDeducted} pts</span>
+                              <span className="text-[#2DD4BF]">-{c.pointsDeducted} pts</span>
                             ) : (
-                              <span className="text-[#737373]">0 pts</span>
+                              <span className="text-[#9AAEAE]">0 pts</span>
                             )}
                           </td>
 
@@ -1559,7 +1596,7 @@ export default function GymAdminRewardsPerformance() {
                             <span
                               className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
                                 c.claimStatus === 'Approved'
-                                  ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/50'
+                                  ? 'bg-[#0E1415]/60 text-emerald-400 border border-[#2A3A3A]/50'
                                   : c.claimStatus === 'Pending'
                                   ? 'bg-amber-950/60 text-amber-400 border border-amber-800/50'
                                   : c.claimStatus === 'Redeemed'
@@ -1582,7 +1619,7 @@ export default function GymAdminRewardsPerformance() {
                                 <span
                                   className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
                                     c.financialPayoutStatus === 'Paid'
-                                      ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/50'
+                                      ? 'bg-[#0E1415]/60 text-emerald-400 border border-[#2A3A3A]/50'
                                       : 'bg-amber-950/60 text-amber-400 border border-amber-800/50'
                                   }`}
                                 >
@@ -1595,7 +1632,7 @@ export default function GymAdminRewardsPerformance() {
                                 )}
                               </div>
                             ) : (
-                              <span className="text-[#737373]">—</span>
+                              <span className="text-[#9AAEAE]">—</span>
                             )}
                           </td>
 
@@ -1605,7 +1642,7 @@ export default function GymAdminRewardsPerformance() {
                                 <>
                                   <button
                                     onClick={() => openClaimAction(c, 'APPROVE')}
-                                    className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#6366F1] hover:bg-[#4F46E5] text-white transition-colors cursor-pointer"
+                                    className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold transition-colors cursor-pointer"
                                   >
                                     Approve
                                   </button>
@@ -1630,7 +1667,7 @@ export default function GymAdminRewardsPerformance() {
                               {hasBonus && c.financialPayoutStatus === 'Pending' && (
                                 <button
                                   onClick={() => openClaimAction(c, 'PAYOUT')}
-                                  className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#6366F1] hover:bg-[#4F46E5] text-white transition-colors cursor-pointer"
+                                  className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold transition-colors cursor-pointer"
                                 >
                                   Record Payout
                                 </button>
@@ -1652,60 +1689,107 @@ export default function GymAdminRewardsPerformance() {
       {/* CUSTOMER DETAIL MODAL / DRAWER                          */}
       {/* ======================================================== */}
       {selectedCustomer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#292940' }}>
-            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#292940' }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+          <div className="bg-[#141D1E] rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-[#2A3A3A]">
+            <div className="sticky top-0 bg-[#0E1415] px-6 py-4 border-b border-[#2A3A3A] flex justify-between items-center z-10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#17172A] text-[#6366F1] font-bold">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#1B2728] text-[#2DD4BF] font-bold border border-[#2A3A3A]">
                   {selectedCustomer.name.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-gray-800">{selectedCustomer.name}</h3>
-                  <p className="text-xs text-gray-500">{selectedCustomer.email} • {selectedCustomer.phone || selectedCustomer.mobile || 'No phone'}</p>
+                  <h3 className="font-bold text-lg text-[#F5FAFA]">{selectedCustomer.name}</h3>
+                  <p className="text-xs text-[#9AAEAE]">{selectedCustomer.email} • {selectedCustomer.phone || selectedCustomer.mobile || 'No phone'}</p>
                 </div>
               </div>
-              <button onClick={() => setSelectedCustomer(null)} className="p-1 rounded-lg hover:bg-gray-100 text-gray-400">
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const cust = selectedCustomer;
+                    setSelectedCustomer(null);
+                    setCalendarModalCustomer(cust);
+                  }}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#2DD4BF] text-[#06201D] font-bold flex items-center gap-1.5 hover:bg-[#5EEAD4] transition cursor-pointer"
+                  title="Open full interactive daily calendar for this customer"
+                >
+                  <Calendar className="w-3.5 h-3.5" /> Open Daily Calendar
+                </button>
+                <button onClick={() => setSelectedCustomer(null)} className="p-1 rounded-lg hover:bg-[#1B2728] text-[#9AAEAE] hover:text-[#F5FAFA] cursor-pointer">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             <div className="p-6 space-y-5">
-              {/* Top Overview Cards */}
+              {/* Modal View Switcher: Overview vs Daily Calendar */}
+              <div className="flex items-center gap-2 p-1 bg-[#0E1415] border border-[#2A3A3A] rounded-xl w-fit">
+                <button
+                  onClick={() => setCustomerModalView('overview')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    customerModalView === 'overview'
+                      ? 'bg-[#2DD4BF] text-white shadow-xs'
+                      : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
+                  }`}
+                >
+                  Full Overview & Logs
+                </button>
+                <button
+                  onClick={() => setCustomerModalView('calendar')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    customerModalView === 'calendar'
+                      ? 'bg-[#2DD4BF] text-white shadow-xs'
+                      : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
+                  }`}
+                >
+                  <Calendar className="w-3.5 h-3.5" />
+                  Per-Day Calendar View
+                </button>
+              </div>
+
+              {customerModalView === 'calendar' ? (
+                <CustomerDailyCalendarView
+                  customers={customers}
+                  selectedCustomerId={selectedCustomer.customerId || selectedCustomer._id}
+                  onSelectCustomer={(c) => setSelectedCustomer(c)}
+                  trainers={trainers}
+                />
+              ) : (
+                <>
+                  {/* Top Overview Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-gray-50 border">
-                  <span className="text-gray-400 block font-medium">MEMBERSHIP</span>
-                  <span className="font-bold text-gray-800 text-sm">{selectedCustomer.membership?.status}</span>
-                  <span className="text-[11px] text-gray-500 block truncate">{selectedCustomer.membership?.planName}</span>
+                <div className="p-3 rounded-xl bg-[#0E1415] border border-[#2A3A3A]">
+                  <span className="text-[#9AAEAE] block font-medium">MEMBERSHIP</span>
+                  <span className="font-bold text-[#F5FAFA] text-sm mt-0.5 block">{selectedCustomer.membership?.status}</span>
+                  <span className="text-[11px] text-[#9AAEAE] block truncate">{selectedCustomer.membership?.planName}</span>
                 </div>
-                <div className="p-3 rounded-xl bg-gray-50 border">
-                  <span className="text-gray-400 block font-medium">ATTENDANCE</span>
-                  <span className="font-bold text-gray-800 text-sm">{selectedCustomer.attendanceSummary?.totalVerifiedVisits} visits</span>
-                  <span className="text-amber-600 font-semibold text-[11px]">🔥 {selectedCustomer.attendanceSummary?.attendanceStreak}d streak</span>
+                <div className="p-3 rounded-xl bg-[#0E1415] border border-[#2A3A3A]">
+                  <span className="text-[#9AAEAE] block font-medium">ATTENDANCE</span>
+                  <span className="font-bold text-[#F5FAFA] text-sm mt-0.5 block">{selectedCustomer.attendanceSummary?.totalVerifiedVisits} visits</span>
+                  <span className="text-[#FBBF24] font-semibold text-[11px]">🔥 {selectedCustomer.attendanceSummary?.attendanceStreak}d streak</span>
                 </div>
-                <div className="p-3 rounded-xl bg-gray-50 border">
-                  <span className="text-gray-400 block font-medium">WORKOUTS</span>
-                  <span className="font-bold text-[#6366F1] text-sm">
+                <div className="p-3 rounded-xl bg-[#0E1415] border border-[#2A3A3A]">
+                  <span className="text-[#9AAEAE] block font-medium">WORKOUTS</span>
+                  <span className="font-bold text-[#2DD4BF] text-sm mt-0.5 block">
                     {selectedCustomer.workoutSummary?.completionPercentage !== null ? `${selectedCustomer.workoutSummary.completionPercentage}%` : 'Not recorded'}
                   </span>
-                  <span className="text-[11px] text-gray-500 block">{selectedCustomer.workoutSummary?.completedWorkoutsCount} completed</span>
+                  <span className="text-[11px] text-[#9AAEAE] block">{selectedCustomer.workoutSummary?.completedWorkoutsCount} completed</span>
                 </div>
-                <div className="p-3 rounded-xl bg-gray-50 border">
-                  <span className="text-gray-400 block font-medium">POINTS WALLET</span>
-                  <span className="font-bold text-emerald-700 text-sm">{selectedCustomer.pointsWallet?.currentBalance} pts</span>
-                  <span className="text-[11px] text-gray-500 block">{selectedCustomer.pointsWallet?.badgesCount} badges</span>
+                <div className="p-3 rounded-xl bg-[#0E1415] border border-[#2A3A3A]">
+                  <span className="text-[#9AAEAE] block font-medium">POINTS WALLET</span>
+                  <span className="font-bold text-[#34D399] text-sm mt-0.5 block">{selectedCustomer.pointsWallet?.currentBalance} pts</span>
+                  <span className="text-[11px] text-[#9AAEAE] block">{selectedCustomer.pointsWallet?.badgesCount} badges</span>
                 </div>
               </div>
 
               {/* Attendance, Workout & Diet Status with Completed Lists */}
               <div className="space-y-4">
                 {/* 1. Attendance History & Verified Gym Visits */}
-                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#292940' }}>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
-                    <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                      <CalendarCheck className="w-4 h-4 text-[#6366F1]" /> Verified Gym Attendance & Visit History
+                <div className="p-4 rounded-xl border bg-[#0E1415]/50 space-y-3 text-xs" style={{ borderColor: '#2A3A3A' }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
+                    <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
+                      <CalendarCheck className="w-4 h-4 text-[#2DD4BF]" /> Verified Gym Attendance & Visit History
                     </h4>
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#17172A] text-[#6366F1] text-xs">
+                      <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-xs">
                         {selectedCustomer.attendanceSummary?.totalVerifiedVisits || 0} Verified Visits
                       </span>
                       {selectedCustomer.attendanceSummary?.attendanceStreak > 0 && (
@@ -1716,18 +1800,18 @@ export default function GymAdminRewardsPerformance() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#0B0B12' }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-[#141D1E] p-3 rounded-lg border text-xs" style={{ borderColor: '#0E1415' }}>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">TOTAL VISITS</span>
-                      <span className="font-bold text-gray-800">{selectedCustomer.attendanceSummary?.totalVerifiedVisits || 0} Check-ins Recorded</span>
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">TOTAL VISITS</span>
+                      <span className="font-bold text-[#F5FAFA]">{selectedCustomer.attendanceSummary?.totalVerifiedVisits || 0} Check-ins Recorded</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">ATTENDANCE STREAK</span>
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">ATTENDANCE STREAK</span>
                       <span className="font-bold text-amber-600">{selectedCustomer.attendanceSummary?.attendanceStreak || 0} Consecutive Days</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">LAST RECORDED VISIT</span>
-                      <span className="font-bold text-gray-700">
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">LAST RECORDED VISIT</span>
+                      <span className="font-bold text-[#C1D0D0]">
                         {selectedCustomer.attendanceSummary?.lastVisitDate
                           ? new Date(selectedCustomer.attendanceSummary.lastVisitDate).toLocaleDateString()
                           : 'None Recorded'}
@@ -1737,19 +1821,19 @@ export default function GymAdminRewardsPerformance() {
 
                   {/* Attendance Visits Log Table */}
                   <div className="space-y-2 pt-1">
-                    <div className="font-bold text-gray-700 flex justify-between items-center">
+                    <div className="font-bold text-[#C1D0D0] flex justify-between items-center">
                       <span>Verified Attendance Logs ({selectedCustomer.attendanceSummary?.attendanceLogs?.length || selectedCustomer.attendanceSummary?.totalVerifiedVisits || 0}):</span>
-                      <span className="text-[11px] text-gray-400 font-normal">Check-in and check-out logs</span>
+                      <span className="text-[11px] text-[#9AAEAE] font-normal">Check-in and check-out logs</span>
                     </div>
 
                     {(!selectedCustomer.attendanceSummary?.attendanceLogs || selectedCustomer.attendanceSummary.attendanceLogs.length === 0) ? (
-                      <div className="p-3 text-center rounded-lg bg-white border text-gray-400 text-xs italic">
+                      <div className="p-3 text-center rounded-lg bg-[#141D1E] border text-[#9AAEAE] text-xs italic">
                         No attendance records logged yet for this member.
                       </div>
                     ) : (
-                      <div className="max-h-52 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#292940' }}>
+                      <div className="max-h-52 overflow-y-auto rounded-lg border bg-[#141D1E]" style={{ borderColor: '#2A3A3A' }}>
                         <table className="w-full text-left border-collapse text-xs">
-                          <thead className="bg-gray-50 text-gray-500 sticky top-0 border-b text-[11px] uppercase">
+                          <thead className="bg-[#0E1415] text-[#9AAEAE] sticky top-0 border-b text-[11px] uppercase">
                             <tr>
                               <th className="py-2 px-3">Date</th>
                               <th className="py-2 px-3">Check-in / Check-out</th>
@@ -1757,25 +1841,25 @@ export default function GymAdminRewardsPerformance() {
                               <th className="py-2 px-3 text-right">Attendance Status</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
+                          <tbody className="divide-y text-[#C1D0D0]" style={{ borderColor: '#0E1415' }}>
                             {selectedCustomer.attendanceSummary.attendanceLogs.map((log: any, idx: number) => (
-                              <tr key={log._id || idx} className="hover:bg-gray-50/50">
-                                <td className="py-2 px-3 font-semibold text-gray-800">
+                              <tr key={log._id || idx} className="hover:bg-[#0E1415]/50">
+                                <td className="py-2 px-3 font-semibold text-[#F5FAFA]">
                                   {log.date ? new Date(log.date).toLocaleDateString() : 'Visit'}
                                 </td>
-                                <td className="py-2 px-3 text-gray-600">
-                                  <div className="font-medium text-gray-800">
+                                <td className="py-2 px-3 text-[#C1D0D0]">
+                                  <div className="font-medium text-[#F5FAFA]">
                                     {log.checkInTime || '—'} {log.checkOutTime && log.checkOutTime !== '—' ? ` - ${log.checkOutTime}` : ''}
                                   </div>
                                 </td>
                                 <td className="py-2 px-3">
-                                  <span className="px-1.5 py-0.5 rounded font-medium bg-gray-100 text-gray-700 text-[11px]">
+                                  <span className="px-1.5 py-0.5 rounded font-medium bg-[#1B2728] text-[#C1D0D0] text-[11px]">
                                     {log.mode || 'In-Person Gym Visit'}
                                   </span>
                                 </td>
                                 <td className="py-2 px-3 text-right">
-                                  <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-700 text-[10px] inline-flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {log.status || 'Present'}
+                                  <span className="px-2 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-[10px] inline-flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3 text-[#2DD4BF]" /> {log.status || 'Present'}
                                   </span>
                                 </td>
                               </tr>
@@ -1788,28 +1872,28 @@ export default function GymAdminRewardsPerformance() {
                 </div>
 
                 {/* 2. Assigned Workout Program & Completed Workouts */}
-                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#292940' }}>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
-                    <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                      <Dumbbell className="w-4 h-4 text-[#6366F1]" /> Assigned Workout Program & Completed Sessions
+                <div className="p-4 rounded-xl border bg-[#0E1415]/50 space-y-3 text-xs" style={{ borderColor: '#2A3A3A' }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
+                    <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
+                      <Dumbbell className="w-4 h-4 text-[#2DD4BF]" /> Assigned Workout Program & Completed Sessions
                     </h4>
-                    <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#17172A] text-[#6366F1] text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-xs">
                       {selectedCustomer.workoutSummary?.completedWorkoutsCount || 0} / {selectedCustomer.workoutSummary?.totalWorkoutsScheduled || 0} Completed ({selectedCustomer.workoutSummary?.completionPercentage !== null ? `${selectedCustomer.workoutSummary?.completionPercentage}%` : 'N/A'})
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#0B0B12' }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-[#141D1E] p-3 rounded-lg border text-xs" style={{ borderColor: '#0E1415' }}>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">PLAN NAME</span>
-                      <span className="font-bold text-gray-800">{selectedCustomer.workoutSummary?.assignedPlanName}</span>
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">PLAN NAME</span>
+                      <span className="font-bold text-[#F5FAFA]">{selectedCustomer.workoutSummary?.assignedPlanName}</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">ASSIGNED TRAINER</span>
-                      <span className="font-bold text-gray-800">{selectedCustomer.assignedTrainer?.name || 'None Assigned'}</span>
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">ASSIGNED TRAINER</span>
+                      <span className="font-bold text-[#F5FAFA]">{selectedCustomer.assignedTrainer?.name || 'None Assigned'}</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">SCHEDULED WORKOUTS</span>
-                      <span className="font-bold text-[#6366F1]">
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">SCHEDULED WORKOUTS</span>
+                      <span className="font-bold text-[#2DD4BF]">
                         {selectedCustomer.workoutSummary?.totalWorkoutsScheduled || 0} Total ({selectedCustomer.workoutSummary?.completedWorkoutsCount || 0} Done)
                       </span>
                     </div>
@@ -1817,19 +1901,19 @@ export default function GymAdminRewardsPerformance() {
 
                   {/* Completed Workouts List / Table */}
                   <div className="space-y-2 pt-1">
-                    <div className="font-bold text-gray-700 flex justify-between items-center">
+                    <div className="font-bold text-[#C1D0D0] flex justify-between items-center">
                       <span>Completed Workouts & Exercises ({selectedCustomer.workoutSummary?.completedWorkoutsList?.length || selectedCustomer.workoutSummary?.completedWorkoutsCount || 0}):</span>
-                      <span className="text-[11px] text-gray-400 font-normal">Real-time attendance & completed sets</span>
+                      <span className="text-[11px] text-[#9AAEAE] font-normal">Real-time attendance & completed sets</span>
                     </div>
 
                     {(!selectedCustomer.workoutSummary?.completedWorkoutsList || selectedCustomer.workoutSummary.completedWorkoutsList.length === 0) ? (
-                      <div className="p-3 text-center rounded-lg bg-white border text-gray-400 text-xs italic">
+                      <div className="p-3 text-center rounded-lg bg-[#141D1E] border text-[#9AAEAE] text-xs italic">
                         No completed workout sessions logged yet for this member.
                       </div>
                     ) : (
-                      <div className="max-h-60 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#292940' }}>
+                      <div className="max-h-60 overflow-y-auto rounded-lg border bg-[#141D1E]" style={{ borderColor: '#2A3A3A' }}>
                         <table className="w-full text-left border-collapse text-xs">
-                          <thead className="bg-gray-50 text-gray-500 sticky top-0 border-b text-[11px] uppercase">
+                          <thead className="bg-[#0E1415] text-[#9AAEAE] sticky top-0 border-b text-[11px] uppercase">
                             <tr>
                               <th className="py-2 px-3">Day / Routine</th>
                               <th className="py-2 px-3">Exercise / Activity</th>
@@ -1838,27 +1922,27 @@ export default function GymAdminRewardsPerformance() {
                               <th className="py-2 px-3 text-right">Status</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
+                          <tbody className="divide-y text-[#C1D0D0]" style={{ borderColor: '#0E1415' }}>
                             {selectedCustomer.workoutSummary.completedWorkoutsList.map((w: any, idx: number) => (
-                              <tr key={w._id || idx} className="hover:bg-gray-50/50">
-                                <td className="py-2 px-3 font-semibold text-gray-800">
+                              <tr key={w._id || idx} className="hover:bg-[#0E1415]/50">
+                                <td className="py-2 px-3 font-semibold text-[#F5FAFA]">
                                   {w.dayName || `Workout #${idx + 1}`}
                                 </td>
                                 <td className="py-2 px-3">
-                                  <div className="font-medium text-gray-800">{w.exerciseName}</div>
-                                  {w.notes && <div className="text-[10px] text-gray-400 italic">{w.notes}</div>}
+                                  <div className="font-medium text-[#F5FAFA]">{w.exerciseName}</div>
+                                  {w.notes && <div className="text-[10px] text-[#9AAEAE] italic">{w.notes}</div>}
                                 </td>
-                                <td className="py-2 px-3 text-gray-600">
+                                <td className="py-2 px-3 text-[#C1D0D0]">
                                   {w.completedSets > 0 ? `${w.completedSets}/${w.totalSets || 3} sets` : 'Full Session'}
                                   {w.completedRepetitions > 0 ? ` • ${w.completedRepetitions} reps` : ''}
                                   {w.duration > 0 ? ` • ${Math.round(w.duration / 60)} mins` : ''}
                                 </td>
-                                <td className="py-2 px-3 text-gray-500 whitespace-nowrap">
+                                <td className="py-2 px-3 text-[#9AAEAE] whitespace-nowrap">
                                   {w.completedAt ? new Date(w.completedAt).toLocaleDateString() : 'Recorded'}
                                 </td>
                                 <td className="py-2 px-3 text-right">
-                                  <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-700 text-[10px] inline-flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Completed
+                                  <span className="px-2 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-[10px] inline-flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3 text-[#2DD4BF]" /> Completed
                                   </span>
                                 </td>
                               </tr>
@@ -1871,30 +1955,30 @@ export default function GymAdminRewardsPerformance() {
                 </div>
 
                 {/* 2. Diet Plan & Completed Meal Check-ins */}
-                <div className="p-4 rounded-xl border bg-gray-50/50 space-y-3 text-xs" style={{ borderColor: '#292940' }}>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
-                    <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
+                <div className="p-4 rounded-xl border bg-[#0E1415]/50 space-y-3 text-xs" style={{ borderColor: '#2A3A3A' }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
+                    <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
                       <Utensils className="w-4 h-4 text-amber-600" /> Diet Plan & Completed Meal Check-ins
                     </h4>
-                    <span className="px-2.5 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-800 text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-xs">
                       {selectedCustomer.dietSummary?.totalMealCheckins || 0} Meals Checked-In ({selectedCustomer.dietSummary?.adherencePercentage !== null ? `${selectedCustomer.dietSummary?.adherencePercentage}%` : '0%'} Adherence)
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-white p-3 rounded-lg border text-xs" style={{ borderColor: '#0B0B12' }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-1 bg-[#141D1E] p-3 rounded-lg border text-xs" style={{ borderColor: '#0E1415' }}>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">PLAN STATUS</span>
-                      <span className="font-bold text-gray-800">
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">PLAN STATUS</span>
+                      <span className="font-bold text-[#F5FAFA]">
                         {selectedCustomer.dietSummary?.plan?.title || 'Personalized Diet Plan'} ({selectedCustomer.dietSummary?.plan?.status || 'No Plan'})
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">CHECK-IN DAYS</span>
-                      <span className="font-bold text-gray-800">{selectedCustomer.dietSummary?.distinctCheckinDays || 0} Days Recorded</span>
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">CHECK-IN DAYS</span>
+                      <span className="font-bold text-[#F5FAFA]">{selectedCustomer.dietSummary?.distinctCheckinDays || 0} Days Recorded</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 block text-[11px] font-semibold">DAILY NUTRITION TARGET</span>
-                      <span className="font-bold text-gray-700">
+                      <span className="text-[#9AAEAE] block text-[11px] font-semibold">DAILY NUTRITION TARGET</span>
+                      <span className="font-bold text-[#C1D0D0]">
                         {selectedCustomer.dietSummary?.plan?.dailyCalories ? `${selectedCustomer.dietSummary?.plan?.dailyCalories} kcal • ${selectedCustomer.dietSummary?.plan?.protein || ''} P` : 'Personalized'}
                       </span>
                     </div>
@@ -1902,19 +1986,19 @@ export default function GymAdminRewardsPerformance() {
 
                   {/* Completed Meal Check-ins List / Table */}
                   <div className="space-y-2 pt-1">
-                    <div className="font-bold text-gray-700 flex justify-between items-center">
+                    <div className="font-bold text-[#C1D0D0] flex justify-between items-center">
                       <span>Completed Meal Check-ins ({selectedCustomer.dietSummary?.completedMealsList?.length || selectedCustomer.dietSummary?.totalMealCheckins || 0}):</span>
-                      <span className="text-[11px] text-gray-400 font-normal">Real check-ins logged by customer</span>
+                      <span className="text-[11px] text-[#9AAEAE] font-normal">Real check-ins logged by customer</span>
                     </div>
 
                     {(!selectedCustomer.dietSummary?.completedMealsList || selectedCustomer.dietSummary.completedMealsList.length === 0) ? (
-                      <div className="p-3 text-center rounded-lg bg-white border text-gray-400 text-xs italic">
+                      <div className="p-3 text-center rounded-lg bg-[#141D1E] border text-[#9AAEAE] text-xs italic">
                         No completed meal check-ins recorded yet for this member.
                       </div>
                     ) : (
-                      <div className="max-h-60 overflow-y-auto rounded-lg border bg-white" style={{ borderColor: '#292940' }}>
+                      <div className="max-h-60 overflow-y-auto rounded-lg border bg-[#141D1E]" style={{ borderColor: '#2A3A3A' }}>
                         <table className="w-full text-left border-collapse text-xs">
-                          <thead className="bg-gray-50 text-gray-500 sticky top-0 border-b text-[11px] uppercase">
+                          <thead className="bg-[#0E1415] text-[#9AAEAE] sticky top-0 border-b text-[11px] uppercase">
                             <tr>
                               <th className="py-2 px-3">Meal Type</th>
                               <th className="py-2 px-3">Day / Date</th>
@@ -1923,39 +2007,39 @@ export default function GymAdminRewardsPerformance() {
                               <th className="py-2 px-3 text-right">Status</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
+                          <tbody className="divide-y text-[#C1D0D0]" style={{ borderColor: '#0E1415' }}>
                             {selectedCustomer.dietSummary.completedMealsList.map((m: any, idx: number) => (
-                              <tr key={m._id || idx} className="hover:bg-gray-50/50">
-                                <td className="py-2 px-3 font-semibold text-gray-800">
+                              <tr key={m._id || idx} className="hover:bg-[#0E1415]/50">
+                                <td className="py-2 px-3 font-semibold text-[#F5FAFA]">
                                   {m.mealType || `Meal #${idx + 1}`}
                                 </td>
-                                <td className="py-2 px-3 text-gray-600">
-                                  <div className="font-medium text-gray-800">{m.dayName || 'Daily Check-in'}</div>
-                                  <div className="text-[10px] text-gray-400">
+                                <td className="py-2 px-3 text-[#C1D0D0]">
+                                  <div className="font-medium text-[#F5FAFA]">{m.dayName || 'Daily Check-in'}</div>
+                                  <div className="text-[10px] text-[#9AAEAE]">
                                     {m.completedAt ? new Date(m.completedAt).toLocaleDateString() : 'Recorded'}
                                   </div>
                                 </td>
-                                <td className="py-2 px-3 text-gray-600">
+                                <td className="py-2 px-3 text-[#C1D0D0]">
                                   {m.items && m.items.length > 0 ? (
                                     <div className="flex flex-wrap gap-1">
                                       {m.items.map((it: string, i: number) => (
-                                        <span key={i} className="px-1.5 py-0.2 bg-gray-100 rounded text-[10px] text-gray-700">
+                                        <span key={i} className="px-1.5 py-0.2 bg-[#1B2728] rounded text-[10px] text-[#C1D0D0]">
                                           {it}
                                         </span>
                                       ))}
                                     </div>
                                   ) : (
-                                    <span className="text-gray-400 italic">Logged</span>
+                                    <span className="text-[#9AAEAE] italic">Logged</span>
                                   )}
                                 </td>
-                                <td className="py-2 px-3 text-gray-600 whitespace-nowrap">
+                                <td className="py-2 px-3 text-[#C1D0D0] whitespace-nowrap">
                                   {m.calories > 0 ? `${m.calories} kcal` : ''}
                                   {m.protein > 0 ? ` • ${m.protein}g P` : ''}
                                   {!m.calories && !m.protein ? '—' : ''}
                                 </td>
                                 <td className="py-2 px-3 text-right">
-                                  <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-700 text-[10px] inline-flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Checked In
+                                  <span className="px-2 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-[10px] inline-flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3 text-[#2DD4BF]" /> Checked In
                                   </span>
                                 </td>
                               </tr>
@@ -1971,23 +2055,23 @@ export default function GymAdminRewardsPerformance() {
 
               {/* Reward Rules Evaluation */}
               <div className="p-4 rounded-xl border space-y-2 text-xs">
-                <h4 className="font-bold text-gray-800 flex items-center gap-1.5">
-                  <Gift className="w-4 h-4 text-emerald-600" /> Reward Rules Evaluation
+                <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5">
+                  <Gift className="w-4 h-4 text-[#2DD4BF]" /> Reward Rules Evaluation
                 </h4>
                 <div className="space-y-1.5 pt-1">
                   {selectedCustomer.rewardsSummary?.evaluatedRewards?.map((rwd: any) => (
-                    <div key={rwd.rewardId} className="flex justify-between items-center p-2 rounded-lg bg-gray-50 border">
+                    <div key={rwd.rewardId} className="flex justify-between items-center p-2 rounded-lg bg-[#0E1415] border">
                       <div>
-                        <span className="font-semibold text-gray-800">{rwd.title}</span>
-                        <span className="text-[11px] text-gray-400 block">{rwd.category}</span>
+                        <span className="font-semibold text-[#F5FAFA]">{rwd.title}</span>
+                        <span className="text-[11px] text-[#9AAEAE] block">{rwd.category}</span>
                       </div>
                       <div className="text-right">
                         {rwd.alreadyClaimed ? (
-                          <span className="px-2 py-0.5 rounded font-semibold bg-gray-100 text-gray-600 text-[11px]">
+                          <span className="px-2 py-0.5 rounded font-semibold bg-[#1B2728] text-[#C1D0D0] text-[11px]">
                             Already Claimed
                           </span>
                         ) : rwd.isEligible ? (
-                          <span className="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800 text-[11px]">
+                          <span className="px-2 py-0.5 rounded font-bold bg-[#1B2728] text-[#2DD4BF] text-[11px]">
                             Eligible to Claim
                           </span>
                         ) : (
@@ -2000,6 +2084,55 @@ export default function GymAdminRewardsPerformance() {
                   ))}
                 </div>
               </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* DEDICATED CUSTOMER DAILY CALENDAR MODAL                  */}
+      {/* ======================================================== */}
+      {calendarModalCustomer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md overflow-y-auto">
+          <div className="bg-[#141D1E] rounded-2xl w-full max-w-6xl max-h-[94vh] overflow-y-auto shadow-2xl border border-[#2A3A3A] flex flex-col">
+            {/* Modal Sticky Header */}
+            <div className="sticky top-0 bg-[#0E1415] px-6 py-4 border-b border-[#2A3A3A] flex justify-between items-center z-20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#1B2728] text-[#2DD4BF] font-bold border border-[#2A3A3A]">
+                  {calendarModalCustomer.name?.charAt(0) || 'C'}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-lg text-[#F5FAFA]">{calendarModalCustomer.name}</h3>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
+                      Per-Day Workout & Diet Calendar
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#9AAEAE]">
+                    {calendarModalCustomer.email} • {calendarModalCustomer.phone || calendarModalCustomer.mobile || 'Member'} • {calendarModalCustomer.membership?.planName || 'Active Membership'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setCalendarModalCustomer(null)}
+                className="p-1.5 rounded-xl hover:bg-[#1B2728] text-[#9AAEAE] hover:text-[#F5FAFA] cursor-pointer transition border border-[#2A3A3A]"
+                title="Close Calendar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body: Customer Daily Calendar with Per-Day Inspection */}
+            <div className="p-5 sm:p-6">
+              <CustomerDailyCalendarView
+                customers={customers}
+                selectedCustomerId={calendarModalCustomer.customerId || calendarModalCustomer._id}
+                onSelectCustomer={(cust) => setCalendarModalCustomer(cust)}
+                trainers={trainers}
+                onClose={() => setCalendarModalCustomer(null)}
+              />
             </div>
           </div>
         </div>
@@ -2010,21 +2143,21 @@ export default function GymAdminRewardsPerformance() {
       {/* ======================================================== */}
       {selectedTrainer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#292940' }}>
+          <div className="bg-[#141D1E] rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#2A3A3A' }}>
             {/* Modal Header */}
-            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#292940' }}>
+            <div className="sticky top-0 bg-[#141D1E] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#2A3A3A' }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#17172A] text-[#6366F1] font-bold text-base">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#1B2728] text-[#2DD4BF] font-bold text-base">
                   {selectedTrainer.name.charAt(0)}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-lg text-gray-800">{selectedTrainer.name}</h3>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700">
+                    <h3 className="font-bold text-lg text-[#F5FAFA]">{selectedTrainer.name}</h3>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#1B2728] text-[#2DD4BF]">
                       {selectedTrainer.activeStatus || 'Active Trainer'}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-[#9AAEAE]">
                     {selectedTrainer.email}
                     {selectedTrainer.phone || selectedTrainer.mobile ? ` • ${selectedTrainer.phone || selectedTrainer.mobile}` : ''}
                     {selectedTrainer.experience ? ` • ${selectedTrainer.experience} Yrs Experience` : ''}
@@ -2033,7 +2166,7 @@ export default function GymAdminRewardsPerformance() {
               </div>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 cursor-pointer"
+                className="p-1 rounded-lg hover:bg-[#1B2728] text-[#9AAEAE] cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -2173,64 +2306,64 @@ export default function GymAdminRewardsPerformance() {
                 <div className="p-6 space-y-5 text-xs">
                   {/* Top Overview KPI Cards */}
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    <div className="p-3 rounded-xl bg-gray-50 border">
-                      <span className="text-gray-400 block font-medium">HANDLED CLIENTS</span>
-                      <span className="font-bold text-base text-gray-800">
+                    <div className="p-3 rounded-xl bg-[#0E1415] border">
+                      <span className="text-[#9AAEAE] block font-medium">HANDLED CLIENTS</span>
+                      <span className="font-bold text-base text-[#F5FAFA]">
                         {selectedTrainer.handledClients?.length || selectedTrainer.clientsSummary?.totalAssignedCustomers || 0}
                       </span>
-                      <span className="text-[11px] text-gray-500 block truncate">Active Roster</span>
+                      <span className="text-[11px] text-[#9AAEAE] block truncate">Active Roster</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-gray-50 border">
-                      <span className="text-gray-400 block font-medium">WORKOUTS DONE</span>
-                      <span className="font-bold text-base text-[#6366F1]">
+                    <div className="p-3 rounded-xl bg-[#0E1415] border">
+                      <span className="text-[#9AAEAE] block font-medium">WORKOUTS DONE</span>
+                      <span className="font-bold text-base text-[#2DD4BF]">
                         {trainerCompletedWorkouts.length}
                       </span>
-                      <span className="text-[11px] text-gray-500 block truncate">
+                      <span className="text-[11px] text-[#9AAEAE] block truncate">
                         {selectedTrainer.clientsSummary?.averageClientWorkoutProgress !== null ? `${selectedTrainer.clientsSummary.averageClientWorkoutProgress}% Adherence` : '100% Adherence'}
                       </span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-gray-50 border">
-                      <span className="text-gray-400 block font-medium">MEALS CHECKED-IN</span>
-                      <span className="font-bold text-base text-emerald-700">
+                    <div className="p-3 rounded-xl bg-[#0E1415] border">
+                      <span className="text-[#9AAEAE] block font-medium">MEALS CHECKED-IN</span>
+                      <span className="font-bold text-base text-[#2DD4BF]">
                         {trainerCompletedMeals.length}
                       </span>
-                      <span className="text-[11px] text-gray-500 block truncate">
+                      <span className="text-[11px] text-[#9AAEAE] block truncate">
                         Verified Records
                       </span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-gray-50 border">
-                      <span className="text-gray-400 block font-medium">SESSIONS DONE</span>
-                      <span className="font-bold text-base text-gray-800">
+                    <div className="p-3 rounded-xl bg-[#0E1415] border">
+                      <span className="text-[#9AAEAE] block font-medium">SESSIONS DONE</span>
+                      <span className="font-bold text-base text-[#F5FAFA]">
                         {trainerCompletedSessions.length}
                       </span>
-                      <span className="text-[11px] text-gray-500 block truncate">
+                      <span className="text-[11px] text-[#9AAEAE] block truncate">
                         {selectedTrainer.sessionsSummary?.onlineCount || 0} On / {selectedTrainer.sessionsSummary?.inPersonCount || trainerCompletedSessions.length} In-Person
                       </span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-gray-50 border">
-                      <span className="text-gray-400 block font-medium">CLIENT RATING</span>
+                    <div className="p-3 rounded-xl bg-[#0E1415] border">
+                      <span className="text-[#9AAEAE] block font-medium">CLIENT RATING</span>
                       <span className="font-bold text-base text-amber-600">
                         {selectedTrainer.feedbackSummary?.averageRating || 5.0} ⭐
                       </span>
-                      <span className="text-[11px] text-gray-500 block truncate">
+                      <span className="text-[11px] text-[#9AAEAE] block truncate">
                         {selectedTrainer.feedbackSummary?.totalRatingsCount || 0} Reviews
                       </span>
                     </div>
                   </div>
 
                   {/* Sub-Tabs Navigation inside Trainer Modal */}
-                  <div className="flex items-center gap-1.5 p-1 bg-gray-100/70 rounded-xl overflow-x-auto">
+                  <div className="flex items-center gap-1.5 p-1 bg-[#1B2728]/70 rounded-xl overflow-x-auto">
                     <button
                       type="button"
                       onClick={() => setTrainerModalTab('handled-customers')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'handled-customers'
-                          ? 'bg-white text-[#6366F1] shadow-xs'
-                          : 'text-gray-500 hover:text-gray-800'
+                          ? 'bg-[#141D1E] text-[#2DD4BF] shadow-xs'
+                          : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                       }`}
                     >
                       <Users className="w-3.5 h-3.5" />
@@ -2242,8 +2375,8 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('workout-tracking')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'workout-tracking'
-                          ? 'bg-white text-[#6366F1] shadow-xs'
-                          : 'text-gray-500 hover:text-gray-800'
+                          ? 'bg-[#141D1E] text-[#2DD4BF] shadow-xs'
+                          : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                       }`}
                     >
                       <Dumbbell className="w-3.5 h-3.5" />
@@ -2255,8 +2388,8 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('diet-tracking')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'diet-tracking'
-                          ? 'bg-white text-[#6366F1] shadow-xs'
-                          : 'text-gray-500 hover:text-gray-800'
+                          ? 'bg-[#141D1E] text-[#2DD4BF] shadow-xs'
+                          : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                       }`}
                     >
                       <Utensils className="w-3.5 h-3.5" />
@@ -2268,8 +2401,8 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('sessions')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'sessions'
-                          ? 'bg-white text-[#6366F1] shadow-xs'
-                          : 'text-gray-500 hover:text-gray-800'
+                          ? 'bg-[#141D1E] text-[#2DD4BF] shadow-xs'
+                          : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                       }`}
                     >
                       <CalendarCheck className="w-3.5 h-3.5" />
@@ -2281,8 +2414,8 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('reviews')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'reviews'
-                          ? 'bg-white text-[#6366F1] shadow-xs'
-                          : 'text-gray-500 hover:text-gray-800'
+                          ? 'bg-[#141D1E] text-[#2DD4BF] shadow-xs'
+                          : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                       }`}
                     >
                       <Star className="w-3.5 h-3.5" />
@@ -2294,8 +2427,8 @@ export default function GymAdminRewardsPerformance() {
                       onClick={() => setTrainerModalTab('rewards')}
                       className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 font-bold cursor-pointer ${
                         trainerModalTab === 'rewards'
-                          ? 'bg-white text-[#6366F1] shadow-xs'
-                          : 'text-gray-500 hover:text-gray-800'
+                          ? 'bg-[#141D1E] text-[#2DD4BF] shadow-xs'
+                          : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                       }`}
                     >
                       <Gift className="w-3.5 h-3.5" />
@@ -2306,24 +2439,24 @@ export default function GymAdminRewardsPerformance() {
                   {/* Sub-Tab 1: Handled Customers */}
                   {trainerModalTab === 'handled-customers' && (
                     <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
-                        <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                          <Users className="w-4 h-4 text-[#6366F1]" />
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
+                        <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
+                          <Users className="w-4 h-4 text-[#2DD4BF]" />
                           Customers Handled by {selectedTrainer.name}
                         </h4>
-                        <span className="text-[11px] text-gray-500">
+                        <span className="text-[11px] text-[#9AAEAE]">
                           Real-time workout &amp; diet plan tracking for assigned gym members
                         </span>
                       </div>
 
                       {(!selectedTrainer.handledClients || selectedTrainer.handledClients.length === 0) ? (
-                        <div className="p-8 text-center rounded-xl bg-gray-50 border text-gray-400 italic">
+                        <div className="p-8 text-center rounded-xl bg-[#0E1415] border text-[#9AAEAE] italic">
                           No customer clients currently assigned to this trainer.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#292940' }}>
+                        <div className="overflow-x-auto rounded-xl border bg-[#141D1E]" style={{ borderColor: '#2A3A3A' }}>
                           <table className="w-full text-left border-collapse text-xs">
-                            <thead className="bg-gray-50 text-gray-500 border-b uppercase text-[11px]">
+                            <thead className="bg-[#0E1415] text-[#9AAEAE] border-b uppercase text-[11px]">
                               <tr>
                                 <th className="py-2.5 px-3">Customer</th>
                                 <th className="py-2.5 px-3">Membership</th>
@@ -2332,67 +2465,67 @@ export default function GymAdminRewardsPerformance() {
                                 <th className="py-2.5 px-3 text-right">Sessions Handled</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
+                            <tbody className="divide-y text-[#C1D0D0]" style={{ borderColor: '#0E1415' }}>
                               {selectedTrainer.handledClients.map((client: any) => (
-                                <tr key={client.customerId} className="hover:bg-gray-50/50">
+                                <tr key={client.customerId} className="hover:bg-[#0E1415]/50">
                                   <td className="py-3 px-3">
-                                    <div className="font-bold text-gray-800">{client.name}</div>
-                                    <div className="text-[11px] text-gray-400">
+                                    <div className="font-bold text-[#F5FAFA]">{client.name}</div>
+                                    <div className="text-[11px] text-[#9AAEAE]">
                                       {client.email}{client.phone ? ` • ${client.phone}` : ''}
                                     </div>
                                   </td>
 
                                   <td className="py-3 px-3">
                                     <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                                      client.membership?.status === 'Active' ? 'bg-emerald-50 text-emerald-800' : 'bg-gray-100 text-gray-600'
+                                      client.membership?.status === 'Active' ? 'bg-[#1B2728] text-[#2DD4BF]' : 'bg-[#1B2728] text-[#C1D0D0]'
                                     }`}>
                                       {client.membership?.status || 'Active'}
                                     </span>
-                                    <span className="block text-[11px] text-gray-500 mt-0.5">
+                                    <span className="block text-[11px] text-[#9AAEAE] mt-0.5">
                                       {client.membership?.planName || 'Standard Package'}
                                     </span>
                                   </td>
 
                                   <td className="py-3 px-3">
-                                    <div className="font-semibold text-gray-800">
+                                    <div className="font-semibold text-[#F5FAFA]">
                                       {client.workoutTracking?.planName}
                                     </div>
                                     <div className="flex items-center gap-2 mt-1">
                                       <div className="w-20 bg-gray-200 rounded-full h-1.5 overflow-hidden">
                                         <div
-                                          className="bg-[#6366F1] h-1.5 rounded-full"
+                                          className="bg-[#2DD4BF] h-1.5 rounded-full"
                                           style={{ width: `${client.workoutTracking?.completionPercentage || 0}%` }}
                                         />
                                       </div>
-                                      <span className="font-bold text-[#6366F1] text-[11px]">
+                                      <span className="font-bold text-[#2DD4BF] text-[11px]">
                                         {client.workoutTracking?.completionPercentage || 0}%
                                       </span>
-                                      <span className="text-[10px] text-gray-400">
+                                      <span className="text-[10px] text-[#9AAEAE]">
                                         ({client.workoutTracking?.completedCount || 0}/{client.workoutTracking?.totalScheduled || 0})
                                       </span>
                                     </div>
                                   </td>
 
                                   <td className="py-3 px-3">
-                                    <div className="font-semibold text-gray-800">
+                                    <div className="font-semibold text-[#F5FAFA]">
                                       {client.dietTracking?.planName}
                                     </div>
                                     <div className="flex items-center gap-2 mt-1">
-                                      <span className="px-1.5 py-0.2 rounded font-bold text-[10px] bg-emerald-50 text-emerald-700">
+                                      <span className="px-1.5 py-0.2 rounded font-bold text-[10px] bg-[#1B2728] text-[#2DD4BF]">
                                         {client.dietTracking?.adherencePercentage || 85}% Adherence
                                       </span>
-                                      <span className="text-[10px] text-gray-500">
+                                      <span className="text-[10px] text-[#9AAEAE]">
                                         {client.dietTracking?.totalMealCheckins || 0} check-ins • {client.dietTracking?.dailyCalories || '2,200 kcal'}
                                       </span>
                                     </div>
                                   </td>
 
                                   <td className="py-3 px-3 text-right">
-                                    <span className="font-bold text-gray-800">
+                                    <span className="font-bold text-[#F5FAFA]">
                                       {client.sessionsCount || 0} sessions
                                     </span>
                                     {client.lastSessionDate && (
-                                      <span className="block text-[10px] text-gray-400">
+                                      <span className="block text-[10px] text-[#9AAEAE]">
                                         Last: {new Date(client.lastSessionDate).toLocaleDateString()}
                                       </span>
                                     )}
@@ -2409,30 +2542,30 @@ export default function GymAdminRewardsPerformance() {
                   {/* Sub-Tab 2: Workout Tracking (ONLY COMPLETED WORKOUTS) */}
                   {trainerModalTab === 'workout-tracking' && (
                     <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
                         <div>
-                          <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                            <Dumbbell className="w-4 h-4 text-[#6366F1]" />
+                          <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
+                            <Dumbbell className="w-4 h-4 text-[#2DD4BF]" />
                             Completed Customer Workouts Managed by {selectedTrainer.name}
                           </h4>
-                          <p className="text-[11px] text-gray-500 mt-0.5">
+                          <p className="text-[11px] text-[#9AAEAE] mt-0.5">
                             Real-time log of exercises, completed sets, reps, and workout completion timestamps
                           </p>
                         </div>
-                        <span className="px-2.5 py-1 rounded-full font-bold bg-emerald-50 text-emerald-800 text-xs flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="px-2.5 py-1 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-xs flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#2DD4BF]" />
                           {trainerCompletedWorkouts.length} Completed Workouts
                         </span>
                       </div>
 
                       {trainerCompletedWorkouts.length === 0 ? (
-                        <div className="p-8 text-center rounded-xl bg-gray-50 border text-gray-400 italic">
+                        <div className="p-8 text-center rounded-xl bg-[#0E1415] border text-[#9AAEAE] italic">
                           No completed workout sessions logged yet for this trainer's clients.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#292940' }}>
+                        <div className="overflow-x-auto rounded-xl border bg-[#141D1E]" style={{ borderColor: '#2A3A3A' }}>
                           <table className="w-full text-left border-collapse text-xs">
-                            <thead className="bg-gray-50 text-gray-500 border-b uppercase text-[11px]">
+                            <thead className="bg-[#0E1415] text-[#9AAEAE] border-b uppercase text-[11px]">
                               <tr>
                                 <th className="py-2.5 px-3">Customer</th>
                                 <th className="py-2.5 px-3">Day / Routine</th>
@@ -2442,31 +2575,31 @@ export default function GymAdminRewardsPerformance() {
                                 <th className="py-2.5 px-3 text-right">Status</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
+                            <tbody className="divide-y text-[#C1D0D0]" style={{ borderColor: '#0E1415' }}>
                               {trainerCompletedWorkouts.map((w: any, idx: number) => (
-                                <tr key={w._id || idx} className="hover:bg-gray-50/50">
+                                <tr key={w._id || idx} className="hover:bg-[#0E1415]/50">
                                   <td className="py-2.5 px-3">
-                                    <div className="font-bold text-gray-800">{w.clientName || 'Customer'}</div>
-                                    {w.clientEmail && <div className="text-[10px] text-gray-400">{w.clientEmail}</div>}
+                                    <div className="font-bold text-[#F5FAFA]">{w.clientName || 'Customer'}</div>
+                                    {w.clientEmail && <div className="text-[10px] text-[#9AAEAE]">{w.clientEmail}</div>}
                                   </td>
-                                  <td className="py-2.5 px-3 font-semibold text-gray-800">
+                                  <td className="py-2.5 px-3 font-semibold text-[#F5FAFA]">
                                     {w.dayName || `Workout #${idx + 1}`}
                                   </td>
                                   <td className="py-2.5 px-3">
-                                    <div className="font-medium text-gray-800">{w.exerciseName}</div>
-                                    {w.notes && <div className="text-[10px] text-gray-400 italic">{w.notes}</div>}
+                                    <div className="font-medium text-[#F5FAFA]">{w.exerciseName}</div>
+                                    {w.notes && <div className="text-[10px] text-[#9AAEAE] italic">{w.notes}</div>}
                                   </td>
-                                  <td className="py-2.5 px-3 text-gray-600">
+                                  <td className="py-2.5 px-3 text-[#C1D0D0]">
                                     {w.completedSets > 0 ? `${w.completedSets}/${w.totalSets || 3} sets` : 'Full Routine'}
                                     {w.completedRepetitions ? ` • ${w.completedRepetitions} reps` : ''}
                                     {w.duration > 0 ? ` • ${Math.round(w.duration / 60)} mins` : ''}
                                   </td>
-                                  <td className="py-2.5 px-3 text-gray-500 whitespace-nowrap">
+                                  <td className="py-2.5 px-3 text-[#9AAEAE] whitespace-nowrap">
                                     {w.completedAt ? new Date(w.completedAt).toLocaleDateString() : 'Recorded'}
                                   </td>
                                   <td className="py-2.5 px-3 text-right">
-                                    <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-700 text-[10px] inline-flex items-center gap-1">
-                                      <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Completed
+                                    <span className="px-2 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-[10px] inline-flex items-center gap-1">
+                                      <CheckCircle2 className="w-3 h-3 text-[#2DD4BF]" /> Completed
                                     </span>
                                   </td>
                                 </tr>
@@ -2481,30 +2614,30 @@ export default function GymAdminRewardsPerformance() {
                   {/* Sub-Tab 3: Diet Tracking (ONLY COMPLETED DIET CHECK-INS) */}
                   {trainerModalTab === 'diet-tracking' && (
                     <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
                         <div>
-                          <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                            <Utensils className="w-4 h-4 text-emerald-600" />
+                          <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
+                            <Utensils className="w-4 h-4 text-[#2DD4BF]" />
                             Completed Customer Meal Check-ins Managed by {selectedTrainer.name}
                           </h4>
-                          <p className="text-[11px] text-gray-500 mt-0.5">
+                          <p className="text-[11px] text-[#9AAEAE] mt-0.5">
                             Verified meal logs, nutritional check-ins, and dietary adherence recorded by assigned clients
                           </p>
                         </div>
-                        <span className="px-2.5 py-1 rounded-full font-bold bg-emerald-50 text-emerald-800 text-xs flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="px-2.5 py-1 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-xs flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#2DD4BF]" />
                           {trainerCompletedMeals.length} Completed Check-ins
                         </span>
                       </div>
 
                       {trainerCompletedMeals.length === 0 ? (
-                        <div className="p-8 text-center rounded-xl bg-gray-50 border text-gray-400 italic">
+                        <div className="p-8 text-center rounded-xl bg-[#0E1415] border text-[#9AAEAE] italic">
                           No completed meal check-ins recorded yet for this trainer's clients.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#292940' }}>
+                        <div className="overflow-x-auto rounded-xl border bg-[#141D1E]" style={{ borderColor: '#2A3A3A' }}>
                           <table className="w-full text-left border-collapse text-xs">
-                            <thead className="bg-gray-50 text-gray-500 border-b uppercase text-[11px]">
+                            <thead className="bg-[#0E1415] text-[#9AAEAE] border-b uppercase text-[11px]">
                               <tr>
                                 <th className="py-2.5 px-3">Customer</th>
                                 <th className="py-2.5 px-3">Meal Type</th>
@@ -2514,43 +2647,43 @@ export default function GymAdminRewardsPerformance() {
                                 <th className="py-2.5 px-3 text-right">Status</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
+                            <tbody className="divide-y text-[#C1D0D0]" style={{ borderColor: '#0E1415' }}>
                               {trainerCompletedMeals.map((m: any, idx: number) => (
-                                <tr key={m._id || idx} className="hover:bg-gray-50/50">
+                                <tr key={m._id || idx} className="hover:bg-[#0E1415]/50">
                                   <td className="py-2.5 px-3">
-                                    <div className="font-bold text-gray-800">{m.clientName || 'Customer'}</div>
-                                    {m.clientEmail && <div className="text-[10px] text-gray-400">{m.clientEmail}</div>}
+                                    <div className="font-bold text-[#F5FAFA]">{m.clientName || 'Customer'}</div>
+                                    {m.clientEmail && <div className="text-[10px] text-[#9AAEAE]">{m.clientEmail}</div>}
                                   </td>
-                                  <td className="py-2.5 px-3 font-semibold text-gray-800">
+                                  <td className="py-2.5 px-3 font-semibold text-[#F5FAFA]">
                                     {m.mealType || `Meal #${idx + 1}`}
                                   </td>
-                                  <td className="py-2.5 px-3 text-gray-600">
-                                    <div className="font-medium text-gray-800">{m.dayName || 'Daily Check-in'}</div>
-                                    <div className="text-[10px] text-gray-400">
+                                  <td className="py-2.5 px-3 text-[#C1D0D0]">
+                                    <div className="font-medium text-[#F5FAFA]">{m.dayName || 'Daily Check-in'}</div>
+                                    <div className="text-[10px] text-[#9AAEAE]">
                                       {m.completedAt ? new Date(m.completedAt).toLocaleDateString() : 'Recorded'}
                                     </div>
                                   </td>
-                                  <td className="py-2.5 px-3 text-gray-600">
+                                  <td className="py-2.5 px-3 text-[#C1D0D0]">
                                     {m.items && m.items.length > 0 ? (
                                       <div className="flex flex-wrap gap-1">
                                         {(Array.isArray(m.items) ? m.items : [m.items]).map((it: string, i: number) => (
-                                          <span key={i} className="px-1.5 py-0.5 bg-gray-100 rounded text-[10px] text-gray-700">
+                                          <span key={i} className="px-1.5 py-0.5 bg-[#1B2728] rounded text-[10px] text-[#C1D0D0]">
                                             {it}
                                           </span>
                                         ))}
                                       </div>
                                     ) : (
-                                      <span className="text-gray-400 italic">Logged</span>
+                                      <span className="text-[#9AAEAE] italic">Logged</span>
                                     )}
                                   </td>
-                                  <td className="py-2.5 px-3 text-gray-600 whitespace-nowrap">
+                                  <td className="py-2.5 px-3 text-[#C1D0D0] whitespace-nowrap">
                                     {m.calories > 0 ? `${m.calories} kcal` : ''}
                                     {m.protein > 0 ? ` • ${m.protein}g Protein` : ''}
                                     {!m.calories && !m.protein ? '—' : ''}
                                   </td>
                                   <td className="py-2.5 px-3 text-right">
-                                    <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-700 text-[10px] inline-flex items-center gap-1">
-                                      <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Completed
+                                    <span className="px-2 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-[10px] inline-flex items-center gap-1">
+                                      <CheckCircle2 className="w-3 h-3 text-[#2DD4BF]" /> Completed
                                     </span>
                                   </td>
                                 </tr>
@@ -2565,30 +2698,30 @@ export default function GymAdminRewardsPerformance() {
                   {/* Sub-Tab 4: Training Sessions (ONLY COMPLETED SESSIONS) */}
                   {trainerModalTab === 'sessions' && (
                     <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
                         <div>
-                          <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
-                            <CalendarCheck className="w-4 h-4 text-[#6366F1]" />
+                          <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
+                            <CalendarCheck className="w-4 h-4 text-[#2DD4BF]" />
                             Completed Training Sessions Conducted by {selectedTrainer.name}
                           </h4>
-                          <p className="text-[11px] text-gray-500 mt-0.5">
+                          <p className="text-[11px] text-[#9AAEAE] mt-0.5">
                             Verified completed training attendance, modes, and client feedback
                           </p>
                         </div>
-                        <span className="px-2.5 py-1 rounded-full font-bold bg-emerald-50 text-emerald-800 text-xs flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="px-2.5 py-1 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-xs flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#2DD4BF]" />
                           {trainerCompletedSessions.length} Completed Sessions
                         </span>
                       </div>
 
                       {trainerCompletedSessions.length === 0 ? (
-                        <div className="p-8 text-center rounded-xl bg-gray-50 border text-gray-400 italic">
+                        <div className="p-8 text-center rounded-xl bg-[#0E1415] border text-[#9AAEAE] italic">
                           No completed training sessions logged yet for this trainer.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: '#292940' }}>
+                        <div className="overflow-x-auto rounded-xl border bg-[#141D1E]" style={{ borderColor: '#2A3A3A' }}>
                           <table className="w-full text-left border-collapse text-xs">
-                            <thead className="bg-gray-50 text-gray-500 border-b uppercase text-[11px]">
+                            <thead className="bg-[#0E1415] text-[#9AAEAE] border-b uppercase text-[11px]">
                               <tr>
                                 <th className="py-2.5 px-3">Date</th>
                                 <th className="py-2.5 px-3">Customer</th>
@@ -2597,25 +2730,25 @@ export default function GymAdminRewardsPerformance() {
                                 <th className="py-2.5 px-3 text-right">Status</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y text-gray-700" style={{ borderColor: '#0B0B12' }}>
+                            <tbody className="divide-y text-[#C1D0D0]" style={{ borderColor: '#0E1415' }}>
                               {trainerCompletedSessions.map((s: any, idx: number) => (
-                                <tr key={s._id || idx} className="hover:bg-gray-50/50">
-                                  <td className="py-2.5 px-3 font-semibold text-gray-800">
+                                <tr key={s._id || idx} className="hover:bg-[#0E1415]/50">
+                                  <td className="py-2.5 px-3 font-semibold text-[#F5FAFA]">
                                     {s.date ? (isNaN(Date.parse(s.date)) ? s.date : new Date(s.date).toLocaleDateString()) : 'Recorded'}
                                   </td>
                                   <td className="py-2.5 px-3">
-                                    <div className="font-medium text-gray-800">{s.clientName}</div>
-                                    {s.clientEmail && <div className="text-[10px] text-gray-400">{s.clientEmail}</div>}
+                                    <div className="font-medium text-[#F5FAFA]">{s.clientName}</div>
+                                    {s.clientEmail && <div className="text-[10px] text-[#9AAEAE]">{s.clientEmail}</div>}
                                   </td>
-                                  <td className="py-2.5 px-3 text-gray-600">{s.time}</td>
+                                  <td className="py-2.5 px-3 text-[#C1D0D0]">{s.time}</td>
                                   <td className="py-2.5 px-3">
-                                    <span className="px-2 py-0.5 rounded font-medium bg-gray-100 text-gray-700 text-[11px]">
+                                    <span className="px-2 py-0.5 rounded font-medium bg-[#1B2728] text-[#C1D0D0] text-[11px]">
                                       {s.mode}
                                     </span>
                                   </td>
                                   <td className="py-2.5 px-3 text-right">
-                                    <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-700 text-[10px] inline-flex items-center gap-1">
-                                      <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Completed
+                                    <span className="px-2 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-[10px] inline-flex items-center gap-1">
+                                      <CheckCircle2 className="w-3 h-3 text-[#2DD4BF]" /> Completed
                                     </span>
                                   </td>
                                 </tr>
@@ -2631,8 +2764,8 @@ export default function GymAdminRewardsPerformance() {
               {/* Sub-Tab 5: Reviews */}
               {trainerModalTab === 'reviews' && (
                 <div className="space-y-3">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
-                    <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
+                    <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
                       <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                       Client Feedback &amp; Reviews for {selectedTrainer.name}
                     </h4>
@@ -2642,21 +2775,21 @@ export default function GymAdminRewardsPerformance() {
                   </div>
 
                   {(!selectedTrainer.feedbackSummary?.reviews || selectedTrainer.feedbackSummary.reviews.length === 0) ? (
-                    <div className="p-8 text-center rounded-xl bg-gray-50 border text-gray-400 italic">
+                    <div className="p-8 text-center rounded-xl bg-[#0E1415] border text-[#9AAEAE] italic">
                       No customer reviews recorded yet for this trainer.
                     </div>
                   ) : (
                     <div className="space-y-2">
                       {selectedTrainer.feedbackSummary.reviews.map((rev: any, i: number) => (
-                        <div key={i} className="p-3 rounded-xl bg-gray-50 border space-y-1">
+                        <div key={i} className="p-3 rounded-xl bg-[#0E1415] border space-y-1">
                           <div className="flex justify-between items-center font-semibold">
-                            <span className="text-gray-800">{rev.clientName || 'Gym Member'}</span>
+                            <span className="text-[#F5FAFA]">{rev.clientName || 'Gym Member'}</span>
                             <div className="flex items-center gap-1 text-amber-600 font-bold">
                               <span>{rev.rating} ⭐</span>
-                              {rev.date && <span className="text-gray-400 font-normal text-[10px]">({rev.date})</span>}
+                              {rev.date && <span className="text-[#9AAEAE] font-normal text-[10px]">({rev.date})</span>}
                             </div>
                           </div>
-                          <p className="text-gray-600 italic">"{rev.review}"</p>
+                          <p className="text-[#C1D0D0] italic">"{rev.review}"</p>
                         </div>
                       ))}
                     </div>
@@ -2667,8 +2800,8 @@ export default function GymAdminRewardsPerformance() {
               {/* Sub-Tab 6: Rewards & Bonuses */}
               {trainerModalTab === 'rewards' && (
                 <div className="space-y-3">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#292940' }}>
-                    <h4 className="font-bold text-gray-800 flex items-center gap-1.5 text-sm">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b" style={{ borderColor: '#2A3A3A' }}>
+                    <h4 className="font-bold text-[#F5FAFA] flex items-center gap-1.5 text-sm">
                       <Gift className="w-4 h-4 text-purple-600" />
                       Trainer Performance Bonuses &amp; Award Eligibility
                     </h4>
@@ -2679,17 +2812,17 @@ export default function GymAdminRewardsPerformance() {
 
                   <div className="space-y-2 pt-1">
                     {selectedTrainer.rewardsSummary?.evaluatedRewards?.map((rwd: any) => (
-                      <div key={rwd.rewardId} className="flex justify-between items-center p-3 rounded-xl bg-gray-50 border">
+                      <div key={rwd.rewardId} className="flex justify-between items-center p-3 rounded-xl bg-[#0E1415] border">
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-gray-800">{rwd.title}</span>
+                            <span className="font-bold text-[#F5FAFA]">{rwd.title}</span>
                             {rwd.bonusAmount > 0 && (
-                              <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800 text-[10px]">
+                              <span className="px-2 py-0.5 rounded-full font-bold bg-[#1B2728] text-[#2DD4BF] text-[10px]">
                                 ₹{rwd.bonusAmount} {rwd.currency || 'INR'}
                               </span>
                             )}
                           </div>
-                          <span className="text-[11px] text-gray-400 block mt-0.5">{rwd.category}</span>
+                          <span className="text-[11px] text-[#9AAEAE] block mt-0.5">{rwd.category}</span>
                           {rwd.reasons && rwd.reasons.length > 0 && (
                             <span className="text-[10px] text-amber-600 block mt-0.5">
                               {rwd.reasons.join(' • ')}
@@ -2698,11 +2831,11 @@ export default function GymAdminRewardsPerformance() {
                         </div>
                         <div className="text-right">
                           {rwd.alreadyClaimed ? (
-                            <span className="px-2.5 py-1 rounded font-bold bg-gray-100 text-gray-600 text-xs">
+                            <span className="px-2.5 py-1 rounded font-bold bg-[#1B2728] text-[#C1D0D0] text-xs">
                               Claimed
                             </span>
                           ) : rwd.isEligible ? (
-                            <span className="px-2.5 py-1 rounded font-bold bg-emerald-100 text-emerald-800 text-xs">
+                            <span className="px-2.5 py-1 rounded font-bold bg-[#1B2728] text-[#2DD4BF] text-xs">
                               Eligible for Bonus
                             </span>
                           ) : (
@@ -2728,21 +2861,21 @@ export default function GymAdminRewardsPerformance() {
       {/* ======================================================== */}
       {isRewardModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border my-8" style={{ borderColor: '#292940' }}>
+          <div className="bg-[#141D1E] rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border my-8" style={{ borderColor: '#2A3A3A' }}>
             {/* Header */}
-            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#292940' }}>
+            <div className="sticky top-0 bg-[#141D1E] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#2A3A3A' }}>
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
                   <Gift className="w-4 h-4" />
                 </div>
-                <h2 className="text-lg font-bold text-gray-900">
+                <h2 className="text-lg font-bold text-[#F5FAFA]">
                   {isEditMode ? 'Edit Reward Definition' : 'Create Rewards & Performance Award'}
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={() => setIsRewardModalOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-[#1B2728] text-[#9AAEAE] hover:text-[#C1D0D0] transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -2753,7 +2886,7 @@ export default function GymAdminRewardsPerformance() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block font-bold mb-1 text-gray-700">Recipient Audience *</label>
+                    <label className="block font-bold mb-1 text-[#C1D0D0]">Recipient Audience *</label>
                     <select
                       value={rewardFormData.recipientType}
                       onChange={e => {
@@ -2773,7 +2906,7 @@ export default function GymAdminRewardsPerformance() {
                         setSelectedCustomerObj(null);
                         setSelectedTrainerObj(null);
                       }}
-                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-[#F5FAFA] bg-[#141D1E] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]"
                     >
                       <option value="Customer">Customers Only</option>
                       <option value="Trainer">Trainers Only</option>
@@ -2782,7 +2915,7 @@ export default function GymAdminRewardsPerformance() {
                   </div>
 
                   <div>
-                    <label className="block font-bold mb-1 text-gray-700">Reward Assignment Method *</label>
+                    <label className="block font-bold mb-1 text-[#C1D0D0]">Reward Assignment Method *</label>
                     <select
                       value={rewardFormData.assignmentMethod}
                       onChange={e => {
@@ -2795,7 +2928,7 @@ export default function GymAdminRewardsPerformance() {
                         setSelectedCustomerObj(null);
                         setSelectedTrainerObj(null);
                       }}
-                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-[#F5FAFA] bg-[#141D1E] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]"
                     >
                       <option value="Direct">1. Direct Assignment (Specific Recipient)</option>
                       <option value="Achievement">2. Achievement-Based Reward (Milestones)</option>
@@ -2806,14 +2939,14 @@ export default function GymAdminRewardsPerformance() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block font-bold mb-1 text-gray-700">Category *</label>
+                    <label className="block font-bold mb-1 text-[#C1D0D0]">Category *</label>
                     <select
                       value={rewardFormData.category}
                       onChange={e => {
                         const cat = e.target.value;
                         setRewardFormData({ ...rewardFormData, category: cat });
                       }}
-                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm text-[#F5FAFA] bg-[#141D1E] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]"
                     >
                       {rewardFormData.recipientType !== 'Trainer' ? (
                         <>
@@ -2836,41 +2969,41 @@ export default function GymAdminRewardsPerformance() {
                   </div>
 
                   <div>
-                    <label className="block font-bold mb-1 text-gray-700">Reward Title *</label>
+                    <label className="block font-bold mb-1 text-[#C1D0D0]">Reward Title *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. ₹200 Off Next Renewal or Free Shaker Bottle"
                       value={rewardFormData.title}
                       onChange={e => setRewardFormData({ ...rewardFormData, title: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                      className="w-full px-3.5 py-2.5 rounded-xl border text-sm text-[#F5FAFA] bg-[#141D1E] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-bold mb-1 text-gray-700">Short Description *</label>
+                  <label className="block font-bold mb-1 text-[#C1D0D0]">Short Description *</label>
                   <textarea
                     required
                     rows={2}
                     placeholder="Detail reward guidelines and redemption rules..."
                     value={rewardFormData.description}
                     onChange={e => setRewardFormData({ ...rewardFormData, description: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl border text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
+                    className="w-full px-3.5 py-2 rounded-xl border text-sm text-[#F5FAFA] bg-[#141D1E] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]"
                   />
                 </div>
               </div>
 
               {/* SECTION 2: DIRECT RECIPIENT SEARCH (Shown only when Direct Assignment is selected) */}
               {rewardFormData.assignmentMethod === 'Direct' && (
-                <div className="p-4 rounded-2xl border bg-emerald-50/50 space-y-3" style={{ borderColor: '#292940' }}>
+                <div className="p-4 rounded-2xl border bg-[#1B2728] space-y-3" style={{ borderColor: '#2A3A3A' }}>
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
+                    <span className="font-bold text-[#2DD4BF] flex items-center gap-1.5 text-xs">
                       <User className="w-4 h-4" />
                       Select {rewardFormData.recipientType === 'Trainer' ? 'Trainer' : 'Customer'} for Direct Assignment *
                     </span>
                     {selectedCustomerObj && (
-                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold text-[#2DD4BF] bg-[#1B2728] px-2 py-0.5 rounded-full">
                         Selected
                       </span>
                     )}
@@ -2886,7 +3019,7 @@ export default function GymAdminRewardsPerformance() {
                           setRewardFormData({ ...rewardFormData, assignedUserId: tId, trainerId: tId });
                           setSelectedTrainerObj(tr || null);
                         }}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-sm"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-sm"
                       >
                         <option value="">-- Choose a Trainer --</option>
                         {trainers.map(t => (
@@ -2899,14 +3032,14 @@ export default function GymAdminRewardsPerformance() {
                   ) : (
                     <div className="space-y-2">
                       {selectedCustomerObj ? (
-                        <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border" style={{ borderColor: '#292940' }}>
+                        <div className="flex items-center justify-between bg-[#141D1E] p-2.5 rounded-xl border" style={{ borderColor: '#2A3A3A' }}>
                           <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-full bg-[#6366F1]/15 text-[#6366F1] font-bold flex items-center justify-center text-xs">
+                            <div className="w-8 h-8 rounded-full bg-[#2DD4BF]/15 text-[#2DD4BF] font-bold flex items-center justify-center text-xs">
                               {selectedCustomerObj.name?.charAt(0) || 'C'}
                             </div>
                             <div>
-                              <p className="font-bold text-gray-800 text-xs">{selectedCustomerObj.name}</p>
-                              <p className="text-[10px] text-gray-500">{selectedCustomerObj.email} • {selectedCustomerObj.membership?.status || 'Active'}</p>
+                              <p className="font-bold text-[#F5FAFA] text-xs">{selectedCustomerObj.name}</p>
+                              <p className="text-[10px] text-[#9AAEAE]">{selectedCustomerObj.email} • {selectedCustomerObj.membership?.status || 'Active'}</p>
                             </div>
                           </div>
                           <button
@@ -2923,17 +3056,17 @@ export default function GymAdminRewardsPerformance() {
                       ) : (
                         <div>
                           <div className="relative mb-2">
-                            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-gray-400" />
+                            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#9AAEAE]" />
                             <input
                               type="text"
                               placeholder="Search customer by name, email, or mobile..."
                               value={customerSearchQuery}
                               onChange={e => setCustomerSearchQuery(e.target.value)}
-                              className="w-full pl-8 pr-3 py-2 rounded-xl border bg-white text-xs text-gray-800"
+                              className="w-full pl-8 pr-3 py-2 rounded-xl border bg-[#141D1E] text-xs text-[#F5FAFA]"
                             />
                           </div>
 
-                          <div className="max-h-36 overflow-y-auto space-y-1 bg-white p-1 rounded-xl border" style={{ borderColor: '#292940' }}>
+                          <div className="max-h-36 overflow-y-auto space-y-1 bg-[#141D1E] p-1 rounded-xl border" style={{ borderColor: '#2A3A3A' }}>
                             {customers
                               .filter(c =>
                                 !customerSearchQuery ||
@@ -2949,13 +3082,13 @@ export default function GymAdminRewardsPerformance() {
                                     setSelectedCustomerObj(c);
                                     setRewardFormData({ ...rewardFormData, assignedUserId: c._id });
                                   }}
-                                  className="w-full p-2 text-left hover:bg-gray-50 rounded-lg flex items-center justify-between text-xs transition cursor-pointer"
+                                  className="w-full p-2 text-left hover:bg-[#0E1415] rounded-lg flex items-center justify-between text-xs transition cursor-pointer"
                                 >
                                   <div>
-                                    <span className="font-bold text-gray-800">{c.name}</span>
-                                    <span className="text-[10px] text-gray-400 ml-2">{c.email}</span>
+                                    <span className="font-bold text-[#F5FAFA]">{c.name}</span>
+                                    <span className="text-[10px] text-[#9AAEAE] ml-2">{c.email}</span>
                                   </div>
-                                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
+                                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#1B2728] text-[#C1D0D0]">
                                     {c.membership?.status || 'Active'}
                                   </span>
                                 </button>
@@ -2970,17 +3103,17 @@ export default function GymAdminRewardsPerformance() {
 
               {/* SECTION 3: DYNAMIC FIELDS BASED ON REWARD CATEGORY */}
               {rewardFormData.category === 'Personal Training' && (
-                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
-                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
-                    <Dumbbell className="w-4 h-4 text-[#6366F1]" /> Personal Training Details
+                <div className="p-4 rounded-2xl border bg-[#0E1415]/70 space-y-3" style={{ borderColor: '#2A3A3A' }}>
+                  <h4 className="font-bold text-[#2DD4BF] flex items-center gap-1.5 text-xs">
+                    <Dumbbell className="w-4 h-4 text-[#2DD4BF]" /> Personal Training Details
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Select Trainer</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Select Trainer</label>
                       <select
                         value={rewardFormData.trainerId}
                         onChange={e => setRewardFormData({ ...rewardFormData, trainerId: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       >
                         <option value="">Any Available Trainer</option>
                         {trainers.map(t => (
@@ -2989,21 +3122,21 @@ export default function GymAdminRewardsPerformance() {
                       </select>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Free Sessions Count</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Free Sessions Count</label>
                       <input
                         type="number"
                         min={1}
                         value={rewardFormData.sessionCount}
                         onChange={e => setRewardFormData({ ...rewardFormData, sessionCount: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs font-bold"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs font-bold"
                       />
                     </div>
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Session Duration</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Session Duration</label>
                       <select
                         value={rewardFormData.sessionDuration}
                         onChange={e => setRewardFormData({ ...rewardFormData, sessionDuration: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       >
                         <option value="30 mins">30 mins</option>
                         <option value="45 mins">45 mins</option>
@@ -3016,24 +3149,24 @@ export default function GymAdminRewardsPerformance() {
               )}
 
               {rewardFormData.category === 'Discount Coupon' && (
-                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
-                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
-                    <Ticket className="w-4 h-4 text-[#6366F1]" /> Discount Coupon Configuration
+                <div className="p-4 rounded-2xl border bg-[#0E1415]/70 space-y-3" style={{ borderColor: '#2A3A3A' }}>
+                  <h4 className="font-bold text-[#2DD4BF] flex items-center gap-1.5 text-xs">
+                    <Ticket className="w-4 h-4 text-[#2DD4BF]" /> Discount Coupon Configuration
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Discount Type</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Discount Type</label>
                       <select
                         value={rewardFormData.discountType}
                         onChange={e => setRewardFormData({ ...rewardFormData, discountType: e.target.value as any })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       >
                         <option value="Percentage">Percentage (%)</option>
                         <option value="Fixed">Fixed Amount (₹)</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">
                         Discount Value ({rewardFormData.discountType === 'Percentage' ? '%' : '₹'})
                       </label>
                       <input
@@ -3041,15 +3174,15 @@ export default function GymAdminRewardsPerformance() {
                         min={1}
                         value={rewardFormData.discountValue}
                         onChange={e => setRewardFormData({ ...rewardFormData, discountValue: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs font-bold text-[#6366F1]"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs font-bold text-[#2DD4BF]"
                       />
                     </div>
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Applicable Service</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Applicable Service</label>
                       <select
                         value={rewardFormData.applicableService}
                         onChange={e => setRewardFormData({ ...rewardFormData, applicableService: e.target.value as any })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       >
                         <option value="All Services">All Eligible Services</option>
                         <option value="Membership">Membership Packages Only</option>
@@ -3059,26 +3192,26 @@ export default function GymAdminRewardsPerformance() {
                     </div>
                   </div>
                   <div>
-                    <label className="block font-medium mb-1 text-gray-600">Minimum Purchase Amount (₹) (0 = No Minimum)</label>
+                    <label className="block font-medium mb-1 text-[#C1D0D0]">Minimum Purchase Amount (₹) (0 = No Minimum)</label>
                     <input
                       type="number"
                       min={0}
                       value={rewardFormData.minPurchaseAmount}
                       onChange={e => setRewardFormData({ ...rewardFormData, minPurchaseAmount: Number(e.target.value) })}
-                      className="w-48 px-3 py-1.5 rounded-xl border bg-white text-xs"
+                      className="w-48 px-3 py-1.5 rounded-xl border bg-[#141D1E] text-xs"
                     />
                   </div>
                 </div>
               )}
 
               {rewardFormData.category === 'Free Product / Gift' && (
-                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
-                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
-                    <Gift className="w-4 h-4 text-[#6366F1]" /> Product &amp; Inventory Selection
+                <div className="p-4 rounded-2xl border bg-[#0E1415]/70 space-y-3" style={{ borderColor: '#2A3A3A' }}>
+                  <h4 className="font-bold text-[#2DD4BF] flex items-center gap-1.5 text-xs">
+                    <Gift className="w-4 h-4 text-[#2DD4BF]" /> Product &amp; Inventory Selection
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="sm:col-span-2">
-                      <label className="block font-medium mb-1 text-gray-600">Select Store Product or Gift</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Select Store Product or Gift</label>
                       <select
                         value={rewardFormData.productId}
                         onChange={e => {
@@ -3090,7 +3223,7 @@ export default function GymAdminRewardsPerformance() {
                             productName: prod ? prod.name : rewardFormData.productName
                           });
                         }}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       >
                         <option value="">-- Choose From Gym Store Inventory --</option>
                         {storeProducts.map(p => (
@@ -3101,13 +3234,13 @@ export default function GymAdminRewardsPerformance() {
                       </select>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Gift Quantity</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Gift Quantity</label>
                       <input
                         type="number"
                         min={1}
                         value={rewardFormData.productQuantity}
                         onChange={e => setRewardFormData({ ...rewardFormData, productQuantity: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs font-bold"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs font-bold"
                       />
                     </div>
                   </div>
@@ -3119,7 +3252,7 @@ export default function GymAdminRewardsPerformance() {
                     const isOutOfStock = selProd.stock < (Number(rewardFormData.productQuantity) || 1);
                     return (
                       <div className={`p-2.5 rounded-xl border text-xs flex items-center justify-between ${
-                        isOutOfStock ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                        isOutOfStock ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-[#1B2728] border-[#2A3A3A] text-[#2DD4BF]'
                       }`}>
                         <div className="flex items-center gap-2">
                           <CheckCircle2 className="w-4 h-4 shrink-0" />
@@ -3128,7 +3261,7 @@ export default function GymAdminRewardsPerformance() {
                           </span>
                         </div>
                         {isOutOfStock && (
-                          <span className="font-bold text-rose-600 bg-white px-2 py-0.5 rounded-md border border-rose-200 text-[10px]">
+                          <span className="font-bold text-rose-600 bg-[#141D1E] px-2 py-0.5 rounded-md border border-rose-200 text-[10px]">
                             Insufficient Stock
                           </span>
                         )}
@@ -3139,13 +3272,13 @@ export default function GymAdminRewardsPerformance() {
               )}
 
               {rewardFormData.category === 'Free Membership / Membership Extension' && (
-                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
-                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
-                    <Award className="w-4 h-4 text-[#6366F1]" /> Membership Grant Details
+                <div className="p-4 rounded-2xl border bg-[#0E1415]/70 space-y-3" style={{ borderColor: '#2A3A3A' }}>
+                  <h4 className="font-bold text-[#2DD4BF] flex items-center gap-1.5 text-xs">
+                    <Award className="w-4 h-4 text-[#2DD4BF]" /> Membership Grant Details
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Applicable Membership Plan</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Applicable Membership Plan</label>
                       <select
                         value={rewardFormData.packageId}
                         onChange={e => {
@@ -3158,7 +3291,7 @@ export default function GymAdminRewardsPerformance() {
                             membershipDuration: pkg ? pkg.duration : rewardFormData.membershipDuration
                           });
                         }}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       >
                         <option value="">-- Choose Gym Package --</option>
                         {gymPackages.map(pkg => (
@@ -3169,11 +3302,11 @@ export default function GymAdminRewardsPerformance() {
                       </select>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Extension Duration</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Extension Duration</label>
                       <select
                         value={rewardFormData.membershipDuration}
                         onChange={e => setRewardFormData({ ...rewardFormData, membershipDuration: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       >
                         <option value="7 Days">7 Days</option>
                         <option value="15 Days">15 Days</option>
@@ -3188,27 +3321,27 @@ export default function GymAdminRewardsPerformance() {
               )}
 
               {rewardFormData.category === 'Performance Award' && (
-                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
-                  <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
-                    <Trophy className="w-4 h-4 text-[#6366F1]" /> Performance Award &amp; Recognition
+                <div className="p-4 rounded-2xl border bg-[#0E1415]/70 space-y-3" style={{ borderColor: '#2A3A3A' }}>
+                  <h4 className="font-bold text-[#2DD4BF] flex items-center gap-1.5 text-xs">
+                    <Trophy className="w-4 h-4 text-[#2DD4BF]" /> Performance Award &amp; Recognition
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="sm:col-span-2">
-                      <label className="block font-medium mb-1 text-gray-600">Achievement Reason</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Achievement Reason</label>
                       <input
                         type="text"
                         placeholder="e.g. 100% workout adherence and highest weight loss milestone"
                         value={rewardFormData.awardReason}
                         onChange={e => setRewardFormData({ ...rewardFormData, awardReason: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       />
                     </div>
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Achievement Period</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Achievement Period</label>
                       <select
                         value={rewardFormData.achievementPeriod}
                         onChange={e => setRewardFormData({ ...rewardFormData, achievementPeriod: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl border bg-white text-xs"
+                        className="w-full px-3 py-2 rounded-xl border bg-[#141D1E] text-xs"
                       >
                         <option value="This Month">This Month</option>
                         <option value="Last Month">Last Month</option>
@@ -3220,13 +3353,13 @@ export default function GymAdminRewardsPerformance() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600">Optional Cash Bonus (₹)</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0]">Optional Cash Bonus (₹)</label>
                       <input
                         type="number"
                         min={0}
                         value={rewardFormData.bonusAmount}
                         onChange={e => setRewardFormData({ ...rewardFormData, bonusAmount: Number(e.target.value) })}
-                        className="w-full px-3 py-1.5 rounded-xl border bg-white text-xs font-bold"
+                        className="w-full px-3 py-1.5 rounded-xl border bg-[#141D1E] text-xs font-bold"
                         placeholder="0 = Non-monetary recognition"
                       />
                     </div>
@@ -3236,9 +3369,9 @@ export default function GymAdminRewardsPerformance() {
                           type="checkbox"
                           checked={rewardFormData.hasCertificate}
                           onChange={e => setRewardFormData({ ...rewardFormData, hasCertificate: e.target.checked })}
-                          className="rounded text-[#6366F1]"
+                          className="rounded text-[#2DD4BF]"
                         />
-                        <span className="font-semibold text-gray-700">Issue Verified Digital Certificate &amp; Badge</span>
+                        <span className="font-semibold text-[#C1D0D0]">Issue Verified Digital Certificate &amp; Badge</span>
                       </label>
                     </div>
                   </div>
@@ -3247,10 +3380,10 @@ export default function GymAdminRewardsPerformance() {
 
               {/* SECTION 4: UNLOCK CONDITIONS (Points or Achievement based) */}
               {rewardFormData.assignmentMethod === 'Points' && (
-                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-2" style={{ borderColor: '#292940' }}>
+                <div className="p-4 rounded-2xl border bg-[#0E1415]/70 space-y-2" style={{ borderColor: '#2A3A3A' }}>
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
-                      <Coins className="w-4 h-4 text-[#6366F1]" /> Points Cost to Redeem
+                    <span className="font-bold text-[#2DD4BF] flex items-center gap-1.5 text-xs">
+                      <Coins className="w-4 h-4 text-[#2DD4BF]" /> Points Cost to Redeem
                     </span>
                     <div className="flex items-center gap-2">
                       <input
@@ -3259,24 +3392,24 @@ export default function GymAdminRewardsPerformance() {
                         required
                         value={rewardFormData.requiredPoints}
                         onChange={e => setRewardFormData({ ...rewardFormData, requiredPoints: Number(e.target.value) })}
-                        className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-[#6366F1] text-right bg-white"
+                        className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-[#2DD4BF] text-right bg-[#141D1E]"
                       />
-                      <span className="font-bold text-gray-500">pts</span>
+                      <span className="font-bold text-[#9AAEAE]">pts</span>
                     </div>
                   </div>
-                  <p className="text-[11px] text-gray-400">
+                  <p className="text-[11px] text-[#9AAEAE]">
                     Customers pay with points earned from daily attendance streaks and workout consistency.
                   </p>
                 </div>
               )}
 
               {rewardFormData.assignmentMethod === 'Achievement' && (
-                <div className="p-4 rounded-2xl border bg-gray-50/70 space-y-3" style={{ borderColor: '#292940' }}>
+                <div className="p-4 rounded-2xl border bg-[#0E1415]/70 space-y-3" style={{ borderColor: '#2A3A3A' }}>
                   <div>
-                    <h4 className="font-bold text-[#6366F1] flex items-center gap-1.5 text-xs">
-                      <Users className="w-4 h-4 text-[#6366F1]" /> How Does a Member Unlock This Reward?
+                    <h4 className="font-bold text-[#2DD4BF] flex items-center gap-1.5 text-xs">
+                      <Users className="w-4 h-4 text-[#2DD4BF]" /> How Does a Member Unlock This Reward?
                     </h4>
-                    <p className="text-[11px] text-gray-500 mt-0.5">
+                    <p className="text-[11px] text-[#9AAEAE] mt-0.5">
                       Select one condition required for the member to unlock and claim this perk.
                     </p>
                   </div>
@@ -3298,24 +3431,24 @@ export default function GymAdminRewardsPerformance() {
                           onClick={() => setRewardFormData({ ...rewardFormData, achievementCondition: cond.id as any })}
                           className={`p-2 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
                             isSel
-                              ? 'bg-white border-[#6366F1] shadow-xs text-[#6366F1]'
-                              : 'bg-white/70 border-gray-200 text-gray-600 hover:border-gray-300'
+                              ? 'bg-[#141D1E] border-[#2DD4BF] shadow-xs text-[#2DD4BF]'
+                              : 'bg-[#141D1E]/70 border-[#2A3A3A] text-[#C1D0D0] hover:border-[#2A3A3A]'
                           }`}
                         >
                           <div className="font-bold text-xs flex items-center gap-1">
                             <span>{cond.icon}</span> {cond.label}
                           </div>
-                          <span className="text-[10px] text-gray-400 mt-1">{cond.desc}</span>
+                          <span className="text-[10px] text-[#9AAEAE] mt-1">{cond.desc}</span>
                         </button>
                       );
                     })}
                   </div>
 
                   {/* Dynamic Single Input for Selected Condition */}
-                  <div className="bg-white p-3 rounded-xl border mt-2" style={{ borderColor: '#0B0B12' }}>
+                  <div className="bg-[#141D1E] p-3 rounded-xl border mt-2" style={{ borderColor: '#0E1415' }}>
                     {rewardFormData.achievementCondition === 'visits' && (
                       <div className="flex items-center justify-between">
-                        <label className="font-bold text-gray-700">Minimum Verified Gym Visits:</label>
+                        <label className="font-bold text-[#C1D0D0]">Minimum Verified Gym Visits:</label>
                         <div className="flex items-center gap-2">
                           <input
                             type="number"
@@ -3324,13 +3457,13 @@ export default function GymAdminRewardsPerformance() {
                             onChange={e => setRewardFormData({ ...rewardFormData, minVerifiedVisits: Number(e.target.value) })}
                             className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-right"
                           />
-                          <span className="text-gray-500 font-medium">visits</span>
+                          <span className="text-[#9AAEAE] font-medium">visits</span>
                         </div>
                       </div>
                     )}
                     {rewardFormData.achievementCondition === 'workouts' && (
                       <div className="flex items-center justify-between">
-                        <label className="font-bold text-gray-700">Minimum Completed Workouts:</label>
+                        <label className="font-bold text-[#C1D0D0]">Minimum Completed Workouts:</label>
                         <div className="flex items-center gap-2">
                           <input
                             type="number"
@@ -3339,13 +3472,13 @@ export default function GymAdminRewardsPerformance() {
                             onChange={e => setRewardFormData({ ...rewardFormData, minWorkoutCompletions: Number(e.target.value) })}
                             className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-right"
                           />
-                          <span className="text-gray-500 font-medium">workouts</span>
+                          <span className="text-[#9AAEAE] font-medium">workouts</span>
                         </div>
                       </div>
                     )}
                     {rewardFormData.achievementCondition === 'streak' && (
                       <div className="flex items-center justify-between">
-                        <label className="font-bold text-gray-700">Required Attendance Streak:</label>
+                        <label className="font-bold text-[#C1D0D0]">Required Attendance Streak:</label>
                         <div className="flex items-center gap-2">
                           <input
                             type="number"
@@ -3354,13 +3487,13 @@ export default function GymAdminRewardsPerformance() {
                             onChange={e => setRewardFormData({ ...rewardFormData, minStreakDays: Number(e.target.value) })}
                             className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-right"
                           />
-                          <span className="text-gray-500 font-medium">consecutive days</span>
+                          <span className="text-[#9AAEAE] font-medium">consecutive days</span>
                         </div>
                       </div>
                     )}
                     {rewardFormData.achievementCondition === 'goals' && (
                       <div className="flex items-center justify-between">
-                        <label className="font-bold text-gray-700">Diet &amp; Workout Goals Met:</label>
+                        <label className="font-bold text-[#C1D0D0]">Diet &amp; Workout Goals Met:</label>
                         <div className="flex items-center gap-2">
                           <input
                             type="number"
@@ -3369,14 +3502,14 @@ export default function GymAdminRewardsPerformance() {
                             onChange={e => setRewardFormData({ ...rewardFormData, minDietAdherenceDays: Number(e.target.value) })}
                             className="w-24 px-3 py-1.5 rounded-xl border text-sm font-bold text-right"
                           />
-                          <span className="text-gray-500 font-medium">days</span>
+                          <span className="text-[#9AAEAE] font-medium">days</span>
                         </div>
                       </div>
                     )}
                     {rewardFormData.achievementCondition === 'milestone' && (
                       <div className="grid grid-cols-2 gap-3">
                         <div className="flex items-center justify-between">
-                          <label className="font-bold text-gray-700">Visits:</label>
+                          <label className="font-bold text-[#C1D0D0]">Visits:</label>
                           <input
                             type="number"
                             min={1}
@@ -3386,7 +3519,7 @@ export default function GymAdminRewardsPerformance() {
                           />
                         </div>
                         <div className="flex items-center justify-between">
-                          <label className="font-bold text-gray-700">Workouts:</label>
+                          <label className="font-bold text-[#C1D0D0]">Workouts:</label>
                           <input
                             type="number"
                             min={1}
@@ -3402,52 +3535,52 @@ export default function GymAdminRewardsPerformance() {
               )}
 
               {/* SECTION 5: INVENTORY LIMITS & DATES (Conditional & Streamlined) */}
-              <div className="p-4 rounded-2xl border bg-gray-50/50 space-y-2.5" style={{ borderColor: '#0B0B12' }}>
-                <span className="font-bold text-gray-700 block text-xs">Inventory &amp; Claim Rules</span>
+              <div className="p-4 rounded-2xl border bg-[#0E1415]/50 space-y-2.5" style={{ borderColor: '#0E1415' }}>
+                <span className="font-bold text-[#C1D0D0] block text-xs">Inventory &amp; Claim Rules</span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block font-medium mb-1 text-gray-600 text-[11px]">Total Available (0 = Unlimited)</label>
+                    <label className="block font-medium mb-1 text-[#C1D0D0] text-[11px]">Total Available (0 = Unlimited)</label>
                     <input
                       type="number"
                       min={0}
                       value={rewardFormData.totalQuantity}
                       onChange={e => setRewardFormData({ ...rewardFormData, totalQuantity: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl border text-sm bg-white"
+                      className="w-full px-3 py-2 rounded-xl border text-sm bg-[#141D1E]"
                     />
                   </div>
                   {rewardFormData.assignmentMethod !== 'Direct' && (
                     <div>
-                      <label className="block font-medium mb-1 text-gray-600 text-[11px]">Max Claims per Member</label>
+                      <label className="block font-medium mb-1 text-[#C1D0D0] text-[11px]">Max Claims per Member</label>
                       <input
                         type="number"
                         min={1}
                         value={rewardFormData.maxClaimsPerUser}
                         onChange={e => setRewardFormData({ ...rewardFormData, maxClaimsPerUser: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl border text-sm bg-white"
+                        className="w-full px-3 py-2 rounded-xl border text-sm bg-[#141D1E]"
                       />
                     </div>
                   )}
                   <div>
-                    <label className="block font-medium mb-1 text-gray-600 text-[11px]">Expiry Date (Optional)</label>
+                    <label className="block font-medium mb-1 text-[#C1D0D0] text-[11px]">Expiry Date (Optional)</label>
                     <input
                       type="date"
                       value={rewardFormData.expiryDate}
                       onChange={e => setRewardFormData({ ...rewardFormData, expiryDate: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl border text-sm bg-white"
+                      className="w-full px-3 py-2 rounded-xl border text-sm bg-[#141D1E]"
                     />
                   </div>
                 </div>
               </div>
 
               {/* SECTION 6: COMPACT PREVIEW SUMMARY BEFORE SUBMISSION */}
-              <div className="bg-[#6366F1]/5 border border-[#6366F1]/20 rounded-2xl p-3.5 space-y-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#6366F1] flex items-center gap-1.5">
+              <div className="bg-[#2DD4BF]/5 border border-[#2DD4BF]/20 rounded-2xl p-3.5 space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#2DD4BF] flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Reward Preview Summary
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                   <div>
-                    <span className="text-gray-500">Recipient &amp; Assignment:</span>
-                    <p className="font-bold text-gray-800">
+                    <span className="text-[#9AAEAE]">Recipient &amp; Assignment:</span>
+                    <p className="font-bold text-[#F5FAFA]">
                       {rewardFormData.assignmentMethod === 'Direct'
                         ? `Direct to: ${selectedCustomerObj?.name || selectedTrainerObj?.name || 'Selected User'}`
                         : rewardFormData.assignmentMethod === 'Achievement'
@@ -3462,8 +3595,8 @@ export default function GymAdminRewardsPerformance() {
                     </p>
                   </div>
                   <div>
-                    <span className="text-gray-500">Category &amp; Benefit:</span>
-                    <p className="font-bold text-gray-800">
+                    <span className="text-[#9AAEAE]">Category &amp; Benefit:</span>
+                    <p className="font-bold text-[#F5FAFA]">
                       {rewardFormData.category} • {rewardFormData.title || 'New Reward'}
                     </p>
                   </div>
@@ -3471,28 +3604,28 @@ export default function GymAdminRewardsPerformance() {
               </div>
 
               {/* FOOTER ACTIONS */}
-              <div className="flex justify-between items-center pt-3 border-t" style={{ borderColor: '#292940' }}>
+              <div className="flex justify-between items-center pt-3 border-t" style={{ borderColor: '#2A3A3A' }}>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={rewardFormData.requireApproval}
                     onChange={e => setRewardFormData({ ...rewardFormData, requireApproval: e.target.checked })}
-                    className="rounded text-[#6366F1]"
+                    className="rounded text-[#2DD4BF]"
                   />
-                  <span className="font-semibold text-gray-700">Require Owner Approval before voucher grant</span>
+                  <span className="font-semibold text-[#C1D0D0]">Require Owner Approval before voucher grant</span>
                 </label>
 
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setIsRewardModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border text-gray-600 hover:bg-gray-50 cursor-pointer"
+                    className="px-4 py-2 rounded-xl border text-[#C1D0D0] hover:bg-[#0E1415] cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl text-white font-bold bg-[#6366F1] hover:bg-[#4F46E5] shadow cursor-pointer transition"
+                    className="px-5 py-2 rounded-xl text-white font-bold bg-[#2DD4BF] hover:bg-[#5EEAD4] shadow cursor-pointer transition"
                   >
                     {isEditMode ? 'Save Changes' : 'Create Reward'}
                   </button>
@@ -3506,15 +3639,15 @@ export default function GymAdminRewardsPerformance() {
       {/* CLAIM ACTION MODAL */}
       {claimActionModalOpen && selectedClaim && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl border" style={{ borderColor: '#292940' }}>
-            <h3 className="text-base font-bold text-gray-800 mb-1">
+          <div className="bg-[#141D1E] rounded-2xl w-full max-w-md p-6 shadow-2xl border" style={{ borderColor: '#2A3A3A' }}>
+            <h3 className="text-base font-bold text-[#F5FAFA] mb-1">
               {actionType === 'APPROVE' && 'Approve Claim Request'}
               {actionType === 'REJECT' && 'Reject Claim Request'}
               {actionType === 'REDEEM' && 'Mark Voucher Redeemed'}
               {actionType === 'PAYOUT' && 'Record Financial Bonus Payout'}
             </h3>
-            <p className="text-xs text-gray-500 mb-4">
-              Voucher: <span className="font-mono font-bold text-gray-800">{selectedClaim.claimCode}</span>
+            <p className="text-xs text-[#9AAEAE] mb-4">
+              Voucher: <span className="font-mono font-bold text-[#F5FAFA]">{selectedClaim.claimCode}</span>
             </p>
 
             <div className="space-y-4 text-xs">
@@ -3530,7 +3663,7 @@ export default function GymAdminRewardsPerformance() {
                     className="w-full px-3 py-2 rounded-xl border"
                   />
                   {selectedClaim.pointsDeducted > 0 && (
-                    <p className="text-[11px] text-emerald-600 mt-1 font-medium">
+                    <p className="text-[11px] text-[#2DD4BF] mt-1 font-medium">
                       Note: Deducted {selectedClaim.pointsDeducted} points will be automatically refunded back to the user wallet.
                     </p>
                   )}
@@ -3539,7 +3672,7 @@ export default function GymAdminRewardsPerformance() {
 
               {actionType === 'PAYOUT' && (
                 <div>
-                  <label className="block font-bold mb-1 text-gray-700">Payment Reference *</label>
+                  <label className="block font-bold mb-1 text-[#C1D0D0]">Payment Reference *</label>
                   <input
                     type="text"
                     required
@@ -3552,7 +3685,7 @@ export default function GymAdminRewardsPerformance() {
               )}
 
               <div>
-                <label className="block font-bold mb-1 text-gray-700">Internal Audit Note</label>
+                <label className="block font-bold mb-1 text-[#C1D0D0]">Internal Audit Note</label>
                 <input
                   type="text"
                   placeholder="Optional internal remarks..."
@@ -3566,7 +3699,7 @@ export default function GymAdminRewardsPerformance() {
                 <button
                   type="button"
                   onClick={() => setClaimActionModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border text-gray-600 hover:bg-gray-50"
+                  className="px-4 py-2 rounded-xl border text-[#C1D0D0] hover:bg-[#0E1415]"
                 >
                   Cancel
                 </button>
@@ -3574,7 +3707,7 @@ export default function GymAdminRewardsPerformance() {
                   type="button"
                   onClick={handleProcessClaim}
                   className={`px-5 py-2 rounded-xl text-white font-bold shadow ${
-                    actionType === 'REJECT' ? 'bg-red-600' : 'bg-[#6366F1]'
+                    actionType === 'REJECT' ? 'bg-red-600' : 'bg-[#2DD4BF]'
                   }`}
                 >
                   Confirm Action

@@ -1,6 +1,6 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, MapPin, Truck, CreditCard, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Loader2, MapPin, Truck, CreditCard, CheckCircle2, ArrowLeft, Coins, Sparkles, Gift } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -20,19 +20,48 @@ const MemberCheckout = () => {
   const [delivery, setDelivery] = useState({ name: '', phone: '', address: '', city: '', state: '', pinCode: '' });
   const [placedOrder, setPlacedOrder] = useState<any>(null);
 
+  // Rewards & Points State
+  const [pointsBalance, setPointsBalance] = useState<number>(0);
+  const [rewardSettings, setRewardSettings] = useState<any>(null);
+  const [usePoints, setUsePoints] = useState<boolean>(false);
+  const [pointsToRedeem, setPointsToRedeem] = useState<number>(0);
+
   const isPremium = user?.subscriptionPlan?.toLowerCase().includes('premium');
   const discountAmount = isPremium ? Math.round(subtotal * 0.3) : 0;
-  const finalTotal = subtotal - discountAmount;
+
+  // Conversion calculation
+  const convUnit = rewardSettings?.pointsPerConversionUnit || 100;
+  const rupeeUnit = rewardSettings?.currencyValuePerUnit || 50;
+  const rate = rupeeUnit / convUnit;
+  const maxPossibleDiscount = Math.max(0, subtotal - discountAmount);
+  const rawPointsDiscount = usePoints ? Math.round(pointsToRedeem * rate) : 0;
+  const pointsDiscount = Math.min(rawPointsDiscount, maxPossibleDiscount);
+  const finalTotal = Math.max(0, subtotal - discountAmount - pointsDiscount);
 
   const load = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/store/customer/cart');
-      const cart = res.data.cart || [];
+      const [cartRes, walletRes, settingsRes] = await Promise.all([
+        api.get('/store/customer/cart'),
+        api.get('/referrals/my-rewards-ledger').catch(() => ({ data: { pointsBalance: 0 } })),
+        api.get('/referrals/settings').catch(() => ({ data: { settings: null } }))
+      ]);
+
+      const cart = cartRes.data.cart || [];
       setItems(cart);
-      setSubtotal(res.data.subtotal || 0);
+      setSubtotal(cartRes.data.subtotal || 0);
       if (cart.length && cart.every((row: any) => row.product?.fulfilmentType === 'Delivery')) {
         setFulfilmentType('Delivery');
+      }
+
+      const pts = walletRes.data?.pointsBalance || 0;
+      setPointsBalance(pts);
+      const st = settingsRes.data?.settings;
+      setRewardSettings(st);
+
+      // Auto-set initial points if eligible
+      if (st && st.enableStorePurchase && pts >= (st.minPointsForRedemption || 100)) {
+        setPointsToRedeem(pts);
       }
     } catch (err) {
       console.error(err);
@@ -61,6 +90,7 @@ const MemberCheckout = () => {
         paymentMethod,
         bankName: paymentMethod === 'Net Banking' ? bankName : undefined,
         discount: discountAmount,
+        pointsToRedeem: usePoints ? pointsToRedeem : 0
       });
       setPlacedOrder(res.data.order);
     } catch (err: any) {
@@ -72,16 +102,16 @@ const MemberCheckout = () => {
 
   if (placedOrder) {
     return (
-      <div className="max-w-lg mx-auto mt-16 text-center bg-white border border-[#292940] rounded-3xl p-10">
-        <CheckCircle2 className="mx-auto text-[#6366F1] mb-4" size={64} />
-        <h1 className="text-3xl font-bold text-[#11111F] mb-2">Order Placed!</h1>
-        <p className="text-[#A1A1AA] mb-2">
-          Order <span className="font-bold text-[#11111F]">{placedOrder.orderNumber}</span> is confirmed.
+      <div className="max-w-lg mx-auto mt-16 text-center bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-10">
+        <CheckCircle2 className="mx-auto text-[#2DD4BF] mb-4" size={64} />
+        <h1 className="text-3xl font-bold text-[#F5FAFA] mb-2">Order Placed!</h1>
+        <p className="text-[#9AAEAE] mb-2">
+          Order <span className="font-bold text-[#F5FAFA]">{placedOrder.orderNumber}</span> is confirmed.
         </p>
-        <p className="text-[#A1A1AA] mb-6">
-          Paid <span className="font-black text-[#6366F1]">₹{placedOrder.total}</span> via {placedOrder.paymentMethod}. Track it under My Orders.
+        <p className="text-[#9AAEAE] mb-6">
+          Paid <span className="font-black text-[#2DD4BF]">₹{placedOrder.total}</span> via {placedOrder.paymentMethod}. Track it under My Orders.
         </p>
-        <button onClick={() => navigate('/member/store/orders')} className="w-full py-3 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity">
+        <button onClick={() => navigate('/member/store/orders')} className="w-full py-3 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity">
           Go to My Orders
         </button>
       </div>
@@ -89,81 +119,81 @@ const MemberCheckout = () => {
   }
 
   if (loading) {
-    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#6366F1]" size={40} /></div>;
+    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#2DD4BF]" size={40} /></div>;
   }
 
   if (items.length === 0) {
     return (
-      <div className="max-w-lg mx-auto mt-20 text-center bg-white border border-[#292940] rounded-3xl p-10">
-        <h1 className="text-2xl font-bold text-[#11111F] mb-2">Nothing to checkout</h1>
-        <p className="text-[#A1A1AA] mb-6">Your cart is empty.</p>
-        <Link to="/member/store" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10">
+      <div className="max-w-lg mx-auto mt-20 text-center bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-10">
+        <h1 className="text-2xl font-bold text-[#F5FAFA] mb-2">Nothing to checkout</h1>
+        <p className="text-[#9AAEAE] mb-6">Your cart is empty.</p>
+        <Link to="/member/store" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl shadow-lg shadow-teal-900/10">
           <ArrowLeft size={17} /> Browse Store
         </Link>
       </div>
     );
   }
 
-  const inputCls = 'w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none';
+  const inputCls = 'w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none';
 
   return (
     <div className="space-y-6">
       <div>
-        <button onClick={() => navigate('/member/store/cart')} className="flex items-center gap-1 text-sm font-bold text-[#4F46E5] hover:underline mb-2">
+        <button onClick={() => navigate('/member/store/cart')} className="flex items-center gap-1 text-sm font-bold text-[#5EEAD4] hover:underline mb-2">
           <ArrowLeft size={15} /> Back to cart
         </button>
-        <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Checkout</h1>
-        <p className="text-[#A1A1AA] mt-1">Confirm your order and payment.</p>
+        <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Checkout</h1>
+        <p className="text-[#9AAEAE] mt-1">Confirm your order and payment.</p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {/* Fulfilment */}
-          <div className="bg-white border border-[#292940] rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-[#11111F] mb-4">How would you like to receive it?</h3>
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6">
+            <h3 className="text-lg font-bold text-[#F5FAFA] mb-4">How would you like to receive it?</h3>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => setFulfilmentType('Gym Pickup')}
-                className={`border-2 rounded-2xl p-4 text-left transition-colors ${fulfilmentType === 'Gym Pickup' ? 'border-[#6366F1] bg-[#0B0B12]' : 'border-[#292940] hover:border-[#6366F1]/40'}`}
+                className={`border-2 rounded-2xl p-4 text-left transition-colors ${fulfilmentType === 'Gym Pickup' ? 'border-[#2DD4BF] bg-[#0E1415]' : 'border-[#2A3A3A] hover:border-[#2DD4BF]/40'}`}
               >
-                <MapPin className="text-[#6366F1]" size={22} />
-                <p className="font-bold text-[#11111F] mt-2">Gym Pickup</p>
-                <p className="text-xs text-[#A1A1AA]">Collect from the gym at your convenience.</p>
+                <MapPin className="text-[#2DD4BF]" size={22} />
+                <p className="font-bold text-[#F5FAFA] mt-2">Gym Pickup</p>
+                <p className="text-xs text-[#9AAEAE]">Collect from the gym at your convenience.</p>
               </button>
               <button
                 onClick={() => setFulfilmentType('Delivery')}
-                className={`border-2 rounded-2xl p-4 text-left transition-colors ${fulfilmentType === 'Delivery' ? 'border-[#6366F1] bg-[#0B0B12]' : 'border-[#292940] hover:border-[#6366F1]/40'}`}
+                className={`border-2 rounded-2xl p-4 text-left transition-colors ${fulfilmentType === 'Delivery' ? 'border-[#2DD4BF] bg-[#0E1415]' : 'border-[#2A3A3A] hover:border-[#2DD4BF]/40'}`}
               >
-                <Truck className="text-[#6366F1]" size={22} />
-                <p className="font-bold text-[#11111F] mt-2">Delivery</p>
-                <p className="text-xs text-[#A1A1AA]">Get it delivered to your address.</p>
+                <Truck className="text-[#2DD4BF]" size={22} />
+                <p className="font-bold text-[#F5FAFA] mt-2">Delivery</p>
+                <p className="text-xs text-[#9AAEAE]">Get it delivered to your address.</p>
               </button>
             </div>
 
             {fulfilmentType === 'Delivery' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 <div>
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Full Name *</label>
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Full Name *</label>
                   <input value={delivery.name} onChange={(e) => setDelivery({ ...delivery, name: e.target.value })} className={inputCls} placeholder="Receiver name" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Phone *</label>
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Phone *</label>
                   <input value={delivery.phone} onChange={(e) => setDelivery({ ...delivery, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} maxLength={10} className={inputCls} placeholder="10-digit mobile" />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Address *</label>
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Address *</label>
                   <input value={delivery.address} onChange={(e) => setDelivery({ ...delivery, address: e.target.value })} className={inputCls} placeholder="House no, street, area" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">City *</label>
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">City *</label>
                   <input value={delivery.city} onChange={(e) => setDelivery({ ...delivery, city: e.target.value })} className={inputCls} />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">State *</label>
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">State *</label>
                   <input value={delivery.state} onChange={(e) => setDelivery({ ...delivery, state: e.target.value })} className={inputCls} />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Pincode *</label>
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Pincode *</label>
                   <input value={delivery.pinCode} onChange={(e) => setDelivery({ ...delivery, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6) })} maxLength={6} className={`${inputCls} sm:max-w-48`} placeholder="6-digit pincode" />
                 </div>
               </div>
@@ -171,8 +201,8 @@ const MemberCheckout = () => {
           </div>
 
           {/* Payment */}
-          <div className="bg-white border border-[#292940] rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-[#11111F] mb-4 flex items-center gap-2"><CreditCard size={19} className="text-[#6366F1]" /> Payment Method</h3>
+          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6">
+            <h3 className="text-lg font-bold text-[#F5FAFA] mb-4 flex items-center gap-2"><CreditCard size={19} className="text-[#2DD4BF]" /> Payment Method</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               {PAYMENT_METHODS.filter(m => fulfilmentType === 'Delivery' ? m !== 'Cash at Gym' : true).map((method) => (
@@ -180,12 +210,12 @@ const MemberCheckout = () => {
                   key={method} 
                   className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${
                     paymentMethod === method 
-                      ? 'border-[#6366F1] bg-[#6366F1]/5' 
-                      : 'border-[#292940] hover:border-[#6366F1]/30'
+                      ? 'border-[#2DD4BF] bg-[#2DD4BF]/5' 
+                      : 'border-[#2A3A3A] hover:border-[#2DD4BF]/30'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className={`font-bold ${paymentMethod === method ? 'text-[#6366F1]' : 'text-[#A1A1AA]'}`}>{method}</span>
+                    <span className={`font-bold ${paymentMethod === method ? 'text-[#2DD4BF]' : 'text-[#9AAEAE]'}`}>{method}</span>
                     <input 
                       type="radio" 
                       name="payment_method" 
@@ -194,46 +224,46 @@ const MemberCheckout = () => {
                       onChange={(e) => setPaymentMethod(e.target.value)} 
                       className="hidden" 
                     />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-[#6366F1]' : 'border-gray-300'}`}>
-                      {paymentMethod === method && <div className="w-2.5 h-2.5 bg-[#6366F1] rounded-full"></div>}
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-[#2DD4BF]' : 'border-[#2A3A3A]'}`}>
+                      {paymentMethod === method && <div className="w-2.5 h-2.5 bg-[#2DD4BF] rounded-full"></div>}
                     </div>
                   </div>
                 </label>
               ))}
             </div>
 
-            <div className="bg-[#0B0B12] border border-[#292940] p-5 rounded-xl">
+            <div className="bg-[#0E1415] border border-[#2A3A3A] p-5 rounded-xl">
               {paymentMethod === 'UPI' && (
                 <div className="space-y-4">
                   <div className="flex flex-col md:flex-row gap-6">
                     <div className="flex-1 space-y-4">
-                      <p className="text-sm font-bold text-[#11111F]">Pay using UPI App</p>
+                      <p className="text-sm font-bold text-[#F5FAFA]">Pay using UPI App</p>
                       <div className="flex flex-wrap gap-2">
                         {['Google Pay', 'PhonePe', 'Paytm', 'BHIM'].map(app => (
-                           <button key={app} className="px-3 py-1.5 bg-white border border-[#292940] rounded-lg text-xs font-bold text-[#A1A1AA] hover:border-[#6366F1] hover:text-[#6366F1] transition-colors shadow-sm">{app}</button>
+                           <button key={app} className="px-3 py-1.5 bg-[#141D1E] border border-[#2A3A3A] rounded-lg text-xs font-bold text-[#9AAEAE] hover:border-[#2DD4BF] hover:text-[#2DD4BF] transition-colors shadow-sm">{app}</button>
                         ))}
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="h-px bg-[#292940] flex-1"></div>
-                        <span className="text-[10px] font-black text-[#4F46E5] uppercase tracking-wider">OR</span>
-                        <div className="h-px bg-[#292940] flex-1"></div>
+                        <div className="h-px bg-[#2A3A3A] flex-1"></div>
+                        <span className="text-[10px] font-black text-[#5EEAD4] uppercase tracking-wider">OR</span>
+                        <div className="h-px bg-[#2A3A3A] flex-1"></div>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Enter UPI ID</label>
+                        <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Enter UPI ID</label>
                         <input placeholder="e.g. yourname@bank" className={inputCls} />
                       </div>
                     </div>
                     
-                    <div className="flex flex-col items-center justify-center md:border-l md:border-[#292940] md:pl-8 pt-4 md:pt-0 border-t md:border-t-0 border-[#292940] min-w-[180px]">
-                      <div className="relative p-4 bg-white border border-[#292940] rounded-2xl mb-3 shadow-sm flex items-center justify-center">
-                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#17172A] rounded-tl-sm"></div>
-                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#17172A] rounded-tr-sm"></div>
-                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#17172A] rounded-bl-sm"></div>
-                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#17172A] rounded-br-sm"></div>
-                        <QRCode value={`upi://pay?pa=aigymstore@ybl&pn=AI%20Gym%20Store&am=${finalTotal}&cu=INR`} size={80} bgColor="transparent" fgColor="#11111F" level="L" />
+                    <div className="flex flex-col items-center justify-center md:border-l md:border-[#2A3A3A] md:pl-8 pt-4 md:pt-0 border-t md:border-t-0 border-[#2A3A3A] min-w-[180px]">
+                      <div className="relative p-4 bg-[#141D1E] border border-[#2A3A3A] rounded-2xl mb-3 shadow-sm flex items-center justify-center">
+                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#1B2728] rounded-tl-sm"></div>
+                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#1B2728] rounded-tr-sm"></div>
+                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#1B2728] rounded-bl-sm"></div>
+                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#1B2728] rounded-br-sm"></div>
+                        <QRCode value={`upi://pay?pa=aigymstore@ybl&pn=AI%20Gym%20Store&am=${finalTotal}&cu=INR`} size={80} bgColor="transparent" fgColor="#141D1E" level="L" />
                       </div>
-                      <p className="text-sm font-bold text-[#11111F]">Scan QR to Pay</p>
-                      <p className="text-[10px] font-semibold text-[#4F46E5] uppercase tracking-wider mt-0.5">Any UPI App</p>
+                      <p className="text-sm font-bold text-[#F5FAFA]">Scan QR to Pay</p>
+                      <p className="text-[10px] font-semibold text-[#5EEAD4] uppercase tracking-wider mt-0.5">Any UPI App</p>
                     </div>
                   </div>
                 </div>
@@ -241,22 +271,22 @@ const MemberCheckout = () => {
               
               {paymentMethod === 'Credit / Debit Card' && (
                 <div className="space-y-4">
-                  <p className="text-sm font-bold text-[#11111F]">Enter Card Details</p>
+                  <p className="text-sm font-bold text-[#F5FAFA]">Enter Card Details</p>
                   <div>
-                    <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Card Number</label>
+                    <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Card Number</label>
                     <input placeholder="XXXX XXXX XXXX XXXX" maxLength={19} className={inputCls} />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Name on Card</label>
+                    <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Name on Card</label>
                     <input placeholder="John Doe" className={inputCls} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Expiry (MM/YY)</label>
+                      <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Expiry (MM/YY)</label>
                       <input placeholder="MM/YY" maxLength={5} className={inputCls} />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">CVV</label>
+                      <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">CVV</label>
                       <input type="password" placeholder="***" maxLength={4} className={inputCls} />
                     </div>
                   </div>
@@ -265,7 +295,7 @@ const MemberCheckout = () => {
               
               {paymentMethod === 'Net Banking' && (
                 <div className="space-y-4">
-                  <p className="text-sm font-bold text-[#11111F]">Select your Bank</p>
+                  <p className="text-sm font-bold text-[#F5FAFA]">Select your Bank</p>
                   <select
                     className={inputCls}
                     value={bankName}
@@ -290,12 +320,12 @@ const MemberCheckout = () => {
               
               {paymentMethod === 'Cash at Gym' && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#6366F1]/10 rounded-full flex items-center justify-center shrink-0">
-                    <CheckCircle2 size={20} className="text-[#6366F1]" />
+                  <div className="w-10 h-10 bg-[#2DD4BF]/10 rounded-full flex items-center justify-center shrink-0">
+                    <CheckCircle2 size={20} className="text-[#2DD4BF]" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-[#11111F]">Pay at Front Desk</p>
-                    <p className="text-xs text-[#A1A1AA] mt-0.5">Your order will be reserved. Please pay by cash or card when you pick up your items.</p>
+                    <p className="text-sm font-bold text-[#F5FAFA]">Pay at Front Desk</p>
+                    <p className="text-xs text-[#9AAEAE] mt-0.5">Your order will be reserved. Please pay by cash or card when you pick up your items.</p>
                   </div>
                 </div>
               )}
@@ -304,8 +334,8 @@ const MemberCheckout = () => {
         </div>
 
         {/* Summary */}
-        <div className="lg:sticky lg:top-24 self-start bg-white border border-[#292940] rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-[#11111F] mb-4">Order Summary</h3>
+        <div className="lg:sticky lg:top-24 self-start bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6">
+          <h3 className="text-lg font-bold text-[#F5FAFA] mb-4">Order Summary</h3>
           <div className="space-y-3 max-h-64 overflow-y-auto">
             {items.map((row, idx) => {
               const p = row.product;
@@ -315,16 +345,66 @@ const MemberCheckout = () => {
               const baseAttrs = !v && p.attributes ? Object.values(p.attributes).slice(0, 2).join(' / ') : '';
               return (
                 <div key={`${p._id}-${idx}`} className="flex justify-between items-center text-sm">
-                  <span className="text-[#A1A1AA]">{p.name} {attrs ? `(${attrs})` : baseAttrs ? `(${baseAttrs})` : ''} <span className="text-[#A1A1AA]">× {row.quantity}</span></span>
-                  <span className="font-bold text-[#11111F]">₹{price * row.quantity}</span>
+                  <span className="text-[#9AAEAE]">{p.name} {attrs ? `(${attrs})` : baseAttrs ? `(${baseAttrs})` : ''} <span className="text-[#9AAEAE]">× {row.quantity}</span></span>
+                  <span className="font-bold text-[#F5FAFA]">₹{price * row.quantity}</span>
                 </div>
               );
             })}
           </div>
-          <div className="border-t border-[#292940] pt-3 mt-4 space-y-2 text-sm">
-            <div className="flex justify-between text-[#A1A1AA]">
+
+          {/* Referral Points Redemption Box */}
+          {rewardSettings?.enableStorePurchase && pointsBalance > 0 && (
+            <div className="mt-4 p-3.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={usePoints}
+                    onChange={(e) => setUsePoints(e.target.checked)}
+                    className="w-4 h-4 rounded text-[#2DD4BF] bg-[#141D1E] border-[#2A3A3A] focus:ring-0 cursor-pointer"
+                  />
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <Coins size={14} className="text-[#2DD4BF]" />
+                    Use Referral Points
+                  </span>
+                </label>
+                <span className="text-[11px] font-bold text-[#2DD4BF]">
+                  {pointsBalance} pts available
+                </span>
+              </div>
+
+              {usePoints && (
+                <div className="space-y-2 pt-2 border-t border-[#2A3A3A]/60">
+                  <div className="flex items-center justify-between text-[11px] text-[#9AAEAE]">
+                    <span>Points to Redeem:</span>
+                    <span className="font-bold text-white">{pointsToRedeem} pts</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={Math.min(rewardSettings.minPointsForRedemption || 100, pointsBalance)}
+                    max={pointsBalance}
+                    step={10}
+                    value={pointsToRedeem}
+                    onChange={(e) => setPointsToRedeem(Number(e.target.value))}
+                    className="w-full h-1.5 bg-[#2A3A3A] rounded-lg appearance-none cursor-pointer accent-[#2DD4BF]"
+                  />
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-[#9AAEAE]">
+                      Rate: {convUnit} pts = ₹{rupeeUnit}
+                    </span>
+                    <span className="text-emerald-400 font-bold flex items-center gap-1">
+                      <Sparkles size={11} /> Discount: ₹{pointsDiscount}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="border-t border-[#2A3A3A] pt-3 mt-4 space-y-2 text-sm">
+            <div className="flex justify-between text-[#9AAEAE]">
               <span>Subtotal</span>
-              <span className="font-bold text-[#11111F]">₹{subtotal}</span>
+              <span className="font-bold text-[#F5FAFA]">₹{subtotal}</span>
             </div>
             {discountAmount > 0 && (
               <div className="flex justify-between text-green-600">
@@ -332,15 +412,21 @@ const MemberCheckout = () => {
                 <span className="font-bold">-₹{discountAmount}</span>
               </div>
             )}
+            {pointsDiscount > 0 && (
+              <div className="flex justify-between text-emerald-400">
+                <span className="flex items-center gap-1"><Coins size={13} /> Referral Points Discount</span>
+                <span className="font-bold">-₹{pointsDiscount}</span>
+              </div>
+            )}
             <div className="flex justify-between">
-              <span className="font-bold text-[#11111F]">Total</span>
-              <span className="font-black text-[#6366F1] text-lg">₹{finalTotal}</span>
+              <span className="font-bold text-[#F5FAFA]">Total</span>
+              <span className="font-black text-[#2DD4BF] text-lg">₹{finalTotal}</span>
             </div>
           </div>
           <button
             onClick={placeOrder}
             disabled={placing}
-            className="mt-6 w-full py-3 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-40"
+            className="mt-6 w-full py-3 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-40"
           >
             {placing ? <Loader2 className="animate-spin" size={18} /> : <CheckCircle2 size={18} />}
             {placing ? 'Placing Order...' : `Pay ₹${finalTotal} & Place Order`}

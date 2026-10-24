@@ -19,10 +19,10 @@ import api from '../../utils/api';
 import clsx from 'clsx';
 
 const TYPE_CONFIG: Record<string, { icon: any; color: string; bg: string; border: string }> = {
-  info: { icon: Info, color: 'text-[#6366F1]', bg: 'bg-[#6366F1]/15', border: 'border-[#6366F1]/30' },
-  success: { icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/15', border: 'border-emerald-500/30' },
+  info: { icon: Info, color: 'text-[#2DD4BF]', bg: 'bg-[#2DD4BF]/15', border: 'border-[#2DD4BF]/30' },
+  success: { icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-[#2DD4BF]/15', border: 'border-[#2A3A3A]/30' },
   alert: { icon: AlertCircle, color: 'text-rose-400', bg: 'bg-rose-500/15', border: 'border-rose-500/30' },
-  message: { icon: MessageSquare, color: 'text-[#818CF8]', bg: 'bg-[#818CF8]/15', border: 'border-[#818CF8]/30' },
+  message: { icon: MessageSquare, color: 'text-[#2DD4BF]', bg: 'bg-[#2DD4BF]/15', border: 'border-[#2DD4BF]/30' },
 };
 
 const getNotificationLink = (notif: any) => {
@@ -36,7 +36,7 @@ const getNotificationLink = (notif: any) => {
   if (title.includes('booking') || msg.includes('booking') || title.includes('session')) return '/admin/session-bookings';
   if (title.includes('equipment') || msg.includes('equipment') || title.includes('maintenance')) return '/admin/equipment';
   if (title.includes('trainer') || msg.includes('trainer')) return '/admin/trainers';
-  if (title.includes('challenge') || msg.includes('challenge')) return '/admin/challenges';
+  if (title.includes('challenge') || msg.includes('challenge')) return '/admin/rewards';
   if (title.includes('reward') || msg.includes('reward')) return '/admin/rewards';
   if (title.includes('referral') || msg.includes('referral')) return '/admin/referrals';
   return null;
@@ -122,45 +122,45 @@ const GymAdminNotifications: React.FC = () => {
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12 w-full">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#11111F] via-[#151515] to-[#0B0B12] border border-[#292940] p-6 sm:p-8 shadow-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#141D1E] via-[#151515] to-[#0E1415] border border-[#2A3A3A] p-6 sm:p-8 shadow-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#6366F1]/15 border border-[#6366F1]/30 flex items-center justify-center text-[#6366F1] shadow-md shadow-[#6366F1]/10 shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 flex items-center justify-center text-[#2DD4BF] shadow-md shadow-[#2DD4BF]/10 shrink-0">
             <Bell size={24} />
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               System Notifications
             </h1>
-            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-0.5">
+            <p className="text-xs sm:text-sm text-[#9AAEAE] mt-0.5">
               Real-time activity alerts, member actions, payment verifications, and store updates.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30">
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30">
             {unreadCount} Unread
           </span>
           <button
             onClick={markAllAsRead}
             disabled={unreadCount === 0}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#17172A] hover:bg-[#292940] text-xs font-bold text-white border border-[#292940] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1B2728] hover:bg-[#2A3A3A] text-xs font-bold text-white border border-[#2A3A3A] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
-            <CheckCheck size={14} className="text-[#6366F1]" />
+            <CheckCheck size={14} className="text-[#2DD4BF]" />
             Mark all read
           </button>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#292940] no-scrollbar">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#2A3A3A] no-scrollbar">
         <button
           onClick={() => setFilter('all')}
           className={clsx(
             "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
             filter === 'all'
-              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
-              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+              ? 'bg-[#2DD4BF] text-white shadow-md shadow-[#2DD4BF]/25 border border-[#2DD4BF]'
+              : 'bg-[#141D1E] text-[#9AAEAE] hover:text-white border border-[#2A3A3A]'
           )}
         >
           All ({notifications.length})
@@ -171,8 +171,8 @@ const GymAdminNotifications: React.FC = () => {
           className={clsx(
             "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
             filter === 'unread'
-              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
-              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+              ? 'bg-[#2DD4BF] text-white shadow-md shadow-[#2DD4BF]/25 border border-[#2DD4BF]'
+              : 'bg-[#141D1E] text-[#9AAEAE] hover:text-white border border-[#2A3A3A]'
           )}
         >
           Unread ({unreadCount})
@@ -183,8 +183,8 @@ const GymAdminNotifications: React.FC = () => {
           className={clsx(
             "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
             filter === 'alerts'
-              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
-              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+              ? 'bg-[#2DD4BF] text-white shadow-md shadow-[#2DD4BF]/25 border border-[#2DD4BF]'
+              : 'bg-[#141D1E] text-[#9AAEAE] hover:text-white border border-[#2A3A3A]'
           )}
         >
           <AlertCircle size={13} className="text-rose-400" />
@@ -196,11 +196,11 @@ const GymAdminNotifications: React.FC = () => {
           className={clsx(
             "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
             filter === 'members'
-              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
-              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+              ? 'bg-[#2DD4BF] text-white shadow-md shadow-[#2DD4BF]/25 border border-[#2DD4BF]'
+              : 'bg-[#141D1E] text-[#9AAEAE] hover:text-white border border-[#2A3A3A]'
           )}
         >
-          <Users size={13} className="text-[#818CF8]" />
+          <Users size={13} className="text-[#2DD4BF]" />
           Members & Enquiries
         </button>
 
@@ -209,8 +209,8 @@ const GymAdminNotifications: React.FC = () => {
           className={clsx(
             "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
             filter === 'billing'
-              ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/25 border border-[#6366F1]'
-              : 'bg-[#11111F] text-[#A1A1AA] hover:text-white border border-[#292940]'
+              ? 'bg-[#2DD4BF] text-white shadow-md shadow-[#2DD4BF]/25 border border-[#2DD4BF]'
+              : 'bg-[#141D1E] text-[#9AAEAE] hover:text-white border border-[#2A3A3A]'
           )}
         >
           <CreditCard size={13} className="text-emerald-400" />
@@ -220,14 +220,14 @@ const GymAdminNotifications: React.FC = () => {
 
       {/* Notifications List */}
       {loading ? (
-        <div className="flex items-center justify-center py-20 bg-[#11111F] border border-[#292940] rounded-3xl">
-          <div className="w-8 h-8 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+        <div className="flex items-center justify-center py-20 bg-[#141D1E] border border-[#2A3A3A] rounded-3xl">
+          <div className="w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredNotifications.length === 0 ? (
-        <div className="bg-[#11111F] border border-[#292940] rounded-3xl py-16 text-center shadow-xl">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl py-16 text-center shadow-xl">
           <Bell size={40} className="mx-auto text-zinc-600 mb-3" />
           <p className="text-white font-bold text-base">No notifications found</p>
-          <p className="text-[#A1A1AA] text-xs mt-1">
+          <p className="text-[#9AAEAE] text-xs mt-1">
             {filter === 'unread' ? "You're all caught up! No unread notifications." : "System alerts and gym events will appear here."}
           </p>
         </div>
@@ -246,8 +246,8 @@ const GymAdminNotifications: React.FC = () => {
                 className={clsx(
                   "w-full text-left p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 shadow-xl group",
                   isUnread
-                    ? 'bg-[#11111F] border-l-4 border-l-[#6366F1] border-[#292940] hover:border-[#6366F1]/60'
-                    : 'bg-[#141414] border-[#292940] hover:border-[#383838] opacity-85'
+                    ? 'bg-[#141D1E] border-l-4 border-l-[#2DD4BF] border-[#2A3A3A] hover:border-[#2DD4BF]/60'
+                    : 'bg-[#141414] border-[#2A3A3A] hover:border-[#383838] opacity-85'
                 )}
               >
                 <div className={clsx("w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border mt-0.5", config.bg, config.border, config.color)}>
@@ -264,7 +264,7 @@ const GymAdminNotifications: React.FC = () => {
                     </span>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-[#A1A1AA] line-clamp-2 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#9AAEAE] line-clamp-2 leading-relaxed">
                     {notif.message}
                   </p>
 
@@ -275,7 +275,7 @@ const GymAdminNotifications: React.FC = () => {
                         if (!notif.isRead) markAsRead(notif._id);
                         navigate(link);
                       }}
-                      className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#6366F1] hover:text-[#5E7BFF] transition cursor-pointer"
+                      className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#2DD4BF] hover:text-[#5E7BFF] transition cursor-pointer"
                     >
                       <span>Go to related section</span>
                       <ArrowRight size={12} />
@@ -288,7 +288,7 @@ const GymAdminNotifications: React.FC = () => {
                     <button
                       onClick={(e) => markAsRead(notif._id, e)}
                       title="Mark as read"
-                      className="p-1.5 rounded-lg hover:bg-white/10 text-[#6366F1] hover:text-white transition cursor-pointer"
+                      className="p-1.5 rounded-lg hover:bg-[#141D1E]/10 text-[#2DD4BF] hover:text-white transition cursor-pointer"
                     >
                       <CheckCheck size={16} />
                     </button>
@@ -314,10 +314,10 @@ const GymAdminNotifications: React.FC = () => {
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-[#11111F] border border-[#292940] rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-fadeIn"
+            className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-fadeIn"
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-5 border-b border-[#292940]">
+            <div className="flex items-center justify-between p-5 border-b border-[#2A3A3A]">
               <div className="flex items-center gap-3">
                 {(() => {
                   const config = TYPE_CONFIG[selected.type] || TYPE_CONFIG.info;
@@ -330,12 +330,12 @@ const GymAdminNotifications: React.FC = () => {
                 })()}
                 <div>
                   <h3 className="font-bold text-white text-base">Notification Details</h3>
-                  <p className="text-xs text-[#A1A1AA]">Admin Activity Log</p>
+                  <p className="text-xs text-[#9AAEAE]">Admin Activity Log</p>
                 </div>
               </div>
               <button
                 onClick={() => setSelected(null)}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-zinc-400 hover:text-white transition cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-[#141D1E]/10 text-zinc-400 hover:text-white transition cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -343,33 +343,33 @@ const GymAdminNotifications: React.FC = () => {
 
             <div className="p-6 space-y-4">
               <div>
-                <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Subject</p>
+                <p className="text-[10px] text-[#9AAEAE] uppercase tracking-wider font-bold mb-1">Subject</p>
                 <p className="font-bold text-white text-lg">{selected.title}</p>
               </div>
 
               <div>
-                <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Message</p>
-                <div className="bg-[#0B0B12] p-4 rounded-2xl border border-[#292940]">
+                <p className="text-[10px] text-[#9AAEAE] uppercase tracking-wider font-bold mb-1">Message</p>
+                <div className="bg-[#0E1415] p-4 rounded-2xl border border-[#2A3A3A]">
                   <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">{selected.message}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-[#292940] text-xs">
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-[#2A3A3A] text-xs">
                 <div>
-                  <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Type</p>
-                  <span className="capitalize font-semibold text-white px-2 py-0.5 rounded-md bg-[#17172A] border border-[#292940]">
+                  <p className="text-[10px] text-[#9AAEAE] uppercase tracking-wider font-bold mb-1">Type</p>
+                  <span className="capitalize font-semibold text-white px-2 py-0.5 rounded-md bg-[#1B2728] border border-[#2A3A3A]">
                     {selected.type || 'info'}
                   </span>
                 </div>
                 <div>
-                  <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Status</p>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-semibold">
+                  <p className="text-[10px] text-[#9AAEAE] uppercase tracking-wider font-bold mb-1">Status</p>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#2DD4BF]/15 text-emerald-400 border border-[#2A3A3A]/30 font-semibold">
                     <CheckCircle2 size={12} />
                     Read
                   </span>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold mb-1">Timestamp</p>
+                  <p className="text-[10px] text-[#9AAEAE] uppercase tracking-wider font-bold mb-1">Timestamp</p>
                   <span className="text-zinc-400">
                     {selected.createdAt ? new Date(selected.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}
                   </span>
@@ -384,7 +384,7 @@ const GymAdminNotifications: React.FC = () => {
                       setSelected(null);
                       if (link) navigate(link);
                     }}
-                    className="flex-1 py-2.5 rounded-xl bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-bold transition shadow-md shadow-[#6366F1]/25 flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 py-2.5 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs font-bold transition shadow-md shadow-[#2DD4BF]/25 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <span>Go to Related Page</span>
                     <ExternalLink size={13} />
@@ -394,7 +394,7 @@ const GymAdminNotifications: React.FC = () => {
                 )}
                 <button
                   onClick={() => setSelected(null)}
-                  className="px-5 py-2.5 bg-[#17172A] hover:bg-[#292940] text-white text-xs font-bold rounded-xl border border-[#292940] transition cursor-pointer"
+                  className="px-5 py-2.5 bg-[#1B2728] hover:bg-[#2A3A3A] text-white text-xs font-bold rounded-xl border border-[#2A3A3A] transition cursor-pointer"
                 >
                   Close
                 </button>

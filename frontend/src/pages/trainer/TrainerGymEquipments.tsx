@@ -145,7 +145,7 @@ const TrainerGymEquipments: React.FC = () => {
     <div className="max-w-7xl mx-auto space-y-6 pb-16 animate-fade-in">
       {/* Toast Alert */}
       {successToast && (
-        <div className="fixed top-6 right-6 z-50 bg-emerald-600 text-white font-bold text-sm px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-in slide-in-from-top-4">
+        <div className="fixed top-6 right-6 z-50 bg-[#2DD4BF] text-[#06201D] font-bold font-bold text-sm px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-in slide-in-from-top-4">
           <CheckCircle2 size={20} className="shrink-0" />
           <span>{successToast}</span>
           <button onClick={() => setSuccessToast('')} className="ml-2 hover:opacity-80">
@@ -155,18 +155,18 @@ const TrainerGymEquipments: React.FC = () => {
       )}
 
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-[#292940] rounded-3xl p-6 md:p-8 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[#6366F1]/10 text-[#6366F1] flex items-center gap-1.5">
+            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center gap-1.5">
               <Wrench size={13} /> Gym Equipment Approvals
             </span>
-            <span className="text-xs text-[#A1A1AA]">• {gymName} Equipment Inventory</span>
+            <span className="text-xs text-[#9AAEAE]">• {gymName} Equipment Inventory</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#11111F] tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[#F5FAFA] tracking-tight">
             Gym Equipments Management
           </h1>
-          <p className="text-sm text-[#A1A1AA] mt-1 max-w-2xl">
+          <p className="text-sm text-[#9AAEAE] mt-1 max-w-2xl">
             Equipments added by gym owners appear here. Click <strong>Approval</strong> on any equipment to verify safety and automatically publish it to the customer dashboard.
           </p>
         </div>
@@ -174,7 +174,7 @@ const TrainerGymEquipments: React.FC = () => {
         <div className="flex items-center gap-3 w-full md:w-auto">
           <button
             onClick={fetchEquipments}
-            className="p-2.5 text-[#A1A1AA] hover:text-[#11111F] bg-[#0B0B12] border border-[#292940] rounded-2xl transition-all hover:bg-[#17172A]/30"
+            className="p-2.5 text-[#9AAEAE] hover:text-[#FFFFFF] bg-[#0E1415] border border-[#2A3A3A] rounded-2xl transition-all hover:bg-[#1B2728]/30"
             title="Refresh equipment list"
           >
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
@@ -182,7 +182,7 @@ const TrainerGymEquipments: React.FC = () => {
           {pendingCount > 0 && (
             <button
               onClick={handleApproveAll}
-              className="flex-1 md:flex-none px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+              className="flex-1 md:flex-none px-4 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
             >
               <CheckCircle2 size={16} /> Approve All Pending ({pendingCount})
             </button>
@@ -192,25 +192,25 @@ const TrainerGymEquipments: React.FC = () => {
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-xs">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-xs">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Total Equipments</span>
-            <Layers size={18} className="text-[#6366F1]" />
+            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Total Equipments</span>
+            <Layers size={18} className="text-[#2DD4BF]" />
           </div>
-          <div className="text-3xl font-black text-[#11111F]">{totalCount}</div>
-          <p className="text-[11px] text-[#A1A1AA] mt-1">Added by gym owner</p>
+          <div className="text-3xl font-black text-[#F5FAFA]">{totalCount}</div>
+          <p className="text-[11px] text-[#9AAEAE] mt-1">Added by gym owner</p>
         </div>
 
-        <div className="bg-white border border-emerald-200 rounded-2xl p-5 shadow-xs bg-emerald-50/20">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-xs bg-[#1B2728]/20">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider">Approved for Customers</span>
-            <ShieldCheck size={18} className="text-emerald-600" />
+            <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider">Approved for Customers</span>
+            <ShieldCheck size={18} className="text-[#2DD4BF]" />
           </div>
-          <div className="text-3xl font-black text-emerald-700">{approvedCount}</div>
-          <p className="text-[11px] text-emerald-600 mt-1">Live on customer dashboard</p>
+          <div className="text-3xl font-black text-[#2DD4BF]">{approvedCount}</div>
+          <p className="text-[11px] text-[#2DD4BF] mt-1">Live on customer dashboard</p>
         </div>
 
-        <div className="bg-white border border-amber-200 rounded-2xl p-5 shadow-xs bg-amber-50/20">
+        <div className="bg-[#141D1E] border border-amber-200 rounded-2xl p-5 shadow-xs bg-amber-50/20">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">Pending Approval</span>
             <AlertTriangle size={18} className="text-amber-500" />
@@ -219,28 +219,28 @@ const TrainerGymEquipments: React.FC = () => {
           <p className="text-[11px] text-amber-600 mt-1">Needs trainer verification</p>
         </div>
 
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-xs">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-xs">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Service Status</span>
-            <Activity size={18} className="text-[#6366F1]" />
+            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Service Status</span>
+            <Activity size={18} className="text-[#2DD4BF]" />
           </div>
-          <div className="text-3xl font-black text-[#11111F]">
+          <div className="text-3xl font-black text-[#F5FAFA]">
             {equipments.filter(e => e.condition === 'Good' || e.condition === 'Excellent').length}
           </div>
-          <p className="text-[11px] text-[#A1A1AA] mt-1">Operational condition</p>
+          <p className="text-[11px] text-[#9AAEAE] mt-1">Operational condition</p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-[#292940] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
+      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
         <div className="relative flex-1 w-full md:w-auto">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A1A1AA]" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AAEAE]" />
           <input
             type="text"
             placeholder="Search equipment by name, brand, or category..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#0B0B12] border border-[#292940] rounded-xl text-sm outline-none focus:border-[#6366F1] text-[#11111F]"
+            className="w-full pl-10 pr-4 py-2 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA]"
           />
         </div>
 
@@ -252,8 +252,8 @@ const TrainerGymEquipments: React.FC = () => {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors whitespace-nowrap ${
                 selectedCategory === cat
-                  ? 'bg-[#6366F1] text-white'
-                  : 'bg-[#0B0B12] text-[#A1A1AA] hover:bg-[#17172A]'
+                  ? 'bg-[#2DD4BF] text-white'
+                  : 'bg-[#0E1415] text-[#9AAEAE] hover:bg-[#1B2728]'
               }`}
             >
               {cat}
@@ -262,15 +262,15 @@ const TrainerGymEquipments: React.FC = () => {
         </div>
 
         {/* Status Filter */}
-        <div className="flex items-center gap-1.5 border-l border-[#292940] pl-3 shrink-0">
+        <div className="flex items-center gap-1.5 border-l border-[#2A3A3A] pl-3 shrink-0">
           {(['All', 'Approved', 'Pending'] as const).map(st => (
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
               className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
                 statusFilter === st
-                  ? 'bg-stone-900 text-white'
-                  : 'text-[#A1A1AA] hover:bg-stone-100'
+                  ? 'bg-[#0E1415] text-white'
+                  : 'text-[#9AAEAE] hover:bg-[#1B2728]'
               }`}
             >
               {st}
@@ -281,15 +281,15 @@ const TrainerGymEquipments: React.FC = () => {
 
       {/* Equipment Grid */}
       {loading ? (
-        <div className="text-center py-20 text-[#A1A1AA]">
-          <div className="w-10 h-10 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <div className="text-center py-20 text-[#9AAEAE]">
+          <div className="w-10 h-10 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="font-semibold text-sm">Loading gym equipments...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-[#292940] rounded-3xl p-12 text-center">
-          <Wrench size={48} className="mx-auto text-[#A1A1AA] mb-3" />
-          <h3 className="text-base font-bold text-[#11111F]">No equipments found</h3>
-          <p className="text-xs text-[#A1A1AA] mt-1">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-12 text-center">
+          <Wrench size={48} className="mx-auto text-[#9AAEAE] mb-3" />
+          <h3 className="text-base font-bold text-[#F5FAFA]">No equipments found</h3>
+          <p className="text-xs text-[#9AAEAE] mt-1">
             {search ? 'Try clearing your search query' : 'Equipments added by gym owners will automatically appear here for trainer review and approval.'}
           </p>
         </div>
@@ -303,26 +303,26 @@ const TrainerGymEquipments: React.FC = () => {
             return (
               <div
                 key={eqId}
-                className={`bg-white border rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${
-                  isApproved ? 'border-emerald-200 ring-1 ring-emerald-500/10' : 'border-[#292940]'
+                className={`bg-[#141D1E] border rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${
+                  isApproved ? 'border-[#2A3A3A] ring-1 ring-emerald-500/10' : 'border-[#2A3A3A]'
                 }`}
               >
                 <div>
                   {/* Status Badges */}
                   <div className="flex justify-between items-start gap-2 mb-3">
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-orange-50 text-orange-700 border border-orange-200">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
                       {eq.category}
                     </span>
                     <span
                       className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold flex items-center gap-1 ${
                         isApproved
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                          ? 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]'
                           : 'bg-amber-100 text-amber-800 border border-amber-300'
                       }`}
                     >
                       {isApproved ? (
                         <>
-                          <CheckCircle2 size={12} className="text-emerald-700" /> Approved
+                          <CheckCircle2 size={12} className="text-[#2DD4BF]" /> Approved
                         </>
                       ) : (
                         <>
@@ -333,43 +333,43 @@ const TrainerGymEquipments: React.FC = () => {
                   </div>
 
                   {/* Equipment Title & Brand */}
-                  <h3 className="font-extrabold text-lg text-[#11111F] mb-1 leading-snug">
+                  <h3 className="font-extrabold text-lg text-[#F5FAFA] mb-1 leading-snug">
                     {eq.name}
                   </h3>
                   {eq.brand && (
-                    <p className="text-xs font-semibold text-[#A1A1AA] mb-4">
-                      Brand: <span className="text-[#11111F]">{eq.brand}</span>
+                    <p className="text-xs font-semibold text-[#9AAEAE] mb-4">
+                      Brand: <span className="text-[#F5FAFA]">{eq.brand}</span>
                     </p>
                   )}
 
                   {/* Attributes Details */}
-                  <div className="grid grid-cols-2 gap-2 bg-[#0B0B12] p-3 rounded-2xl border border-[#292940] text-xs mb-4">
+                  <div className="grid grid-cols-2 gap-2 bg-[#0E1415] p-3 rounded-2xl border border-[#2A3A3A] text-xs mb-4">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Quantity</span>
-                      <strong className="text-[#11111F]">{eq.quantity || 1} Units</strong>
+                      <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Quantity</span>
+                      <strong className="text-[#F5FAFA]">{eq.quantity || 1} Units</strong>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Condition</span>
-                      <span className="font-semibold text-emerald-700">{eq.condition || 'Good'}</span>
+                      <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Condition</span>
+                      <span className="font-semibold text-[#2DD4BF]">{eq.condition || 'Good'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Availability</span>
-                      <span className="font-semibold text-[#11111F]">{eq.availability || 'Available'}</span>
+                      <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Availability</span>
+                      <span className="font-semibold text-[#F5FAFA]">{eq.availability || 'Available'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Next Service</span>
-                      <span className="font-medium text-[#A1A1AA]">{eq.nextService || 'Up to date'}</span>
+                      <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Next Service</span>
+                      <span className="font-medium text-[#9AAEAE]">{eq.nextService || 'Up to date'}</span>
                     </div>
                   </div>
 
                   {/* Trainer Approval Meta */}
                   {isApproved && (
-                    <div className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200 text-[11px] text-emerald-900 mb-4 flex items-center justify-between">
+                    <div className="bg-[#1B2728] p-3 rounded-xl border border-[#2A3A3A] text-[11px] text-[#2DD4BF] mb-4 flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <ShieldCheck size={14} className="text-emerald-600 shrink-0" />
+                        <ShieldCheck size={14} className="text-[#2DD4BF] shrink-0" />
                         <span>Verified by {eq.approvedByName || 'Trainer'}</span>
                       </div>
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold text-[#2DD4BF] bg-[#1B2728] px-2 py-0.5 rounded-full">
                         Live on Customer App
                       </span>
                     </div>
@@ -377,21 +377,21 @@ const TrainerGymEquipments: React.FC = () => {
                 </div>
 
                 {/* APPROVAL ACTION BUTTON */}
-                <div className="pt-3 border-t border-[#292940] mt-2">
+                <div className="pt-3 border-t border-[#2A3A3A] mt-2">
                   <button
                     onClick={() => handleToggleApproval(eq)}
                     disabled={isProcessing}
                     className={`w-full py-2.5 px-4 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer ${
                       isApproved
-                        ? 'bg-emerald-50 hover:bg-rose-50 text-emerald-800 hover:text-rose-700 border border-emerald-300 hover:border-rose-300'
-                        : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
+                        ? 'bg-[#1B2728] hover:bg-rose-50 text-[#2DD4BF] hover:text-rose-700 border border-[#2A3A3A] hover:border-rose-300'
+                        : 'bg-[#2DD4BF] hover:bg-[#5EEAD4] text-white shadow-emerald-600/20'
                     }`}
                   >
                     {isProcessing ? (
                       <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
                     ) : isApproved ? (
                       <>
-                        <CheckCircle2 size={15} className="text-emerald-600" />
+                        <CheckCircle2 size={15} className="text-[#2DD4BF]" />
                         <span>Approved (Click to Revoke)</span>
                       </>
                     ) : (

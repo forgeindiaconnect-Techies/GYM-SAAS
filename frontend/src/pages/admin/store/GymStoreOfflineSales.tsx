@@ -203,13 +203,13 @@ const GymStoreOfflineSales = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">Offline / In-Gym Sales</h1>
-          <p className="text-[#A1A1AA] mt-1">Record sales made in person at the gym with live payment scanning.</p>
+          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Offline / In-Gym Sales</h1>
+          <p className="text-[#9AAEAE] mt-1">Record sales made in person at the gym with live payment scanning.</p>
         </div>
       </div>
 
-      <div className="flex border-b border-[#292940] space-x-8">
-        <button onClick={() => setTab('record')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'record' ? 'border-[#6366F1] text-[#6366F1]' : 'border-transparent text-[#A1A1AA] hover:text-[#11111F]'}`}>
+      <div className="flex border-b border-[#2A3A3A] space-x-8">
+        <button onClick={() => setTab('record')} className={`py-3 font-semibold text-sm transition-colors border-b-2 ${tab === 'record' ? 'border-[#2DD4BF] text-[#2DD4BF]' : 'border-transparent text-[#9AAEAE] hover:text-[#FFFFFF]'}`}>
           Record Sale
         </button>
       </div>
@@ -217,20 +217,20 @@ const GymStoreOfflineSales = () => {
       {tab === 'record' && (
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 space-y-6">
-            <div className="bg-white border border-[#292940] rounded-2xl p-6 space-y-5">
+            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 space-y-5">
               
               {/* Customer and Payment Method row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Member (optional)</label>
-                  <select value={customerId} onChange={(e) => setCustomerId(e.target.value)} className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none">
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Member (optional)</label>
+                  <select value={customerId} onChange={(e) => setCustomerId(e.target.value)} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none">
                     <option value="">Walk-in customer (not linked)</option>
                     {customers.map((c) => <option key={c._id} value={c._id}>{c.firstName} {c.lastName} {c.email ? `· ${c.email}` : ''}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Payment Method *</label>
-                  <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none font-medium">
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Payment Method *</label>
+                  <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none font-medium">
                     {PAYMENT_METHODS.map((m) => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
@@ -238,7 +238,7 @@ const GymStoreOfflineSales = () => {
 
               {/* Visual Quick Payment Method Selector Pills */}
               <div>
-                <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider block mb-2">Select or Switch Method:</span>
+                <span className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider block mb-2">Select or Switch Method:</span>
                 <div className="flex flex-wrap gap-2">
                   {PAYMENT_METHODS.map((method) => {
                     const isSelected = paymentMethod === method;
@@ -249,8 +249,8 @@ const GymStoreOfflineSales = () => {
                         onClick={() => setPaymentMethod(method)}
                         className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                           isSelected
-                            ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-sm shadow-[#6366F1]/20 scale-[1.02]'
-                            : 'bg-[#0B0B12] text-[#A1A1AA] border-[#292940] hover:bg-[#292940] hover:text-[#11111F]'
+                            ? 'bg-[#2DD4BF] text-white border-[#2DD4BF] shadow-sm shadow-[#2DD4BF]/20 scale-[1.02]'
+                            : 'bg-[#0E1415] text-[#9AAEAE] border-[#2A3A3A] hover:bg-[#2A3A3A] hover:text-[#FFFFFF]'
                         }`}
                       >
                         {method === 'Cash' && <Banknote size={14} />}
@@ -271,34 +271,34 @@ const GymStoreOfflineSales = () => {
 
               {/* 1. UPI / Paytm / PhonePe / Google Pay Panel */}
               {isUpiMethod && (
-                <div className="bg-gradient-to-br from-[#0B0B12] to-[#17172A] border-2 border-[#6366F1]/30 rounded-2xl p-5 shadow-sm space-y-4 animate-in fade-in duration-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#292940] pb-3">
+                <div className="bg-gradient-to-br from-[#0E1415] to-[#1B2728] border-2 border-[#2DD4BF]/30 rounded-2xl p-5 shadow-sm space-y-4 animate-in fade-in duration-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2A3A3A] pb-3">
                     <div className="flex items-center gap-2.5">
                       <div className={`p-2 rounded-xl text-white font-bold flex items-center justify-center ${
                         paymentMethod === 'Paytm' ? 'bg-[#002E6E]' :
                         paymentMethod === 'Google Pay' ? 'bg-[#1a73e8]' :
                         paymentMethod === 'PhonePe' ? 'bg-[#5f259f]' :
-                        'bg-[#6366F1]'
+                        'bg-[#2DD4BF]'
                       }`}>
                         <QrCode size={18} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-[#11111F] flex items-center gap-2">
+                        <h4 className="font-bold text-sm text-[#F5FAFA] flex items-center gap-2">
                           {paymentMethod === 'Paytm' && 'Paytm UPI QR & Payment'}
                           {paymentMethod === 'Google Pay' && 'Google Pay UPI QR & Payment'}
                           {paymentMethod === 'PhonePe' && 'PhonePe UPI QR & Payment'}
                           {paymentMethod === 'UPI' && 'UPI Instant QR Scanner'}
-                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-white/80 text-[#6366F1] border border-[#6366F1]/20">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-[#141D1E]/80 text-[#2DD4BF] border border-[#2DD4BF]/20">
                             Live Scanner
                           </span>
                         </h4>
-                        <p className="text-xs text-[#A1A1AA]">Customer can scan this QR code with {paymentMethod} or any UPI app</p>
+                        <p className="text-xs text-[#9AAEAE]">Customer can scan this QR code with {paymentMethod} or any UPI app</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#A1A1AA] font-medium">Amount to Pay:</span>
-                      <span className="text-base font-black text-[#6366F1] bg-white px-3 py-1 rounded-lg border border-[#292940]">
+                      <span className="text-xs text-[#9AAEAE] font-medium">Amount to Pay:</span>
+                      <span className="text-base font-black text-[#2DD4BF] bg-[#141D1E] px-3 py-1 rounded-lg border border-[#2A3A3A]">
                         ₹{total}
                       </span>
                     </div>
@@ -307,28 +307,28 @@ const GymStoreOfflineSales = () => {
                   <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pt-1">
                     {/* QR Code Scanner Box */}
                     <div className="flex flex-col items-center shrink-0">
-                      <div className="relative p-4 bg-white border-2 border-[#6366F1]/40 rounded-2xl shadow-md flex items-center justify-center group">
+                      <div className="relative p-4 bg-[#141D1E] border-2 border-[#2DD4BF]/40 rounded-2xl shadow-md flex items-center justify-center group">
                         {/* Viewfinder crosshairs */}
-                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#6366F1] rounded-tl-sm"></div>
-                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#6366F1] rounded-tr-sm"></div>
-                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#6366F1] rounded-bl-sm"></div>
-                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#6366F1] rounded-br-sm"></div>
+                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#2DD4BF] rounded-tl-sm"></div>
+                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#2DD4BF] rounded-tr-sm"></div>
+                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#2DD4BF] rounded-bl-sm"></div>
+                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#2DD4BF] rounded-br-sm"></div>
 
                         {/* QR Code component */}
                         <QRCode
                           value={upiPayUri}
                           size={135}
                           bgColor="#FFFFFF"
-                          fgColor="#11111F"
+                          fgColor="#141D1E"
                           level="M"
                         />
                       </div>
 
                       <div className="text-center mt-2.5 space-y-0.5">
-                        <span className="text-[11px] font-bold text-[#6366F1] uppercase tracking-wider block">
+                        <span className="text-[11px] font-bold text-[#2DD4BF] uppercase tracking-wider block">
                           Scan to Pay ₹{total}
                         </span>
-                        <span className="text-[10px] text-[#A1A1AA]">
+                        <span className="text-[10px] text-[#9AAEAE]">
                           Works with Paytm, GPay, PhonePe, BHIM
                         </span>
                       </div>
@@ -337,16 +337,16 @@ const GymStoreOfflineSales = () => {
                     {/* UPI ID Details & UTR input */}
                     <div className="flex-1 w-full space-y-3">
                       {/* Recipient UPI ID Card */}
-                      <div className="bg-white border border-[#292940] rounded-xl p-3.5 space-y-2">
+                      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-xl p-3.5 space-y-2">
                         <div className="flex items-center justify-between">
-                          <label className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider">
+                          <label className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider">
                             Recipient UPI ID ({gym?.name || 'Gym Account'})
                           </label>
                           {!isEditingUpi ? (
                             <button
                               type="button"
                               onClick={() => { setIsEditingUpi(true); setTempUpiId(upiId); }}
-                              className="text-xs font-bold text-[#6366F1] hover:underline flex items-center gap-1"
+                              className="text-xs font-bold text-[#2DD4BF] hover:underline flex items-center gap-1"
                             >
                               <Edit2 size={12} /> Edit UPI
                             </button>
@@ -355,14 +355,14 @@ const GymStoreOfflineSales = () => {
                               <button
                                 type="button"
                                 onClick={handleSaveUpi}
-                                className="text-xs font-bold text-[#11111F] bg-[#6366F1] px-2 py-0.5 rounded hover:opacity-90"
+                                className="text-xs font-bold text-[#F5FAFA] bg-[#2DD4BF] px-2 py-0.5 rounded hover:opacity-90"
                               >
                                 Save
                               </button>
                               <button
                                 type="button"
                                 onClick={() => setIsEditingUpi(false)}
-                                className="text-xs font-medium text-gray-500 hover:text-gray-700"
+                                className="text-xs font-medium text-[#9AAEAE] hover:text-[#C1D0D0]"
                               >
                                 Cancel
                               </button>
@@ -377,12 +377,12 @@ const GymStoreOfflineSales = () => {
                               value={tempUpiId}
                               onChange={(e) => setTempUpiId(e.target.value)}
                               placeholder="e.g. gymname@paytm"
-                              className="flex-1 bg-[#0B0B12] border border-[#6366F1] rounded-lg px-3 py-1.5 text-xs text-[#11111F] font-mono outline-none"
+                              className="flex-1 bg-[#0E1415] border border-[#2DD4BF] rounded-lg px-3 py-1.5 text-xs text-[#F5FAFA] font-mono outline-none"
                             />
                           </div>
                         ) : (
-                          <div className="flex items-center justify-between bg-[#0B0B12] border border-[#292940] rounded-lg px-3 py-2">
-                            <span className="font-mono font-bold text-sm text-[#11111F] tracking-wide select-all">
+                          <div className="flex items-center justify-between bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-3 py-2">
+                            <span className="font-mono font-bold text-sm text-[#F5FAFA] tracking-wide select-all">
                               {upiId || 'gym@paytm'}
                             </span>
                             <button
@@ -390,8 +390,8 @@ const GymStoreOfflineSales = () => {
                               onClick={() => copyToClipboard(upiId)}
                               className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
                                 copiedUpi
-                                  ? 'bg-emerald-100 text-emerald-700'
-                                  : 'bg-white border border-[#292940] text-[#6366F1] hover:bg-[#0B0B12]'
+                                  ? 'bg-[#1B2728] text-[#2DD4BF]'
+                                  : 'bg-[#141D1E] border border-[#2A3A3A] text-[#2DD4BF] hover:bg-[#0E1415]'
                               }`}
                             >
                               {copiedUpi ? <Check size={13} /> : <Copy size={13} />}
@@ -401,7 +401,7 @@ const GymStoreOfflineSales = () => {
                         )}
 
                         {/* Quick UPI Handle suggestions */}
-                        <div className="flex items-center gap-2 pt-1 text-[11px] text-[#A1A1AA]">
+                        <div className="flex items-center gap-2 pt-1 text-[11px] text-[#9AAEAE]">
                           <span>Handles:</span>
                           {['@paytm', '@okaxis', '@ybl', '@upi'].map((handle) => {
                             const userPart = upiId.split('@')[0] || 'gym';
@@ -413,8 +413,8 @@ const GymStoreOfflineSales = () => {
                                 onClick={() => { setUpiId(target); setTempUpiId(target); }}
                                 className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
                                   upiId.endsWith(handle)
-                                    ? 'bg-[#6366F1] text-white font-bold'
-                                    : 'bg-[#0B0B12] text-[#A1A1AA] hover:bg-gray-200'
+                                    ? 'bg-[#2DD4BF] text-white font-bold'
+                                    : 'bg-[#0E1415] text-[#9AAEAE] hover:bg-gray-200'
                                 }`}
                               >
                                 {handle}
@@ -427,11 +427,11 @@ const GymStoreOfflineSales = () => {
                       {/* Transaction / UTR ID Input */}
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <label className="text-xs font-bold text-[#A1A1AA] uppercase">
+                          <label className="text-xs font-bold text-[#9AAEAE] uppercase">
                             UPI Transaction / UTR Number (12 digits)
                           </label>
                           {transactionId.length === 12 && (
-                            <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                            <span className="text-[11px] font-bold text-[#2DD4BF] flex items-center gap-1">
                               <CheckCircle2 size={13} /> 12-Digit UTR
                             </span>
                           )}
@@ -442,9 +442,9 @@ const GymStoreOfflineSales = () => {
                           value={transactionId}
                           onChange={(e) => setTransactionId(e.target.value.trim())}
                           placeholder="e.g. 429381029381 (from customer's screen)"
-                          className="w-full bg-white border border-[#292940] rounded-xl px-3 py-2 text-sm font-mono text-[#11111F] focus:border-[#6366F1] outline-none"
+                          className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm font-mono text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
                         />
-                        <p className="text-[11px] text-[#A1A1AA] mt-1">
+                        <p className="text-[11px] text-[#9AAEAE] mt-1">
                           Enter the 12-digit UTR reference from {paymentMethod} to record the payment verification.
                         </p>
                       </div>
@@ -455,15 +455,15 @@ const GymStoreOfflineSales = () => {
 
               {/* 2. Cash Payment Panel */}
               {paymentMethod === 'Cash' && (
-                <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-5 space-y-4 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b border-[#292940] pb-3">
+                <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-5 space-y-4 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
                     <div className="flex items-center gap-2">
-                      <Banknote className="text-[#6366F1]" size={20} />
-                      <h4 className="font-bold text-sm text-[#11111F]">Cash Payment Counter</h4>
+                      <Banknote className="text-[#2DD4BF]" size={20} />
+                      <h4 className="font-bold text-sm text-[#F5FAFA]">Cash Payment Counter</h4>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#A1A1AA]">Total Due:</span>
-                      <span className="font-black text-sm text-[#6366F1] bg-white px-2.5 py-0.5 rounded border border-[#292940]">
+                      <span className="text-xs text-[#9AAEAE]">Total Due:</span>
+                      <span className="font-black text-sm text-[#2DD4BF] bg-[#141D1E] px-2.5 py-0.5 rounded border border-[#2A3A3A]">
                         ₹{total}
                       </span>
                     </div>
@@ -471,7 +471,7 @@ const GymStoreOfflineSales = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">
+                      <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">
                         Cash Handed by Customer (₹)
                       </label>
                       <input
@@ -480,7 +480,7 @@ const GymStoreOfflineSales = () => {
                         value={cashReceived}
                         onChange={(e) => setCashReceived(e.target.value)}
                         placeholder={`e.g. ${total}`}
-                        className="w-full bg-white border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] font-bold focus:border-[#6366F1] outline-none"
+                        className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] font-bold focus:border-[#2DD4BF] outline-none"
                       />
 
                       {/* Quick Denomination Chips */}
@@ -488,7 +488,7 @@ const GymStoreOfflineSales = () => {
                         <button
                           type="button"
                           onClick={() => setCashReceived(String(total))}
-                          className="px-2 py-1 text-[11px] font-bold bg-white border border-[#292940] rounded-lg hover:border-[#6366F1] text-[#6366F1]"
+                          className="px-2 py-1 text-[11px] font-bold bg-[#141D1E] border border-[#2A3A3A] rounded-lg hover:border-[#2DD4BF] text-[#2DD4BF]"
                         >
                           Exact (₹{total})
                         </button>
@@ -497,7 +497,7 @@ const GymStoreOfflineSales = () => {
                             key={amt}
                             type="button"
                             onClick={() => setCashReceived(String(amt))}
-                            className="px-2 py-1 text-[11px] font-medium bg-white border border-[#292940] rounded-lg hover:border-[#6366F1] text-[#A1A1AA]"
+                            className="px-2 py-1 text-[11px] font-medium bg-[#141D1E] border border-[#2A3A3A] rounded-lg hover:border-[#2DD4BF] text-[#9AAEAE]"
                           >
                             ₹{amt}
                           </button>
@@ -507,14 +507,14 @@ const GymStoreOfflineSales = () => {
 
                     <div className="flex flex-col justify-center">
                       {cashReceived && Number(cashReceived) >= total ? (
-                        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-emerald-800">
-                          <span className="text-[11px] font-bold uppercase tracking-wider block text-emerald-700">
+                        <div className="bg-[#1B2728] border border-[#2A3A3A] rounded-xl p-3 text-[#2DD4BF]">
+                          <span className="text-[11px] font-bold uppercase tracking-wider block text-[#2DD4BF]">
                             Change to Return
                           </span>
-                          <span className="text-2xl font-black text-emerald-600">
+                          <span className="text-2xl font-black text-[#2DD4BF]">
                             ₹{Number(cashReceived) - total}
                           </span>
-                          <p className="text-[11px] text-emerald-700 mt-0.5">Please hand this change to the customer.</p>
+                          <p className="text-[11px] text-[#2DD4BF] mt-0.5">Please hand this change to the customer.</p>
                         </div>
                       ) : cashReceived && Number(cashReceived) < total ? (
                         <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-amber-800">
@@ -527,7 +527,7 @@ const GymStoreOfflineSales = () => {
                           <p className="text-[11px] text-amber-700 mt-0.5">Customer still owes this balance.</p>
                         </div>
                       ) : (
-                        <div className="bg-white border border-dashed border-[#292940] rounded-xl p-3 text-center text-xs text-[#A1A1AA]">
+                        <div className="bg-[#141D1E] border border-dashed border-[#2A3A3A] rounded-xl p-3 text-center text-xs text-[#9AAEAE]">
                           Enter cash received to automatically calculate change to return.
                         </div>
                       )}
@@ -538,34 +538,34 @@ const GymStoreOfflineSales = () => {
 
               {/* 3. Bank Transfer Panel */}
               {paymentMethod === 'Bank Transfer' && (
-                <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-5 space-y-4 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b border-[#292940] pb-3">
+                <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-5 space-y-4 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
                     <div className="flex items-center gap-2">
-                      <Building2 className="text-[#6366F1]" size={20} />
-                      <h4 className="font-bold text-sm text-[#11111F]">Bank Account Details</h4>
+                      <Building2 className="text-[#2DD4BF]" size={20} />
+                      <h4 className="font-bold text-sm text-[#F5FAFA]">Bank Account Details</h4>
                     </div>
-                    <span className="font-black text-sm text-[#6366F1] bg-white px-2.5 py-0.5 rounded border border-[#292940]">
+                    <span className="font-black text-sm text-[#2DD4BF] bg-[#141D1E] px-2.5 py-0.5 rounded border border-[#2A3A3A]">
                       ₹{total}
                     </span>
                   </div>
 
                   {gym?.paymentSettings?.accountNumber ? (
-                    <div className="bg-white border border-[#292940] rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Account Name</span>
-                        <span className="font-bold text-[#11111F]">{gym.paymentSettings.accountName || gym.name}</span>
+                        <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Account Name</span>
+                        <span className="font-bold text-[#F5FAFA]">{gym.paymentSettings.accountName || gym.name}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Bank Name</span>
-                        <span className="font-bold text-[#11111F]">{gym.paymentSettings.bankName || 'N/A'}</span>
+                        <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Bank Name</span>
+                        <span className="font-bold text-[#F5FAFA]">{gym.paymentSettings.bankName || 'N/A'}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">Account Number</span>
-                        <span className="font-mono font-bold text-[#11111F]">{gym.paymentSettings.accountNumber}</span>
+                        <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Account Number</span>
+                        <span className="font-mono font-bold text-[#F5FAFA]">{gym.paymentSettings.accountNumber}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA] block">IFSC Code</span>
-                        <span className="font-mono font-bold text-[#11111F]">{gym.paymentSettings.ifscCode}</span>
+                        <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">IFSC Code</span>
+                        <span className="font-mono font-bold text-[#F5FAFA]">{gym.paymentSettings.ifscCode}</span>
                       </div>
                     </div>
                   ) : (
@@ -580,7 +580,7 @@ const GymStoreOfflineSales = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">
+                      <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">
                         Bank Reference / IMPS / NEFT Number *
                       </label>
                       <input
@@ -588,11 +588,11 @@ const GymStoreOfflineSales = () => {
                         value={bankRef}
                         onChange={(e) => setBankRef(e.target.value)}
                         placeholder="e.g. IMPS1928301928"
-                        className="w-full bg-white border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none"
+                        className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">
+                      <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">
                         Sender Bank / Name (Optional)
                       </label>
                       <input
@@ -600,7 +600,7 @@ const GymStoreOfflineSales = () => {
                         value={bankSender}
                         onChange={(e) => setBankSender(e.target.value)}
                         placeholder="e.g. HDFC Bank - Rajesh"
-                        className="w-full bg-white border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none"
+                        className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
                       />
                     </div>
                   </div>
@@ -609,13 +609,13 @@ const GymStoreOfflineSales = () => {
 
               {/* 4. Other Payment Panel */}
               {paymentMethod === 'Other' && (
-                <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-5 space-y-3 animate-in fade-in duration-200">
-                  <div className="flex items-center gap-2 border-b border-[#292940] pb-2">
-                    <Wallet className="text-[#6366F1]" size={18} />
-                    <h4 className="font-bold text-sm text-[#11111F]">Other Payment Method Details</h4>
+                <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-5 space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center gap-2 border-b border-[#2A3A3A] pb-2">
+                    <Wallet className="text-[#2DD4BF]" size={18} />
+                    <h4 className="font-bold text-sm text-[#F5FAFA]">Other Payment Method Details</h4>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">
+                    <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">
                       Payment Reference / POS Slip / Details
                     </label>
                     <input
@@ -623,7 +623,7 @@ const GymStoreOfflineSales = () => {
                       value={otherRef}
                       onChange={(e) => setOtherRef(e.target.value)}
                       placeholder="e.g. Card POS Terminal Auth Code #38192 or Cheque #102931"
-                      className="w-full bg-white border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none"
+                      className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
                     />
                   </div>
                 </div>
@@ -632,12 +632,12 @@ const GymStoreOfflineSales = () => {
               {/* Items Section */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase">Items *</label>
-                  <button onClick={addLine} className="text-xs font-bold text-[#6366F1] flex items-center gap-1 hover:underline"><Plus size={14} /> Add Item</button>
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase">Items *</label>
+                  <button onClick={addLine} className="text-xs font-bold text-[#2DD4BF] flex items-center gap-1 hover:underline"><Plus size={14} /> Add Item</button>
                 </div>
                 <div className="space-y-3">
                   {lines.map((line, idx) => (
-                      <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-[#0B0B12] border border-[#292940] rounded-xl p-3">
+                      <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-[#0E1415] border border-[#2A3A3A] rounded-xl p-3">
                         <select value={line.variantId ? `${line.productId}|${line.variantId}` : line.productId} onChange={(e) => {
                              const val = e.target.value;
                              if (val.includes('|')) {
@@ -647,7 +647,7 @@ const GymStoreOfflineSales = () => {
                                 updateLine(idx, { productId: val, variantId: '' });
                              }
                            }} 
-                           className="flex-1 bg-white border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none">
+                           className="flex-1 bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none">
                           <option value="">Select product...</option>
                           {products.flatMap((pr) => {
                             if (pr.hasVariants && pr.variants && pr.variants.length > 0) {
@@ -668,10 +668,10 @@ const GymStoreOfflineSales = () => {
                           type="number" min={1}
                           value={line.quantity}
                           onChange={(e) => updateLine(idx, { quantity: e.target.value })}
-                          className="w-full sm:w-20 bg-white border border-[#292940] rounded-xl px-3 py-2 text-sm text-center text-[#11111F] focus:border-[#6366F1] outline-none"
+                          className="w-full sm:w-20 bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-center text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
                         />
                         <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-                          <span className="font-bold text-[#11111F] w-20 text-right">₹{(priceOfLine(line) * (Number(line.quantity) || 1))}</span>
+                          <span className="font-bold text-[#F5FAFA] w-20 text-right">₹{(priceOfLine(line) * (Number(line.quantity) || 1))}</span>
                           <div className="w-8 flex justify-end">
                             {lines.length > 1 && (
                               <button onClick={() => removeLine(idx)} className="p-1.5 bg-red-50 text-rose-600 rounded-lg hover:bg-red-100 transition-colors"><Trash2 size={15} /></button>
@@ -684,14 +684,14 @@ const GymStoreOfflineSales = () => {
               </div>
 
               {/* Discount and Note */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#292940]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#2A3A3A]">
                 <div>
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Discount (₹)</label>
-                  <input type="number" min={0} value={discount} onChange={(e) => setDiscount(e.target.value)} className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" />
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Discount (₹)</label>
+                  <input type="number" min={0} value={discount} onChange={(e) => setDiscount(e.target.value)} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#A1A1AA] uppercase mb-1 block">Note</label>
-                  <input value={note} onChange={(e) => setNote(e.target.value)} className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" placeholder="Optional" />
+                  <label className="text-xs font-bold text-[#9AAEAE] uppercase mb-1 block">Note</label>
+                  <input value={note} onChange={(e) => setNote(e.target.value)} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none" placeholder="Optional" />
                 </div>
               </div>
             </div>
@@ -699,41 +699,41 @@ const GymStoreOfflineSales = () => {
 
           {/* Right Summary Column */}
           <div className="w-full lg:w-[340px]">
-             <div className="bg-[#0B0B12] border border-[#292940] rounded-2xl p-6 flex flex-col sticky top-24 shadow-sm">
+             <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-6 flex flex-col sticky top-24 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
-                  <Store className="text-[#6366F1]/30" size={32} />
-                  <span className="text-[10px] font-bold tracking-wider text-[#A1A1AA] uppercase bg-[#292940] px-2.5 py-1 rounded-md">Summary</span>
+                  <Store className="text-[#2DD4BF]/30" size={32} />
+                  <span className="text-[10px] font-bold tracking-wider text-[#9AAEAE] uppercase bg-[#2A3A3A] px-2.5 py-1 rounded-md">Summary</span>
                 </div>
                 
-                <div className="space-y-3 mb-6 border-b border-[#292940] pb-6">
-                  <div className="flex justify-between text-sm text-[#A1A1AA] font-medium">
+                <div className="space-y-3 mb-6 border-b border-[#2A3A3A] pb-6">
+                  <div className="flex justify-between text-sm text-[#9AAEAE] font-medium">
                      <span>Subtotal</span>
                      <span>₹{total + Number(discount || 0)}</span>
                   </div>
                   {Number(discount || 0) > 0 && (
-                    <div className="flex justify-between text-sm text-[#6366F1] font-medium">
+                    <div className="flex justify-between text-sm text-[#2DD4BF] font-medium">
                        <span>Discount</span>
                        <span>- ₹{discount}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-xs text-[#A1A1AA]">
+                  <div className="flex justify-between text-xs text-[#9AAEAE]">
                      <span>Payment Mode</span>
-                     <span className="font-bold text-[#11111F]">{paymentMethod}</span>
+                     <span className="font-bold text-[#F5FAFA]">{paymentMethod}</span>
                   </div>
                   {isUpiMethod && upiId && (
-                    <div className="flex justify-between text-[11px] text-[#A1A1AA]">
+                    <div className="flex justify-between text-[11px] text-[#9AAEAE]">
                        <span>Recipient UPI</span>
-                       <span className="font-mono text-[#6366F1] font-semibold truncate max-w-[150px]">{upiId}</span>
+                       <span className="font-mono text-[#2DD4BF] font-semibold truncate max-w-[150px]">{upiId}</span>
                     </div>
                   )}
                 </div>
                 
                 <div className="mb-8">
-                  <p className="text-xs font-bold text-[#A1A1AA] uppercase mb-1">Total Amount</p>
-                  <p className="text-4xl font-black text-[#6366F1]">₹{total}</p>
+                  <p className="text-xs font-bold text-[#9AAEAE] uppercase mb-1">Total Amount</p>
+                  <p className="text-4xl font-black text-[#2DD4BF]">₹{total}</p>
                 </div>
 
-                <button onClick={save} disabled={saving} className="w-full py-4 bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                <button onClick={save} disabled={saving} className="w-full py-4 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl shadow-lg shadow-teal-900/10 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                   {saving ? <Loader2 className="animate-spin" size={18} /> : <Plus size={18} />}
                   Record Sale
                 </button>
@@ -743,19 +743,19 @@ const GymStoreOfflineSales = () => {
       )}
 
       {tab === 'history' && (
-        <div className="bg-white border border-[#292940] rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-[#292940]">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl overflow-hidden">
+          <div className="p-4 border-b border-[#2A3A3A]">
             <div className="relative max-w-sm">
-              <input value={salesSearch} onChange={(e) => setSalesSearch(e.target.value)} placeholder="Search..." className="w-full bg-[#0B0B12] border border-[#292940] rounded-xl pl-9 pr-4 py-2 text-sm text-[#11111F] focus:border-[#6366F1] outline-none" />
-              <Search className="absolute left-3 top-2.5 text-[#A1A1AA]" size={16} />
+              <input value={salesSearch} onChange={(e) => setSalesSearch(e.target.value)} placeholder="Search..." className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl pl-9 pr-4 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none" />
+              <Search className="absolute left-3 top-2.5 text-[#9AAEAE]" size={16} />
             </div>
           </div>
           {loadingSales ? (
-            <div className="flex justify-center py-16"><Loader2 className="animate-spin text-[#6366F1]" size={36} /></div>
+            <div className="flex justify-center py-16"><Loader2 className="animate-spin text-[#2DD4BF]" size={36} /></div>
           ) : (
             <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-left text-sm text-[#A1A1AA] whitespace-nowrap">
-                <thead className="bg-[#FFFFFF] border-b border-[#292940] text-[#11111F]">
+              <table className="w-full text-left text-sm text-[#9AAEAE] whitespace-nowrap">
+                <thead className="bg-[#FFFFFF] border-b border-[#2A3A3A] text-[#F5FAFA]">
                   <tr>
                     <th className="px-6 py-4 font-semibold">Sale No.</th>
                     <th className="px-6 py-4 font-semibold">Date</th>
@@ -766,35 +766,35 @@ const GymStoreOfflineSales = () => {
                     <th className="px-6 py-4 font-semibold text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#292940]">
+                <tbody className="divide-y divide-[#2A3A3A]">
                   {(salesSearch.trim()
                     ? sales.filter((s) => `${s.saleNumber} ${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.toLowerCase().includes(salesSearch.toLowerCase()))
                     : sales).map((s) => (
-                    <tr key={s._id} className="hover:bg-[#0B0B12] transition-colors">
-                      <td className="px-6 py-4 font-bold text-[#11111F]">{s.saleNumber}</td>
+                    <tr key={s._id} className="hover:bg-[#0E1415] transition-colors">
+                      <td className="px-6 py-4 font-bold text-[#F5FAFA]">{s.saleNumber}</td>
                       <td className="px-6 py-4">{new Date(s.paymentDate || s.createdAt).toLocaleString()}</td>
                       <td className="px-6 py-4 font-semibold">{s.customerId ? `${s.customerId.firstName} ${s.customerId.lastName}` : 'Walk-in'}</td>
                       <td className="px-6 py-4">{s.items.reduce((sum: number, i: any) => sum + i.quantity, 0)} item(s)</td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="font-semibold text-[#11111F] flex items-center gap-1.5">
+                          <span className="font-semibold text-[#F5FAFA] flex items-center gap-1.5">
                             {s.paymentMethod}
                           </span>
                           {s.transactionId && (
-                            <span className="text-[11px] font-mono text-[#6366F1] mt-0.5">
+                            <span className="text-[11px] font-mono text-[#2DD4BF] mt-0.5">
                               UTR: {s.transactionId}
                             </span>
                           )}
                           {s.upiId && !s.transactionId && (
-                            <span className="text-[10px] font-mono text-[#A1A1AA] mt-0.5">
+                            <span className="text-[10px] font-mono text-[#9AAEAE] mt-0.5">
                               {s.upiId}
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right font-black text-[#6366F1]">₹{s.total}</td>
+                      <td className="px-6 py-4 text-right font-black text-[#2DD4BF]">₹{s.total}</td>
                       <td className="px-6 py-4 text-center">
-                        <button onClick={() => setViewingSale(s)} className="p-1.5 bg-blue-50 text-[#6366F1] rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center justify-center">
+                        <button onClick={() => setViewingSale(s)} className="p-1.5 bg-[#1B2728] text-[#2DD4BF] rounded-lg hover:bg-[#1B2728] transition-colors inline-flex items-center justify-center">
                           <Eye size={16} />
                         </button>
                       </td>
@@ -811,62 +811,62 @@ const GymStoreOfflineSales = () => {
       {/* Sale Details Modal */}
       {viewingSale && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <button onClick={() => setViewingSale(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+          <div className="bg-[#141D1E] rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <button onClick={() => setViewingSale(null)} className="absolute top-4 right-4 text-[#9AAEAE] hover:text-[#C1D0D0]">
               <X size={22} />
             </button>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-[#11111F]">Sale Details</h2>
-              <p className="text-sm text-[#A1A1AA] mt-1">{viewingSale.saleNumber}</p>
+              <h2 className="text-2xl font-bold text-[#F5FAFA]">Sale Details</h2>
+              <p className="text-sm text-[#9AAEAE] mt-1">{viewingSale.saleNumber}</p>
             </div>
 
             <div className="space-y-4 mb-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs font-bold text-[#A1A1AA] uppercase">Date</p>
-                  <p className="text-sm text-[#11111F] font-semibold">{new Date(viewingSale.paymentDate || viewingSale.createdAt).toLocaleString()}</p>
+                  <p className="text-xs font-bold text-[#9AAEAE] uppercase">Date</p>
+                  <p className="text-sm text-[#F5FAFA] font-semibold">{new Date(viewingSale.paymentDate || viewingSale.createdAt).toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#A1A1AA] uppercase">Customer</p>
-                  <p className="text-sm text-[#11111F] font-semibold">{viewingSale.customerId ? `${viewingSale.customerId.firstName} ${viewingSale.customerId.lastName}` : 'Walk-in customer'}</p>
+                  <p className="text-xs font-bold text-[#9AAEAE] uppercase">Customer</p>
+                  <p className="text-sm text-[#F5FAFA] font-semibold">{viewingSale.customerId ? `${viewingSale.customerId.firstName} ${viewingSale.customerId.lastName}` : 'Walk-in customer'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#A1A1AA] uppercase">Payment Method</p>
-                  <p className="text-sm text-[#11111F] font-semibold">{viewingSale.paymentMethod}</p>
+                  <p className="text-xs font-bold text-[#9AAEAE] uppercase">Payment Method</p>
+                  <p className="text-sm text-[#F5FAFA] font-semibold">{viewingSale.paymentMethod}</p>
                 </div>
                 {viewingSale.transactionId && (
                   <div>
-                    <p className="text-xs font-bold text-[#A1A1AA] uppercase">Transaction / UTR ID</p>
-                    <p className="text-sm text-[#6366F1] font-mono font-bold">{viewingSale.transactionId}</p>
+                    <p className="text-xs font-bold text-[#9AAEAE] uppercase">Transaction / UTR ID</p>
+                    <p className="text-sm text-[#2DD4BF] font-mono font-bold">{viewingSale.transactionId}</p>
                   </div>
                 )}
                 {viewingSale.upiId && (
                   <div>
-                    <p className="text-xs font-bold text-[#A1A1AA] uppercase">UPI ID</p>
-                    <p className="text-sm text-[#11111F] font-mono">{viewingSale.upiId}</p>
+                    <p className="text-xs font-bold text-[#9AAEAE] uppercase">UPI ID</p>
+                    <p className="text-sm text-[#F5FAFA] font-mono">{viewingSale.upiId}</p>
                   </div>
                 )}
               </div>
             </div>
 
             <div className="mb-6">
-              <p className="text-xs font-bold text-[#A1A1AA] uppercase mb-2">Items Purchased</p>
-              <div className="bg-[#0B0B12] rounded-xl border border-[#292940] overflow-hidden">
-                <table className="w-full text-left text-sm text-[#A1A1AA]">
-                  <thead className="bg-[#0B0B12] border-b border-[#292940]">
+              <p className="text-xs font-bold text-[#9AAEAE] uppercase mb-2">Items Purchased</p>
+              <div className="bg-[#0E1415] rounded-xl border border-[#2A3A3A] overflow-hidden">
+                <table className="w-full text-left text-sm text-[#9AAEAE]">
+                  <thead className="bg-[#0E1415] border-b border-[#2A3A3A]">
                     <tr>
                       <th className="px-4 py-2 font-semibold">Item</th>
                       <th className="px-4 py-2 font-semibold text-center">Qty</th>
                       <th className="px-4 py-2 font-semibold text-right">Price</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#292940]">
+                  <tbody className="divide-y divide-[#2A3A3A]">
                     {viewingSale.items.map((item: any, i: number) => (
                       <tr key={i}>
-                        <td className="px-4 py-2 font-medium text-[#11111F]">
+                        <td className="px-4 py-2 font-medium text-[#F5FAFA]">
                           {item.name}
                           {item.attributes && Object.keys(item.attributes).length > 0 && (
-                            <span className="text-xs text-[#A1A1AA] ml-1">({Object.values(item.attributes).join(', ')})</span>
+                            <span className="text-xs text-[#9AAEAE] ml-1">({Object.values(item.attributes).join(', ')})</span>
                           )}
                         </td>
                         <td className="px-4 py-2 text-center">{item.quantity}</td>
@@ -878,24 +878,24 @@ const GymStoreOfflineSales = () => {
               </div>
             </div>
 
-            <div className="space-y-2 border-t border-[#292940] pt-4">
-              <div className="flex justify-between text-sm text-[#A1A1AA]">
+            <div className="space-y-2 border-t border-[#2A3A3A] pt-4">
+              <div className="flex justify-between text-sm text-[#9AAEAE]">
                 <span>Subtotal</span>
                 <span>₹{viewingSale.total + Number(viewingSale.discount || 0)}</span>
               </div>
               {Number(viewingSale.discount || 0) > 0 && (
-                <div className="flex justify-between text-sm text-[#6366F1]">
+                <div className="flex justify-between text-sm text-[#2DD4BF]">
                   <span>Discount</span>
                   <span>- ₹{viewingSale.discount}</span>
                 </div>
               )}
               {(viewingSale.note || viewingSale.notes) && (
-                <div className="flex justify-between text-sm text-[#A1A1AA]">
+                <div className="flex justify-between text-sm text-[#9AAEAE]">
                   <span>Note</span>
                   <span className="text-right max-w-[60%]">{viewingSale.note || viewingSale.notes}</span>
                 </div>
               )}
-              <div className="flex justify-between text-lg font-black text-[#6366F1] pt-2 border-t border-[#292940] mt-2">
+              <div className="flex justify-between text-lg font-black text-[#2DD4BF] pt-2 border-t border-[#2A3A3A] mt-2">
                 <span>Total</span>
                 <span>₹{viewingSale.total}</span>
               </div>

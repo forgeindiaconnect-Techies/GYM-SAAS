@@ -3,15 +3,15 @@
 const SuperAdminPayouts = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex justify-between items-end mb-8 border-b border-[#292940] pb-6">
+      <div className="flex justify-between items-end mb-8 border-b border-[#2A3A3A] pb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Wallet className="text-[#6366F1]" size={32} />
+            <Wallet className="text-[#2DD4BF]" size={32} />
             Payout Management
           </h1>
-          <p className="text-[#A1A1AA] mt-2 font-mono text-sm">Process and review trainer withdrawals.</p>
+          <p className="text-[#9AAEAE] mt-2 font-mono text-sm">Process and review trainer withdrawals.</p>
         </div>
-        <button className="px-6 py-2 bg-[#17172A]/10 text-[#4F46E5] border border-[#17172A]/30 rounded-xl font-bold hover:bg-[#17172A] hover:text-[#6366F1] transition-colors">
+        <button className="px-6 py-2 bg-[#1B2728]/10 text-[#5EEAD4] border border-[#1B2728]/30 rounded-xl font-bold hover:bg-[#1B2728] hover:text-[#2DD4BF] transition-colors">
           Execute Protocol
         </button>
       </div>
@@ -23,37 +23,37 @@ const SuperAdminPayouts = () => {
           { label: 'Error Rate', val: '0.04%' },
           { label: 'System Load', val: '42%' }
         ].map((stat, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#292940] rounded-xl p-5 relative overflow-hidden group">
-             <div className="absolute top-0 right-0 w-16 h-16 bg-[#17172A]/5 rounded-full blur-xl group-hover:bg-[#17172A]/10 transition-colors"></div>
-             <p className="text-[#A1A1AA] text-xs font-mono uppercase mb-1">{stat.label}</p>
-             <p className="text-2xl font-bold text-[#11111F] relative z-10">{stat.val}</p>
+          <div key={i} className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-5 relative overflow-hidden group">
+             <div className="absolute top-0 right-0 w-16 h-16 bg-[#1B2728]/5 rounded-full blur-xl group-hover:bg-[#1B2728]/10 transition-colors"></div>
+             <p className="text-[#9AAEAE] text-xs font-mono uppercase mb-1">{stat.label}</p>
+             <p className="text-2xl font-bold text-[#F5FAFA] relative z-10">{stat.val}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-[#292940] bg-[#FFFFFF]">
-          <h2 className="text-sm font-bold font-mono text-[#4F46E5] uppercase tracking-widest">Global Registry Table</h2>
+      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl overflow-hidden">
+        <div className="p-4 border-b border-[#2A3A3A] bg-[#FFFFFF]">
+          <h2 className="text-sm font-bold font-mono text-[#5EEAD4] uppercase tracking-widest">Global Registry Table</h2>
         </div>
         <table className="w-full text-left font-mono text-sm">
           <thead>
-            <tr className="bg-[#0B0B12] text-[#11111F] border-b border-[#292940]">
+            <tr className="bg-[#0E1415] text-[#F5FAFA] border-b border-[#2A3A3A]">
               <th className="p-4 font-normal">SYS_ID</th>
               <th className="p-4 font-normal">STATUS</th>
               <th className="p-4 font-normal">TIMESTAMP</th>
               <th className="p-4 font-normal text-right">OVERRIDE</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#292940]">
+          <tbody className="divide-y divide-[#2A3A3A]">
             {[1, 2, 3, 4, 5, 6].map((row) => (
               <tr key={row} className="hover:bg-[#FFFFFF] transition-colors">
-                <td className="p-4 text-[#A1A1AA]">0x00A${row}F${9-row}</td>
+                <td className="p-4 text-[#9AAEAE]">0x00A${row}F${9-row}</td>
                 <td className="p-4">
                    <span className="px-2 py-0.5 bg-green-500/10 text-green-500 rounded-full text-[10px] uppercase border border-green-500/20">Operational</span>
                 </td>
-                <td className="p-4 text-[#A1A1AA]">2026-10-12T14:43:0${row}Z</td>
+                <td className="p-4 text-[#9AAEAE]">2026-10-12T14:43:0${row}Z</td>
                 <td className="p-4 text-right">
-                  <button className="text-[#A1A1AA] hover:text-[#6366F1] transition-colors">Modify</button>
+                  <button className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors">Modify</button>
                 </td>
               </tr>
             ))}

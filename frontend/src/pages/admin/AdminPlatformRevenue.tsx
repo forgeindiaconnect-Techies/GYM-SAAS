@@ -6,37 +6,37 @@ const AdminPlatformRevenue = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <BarChart3 className="text-[#6366F1]" size={32} />
+            <BarChart3 className="text-[#2DD4BF]" size={32} />
             Platform Revenue
           </h1>
-          <p className="text-[#A1A1AA] mt-2">Net revenue after trainer splits and gateway fees.</p>
+          <p className="text-[#9AAEAE] mt-2">Net revenue after trainer splits and gateway fees.</p>
         </div>
-        <button className="px-6 py-2 bg-[#6366F1] text-white rounded-xl font-bold hover:bg-[#4F46E5] transition-colors">
+        <button className="px-6 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors">
           Manage Platform Revenue
         </button>
       </div>
       
       
-      <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-8 text-center mb-6">
-        <h2 className="text-[#A1A1AA] uppercase tracking-widest text-sm mb-4">Net Platform Revenue (YTD)</h2>
-        <p className="text-6xl font-bold text-[#11111F] mb-2">$142,890</p>
+      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-8 text-center mb-6">
+        <h2 className="text-[#9AAEAE] uppercase tracking-widest text-sm mb-4">Net Platform Revenue (YTD)</h2>
+        <p className="text-6xl font-bold text-[#F5FAFA] mb-2">$142,890</p>
         <p className="text-green-500">+14% vs last year</p>
       </div>
       <div className="grid md:grid-cols-2 gap-6">
-         <div className="bg-[#FFFFFF] border border-[#292940] rounded-2xl p-6">
+         <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6">
            <h3 className="font-bold mb-4">Revenue by Source</h3>
            <div className="space-y-4">
              <div>
                <div className="flex justify-between text-sm mb-1"><span>Subscriptions</span><span>$80,000</span></div>
-               <div className="w-full bg-[#17172A] h-1.5 rounded-full"><div className="bg-[#6366F1] h-1.5 rounded-full" style={{width:'60%'}}></div></div>
+               <div className="w-full bg-[#1B2728] h-1.5 rounded-full"><div className="bg-[#2DD4BF] h-1.5 rounded-full" style={{width:'60%'}}></div></div>
              </div>
              <div>
                <div className="flex justify-between text-sm mb-1"><span>Trainer Commissions</span><span>$50,000</span></div>
-               <div className="w-full bg-[#17172A] h-1.5 rounded-full"><div className="bg-[#6366F1] h-1.5 rounded-full" style={{width:'35%'}}></div></div>
+               <div className="w-full bg-[#1B2728] h-1.5 rounded-full"><div className="bg-[#2DD4BF] h-1.5 rounded-full" style={{width:'35%'}}></div></div>
              </div>
              <div>
                <div className="flex justify-between text-sm mb-1"><span>Merch/Other</span><span>$12,890</span></div>
-               <div className="w-full bg-[#17172A] h-1.5 rounded-full"><div className="bg-[#6366F1] h-1.5 rounded-full" style={{width:'15%'}}></div></div>
+               <div className="w-full bg-[#1B2728] h-1.5 rounded-full"><div className="bg-[#2DD4BF] h-1.5 rounded-full" style={{width:'15%'}}></div></div>
              </div>
            </div>
          </div>

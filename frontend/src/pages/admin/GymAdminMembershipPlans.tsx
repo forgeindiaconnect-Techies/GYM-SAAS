@@ -48,15 +48,15 @@ interface GymPackage {
 }
 
 const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = {
-  'Weight Loss':       { icon: Target,    accent: '#818CF8', bg: 'rgba(129, 140, 248,0.12)'  },
-  'Muscle Gain':       { icon: Dumbbell,  accent: '#6366F1', bg: 'rgba(99, 102, 241,0.15)'  },
-  'Strength':          { icon: Zap,       accent: '#4F46E5', bg: 'rgba(59,130,246,0.15)' },
-  'General Fitness':   { icon: Activity,  accent: '#22C55E', bg: 'rgba(34,197,94,0.12)'  },
-  'Bodybuilding':      { icon: Crown,     accent: '#818CF8', bg: 'rgba(129, 140, 248,0.12)'  },
+  'Weight Loss':       { icon: Target,    accent: '#2DD4BF', bg: 'rgba(45, 212, 191,0.12)'  },
+  'Muscle Gain':       { icon: Dumbbell,  accent: '#2DD4BF', bg: 'rgba(45, 212, 191,0.15)'  },
+  'Strength':          { icon: Zap,       accent: '#5EEAD4', bg: 'rgba(59,130,246,0.15)' },
+  'General Fitness':   { icon: Activity,  accent: '#34D399', bg: 'rgba(52, 211, 153,0.12)'  },
+  'Bodybuilding':      { icon: Crown,     accent: '#2DD4BF', bg: 'rgba(45, 212, 191,0.12)'  },
   'Yoga':              { icon: Leaf,      accent: '#38BDF8', bg: 'rgba(56,189,248,0.12)' },
-  'CrossFit':          { icon: TrendingUp,accent: '#F59E0B', bg: 'rgba(245,158,11,0.12)' },
-  'Personal Training': { icon: Users,     accent: '#6366F1', bg: 'rgba(99, 102, 241,0.15)'  },
-  'Online Coaching':   { icon: Cpu,       accent: '#818CF8', bg: 'rgba(129, 140, 248,0.12)'  },
+  'CrossFit':          { icon: TrendingUp,accent: '#FBBF24', bg: 'rgba(251, 191, 36,0.12)' },
+  'Personal Training': { icon: Users,     accent: '#2DD4BF', bg: 'rgba(45, 212, 191,0.15)'  },
+  'Online Coaching':   { icon: Cpu,       accent: '#2DD4BF', bg: 'rgba(45, 212, 191,0.12)'  },
 };
 
 // ── Empty form state ──────────────────────────────────────────────────────────
@@ -261,8 +261,8 @@ const GymAdminMembershipPlans = () => {
     <div className="space-y-8 pb-16 max-w-7xl mx-auto">
       {/* Toast */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[110] px-5 py-3 rounded-2xl shadow-2xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200 ${toast.type === 'error' ? 'bg-red-900 border-red-700 text-white' : 'bg-[#11111F] text-white border-stone-700'}`}>
-          {toast.type === 'error' ? <X size={18} className="text-red-400" /> : <CheckCircle2 size={18} className="text-[#27845A]" />}
+        <div className={`fixed top-6 right-6 z-[110] px-5 py-3 rounded-2xl shadow-2xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200 ${toast.type === 'error' ? 'bg-red-900 border-red-700 text-white' : 'bg-[#141D1E] text-white border-[#2A3A3A]'}`}>
+          {toast.type === 'error' ? <X size={18} className="text-red-400" /> : <CheckCircle2 size={18} className="text-[#34D399]" />}
           <span className="text-sm font-semibold">{toast.msg}</span>
         </div>
       )}
@@ -270,11 +270,11 @@ const GymAdminMembershipPlans = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#F8FAFC] tracking-tight">Package Plans</h1>
-          <p className="text-sm text-[#A1A1AA] mt-1">Create and manage fitness packages for your gym members.</p>
+          <h1 className="text-3xl font-extrabold text-[#F5FAFA] tracking-tight">Package Plans</h1>
+          <p className="text-sm text-[#9AAEAE] mt-1">Create and manage fitness packages for your gym members.</p>
         </div>
         <button onClick={openCreate}
-          className="px-4 py-2.5 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-bold rounded-xl flex items-center gap-2 shadow-md shadow-[#6366F1]/30 transition-all active:scale-95 text-sm cursor-pointer">
+          className="px-4 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl flex items-center gap-2 shadow-md shadow-[#2DD4BF]/30 transition-all active:scale-95 text-sm cursor-pointer">
           <Plus size={18} /> Add Package Plan
         </button>
       </div>
@@ -282,26 +282,26 @@ const GymAdminMembershipPlans = () => {
       {/* Filters */}
       <div className="flex flex-wrap gap-3 items-center">
         {/* Billing toggle */}
-        <div className="bg-[#11111F] p-1.5 rounded-2xl border border-[#292940] inline-flex shadow-xs">
+        <div className="bg-[#141D1E] p-1.5 rounded-2xl border border-[#2A3A3A] inline-flex shadow-xs">
           {(['monthly', 'annually'] as const).map(c => (
             <button key={c} onClick={() => setBillingView(c)}
-              className={`px-5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer ${billingView === c ? 'bg-[#6366F1] text-white shadow-md shadow-[#6366F1]/30' : 'text-[#A1A1AA] hover:text-[#F8FAFC]'}`}>
+              className={`px-5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer ${billingView === c ? 'bg-[#2DD4BF] text-white shadow-md shadow-[#2DD4BF]/30' : 'text-[#9AAEAE] hover:text-[#F5FAFA]'}`}>
               {c === 'monthly' ? 'Monthly' : 'Annually'}
-              {c === 'annually' && <span className="ml-2 text-xs bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full">Save 2 mo</span>}
+              {c === 'annually' && <span className="ml-2 text-xs bg-[#2DD4BF]/15 text-emerald-400 border border-[#2A3A3A]/30 px-1.5 py-0.5 rounded-full">Save 2 mo</span>}
             </button>
           ))}
         </div>
 
         {/* Goal filter */}
         <select value={filterGoal} onChange={e => setFilterGoal(e.target.value as any)}
-          className="border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#6366F1] bg-[#11111F] cursor-pointer">
+          className="border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] outline-none focus:border-[#2DD4BF] bg-[#141D1E] cursor-pointer">
           <option value="">All Goals</option>
           {FITNESS_GOALS.map(g => <option key={g} value={g}>{g}</option>)}
         </select>
 
         {/* Status filter */}
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value as any)}
-          className="border border-[#292940] rounded-xl px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#6366F1] bg-[#11111F] cursor-pointer">
+          className="border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] outline-none focus:border-[#2DD4BF] bg-[#141D1E] cursor-pointer">
           <option value="">All Statuses</option>
           <option value="Active">Active</option>
           <option value="Inactive">Inactive</option>
@@ -311,19 +311,19 @@ const GymAdminMembershipPlans = () => {
       {/* Content */}
       {loading ? (
         <div className="flex justify-center py-24">
-          <div className="w-10 h-10 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : error ? (
         <div className="text-center py-12 text-red-400">{error}</div>
       ) : displayed.length === 0 ? (
         <div className="text-center py-20 space-y-4">
-          <div className="w-20 h-20 mx-auto bg-[#6366F1]/15 border border-[#6366F1]/30 rounded-3xl flex items-center justify-center">
-            <Sparkles size={36} className="text-[#818CF8]" />
+          <div className="w-20 h-20 mx-auto bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 rounded-3xl flex items-center justify-center">
+            <Sparkles size={36} className="text-[#2DD4BF]" />
           </div>
-          <h3 className="text-xl font-bold text-[#F8FAFC]">No packages yet</h3>
-          <p className="text-[#A1A1AA] text-sm">Create your first fitness package for members to discover.</p>
+          <h3 className="text-xl font-bold text-[#F5FAFA]">No packages yet</h3>
+          <p className="text-[#9AAEAE] text-sm">Create your first fitness package for members to discover.</p>
           <button onClick={openCreate}
-            className="px-6 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-bold rounded-xl shadow-md shadow-[#6366F1]/30 transition-all cursor-pointer">
+            className="px-6 py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl shadow-md shadow-[#2DD4BF]/30 transition-all cursor-pointer">
             <Plus size={16} className="inline mr-2" />Add Package Plan
           </button>
         </div>
@@ -337,20 +337,20 @@ const GymAdminMembershipPlans = () => {
 
             return (
               <div key={pkg._id}
-                className={`h-full rounded-3xl p-7 relative flex flex-col justify-between bg-[#11111F] ${
+                className={`h-full rounded-3xl p-7 relative flex flex-col justify-between bg-[#141D1E] ${
                   pkg.status === 'Inactive' ? 'opacity-60' : ''
-                } ${pkg.isPopular ? 'border-2 border-[#6366F1] shadow-[0_0_25px_rgba(99, 102, 241,0.2)]' : 'border border-[#292940] shadow-sm hover:border-[#6366F1]/50'} transition-all`}>
+                } ${pkg.isPopular ? 'border-2 border-[#2DD4BF] shadow-[0_0_25px_rgba(45, 212, 191,0.2)]' : 'border border-[#2A3A3A] shadow-sm hover:border-[#2DD4BF]/50'} transition-all`}>
 
                 {pkg.isPopular && (
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <span className="bg-[#6366F1] text-white text-xs font-black uppercase tracking-wider py-1.5 px-5 rounded-full shadow-md shadow-[#6366F1]/30 flex items-center gap-1.5">
+                    <span className="bg-[#2DD4BF] text-[#06201D] font-bold text-xs font-black uppercase tracking-wider py-1.5 px-5 rounded-full shadow-md shadow-[#2DD4BF]/30 flex items-center gap-1.5">
                       <Star size={12} className="fill-white" /> Most Popular
                     </span>
                   </div>
                 )}
 
                 {pkg.status === 'Inactive' && (
-                  <div className="absolute top-3 right-14 bg-slate-800 text-slate-400 border border-slate-700 text-xs font-bold px-2 py-0.5 rounded-full">Inactive</div>
+                  <div className="absolute top-3 right-14 bg-slate-800 text-[#9AAEAE] border border-slate-700 text-xs font-bold px-2 py-0.5 rounded-full">Inactive</div>
                 )}
 
                 <div className="flex-1 flex flex-col">
@@ -361,7 +361,7 @@ const GymAdminMembershipPlans = () => {
                         <IconComp size={22} style={{ color: badge.accent }} />
                       </div>
                       <div>
-                        <h3 className="text-lg font-extrabold text-[#F8FAFC] leading-tight">{pkg.name}</h3>
+                        <h3 className="text-lg font-extrabold text-[#F5FAFA] leading-tight">{pkg.name}</h3>
                         {pkg.name.trim().toLowerCase() !== pkg.fitnessGoal.trim().toLowerCase() && (
                           <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md mt-1 border border-white/10" style={{ color: badge.accent, backgroundColor: badge.bg }}>
                             {pkg.fitnessGoal}
@@ -369,43 +369,43 @@ const GymAdminMembershipPlans = () => {
                         )}
                       </div>
                     </div>
-                    <button onClick={e => openEdit(pkg, e)} className="p-2 text-[#A1A1AA] hover:text-[#6366F1] hover:bg-[#17172A] rounded-xl transition-colors cursor-pointer" title="Edit">
+                    <button onClick={e => openEdit(pkg, e)} className="p-2 text-[#9AAEAE] hover:text-[#2DD4BF] hover:bg-[#1B2728] rounded-xl transition-colors cursor-pointer" title="Edit">
                       <Edit2 size={16} />
                     </button>
                   </div>
 
                   {pkg.description ? (
-                    <p className="text-xs text-[#A1A1AA] mb-4 leading-relaxed line-clamp-3">{pkg.description}</p>
+                    <p className="text-xs text-[#9AAEAE] mb-4 leading-relaxed line-clamp-3">{pkg.description}</p>
                   ) : (
                     <div className="mb-4" />
                   )}
 
                   <div className="mb-4 flex items-baseline">
-                    <span className="text-3xl font-black text-[#F8FAFC]">₹{price.toLocaleString('en-IN')}</span>
-                    <span className="text-[#A1A1AA] ml-2 font-medium text-sm">{durLabel}</span>
+                    <span className="text-3xl font-black text-[#F5FAFA]">₹{price.toLocaleString('en-IN')}</span>
+                    <span className="text-[#9AAEAE] ml-2 font-medium text-sm">{durLabel}</span>
                   </div>
 
                   {/* Training type & duration badges */}
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="text-xs bg-[#0B0B12] border border-[#292940] text-[#A1A1AA] font-semibold px-2.5 py-1 rounded-full">{pkg.trainingType}</span>
-                    <span className="text-xs bg-[#0B0B12] border border-[#292940] text-[#A1A1AA] font-semibold px-2.5 py-1 rounded-full">{pkg.duration}</span>
+                    <span className="text-xs bg-[#0E1415] border border-[#2A3A3A] text-[#9AAEAE] font-semibold px-2.5 py-1 rounded-full">{pkg.trainingType}</span>
+                    <span className="text-xs bg-[#0E1415] border border-[#2A3A3A] text-[#9AAEAE] font-semibold px-2.5 py-1 rounded-full">{pkg.duration}</span>
                   </div>
 
                   {/* Features List */}
                   {pkg.features.length > 0 && (
                     <div className="flex-1 flex flex-col mb-4">
-                      <p className="text-xs font-bold text-[#F8FAFC] mb-2.5 uppercase tracking-wider">Features Included:</p>
+                      <p className="text-xs font-bold text-[#F5FAFA] mb-2.5 uppercase tracking-wider">Features Included:</p>
                       <ul className="space-y-2 flex-1">
                         {pkg.features.slice(0, 4).map((f, i) => (
                           <li key={i} className="flex items-start gap-2">
                             <span className="mt-0.5 shrink-0 w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: badge.bg }}>
                               <Check size={10} style={{ color: badge.accent }} strokeWidth={3} />
                             </span>
-                            <span className="text-xs text-[#F8FAFC] leading-snug">{f}</span>
+                            <span className="text-xs text-[#F5FAFA] leading-snug">{f}</span>
                           </li>
                         ))}
                         {pkg.features.length > 4 && (
-                          <li className="text-xs text-[#818CF8] font-semibold">+{pkg.features.length - 4} more features</li>
+                          <li className="text-xs text-[#2DD4BF] font-semibold">+{pkg.features.length - 4} more features</li>
                         )}
                       </ul>
                     </div>
@@ -413,14 +413,14 @@ const GymAdminMembershipPlans = () => {
                 </div>
 
                 {/* Footer Buttons - pinned to bottom */}
-                <div className="pt-5 mt-auto border-t border-[#292940] flex items-center gap-2 shrink-0">
+                <div className="pt-5 mt-auto border-t border-[#2A3A3A] flex items-center gap-2 shrink-0">
                   <button onClick={e => handleToggleStatus(pkg, e)}
-                    className={`flex-1 h-10 px-3 rounded-xl font-bold text-xs transition-colors border flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${pkg.status === 'Active' ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20' : 'border-[#292940] text-[#A1A1AA] bg-[#0B0B12] hover:border-[#6366F1]'}`}>
+                    className={`flex-1 h-10 px-3 rounded-xl font-bold text-xs transition-colors border flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${pkg.status === 'Active' ? 'border-[#2A3A3A]/30 text-emerald-400 bg-[#2DD4BF]/10 hover:bg-[#2DD4BF]/20' : 'border-[#2A3A3A] text-[#9AAEAE] bg-[#0E1415] hover:border-[#2DD4BF]'}`}>
                     {pkg.status === 'Active' ? <ToggleRight size={14} className="shrink-0" /> : <ToggleLeft size={14} className="shrink-0" />}
                     <span>{pkg.status === 'Active' ? 'Active' : 'Inactive'}</span>
                   </button>
                   <button onClick={e => openEdit(pkg, e)}
-                    className="flex-1 h-10 px-3 rounded-xl font-bold text-xs transition-colors text-white shadow-sm hover:opacity-90 flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap bg-[#6366F1] hover:bg-[#4F46E5]">
+                    className="flex-1 h-10 px-3 rounded-xl font-bold text-xs transition-colors text-white shadow-sm hover:opacity-90 flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap bg-[#2DD4BF] hover:bg-[#5EEAD4]">
                     <span>Edit Plan</span>
                   </button>
                   <button onClick={e => handleDelete(pkg, e)}
@@ -440,14 +440,14 @@ const GymAdminMembershipPlans = () => {
       {/* ── CREATE / EDIT MODAL ── */}
       {showModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-150">
-          <div className="bg-[#11111F] w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#292940] my-auto">
+          <div className="bg-[#141D1E] w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#2A3A3A] my-auto">
             {/* Modal Header */}
-            <div className="flex justify-between items-center mb-6 border-b border-[#292940] pb-4">
+            <div className="flex justify-between items-center mb-6 border-b border-[#2A3A3A] pb-4">
               <div>
-                <h2 className="text-2xl font-extrabold text-[#F8FAFC]">{isEditing ? 'Edit Package Plan' : 'Create New Package Plan'}</h2>
-                <p className="text-xs text-[#A1A1AA] mt-0.5">Configure fitness goal, pricing, features, and availability.</p>
+                <h2 className="text-2xl font-extrabold text-[#F5FAFA]">{isEditing ? 'Edit Package Plan' : 'Create New Package Plan'}</h2>
+                <p className="text-xs text-[#9AAEAE] mt-0.5">Configure fitness goal, pricing, features, and availability.</p>
               </div>
-              <button onClick={() => setShowModal(false)} className="p-1.5 text-[#A1A1AA] hover:text-[#F8FAFC] rounded-lg hover:bg-[#17172A] transition-colors cursor-pointer">
+              <button onClick={() => setShowModal(false)} className="p-1.5 text-[#9AAEAE] hover:text-[#F5FAFA] rounded-lg hover:bg-[#1B2728] transition-colors cursor-pointer">
                 <X size={20} />
               </button>
             </div>
@@ -455,10 +455,10 @@ const GymAdminMembershipPlans = () => {
             <form onSubmit={handleSave} className="space-y-5 max-h-[70vh] overflow-y-auto pr-2">
               {/* Package Name (Goal / Category) Dropdown */}
               <div>
-                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5 flex items-center justify-between">
                   <span>Package Name *</span>
                   {form.fitnessGoal && (
-                    <span className="text-[10px] font-semibold text-[#818CF8]">Selected</span>
+                    <span className="text-[10px] font-semibold text-[#2DD4BF]">Selected</span>
                   )}
                 </label>
                 <div className="relative">
@@ -466,14 +466,14 @@ const GymAdminMembershipPlans = () => {
                     required
                     value={form.fitnessGoal}
                     onChange={e => handleGoalChange(e.target.value as FitnessGoal)}
-                    className="w-full border border-[#292940] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC] font-semibold bg-[#0B0B12] cursor-pointer appearance-none pr-9 transition-colors shadow-sm"
+                    className="w-full border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA] font-semibold bg-[#0E1415] cursor-pointer appearance-none pr-9 transition-colors shadow-sm"
                   >
                     <option value="">-- Select Package Name --</option>
                     {FITNESS_GOALS.map(g => (
                       <option key={g} value={g}>{g}</option>
                     ))}
                   </select>
-                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A1A1AA] pointer-events-none" />
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9AAEAE] pointer-events-none" />
                 </div>
                 {!form.fitnessGoal && (
                   <p className="text-[10px] text-red-400 mt-1">Required – select a package</p>
@@ -482,32 +482,32 @@ const GymAdminMembershipPlans = () => {
 
               {/* Suggestion banner */}
               {showSuggestBanner && form.fitnessGoal && (
-                <div className="p-3 bg-[#6366F1]/10 border border-[#6366F1]/30 rounded-xl flex items-start gap-3">
-                  <Info size={16} className="text-[#818CF8] shrink-0 mt-0.5" />
+                <div className="p-3 bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 rounded-xl flex items-start gap-3">
+                  <Info size={16} className="text-[#2DD4BF] shrink-0 mt-0.5" />
                   <div className="flex-1">
-                    <p className="text-xs font-semibold text-[#F8FAFC]">Suggested features available for "{form.fitnessGoal}"</p>
-                    <p className="text-xs text-[#A1A1AA] mt-0.5">You can apply the suggested features or customize your own.</p>
+                    <p className="text-xs font-semibold text-[#F5FAFA]">Suggested features available for "{form.fitnessGoal}"</p>
+                    <p className="text-xs text-[#9AAEAE] mt-0.5">You can apply the suggested features or customize your own.</p>
                   </div>
                   <div className="flex gap-2 shrink-0">
-                    <button type="button" onClick={applySuggestions} className="text-xs font-bold text-[#818CF8] hover:underline cursor-pointer">Apply</button>
-                    <button type="button" onClick={() => setShowSuggestBanner(false)} className="text-xs text-[#A1A1AA] hover:underline cursor-pointer">Dismiss</button>
+                    <button type="button" onClick={applySuggestions} className="text-xs font-bold text-[#2DD4BF] hover:underline cursor-pointer">Apply</button>
+                    <button type="button" onClick={() => setShowSuggestBanner(false)} className="text-xs text-[#9AAEAE] hover:underline cursor-pointer">Dismiss</button>
                   </div>
                 </div>
               )}
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1.5">Description</label>
+                <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5">Description</label>
                 <textarea rows={2} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                   placeholder="Brief description of this package..."
-                  className="w-full border border-[#292940] bg-[#0B0B12] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC] placeholder:text-[#A1A1AA] leading-relaxed resize-none" />
+                  className="w-full border border-[#2A3A3A] bg-[#0E1415] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA] placeholder:text-[#9AAEAE] leading-relaxed resize-none" />
               </div>
 
               {/* Features */}
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Package Features</label>
-                  <button type="button" onClick={() => addListItem('features')} className="text-xs text-[#818CF8] font-bold hover:underline flex items-center gap-1 cursor-pointer">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Package Features</label>
+                  <button type="button" onClick={() => addListItem('features')} className="text-xs text-[#2DD4BF] font-bold hover:underline flex items-center gap-1 cursor-pointer">
                     <Plus size={12} /> Add
                   </button>
                 </div>
@@ -516,7 +516,7 @@ const GymAdminMembershipPlans = () => {
                     <div key={i} className="flex gap-2">
                       <input value={f} onChange={e => updateListItem('features', i, e.target.value)}
                         placeholder={`Feature ${i + 1}`}
-                        className="flex-1 border border-[#292940] bg-[#0B0B12] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC] placeholder:text-[#A1A1AA]" />
+                        className="flex-1 border border-[#2A3A3A] bg-[#0E1415] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA] placeholder:text-[#9AAEAE]" />
                       {form.features.length > 1 && (
                         <button type="button" onClick={() => removeListItem('features', i)} className="p-2 text-red-400 hover:text-red-300 rounded-lg hover:bg-red-950/25 transition-colors cursor-pointer">
                           <X size={14} />
@@ -530,8 +530,8 @@ const GymAdminMembershipPlans = () => {
               {/* Benefits */}
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider">Package Benefits</label>
-                  <button type="button" onClick={() => addListItem('benefits')} className="text-xs text-[#818CF8] font-bold hover:underline flex items-center gap-1 cursor-pointer">
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Package Benefits</label>
+                  <button type="button" onClick={() => addListItem('benefits')} className="text-xs text-[#2DD4BF] font-bold hover:underline flex items-center gap-1 cursor-pointer">
                     <Plus size={12} /> Add
                   </button>
                 </div>
@@ -540,7 +540,7 @@ const GymAdminMembershipPlans = () => {
                     <div key={i} className="flex gap-2">
                       <input value={b} onChange={e => updateListItem('benefits', i, e.target.value)}
                         placeholder={`Benefit ${i + 1}`}
-                        className="flex-1 border border-[#292940] bg-[#0B0B12] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC] placeholder:text-[#A1A1AA]" />
+                        className="flex-1 border border-[#2A3A3A] bg-[#0E1415] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA] placeholder:text-[#9AAEAE]" />
                       {form.benefits.length > 1 && (
                         <button type="button" onClick={() => removeListItem('benefits', i)} className="p-2 text-red-400 hover:text-red-300 rounded-lg hover:bg-red-950/25 transition-colors cursor-pointer">
                           <X size={14} />
@@ -554,23 +554,23 @@ const GymAdminMembershipPlans = () => {
               {/* Training Type, Duration, Available Plans */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1.5">Training Type</label>
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5">Training Type</label>
                   <select value={form.trainingType} onChange={e => setForm(f => ({ ...f, trainingType: e.target.value }))}
-                    className="w-full border border-[#292940] bg-[#0B0B12] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC]">
+                    className="w-full border border-[#2A3A3A] bg-[#0E1415] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA]">
                     {TRAINING_TYPES.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1.5">Duration</label>
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5">Duration</label>
                   <select value={form.duration} onChange={e => setForm(f => ({ ...f, duration: e.target.value }))}
-                    className="w-full border border-[#292940] bg-[#0B0B12] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC]">
+                    className="w-full border border-[#2A3A3A] bg-[#0E1415] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA]">
                     {['1 Month', '3 Months', '6 Months', '1 Year'].map(d => <option key={d}>{d}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1.5">Available Plans</label>
+                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5">Available Plans</label>
                   <select value={form.availablePlans} onChange={e => setForm(f => ({ ...f, availablePlans: e.target.value }))}
-                    className="w-full border border-[#292940] bg-[#0B0B12] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC]">
+                    className="w-full border border-[#2A3A3A] bg-[#0E1415] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA]">
                     <option value="both">Monthly &amp; Annual</option>
                     <option value="monthly">Monthly Only</option>
                     <option value="annual">Annual Only</option>
@@ -582,18 +582,18 @@ const GymAdminMembershipPlans = () => {
               <div className="grid grid-cols-2 gap-4">
                 {(form.availablePlans === 'monthly' || form.availablePlans === 'both') && (
                   <div>
-                    <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1.5">Monthly Price (₹) *</label>
+                    <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5">Monthly Price (₹) *</label>
                     <input required type="number" min="0" value={form.monthlyPrice}
                       onChange={e => setForm(f => ({ ...f, monthlyPrice: e.target.value }))}
-                      placeholder="e.g. 999" className="w-full border border-[#292940] bg-[#0B0B12] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC] font-semibold" />
+                      placeholder="e.g. 999" className="w-full border border-[#2A3A3A] bg-[#0E1415] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA] font-semibold" />
                   </div>
                 )}
                 {(form.availablePlans === 'annual' || form.availablePlans === 'both') && (
                   <div>
-                    <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1.5">Annual Price (₹) *</label>
+                    <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5">Annual Price (₹) *</label>
                     <input required type="number" min="0" value={form.annualPrice}
                       onChange={e => setForm(f => ({ ...f, annualPrice: e.target.value }))}
-                      placeholder="e.g. 9990" className="w-full border border-[#292940] bg-[#0B0B12] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] text-[#F8FAFC] font-semibold" />
+                      placeholder="e.g. 9990" className="w-full border border-[#2A3A3A] bg-[#0E1415] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2DD4BF] text-[#F5FAFA] font-semibold" />
                   </div>
                 )}
               </div>
@@ -602,24 +602,24 @@ const GymAdminMembershipPlans = () => {
               <div className="flex flex-wrap gap-4 items-center">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={form.isPopular} onChange={e => setForm(f => ({ ...f, isPopular: e.target.checked }))}
-                    className="w-4 h-4 text-[#6366F1] rounded border-[#292940] bg-[#0B0B12] focus:ring-[#6366F1]" />
-                  <span className="text-xs font-bold text-[#F8FAFC]">Mark as "Most Popular"</span>
+                    className="w-4 h-4 text-[#2DD4BF] rounded border-[#2A3A3A] bg-[#0E1415] focus:ring-[#2DD4BF]" />
+                  <span className="text-xs font-bold text-[#F5FAFA]">Mark as "Most Popular"</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <span className="text-xs font-bold text-[#A1A1AA]">Status:</span>
+                  <span className="text-xs font-bold text-[#9AAEAE]">Status:</span>
                   <button type="button" onClick={() => setForm(f => ({ ...f, status: f.status === 'Active' ? 'Inactive' : 'Active' }))}
-                    className={`text-xs font-bold px-3 py-1 rounded-full transition-colors cursor-pointer ${form.status === 'Active' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
+                    className={`text-xs font-bold px-3 py-1 rounded-full transition-colors cursor-pointer ${form.status === 'Active' ? 'bg-[#2DD4BF]/15 text-emerald-400 border border-[#2A3A3A]/30' : 'bg-slate-800 text-[#9AAEAE] border border-slate-700'}`}>
                     {form.status}
                   </button>
                 </label>
               </div>
 
               {/* Submit */}
-              <div className="pt-4 border-t border-[#292940] flex justify-end gap-3">
+              <div className="pt-4 border-t border-[#2A3A3A] flex justify-end gap-3">
                 <button type="button" onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 text-[#A1A1AA] hover:bg-[#17172A] hover:text-[#F8FAFC] rounded-xl font-bold text-xs transition-colors cursor-pointer">Cancel</button>
+                  className="px-5 py-2.5 text-[#9AAEAE] hover:bg-[#1B2728] hover:text-[#F5FAFA] rounded-xl font-bold text-xs transition-colors cursor-pointer">Cancel</button>
                 <button type="submit" disabled={saving}
-                  className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-bold rounded-xl text-xs transition-all shadow-md shadow-[#6366F1]/30 active:scale-95 disabled:opacity-60 flex items-center gap-2 cursor-pointer">
+                  className="px-6 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl text-xs transition-all shadow-md shadow-[#2DD4BF]/30 active:scale-95 disabled:opacity-60 flex items-center gap-2 cursor-pointer">
                   {saving && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                   {isEditing ? 'Update Package' : 'Create Package'}
                 </button>

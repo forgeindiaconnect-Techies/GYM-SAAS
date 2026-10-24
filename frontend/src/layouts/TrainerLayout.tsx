@@ -8,7 +8,7 @@ import {
   Utensils, Calendar,
   MessageSquare, IndianRupee, Bell,
   Activity, Menu, LogOut, Bot,
-  Dumbbell, Star, Video, CheckCircle2, Wrench, Trophy, Gift, Award
+  Dumbbell, Star, Video, CheckCircle2, Wrench, Gift, Award
 } from 'lucide-react';
 
 const TrainerLayout = () => {
@@ -76,9 +76,8 @@ const TrainerLayout = () => {
       ]
     },
     {
-      title: 'Challenges & Rewards',
+      title: 'Rewards & Performance',
       items: [
-        { label: 'Customer Challenge Progress', path: '/trainer/challenges', icon: Trophy },
         { label: 'Rewards & Performance', path: '/trainer/rewards', icon: Award },
       ]
     },
@@ -110,24 +109,24 @@ const TrainerLayout = () => {
   const renderSidebar = () => (
     <>
       {/* Logo */}
-      <div className="p-5 border-b border-[#292940]">
+      <div className="p-5 border-b border-[#2A3A3A]">
         <Link to="/" className="flex items-center space-x-2" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 bg-[#6366F1] text-white rounded-xl flex items-center justify-center shadow-md shadow-[#6366F1]/25 shrink-0">
+          <div className="w-9 h-9 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl flex items-center justify-center shadow-md shadow-[#2DD4BF]/25 shrink-0">
             <Activity className="text-white" size={20} />
           </div>
-          <span className="text-xl font-bold tracking-tight text-[#F8FAFC] truncate max-w-[160px]" title={gym?.name || 'Gymora'}>
+          <span className="text-xl font-bold tracking-tight text-[#F5FAFA] truncate max-w-[160px]" title={gym?.name || 'Gymora'}>
             {gym?.name || 'Gymora'}
           </span>
         </Link>
         <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#11111F] border border-[#292940] rounded-full flex items-center justify-center text-[#6366F1] font-bold text-base shadow-xs">
+          <div className="w-10 h-10 bg-[#141D1E] border border-[#2A3A3A] rounded-full flex items-center justify-center text-[#2DD4BF] font-bold text-base shadow-xs">
             {user?.firstName?.[0] || 'T'}
           </div>
           <div className="flex-1 overflow-hidden">
-            <p className="font-semibold text-sm text-[#F8FAFC] truncate">{user?.firstName} {user?.lastName}</p>
+            <p className="font-semibold text-sm text-[#F5FAFA] truncate">{user?.firstName} {user?.lastName}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-xs text-[#A1A1AA] font-medium truncate">Elite Trainer</span>
-              <span className="px-1.5 py-0.2 bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30 rounded text-[9px] font-bold uppercase tracking-wider">COACH</span>
+              <span className="text-xs text-[#9AAEAE] font-medium truncate">Elite Trainer</span>
+              <span className="px-1.5 py-0.2 bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 rounded text-[9px] font-bold uppercase tracking-wider">COACH</span>
             </div>
           </div>
         </div>
@@ -137,7 +136,7 @@ const TrainerLayout = () => {
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         {navGroups.map((group, idx) => (
           <div key={idx}>
-            <h3 className="px-3 text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">{group.title}</h3>
+            <h3 className="px-3 text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">{group.title}</h3>
             <div className="space-y-0.5">
               {group.items.map((item) => {
                 const isClientsItem = item.path === '/trainer/members';
@@ -156,15 +155,15 @@ const TrainerLayout = () => {
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
                       isActive
-                        ? 'bg-[#6366F1]/15 text-[#F8FAFC] font-semibold border-l-4 border-[#6366F1] shadow-sm'
-                        : 'text-[#A1A1AA] hover:bg-[#11111F] hover:text-[#F8FAFC]'
+                        ? 'bg-[#2DD4BF]/15 text-[#F5FAFA] font-semibold border-l-4 border-[#2DD4BF] shadow-sm'
+                        : 'text-[#9AAEAE] hover:bg-[#141D1E] hover:text-[#F5FAFA]'
                     )}
                   >
                     <Icon
                       size={18}
                       className={clsx(
                         'shrink-0 transition-colors',
-                        isActive ? 'text-[#6366F1]' : 'text-[#A1A1AA] group-hover:text-[#6366F1]'
+                        isActive ? 'text-[#2DD4BF]' : 'text-[#9AAEAE] group-hover:text-[#2DD4BF]'
                       )}
                     />
                     <span className="truncate">{item.label}</span>
@@ -177,10 +176,10 @@ const TrainerLayout = () => {
       </nav>
 
       {/* Logout */}
-      <div className="p-3 border-t border-[#292940]">
+      <div className="p-3 border-t border-[#2A3A3A]">
         <button
           onClick={logout}
-          className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-[#EF4444] hover:bg-red-950/25 hover:text-red-400 rounded-xl transition-colors font-semibold text-sm cursor-pointer border border-transparent hover:border-[#EF4444]/30"
+          className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-[#F87171] hover:bg-red-950/25 hover:text-red-400 rounded-xl transition-colors font-semibold text-sm cursor-pointer border border-transparent hover:border-[#F87171]/30"
         >
           <LogOut size={16} />
           <span>Logout</span>
@@ -190,7 +189,7 @@ const TrainerLayout = () => {
   );
 
   return (
-    <div className="flex h-screen bg-[#050505] text-[#F8FAFC] overflow-hidden">
+    <div className="flex h-screen bg-[#080B0C] text-[#F5FAFA] overflow-hidden">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -203,7 +202,7 @@ const TrainerLayout = () => {
       {/* Sidebar */}
       <aside
         className={clsx(
-          'fixed lg:static top-0 left-0 h-full w-64 bg-[#0B0B12] text-[#F8FAFC] border-r border-[#292940] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none',
+          'fixed lg:static top-0 left-0 h-full w-64 bg-[#0B1112] text-[#F5FAFA] border-r border-[#2A3A3A] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
@@ -211,30 +210,30 @@ const TrainerLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#050505]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(99, 102, 241,0.06)_0%,_transparent_60%)] pointer-events-none" />
+      <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#080B0C]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(45, 212, 191,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
         {/* Header */}
-        <header className="h-16 border-b border-[#292940] flex items-center px-4 md:px-8 justify-between bg-[#0B0B12]/95 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm text-[#F8FAFC]">
+        <header className="h-16 border-b border-[#2A3A3A] flex items-center px-4 md:px-8 justify-between bg-[#0E1415]/95 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm text-[#F5FAFA]">
           <div className="flex items-center space-x-3">
             <button
-              className="lg:hidden text-[#A1A1AA] hover:text-[#6366F1] transition-colors p-1 rounded-lg hover:bg-[#11111F]"
+              className="lg:hidden text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors p-1 rounded-lg hover:bg-[#141D1E]"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#6366F1] hidden sm:block" />}
-            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#F8FAFC]">
+            {currentNav && <currentNav.icon size={20} className="text-[#2DD4BF] hidden sm:block" />}
+            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#F5FAFA]">
               {currentNav?.label || 'Trainer Portal'}
             </h2>
           </div>
 
           <div className="flex items-center space-x-3 md:space-x-5">
-            <Link to="/trainer/notifications" className="relative text-[#A1A1AA] hover:text-[#6366F1] transition-colors p-1 block">
+            <Link to="/trainer/notifications" className="relative text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors p-1 block">
               <Bell size={20} />
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#6366F1] text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow shadow-blue-900/40">
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#2DD4BF] text-[#06201D] font-bold text-[10px] font-bold rounded-full flex items-center justify-center shadow shadow-blue-900/40">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
@@ -242,10 +241,10 @@ const TrainerLayout = () => {
 
             <Link to="/trainer/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
-                <p className="text-sm font-semibold text-[#F8FAFC] leading-none mb-0.5">{user?.firstName || 'Trainer'} {user?.lastName || ''}</p>
-                <p className="text-xs text-[#A1A1AA] leading-none">Fitness Coach</p>
+                <p className="text-sm font-semibold text-[#F5FAFA] leading-none mb-0.5">{user?.firstName || 'Trainer'} {user?.lastName || ''}</p>
+                <p className="text-xs text-[#9AAEAE] leading-none">Fitness Coach</p>
               </div>
-              <div className="w-9 h-9 bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold rounded-full flex items-center justify-center font-bold text-sm shadow">
                 {user?.firstName?.[0] || 'T'}
               </div>
             </Link>

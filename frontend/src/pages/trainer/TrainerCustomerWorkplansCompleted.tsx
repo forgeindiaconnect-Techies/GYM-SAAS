@@ -170,7 +170,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
   const getMealIcon = (type: string) => {
     const lower = type.toLowerCase();
     if (lower.includes('morning') || lower.includes('hydration')) return <Sun size={15} className="text-amber-500" />;
-    if (lower.includes('breakfast')) return <Coffee size={15} className="text-orange-500" />;
+    if (lower.includes('breakfast')) return <Coffee size={15} className="text-[#2DD4BF]" />;
     if (lower.includes('lunch')) return <Utensils size={15} className="text-emerald-500" />;
     if (lower.includes('dinner')) return <Moon size={15} className="text-indigo-500" />;
     return <Apple size={15} className="text-rose-500" />;
@@ -179,23 +179,23 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-16">
       {/* ── Top Header Banner with Mode Switcher ── */}
-      <div className="bg-white border border-[#292940] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1.5 ${
-              activePlanType === 'workout' ? 'bg-orange-100 text-[#4F46E5]' : 'bg-emerald-100 text-emerald-700'
+              activePlanType === 'workout' ? 'bg-[#1B2728] text-[#5EEAD4]' : 'bg-[#1B2728] text-[#2DD4BF]'
             }`}>
               <CheckCircle2 size={13} />
               <span>{activePlanType === 'workout' ? 'Customer Workplan Monitoring' : 'Customer Diet Monitoring'}</span>
             </span>
-            <span className="text-xs text-[#A1A1AA] font-semibold">
+            <span className="text-xs text-[#9AAEAE] font-semibold">
               • {activePlanType === 'workout' ? 'Live Workout Progress' : 'Live Nutrition & Diet Progress'}
             </span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-black text-[#11111F] tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-black text-[#F5FAFA] tracking-tight">
             {activePlanType === 'workout' ? 'Customer Workplan Completed' : 'Customer Diet Work Plan Completed'}
           </h1>
-          <p className="text-xs md:text-sm text-[#A1A1AA] mt-1 max-w-2xl">
+          <p className="text-xs md:text-sm text-[#9AAEAE] mt-1 max-w-2xl">
             {activePlanType === 'workout'
               ? 'Track day-wise workout plan completed details for all your assigned clients. Inspect completed animated sets, repetition adherence, and training streak.'
               : 'Track day-wise diet plan completed details and nutrition adherence for all your assigned clients. Inspect completed meals, calories consumed, and macro goals.'}
@@ -203,7 +203,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
         </div>
 
         {/* ── Option Switcher: Workout Plan vs Diet Work Plan ── */}
-        <div className="flex items-center bg-stone-100 p-1.5 rounded-2xl border border-stone-200 shrink-0 shadow-inner">
+        <div className="flex items-center bg-[#1B2728] p-1.5 rounded-2xl border border-[#2A3A3A] shrink-0 shadow-inner">
           <button
             onClick={() => {
               setActivePlanType('workout');
@@ -211,8 +211,8 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
             }}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
               activePlanType === 'workout'
-                ? 'bg-white text-orange-600 shadow-sm'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-[#141D1E] text-[#2DD4BF] shadow-sm'
+                : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
             }`}
           >
             <Dumbbell size={16} />
@@ -225,8 +225,8 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
             }}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
               activePlanType === 'diet'
-                ? 'bg-white text-emerald-600 shadow-sm'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-[#141D1E] text-[#2DD4BF] shadow-sm'
+                : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
             }`}
           >
             <Utensils size={16} />
@@ -237,93 +237,93 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
 
       {/* ── 4 Key Overview Metrics Cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-xs">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-xs">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider">Clients Monitored</span>
+            <span className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider">Clients Monitored</span>
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-              activePlanType === 'workout' ? 'bg-orange-50 text-[#6366F1]' : 'bg-emerald-50 text-emerald-600'
+              activePlanType === 'workout' ? 'bg-[#1B2728] text-[#2DD4BF]' : 'bg-[#1B2728] text-[#2DD4BF]'
             }`}>
               <UserCheck size={16} />
             </div>
           </div>
-          <span className="text-2xl sm:text-3xl font-black text-[#11111F]">{totalAssignedClients}</span>
-          <span className="text-[11px] text-[#A1A1AA] font-semibold block mt-1">Assigned Members</span>
+          <span className="text-2xl sm:text-3xl font-black text-[#F5FAFA]">{totalAssignedClients}</span>
+          <span className="text-[11px] text-[#9AAEAE] font-semibold block mt-1">Assigned Members</span>
         </div>
 
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-xs">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-xs">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider">
               {activePlanType === 'workout' ? 'Avg Plan Adherence' : 'Avg Diet Adherence'}
             </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#1B2728] text-[#2DD4BF] flex items-center justify-center">
               <Activity size={16} />
             </div>
           </div>
-          <span className="text-2xl sm:text-3xl font-black text-emerald-700">{avgCompletionRate}%</span>
-          <span className="text-[11px] text-emerald-600 font-semibold block mt-1">Average Completion</span>
+          <span className="text-2xl sm:text-3xl font-black text-[#2DD4BF]">{avgCompletionRate}%</span>
+          <span className="text-[11px] text-[#2DD4BF] font-semibold block mt-1">Average Completion</span>
         </div>
 
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-xs">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-xs">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider">
               {activePlanType === 'workout' ? 'Exercises Done' : 'Meals Completed'}
             </span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#6366F1] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#1B2728] text-[#2DD4BF] flex items-center justify-center">
               <CheckCircle2 size={16} />
             </div>
           </div>
-          <span className="text-2xl sm:text-3xl font-black text-blue-700">
+          <span className="text-2xl sm:text-3xl font-black text-[#2DD4BF]">
             {activePlanType === 'workout' ? totalCompletedExercises : totalCompletedMeals}
           </span>
-          <span className="text-[11px] text-[#A1A1AA] font-semibold block mt-1">
+          <span className="text-[11px] text-[#9AAEAE] font-semibold block mt-1">
             {activePlanType === 'workout' ? 'Across All Workplans' : 'Across All Diet Plans'}
           </span>
         </div>
 
-        <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-xs">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-xs">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-[11px] font-bold text-[#A1A1AA] uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider">
               {activePlanType === 'workout' ? 'Total Training Hours' : 'Calories Logged'}
             </span>
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-              activePlanType === 'workout' ? 'bg-amber-50 text-amber-600' : 'bg-orange-50 text-orange-600'
+              activePlanType === 'workout' ? 'bg-amber-50 text-amber-600' : 'bg-[#1B2728] text-[#2DD4BF]'
             }`}>
               {activePlanType === 'workout' ? <Clock size={16} /> : <Flame size={16} />}
             </div>
           </div>
           <span className={`text-2xl sm:text-3xl font-black ${
-            activePlanType === 'workout' ? 'text-amber-700' : 'text-orange-700'
+            activePlanType === 'workout' ? 'text-amber-700' : 'text-[#2DD4BF]'
           }`}>
             {activePlanType === 'workout' ? `${totalHoursLogged} hrs` : `${totalCaloriesLogged.toLocaleString()} kcal`}
           </span>
-          <span className="text-[11px] text-[#A1A1AA] font-semibold block mt-1">
+          <span className="text-[11px] text-[#9AAEAE] font-semibold block mt-1">
             {activePlanType === 'workout' ? 'Logged In Gym & App' : 'Nutritional Intake'}
           </span>
         </div>
       </div>
 
       {/* ── Filters and Day Selector Bar ── */}
-      <div className="bg-white border border-[#292940] rounded-2xl p-5 shadow-xs space-y-4">
+      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-xs space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Search bar */}
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AAEAE]" size={16} />
             <input
               type="text"
               placeholder={activePlanType === 'workout' ? "Search by client name, email or workout..." : "Search by client name, email or diet plan..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#0B0B12] border border-[#292940] rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6366F1]/30 focus:border-[#6366F1]"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/30 focus:border-[#2DD4BF]"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             {/* Status Filter */}
-            <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl">
+            <div className="flex items-center gap-1 bg-[#1B2728] p-1 rounded-xl">
               <button
                 onClick={() => setStatusFilter('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  statusFilter === 'all' ? 'bg-white text-stone-900 shadow-xs' : 'text-stone-600 hover:text-stone-900'
+                  statusFilter === 'all' ? 'bg-[#141D1E] text-[#F5FAFA] shadow-xs' : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                 }`}
               >
                 All Status
@@ -331,7 +331,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
               <button
                 onClick={() => setStatusFilter('completed')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  statusFilter === 'completed' ? 'bg-white text-emerald-800 shadow-xs' : 'text-stone-600 hover:text-stone-900'
+                  statusFilter === 'completed' ? 'bg-[#141D1E] text-[#2DD4BF] shadow-xs' : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                 }`}
               >
                 100% Completed
@@ -339,7 +339,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
               <button
                 onClick={() => setStatusFilter('in_progress')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  statusFilter === 'in_progress' ? 'bg-white text-orange-800 shadow-xs' : 'text-stone-600 hover:text-stone-900'
+                  statusFilter === 'in_progress' ? 'bg-[#141D1E] text-[#2DD4BF] shadow-xs' : 'text-[#9AAEAE] hover:text-[#F5FAFA]'
                 }`}
               >
                 In Progress
@@ -351,10 +351,10 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
               <select
                 value={selectedDay}
                 onChange={(e) => setSelectedDay(e.target.value)}
-                className={`w-full bg-[#0B0B12] border text-[#11111F] text-xs font-bold rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 shadow-xs cursor-pointer appearance-none pr-9 transition-colors ${
+                className={`w-full bg-[#0E1415] border text-[#F5FAFA] text-xs font-bold rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 shadow-xs cursor-pointer appearance-none pr-9 transition-colors ${
                   activePlanType === 'workout'
-                    ? 'border-orange-200 hover:border-[#6366F1] focus:ring-[#6366F1]/30'
-                    : 'border-emerald-200 hover:border-emerald-500 focus:ring-emerald-500/30'
+                    ? 'border-[#2A3A3A] hover:border-[#2DD4BF] focus:ring-[#2DD4BF]/30'
+                    : 'border-[#2A3A3A] hover:border-[#2A3A3A] focus:ring-emerald-500/30'
                 }`}
               >
                 <option value="all">
@@ -366,7 +366,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                   </option>
                 ))}
               </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-stone-500">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#9AAEAE]">
                 <ChevronDown size={15} />
               </div>
             </div>
@@ -374,14 +374,14 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
         </div>
 
         {/* Quick Day Selector Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-[#292940] custom-scrollbar">
-          <span className="text-[10px] uppercase font-bold text-stone-400 mr-1 shrink-0">Day Filter:</span>
+        <div className="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-[#2A3A3A] custom-scrollbar">
+          <span className="text-[10px] uppercase font-bold text-[#9AAEAE] mr-1 shrink-0">Day Filter:</span>
           <button
             onClick={() => setSelectedDay('all')}
             className={`px-3 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
               selectedDay === 'all'
-                ? 'bg-[#11111F] text-white shadow-xs'
-                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                ? 'bg-[#141D1E] text-white shadow-xs'
+                : 'bg-[#1B2728] text-[#9AAEAE] hover:bg-[#1B2728]'
             }`}
           >
             All Days
@@ -392,8 +392,8 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
               onClick={() => setSelectedDay(d)}
               className={`px-3 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                 selectedDay === d
-                  ? activePlanType === 'workout' ? 'bg-[#6366F1] text-white shadow-xs' : 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                  ? activePlanType === 'workout' ? 'bg-[#2DD4BF] text-white shadow-xs' : 'bg-[#2DD4BF] text-white shadow-xs'
+                  : 'bg-[#1B2728] text-[#F5FAFA] hover:bg-[#1B2728]'
               }`}
             >
               {d}
@@ -404,25 +404,25 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
 
       {/* ── Client Cards Grid ── */}
       {loading ? (
-        <div className="bg-white border border-[#292940] rounded-2xl p-12 text-center text-[#A1A1AA]">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-12 text-center text-[#9AAEAE]">
           <div className={`w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-2 ${
-            activePlanType === 'workout' ? 'border-[#6366F1]' : 'border-emerald-600'
+            activePlanType === 'workout' ? 'border-[#2DD4BF]' : 'border-[#2A3A3A]'
           }`} />
           <p className="text-xs font-semibold">
             Loading customer {activePlanType === 'workout' ? 'workplan' : 'diet plan'} records...
           </p>
         </div>
       ) : filteredClients.length === 0 ? (
-        <div className="bg-white border border-dashed border-[#292940] rounded-2xl p-12 text-center text-[#A1A1AA]">
+        <div className="bg-[#141D1E] border border-dashed border-[#2A3A3A] rounded-2xl p-12 text-center text-[#9AAEAE]">
           {activePlanType === 'workout' ? (
-            <Dumbbell size={36} className="mx-auto text-stone-600 mb-2" />
+            <Dumbbell size={36} className="mx-auto text-[#9AAEAE] mb-2" />
           ) : (
-            <Utensils size={36} className="mx-auto text-stone-600 mb-2" />
+            <Utensils size={36} className="mx-auto text-[#9AAEAE] mb-2" />
           )}
-          <h4 className="font-bold text-stone-800 text-base">
+          <h4 className="font-bold text-[#F5FAFA] text-base">
             No Customer {activePlanType === 'workout' ? 'Workplan' : 'Diet Plan'} Records Found
           </h4>
-          <p className="text-xs text-stone-500 mt-1">Try adjusting your search query or day filter.</p>
+          <p className="text-xs text-[#9AAEAE] mt-1">Try adjusting your search query or day filter.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -472,10 +472,10 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
             return (
               <div
                 key={client.customer.id}
-                className={`bg-white border rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between group ${
+                className={`bg-[#141D1E] border rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between group ${
                   activePlanType === 'workout'
-                    ? 'border-[#292940] hover:border-orange-300'
-                    : 'border-[#292940] hover:border-emerald-300'
+                    ? 'border-[#2A3A3A] hover:border-[#2DD4BF]'
+                    : 'border-[#2A3A3A] hover:border-[#2A3A3A]'
                 }`}
               >
                 <div>
@@ -483,7 +483,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                   <div className="flex items-center justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className={`w-11 h-11 rounded-xl text-white font-black flex items-center justify-center text-sm overflow-hidden shrink-0 shadow-xs ${
-                        activePlanType === 'workout' ? 'bg-[#6366F1]' : 'bg-emerald-600'
+                        activePlanType === 'workout' ? 'bg-[#2DD4BF]' : 'bg-[#2DD4BF]'
                       }`}>
                         {client.customer.profilePhoto ? (
                           <img src={client.customer.profilePhoto} alt="" className="w-full h-full object-cover" />
@@ -492,41 +492,41 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                         )}
                       </div>
                       <div className="min-w-0">
-                        <h3 className={`font-extrabold text-base text-[#11111F] truncate transition-colors ${
-                          activePlanType === 'workout' ? 'group-hover:text-[#6366F1]' : 'group-hover:text-emerald-600'
+                        <h3 className={`font-extrabold text-base text-[#F5FAFA] truncate transition-colors ${
+                          activePlanType === 'workout' ? 'group-hover:text-[#2DD4BF]' : 'group-hover:text-[#2DD4BF]'
                         }`}>
                           {client.customer.name}
                         </h3>
-                        <p className="text-xs text-[#A1A1AA] truncate">{client.customer.fitnessGoal || client.customer.email}</p>
+                        <p className="text-xs text-[#9AAEAE] truncate">{client.customer.fitnessGoal || client.customer.email}</p>
                       </div>
                     </div>
 
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shrink-0 ${
                       completionPct === 100
-                        ? 'bg-emerald-100 text-emerald-800'
+                        ? 'bg-[#1B2728] text-[#2DD4BF]'
                         : completionPct > 0
-                        ? activePlanType === 'workout' ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-700'
-                        : 'bg-stone-100 text-stone-600'
+                        ? activePlanType === 'workout' ? 'bg-[#1B2728] text-[#2DD4BF]' : 'bg-[#1B2728] text-[#2DD4BF]'
+                        : 'bg-[#1B2728] text-[#9AAEAE]'
                     }`}>
                       {isDayFilter ? `${selectedDay}: ` : ''}{completionPct}% Done
                     </span>
                   </div>
 
                   {/* Assigned Plan Banner */}
-                  <div className="bg-[#0B0B12] p-3 rounded-xl border border-[#292940] mb-4">
+                  <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A] mb-4">
                     <div className="flex items-center justify-between mb-0.5">
-                      <span className="text-[10px] uppercase font-bold text-[#A1A1AA]">
+                      <span className="text-[10px] uppercase font-bold text-[#9AAEAE]">
                         {isDayFilter ? `${selectedDay} ${activePlanType === 'workout' ? 'Routine' : 'Diet'}` : (activePlanType === 'workout' ? 'Assigned Workplan' : 'Assigned Diet Plan')}
                       </span>
                       {isDayFilter && dayStats?.focus && (
                         <span className={`text-[10px] font-bold truncate max-w-[160px] ${
-                          activePlanType === 'workout' ? 'text-[#6366F1]' : 'text-emerald-600'
+                          activePlanType === 'workout' ? 'text-[#2DD4BF]' : 'text-[#2DD4BF]'
                         }`}>
                           {dayStats.focus}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs font-extrabold text-[#11111F] truncate">
+                    <p className="text-xs font-extrabold text-[#F5FAFA] truncate">
                       {hasPlan ? client.plan?.name : (activePlanType === 'workout' ? 'No active workout plan assigned' : '7-Day Nutrition & Macro Diet Plan')}
                     </p>
                   </div>
@@ -534,19 +534,19 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                   {/* Progress Bar */}
                   <div className="space-y-1.5 mb-4">
                     <div className="flex justify-between text-xs font-bold">
-                      <span className="text-[#A1A1AA]">
+                      <span className="text-[#9AAEAE]">
                         {isDayFilter ? `${selectedDay} Completion Rate` : 'Plan Completion Rate'}
                       </span>
-                      <span className={activePlanType === 'workout' ? 'text-[#6366F1]' : 'text-emerald-600'}>
+                      <span className={activePlanType === 'workout' ? 'text-[#2DD4BF]' : 'text-[#2DD4BF]'}>
                         {completionPct}%
                       </span>
                     </div>
-                    <div className="w-full h-2.5 bg-stone-100 rounded-full overflow-hidden">
+                    <div className="w-full h-2.5 bg-[#1B2728] rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           activePlanType === 'workout'
-                            ? 'bg-gradient-to-r from-[#6366F1] to-emerald-500'
-                            : 'bg-gradient-to-r from-emerald-400 to-teal-600'
+                            ? 'bg-gradient-to-r from-[#2DD4BF] to-emerald-500'
+                            : 'bg-gradient-to-r from-emerald-400 to-[#5EEAD4]'
                         }`}
                         style={{ width: `${completionPct}%` }}
                       />
@@ -556,63 +556,63 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                   {/* 4 Stats Grid */}
                   {activePlanType === 'workout' ? (
                     <div className="grid grid-cols-2 gap-2 text-center mb-4 text-xs">
-                      <div className="bg-stone-50/80 p-2.5 rounded-xl border border-stone-200">
-                        <span className="text-[9px] uppercase font-bold text-stone-500 block">
+                      <div className="bg-[#1B2728]/80 p-2.5 rounded-xl border border-[#2A3A3A]">
+                        <span className="text-[9px] uppercase font-bold text-[#9AAEAE] block">
                           {isDayFilter ? `${selectedDay} Done` : 'Exercises Done'}
                         </span>
-                        <strong className="text-sm font-black text-stone-900">
+                        <strong className="text-sm font-black text-[#F5FAFA]">
                           {exercisesDone}
                         </strong>
                       </div>
 
-                      <div className="bg-stone-50/80 p-2.5 rounded-xl border border-stone-200">
-                        <span className="text-[9px] uppercase font-bold text-stone-500 block">Pending</span>
+                      <div className="bg-[#1B2728]/80 p-2.5 rounded-xl border border-[#2A3A3A]">
+                        <span className="text-[9px] uppercase font-bold text-[#9AAEAE] block">Pending</span>
                         <strong className="text-sm font-black text-amber-700">
                           {pendingWorkoutCount} Routines
                         </strong>
                       </div>
 
-                      <div className="bg-stone-50/80 p-2.5 rounded-xl border border-stone-200">
-                        <span className="text-[9px] uppercase font-bold text-stone-500 block">Sets Completed</span>
-                        <strong className="text-sm font-black text-stone-900">
+                      <div className="bg-[#1B2728]/80 p-2.5 rounded-xl border border-[#2A3A3A]">
+                        <span className="text-[9px] uppercase font-bold text-[#9AAEAE] block">Sets Completed</span>
+                        <strong className="text-sm font-black text-[#F5FAFA]">
                           {completedSets} Sets
                         </strong>
                       </div>
 
-                      <div className="bg-stone-50/80 p-2.5 rounded-xl border border-stone-200">
-                        <span className="text-[9px] uppercase font-bold text-stone-500 block">Time Logged</span>
-                        <strong className="text-sm font-black text-emerald-700">
+                      <div className="bg-[#1B2728]/80 p-2.5 rounded-xl border border-[#2A3A3A]">
+                        <span className="text-[9px] uppercase font-bold text-[#9AAEAE] block">Time Logged</span>
+                        <strong className="text-sm font-black text-[#2DD4BF]">
                           {timeLogged} mins
                         </strong>
                       </div>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2 text-center mb-4 text-xs">
-                      <div className="bg-emerald-50/60 p-2.5 rounded-xl border border-emerald-100">
-                        <span className="text-[9px] uppercase font-bold text-stone-500 block">
+                      <div className="bg-[#1B2728]/60 p-2.5 rounded-xl border border-[#2A3A3A]">
+                        <span className="text-[9px] uppercase font-bold text-[#9AAEAE] block">
                           {isDayFilter ? `${selectedDay} Meals` : 'Meals Done'}
                         </span>
-                        <strong className="text-sm font-black text-emerald-800">
+                        <strong className="text-sm font-black text-[#2DD4BF]">
                           {mealsDone}
                         </strong>
                       </div>
 
-                      <div className="bg-stone-50/80 p-2.5 rounded-xl border border-stone-200">
-                        <span className="text-[9px] uppercase font-bold text-stone-500 block">Pending</span>
+                      <div className="bg-[#1B2728]/80 p-2.5 rounded-xl border border-[#2A3A3A]">
+                        <span className="text-[9px] uppercase font-bold text-[#9AAEAE] block">Pending</span>
                         <strong className="text-sm font-black text-amber-700">
                           {pendingMealCount} Meals
                         </strong>
                       </div>
 
-                      <div className="bg-stone-50/80 p-2.5 rounded-xl border border-stone-200">
-                        <span className="text-[9px] uppercase font-bold text-stone-500 block">Calories Logged</span>
-                        <strong className="text-sm font-black text-orange-700">
+                      <div className="bg-[#1B2728]/80 p-2.5 rounded-xl border border-[#2A3A3A]">
+                        <span className="text-[9px] uppercase font-bold text-[#9AAEAE] block">Calories Logged</span>
+                        <strong className="text-sm font-black text-[#2DD4BF]">
                           {caloriesLogged} kcal
                         </strong>
                       </div>
 
-                      <div className="bg-stone-50/80 p-2.5 rounded-xl border border-stone-200">
-                        <span className="text-[9px] uppercase font-bold text-stone-500 block">Protein Intake</span>
+                      <div className="bg-[#1B2728]/80 p-2.5 rounded-xl border border-[#2A3A3A]">
+                        <span className="text-[9px] uppercase font-bold text-[#9AAEAE] block">Protein Intake</span>
                         <strong className="text-sm font-black text-indigo-700">
                           {proteinLogged}g
                         </strong>
@@ -621,7 +621,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                   )}
 
                   {/* Last Active Timestamp */}
-                  <div className="text-[11px] text-stone-500 flex items-center justify-between mb-3">
+                  <div className="text-[11px] text-[#9AAEAE] flex items-center justify-between mb-3">
                     <span>
                       {activePlanType === 'workout'
                         ? `Weekly: ${client.stats.weeklyWorkoutCount || 0} workouts/wk`
@@ -632,13 +632,13 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                 </div>
 
                 {/* Inspect Action Button */}
-                <div className="pt-3 border-t border-[#292940]">
+                <div className="pt-3 border-t border-[#2A3A3A]">
                   <button
                     onClick={() => handleOpenDetail(client.customer.id, selectedDay)}
-                    className={`w-full py-2.5 bg-[#0B0B12] text-[#11111F] text-xs font-bold rounded-xl border border-[#292940] transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    className={`w-full py-2.5 bg-[#0E1415] text-[#F5FAFA] text-xs font-bold rounded-xl border border-[#2A3A3A] transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                       activePlanType === 'workout'
-                        ? 'hover:bg-[#17172A]/40 group-hover:border-[#6366F1]'
-                        : 'hover:bg-emerald-50 group-hover:border-emerald-500'
+                        ? 'hover:bg-[#1B2728]/40 group-hover:border-[#2DD4BF]'
+                        : 'hover:bg-[#1B2728] group-hover:border-[#2A3A3A]'
                     }`}
                   >
                     <span>
@@ -646,7 +646,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                         ? `Inspect ${isDayFilter ? `${selectedDay} Workplan` : 'Completed Workplan'}`
                         : `Inspect ${isDayFilter ? `${selectedDay} Diet Plan` : 'Completed Diet Plan'}`}
                     </span>
-                    <ChevronRight size={14} className={activePlanType === 'workout' ? 'text-[#6366F1]' : 'text-emerald-600'} />
+                    <ChevronRight size={14} className={activePlanType === 'workout' ? 'text-[#2DD4BF]' : 'text-[#2DD4BF]'} />
                   </button>
                 </div>
               </div>
@@ -658,30 +658,30 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
       {/* ── Inspection Modal: Workplan or Diet Plan Completed Details ── */}
       {selectedCustomerId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl border border-[#292940] overflow-hidden">
+          <div className="bg-[#141D1E] rounded-3xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl border border-[#2A3A3A] overflow-hidden">
             {/* Modal Header */}
-            <div className="p-5 border-b border-[#292940] flex justify-between items-center bg-[#0B0B12]">
+            <div className="p-5 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415]">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                    activePlanType === 'workout' ? 'bg-orange-100 text-[#4F46E5]' : 'bg-emerald-100 text-emerald-800'
+                    activePlanType === 'workout' ? 'bg-[#1B2728] text-[#5EEAD4]' : 'bg-[#1B2728] text-[#2DD4BF]'
                   }`}>
                     {activePlanType === 'workout' ? 'Customer Workplan Completed Log' : 'Customer Diet Plan Completed Log'}
                   </span>
-                  <span className="text-xs text-stone-500 font-semibold">
+                  <span className="text-xs text-[#9AAEAE] font-semibold">
                     • {modalSelectedDay === 'all' ? 'All Days' : `${modalSelectedDay} Routine`}
                   </span>
                 </div>
-                <h3 className="text-xl font-black text-stone-900">
+                <h3 className="text-xl font-black text-[#F5FAFA]">
                   {customerDetail?.customer?.name || 'Customer Progress'}
                 </h3>
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-[#9AAEAE]">
                   {customerDetail?.customer?.email} • {customerDetail?.customer?.fitnessGoal || 'General Fitness'}
                 </p>
               </div>
               <button
                 onClick={() => setSelectedCustomerId(null)}
-                className="p-2 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-xl transition-colors cursor-pointer"
+                className="p-2 text-[#9AAEAE] hover:text-[#F5FAFA] hover:bg-[#1B2728] rounded-xl transition-colors cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -690,9 +690,9 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
             {/* Modal Body */}
             <div className="p-6 overflow-y-auto space-y-6 flex-1">
               {loadingDetail || !customerDetail ? (
-                <div className="py-12 text-center text-stone-500">
+                <div className="py-12 text-center text-[#9AAEAE]">
                   <div className={`w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-2 ${
-                    activePlanType === 'workout' ? 'border-[#6366F1]' : 'border-emerald-600'
+                    activePlanType === 'workout' ? 'border-[#2DD4BF]' : 'border-[#2A3A3A]'
                   }`} />
                   <p className="text-xs font-semibold">Loading detailed records...</p>
                 </div>
@@ -701,7 +701,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                 <>
                   {/* Modal Day Filter Pills */}
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#9AAEAE] block mb-2">
                       Select Day to View Completed Meals:
                     </span>
                     <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
@@ -709,8 +709,8 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                         onClick={() => setModalSelectedDay('all')}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                           modalSelectedDay === 'all'
-                            ? 'bg-stone-900 text-white shadow-xs'
-                            : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                            ? 'bg-[#0E1415] text-white shadow-xs'
+                            : 'bg-[#1B2728] text-[#9AAEAE] hover:bg-[#1B2728]'
                         }`}
                       >
                         All Days Overview
@@ -721,8 +721,8 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                           onClick={() => setModalSelectedDay(d)}
                           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                             modalSelectedDay === d
-                              ? 'bg-emerald-600 text-white shadow-xs'
-                              : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                              ? 'bg-[#2DD4BF] text-white shadow-xs'
+                              : 'bg-[#1B2728] text-[#F5FAFA] hover:bg-[#1B2728]'
                           }`}
                         >
                           {d}
@@ -742,23 +742,23 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                           if (!dayData) return null;
 
                           return (
-                            <div key={dayName} className="border border-stone-200 rounded-2xl overflow-hidden">
-                              <div className="p-4 bg-emerald-50/70 border-b border-stone-200 flex flex-wrap justify-between items-center gap-2">
+                            <div key={dayName} className="border border-[#2A3A3A] rounded-2xl overflow-hidden">
+                              <div className="p-4 bg-[#1B2728] border-b border-[#2A3A3A] flex flex-wrap justify-between items-center gap-2">
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <span className="font-extrabold text-sm text-stone-900">{dayName}</span>
-                                    <span className="text-xs text-emerald-800 font-semibold">• {dayData.focus}</span>
+                                    <span className="font-extrabold text-sm text-[#F5FAFA]">{dayName}</span>
+                                    <span className="text-xs text-[#2DD4BF] font-semibold">• {dayData.focus}</span>
                                   </div>
-                                  <div className="flex items-center gap-3 mt-1 text-[11px] text-stone-600">
+                                  <div className="flex items-center gap-3 mt-1 text-[11px] text-[#9AAEAE]">
                                     <span>Target: <strong>{dayData.targetCalories} kcal</strong></span>
-                                    <span>Consumed: <strong className="text-emerald-700">{dayData.consumedCalories} kcal</strong></span>
+                                    <span>Consumed: <strong className="text-[#2DD4BF]">{dayData.consumedCalories} kcal</strong></span>
                                     <span>Protein: <strong className="text-indigo-700">{dayData.consumedProtein}g / {dayData.targetProtein}g</strong></span>
                                   </div>
                                 </div>
                                 <span className={`px-2.5 py-1 rounded-full text-xs font-black uppercase ${
                                   dayData.completionPercentage === 100
-                                    ? 'bg-emerald-200 text-emerald-900'
-                                    : 'bg-stone-200 text-stone-800'
+                                    ? 'bg-[#1B2728] text-[#2DD4BF]'
+                                    : 'bg-[#1B2728] text-[#F5FAFA]'
                                 }`}>
                                   {dayData.completedMeals} / {dayData.totalMeals} Meals ({dayData.completionPercentage}%)
                                 </span>
@@ -769,25 +769,25 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                                   <div
                                     key={m.id}
                                     className={`p-4 flex items-start justify-between gap-4 transition-colors ${
-                                      m.completed ? 'bg-emerald-50/20' : 'bg-white'
+                                      m.completed ? 'bg-[#1B2728]/20' : 'bg-[#141D1E]'
                                     }`}
                                   >
                                     <div className="flex items-start gap-3">
                                       <div className={`mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
-                                        m.completed ? 'bg-emerald-600 text-white' : 'border-2 border-stone-300 text-transparent'
+                                        m.completed ? 'bg-[#2DD4BF] text-white' : 'border-2 border-[#2A3A3A] text-transparent'
                                       }`}>
                                         <CheckCircle2 size={16} />
                                       </div>
                                       <div>
                                         <div className="flex items-center gap-2">
                                           {getMealIcon(m.type)}
-                                          <span className="text-xs font-bold text-stone-500 uppercase">{m.time}</span>
-                                          <span className="font-extrabold text-sm text-stone-900">{m.type}</span>
+                                          <span className="text-xs font-bold text-[#9AAEAE] uppercase">{m.time}</span>
+                                          <span className="font-extrabold text-sm text-[#F5FAFA]">{m.type}</span>
                                         </div>
                                         <ul className="mt-1.5 space-y-0.5">
                                           {(m.items || []).map((item: string, i: number) => (
-                                            <li key={i} className="text-xs text-stone-600 flex items-center gap-1.5">
-                                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                                            <li key={i} className="text-xs text-[#9AAEAE] flex items-center gap-1.5">
+                                              <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF] shrink-0" />
                                               <span>{item}</span>
                                             </li>
                                           ))}
@@ -796,10 +796,10 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                                     </div>
 
                                     <div className="text-right shrink-0">
-                                      <span className="text-xs font-black text-stone-900 block">{m.calories} kcal</span>
-                                      <span className="text-[10px] text-stone-500 block">P: {m.protein}g • C: {m.carbs}g • F: {m.fats}g</span>
+                                      <span className="text-xs font-black text-[#F5FAFA] block">{m.calories} kcal</span>
+                                      <span className="text-[10px] text-[#9AAEAE] block">P: {m.protein}g • C: {m.carbs}g • F: {m.fats}g</span>
                                       {m.completed && (
-                                        <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                        <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#1B2728] text-[#2DD4BF]">
                                           ✓ Completed
                                         </span>
                                       )}
@@ -819,7 +819,7 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                 <>
                   {/* Modal Day Filter Pills */}
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#9AAEAE] block mb-2">
                       Select Day to View Completed Workplan:
                     </span>
                     <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
@@ -827,8 +827,8 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                         onClick={() => setModalSelectedDay('all')}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                           modalSelectedDay === 'all'
-                            ? 'bg-stone-900 text-white shadow-xs'
-                            : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                            ? 'bg-[#0E1415] text-white shadow-xs'
+                            : 'bg-[#1B2728] text-[#9AAEAE] hover:bg-[#1B2728]'
                         }`}
                       >
                         All Days Overview
@@ -839,8 +839,8 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                           onClick={() => setModalSelectedDay(d)}
                           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                             modalSelectedDay === d
-                              ? 'bg-[#6366F1] text-white shadow-xs'
-                              : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                              ? 'bg-[#2DD4BF] text-white shadow-xs'
+                              : 'bg-[#1B2728] text-[#F5FAFA] hover:bg-[#1B2728]'
                           }`}
                         >
                           {d}
@@ -860,22 +860,22 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                           if (!dayData) return null;
 
                           return (
-                            <div key={dayName} className="border border-stone-200 rounded-2xl overflow-hidden">
-                              <div className="p-4 bg-orange-50/70 border-b border-stone-200 flex flex-wrap justify-between items-center gap-2">
+                            <div key={dayName} className="border border-[#2A3A3A] rounded-2xl overflow-hidden">
+                              <div className="p-4 bg-[#1B2728]/70 border-b border-[#2A3A3A] flex flex-wrap justify-between items-center gap-2">
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <span className="font-extrabold text-sm text-stone-900">{dayName}</span>
-                                    <span className="text-xs text-[#4F46E5] font-semibold">• {dayData.focus || 'Workout Routine'}</span>
+                                    <span className="font-extrabold text-sm text-[#F5FAFA]">{dayName}</span>
+                                    <span className="text-xs text-[#5EEAD4] font-semibold">• {dayData.focus || 'Workout Routine'}</span>
                                   </div>
-                                  <div className="flex items-center gap-3 mt-1 text-[11px] text-stone-600">
-                                    <span>Completed Exercises: <strong className="text-emerald-700">{dayData.completedExercises}</strong> / {dayData.totalExercises}</span>
-                                    <span>Sets: <strong className="text-stone-900">{dayData.completedSets}</strong></span>
+                                  <div className="flex items-center gap-3 mt-1 text-[11px] text-[#9AAEAE]">
+                                    <span>Completed Exercises: <strong className="text-[#2DD4BF]">{dayData.completedExercises}</strong> / {dayData.totalExercises}</span>
+                                    <span>Sets: <strong className="text-[#F5FAFA]">{dayData.completedSets}</strong></span>
                                   </div>
                                 </div>
                                 <span className={`px-2.5 py-1 rounded-full text-xs font-black uppercase ${
                                   dayData.completionPercentage === 100
-                                    ? 'bg-emerald-200 text-emerald-900'
-                                    : 'bg-stone-200 text-stone-800'
+                                    ? 'bg-[#1B2728] text-[#2DD4BF]'
+                                    : 'bg-[#1B2728] text-[#F5FAFA]'
                                 }`}>
                                   {dayData.completionPercentage}% Done
                                 </span>
@@ -886,29 +886,29 @@ const TrainerCustomerWorkplansCompleted: React.FC = () => {
                                   <div
                                     key={ex.exerciseId}
                                     className={`p-4 flex items-center justify-between gap-4 transition-colors ${
-                                      ex.isCompleted ? 'bg-emerald-50/20' : 'bg-white'
+                                      ex.isCompleted ? 'bg-[#1B2728]/20' : 'bg-[#141D1E]'
                                     }`}
                                   >
                                     <div className="flex items-center gap-3">
                                       <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
-                                        ex.isCompleted ? 'bg-emerald-600 text-white' : 'border-2 border-stone-300 text-transparent'
+                                        ex.isCompleted ? 'bg-[#2DD4BF] text-white' : 'border-2 border-[#2A3A3A] text-transparent'
                                       }`}>
                                         <CheckCircle2 size={16} />
                                       </div>
                                       <div>
-                                        <span className="font-extrabold text-sm text-stone-900 block">{ex.name}</span>
-                                        <span className="text-xs text-stone-500">
+                                        <span className="font-extrabold text-sm text-[#F5FAFA] block">{ex.name}</span>
+                                        <span className="text-xs text-[#9AAEAE]">
                                           {ex.sets} sets • {ex.reps} reps • {ex.targetMuscle}
                                         </span>
                                       </div>
                                     </div>
 
                                     <div className="text-right shrink-0">
-                                      <span className="text-xs font-black text-stone-900 block">
+                                      <span className="text-xs font-black text-[#F5FAFA] block">
                                         {ex.isCompleted ? `${ex.completedSets || ex.sets} Sets Done` : 'Pending'}
                                       </span>
                                       {ex.completedAt && (
-                                        <span className="text-[10px] text-stone-500 block">
+                                        <span className="text-[10px] text-[#9AAEAE] block">
                                           {new Date(ex.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </span>
                                       )}

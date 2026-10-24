@@ -39,7 +39,7 @@ const TrainerFeeView = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center py-32">
-      <div className="w-10 h-10 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -47,36 +47,36 @@ const TrainerFeeView = () => {
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#11111F]">My Trainer Fee</h1>
-        <p className="text-[#A1A1AA] text-sm mt-1">Fee configuration set by your Gym Owner</p>
+        <h1 className="text-2xl font-bold text-[#F5FAFA]">My Trainer Fee</h1>
+        <p className="text-[#9AAEAE] text-sm mt-1">Fee configuration set by your Gym Owner</p>
       </div>
 
       {/* Read-only notice */}
-      <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl px-5 py-3">
-        <Lock size={15} className="text-[#6366F1] mt-0.5 shrink-0" />
-        <p className="text-blue-800 text-sm">
+      <div className="flex items-start gap-3 bg-[#1B2728] border border-[#2A3A3A] rounded-xl px-5 py-3">
+        <Lock size={15} className="text-[#2DD4BF] mt-0.5 shrink-0" />
+        <p className="text-[#2DD4BF] text-sm">
           This information is <strong>configured by your Gym Owner</strong> and is read-only. Contact your gym management to update your fee details.
         </p>
       </div>
 
       {!fee ? (
-        <div className="bg-white border border-[#17172A] rounded-2xl p-12 text-center shadow-sm">
-          <IndianRupee size={40} className="mx-auto text-[#292940] mb-4" />
-          <h3 className="text-lg font-semibold text-[#A1A1AA]">No Fee Configured Yet</h3>
-          <p className="text-[#A1A1AA] text-sm mt-2">Your Gym Owner has not configured your fee yet. Please contact them for more information.</p>
+        <div className="bg-[#141D1E] border border-[#1B2728] rounded-2xl p-12 text-center shadow-sm">
+          <IndianRupee size={40} className="mx-auto text-[#2A3A3A] mb-4" />
+          <h3 className="text-lg font-semibold text-[#9AAEAE]">No Fee Configured Yet</h3>
+          <p className="text-[#9AAEAE] text-sm mt-2">Your Gym Owner has not configured your fee yet. Please contact them for more information.</p>
         </div>
       ) : fee.status !== 'Active' ? (
-        <div className="bg-white border border-[#17172A] rounded-2xl p-12 text-center shadow-sm">
+        <div className="bg-[#141D1E] border border-[#1B2728] rounded-2xl p-12 text-center shadow-sm">
           <Clock size={40} className="mx-auto text-amber-500 mb-4" />
-          <h3 className="text-lg font-semibold text-[#A1A1AA]">Fee Status: {fee.status}</h3>
-          <p className="text-[#A1A1AA] text-sm mt-2">Your fee configuration is currently marked as {fee.status.toLowerCase()}. The details will be visible once it becomes Active.</p>
+          <h3 className="text-lg font-semibold text-[#9AAEAE]">Fee Status: {fee.status}</h3>
+          <p className="text-[#9AAEAE] text-sm mt-2">Your fee configuration is currently marked as {fee.status.toLowerCase()}. The details will be visible once it becomes Active.</p>
         </div>
       ) : (
         <>
           {/* Main Fee Card */}
-          <div className="bg-white border border-[#17172A] rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-[#141D1E] border border-[#1B2728] rounded-2xl shadow-sm overflow-hidden">
             {/* Top Banner */}
-            <div className="bg-gradient-to-r from-[#6366F1] to-[#4F46E5] px-6 py-5">
+            <div className="bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] px-6 py-5">
               <p className="text-green-100 text-sm font-medium mb-1">Net Payable Fee</p>
               <div className="flex items-end gap-2">
                 <span className="text-4xl font-black text-white">₹{getNetFee(fee).toLocaleString('en-IN')}</span>
@@ -87,7 +87,7 @@ const TrainerFeeView = () => {
                   Base Fee: ₹{Number(fee.feeAmount).toLocaleString('en-IN')} (−{fee.commissionType === 'Fixed Amount' ? `₹${fee.commissionValue}` : `${fee.commissionValue}%`} commission)
                 </p>
               )}
-              <span className={`inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold ${fee.status === 'Active' ? 'bg-white/20 text-white' : 'bg-red-500/30 text-red-100'}`}>
+              <span className={`inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold ${fee.status === 'Active' ? 'bg-[#141D1E]/20 text-white' : 'bg-red-500/30 text-red-100'}`}>
                 ● {fee.status}
               </span>
             </div>
@@ -95,32 +95,32 @@ const TrainerFeeView = () => {
             {/* Details Grid */}
             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#0B0B12] flex items-center justify-center shrink-0">
-                  <Activity size={16} className="text-[#6366F1]" />
+                <div className="w-9 h-9 rounded-lg bg-[#0E1415] flex items-center justify-center shrink-0">
+                  <Activity size={16} className="text-[#2DD4BF]" />
                 </div>
                 <div>
-                  <p className="text-xs text-[#A1A1AA] font-medium uppercase tracking-wide mb-0.5">Training Type</p>
-                  <p className="font-semibold text-[#11111F]">{fee.trainingType}</p>
+                  <p className="text-xs text-[#9AAEAE] font-medium uppercase tracking-wide mb-0.5">Training Type</p>
+                  <p className="font-semibold text-[#F5FAFA]">{fee.trainingType}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                  <Tag size={16} className="text-[#6366F1]" />
+                <div className="w-9 h-9 rounded-lg bg-[#1B2728] flex items-center justify-center shrink-0">
+                  <Tag size={16} className="text-[#2DD4BF]" />
                 </div>
                 <div>
-                  <p className="text-xs text-[#A1A1AA] font-medium uppercase tracking-wide mb-0.5">Billing Cycle</p>
-                  <p className="font-semibold text-[#11111F]">{fee.billingCycle}</p>
+                  <p className="text-xs text-[#9AAEAE] font-medium uppercase tracking-wide mb-0.5">Billing Cycle</p>
+                  <p className="font-semibold text-[#F5FAFA]">{fee.billingCycle}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
-                  <Calendar size={16} className="text-[#6366F1]" />
+                  <Calendar size={16} className="text-[#2DD4BF]" />
                 </div>
                 <div>
-                  <p className="text-xs text-[#A1A1AA] font-medium uppercase tracking-wide mb-0.5">Effective From</p>
-                  <p className="font-semibold text-[#11111F]">
+                  <p className="text-xs text-[#9AAEAE] font-medium uppercase tracking-wide mb-0.5">Effective From</p>
+                  <p className="font-semibold text-[#F5FAFA]">
                     {fee.effectiveFrom ? new Date(fee.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) : '-'}
                   </p>
                 </div>
@@ -130,18 +130,18 @@ const TrainerFeeView = () => {
 
             {fee.notes && (
               <div className="px-6 pb-6">
-                <div className="bg-[#0B0B12] border border-[#17172A] rounded-xl p-4">
-                  <p className="text-xs text-[#A1A1AA] font-medium mb-1">Notes from Gym Owner</p>
-                  <p className="text-sm text-[#A1A1AA]">{fee.notes}</p>
+                <div className="bg-[#0E1415] border border-[#1B2728] rounded-xl p-4">
+                  <p className="text-xs text-[#9AAEAE] font-medium mb-1">Notes from Gym Owner</p>
+                  <p className="text-sm text-[#9AAEAE]">{fee.notes}</p>
                 </div>
               </div>
             )}
           </div>
 
           {/* Info Box */}
-          <div className="bg-[#0B0B12] border border-[#292940] rounded-xl px-5 py-4">
-            <p className="text-sm text-[#6366F1] font-semibold mb-1">How your fee works</p>
-            <p className="text-sm text-[#A1A1AA]">
+          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-5 py-4">
+            <p className="text-sm text-[#2DD4BF] font-semibold mb-1">How your fee works</p>
+            <p className="text-sm text-[#9AAEAE]">
               {fee.billingCycle === 'Per Session' && 'You earn ₹' + fee.feeAmount?.toLocaleString('en-IN') + ' per completed session. Your Gym Owner will record payment after confirming sessions.'}
               {fee.billingCycle === 'Weekly' && 'You receive ₹' + fee.feeAmount?.toLocaleString('en-IN') + ' every week. Payments are processed by your Gym Owner.'}
               {fee.billingCycle === 'Monthly' && 'You receive ₹' + fee.feeAmount?.toLocaleString('en-IN') + ' every month. Your Gym Owner will initiate the payment at the end of each month.'}

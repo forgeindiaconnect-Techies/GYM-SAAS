@@ -30,12 +30,12 @@ export const MemberEnquiries = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'NEW': return 'bg-blue-100 text-blue-700';
+      case 'NEW': return 'bg-[#1B2728] text-[#2DD4BF]';
       case 'CONTACTED': return 'bg-yellow-100 text-yellow-700';
-      case 'FOLLOW_UP': return 'bg-[#17172A] text-[#6366F1]';
-      case 'CONVERTED': return 'bg-[#17172A]/10 text-[#6366F1]';
-      case 'CLOSED': return 'bg-gray-100 text-gray-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'FOLLOW_UP': return 'bg-[#1B2728] text-[#2DD4BF]';
+      case 'CONVERTED': return 'bg-[#1B2728]/10 text-[#2DD4BF]';
+      case 'CLOSED': return 'bg-[#1B2728] text-[#C1D0D0]';
+      default: return 'bg-[#1B2728] text-[#C1D0D0]';
     }
   };
 
@@ -43,18 +43,18 @@ export const MemberEnquiries = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#11111F] tracking-tight">My Enquiries</h1>
-          <p className="text-[#A1A1AA] mt-1">Track the status of your queries sent to gyms.</p>
+          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">My Enquiries</h1>
+          <p className="text-[#9AAEAE] mt-1">Track the status of your queries sent to gyms.</p>
         </div>
         <div className="flex items-center">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A1A1AA]" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEAE]" size={18} />
             <input
               type="text"
               placeholder="Search by gym or type..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-[#17172A] rounded-xl text-sm focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1] outline-none"
+              className="pl-10 pr-4 py-2 border border-[#1B2728] rounded-xl text-sm focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF] outline-none"
             />
           </div>
         </div>
@@ -62,38 +62,38 @@ export const MemberEnquiries = () => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin text-[#6366F1]" size={40} />
+          <Loader2 className="animate-spin text-[#2DD4BF]" size={40} />
         </div>
       ) : (
-        <div className="bg-white border border-[#17172A] rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-[#141D1E] border border-[#1B2728] rounded-2xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#0B0B12] border-b border-[#17172A]">
-                  <th className="px-6 py-4 text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider">Gym Details</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider">Enquiry Info</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider">Date Submitted</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider">Status</th>
+                <tr className="bg-[#0E1415] border-b border-[#1B2728]">
+                  <th className="px-6 py-4 text-xs font-semibold text-[#9AAEAE] uppercase tracking-wider">Gym Details</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#9AAEAE] uppercase tracking-wider">Enquiry Info</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#9AAEAE] uppercase tracking-wider">Date Submitted</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-[#9AAEAE] uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#17172A]">
+              <tbody className="divide-y divide-[#1B2728]">
                 {filteredEnquiries.map((enq) => (
-                  <tr key={enq._id} className="hover:bg-[#0B0B12] transition-colors">
+                  <tr key={enq._id} className="hover:bg-[#0E1415] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-[#11111F] flex items-center gap-1.5">
-                        <Building2 size={14} className="text-[#6366F1]"/> {enq.gymId?.name || 'Unknown Gym'}
+                      <div className="font-semibold text-[#F5FAFA] flex items-center gap-1.5">
+                        <Building2 size={14} className="text-[#2DD4BF]"/> {enq.gymId?.name || 'Unknown Gym'}
                       </div>
-                      <div className="text-sm text-[#A1A1AA] flex items-center gap-1 mt-1">
+                      <div className="text-sm text-[#9AAEAE] flex items-center gap-1 mt-1">
                         <MapPin size={12}/> {enq.branchId?.name || enq.city || 'Main Branch'}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-[#11111F]">{enq.enquiryType}</div>
-                      <div className="text-sm text-[#A1A1AA] line-clamp-1 max-w-xs">{enq.message}</div>
+                      <div className="text-sm font-semibold text-[#F5FAFA]">{enq.enquiryType}</div>
+                      <div className="text-sm text-[#9AAEAE] line-clamp-1 max-w-xs">{enq.message}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-[#11111F]">{new Date(enq.createdAt).toLocaleDateString()}</div>
-                      <div className="text-xs text-[#A1A1AA]">{new Date(enq.createdAt).toLocaleTimeString()}</div>
+                      <div className="text-sm text-[#F5FAFA]">{new Date(enq.createdAt).toLocaleDateString()}</div>
+                      <div className="text-xs text-[#9AAEAE]">{new Date(enq.createdAt).toLocaleTimeString()}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${getStatusColor(enq.status)}`}>
@@ -104,8 +104,8 @@ export const MemberEnquiries = () => {
                 ))}
                 {filteredEnquiries.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-6 py-12 text-center text-[#A1A1AA]">
-                      <MessageSquare size={40} className="mx-auto text-[#4F46E5] mb-3" />
+                    <td colSpan={4} className="px-6 py-12 text-center text-[#9AAEAE]">
+                      <MessageSquare size={40} className="mx-auto text-[#5EEAD4] mb-3" />
                       You haven't submitted any enquiries yet.
                     </td>
                   </tr>

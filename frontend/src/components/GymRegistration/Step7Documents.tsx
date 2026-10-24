@@ -16,42 +16,42 @@ export const Step7Documents = ({ data, updateData, errors }: any) => {
     const error = errors[field];
 
     return (
-      <div className={`bg-[#FFFFFF] p-6 rounded-2xl border transition-colors ${error ? 'border-[#17172A]/50' : hasFile ? 'border-green-500/50 bg-green-500/5' : 'border-[#292940]'}`}>
+      <div className={`bg-[#FFFFFF] p-6 rounded-2xl border transition-colors ${error ? 'border-[#1B2728]/50' : hasFile ? 'border-green-500/50 bg-green-500/5' : 'border-[#2A3A3A]'}`}>
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="text-lg font-bold text-[#11111F] flex items-center">
-              {title} {isRequired && <span className="text-[#6366F1] ml-1">*</span>}
+            <h3 className="text-lg font-bold text-[#F5FAFA] flex items-center">
+              {title} {isRequired && <span className="text-[#2DD4BF] ml-1">*</span>}
             </h3>
-            <p className="text-[#A1A1AA] text-sm mt-1">{desc}</p>
+            <p className="text-[#9AAEAE] text-sm mt-1">{desc}</p>
           </div>
           {hasFile ? (
             <div className="bg-green-500/20 text-green-500 p-2 rounded-full">
               <CheckCircle2 size={24} />
             </div>
           ) : (
-            <div className="bg-[#FFFFFF] text-[#A1A1AA] p-2 rounded-full">
+            <div className="bg-[#FFFFFF] text-[#9AAEAE] p-2 rounded-full">
               <FileText size={24} />
             </div>
           )}
         </div>
 
         {!hasFile ? (
-          <div className="relative border-2 border-dashed border-[#292940] hover:border-[#6366F1] rounded-xl p-8 transition-colors text-center group cursor-pointer">
+          <div className="relative border-2 border-dashed border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl p-8 transition-colors text-center group cursor-pointer">
             <input 
               type="file" 
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               accept=".pdf,.jpg,.jpeg,.png"
               onChange={(e) => handleFileUpload(field, e.target.files?.[0] || null)}
             />
-            <UploadCloud size={32} className="mx-auto text-[#A1A1AA] group-hover:text-[#6366F1] mb-3 transition-colors" />
-            <p className="text-sm font-semibold text-[#11111F]">Click to upload or drag and drop</p>
-            <p className="text-xs text-[#A1A1AA] mt-1">PDF, JPG, PNG (Max. 10MB)</p>
+            <UploadCloud size={32} className="mx-auto text-[#9AAEAE] group-hover:text-[#2DD4BF] mb-3 transition-colors" />
+            <p className="text-sm font-semibold text-[#F5FAFA]">Click to upload or drag and drop</p>
+            <p className="text-xs text-[#9AAEAE] mt-1">PDF, JPG, PNG (Max. 10MB)</p>
           </div>
         ) : (
-          <div className="flex items-center justify-between bg-[#FFFFFF] border border-[#292940] p-4 rounded-xl">
+          <div className="flex items-center justify-between bg-[#FFFFFF] border border-[#2A3A3A] p-4 rounded-xl">
             <div className="flex items-center space-x-3 truncate">
-              <FileText size={20} className="text-[#6366F1] shrink-0" />
-              <span className="text-sm font-medium text-[#11111F] truncate">{data[field]}</span>
+              <FileText size={20} className="text-[#2DD4BF] shrink-0" />
+              <span className="text-sm font-medium text-[#F5FAFA] truncate">{data[field]}</span>
             </div>
             <div className="flex items-center space-x-4 shrink-0 ml-4">
               {fileUrl && (
@@ -59,14 +59,14 @@ export const Step7Documents = ({ data, updateData, errors }: any) => {
                   href={fileUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors"
+                  className="text-xs font-bold text-[#2DD4BF] hover:text-[#2DD4BF] transition-colors"
                 >
                   View
                 </a>
               )}
               <button 
                 onClick={() => updateData({ [field]: '', [`${field}Url`]: '' })}
-                className="text-xs font-bold text-[#17172A] hover:text-teal-400 transition-colors"
+                className="text-xs font-bold text-[#1B2728] hover:text-[#2DD4BF] transition-colors"
               >
                 Remove
               </button>
@@ -75,7 +75,7 @@ export const Step7Documents = ({ data, updateData, errors }: any) => {
         )}
         
         {error && (
-          <p className="text-[#17172A] text-xs font-bold mt-3 flex items-center">
+          <p className="text-[#1B2728] text-xs font-bold mt-3 flex items-center">
             <AlertCircle size={12} className="mr-1" /> {error}
           </p>
         )}
@@ -86,8 +86,8 @@ export const Step7Documents = ({ data, updateData, errors }: any) => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-[#11111F] tracking-tight">Verification Documents</h2>
-        <p className="text-[#A1A1AA] mt-1">Upload the required legal documents to verify the gym's authenticity.</p>
+        <h2 className="text-2xl font-bold text-[#F5FAFA] tracking-tight">Verification Documents</h2>
+        <p className="text-[#9AAEAE] mt-1">Upload the required legal documents to verify the gym's authenticity.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

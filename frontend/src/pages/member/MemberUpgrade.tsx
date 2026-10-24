@@ -151,7 +151,7 @@ const MemberUpgrade = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#6366F1]" size={40} /></div>;
+    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#2DD4BF]" size={40} /></div>;
   }
 
   if (!selectedPlan) {
@@ -171,8 +171,8 @@ const MemberUpgrade = () => {
           </div>
         )}
 
-        <h1 className="text-3xl font-bold mb-2 text-[#11111F]">Upgrade Subscription</h1>
-        <p className="text-[#A1A1AA] mb-8">Choose a subscription plan to continue accessing premium gym services.</p>
+        <h1 className="text-3xl font-bold mb-2 text-[#F5FAFA]">Upgrade Subscription</h1>
+        <p className="text-[#9AAEAE] mb-8">Choose a subscription plan to continue accessing premium gym services.</p>
 
         <div className="grid md:grid-cols-3 gap-6">
           {plans.map((plan, idx) => {
@@ -181,13 +181,13 @@ const MemberUpgrade = () => {
             const disableFreePlan = isFreePlan;
 
             return (
-              <div key={idx} className="bg-white rounded-2xl border border-[#292940] p-6 shadow-sm hover:shadow-xl transition-shadow flex flex-col">
-                <h3 className="text-xl font-bold text-[#11111F] mb-2">{plan.name}</h3>
-                <div className="text-3xl font-extrabold text-[#6366F1] mb-4">₹{plan.price}<span className="text-sm text-[#A1A1AA] font-normal"> / {plan.duration}</span></div>
-                <ul className="space-y-3 mb-8 flex-1 text-sm text-[#A1A1AA]">
+              <div key={idx} className="bg-[#141D1E] rounded-2xl border border-[#2A3A3A] p-6 shadow-sm hover:shadow-xl transition-shadow flex flex-col">
+                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">{plan.name}</h3>
+                <div className="text-3xl font-extrabold text-[#2DD4BF] mb-4">₹{plan.price}<span className="text-sm text-[#9AAEAE] font-normal"> / {plan.duration}</span></div>
+                <ul className="space-y-3 mb-8 flex-1 text-sm text-[#9AAEAE]">
                   {plan.features?.split(',').map((f: string, i: number) => (
                     <li key={i} className="flex items-start">
-                      <CheckCircle size={16} className="text-[#6366F1] mr-2 shrink-0 mt-0.5" />
+                      <CheckCircle size={16} className="text-[#2DD4BF] mr-2 shrink-0 mt-0.5" />
                       <span>{f.trim()}</span>
                     </li>
                   ))}
@@ -197,8 +197,8 @@ const MemberUpgrade = () => {
                   onClick={() => setSelectedPlan(plan)}
                   className={`w-full py-3 font-bold rounded-xl transition-colors ${
                     disableFreePlan 
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
-                      : 'bg-[#6366F1] text-white hover:bg-[#4F46E5]'
+                      ? 'bg-[#1B2728] text-[#9AAEAE] cursor-not-allowed border border-[#2A3A3A]' 
+                      : 'bg-[#2DD4BF] text-white hover:bg-[#5EEAD4]'
                   }`}
                 >
                   {disableFreePlan ? 'Trial Completed' : 'Continue to Payment'}
@@ -207,10 +207,10 @@ const MemberUpgrade = () => {
             );
           })}
           {plans.length === 0 && (
-            <div className="col-span-3 text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300">
-              <AlertCircle size={48} className="mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-bold text-gray-700">No Plans Available</h3>
-              <p className="text-gray-500">The gym owner has not configured any subscription plans yet.</p>
+            <div className="col-span-3 text-center py-10 bg-[#141D1E] rounded-2xl border border-dashed border-[#2A3A3A]">
+              <AlertCircle size={48} className="mx-auto text-[#9AAEAE] mb-4" />
+              <h3 className="text-xl font-bold text-[#C1D0D0]">No Plans Available</h3>
+              <p className="text-[#9AAEAE]">The gym owner has not configured any subscription plans yet.</p>
             </div>
           )}
         </div>
@@ -229,89 +229,89 @@ const MemberUpgrade = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <button onClick={() => setSelectedPlan(null)} className="text-[#A1A1AA] hover:text-[#6366F1] mb-6 font-medium text-sm transition-colors">
+      <button onClick={() => setSelectedPlan(null)} className="text-[#9AAEAE] hover:text-[#2DD4BF] mb-6 font-medium text-sm transition-colors">
         &larr; Back to Plans
       </button>
 
-      <div className="bg-white rounded-2xl border border-[#292940] shadow-xl overflow-hidden flex flex-col md:flex-row">
+      <div className="bg-[#141D1E] rounded-2xl border border-[#2A3A3A] shadow-xl overflow-hidden flex flex-col md:flex-row">
         
         {/* Payment Form */}
-        <div className="p-8 md:w-2/3 border-r border-[#292940]">
-          <h2 className="text-2xl font-bold text-[#11111F] mb-6">Payment Method</h2>
+        <div className="p-8 md:w-2/3 border-r border-[#2A3A3A]">
+          <h2 className="text-2xl font-bold text-[#F5FAFA] mb-6">Payment Method</h2>
           
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
-            <label className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bank' ? 'border-[#6366F1] bg-[#6366F1]/5' : 'border-[#292940] hover:border-[#6366F1]/50'}`}>
+            <label className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bank' ? 'border-[#2DD4BF] bg-[#2DD4BF]/5' : 'border-[#2A3A3A] hover:border-[#2DD4BF]/50'}`}>
               <div className="flex items-center justify-between mb-2">
-                <Landmark className={paymentMethod === 'bank' ? 'text-[#6366F1]' : 'text-[#A1A1AA]'} size={24} />
+                <Landmark className={paymentMethod === 'bank' ? 'text-[#2DD4BF]' : 'text-[#9AAEAE]'} size={24} />
                 <input type="radio" checked={paymentMethod === 'bank'} onChange={() => setPaymentMethod('bank')} className="hidden" />
-                {paymentMethod === 'bank' && <CheckCircle className="text-[#6366F1]" size={20} />}
+                {paymentMethod === 'bank' && <CheckCircle className="text-[#2DD4BF]" size={20} />}
               </div>
-              <span className="font-medium text-[#11111F] mb-1">Manual Payment</span>
-              <span className="text-xs text-[#A1A1AA]">Bank Transfer or Cash</span>
+              <span className="font-medium text-[#F5FAFA] mb-1">Manual Payment</span>
+              <span className="text-xs text-[#9AAEAE]">Bank Transfer or Cash</span>
             </label>
 
             {isQrEnabled && (
-              <label className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'qr' ? 'border-[#6366F1] bg-[#6366F1]/5' : 'border-[#292940] hover:border-[#6366F1]/50'}`}>
+              <label className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'qr' ? 'border-[#2DD4BF] bg-[#2DD4BF]/5' : 'border-[#2A3A3A] hover:border-[#2DD4BF]/50'}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <QrCode className={paymentMethod === 'qr' ? 'text-[#6366F1]' : 'text-[#A1A1AA]'} size={24} />
+                  <QrCode className={paymentMethod === 'qr' ? 'text-[#2DD4BF]' : 'text-[#9AAEAE]'} size={24} />
                   <input type="radio" checked={paymentMethod === 'qr'} onChange={() => setPaymentMethod('qr')} className="hidden" />
-                  {paymentMethod === 'qr' && <CheckCircle className="text-[#6366F1]" size={20} />}
+                  {paymentMethod === 'qr' && <CheckCircle className="text-[#2DD4BF]" size={20} />}
                 </div>
-                <span className="font-medium text-[#11111F] mb-1">QR Code Payment</span>
-                <span className="text-xs text-[#A1A1AA]">GPay, PhonePe, UPI</span>
+                <span className="font-medium text-[#F5FAFA] mb-1">QR Code Payment</span>
+                <span className="text-xs text-[#9AAEAE]">GPay, PhonePe, UPI</span>
               </label>
             )}
           </div>
 
           {!isFreePlan && paymentMethod === 'bank' && (
             <div className="space-y-6 animate-in fade-in">
-              <div className="bg-[#0B0B12] p-5 rounded-xl border border-[#292940] text-sm text-[#A1A1AA]">
-                <p className="font-semibold text-[#11111F] mb-4 text-base border-b border-[#292940] pb-3">Payment Information</p>
+              <div className="bg-[#0E1415] p-5 rounded-xl border border-[#2A3A3A] text-sm text-[#9AAEAE]">
+                <p className="font-semibold text-[#F5FAFA] mb-4 text-base border-b border-[#2A3A3A] pb-3">Payment Information</p>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-5 mt-3">
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Customer Name</span><span className="font-medium text-[#11111F]">{user?.firstName} {user?.lastName}</span></div>
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Gym Name</span><span className="font-medium text-[#11111F]">{gym?.name}</span></div>
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Branch</span><span className="font-medium text-[#11111F]">{gym?.branches?.find((b:any) => b._id === user?.branchId)?.name || 'Main Branch'}</span></div>
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Plan</span><span className="font-medium text-[#11111F]">{selectedPlan.name}</span></div>
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Billing Cycle</span><span className="font-medium text-[#11111F]">{selectedPlan.duration}</span></div>
-                  <div className="col-span-2 mt-2 pt-4 border-t border-[#292940] flex justify-between items-center">
-                    <span className="text-[#11111F] font-semibold text-base">Total Amount:</span> 
-                    <span className="text-[#6366F1] font-black text-xl">₹{total}</span>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Customer Name</span><span className="font-medium text-[#F5FAFA]">{user?.firstName} {user?.lastName}</span></div>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Gym Name</span><span className="font-medium text-[#F5FAFA]">{gym?.name}</span></div>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Branch</span><span className="font-medium text-[#F5FAFA]">{gym?.branches?.find((b:any) => b._id === user?.branchId)?.name || 'Main Branch'}</span></div>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Plan</span><span className="font-medium text-[#F5FAFA]">{selectedPlan.name}</span></div>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Billing Cycle</span><span className="font-medium text-[#F5FAFA]">{selectedPlan.duration}</span></div>
+                  <div className="col-span-2 mt-2 pt-4 border-t border-[#2A3A3A] flex justify-between items-center">
+                    <span className="text-[#F5FAFA] font-semibold text-base">Total Amount:</span> 
+                    <span className="text-[#2DD4BF] font-black text-xl">₹{total}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm text-[#A1A1AA]">
-                <p className="font-semibold text-[#11111F] mb-2 text-base border-b border-slate-200 pb-2">Gym Account Details</p>
+              <div className="bg-[#0E1415] p-4 rounded-xl border border-[#2A3A3A] text-sm text-[#9AAEAE]">
+                <p className="font-semibold text-[#F5FAFA] mb-2 text-base border-b border-[#2A3A3A] pb-2">Gym Account Details</p>
                 <div className="mt-3 space-y-2">
                   <p><strong>Account Name:</strong> {paymentSettings.accountName || gym?.name || 'N/A'}</p>
                   <p><strong>Instructions:</strong> {paymentSettings.instructions || 'Please transfer the exact amount to the gym account.'}</p>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-gray-200">
-                <h3 className="font-bold text-[#11111F] mb-4 text-lg">Enter Payment Details</h3>
+              <div className="pt-4 border-t border-[#2A3A3A]">
+                <h3 className="font-bold text-[#F5FAFA] mb-4 text-lg">Enter Payment Details</h3>
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Payment Date <span className="text-rose-600 font-bold">*</span></label>
+                    <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Payment Date <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="date" 
                       value={paymentDate}
                       onChange={(e) => setPaymentDate(e.target.value)}
-                      className="w-full bg-[#0B0B12] border border-[#292940] rounded-lg px-4 py-3 text-[#11111F] focus:outline-none focus:border-[#6366F1]" 
+                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-4 py-3 text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]" 
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Bank Name <span className="text-rose-600 font-bold">*</span></label>
+                    <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Bank Name <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="text" 
                       value={customerBankName}
                       onChange={(e) => setCustomerBankName(e.target.value)}
                       placeholder="e.g. HDFC Bank" 
-                      className="w-full bg-[#0B0B12] border border-[#292940] rounded-lg px-4 py-3 text-[#11111F] focus:outline-none focus:border-[#6366F1]" 
+                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-4 py-3 text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]" 
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Account Number <span className="text-rose-600 font-bold">*</span></label>
+                    <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Account Number <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="text" 
                       value={customerAccountNumber}
@@ -320,12 +320,12 @@ const MemberUpgrade = () => {
                         setCustomerAccountNumber(val);
                       }}
                       placeholder="e.g. 50100123456789" 
-                      className="w-full bg-[#0B0B12] border border-[#292940] rounded-lg px-4 py-3 text-[#11111F] focus:outline-none focus:border-[#6366F1]" 
+                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-4 py-3 text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]" 
                       maxLength={18}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#A1A1AA] mb-2">IFSC Code <span className="text-rose-600 font-bold">*</span></label>
+                    <label className="block text-sm font-medium text-[#9AAEAE] mb-2">IFSC Code <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="text" 
                       value={customerIfscCode}
@@ -334,19 +334,19 @@ const MemberUpgrade = () => {
                         setCustomerIfscCode(val);
                       }}
                       placeholder="e.g. HDFC0001234" 
-                      className="w-full bg-[#0B0B12] border border-[#292940] rounded-lg px-4 py-3 text-[#11111F] focus:outline-none focus:border-[#6366F1]" 
+                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-4 py-3 text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]" 
                       maxLength={11}
                     />
                   </div>
                 </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Additional Notes (Optional)</label>
+                <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Additional Notes (Optional)</label>
                 <textarea 
                   value={paymentNotes}
                   onChange={(e) => setPaymentNotes(e.target.value)}
                   placeholder="E.g., Payment made through bank transfer from HDFC." 
-                  className="w-full bg-[#0B0B12] border border-[#292940] rounded-lg px-4 py-3 text-[#11111F] focus:outline-none focus:border-[#6366F1] h-24 resize-none" 
+                  className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-4 py-3 text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF] h-24 resize-none" 
                 ></textarea>
               </div>
               </div>
@@ -355,27 +355,27 @@ const MemberUpgrade = () => {
 
           {!isFreePlan && paymentMethod === 'qr' && (
             <div className="space-y-6 animate-in fade-in">
-              <div className="bg-[#0B0B12] p-5 rounded-xl border border-[#292940] text-sm text-[#A1A1AA]">
-                <p className="font-semibold text-[#11111F] mb-4 text-base border-b border-[#292940] pb-3">Payment Details</p>
+              <div className="bg-[#0E1415] p-5 rounded-xl border border-[#2A3A3A] text-sm text-[#9AAEAE]">
+                <p className="font-semibold text-[#F5FAFA] mb-4 text-base border-b border-[#2A3A3A] pb-3">Payment Details</p>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-5 mt-3">
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Gym Name</span><span className="font-medium text-[#11111F]">{gym?.name}</span></div>
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Branch</span><span className="font-medium text-[#11111F]">{gym?.branches?.find((b:any) => b._id === user?.branchId)?.name || 'Main Branch'}</span></div>
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Business Name</span><span className="font-medium text-[#11111F]">{paymentSettings.accountName || gym?.name}</span></div>
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Plan</span><span className="font-medium text-[#11111F]">{selectedPlan.name}</span></div>
-                  <div className="flex flex-col"><span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Billing Cycle</span><span className="font-medium text-[#11111F]">{selectedPlan.duration}</span></div>
-                  <div className="col-span-2 mt-2 pt-4 border-t border-[#292940] flex justify-between items-center">
-                    <span className="text-[#11111F] font-semibold text-base">Amount to Pay:</span> 
-                    <span className="text-[#6366F1] font-black text-xl">₹{total}</span>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Gym Name</span><span className="font-medium text-[#F5FAFA]">{gym?.name}</span></div>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Branch</span><span className="font-medium text-[#F5FAFA]">{gym?.branches?.find((b:any) => b._id === user?.branchId)?.name || 'Main Branch'}</span></div>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Business Name</span><span className="font-medium text-[#F5FAFA]">{paymentSettings.accountName || gym?.name}</span></div>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Plan</span><span className="font-medium text-[#F5FAFA]">{selectedPlan.name}</span></div>
+                  <div className="flex flex-col"><span className="text-[#9AAEAE] text-xs uppercase tracking-wider mb-1">Billing Cycle</span><span className="font-medium text-[#F5FAFA]">{selectedPlan.duration}</span></div>
+                  <div className="col-span-2 mt-2 pt-4 border-t border-[#2A3A3A] flex justify-between items-center">
+                    <span className="text-[#F5FAFA] font-semibold text-base">Amount to Pay:</span> 
+                    <span className="text-[#2DD4BF] font-black text-xl">₹{total}</span>
                   </div>
                 </div>
-                <div className="mt-5 bg-white p-4 rounded-xl border border-green-100/50 shadow-sm">
+                <div className="mt-5 bg-[#141D1E] p-4 rounded-xl border border-green-100/50 shadow-sm">
                   <p><strong>Payment Instructions:</strong> {paymentSettings.instructions || 'Pay the exact subscription amount and enter the UTR number below after completing the payment.'}</p>
                 </div>
               </div>
 
-              <div className="flex flex-col items-center justify-center py-6 bg-slate-50 rounded-xl border border-slate-200">
-                <p className="font-semibold text-[#11111F] mb-4">Scan this QR code using your preferred UPI app.</p>
-                <div className="bg-white p-4 rounded-xl border-2 border-[#6366F1] shadow-md mb-6">
+              <div className="flex flex-col items-center justify-center py-6 bg-[#0E1415] rounded-xl border border-[#2A3A3A]">
+                <p className="font-semibold text-[#F5FAFA] mb-4">Scan this QR code using your preferred UPI app.</p>
+                <div className="bg-[#141D1E] p-4 rounded-xl border-2 border-[#2DD4BF] shadow-md mb-6">
                   <img 
                     src={paymentSettings.qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(`upi://pay?pa=${paymentSettings.upiId || 'gym@upi'}&pn=${encodeURIComponent(gym.name)}&am=${total}&cu=INR`)}`}
                     alt="UPI QR Code" 
@@ -385,23 +385,23 @@ const MemberUpgrade = () => {
                   />
                 </div>
                 <div className="flex gap-4 mb-2 w-full justify-center">
-                  <button onClick={() => setQrApp('GPay')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#11111F] ${qrApp === 'GPay' ? 'bg-[#6366F1]/10 border-[#6366F1]' : 'bg-white border-gray-200 hover:border-[#6366F1]'}`}>
-                    <Smartphone size={16} className="text-[#6366F1]" /> GPay
+                  <button onClick={() => setQrApp('GPay')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#F5FAFA] ${qrApp === 'GPay' ? 'bg-[#2DD4BF]/10 border-[#2DD4BF]' : 'bg-[#141D1E] border-[#2A3A3A] hover:border-[#2DD4BF]'}`}>
+                    <Smartphone size={16} className="text-[#2DD4BF]" /> GPay
                   </button>
-                  <button onClick={() => setQrApp('PhonePe')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#11111F] ${qrApp === 'PhonePe' ? 'bg-[#6366F1]/10 border-[#6366F1]' : 'bg-white border-gray-200 hover:border-[#6366F1]'}`}>
-                    <Smartphone size={16} className="text-[#6366F1]" /> PhonePe
+                  <button onClick={() => setQrApp('PhonePe')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#F5FAFA] ${qrApp === 'PhonePe' ? 'bg-[#2DD4BF]/10 border-[#2DD4BF]' : 'bg-[#141D1E] border-[#2A3A3A] hover:border-[#2DD4BF]'}`}>
+                    <Smartphone size={16} className="text-[#2DD4BF]" /> PhonePe
                   </button>
-                  <button onClick={() => setQrApp('Paytm')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#11111F] ${qrApp === 'Paytm' ? 'bg-[#6366F1]/10 border-[#6366F1]' : 'bg-white border-gray-200 hover:border-[#6366F1]'}`}>
-                    <Smartphone size={16} className="text-[#6366F1]" /> Paytm
+                  <button onClick={() => setQrApp('Paytm')} disabled={isProcessing} className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors text-sm font-bold text-[#F5FAFA] ${qrApp === 'Paytm' ? 'bg-[#2DD4BF]/10 border-[#2DD4BF]' : 'bg-[#141D1E] border-[#2A3A3A] hover:border-[#2DD4BF]'}`}>
+                    <Smartphone size={16} className="text-[#2DD4BF]" /> Paytm
                   </button>
                 </div>
               </div>
               
-              <div className="pt-4 border-t border-gray-200">
-                <h3 className="font-bold text-[#11111F] mb-4 text-lg">Enter Payment Details</h3>
+              <div className="pt-4 border-t border-[#2A3A3A]">
+                <h3 className="font-bold text-[#F5FAFA] mb-4 text-lg">Enter Payment Details</h3>
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Transaction ID / UTR Number <span className="text-rose-600 font-bold">*</span></label>
+                    <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Transaction ID / UTR Number <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="text" 
                       value={paymentReference}
@@ -410,28 +410,28 @@ const MemberUpgrade = () => {
                         setPaymentReference(val);
                       }}
                       placeholder="Enter 12-digit UTR number" 
-                      className="w-full bg-[#0B0B12] border border-[#292940] rounded-lg px-4 py-3 text-[#11111F] focus:outline-none focus:border-[#6366F1]" 
+                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-4 py-3 text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]" 
                       maxLength={12}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Payment Date <span className="text-rose-600 font-bold">*</span></label>
+                    <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Payment Date <span className="text-rose-600 font-bold">*</span></label>
                     <input 
                       type="date" 
                       value={paymentDate}
                       onChange={(e) => setPaymentDate(e.target.value)}
-                      className="w-full bg-[#0B0B12] border border-[#292940] rounded-lg px-4 py-3 text-[#11111F] focus:outline-none focus:border-[#6366F1]" 
+                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-4 py-3 text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]" 
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#A1A1AA] mb-2">Additional Notes (Optional)</label>
+                  <label className="block text-sm font-medium text-[#9AAEAE] mb-2">Additional Notes (Optional)</label>
                   <textarea 
                     value={paymentNotes}
                     onChange={(e) => setPaymentNotes(e.target.value)}
                     placeholder="E.g., Paid using Paytm." 
-                    className="w-full bg-[#0B0B12] border border-[#292940] rounded-lg px-4 py-3 text-[#11111F] focus:outline-none focus:border-[#6366F1] h-24 resize-none" 
+                    className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-lg px-4 py-3 text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF] h-24 resize-none" 
                   ></textarea>
                 </div>
               </div>
@@ -443,8 +443,8 @@ const MemberUpgrade = () => {
             onClick={() => handleSubmitPayment()}
             className={`w-full mt-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center transition-all ${
               isProcessing
-                ? 'bg-[#17172A] text-[#A1A1AA] cursor-not-allowed hidden'
-                : 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-lg shadow-teal-900/10'
+                ? 'bg-[#1B2728] text-[#9AAEAE] cursor-not-allowed hidden'
+                : 'bg-[#2DD4BF] text-white hover:bg-[#5EEAD4] shadow-lg shadow-teal-900/10'
             }`}
           >
             {isProcessing ? <><Loader2 className="animate-spin mr-2" size={20} /> Processing...</> : (isFreePlan ? 'Activate Plan' : 'Submit Payment for Verification')}
@@ -452,26 +452,26 @@ const MemberUpgrade = () => {
         </div>
 
         {/* Order Summary */}
-        <div className="p-8 md:w-1/3 bg-[#0B0B12]">
-          <h3 className="text-lg font-bold text-[#11111F] mb-6 border-b border-[#292940] pb-4">Order Summary</h3>
+        <div className="p-8 md:w-1/3 bg-[#0E1415]">
+          <h3 className="text-lg font-bold text-[#F5FAFA] mb-6 border-b border-[#2A3A3A] pb-4">Order Summary</h3>
           <div className="space-y-5 mb-8 text-sm">
             <div>
-              <p className="text-gray-500 mb-1 uppercase tracking-wider text-xs">Plan</p>
-              <p className="font-bold text-[#11111F] text-base">{selectedPlan.name}</p>
+              <p className="text-[#9AAEAE] mb-1 uppercase tracking-wider text-xs">Plan</p>
+              <p className="font-bold text-[#F5FAFA] text-base">{selectedPlan.name}</p>
             </div>
             <div>
-              <p className="text-gray-500 mb-1 uppercase tracking-wider text-xs">Duration</p>
-              <p className="font-bold text-[#11111F] text-base">{selectedPlan.duration}</p>
+              <p className="text-[#9AAEAE] mb-1 uppercase tracking-wider text-xs">Duration</p>
+              <p className="font-bold text-[#F5FAFA] text-base">{selectedPlan.duration}</p>
             </div>
           </div>
-          <div className="border-t border-[#292940] pt-6 space-y-4 mb-6 text-sm">
-            <div className="flex justify-between items-center"><span className="text-[#A1A1AA]">Amount</span><span className="font-semibold text-[#11111F]">₹{selectedPlan.price}</span></div>
-            <div className="flex justify-between items-center"><span className="text-[#A1A1AA]">GST (18%)</span><span className="font-semibold text-[#11111F]">₹{tax}</span></div>
+          <div className="border-t border-[#2A3A3A] pt-6 space-y-4 mb-6 text-sm">
+            <div className="flex justify-between items-center"><span className="text-[#9AAEAE]">Amount</span><span className="font-semibold text-[#F5FAFA]">₹{selectedPlan.price}</span></div>
+            <div className="flex justify-between items-center"><span className="text-[#9AAEAE]">GST (18%)</span><span className="font-semibold text-[#F5FAFA]">₹{tax}</span></div>
           </div>
           <div className="border-t border-dashed border-gray-400 pt-5 flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <span className="text-[#11111F] font-semibold text-lg">Total</span>
-              <div className="text-3xl font-black text-[#6366F1] tracking-tight">₹{total}</div>
+              <span className="text-[#F5FAFA] font-semibold text-lg">Total</span>
+              <div className="text-3xl font-black text-[#2DD4BF] tracking-tight">₹{total}</div>
             </div>
           </div>
         </div>

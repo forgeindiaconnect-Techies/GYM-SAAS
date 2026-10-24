@@ -50,25 +50,25 @@ const SuperAdminLayout = () => {
   const renderSidebar = () => (
     <>
       {/* Logo */}
-      <div className="p-5 border-b border-[#292940]">
+      <div className="p-5 border-b border-[#2A3A3A]">
         <Link to="/" className="flex items-center space-x-2" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 bg-[#6366F1] text-white rounded-xl flex items-center justify-center shadow-md shadow-[#6366F1]/25">
+          <div className="w-9 h-9 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl flex items-center justify-center shadow-md shadow-[#2DD4BF]/25">
             <ShieldCheck className="text-white" size={20} />
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-sm font-bold tracking-tight text-[#FFFFFF]">SUPER</span>
-            <span className="text-sm font-bold tracking-tight text-[#818CF8]">ADMIN</span>
+            <span className="text-sm font-bold tracking-tight text-[#2DD4BF]">ADMIN</span>
           </div>
         </Link>
         <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#11111F] border border-[#292940] rounded-full flex items-center justify-center text-[#6366F1] font-bold text-base shadow-xs">
+          <div className="w-10 h-10 bg-[#141D1E] border border-[#2A3A3A] rounded-full flex items-center justify-center text-[#2DD4BF] font-bold text-base shadow-xs">
             {user?.firstName?.[0] || 'S'}
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="font-semibold text-sm text-[#FFFFFF] truncate">{user?.firstName || 'Super'} {user?.lastName || 'Admin'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-xs text-[#A1A1AA] font-medium truncate">Root Access</span>
-              <span className="px-1.5 py-0.2 bg-[#818CF8]/15 text-[#818CF8] border border-[#818CF8]/30 rounded text-[9px] font-bold uppercase tracking-wider">SUPER</span>
+              <span className="text-xs text-[#9AAEAE] font-medium truncate">Root Access</span>
+              <span className="px-1.5 py-0.2 bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 rounded text-[9px] font-bold uppercase tracking-wider">SUPER</span>
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@ const SuperAdminLayout = () => {
       <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
         {navGroups.map((group, gIdx) => (
           <div key={group.title || gIdx}>
-            <h3 className="px-3 text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">
+            <h3 className="px-3 text-[10px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
               {group.title}
             </h3>
             <div className="space-y-0.5">
@@ -93,15 +93,15 @@ const SuperAdminLayout = () => {
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
                       isActive
-                        ? 'bg-[#6366F1]/15 text-[#FFFFFF] font-semibold border-l-4 border-[#6366F1] shadow-sm'
-                        : 'text-[#A1A1AA] hover:bg-[#11111F] hover:text-[#FFFFFF]'
+                        ? 'bg-[#2DD4BF]/15 text-[#FFFFFF] font-semibold border-l-4 border-[#2DD4BF] shadow-sm'
+                        : 'text-[#9AAEAE] hover:bg-[#141D1E] hover:text-[#FFFFFF]'
                     )}
                   >
                     <Icon
                       size={18}
                       className={clsx(
                         'shrink-0 transition-colors',
-                        isActive ? 'text-[#6366F1]' : 'text-[#A1A1AA] group-hover:text-[#6366F1]'
+                        isActive ? 'text-[#2DD4BF]' : 'text-[#9AAEAE] group-hover:text-[#2DD4BF]'
                       )}
                     />
                     <span className="truncate">{item.label}</span>
@@ -114,10 +114,10 @@ const SuperAdminLayout = () => {
       </nav>
 
       {/* Logout */}
-      <div className="p-3 border-t border-[#292940]">
+      <div className="p-3 border-t border-[#2A3A3A]">
         <button
           onClick={logout}
-          className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-[#EF4444] hover:bg-red-950/25 hover:text-red-400 rounded-xl transition-colors font-semibold text-sm cursor-pointer border border-transparent hover:border-[#EF4444]/30"
+          className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-[#F87171] hover:bg-red-950/25 hover:text-red-400 rounded-xl transition-colors font-semibold text-sm cursor-pointer border border-transparent hover:border-[#F87171]/30"
         >
           <LogOut size={16} />
           <span>Logout</span>
@@ -127,7 +127,7 @@ const SuperAdminLayout = () => {
   );
 
   return (
-    <div className="flex h-screen bg-[#050505] text-[#FFFFFF] overflow-hidden">
+    <div className="flex h-screen bg-[#080B0C] text-[#FFFFFF] overflow-hidden">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -140,7 +140,7 @@ const SuperAdminLayout = () => {
       {/* Sidebar */}
       <aside
         className={clsx(
-          'fixed lg:static top-0 left-0 h-full w-64 bg-[#0B0B12] text-[#FFFFFF] border-r border-[#292940] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none',
+          'fixed lg:static top-0 left-0 h-full w-64 bg-[#0B1112] text-[#F5FAFA] border-r border-[#2A3A3A] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
@@ -148,20 +148,20 @@ const SuperAdminLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#050505]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(99, 102, 241,0.06)_0%,_transparent_60%)] pointer-events-none" />
+      <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#080B0C]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(45, 212, 191,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
         {/* Header */}
-        <header className="h-16 border-b border-[#292940] flex items-center px-4 md:px-8 justify-between bg-[#0B0B12]/95 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm text-[#FFFFFF]">
+        <header className="h-16 border-b border-[#2A3A3A] flex items-center px-4 md:px-8 justify-between bg-[#0E1415]/95 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm text-[#FFFFFF]">
           <div className="flex items-center space-x-3">
             <button
-              className="lg:hidden text-[#A1A1AA] hover:text-[#6366F1] transition-colors p-1 rounded-lg hover:bg-[#11111F]"
+              className="lg:hidden text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors p-1 rounded-lg hover:bg-[#141D1E]"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#6366F1] hidden sm:block" />}
+            {currentNav && <currentNav.icon size={20} className="text-[#2DD4BF] hidden sm:block" />}
             <h2 className="text-base md:text-lg font-bold tracking-tight text-[#FFFFFF]">
               {currentNav?.label || 'Super Admin Portal'}
             </h2>
@@ -170,7 +170,7 @@ const SuperAdminLayout = () => {
           <div className="flex items-center space-x-3">
             <Link
               to="/super-admin/notifications"
-              className="text-[#A1A1AA] hover:text-[#6366F1] p-2 rounded-xl hover:bg-[#11111F] transition-colors relative"
+              className="text-[#9AAEAE] hover:text-[#2DD4BF] p-2 rounded-xl hover:bg-[#141D1E] transition-colors relative"
               title="Notifications"
             >
               <Bell size={20} />
@@ -178,9 +178,9 @@ const SuperAdminLayout = () => {
             <Link to="/super-admin/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-semibold text-[#FFFFFF] leading-none mb-0.5">{user?.firstName || 'Super'} {user?.lastName || 'Admin'}</p>
-                <p className="text-xs text-[#A1A1AA] font-medium leading-none">Root Access</p>
+                <p className="text-xs text-[#9AAEAE] font-medium leading-none">Root Access</p>
               </div>
-              <div className="w-9 h-9 bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold rounded-full flex items-center justify-center font-bold text-sm shadow">
                 {user?.firstName?.[0] || 'S'}
               </div>
             </Link>

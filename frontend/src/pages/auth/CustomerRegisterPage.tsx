@@ -27,8 +27,8 @@ const GOAL_ICONS: Record<string, any> = {
   'CrossFit': TrendingUp, 'Personal Training': Users, 'Online Coaching': Cpu,
 };
 const GOAL_COLORS: Record<string, string> = {
-  'Weight Loss': '#C43D35', 'Muscle Gain': '#6366F1', 'Strength': '#6366F1',
-  'General Fitness': '#27845A', 'Bodybuilding': '#4F46E5', 'Yoga': '#27845A',
+  'Weight Loss': '#C43D35', 'Muscle Gain': '#2DD4BF', 'Strength': '#2DD4BF',
+  'General Fitness': '#34D399', 'Bodybuilding': '#5EEAD4', 'Yoga': '#34D399',
   'CrossFit': '#D99A27', 'Personal Training': '#8B5CF6', 'Online Coaching': '#0EA5E9',
 };
 
@@ -386,44 +386,44 @@ const CustomerRegisterPage = () => {
   };
 
   const inputCls = (field: string) =>
-    `w-full bg-[#FFFFFF] border ${errors[field] ? 'border-[#17172A]' : 'border-[#292940]'} text-[#11111F] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors placeholder-[#A1A1AA]`;
+    `w-full bg-[#141D1E] border ${errors[field] ? 'border-[#1B2728]' : 'border-[#2A3A3A]'} text-[#F5FAFA] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#2DD4BF] transition-colors placeholder-[#9AAEAE]`;
 
   const selBtnCls = (active: boolean) =>
-    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#6366F1] text-white border-[#6366F1] font-semibold' : 'bg-[#FFFFFF] border-[#292940] text-[#A1A1AA] hover:border-[#6366F1]/50'}`;
+    `px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${active ? 'bg-[#2DD4BF] text-white border-[#2DD4BF] font-semibold' : 'bg-[#141D1E] border-[#2A3A3A] text-[#9AAEAE] hover:border-[#2DD4BF]/50'}`;
 
   // Helper: get selected package
   const selectedPkg = packages.find(p => p._id === form.selectedPackageId);
 
   return (
-    <div className="min-h-screen bg-[#0B0B12] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#0E1415] flex flex-col items-center justify-center px-4 py-12">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
       {/* Back to Home Arrow */}
-      <Link to="/" className="absolute top-8 left-8 text-[#A1A1AA] hover:text-[#6366F1] flex items-center gap-2 transition-colors z-10">
+      <Link to="/" className="absolute top-8 left-8 text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors z-10">
         <ArrowLeft size={20} />
         <span className="font-medium text-sm">Back to Home</span>
       </Link>
 
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2 mb-8 group z-10">
-        <div className="w-9 h-9 bg-[#6366F1] rounded-md flex items-center justify-center">
+        <div className="w-9 h-9 bg-[#2DD4BF] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#6366F1]">Gymora</span>
+        <span className="text-2xl font-bold tracking-tight text-[#2DD4BF]">Gymora</span>
       </Link>
 
-      <div className="w-full max-w-2xl bg-[#FFFFFF] border border-[#292940] rounded-2xl shadow-2xl overflow-hidden z-10">
+      <div className="w-full max-w-2xl bg-[#141D1E] border border-[#2A3A3A] rounded-2xl shadow-2xl overflow-hidden z-10">
         {/* Progress Header */}
-        <div className="bg-[#FFFFFF] border-b border-[#292940] px-8 py-5 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-[#11111F]">Customer Registration</h1>
+        <div className="bg-[#141D1E] border-b border-[#2A3A3A] px-8 py-5 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-[#F5FAFA]">Customer Registration</h1>
           <div className="flex items-center space-x-2">
             {STEPS.map((s, i) => (
               <div key={i} className="flex items-center space-x-2" title={s}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#6366F1] text-white' : i === step ? 'bg-[#6366F1] text-white ring-2 ring-[#C43D35]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#17172A] text-[#A1A1AA]'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#2DD4BF] text-white' : i === step ? 'bg-[#2DD4BF] text-white ring-2 ring-[#C43D35]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#1B2728] text-[#9AAEAE]'}`}>
                   {i < step ? <Check size={14} /> : i + 1}
                 </div>
-                <span className={`text-xs hidden sm:block ${i === step ? 'text-[#11111F] font-medium' : 'text-[#A1A1AA]'}`}>{s}</span>
-                {i < STEPS.length - 1 && <div className={`h-px w-4 sm:w-6 ${i < step ? 'bg-[#6366F1]' : 'bg-[#17172A]'}`} />}
+                <span className={`text-xs hidden sm:block ${i === step ? 'text-[#F5FAFA] font-medium' : 'text-[#9AAEAE]'}`}>{s}</span>
+                {i < STEPS.length - 1 && <div className={`h-px w-4 sm:w-6 ${i < step ? 'bg-[#2DD4BF]' : 'bg-[#1B2728]'}`} />}
               </div>
             ))}
           </div>
@@ -431,7 +431,7 @@ const CustomerRegisterPage = () => {
 
         <form onSubmit={handleSubmit} className="p-8">
           {apiError && (
-            <div className="flex items-center space-x-3 bg-[#17172A]/10 border border-[#17172A]/30 text-teal-400 rounded-xl px-4 py-3 mb-6 text-sm">
+            <div className="flex items-center space-x-3 bg-[#1B2728]/10 border border-[#1B2728]/30 text-[#2DD4BF] rounded-xl px-4 py-3 mb-6 text-sm">
               <AlertCircle size={18} className="shrink-0" /><span>{apiError}</span>
             </div>
           )}
@@ -439,52 +439,52 @@ const CustomerRegisterPage = () => {
           {/* STEP 0 — Account */}
           {step === 0 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-semibold text-[#11111F] mb-1">Account Details</h2>
+              <h2 className="text-lg font-semibold text-[#F5FAFA] mb-1">Account Details</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#A1A1AA] mb-2">First Name *</label>
+                  <label className="block text-sm text-[#9AAEAE] mb-2">First Name *</label>
                   <input id="reg-firstName" value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="John" className={inputCls('firstName')} />
-                  {errors.firstName && <p className="text-teal-400 text-xs mt-1">{errors.firstName}</p>}
+                  {errors.firstName && <p className="text-[#2DD4BF] text-xs mt-1">{errors.firstName}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#A1A1AA] mb-2">Last Name *</label>
+                  <label className="block text-sm text-[#9AAEAE] mb-2">Last Name *</label>
                   <input id="reg-lastName" value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="Doe" className={inputCls('lastName')} />
-                  {errors.lastName && <p className="text-teal-400 text-xs mt-1">{errors.lastName}</p>}
+                  {errors.lastName && <p className="text-[#2DD4BF] text-xs mt-1">{errors.lastName}</p>}
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-2">Email Address *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-2">Email Address *</label>
                 <div className="flex gap-2">
                   <input id="reg-email" type="email" value={form.email} onChange={e => { set('email', e.target.value); setOtpVerified(false); setOtpSent(false); }} disabled={otpVerified} placeholder="you@example.com" className={inputCls('email') + ' flex-1'} />
                   {!otpVerified && (
-                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#6366F1] text-white rounded-xl text-sm font-bold hover:bg-[#4F46E5] transition-colors whitespace-nowrap">
+                    <button type="button" onClick={handleSendOtp} className="px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl text-sm font-bold hover:bg-[#5EEAD4] transition-colors whitespace-nowrap">
                       {otpSent ? 'Resend' : 'Send OTP'}
                     </button>
                   )}
                   {otpVerified && (
-                    <button type="button" onClick={() => { setOtpVerified(false); setOtpSent(false); setOtp(''); }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition-colors whitespace-nowrap">
+                    <button type="button" onClick={() => { setOtpVerified(false); setOtpSent(false); setOtp(''); }} className="px-4 py-2 bg-gray-200 text-[#C1D0D0] rounded-xl text-sm font-bold hover:bg-gray-300 transition-colors whitespace-nowrap">
                       Change
                     </button>
                   )}
                 </div>
-                {errors.email && <p className="text-[#17172A] text-xs mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-[#1B2728] text-xs mt-1">{errors.email}</p>}
                 {otpSent && !otpVerified && (
                   <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl">
-                    <label className="block text-xs font-semibold text-[#6366F1] mb-2">Enter OTP sent to your email</label>
+                    <label className="block text-xs font-semibold text-[#2DD4BF] mb-2">Enter OTP sent to your email</label>
                     <div className="flex gap-2">
-                      <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#11111F] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#6366F1] transition-colors flex-1" maxLength={6} />
-                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#11111F] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">Verify</button>
+                      <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#141D1E] border border-green-200 text-[#F5FAFA] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#2DD4BF] transition-colors flex-1" maxLength={6} />
+                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#141D1E] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">Verify</button>
                     </div>
                   </div>
                 )}
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm text-[#A1A1AA]">Mobile Number *</label>
+                  <label className="block text-sm text-[#9AAEAE]">Mobile Number *</label>
                   {!otpVerified ? (
                     <span className="text-xs text-amber-600 font-medium flex items-center gap-1"><Lock size={12} /> Verify email first</span>
                   ) : (
-                    <span className="text-xs text-emerald-600 font-medium flex items-center gap-1"><Check size={12} /> Email verified</span>
+                    <span className="text-xs text-[#2DD4BF] font-medium flex items-center gap-1"><Check size={12} /> Email verified</span>
                   )}
                 </div>
                 <div onClick={() => { if (!otpVerified) handleMobileClick(); }} className={!otpVerified ? 'cursor-not-allowed' : ''}>
@@ -494,39 +494,39 @@ const CustomerRegisterPage = () => {
                     onFocus={e => { if (!otpVerified) { e.target.blur(); handleMobileClick(e); } }}
                     readOnly={!otpVerified}
                     placeholder={otpVerified ? '10-digit number' : 'Please verify email first'}
-                    className={inputCls('mobile') + (!otpVerified ? ' bg-[#0B0B12]/70 cursor-not-allowed select-none' : '')} />
+                    className={inputCls('mobile') + (!otpVerified ? ' bg-[#0E1415]/70 cursor-not-allowed select-none' : '')} />
                 </div>
-                {errors.mobile && <p className="text-teal-400 text-xs mt-1">{errors.mobile}</p>}
+                {errors.mobile && <p className="text-[#2DD4BF] text-xs mt-1">{errors.mobile}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-2">Password *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-2">Password *</label>
                 <div className="relative">
                   <input id="reg-password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => set('password', e.target.value)} placeholder="Minimum 8 characters" className={inputCls('password') + ' pr-12'} />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#11111F]">
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#FFFFFF]">
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                {errors.password && <p className="text-teal-400 text-xs mt-1">{errors.password}</p>}
+                {errors.password && <p className="text-[#2DD4BF] text-xs mt-1">{errors.password}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-2">Confirm Password *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-2">Confirm Password *</label>
                 <div className="relative">
                   <input id="reg-confirmPassword" type={showConfirm ? 'text' : 'password'} value={form.confirmPassword} onChange={e => set('confirmPassword', e.target.value)} placeholder="Repeat your password" className={inputCls('confirmPassword') + ' pr-12'} />
-                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#11111F]">
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#FFFFFF]">
                     {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                {errors.confirmPassword && <p className="text-teal-400 text-xs mt-1">{errors.confirmPassword}</p>}
+                {errors.confirmPassword && <p className="text-[#2DD4BF] text-xs mt-1">{errors.confirmPassword}</p>}
               </div>
 
               {/* Referral Code (Optional) */}
-              <div className="pt-3 border-t border-[#292940] space-y-2">
+              <div className="pt-3 border-t border-[#2A3A3A] space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="block text-sm text-[#A1A1AA] flex items-center gap-1.5 font-medium">
-                    <Gift size={16} className="text-[#6366F1]" />
+                  <label className="block text-sm text-[#9AAEAE] flex items-center gap-1.5 font-medium">
+                    <Gift size={16} className="text-[#2DD4BF]" />
                     Referral Code (Optional)
                   </label>
-                  <span className="text-[11px] text-[#6366F1] font-semibold">Special Joiner Perks</span>
+                  <span className="text-[11px] text-[#2DD4BF] font-semibold">Special Joiner Perks</span>
                 </div>
                 <div className="flex gap-2">
                   <input
@@ -558,8 +558,8 @@ const CustomerRegisterPage = () => {
                     onClick={() => handleValidateReferralCode(form.referralCode)}
                     className={`px-4 py-2 text-xs font-bold rounded-xl transition-all whitespace-nowrap shadow-sm cursor-pointer ${
                       validatedReferral
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                        : 'bg-[#6366F1] hover:bg-[#4F46E5] disabled:bg-[#17172A] disabled:text-[#A1A1AA] disabled:cursor-not-allowed text-white'
+                        ? 'bg-[#2DD4BF] hover:bg-[#5EEAD4] text-white'
+                        : 'bg-[#2DD4BF] hover:bg-[#5EEAD4] disabled:bg-[#1B2728] disabled:text-[#9AAEAE] disabled:cursor-not-allowed text-white'
                     }`}
                   >
                     {referralCheckLoading ? 'Validating...' : validatedReferral ? 'Applied ✓' : 'Apply Code'}
@@ -567,10 +567,10 @@ const CustomerRegisterPage = () => {
                 </div>
 
                 {validatedReferral && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 space-y-1 animate-fadeIn">
+                  <div className="p-3 bg-[#1B2728] border border-[#2A3A3A] rounded-xl text-xs text-[#2DD4BF] space-y-1 animate-fadeIn">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 font-bold text-emerald-950">
-                        <Sparkles size={14} className="text-emerald-600" />
+                      <div className="flex items-center gap-1.5 font-bold text-[#2DD4BF]">
+                        <Sparkles size={14} className="text-[#2DD4BF]" />
                         Referral Offer Verified!
                       </div>
                       <button
@@ -610,53 +610,53 @@ const CustomerRegisterPage = () => {
           {/* STEP 1 — Personal */}
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-semibold text-[#11111F] mb-1">Personal Details</h2>
+              <h2 className="text-lg font-semibold text-[#F5FAFA] mb-1">Personal Details</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#A1A1AA] mb-2">City *</label>
+                  <label className="block text-sm text-[#9AAEAE] mb-2">City *</label>
                   <input id="reg-city" value={form.city} onChange={e => set('city', e.target.value)} placeholder="Your city" className={inputCls('city')} />
-                  {errors.city && <p className="text-teal-400 text-xs mt-1">{errors.city}</p>}
+                  {errors.city && <p className="text-[#2DD4BF] text-xs mt-1">{errors.city}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#A1A1AA] mb-2">PIN Code</label>
+                  <label className="block text-sm text-[#9AAEAE] mb-2">PIN Code</label>
                   <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-3">Gender *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-3">Gender *</label>
                 <div className="flex flex-wrap gap-2">
                   {GENDERS.map(g => (
                     <button key={g} type="button" onClick={() => set('gender', g)} className={selBtnCls(form.gender === g)}>{g}</button>
                   ))}
                 </div>
-                {errors.gender && <p className="text-teal-400 text-xs mt-2">{errors.gender}</p>}
+                {errors.gender && <p className="text-[#2DD4BF] text-xs mt-2">{errors.gender}</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#A1A1AA] mb-2">Height (cm) *</label>
+                  <label className="block text-sm text-[#9AAEAE] mb-2">Height (cm) *</label>
                   <input id="reg-height" type="number" value={form.height} onChange={e => set('height', e.target.value)} placeholder="e.g. 175" className={inputCls('height')} />
-                  {errors.height && <p className="text-teal-400 text-xs mt-1">{errors.height}</p>}
+                  {errors.height && <p className="text-[#2DD4BF] text-xs mt-1">{errors.height}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-[#A1A1AA] mb-2">Weight (kg) *</label>
+                  <label className="block text-sm text-[#9AAEAE] mb-2">Weight (kg) *</label>
                   <input id="reg-weight" type="number" value={form.weight} onChange={e => set('weight', e.target.value)} placeholder="e.g. 70" className={inputCls('weight')} />
-                  {errors.weight && <p className="text-teal-400 text-xs mt-1">{errors.weight}</p>}
+                  {errors.weight && <p className="text-[#2DD4BF] text-xs mt-1">{errors.weight}</p>}
                 </div>
               </div>
-              <div className="pt-4 border-t border-[#292940]">
-                <h3 className="text-[#11111F] font-bold mb-4">Emergency Contact</h3>
+              <div className="pt-4 border-t border-[#2A3A3A]">
+                <h3 className="text-[#F5FAFA] font-bold mb-4">Emergency Contact</h3>
                 <div className="space-y-4">
                   <div>
                     <input type="text" placeholder="Contact Name" value={form.emergencyContactName} onChange={e => set('emergencyContactName', e.target.value)} className={inputCls('emergencyContactName')} />
-                    {errors.emergencyContactName && <p className="text-[#17172A] text-xs mt-1">{errors.emergencyContactName}</p>}
+                    {errors.emergencyContactName && <p className="text-[#1B2728] text-xs mt-1">{errors.emergencyContactName}</p>}
                   </div>
                   <div>
                     <input type="tel" maxLength={10} placeholder="Contact Number" value={form.emergencyContactMobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if (v.length <= 10) set('emergencyContactMobile', v); }} className={inputCls('emergencyContactMobile')} />
-                    {errors.emergencyContactMobile && <p className="text-[#17172A] text-xs mt-1">{errors.emergencyContactMobile}</p>}
+                    {errors.emergencyContactMobile && <p className="text-[#1B2728] text-xs mt-1">{errors.emergencyContactMobile}</p>}
                   </div>
                   <div>
                     <input type="text" placeholder="Relationship (e.g., Parent, Spouse)" value={form.emergencyContactRelation} onChange={e => set('emergencyContactRelation', e.target.value)} className={inputCls('emergencyContactRelation')} />
-                    {errors.emergencyContactRelation && <p className="text-[#17172A] text-xs mt-1">{errors.emergencyContactRelation}</p>}
+                    {errors.emergencyContactRelation && <p className="text-[#1B2728] text-xs mt-1">{errors.emergencyContactRelation}</p>}
                   </div>
                 </div>
               </div>
@@ -666,17 +666,17 @@ const CustomerRegisterPage = () => {
           {/* STEP 2 — Fitness Preferences */}
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold text-[#11111F] mb-1">Fitness Preferences</h2>
+              <h2 className="text-lg font-semibold text-[#F5FAFA] mb-1">Fitness Preferences</h2>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-3">Fitness Goal *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-3">Fitness Goal *</label>
                 <div className="flex flex-wrap gap-2">
                   {FITNESS_GOALS.map(g => {
                     const Icon = GOAL_ICONS[g] || Activity;
-                    const color = GOAL_COLORS[g] || '#6366F1';
+                    const color = GOAL_COLORS[g] || '#2DD4BF';
                     const isActive = form.fitnessGoal === g;
                     return (
                       <button key={g} type="button" onClick={() => setFitnessGoal(g)}
-                        className={`px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer flex items-center gap-1.5 ${isActive ? 'text-white border-transparent font-semibold' : 'bg-[#FFFFFF] border-[#292940] text-[#A1A1AA] hover:border-[#6366F1]/50'}`}
+                        className={`px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer flex items-center gap-1.5 ${isActive ? 'text-white border-transparent font-semibold' : 'bg-[#141D1E] border-[#2A3A3A] text-[#9AAEAE] hover:border-[#2DD4BF]/50'}`}
                         style={isActive ? { backgroundColor: color, borderColor: color } : {}}>
                         <Icon size={14} />
                         {g}
@@ -684,43 +684,43 @@ const CustomerRegisterPage = () => {
                     );
                   })}
                 </div>
-                {errors.fitnessGoal && <p className="text-teal-400 text-xs mt-2">{errors.fitnessGoal}</p>}
+                {errors.fitnessGoal && <p className="text-[#2DD4BF] text-xs mt-2">{errors.fitnessGoal}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-3">Experience Level *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-3">Experience Level *</label>
                 <div className="flex gap-2">
                   {EXPERIENCE_LEVELS.map(l => (
                     <button key={l} type="button" onClick={() => set('experienceLevel', l)} className={selBtnCls(form.experienceLevel === l)}>{l}</button>
                   ))}
                 </div>
-                {errors.experienceLevel && <p className="text-teal-400 text-xs mt-2">{errors.experienceLevel}</p>}
+                {errors.experienceLevel && <p className="text-[#2DD4BF] text-xs mt-2">{errors.experienceLevel}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-3">Preferred Workout Type *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-3">Preferred Workout Type *</label>
                 <div className="flex gap-2">
                   {TRAINING_TYPES.map(t => (
                     <button key={t} type="button" onClick={() => set('preferredTraining', t)} className={selBtnCls(form.preferredTraining === t)}>{t}</button>
                   ))}
                 </div>
-                {errors.preferredTraining && <p className="text-teal-400 text-xs mt-2">{errors.preferredTraining}</p>}
+                {errors.preferredTraining && <p className="text-[#2DD4BF] text-xs mt-2">{errors.preferredTraining}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-3">Preferred Workout Days *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-3">Preferred Workout Days *</label>
                 <div className="flex gap-2">
                   {WORKOUT_DAYS.map(d => (
                     <button key={d} type="button" onClick={() => set('preferredWorkoutDays', d)} className={selBtnCls(form.preferredWorkoutDays === d)}>{d}</button>
                   ))}
                 </div>
-                {errors.preferredWorkoutDays && <p className="text-teal-400 text-xs mt-2">{errors.preferredWorkoutDays}</p>}
+                {errors.preferredWorkoutDays && <p className="text-[#2DD4BF] text-xs mt-2">{errors.preferredWorkoutDays}</p>}
               </div>
               <div>
-                <label className="block text-sm text-[#A1A1AA] mb-3">Preferred Workout Time *</label>
+                <label className="block text-sm text-[#9AAEAE] mb-3">Preferred Workout Time *</label>
                 <div className="flex flex-wrap gap-2">
                   {WORKOUT_TIMES.map(t => (
                     <button key={t} type="button" onClick={() => set('preferredWorkoutTime', t)} className={selBtnCls(form.preferredWorkoutTime === t)}>{t}</button>
                   ))}
                 </div>
-                {errors.preferredWorkoutTime && <p className="text-teal-400 text-xs mt-2">{errors.preferredWorkoutTime}</p>}
+                {errors.preferredWorkoutTime && <p className="text-[#2DD4BF] text-xs mt-2">{errors.preferredWorkoutTime}</p>}
               </div>
             </div>
           )}
@@ -729,8 +729,8 @@ const CustomerRegisterPage = () => {
           {step === 3 && (
             <div className="space-y-5">
               <div>
-                <h2 className="text-lg font-semibold text-[#11111F] mb-1">Select Your Package</h2>
-                <p className="text-sm text-[#A1A1AA]">
+                <h2 className="text-lg font-semibold text-[#F5FAFA] mb-1">Select Your Package</h2>
+                <p className="text-sm text-[#9AAEAE]">
                   Browse all available gym membership packages. Packages matching your goal are highlighted.
                 </p>
               </div>
@@ -743,8 +743,8 @@ const CustomerRegisterPage = () => {
                     onClick={() => setPackageFilter('ALL')}
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       packageFilter === 'ALL'
-                        ? 'bg-[#6366F1] text-white shadow-sm'
-                        : 'bg-white border border-[#292940] text-[#A1A1AA] hover:border-[#6366F1]/50'
+                        ? 'bg-[#2DD4BF] text-white shadow-sm'
+                        : 'bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] hover:border-[#2DD4BF]/50'
                     }`}
                   >
                     All Packages ({packages.length})
@@ -759,13 +759,13 @@ const CustomerRegisterPage = () => {
                         onClick={() => setPackageFilter(goal)}
                         className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                           packageFilter === goal
-                            ? 'bg-[#6366F1] text-white shadow-sm'
-                            : 'bg-white border border-[#292940] text-[#A1A1AA] hover:border-[#6366F1]/50'
+                            ? 'bg-[#2DD4BF] text-white shadow-sm'
+                            : 'bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] hover:border-[#2DD4BF]/50'
                         }`}
                       >
                         {isGoalMatch && <span>🎯</span>}
                         <span>{goal}</span>
-                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${packageFilter === goal ? 'bg-white/20 text-white' : 'bg-[#EBF3F2] text-[#6366F1]'}`}>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${packageFilter === goal ? 'bg-[#141D1E]/20 text-white' : 'bg-[#EBF3F2] text-[#2DD4BF]'}`}>
                           {count}
                         </span>
                       </button>
@@ -776,18 +776,18 @@ const CustomerRegisterPage = () => {
 
               {pkgLoading ? (
                 <div className="flex justify-center py-12">
-                  <div className="w-8 h-8 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : pkgError ? (
                 <div className="text-center py-8 text-red-500 text-sm">{pkgError}</div>
               ) : packages.length === 0 ? (
-                <div className="text-center py-12 space-y-3 bg-stone-50 rounded-2xl border border-[#292940]">
-                  <div className="w-14 h-14 mx-auto bg-orange-50 rounded-2xl flex items-center justify-center">
-                    <Package size={28} className="text-[#6366F1]" />
+                <div className="text-center py-12 space-y-3 bg-[#1B2728] rounded-2xl border border-[#2A3A3A]">
+                  <div className="w-14 h-14 mx-auto bg-[#1B2728] rounded-2xl flex items-center justify-center">
+                    <Package size={28} className="text-[#2DD4BF]" />
                   </div>
-                  <p className="font-semibold text-[#11111F]">No packages available</p>
-                  <p className="text-xs text-[#A1A1AA]">No packages are currently published for this gym.</p>
-                  <p className="text-xs text-[#A1A1AA]">You can continue your registration and join a package later.</p>
+                  <p className="font-semibold text-[#F5FAFA]">No packages available</p>
+                  <p className="text-xs text-[#9AAEAE]">No packages are currently published for this gym.</p>
+                  <p className="text-xs text-[#9AAEAE]">You can continue your registration and join a package later.</p>
                 </div>
               ) : (
                 <div className="space-y-4 max-h-[55vh] overflow-y-auto pr-1">
@@ -802,13 +802,13 @@ const CustomerRegisterPage = () => {
                     })
                     .map(pkg => {
                     const Icon = GOAL_ICONS[pkg.fitnessGoal] || Activity;
-                    const color = GOAL_COLORS[pkg.fitnessGoal] || '#6366F1';
+                    const color = GOAL_COLORS[pkg.fitnessGoal] || '#2DD4BF';
                     const isSelected = form.selectedPackageId === pkg._id;
 
                     return (
                       <div key={pkg._id}
                         onClick={() => selectPackage(pkg._id)}
-                        className={`rounded-2xl p-5 border-2 cursor-pointer transition-all ${isSelected ? 'border-[#6366F1] shadow-md' : 'border-[#292940] hover:border-[#6366F1]/50'}`}>
+                        className={`rounded-2xl p-5 border-2 cursor-pointer transition-all ${isSelected ? 'border-[#2DD4BF] shadow-md' : 'border-[#2A3A3A] hover:border-[#2DD4BF]/50'}`}>
                         {/* Package header */}
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3">
@@ -817,43 +817,43 @@ const CustomerRegisterPage = () => {
                             </div>
                             <div>
                               <div className="flex items-center flex-wrap gap-2">
-                                <h3 className="font-bold text-[#11111F] text-sm">{pkg.name}</h3>
+                                <h3 className="font-bold text-[#F5FAFA] text-sm">{pkg.name}</h3>
                                 {pkg.isPopular && (
-                                  <span className="text-[10px] bg-[#6366F1] text-white font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                  <span className="text-[10px] bg-[#2DD4BF] text-[#06201D] font-bold font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                                     <Star size={8} className="fill-white" /> Popular
                                   </span>
                                 )}
                                 {pkg.fitnessGoal === form.fitnessGoal && (
-                                  <span className="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                  <span className="text-[10px] bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                                     🎯 Recommended for your goal
                                   </span>
                                 )}
                               </div>
                               <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-xs font-semibold text-[#6366F1]">{pkg.fitnessGoal}</span>
-                                <span className="text-[#292940]">·</span>
-                                <span className="text-xs text-[#A1A1AA]">{pkg.trainingType}</span>
-                                <span className="text-[#292940]">·</span>
-                                <span className="text-xs text-[#A1A1AA]">{pkg.duration}</span>
+                                <span className="text-xs font-semibold text-[#2DD4BF]">{pkg.fitnessGoal}</span>
+                                <span className="text-[#2A3A3A]">·</span>
+                                <span className="text-xs text-[#9AAEAE]">{pkg.trainingType}</span>
+                                <span className="text-[#2A3A3A]">·</span>
+                                <span className="text-xs text-[#9AAEAE]">{pkg.duration}</span>
                               </div>
                             </div>
                           </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 transition-all ${isSelected ? 'border-[#6366F1] bg-[#6366F1]' : 'border-[#292940]'}`}>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 transition-all ${isSelected ? 'border-[#2DD4BF] bg-[#2DD4BF]' : 'border-[#2A3A3A]'}`}>
                             {isSelected && <Check size={12} className="text-white" strokeWidth={3} />}
                           </div>
                         </div>
 
                         {pkg.description && (
-                          <p className="text-xs text-[#A1A1AA] mb-3 leading-relaxed">{pkg.description}</p>
+                          <p className="text-xs text-[#9AAEAE] mb-3 leading-relaxed">{pkg.description}</p>
                         )}
 
                         {/* Features */}
                         {pkg.features.length > 0 && (
                           <div className="mb-4">
-                            <p className="text-xs font-bold text-[#11111F] mb-2 uppercase tracking-wider">Features:</p>
+                            <p className="text-xs font-bold text-[#F5FAFA] mb-2 uppercase tracking-wider">Features:</p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                               {pkg.features.slice(0, 6).map((f, i) => (
-                                <div key={i} className="flex items-center gap-1.5 text-xs text-[#A1A1AA]">
+                                <div key={i} className="flex items-center gap-1.5 text-xs text-[#9AAEAE]">
                                   <Check size={10} style={{ color }} strokeWidth={3} className="shrink-0" />
                                   {f}
                                 </div>
@@ -864,30 +864,30 @@ const CustomerRegisterPage = () => {
 
                         {/* Billing plan selection */}
                         {isSelected && (
-                          <div className="border-t border-[#292940] pt-3 mt-1 space-y-2">
-                            <p className="text-xs font-bold text-[#11111F] mb-2">Choose your billing plan:</p>
+                          <div className="border-t border-[#2A3A3A] pt-3 mt-1 space-y-2">
+                            <p className="text-xs font-bold text-[#F5FAFA] mb-2">Choose your billing plan:</p>
                             <div className="grid grid-cols-2 gap-3">
                               {(pkg.availablePlans === 'monthly' || pkg.availablePlans === 'both') && (
                                 <button type="button"
                                   onClick={e => { e.stopPropagation(); setForm((f: any) => ({ ...f, selectedBillingPlan: 'monthly' })); setErrors((e: any) => { const n = { ...e }; delete n['selectedBillingPlan']; return n; }); }}
-                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'monthly' ? 'border-[#6366F1] bg-orange-50' : 'border-[#292940] hover:border-[#6366F1]/50'}`}>
-                                  <span className="block text-xs font-semibold text-[#A1A1AA]">Monthly</span>
-                                  <span className="block text-lg font-black text-[#6366F1]">₹{pkg.monthlyPrice.toLocaleString('en-IN')}</span>
-                                  <span className="block text-[10px] text-[#A1A1AA]">per month</span>
+                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'monthly' ? 'border-[#2DD4BF] bg-[#1B2728]' : 'border-[#2A3A3A] hover:border-[#2DD4BF]/50'}`}>
+                                  <span className="block text-xs font-semibold text-[#9AAEAE]">Monthly</span>
+                                  <span className="block text-lg font-black text-[#2DD4BF]">₹{pkg.monthlyPrice.toLocaleString('en-IN')}</span>
+                                  <span className="block text-[10px] text-[#9AAEAE]">per month</span>
                                 </button>
                               )}
                               {(pkg.availablePlans === 'annual' || pkg.availablePlans === 'both') && (
                                 <button type="button"
                                   onClick={e => { e.stopPropagation(); setForm((f: any) => ({ ...f, selectedBillingPlan: 'annual' })); setErrors((e: any) => { const n = { ...e }; delete n['selectedBillingPlan']; return n; }); }}
-                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'annual' ? 'border-[#27845A] bg-emerald-50' : 'border-[#292940] hover:border-emerald-300'}`}>
-                                  <span className="block text-xs font-semibold text-[#A1A1AA]">Annual</span>
-                                  <span className="block text-lg font-black text-[#27845A]">₹{pkg.annualPrice.toLocaleString('en-IN')}</span>
-                                  <span className="block text-[10px] text-emerald-700 font-semibold">per year · Save more</span>
+                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'annual' ? 'border-[#34D399] bg-[#1B2728]' : 'border-[#2A3A3A] hover:border-[#2A3A3A]'}`}>
+                                  <span className="block text-xs font-semibold text-[#9AAEAE]">Annual</span>
+                                  <span className="block text-lg font-black text-[#34D399]">₹{pkg.annualPrice.toLocaleString('en-IN')}</span>
+                                  <span className="block text-[10px] text-[#2DD4BF] font-semibold">per year · Save more</span>
                                 </button>
                               )}
                             </div>
                             {errors.selectedBillingPlan && (
-                              <p className="text-teal-400 text-xs mt-1">{errors.selectedBillingPlan}</p>
+                              <p className="text-[#2DD4BF] text-xs mt-1">{errors.selectedBillingPlan}</p>
                             )}
                           </div>
                         )}
@@ -898,20 +898,20 @@ const CustomerRegisterPage = () => {
               )}
 
               {errors.selectedPackageId && (
-                <p className="text-teal-400 text-xs">{errors.selectedPackageId}</p>
+                <p className="text-[#2DD4BF] text-xs">{errors.selectedPackageId}</p>
               )}
 
               {/* Summary of selected */}
               {selectedPkg && form.selectedBillingPlan && (
-                <div className="p-4 bg-[#0B0B12] border border-[#6366F1]/30 rounded-xl">
-                  <p className="text-xs font-bold text-[#11111F] mb-2">Selected Plan Summary</p>
-                  <div className="space-y-1 text-xs text-[#A1A1AA]">
-                    <div className="flex justify-between"><span>Package:</span><span className="font-semibold text-[#11111F]">{selectedPkg.name}</span></div>
-                    <div className="flex justify-between"><span>Goal:</span><span className="font-semibold text-[#11111F]">{selectedPkg.fitnessGoal}</span></div>
-                    <div className="flex justify-between"><span>Plan:</span><span className="font-semibold text-[#11111F] capitalize">{form.selectedBillingPlan}</span></div>
+                <div className="p-4 bg-[#0E1415] border border-[#2DD4BF]/30 rounded-xl">
+                  <p className="text-xs font-bold text-[#F5FAFA] mb-2">Selected Plan Summary</p>
+                  <div className="space-y-1 text-xs text-[#9AAEAE]">
+                    <div className="flex justify-between"><span>Package:</span><span className="font-semibold text-[#F5FAFA]">{selectedPkg.name}</span></div>
+                    <div className="flex justify-between"><span>Goal:</span><span className="font-semibold text-[#F5FAFA]">{selectedPkg.fitnessGoal}</span></div>
+                    <div className="flex justify-between"><span>Plan:</span><span className="font-semibold text-[#F5FAFA] capitalize">{form.selectedBillingPlan}</span></div>
                     <div className="flex justify-between">
                       <span>Price:</span>
-                      <span className="font-bold text-[#6366F1]">
+                      <span className="font-bold text-[#2DD4BF]">
                         ₹{(form.selectedBillingPlan === 'annual' ? selectedPkg.annualPrice : selectedPkg.monthlyPrice).toLocaleString('en-IN')}
                         {form.selectedBillingPlan === 'monthly' ? '/month' : '/year'}
                       </span>
@@ -925,20 +925,20 @@ const CustomerRegisterPage = () => {
           {/* STEP 4 — Terms */}
           {step === 4 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <h2 className="text-lg font-semibold text-[#11111F] mb-1">Terms &amp; Conditions</h2>
-              <p className="text-[#A1A1AA] text-sm">Please read and accept the following before creating your account.</p>
+              <h2 className="text-lg font-semibold text-[#F5FAFA] mb-1">Terms &amp; Conditions</h2>
+              <p className="text-[#9AAEAE] text-sm">Please read and accept the following before creating your account.</p>
 
               {/* Selected plan summary */}
               {selectedPkg && form.selectedBillingPlan && (
-                <div className="p-4 bg-[#0B0B12] border border-[#292940] rounded-xl mb-4">
-                  <h3 className="font-bold text-[#11111F] mb-3">Selected Membership Package</h3>
-                  <div className="space-y-2 text-sm text-[#A1A1AA]">
-                    <div className="flex justify-between"><span>Package:</span><span className="font-semibold text-[#11111F]">{selectedPkg.name}</span></div>
-                    <div className="flex justify-between"><span>Fitness Goal:</span><span className="font-semibold text-[#11111F]">{selectedPkg.fitnessGoal}</span></div>
-                    <div className="flex justify-between"><span>Billing Plan:</span><span className="font-semibold text-[#11111F] capitalize">{form.selectedBillingPlan}</span></div>
+                <div className="p-4 bg-[#0E1415] border border-[#2A3A3A] rounded-xl mb-4">
+                  <h3 className="font-bold text-[#F5FAFA] mb-3">Selected Membership Package</h3>
+                  <div className="space-y-2 text-sm text-[#9AAEAE]">
+                    <div className="flex justify-between"><span>Package:</span><span className="font-semibold text-[#F5FAFA]">{selectedPkg.name}</span></div>
+                    <div className="flex justify-between"><span>Fitness Goal:</span><span className="font-semibold text-[#F5FAFA]">{selectedPkg.fitnessGoal}</span></div>
+                    <div className="flex justify-between"><span>Billing Plan:</span><span className="font-semibold text-[#F5FAFA] capitalize">{form.selectedBillingPlan}</span></div>
                     <div className="flex justify-between">
                       <span>Price:</span>
-                      <span className="font-semibold text-[#6366F1]">
+                      <span className="font-semibold text-[#2DD4BF]">
                         ₹{(form.selectedBillingPlan === 'annual' ? selectedPkg.annualPrice : selectedPkg.monthlyPrice).toLocaleString('en-IN')}
                         {form.selectedBillingPlan === 'monthly' ? ' / month' : ' / year'}
                       </span>
@@ -948,57 +948,57 @@ const CustomerRegisterPage = () => {
               )}
 
               {intentData?.plan && !selectedPkg && (
-                <div className="p-4 bg-[#0B0B12] border border-[#292940] rounded-xl mb-6">
-                  <h3 className="font-bold text-[#11111F] mb-3">Selected Membership Plan</h3>
-                  <div className="space-y-2 text-sm text-[#A1A1AA]">
-                    <div className="flex justify-between"><span>Plan:</span><span className="font-semibold text-[#11111F]">{intentData.plan.name}</span></div>
-                    <div className="flex justify-between"><span>Duration:</span><span className="font-semibold text-[#11111F]">{intentData.plan.duration}</span></div>
-                    <div className="flex justify-between"><span>Price:</span><span className="font-semibold text-[#6366F1]">₹{intentData.plan.price}</span></div>
+                <div className="p-4 bg-[#0E1415] border border-[#2A3A3A] rounded-xl mb-6">
+                  <h3 className="font-bold text-[#F5FAFA] mb-3">Selected Membership Plan</h3>
+                  <div className="space-y-2 text-sm text-[#9AAEAE]">
+                    <div className="flex justify-between"><span>Plan:</span><span className="font-semibold text-[#F5FAFA]">{intentData.plan.name}</span></div>
+                    <div className="flex justify-between"><span>Duration:</span><span className="font-semibold text-[#F5FAFA]">{intentData.plan.duration}</span></div>
+                    <div className="flex justify-between"><span>Price:</span><span className="font-semibold text-[#2DD4BF]">₹{intentData.plan.price}</span></div>
                   </div>
                 </div>
               )}
 
-              <div className="bg-[#FFFFFF] border border-[#292940] rounded-xl p-4 text-sm text-[#A1A1AA] max-h-40 overflow-y-auto leading-relaxed">
-                <strong className="text-[#11111F] block mb-2">Terms &amp; Conditions</strong>
+              <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-xl p-4 text-sm text-[#9AAEAE] max-h-40 overflow-y-auto leading-relaxed">
+                <strong className="text-[#F5FAFA] block mb-2">Terms &amp; Conditions</strong>
                 By creating an account on Gymora, you agree to use the platform in compliance with all applicable laws. Your personal data will be used to provide fitness coaching and gym management services. AI-generated plans are for guidance only and not a substitute for professional medical advice. Subscriptions are billed according to your chosen plan. You may cancel at any time.
               </div>
               <div className="space-y-4">
                 <label className="flex items-start space-x-3 cursor-pointer">
-                  <button type="button" onClick={() => set('acceptTerms', !form.acceptTerms)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptTerms ? 'bg-[#6366F1] border-[#6366F1]' : 'border-[#A1A1AA]'}`}>
+                  <button type="button" onClick={() => set('acceptTerms', !form.acceptTerms)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptTerms ? 'bg-[#2DD4BF] border-[#2DD4BF]' : 'border-[#9AAEAE]'}`}>
                     {form.acceptTerms && <Check size={12} className="text-black" />}
                   </button>
-                  <span className="text-sm text-[#A1A1AA]">I accept the <Link to="/terms-of-service" className="text-[#6366F1] hover:underline">Terms &amp; Conditions</Link></span>
+                  <span className="text-sm text-[#9AAEAE]">I accept the <Link to="/terms-of-service" className="text-[#2DD4BF] hover:underline">Terms &amp; Conditions</Link></span>
                 </label>
-                {errors.acceptTerms && <p className="text-teal-400 text-xs ml-8">{errors.acceptTerms}</p>}
+                {errors.acceptTerms && <p className="text-[#2DD4BF] text-xs ml-8">{errors.acceptTerms}</p>}
                 <label className="flex items-start space-x-3 cursor-pointer">
-                  <button type="button" onClick={() => set('acceptPrivacy', !form.acceptPrivacy)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptPrivacy ? 'bg-[#6366F1] border-[#6366F1]' : 'border-[#A1A1AA]'}`}>
+                  <button type="button" onClick={() => set('acceptPrivacy', !form.acceptPrivacy)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptPrivacy ? 'bg-[#2DD4BF] border-[#2DD4BF]' : 'border-[#9AAEAE]'}`}>
                     {form.acceptPrivacy && <Check size={12} className="text-black" />}
                   </button>
-                  <span className="text-sm text-[#A1A1AA]">I accept the <Link to="/privacy-policy" className="text-[#6366F1] hover:underline">Privacy Policy</Link></span>
+                  <span className="text-sm text-[#9AAEAE]">I accept the <Link to="/privacy-policy" className="text-[#2DD4BF] hover:underline">Privacy Policy</Link></span>
                 </label>
-                {errors.acceptPrivacy && <p className="text-teal-400 text-xs ml-8">{errors.acceptPrivacy}</p>}
+                {errors.acceptPrivacy && <p className="text-[#2DD4BF] text-xs ml-8">{errors.acceptPrivacy}</p>}
               </div>
             </div>
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#292940]">
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#2A3A3A]">
             {step > 0 ? (
-              <button type="button" onClick={prev} className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl hover:bg-[#17172A] transition-colors text-sm">
+              <button type="button" onClick={prev} className="flex items-center space-x-2 px-5 py-2.5 bg-[#141D1E] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl hover:bg-[#1B2728] transition-colors text-sm">
                 <ChevronLeft size={18} /><span>Back</span>
               </button>
             ) : (
-              <Link to="/login" className="flex items-center space-x-2 px-5 py-2.5 bg-[#FFFFFF] border border-[#292940] text-[#11111F] rounded-xl hover:bg-[#17172A] transition-colors text-sm">
+              <Link to="/login" className="flex items-center space-x-2 px-5 py-2.5 bg-[#141D1E] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl hover:bg-[#1B2728] transition-colors text-sm">
                 <span>Back to Login</span>
               </Link>
             )}
 
             {step < STEPS.length - 1 ? (
-              <button type="button" onClick={next} className="flex items-center space-x-2 px-6 py-2.5 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] transition-colors text-sm">
+              <button type="button" onClick={next} className="flex items-center space-x-2 px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors text-sm">
                 <span>Next</span><ChevronRight size={18} />
               </button>
             ) : (
-              <button id="reg-submit" type="submit" disabled={isLoading} className="flex items-center space-x-2 px-6 py-2.5 bg-[#6366F1] text-white font-bold rounded-xl hover:bg-[#4F46E5] disabled:opacity-60 transition-colors text-sm">
+              <button id="reg-submit" type="submit" disabled={isLoading} className="flex items-center space-x-2 px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] disabled:opacity-60 transition-colors text-sm">
                 {isLoading ? <><Loader2 size={18} className="animate-spin" /><span>Creating Profile...</span></> : <><span>Create Profile</span><Check size={18} /></>}
               </button>
             )}
