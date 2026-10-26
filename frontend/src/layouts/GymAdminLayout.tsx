@@ -9,7 +9,8 @@ import {
   Calendar, CalendarCheck, IndianRupee, UserPlus,
   Bell, BarChart, Activity, Building2, Menu, LogOut, Trash2, MapPin, MessageSquare,
   Video, Trophy, Gift, Award,
-  Store, Package, Boxes, ShoppingCart, Bot, TrendingUp, Star
+  Store, Package, Boxes, ShoppingCart, Bot, TrendingUp, Star,
+  Briefcase, UserCheck, Search
 } from 'lucide-react';
 
 const getNotificationLink = (notif: any) => {
@@ -137,6 +138,18 @@ const GymAdminLayout = () => {
         title: 'Trainers',
         items: [
           { label: 'Trainers', path: '/admin/trainers', icon: Dumbbell }
+        ]
+      },
+      {
+        title: 'Trainer Hiring',
+        items: [
+          { label: 'Browse Trainers', path: '/admin/hiring/trainers', icon: Search },
+          { label: 'Post a Job', path: '/admin/hiring/jobs/new', icon: UserPlus },
+          { label: 'Manage Jobs', path: '/admin/hiring/jobs', icon: Briefcase },
+          { label: 'Job Applications', path: '/admin/hiring/applications', icon: Users },
+          { label: 'Hiring Requests', path: '/admin/hiring/requests', icon: MessageSquare },
+          { label: 'Interview Schedule', path: '/admin/hiring/interviews', icon: Calendar },
+          { label: 'Hired Trainers', path: '/admin/hiring/hired', icon: UserCheck }
         ]
       },
       {

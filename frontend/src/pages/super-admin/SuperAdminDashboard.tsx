@@ -1,8 +1,9 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getDb } from '../../utils/mockDb';
 import { Building2, FileText, CheckCircle, XCircle, AlertTriangle, Activity, BarChart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
+import PlatformPortalsSection from '../../components/common/PlatformPortalsSection';
 
 const SuperAdminDashboard = () => {
   const [stats, setStats] = useState({ active: 0, approved: 0, pending: 0, suspended: 0, rejected: 0 });
@@ -116,6 +117,9 @@ const SuperAdminDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Role Portals & Ecosystem Section */}
+      <PlatformPortalsSection currentDashboard="SUPER_ADMIN" />
     </div>
   );
 };

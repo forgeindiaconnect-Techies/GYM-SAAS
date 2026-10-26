@@ -92,12 +92,12 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#080B0C] flex flex-col items-center justify-center px-4 py-8 relative">
+    <div className="min-h-screen bg-[#080B0C] flex flex-col items-center justify-center px-4 py-12 sm:py-16 relative">
       {/* Background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(45,212,191,0.07)_0%,_transparent_65%)] pointer-events-none" />
 
       {/* Logo */}
-      <Link to="/" className="flex items-center space-x-2.5 mb-8 group z-10">
+      <Link to="/" className="flex items-center space-x-2.5 mt-6 sm:mt-2 mb-8 group z-10">
         <div className="w-10 h-10 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/10">
           <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
         </div>

@@ -385,7 +385,7 @@ const GymOwnerRegisterPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#080B0C] flex flex-col items-center justify-center px-3 sm:px-4 py-6 sm:py-12 relative">
+    <div className="min-h-screen bg-[#080B0C] flex flex-col items-center justify-center px-3 sm:px-4 py-10 sm:py-16 relative">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(45,212,191,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
       <Link to="/" className="static sm:absolute sm:top-8 sm:left-8 mb-4 sm:mb-0 self-start sm:self-auto text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors z-10 cursor-pointer">
@@ -393,7 +393,7 @@ const GymOwnerRegisterPage = () => {
         <span className="font-medium text-sm">Back to Home</span>
       </Link>
 
-      <Link to="/" className="flex items-center space-x-2.5 mb-4 sm:mb-8 group z-10">
+      <Link to="/" className="flex items-center space-x-2.5 mt-4 sm:mt-2 mb-4 sm:mb-8 group z-10">
         <div className="w-10 h-10 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/10">
           <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
         </div>

@@ -1,57 +1,798 @@
-﻿import { Link } from 'react-router-dom';
-import { Activity, ArrowLeft, Briefcase, MapPin, Clock } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
+import {
+  Activity,
+  ArrowLeft,
+  Briefcase,
+  MapPin,
+  Clock,
+  DollarSign,
+  Search,
+  Filter,
+  Building2,
+  CheckCircle,
+  Sparkles,
+  Upload,
+  X,
+  FileText,
+  UserCheck,
+  ChevronRight,
+  ExternalLink,
+  Award
+} from 'lucide-react';
 
-const Careers = () => {
-  const jobs = [
-    { title: 'Senior AI Engineer', dept: 'Engineering', loc: 'Remote', type: 'Full-time' },
-    { title: 'Product Manager, Fitness', dept: 'Product', loc: 'New York, NY', type: 'Full-time' },
-    { title: 'Full Stack React Developer', dept: 'Engineering', loc: 'Remote', type: 'Full-time' },
-    { title: 'Customer Success Specialist', dept: 'Support', loc: 'Austin, TX', type: 'Part-time' },
-  ];
+interface Vacancy {
+  _id: string;
+  gymName: string;
+  title: string;
+  expertise: string[];
+  description: string;
+  responsibilities: string[];
+  qualifications: string[];
+  certifications: string[];
+  experienceRequired: number;
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryType: string;
+  employmentType: string;
+  location: string;
+  vacanciesCount: number;
+  applicationDeadline?: string;
+  status: string;
+}
+
+export default function Careers() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const targetJobId = searchParams.get('jobId');
+
+  const { user, isAuthenticated } = useAuth();
+
+  const [jobs, setJobs] = useState<Vacancy[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Filters
+  const [search, setSearch] = useState('');
+  const [locationFilter, setLocationFilter] = useState('');
+  const [employmentFilter, setEmploymentFilter] = useState('');
+  const [experienceFilter, setExperienceFilter] = useState('');
+
+  // Selected job for detail / apply
+  const [selectedJob, setSelectedJob] = useState<Vacancy | null>(null);
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
+
+  // Application form
+  const [form, setForm] = useState({
+    fullName: user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    yearsOfExperience: '2',
+    qualifications: '',
+    certifications: '',
+    expertise: '',
+    expectedSalary: '',
+    preferredLocation: '',
+    employmentPreference: 'Full-time',
+    availability: 'Immediate',
+    coverLetter: ''
+  });
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    fetchJobs();
+    if (isAuthenticated && user?.role === 'TRAINER') {
+      fetchMyApplications();
+    }
+  }, [locationFilter, employmentFilter, experienceFilter]);
+
+  const fetchJobs = async () => {
+    setLoading(true);
+    try {
+      const params: any = {};
+      if (locationFilter) params.location = locationFilter;
+      if (employmentFilter) params.employmentType = employmentFilter;
+      if (experienceFilter) params.experience = experienceFilter;
+
+      const res = await axios.get('http://localhost:5600/api/hiring/jobs', { params });
+      if (res.data.success) {
+        const list = res.data.data || res.data.jobs || [];
+        setJobs(list);
+        if (targetJobId) {
+          const match = list.find((j: Vacancy) => j._id === targetJobId);
+          if (match) {
+            setSelectedJob(match);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load published vacancies:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMyApplications = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await axios.get('http://localhost:5600/api/hiring/trainer/applications', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.data.success) {
+        const ids = res.data.data.map((app: any) => app.jobId?._id || app.jobId);
+        setAppliedJobs(ids);
+      }
+    } catch (err) {
+      console.error('Failed to load trainer applications:', err);
+    }
+  };
+
+  const handleApplyClick = (job: Vacancy) => {
+    // 1. Check if user is authenticated and is a TRAINER
+    if (!isAuthenticated) {
+      // Redirect to trainer login and return back
+      const returnUrl = encodeURIComponent(`/careers?jobId=${job._id}`);
+      navigate(`/login?portal=trainer&redirect=${returnUrl}`);
+      return;
+    }
+
+    if (user?.role !== 'TRAINER') {
+      alert(
+        'Trainer authentication required. Please log in with a Trainer account to apply for gym positions.'
+      );
+      navigate('/login?portal=trainer');
+      return;
+    }
+
+    // Prepopulate
+    setSelectedJob(job);
+    setForm({
+      fullName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || (user as any)?.name || '',
+      email: user.email || '',
+      phone: (user as any)?.phone || '',
+      yearsOfExperience: '2',
+      qualifications: 'B.Sc. Exercise Science / Certified Fitness Coach',
+      certifications: 'CPR/AED Certified, ACE Personal Trainer',
+      expertise: job.expertise?.join(', ') || 'Strength Conditioning, HIIT',
+      expectedSalary: job.salaryMin ? `₹${job.salaryMin.toLocaleString()}` : '',
+      preferredLocation: job.location,
+      employmentPreference: job.employmentType,
+      availability: 'Immediate',
+      coverLetter: `I am passionate about personal training and excited to apply for the ${job.title} role at ${job.gymName}.`
+    });
+    setShowApplyModal(true);
+  };
+
+  const handleSubmitApplication = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedJob) return;
+
+    if (!resumeFile) {
+      alert('Please select and upload your resume document (PDF, DOC, DOCX up to 10MB).');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('jobId', selectedJob._id);
+      formData.append('fullName', form.fullName);
+      formData.append('email', form.email);
+      formData.append('phone', form.phone);
+      formData.append('yearsOfExperience', form.yearsOfExperience);
+      formData.append('qualifications', form.qualifications);
+      formData.append('certifications', form.certifications);
+      formData.append('expertise', form.expertise);
+      formData.append('expectedSalary', form.expectedSalary);
+      formData.append('preferredLocation', form.preferredLocation);
+      formData.append('employmentPreference', form.employmentPreference);
+      formData.append('availability', form.availability);
+      formData.append('coverLetter', form.coverLetter);
+      formData.append('resume', resumeFile);
+
+      const res = await axios.post('http://localhost:5600/api/hiring/trainer/apply', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (res.data.success) {
+        alert(
+          'Application submitted successfully! The Gym Owner has been notified and you can track status in your Trainer Dashboard.'
+        );
+        setAppliedJobs((prev) => [...prev, selectedJob._id]);
+        setShowApplyModal(false);
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to submit application');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const filteredJobs = jobs.filter((j) => {
+    const term = search.toLowerCase();
+    return (
+      j.title.toLowerCase().includes(term) ||
+      j.gymName.toLowerCase().includes(term) ||
+      j.location.toLowerCase().includes(term) ||
+      j.expertise.some((e) => e.toLowerCase().includes(term))
+    );
+  });
 
   return (
-    <div className="min-h-screen bg-[#0E1415] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-[#F5FAFA]">
-      <nav className="border-b border-[#2A3A3A] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
+    <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-black">
+      {/* Navbar */}
+      <nav className="border-b border-[#2A3A3A] bg-[#0E1415]/90 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 bg-[#2DD4BF] rounded-sm flex items-center justify-center">
-              <Activity className="text-black" size={20} />
+          <Link to="/" className="flex items-center space-x-2.5">
+            <div className="w-10 h-10 bg-[#2DD4BF] rounded-xl flex items-center justify-center shadow-lg shadow-[#2DD4BF]/20">
+              <Activity className="text-black" size={24} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#2DD4BF]">Gymora</span>
+            <span className="text-2xl font-bold tracking-tight text-white">Gymora</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/30 font-semibold uppercase tracking-wider ml-2">
+              Careers Portal
+            </span>
           </Link>
-          <Link to="/" className="text-sm font-medium text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center space-x-2">
-            <ArrowLeft size={16} /> <span>Back to Home</span>
-          </Link>
+
+          <div className="flex items-center space-x-4">
+            <Link
+              to="/login?portal=gym-owner"
+              className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white rounded-xl border border-[#2A3A3A] text-sm transition-all flex items-center gap-2"
+            >
+              <Building2 className="w-4 h-4 text-[#2DD4BF]" />
+              Hire a Trainer (Gym Owners)
+            </Link>
+
+            {isAuthenticated && user?.role === 'TRAINER' ? (
+              <Link
+                to="/trainer/applications"
+                className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-sm transition-all shadow-md shadow-[#2DD4BF]/25"
+              >
+                My Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/login?portal=trainer"
+                className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-sm transition-all shadow-md shadow-[#2DD4BF]/25"
+              >
+                Trainer Login
+              </Link>
+            )}
+          </div>
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <span className="text-[#2DD4BF] text-sm font-bold uppercase tracking-wider mb-4 block">Join Our Team</span>
-        <h1 className="text-4xl md:text-5xl font-bold mb-8">Build the Future of Fitness</h1>
-        <p className="text-[#9AAEAE] text-lg mb-12">
-          We are a fast-growing team of fitness enthusiasts, engineers, and designers. If you are passionate about health and technology, come join us!
-        </p>
+      {/* Hero Section */}
+      <header className="relative py-16 px-4 sm:px-6 lg:px-8 border-b border-[#2A3A3A] bg-gradient-to-b from-[#0E1415] via-[#080B0C] to-[#080B0C] overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#2DD4BF_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
-        <div className="space-y-4">
-          {jobs.map((job, idx) => (
-            <div key={idx} className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#2A3A3A] hover:border-[#2DD4BF]/50 transition-colors group flex flex-col md:flex-row md:items-center justify-between cursor-pointer">
+        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-4">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/30 text-xs font-semibold uppercase tracking-widest">
+            <Sparkles className="w-3.5 h-3.5" /> Verified Gym Trainer Vacancies
+          </span>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+            Find High-Paying <span className="text-[#2DD4BF]">Gym Coaching Jobs</span>
+          </h1>
+          <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Apply to top fitness clubs, CrossFit boxes, and wellness centers. Connect directly with
+            authorized gym owners and accelerate your coaching career.
+          </p>
+
+          {/* Quick Stats Banner */}
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="w-4 h-4 text-[#2DD4BF]" /> Direct Owner Hiring
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="w-4 h-4 text-[#2DD4BF]" /> Transparent Salary Ranges
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="w-4 h-4 text-[#2DD4BF]" /> Rapid Interview Scheduling
+            </span>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        {/* Search & Filters */}
+        <div className="bg-[#0E1415] p-5 rounded-2xl border border-[#2A3A3A] shadow-xl space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search by job title, gym name, specialization (e.g. Strength, Yoga, Crossfit)..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#2DD4BF]"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-[#2A3A3A]">
+            <div>
+              <label className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">
+                Location
+              </label>
+              <input
+                type="text"
+                placeholder="City or state..."
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white text-xs placeholder-slate-500 focus:outline-none focus:border-[#2DD4BF]"
+              />
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">
+                Employment Type
+              </label>
+              <select
+                value={employmentFilter}
+                onChange={(e) => setEmploymentFilter(e.target.value)}
+                className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white text-xs focus:outline-none focus:border-[#2DD4BF]"
+              >
+                <option value="">All Employment Types</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Contract">Contract</option>
+                <option value="Freelance">Freelance</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">
+                Minimum Experience
+              </label>
+              <select
+                value={experienceFilter}
+                onChange={(e) => setExperienceFilter(e.target.value)}
+                className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white text-xs focus:outline-none focus:border-[#2DD4BF]"
+              >
+                <option value="">Any Experience</option>
+                <option value="1">1+ Years</option>
+                <option value="3">3+ Years</option>
+                <option value="5">5+ Years</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Results Counter */}
+        <div className="flex items-center justify-between text-xs text-slate-400 px-1">
+          <span>
+            Showing <strong className="text-white">{filteredJobs.length}</strong> active published
+            gym opportunities
+          </span>
+          <span>Only verified, authenticated gym vacancies</span>
+        </div>
+
+        {/* Vacancies Grid */}
+        {loading ? (
+          <div className="p-16 text-center text-slate-400 bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
+            <div className="inline-block animate-spin w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full mb-3" />
+            <p>Loading gym opportunities...</p>
+          </div>
+        ) : filteredJobs.length === 0 ? (
+          <div className="p-16 text-center bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
+            <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+            <h3 className="text-lg font-semibold text-white mb-1">No vacancies found</h3>
+            <p className="text-sm text-slate-400 max-w-md mx-auto">
+              There are currently no active job vacancies matching your search or filters. Check back
+              soon or clear your search criteria.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredJobs.map((job) => {
+              const isApplied = appliedJobs.includes(job._id);
+
+              return (
+                <div
+                  key={job._id}
+                  className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-2xl p-6 transition-all flex flex-col justify-between space-y-4 shadow-xl group hover:shadow-2xl hover:shadow-[#2DD4BF]/5"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div>
+                        <span className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1">
+                          <Building2 className="w-3.5 h-3.5" />
+                          {job.gymName}
+                        </span>
+                        <h3 className="text-xl font-bold text-white group-hover:text-[#2DD4BF] transition-colors mt-1">
+                          {job.title}
+                        </h3>
+                      </div>
+                      <span className="text-[11px] bg-[#141D1E] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#2A3A3A] font-medium whitespace-nowrap">
+                        {job.employmentType}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 text-xs text-slate-400 my-4 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="text-slate-300 truncate">{job.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="w-3.5 h-3.5 text-[#2DD4BF] shrink-0" />
+                        <span className="text-white font-bold font-mono">
+                          {job.salaryMin
+                            ? `₹${job.salaryMin.toLocaleString()} - ₹${job.salaryMax?.toLocaleString()} / ${job.salaryType}`
+                            : 'Competitive'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span>{job.experienceRequired}+ years required experience</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                      {job.description}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {job.expertise?.slice(0, 3).map((exp, i) => (
+                        <span
+                          key={i}
+                          className="text-[10px] bg-[#1B2728] text-slate-300 px-2.5 py-1 rounded-lg border border-[#2A3A3A]"
+                        >
+                          {exp}
+                        </span>
+                      ))}
+                      {job.expertise?.length > 3 && (
+                        <span className="text-[10px] text-slate-500 self-center">
+                          +{job.expertise.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-[#2A3A3A] flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => setSelectedJob(job)}
+                      className="px-3.5 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white rounded-xl text-xs font-medium border border-[#2A3A3A] transition-all"
+                    >
+                      View Details
+                    </button>
+
+                    {isApplied ? (
+                      <span className="px-4 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-semibold flex items-center gap-1.5">
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        Applied
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleApplyClick(job)}
+                        className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md shadow-[#2DD4BF]/20"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Apply Now
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </main>
+
+      {/* View Details Modal */}
+      {selectedJob && !showApplyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-4">
               <div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">{job.title}</h3>
-                <div className="flex flex-wrap items-center space-x-4 text-sm text-[#9AAEAE]">
-                  <span className="flex items-center space-x-1"><Briefcase size={14} /> <span>{job.dept}</span></span>
-                  <span className="flex items-center space-x-1"><MapPin size={14} /> <span>{job.loc}</span></span>
-                  <span className="flex items-center space-x-1"><Clock size={14} /> <span>{job.type}</span></span>
+                <span className="text-xs text-[#2DD4BF] font-semibold block">
+                  {selectedJob.gymName}
+                </span>
+                <h2 className="text-2xl font-bold text-white mt-1">{selectedJob.title}</h2>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-2">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5" /> {selectedJob.location}
+                  </span>
+                  <span>•</span>
+                  <span>{selectedJob.employmentType}</span>
+                  <span>•</span>
+                  <span className="text-[#2DD4BF] font-mono font-bold">
+                    {selectedJob.salaryMin
+                      ? `₹${selectedJob.salaryMin.toLocaleString()} - ₹${selectedJob.salaryMax?.toLocaleString()} / ${selectedJob.salaryType}`
+                      : 'Negotiable'}
+                  </span>
                 </div>
               </div>
-              <button className="mt-4 md:mt-0 px-5 py-2.5 bg-[#1B2728] text-[#F5FAFA] font-semibold rounded-lg group-hover:bg-[#2DD4BF] group-hover:text-black transition-colors">
-                Apply Now
+              <button
+                onClick={() => setSelectedJob(null)}
+                className="text-slate-400 hover:text-white p-1"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
-          ))}
+
+            <div>
+              <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2">
+                Job Overview
+              </h4>
+              <p className="text-sm text-slate-300 leading-relaxed bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                {selectedJob.description}
+              </p>
+            </div>
+
+            {selectedJob.responsibilities?.length > 0 && (
+              <div>
+                <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2">
+                  Key Responsibilities
+                </h4>
+                <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                  {selectedJob.responsibilities.map((r, i) => (
+                    <li key={i}>{r}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {selectedJob.qualifications?.length > 0 && (
+                <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                  <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
+                    Qualifications
+                  </h4>
+                  <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                    {selectedJob.qualifications.map((q, i) => (
+                      <li key={i}>{q}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {selectedJob.certifications?.length > 0 && (
+                <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                  <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
+                    Certifications
+                  </h4>
+                  <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                    {selectedJob.certifications.map((c, i) => (
+                      <li key={i}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-4 border-t border-[#2A3A3A] flex items-center justify-between">
+              <span className="text-xs text-slate-400">
+                {selectedJob.vacanciesCount} openings available
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedJob(null)}
+                  className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl text-xs"
+                >
+                  Close
+                </button>
+                {appliedJobs.includes(selectedJob._id) ? (
+                  <span className="px-4 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-semibold flex items-center gap-1.5">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    Already Applied
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => handleApplyClick(selectedJob)}
+                    className="px-5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md shadow-[#2DD4BF]/20"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Apply for this Position
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      )}
+
+      {/* Apply Form Modal */}
+      {showApplyModal && selectedJob && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[92vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-3">
+              <div>
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[#2DD4BF]" />
+                  Application for {selectedJob.title}
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Gym: <span className="text-[#2DD4BF] font-semibold">{selectedJob.gymName}</span> •{' '}
+                  {selectedJob.location}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowApplyModal(false)}
+                className="text-slate-400 hover:text-white p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitApplication} className="space-y-4 text-xs">
+              {/* Personal Details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="text-slate-400 block mb-1">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.fullName}
+                    onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-400 block mb-1">Email *</label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-400 block mb-1">Phone Number *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  />
+                </div>
+              </div>
+
+              {/* Experience & Salary Expectations */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="text-slate-400 block mb-1">Experience (Years) *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    required
+                    value={form.yearsOfExperience}
+                    onChange={(e) => setForm({ ...form, yearsOfExperience: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-400 block mb-1">Expected Salary (₹)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. ₹40,000 / month"
+                    value={form.expectedSalary}
+                    onChange={(e) => setForm({ ...form, expectedSalary: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-400 block mb-1">Notice / Availability</label>
+                  <select
+                    value={form.availability}
+                    onChange={(e) => setForm({ ...form, availability: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  >
+                    <option value="Immediate">Immediate Joining</option>
+                    <option value="15 Days">Within 15 Days</option>
+                    <option value="1 Month">1 Month Notice</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Specializations & Certifications */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-400 block mb-1">
+                    Specializations / Expertise (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Strength Training, Crossfit, Functional Fitness"
+                    value={form.expertise}
+                    onChange={(e) => setForm({ ...form, expertise: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-400 block mb-1">
+                    Certifications (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. ACE CPT, CPR/AED, ISSA"
+                    value={form.certifications}
+                    onChange={(e) => setForm({ ...form, certifications: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  />
+                </div>
+              </div>
+
+              {/* Qualifications */}
+              <div>
+                <label className="text-slate-400 block mb-1">
+                  Academic / Sports Qualifications (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. B.P.Ed, Sports Nutrition Diploma"
+                  value={form.qualifications}
+                  onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
+                  className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                />
+              </div>
+
+              {/* Resume File Upload */}
+              <div className="bg-[#141D1E] p-4 rounded-xl border border-dashed border-[#2DD4BF]/40">
+                <label className="text-white font-semibold block mb-1 flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-[#2DD4BF]" />
+                  Upload Resume / Credentials (PDF, DOC, DOCX up to 10MB) *
+                </label>
+                <input
+                  type="file"
+                  required
+                  accept=".pdf,.doc,.docx,image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setResumeFile(e.target.files[0]);
+                    }
+                  }}
+                  className="w-full text-slate-400 text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#2DD4BF] file:text-black hover:file:bg-[#5EEAD4] cursor-pointer"
+                />
+                {resumeFile && (
+                  <p className="text-[#2DD4BF] text-[11px] mt-1 font-medium">
+                    Selected: {resumeFile.name} ({(resumeFile.size / 1024).toFixed(1)} KB)
+                  </p>
+                )}
+              </div>
+
+              {/* Cover Note */}
+              <div>
+                <label className="text-slate-400 block mb-1">
+                  Personal Pitch / Cover Note (Optional)
+                </label>
+                <textarea
+                  rows={3}
+                  value={form.coverLetter}
+                  onChange={(e) => setForm({ ...form, coverLetter: e.target.value })}
+                  className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF] resize-none"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowApplyModal(false)}
+                  className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="px-5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl flex items-center gap-1.5 shadow-md shadow-[#2DD4BF]/20"
+                >
+                  {submitting ? 'Submitting Application...' : 'Confirm & Submit Application'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default Careers;
+}

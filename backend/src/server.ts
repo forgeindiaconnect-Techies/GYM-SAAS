@@ -34,6 +34,7 @@ import rewardRoutes from './routes/rewardRoutes';
 import awardRoutes from './routes/awardRoutes';
 import performanceRoutes from './routes/performanceRoutes';
 import referralRoutes from './routes/referralRoutes';
+import hiringRoutes from './routes/hiringRoutes';
 
 dotenv.config();
 
@@ -80,6 +81,7 @@ app.use('/api/rewards', rewardRoutes);
 app.use('/api/awards', awardRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/referrals', referralRoutes);
+app.use('/api/hiring', hiringRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running' });

@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft, ShieldCheck, Building2, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../../utils/routeHelpers';
 import api from '../../utils/api';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const portal = searchParams.get('portal');
   const { login } = useAuth();
 
   const [form, setForm] = useState({ email: '', password: '' });
@@ -92,18 +94,31 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#080B0C] flex flex-col items-center justify-center px-4 relative">
+    <div className="min-h-screen bg-[#080B0C] flex flex-col items-center justify-center px-4 py-12 sm:py-16 relative">
       {/* Background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(45,212,191,0.07)_0%,_transparent_65%)] pointer-events-none" />
 
-      {/* Back to Home Arrow */}
-      <Link to="/" className="absolute top-8 left-8 text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors">
+      {/* Dynamic Back Arrow */}
+      <Link 
+        to={
+          portal === 'super-admin' ? '/portal/super-admin' : 
+          portal === 'gym-owner' ? '/portal/gym-owner' : 
+          portal === 'customer' ? '/portal/customer' : '/'
+        } 
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors z-20"
+      >
         <ArrowLeft size={20} />
-        <span className="font-medium text-sm">Back to Home</span>
+        <span className="font-medium text-sm">
+          {
+            portal === 'super-admin' ? 'Back to Super Admin Portal' : 
+            portal === 'gym-owner' ? 'Back to Gym Owner Portal' : 
+            portal === 'customer' ? 'Back to Customer Portal' : 'Back to Home'
+          }
+        </span>
       </Link>
 
       {/* Logo */}
-      <Link to="/" className="flex items-center space-x-2.5 mb-8 group z-10">
+      <Link to="/" className="flex items-center space-x-2.5 mt-8 sm:mt-4 mb-6 sm:mb-8 group z-10">
         <div className="w-10 h-10 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/10">
           <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
         </div>
@@ -111,6 +126,26 @@ const LoginPage = () => {
       </Link>
 
       <div className="w-full max-w-md bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-8 sm:p-9 shadow-2xl relative z-10 backdrop-blur-sm">
+        {/* Portal Context Badge */}
+        {portal === 'super-admin' && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
+            <ShieldCheck size={13} />
+            <span>Super Admin Portal Login</span>
+          </div>
+        )}
+        {portal === 'gym-owner' && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
+            <Building2 size={13} />
+            <span>Gym Owner Portal Login</span>
+          </div>
+        )}
+        {portal === 'customer' && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
+            <User size={13} />
+            <span>Customer Fitness Portal Login</span>
+          </div>
+        )}
+
         <h1 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA] mb-1.5 tracking-tight">Welcome back</h1>
         <p className="text-[#9AAEAE] text-sm mb-7">Log in to your Gymora account</p>
 

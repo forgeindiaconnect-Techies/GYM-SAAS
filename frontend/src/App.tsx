@@ -13,6 +13,14 @@ import StatusPage from './pages/auth/StatusPage';
 import TrainerInvitationPage from './pages/auth/TrainerInvitationPage';
 import TrainerOnboarding from './pages/auth/TrainerOnboarding';
 
+// Role-Based Public Portals
+import SuperAdminPortalLanding from './pages/portals/SuperAdminPortalLanding';
+import SuperAdminFeatureDetail from './pages/portals/SuperAdminFeatureDetail';
+import GymOwnerPortalLanding from './pages/portals/GymOwnerPortalLanding';
+import GymOwnerFeatureDetail from './pages/portals/GymOwnerFeatureDetail';
+import CustomerPortalLanding from './pages/portals/CustomerPortalLanding';
+import CustomerFeatureDetail from './pages/portals/CustomerFeatureDetail';
+
 // Public Marketplace
 import GymMarketplace from './pages/marketplace/GymMarketplace';
 import GymDetails from './pages/marketplace/GymDetails';
@@ -73,6 +81,24 @@ import GymAdminChallenges from './pages/admin/GymAdminChallenges';
 import GymAdminRewards from './pages/admin/GymAdminRewards';
 import GymAdminRewardsPerformance from './pages/admin/GymAdminRewardsPerformance';
 import GymAdminReferrals from './pages/admin/GymAdminReferrals';
+
+// Trainer Recruitment & Hiring
+import TrainersDirectory from './pages/company/TrainersDirectory';
+import GymAdminBrowseTrainers from './pages/admin/hiring/GymAdminBrowseTrainers';
+import GymAdminManageJobs from './pages/admin/hiring/GymAdminManageJobs';
+import GymAdminPostJob from './pages/admin/hiring/GymAdminPostJob';
+import GymAdminApplications from './pages/admin/hiring/GymAdminApplications';
+import GymAdminHiringRequests from './pages/admin/hiring/GymAdminHiringRequests';
+import GymAdminShortlisted from './pages/admin/hiring/GymAdminShortlisted';
+import GymAdminInterviews from './pages/admin/hiring/GymAdminInterviews';
+import GymAdminHiredTrainers from './pages/admin/hiring/GymAdminHiredTrainers';
+
+// Trainer Hiring & Jobs
+import TrainerFindJobs from './pages/trainer/hiring/TrainerFindJobs';
+import TrainerMyApplications from './pages/trainer/hiring/TrainerMyApplications';
+import TrainerHiringRequests from './pages/trainer/hiring/TrainerHiringRequests';
+import TrainerInterviews from './pages/trainer/hiring/TrainerInterviews';
+import TrainerJobOffers from './pages/trainer/hiring/TrainerJobOffers';
 
 // Gym Store (Admin)
 import GymStoreDashboard from './pages/admin/store/GymStoreDashboard';
@@ -195,6 +221,14 @@ function App() {
           <Route path="/invite/trainer/onboarding" element={<TrainerOnboarding />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           
+          {/* Role-Based Public Portals */}
+          <Route path="/portal/super-admin" element={<SuperAdminPortalLanding />} />
+          <Route path="/portal/super-admin/:featureId" element={<SuperAdminFeatureDetail />} />
+          <Route path="/portal/gym-owner" element={<GymOwnerPortalLanding />} />
+          <Route path="/portal/gym-owner/:featureId" element={<GymOwnerFeatureDetail />} />
+          <Route path="/portal/customer" element={<CustomerPortalLanding />} />
+          <Route path="/portal/customer/:featureId" element={<CustomerFeatureDetail />} />
+          
           {/* Gym Marketplace */}
           <Route path="/gyms" element={<GymMarketplace />} />
           <Route path="/gyms/:id" element={<GymDetails />} />
@@ -205,6 +239,9 @@ function App() {
           {/* Company Routes */}
           <Route path="/about" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/jobs" element={<Careers />} />
+          <Route path="/trainers" element={<TrainersDirectory />} />
+          <Route path="/explore-trainers" element={<TrainersDirectory />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
@@ -311,6 +348,13 @@ function App() {
             <Route path="reviews" element={<TrainerReviewsRatings />} />
             <Route path="challenges" element={<TrainerCustomerChallenges />} />
             <Route path="rewards" element={<TrainerRewards />} />
+
+            {/* Trainer Hiring & Job Opportunities */}
+            <Route path="jobs" element={<TrainerFindJobs />} />
+            <Route path="applications" element={<TrainerMyApplications />} />
+            <Route path="hiring-requests" element={<TrainerHiringRequests />} />
+            <Route path="interviews" element={<TrainerInterviews />} />
+            <Route path="job-offers" element={<TrainerJobOffers />} />
           </Route>
 
 {/* Manager Dashboard */}
@@ -340,6 +384,18 @@ function App() {
             <Route path="add-branch" element={<GymAdminAddBranch />} />
             <Route path="branches/:id" element={<GymAdminBranchProfile />} />
             <Route path="trainers" element={<GymAdminTrainers />} />
+
+            {/* Trainer Hiring & Vacancies */}
+            <Route path="hiring/trainers" element={<GymAdminBrowseTrainers />} />
+            <Route path="hiring/jobs" element={<GymAdminManageJobs />} />
+            <Route path="hiring/jobs/new" element={<GymAdminPostJob />} />
+            <Route path="hiring/jobs/edit/:id" element={<GymAdminPostJob />} />
+            <Route path="hiring/applications" element={<GymAdminApplications />} />
+            <Route path="hiring/requests" element={<GymAdminHiringRequests />} />
+            <Route path="hiring/shortlisted" element={<GymAdminShortlisted />} />
+            <Route path="hiring/interviews" element={<GymAdminInterviews />} />
+            <Route path="hiring/hired" element={<GymAdminHiredTrainers />} />
+
             <Route path="members" element={<GymAdminMembers />} />
             <Route path="exercises" element={<GymAdminExerciseLibrary />} />
             <Route path="exercise-videos" element={<GymExerciseVideos />} />

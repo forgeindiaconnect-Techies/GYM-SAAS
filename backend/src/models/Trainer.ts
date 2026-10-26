@@ -33,6 +33,18 @@ export interface ITrainer extends Document {
   availabilityStatus?: 'Online' | 'Offline' | 'Busy';
   averageRating?: number;
   totalReviews?: number;
+  // Recruitment & Direct Hiring Fields
+  isPublicRecruitment?: boolean;
+  professionalHeadline?: string;
+  preferredLocation?: string;
+  employmentPreference?: 'Full-time' | 'Part-time' | 'Contract' | 'Any';
+  expectedSalary?: number;
+  personalTrainingFee?: number;
+  resumeUrl?: string;
+  portfolioUrl?: string;
+  earliestJoiningDate?: string;
+  workHistory?: Array<{ company: string; role: string; duration: string; description?: string }>;
+  shortlistedByGyms?: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -69,7 +81,24 @@ const trainerSchema = new Schema<ITrainer>({
   status: { type: String, enum: ['Pending', 'Active', 'Rejected', 'Suspended'], default: 'Pending' },
   availabilityStatus: { type: String, enum: ['Online', 'Offline', 'Busy'], default: 'Online' },
   averageRating: { type: Number, default: 5.0 },
-  totalReviews: { type: Number, default: 0 }
+  totalReviews: { type: Number, default: 0 },
+  // Recruitment & Direct Hiring Fields
+  isPublicRecruitment: { type: Boolean, default: true, index: true },
+  professionalHeadline: { type: String },
+  preferredLocation: { type: String },
+  employmentPreference: { type: String, enum: ['Full-time', 'Part-time', 'Contract', 'Any'], default: 'Any' },
+  expectedSalary: { type: Number, default: 0 },
+  personalTrainingFee: { type: Number, default: 0 },
+  resumeUrl: { type: String },
+  portfolioUrl: { type: String },
+  earliestJoiningDate: { type: String },
+  workHistory: [{
+    company: { type: String },
+    role: { type: String },
+    duration: { type: String },
+    description: { type: String }
+  }],
+  shortlistedByGyms: [{ type: Schema.Types.ObjectId, ref: 'Gym' }]
 }, { timestamps: true });
 
 export default mongoose.model<ITrainer>('Trainer', trainerSchema);

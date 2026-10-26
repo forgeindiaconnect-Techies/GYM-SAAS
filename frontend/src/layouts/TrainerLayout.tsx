@@ -8,7 +8,8 @@ import {
   Utensils, Calendar,
   MessageSquare, IndianRupee, Bell,
   Activity, Menu, LogOut, Bot,
-  Dumbbell, Star, Video, CheckCircle2, Wrench, Gift, Award
+  Dumbbell, Star, Video, CheckCircle2, Wrench, Gift, Award,
+  Search, Briefcase, Mail
 } from 'lucide-react';
 
 const TrainerLayout = () => {
@@ -85,6 +86,16 @@ const TrainerLayout = () => {
       title: 'Financials',
       items: [
         { label: 'Financials', path: '/trainer/my-fee', icon: IndianRupee },
+      ]
+    },
+    {
+      title: 'Job Opportunities',
+      items: [
+        { label: 'Find Jobs', path: '/trainer/jobs', icon: Search },
+        { label: 'My Applications', path: '/trainer/applications', icon: Briefcase },
+        { label: 'Hiring Requests', path: '/trainer/hiring-requests', icon: Mail },
+        { label: 'Interview Schedule', path: '/trainer/interviews', icon: Calendar },
+        { label: 'Job Offers', path: '/trainer/job-offers', icon: Gift },
       ]
     },
     {

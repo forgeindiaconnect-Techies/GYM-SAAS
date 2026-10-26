@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 
 import { useAuth } from '../../contexts/AuthContext';
+import PlatformPortalsSection from '../../components/common/PlatformPortalsSection';
 
 const getNotificationLink = (notif: any) => {
   if (notif.link) return notif.link;
@@ -378,6 +379,9 @@ const GymAdminDashboard = () => {
           </table>
         </div>
       </div>
+
+      {/* Role Portals & Ecosystem Section */}
+      <PlatformPortalsSection currentDashboard="GYM_OWNER" />
     </div>
   );
 };

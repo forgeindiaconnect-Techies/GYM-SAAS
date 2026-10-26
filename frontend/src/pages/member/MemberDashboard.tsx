@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../../utils/api';
+import PlatformPortalsSection from '../../components/common/PlatformPortalsSection';
 
 const MemberDashboard = () => {
   const { user, logout } = useAuth();
@@ -467,6 +468,9 @@ const MemberDashboard = () => {
               </table>
             </div>
           </div>
+
+          {/* Role Portals & Ecosystem Section */}
+          <PlatformPortalsSection currentDashboard="MEMBER" />
         </>
       )}
 
