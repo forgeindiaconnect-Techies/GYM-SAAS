@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Plus, Trash2, Dumbbell } from 'lucide-react';
 
 interface StepProps {
@@ -39,7 +39,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
         <span className="text-sm text-[#9AAEAE]">{(form.equipment || []).length} items added</span>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl p-6 space-y-4">
+      <div className="bg-[#101819] border border-[#2A3A3A] rounded-xl p-6 space-y-4">
         <h3 className="text-sm font-medium text-[#F5FAFA] mb-4">Add New Equipment</h3>
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -110,7 +110,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
             </select>
           </div>
           <div>
-            <button type="button" onClick={addItem} className="w-full flex items-center justify-center space-x-2 py-3 bg-[#FFFFFF] border border-[#2DD4BF] text-[#2DD4BF] rounded-xl hover:bg-[#2DD4BF]/10 transition-colors">
+            <button type="button" onClick={addItem} className="w-full flex items-center justify-center space-x-2 py-3 bg-[#141D1E] border border-[#2DD4BF] text-[#2DD4BF] rounded-xl hover:bg-[#2DD4BF]/10 transition-colors">
               <Plus size={16} />
               <span>Add Equipment</span>
             </button>
@@ -127,9 +127,9 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
             <span className="text-[10px] text-[#9AAEAE] italic">Add more, or click 'Next' below to continue</span>
           </div>
           {form.equipment.map((item: any, i: number) => (
-            <div key={i} className="flex items-center justify-between bg-[#FFFFFF] border border-[#2A3A3A] p-4 rounded-xl">
+            <div key={i} className="flex items-center justify-between bg-[#101819] border border-[#2A3A3A] p-4 rounded-xl">
               <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-[#FFFFFF] rounded-lg flex items-center justify-center text-[#2DD4BF]">
+                <div className="w-10 h-10 bg-[#141D1E] border border-[#2A3A3A] rounded-lg flex items-center justify-center text-[#2DD4BF]">
                   <Dumbbell size={20} />
                 </div>
                 <div>
@@ -137,7 +137,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
                   <p className="text-xs text-[#9AAEAE]">{item.category} • {item.condition} • {item.availability}</p>
                 </div>
               </div>
-              <button type="button" onClick={() => removeItem(i)} className="p-2 text-[#9AAEAE] hover:text-[#1B2728] hover:bg-red-500/10 rounded-lg transition-colors">
+              <button type="button" onClick={() => removeItem(i)} className="p-2 text-[#9AAEAE] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
                 <Trash2 size={16} />
               </button>
             </div>

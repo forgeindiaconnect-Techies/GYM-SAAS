@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Wrench, Search, CheckCircle2, AlertTriangle, ShieldCheck,
   RefreshCw, Dumbbell, Activity, Check, X, Sparkles, Filter,
@@ -171,23 +171,14 @@ const TrainerGymEquipments: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        {pendingCount > 0 && (
           <button
-            onClick={fetchEquipments}
-            className="p-2.5 text-[#9AAEAE] hover:text-[#FFFFFF] bg-[#0E1415] border border-[#2A3A3A] rounded-2xl transition-all hover:bg-[#1B2728]/30"
-            title="Refresh equipment list"
+            onClick={handleApproveAll}
+            className="px-4 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
           >
-            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            <CheckCircle2 size={16} /> Approve All Pending ({pendingCount})
           </button>
-          {pendingCount > 0 && (
-            <button
-              onClick={handleApproveAll}
-              className="flex-1 md:flex-none px-4 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
-            >
-              <CheckCircle2 size={16} /> Approve All Pending ({pendingCount})
-            </button>
-          )}
-        </div>
+        )}
       </div>
 
       {/* KPI Stats Cards */}

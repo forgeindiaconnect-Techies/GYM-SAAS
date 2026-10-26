@@ -1,6 +1,6 @@
-﻿import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
-  Building2, MapPin, LayoutDashboard, Users, UserPlus, BrainCircuit, Activity, ArrowRight, SkipForward
+  Building2, MapPin, LayoutDashboard, Users, UserPlus, BrainCircuit, Activity, ArrowRight, SkipForward, ArrowLeft
 } from 'lucide-react';
 
 const steps = [
@@ -57,18 +57,30 @@ const GymOwnerIntroduction = () => {
       <nav className="bg-[#141D1E] border-b border-[#2A3A3A] sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-lg flex items-center justify-center">
-                <Activity className="text-white" size={20} />
+            <Link to="/" className="flex items-center space-x-2.5 group">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+                <Activity className="text-[#06201D]" size={20} strokeWidth={2.5} />
               </div>
-              <span className="text-xl font-bold tracking-tight text-[#F5FAFA]">Gymora</span>
+              <span className="text-xl font-bold tracking-tight text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors">Gymora</span>
             </Link>
-            <Link 
-              to="/register/gym-owner"
-              className="text-sm font-semibold text-[#1B2728] hover:text-[#2DD4BF] flex items-center gap-1 transition-colors"
-            >
-              Skip Introduction <SkipForward size={14} />
-            </Link>
+
+            <div className="flex items-center gap-3">
+              <Link 
+                to="/"
+                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-teal-500/20"
+              >
+                <ArrowLeft size={16} />
+                <span>Back to Home</span>
+              </Link>
+
+              <Link 
+                to="/register/gym-owner"
+                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-teal-500/20"
+              >
+                <span>Skip Introduction</span>
+                <SkipForward size={14} />
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -139,13 +151,13 @@ const GymOwnerIntroduction = () => {
             
             <button 
               onClick={() => navigate('/register/gym-owner')}
-              className="w-full sm:w-auto px-8 py-4 bg-[#141D1E] text-[#9AAEAE] rounded-xl font-bold text-lg border-2 border-[#2A3A3A] hover:border-[#1B2728] hover:text-[#1B2728] transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold rounded-xl font-bold text-lg hover:from-[#5EEAD4] hover:to-[#5EEAD4] shadow-lg shadow-teal-900/10 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer"
             >
               Skip Introduction
             </button>
           </div>
           
-          <div className="mt-8 relative z-10">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 relative z-10">
             <Link 
               to="/register/gym-owner" 
               className="text-sm font-medium text-[#9AAEAE] hover:text-[#2DD4BF] underline underline-offset-4 decoration-[#2A3A3A] hover:decoration-[#2DD4BF] transition-all"

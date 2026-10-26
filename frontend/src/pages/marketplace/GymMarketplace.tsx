@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Star, MapPin, Search, Navigation, Activity, Loader2, Volume2, VolumeX, ChevronDown } from 'lucide-react';
+import { Star, MapPin, Search, Navigation, Activity, Loader2, Volume2, VolumeX, ChevronDown, ArrowLeft } from 'lucide-react';
 import api from '../../utils/api';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
 
@@ -138,7 +138,33 @@ const GymMarketplace = () => {
     <div className="min-h-screen bg-[#0E1415]">
 
       {/* ===== HERO VIDEO SECTION ===== */}
-      <div className="relative w-full h-screen overflow-hidden">
+      <div className="relative w-full min-h-screen overflow-hidden flex flex-col justify-between">
+
+        {/* Floating Top Header */}
+        <header className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-8 py-5 flex items-center justify-between pointer-events-auto">
+          <Link to="/" className="flex items-center space-x-2.5 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+              <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
+            </div>
+            <span className="text-2xl font-bold tracking-tight text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors">Gymora</span>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <Link 
+              to="/" 
+              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-[#C1D0D0] hover:text-[#F5FAFA] bg-[#141D1E]/70 backdrop-blur-md border border-[#2A3A3A] hover:border-[#2DD4BF]/50 transition-all flex items-center gap-1.5 shadow-sm"
+            >
+              <ArrowLeft size={16} />
+              <span>Back to Home</span>
+            </Link>
+            <Link 
+              to="/login" 
+              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20"
+            >
+              Sign In
+            </Link>
+          </div>
+        </header>
 
         {/* YouTube Video Background */}
         <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-[#111]">
@@ -166,8 +192,8 @@ const GymMarketplace = () => {
         <div className="absolute inset-0 bg-black/65 z-[1]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-[#0E1415] z-[1]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60 z-[1]" />
-        {/* Gold glow at center */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(22,125,120,0.07)_0%,_transparent_65%)] z-[1] pointer-events-none" />
+        {/* Teal glow at center */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(45,212,191,0.08)_0%,_transparent_65%)] z-[1] pointer-events-none" />
 
         {/* Slide transition indicator dots — bottom left */}
         {HERO_SLIDES.length > 1 && (
@@ -185,29 +211,29 @@ const GymMarketplace = () => {
         {/* Volume Control */}
         <button
           onClick={toggleMute}
-          className="absolute bottom-10 right-8 z-20 p-3 rounded-full bg-[#141D1E]/10 backdrop-blur-md border border-white/20 text-[#F5FAFA] hover:bg-[#141D1E]/20 transition-all"
+          className="absolute bottom-10 right-8 z-20 p-3 rounded-full bg-[#141D1E]/40 backdrop-blur-md border border-white/20 text-[#F5FAFA] hover:bg-[#141D1E]/60 transition-all cursor-pointer"
           title={muted ? 'Unmute' : 'Mute'}
         >
           {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
         </button>
 
         {/* ===== HERO CONTENT ===== */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 pb-28">
+        <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-4 pt-28 sm:pt-32 md:pt-36 pb-20 sm:pb-24 max-w-5xl mx-auto my-auto w-full">
 
-          {/* Slide label badge */}
+          {/* Slide label badge — comfortably spaced down */}
           <div
             key={`badge-${slideIdx}`}
-            className="inline-flex items-center gap-2 bg-[#2DD4BF]/20 backdrop-blur-md border border-[#2DD4BF]/50 text-[#2DD4BF] text-xs font-bold px-4 py-2 rounded-full mb-6 tracking-widest uppercase"
+            className="inline-flex items-center gap-2 bg-[#2DD4BF]/20 backdrop-blur-md border border-[#2DD4BF]/50 text-[#2DD4BF] text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full mb-6 tracking-widest uppercase shadow-lg shadow-teal-500/10"
             style={{ animation: 'fadeInUp 0.7s ease' }}
           >
-            <Star size={12} className="fill-current" />
-            {currentSlide.badge}
+            <Star size={14} className="fill-current text-[#2DD4BF]" />
+            <span>{currentSlide.badge}</span>
           </div>
 
           {/* Main Headline — changes with slide */}
           <h1
             key={`title-${slideIdx}`}
-            className="text-5xl md:text-7xl xl:text-8xl font-extrabold text-white leading-tight tracking-tight drop-shadow-2xl mb-4"
+            className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white leading-[1.15] tracking-tight drop-shadow-2xl mb-4 max-w-4xl"
             style={{ animation: 'fadeInUp 0.8s ease' }}
           >
             {currentSlide.title}
@@ -221,7 +247,7 @@ const GymMarketplace = () => {
           {/* Subtitle — changes with slide */}
           <p
             key={`sub-${slideIdx}`}
-            className="text-white/85 text-base md:text-xl max-w-2xl mb-10 leading-relaxed font-light"
+            className="text-white/90 text-sm sm:text-base md:text-lg max-w-2xl mb-8 leading-relaxed font-light"
             style={{ animation: 'fadeInUp 0.9s ease' }}
           >
             {currentSlide.subtitle}
@@ -233,7 +259,7 @@ const GymMarketplace = () => {
             className="w-full max-w-3xl"
             style={{ animation: 'fadeInUp 1s ease' }}
           >
-            <div className="flex flex-col sm:flex-row gap-2 bg-[#141D1E]/10 backdrop-blur-xl border border-white/25 rounded-2xl p-2 shadow-2xl">
+            <div className="flex flex-col sm:flex-row gap-2 bg-[#141D1E]/40 backdrop-blur-xl border border-white/20 rounded-2xl p-2 shadow-2xl">
               <div className="flex-1 relative">
                 <Search className="absolute left-4 top-3.5 text-white/60" size={20} />
                 <input
@@ -246,7 +272,7 @@ const GymMarketplace = () => {
               </div>
               <button
                 type="submit"
-                className="px-8 py-3 bg-[#2DD4BF] text-[#06201D] font-bold font-extrabold rounded-xl hover:bg-[#5EEAD4] transition-all shadow-[0_4px_20px_rgba(169,145,212,0.4)] whitespace-nowrap text-sm tracking-wide"
+                className="px-8 py-3 bg-[#2DD4BF] text-[#06201D] font-extrabold rounded-xl hover:bg-[#5EEAD4] transition-all shadow-[0_4px_20px_rgba(45,212,191,0.3)] whitespace-nowrap text-sm tracking-wide cursor-pointer"
               >
                 Search
               </button>
@@ -258,7 +284,7 @@ const GymMarketplace = () => {
             <button
               onClick={handleUseLocation}
               disabled={locationLoading}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#141D1E]/10 backdrop-blur-md border border-white/20 text-white rounded-full hover:bg-[#141D1E]/20 transition-all text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#141D1E]/40 backdrop-blur-md border border-white/20 text-white rounded-full hover:bg-[#141D1E]/60 transition-all text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
               {locationLoading ? (
                 <><Loader2 size={15} className="animate-spin text-[#2DD4BF]" /> Detecting location...</>
@@ -266,11 +292,11 @@ const GymMarketplace = () => {
                 <><Navigation size={15} className="text-[#2DD4BF]" /> Use My Location</>
               )}
             </button>
-            <div className="h-4 w-px bg-[#141D1E]/20" />
+            <div className="h-4 w-px bg-white/20" />
             <div className="text-sm text-white/80">
               <span className="text-white font-bold text-lg">{gyms.length > 0 ? `${gyms.length}+` : '—'}</span> Gyms Listed
             </div>
-            <div className="h-4 w-px bg-[#141D1E]/20" />
+            <div className="h-4 w-px bg-white/20" />
             <div className="text-sm text-white/80">
               <span className="text-white font-bold text-lg">100%</span> Verified
             </div>
@@ -280,7 +306,7 @@ const GymMarketplace = () => {
         {/* Scroll Down Arrow */}
         <button
           onClick={scrollToGyms}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-white/70 hover:text-[#2DD4BF] transition transition-colors"
+          className="relative z-20 mx-auto pb-6 flex flex-col items-center gap-1.5 text-white/70 hover:text-[#2DD4BF] transition-colors cursor-pointer"
           style={{ animation: 'bounce 2s infinite' }}
         >
           <span className="text-[10px] tracking-[0.2em] uppercase font-semibold">Explore Gyms</span>

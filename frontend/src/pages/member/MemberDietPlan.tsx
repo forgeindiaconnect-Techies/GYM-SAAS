@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { 
   Utensils, Apple, Coffee, Moon, CheckCircle2, ShieldCheck, 
   Flame, Droplets, Leaf, Sparkles, Sun, Check, RotateCcw, Calendar
@@ -878,7 +878,7 @@ const MemberDietPlan = () => {
 
       {/* Trainer Approved Diet Banner */}
       {approvedDietPlan && (
-        <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 border-2 border-[#2A3A3A] rounded-3xl p-6 shadow-xs space-y-4">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-xs space-y-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#2A3A3A]/70 pb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center font-extrabold text-xl shadow-md">

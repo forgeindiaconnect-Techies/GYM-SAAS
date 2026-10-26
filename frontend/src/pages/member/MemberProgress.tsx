@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dumbbell, Loader2, Flame, Clock, CheckCircle2, RefreshCw, PlayCircle,
   Calendar, ChevronDown, Check, Utensils, Apple, Coffee, Moon, Sun, ArrowRight
@@ -802,7 +802,7 @@ const MemberProgress: React.FC = () => {
             {selectedDay !== 'all' && activeDayDiet ? (
               <div className="space-y-4 animate-in fade-in">
                 {/* Day Highlights Banner */}
-                <div className="bg-gradient-to-br from-emerald-50/70 to-teal-50/50 border border-[#2A3A3A] rounded-2xl p-5 sm:p-6 shadow-xs">
+                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 sm:p-6 shadow-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">

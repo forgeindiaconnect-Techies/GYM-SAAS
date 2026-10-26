@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Clock, Users, Plus, X, Calendar as CalendarIcon, Video,
   Loader2, Search, Filter, RefreshCw, ChevronRight,
@@ -179,10 +179,6 @@ const TrainerSchedule = () => {
           <p className="text-[#9AAEAE] mt-0.5 text-sm">Manage your upcoming sessions, member appointments, and availability.</p>
         </div>
         <div className="flex items-center gap-2.5">
-          <button onClick={() => fetchSessions(true)} disabled={refreshing}
-            className="w-10 h-10 border border-[#2A3A3A] rounded-2xl bg-[#141D1E] text-[#9AAEAE] hover:bg-[#0E1415] flex items-center justify-center transition-colors disabled:opacity-50">
-            <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
-          </button>
           <button onClick={() => setAddModal(true)}
             className="px-5 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold rounded-full font-bold flex items-center gap-2 hover:bg-[#5EEAD4] transition-colors shadow-sm text-sm">
             <Plus size={16} /> Schedule Online Session

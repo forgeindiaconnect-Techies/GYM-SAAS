@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Clock, Calendar as CalendarIcon, Video, Loader2, CheckCircle2,
   X, AlertTriangle, Users, RefreshCw, Filter, FileText, LogOut, Eye, Star
@@ -159,11 +159,6 @@ const TrainerSessionBookings = () => {
           <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Session Bookings</h1>
           <p className="text-[#9AAEAE] mt-1 text-sm">Manage customer booking requests  -  approve or reject incoming sessions.</p>
         </div>
-        <button onClick={() => fetchBookings(true)} disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#2DD4BF] border border-[#2A3A3A] rounded-xl hover:bg-[#0E1415] transition-colors disabled:opacity-50 self-start sm:self-auto">
-          <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
-          Refresh
-        </button>
       </div>
 
       <div className="bg-[#0E1415] border border-[#1B2728] rounded-2xl p-4 flex items-start gap-3">

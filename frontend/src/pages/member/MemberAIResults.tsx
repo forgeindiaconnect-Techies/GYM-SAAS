@@ -928,7 +928,7 @@ const MemberAIResults = () => {
             /* STATE 2: ONCE TRAINERS REVIEW DONE -> SHOW BOTH AI OUTPUT AND TRAINER OUTPUT */
             <div className="space-y-8">
               {/* Official Approval Banner */}
-              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm">
+              <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                   <div className="flex items-start gap-4">
                     <div className="w-14 h-14 rounded-2xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center shrink-0 mt-0.5">
@@ -1697,7 +1697,7 @@ const MemberAIResults = () => {
                   </div>
 
                   {/* Bottom Action Card */}
-                  <div className="mt-8 bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
+                  <div className="mt-8 bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
                         <Sparkles size={20} className="text-[#2DD4BF]" />

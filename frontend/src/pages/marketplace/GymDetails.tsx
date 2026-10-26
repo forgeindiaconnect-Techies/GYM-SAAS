@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   MapPin, Star, Activity, CheckCircle, Phone, Mail, Globe, ArrowLeft, 
@@ -268,7 +268,7 @@ const GymDetails = () => {
             <div className="flex gap-4">
               <button 
                 onClick={() => setShowEnquiry(true)}
-                className="px-8 py-4 bg-[#0E1415] border border-[#1B2728] text-[#F5FAFA] font-bold rounded-xl hover:bg-[#0E1415] transition-all whitespace-nowrap"
+                className="px-8 py-4 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl hover:bg-[#5EEAD4] transition-all shadow-[0_0_20px_rgba(45,212,191,0.25)] whitespace-nowrap cursor-pointer"
               >
                 Enquire Now
               </button>
@@ -277,7 +277,7 @@ const GymDetails = () => {
                   const plansSection = document.getElementById('membership-plans');
                   if (plansSection) plansSection.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="px-8 py-4 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] transition-all shadow-[0_0_20px_rgba(22,125,120,0.25)] whitespace-nowrap"
+                className="px-8 py-4 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl hover:bg-[#5EEAD4] transition-all shadow-[0_0_20px_rgba(45,212,191,0.25)] whitespace-nowrap cursor-pointer"
               >
                 View Plans to Join
               </button>

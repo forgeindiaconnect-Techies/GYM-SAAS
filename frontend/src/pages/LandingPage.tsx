@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bot, User, MapPin, Activity, ArrowRight, PlayCircle, Star, CheckCircle, XCircle, TrendingUp, Dumbbell, Quote, X, Loader2 } from 'lucide-react';
+import { Bot, User, MapPin, Activity, ArrowRight, ArrowLeft, PlayCircle, Star, CheckCircle, XCircle, TrendingUp, Dumbbell, Quote, X, Loader2 } from 'lucide-react';
 import { FaInstagram, FaTwitter, FaYoutube, FaFacebook } from 'react-icons/fa';
 import api from '../utils/api';
 import { FeaturePreview } from '../components/Landing/FeaturePreview';
@@ -27,6 +27,13 @@ const LandingPage = () => {
   const [tourStep, setTourStep] = useState(1);
 
   const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    setActiveVideo(null);
+    setIsTourOpen(false);
+    setIsFeaturesOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -890,33 +897,51 @@ const LandingPage = () => {
       </footer>
       {/* Video Modal */}
       {activeVideo && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-10 md:p-14 bg-black/90 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setActiveVideo(null)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 md:p-12 bg-black/90 backdrop-blur-md animate-in fade-in duration-200" onClick={handleBackToHome}>
+          {/* Fixed Back to Home Button on overlay */}
+          <button
+            onClick={handleBackToHome}
+            className="fixed top-5 left-5 z-[110] flex items-center gap-2 px-4 py-2.5 bg-[#141D1E]/95 hover:bg-[#2DD4BF] text-[#F5FAFA] hover:text-[#06201D] font-bold text-sm rounded-full border border-[#2A3A3A] hover:border-[#2DD4BF] transition-all shadow-2xl backdrop-blur-md cursor-pointer group"
+            title="Back to Home"
+          >
+            <ArrowLeft size={18} className="text-[#2DD4BF] group-hover:text-[#06201D] group-hover:-translate-x-0.5 transition-all" />
+            <span>Back to Home</span>
+          </button>
+
           <div
             className="relative w-full max-w-4xl max-h-[85vh] my-auto bg-[#141D1E] rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Bar */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 backdrop-blur-md">
-              <div className="flex items-center gap-2.5">
-                <PlayCircle size={22} className="text-[#2DD4BF]" />
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10 bg-[#0E1415]/90 backdrop-blur-md gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <PlayCircle size={22} className="text-[#2DD4BF] shrink-0" />
                 <h3 className="text-white font-bold text-sm sm:text-base truncate">{activeVideo.title}</h3>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                <button
+                  onClick={handleBackToHome}
+                  className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm rounded-full transition-all shadow-md hover:shadow-teal-500/25 cursor-pointer"
+                  title="Back to Home"
+                >
+                  <ArrowLeft size={16} />
+                  <span>Back to Home</span>
+                </button>
                 <a
                   href={activeVideo.url.startsWith('http') ? activeVideo.url : `https://www.youtube.com/watch?v=${activeVideo.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#1B2728] hover:text-[#FFFFFF] bg-[#141D1E]/10 hover:bg-[#2DD4BF] px-3 py-1.5 rounded-full transition-colors font-medium"
+                  className="hidden md:inline-flex items-center gap-1.5 text-xs text-[#C1D0D0] hover:text-white bg-[#101819] hover:bg-[#1B2728] border border-[#2A3A3A] px-3.5 py-1.5 rounded-full transition-colors font-medium"
                 >
                   <span>Watch on YouTube</span>
                   <ArrowRight size={13} />
                 </a>
                 <button
-                  onClick={() => setActiveVideo(null)}
-                  className="w-9 h-9 bg-[#141D1E]/10 hover:bg-[#2DD4BF] text-[#06201D] font-bold hover:text-white rounded-full flex items-center justify-center transition-all cursor-pointer"
+                  onClick={handleBackToHome}
+                  className="w-8 h-8 sm:w-9 sm:h-9 bg-[#101819] hover:bg-red-500/20 text-[#9AAEAE] hover:text-red-400 border border-[#2A3A3A] hover:border-red-500/30 rounded-full flex items-center justify-center transition-all cursor-pointer"
                   title="Close Video"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
             </div>
@@ -945,14 +970,24 @@ const LandingPage = () => {
 
       {/* Features Modal */}
       {isFeaturesOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#141D1E]/80 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setIsFeaturesOpen(false)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#141D1E]/80 backdrop-blur-sm animate-in fade-in duration-300" onClick={handleBackToHome}>
           <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl w-full max-w-6xl max-h-[90vh] overflow-y-auto overflow-x-hidden shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-[#2A3A3A]">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA]">Everything You Need for a Smarter Fitness Journey</h2>
-              <button onClick={() => setIsFeaturesOpen(false)} className="p-2 text-[#9AAEAE] hover:bg-[#0E1415] rounded-full transition-colors">
-                <X size={24} />
-              </button>
+            <div className="flex justify-between items-center p-6 border-b border-[#2A3A3A] gap-4">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#F5FAFA]">Everything You Need for a Smarter Fitness Journey</h2>
+              <div className="flex items-center gap-2.5 shrink-0">
+                <button
+                  onClick={handleBackToHome}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
+                  title="Back to Home"
+                >
+                  <ArrowLeft size={16} />
+                  <span>Back to Home</span>
+                </button>
+                <button onClick={() => setIsFeaturesOpen(false)} className="p-2 text-[#9AAEAE] hover:text-white hover:bg-[#0E1415] rounded-full transition-colors cursor-pointer">
+                  <X size={22} />
+                </button>
+              </div>
             </div>
 
             {/* Body */}
@@ -1004,19 +1039,29 @@ const LandingPage = () => {
 
       {/* Video Tour Modal */}
       {isTourOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#141D1E]/90 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setIsTourOpen(false)}>
-          <div className="relative w-full max-w-6xl bg-[#141D1E] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(22,125,120,0.15)] flex flex-col h-[85vh] border border-[#141D1E]" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#141D1E]/90 backdrop-blur-md animate-in fade-in duration-300" onClick={handleBackToHome}>
+          <div className="relative w-full max-w-6xl bg-[#141D1E] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(22,125,120,0.15)] flex flex-col h-[85vh] border border-[#2A3A3A]" onClick={e => e.stopPropagation()}>
             {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b border-[#141D1E] bg-[#141D1E] shrink-0">
+            <div className="flex justify-between items-center p-4 border-b border-[#2A3A3A] bg-[#141D1E] shrink-0">
               <div className="flex items-center space-x-3">
                 <PlayCircle className="text-[#2DD4BF]" size={20} />
                 <span className="font-bold text-white text-sm tracking-wide uppercase">
                   {tourJourney === 'select' ? 'Choose Your Journey' : tourJourney === 'customer' ? 'Customer Journey' : 'Gym Owner Journey'}
                 </span>
               </div>
-              <button onClick={() => setIsTourOpen(false)} className="text-[#9AAEAE] hover:text-white transition-colors">
-                <X size={24} />
-              </button>
+              <div className="flex items-center gap-2.5">
+                <button
+                  onClick={handleBackToHome}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
+                  title="Back to Home"
+                >
+                  <ArrowLeft size={16} />
+                  <span>Back to Home</span>
+                </button>
+                <button onClick={() => setIsTourOpen(false)} className="text-[#9AAEAE] hover:text-white transition-colors cursor-pointer p-1">
+                  <X size={22} />
+                </button>
+              </div>
             </div>
 
             {/* Slide Area */}
@@ -1027,8 +1072,6 @@ const LandingPage = () => {
                 setJourney={(j) => { setTourJourney(j); setTourStep(1); }}
               />
             </div>
-
-
           </div>
         </div>
       )}

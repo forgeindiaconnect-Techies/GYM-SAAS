@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Star, MessageSquare, TrendingUp, Award, RefreshCw,
   Calendar, ChevronDown, Filter, User
@@ -110,13 +110,6 @@ const TrainerReviewsRatings = () => {
           <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Reviews & Ratings</h1>
           <p className="text-[#9AAEAE] text-sm mt-1">Customer feedback from your completed sessions</p>
         </div>
-        <button
-          onClick={fetchReviews}
-          className="flex items-center gap-2 px-4 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-sm font-medium text-[#9AAEAE] hover:bg-[#0E1415] transition-colors shadow-sm"
-        >
-          <RefreshCw size={15} />
-          Refresh
-        </button>
       </div>
 
       {error && (

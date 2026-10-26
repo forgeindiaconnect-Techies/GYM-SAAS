@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { IndianRupee, Clock, CheckCircle, Info, History, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
@@ -6,22 +6,22 @@ import TrainerFinancialsTabs from '../../components/Trainer/TrainerFinancialsTab
 
 const cycleBadge = (cycle: string) => {
   const map: Record<string, string> = {
-    'Per Session': 'bg-[#1B2728] text-[#2DD4BF]',
-    'Weekly': 'bg-[#1B2728] text-[#2DD4BF]',
-    'Monthly': 'bg-[#1B2728]/10 text-[#2DD4BF]',
-    'Custom': 'bg-[#1B2728] text-[#2DD4BF]',
+    'Per Session': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
+    'Weekly': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
+    'Monthly': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
+    'Custom': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
   };
-  return map[cycle] || 'bg-[#1B2728] text-[#C1D0D0]';
+  return map[cycle] || 'bg-[#1B2728] text-[#C1D0D0] border border-[#2A3A3A]';
 };
 
 const statusBadge = (status: string) => {
   const map: Record<string, string> = {
-    'Active': 'bg-[#1B2728]/10 text-[#2DD4BF]',
-    'Pending': 'bg-amber-100 text-amber-700',
-    'Rejected': 'bg-red-100 text-red-700',
-    'Inactive': 'bg-[#1B2728] text-[#9AAEAE]',
+    'Active': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
+    'Pending': 'bg-amber-950/40 text-amber-400 border border-amber-800/50',
+    'Rejected': 'bg-red-950/40 text-red-400 border border-red-800/50',
+    'Inactive': 'bg-[#0E1415] text-[#9AAEAE] border border-[#2A3A3A]',
   };
-  return map[status] || 'bg-[#1B2728] text-[#C1D0D0]';
+  return map[status] || 'bg-[#1B2728] text-[#C1D0D0] border border-[#2A3A3A]';
 };
 
 const TrainerMyAssignedFee = () => {
@@ -142,7 +142,7 @@ const TrainerMyAssignedFee = () => {
               {activeFee.notes && (
                 <div className="px-6 pb-6 border-t border-[#2A3A3A] pt-4">
                   <p className="text-sm font-medium text-[#9AAEAE]">Notes from Owner</p>
-                  <p className="text-sm text-[#C1D0D0] bg-amber-50 p-3 rounded-lg mt-1 italic border border-amber-100">
+                  <p className="text-sm text-[#C1D0D0] bg-[#0E1415] p-3 rounded-lg mt-1 italic border border-[#2A3A3A]">
                     "{activeFee.notes}"
                   </p>
                 </div>
@@ -165,20 +165,20 @@ const TrainerMyAssignedFee = () => {
               <span className="text-xs font-semibold text-[#9AAEAE]">{fees.length} record{fees.length !== 1 ? 's' : ''}</span>
             </div>
 
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-[#2A3A3A]">
               {sortedFees.map((f, index) => (
                 <div
                   key={f._id}
                   className={`p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${
-                    f.status === 'Active' ? 'bg-green-50/40 hover:bg-green-50' : 'hover:bg-[#0E1415]'
+                    f.status === 'Active' ? 'bg-[#141D1E] hover:bg-[#1B2728]' : 'bg-[#0E1415] hover:bg-[#141D1E]'
                   }`}
                 >
                   <div className="flex items-center gap-4">
                     {/* Order Number */}
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                      f.status === 'Active' ? 'bg-[#2DD4BF] text-white' :
-                      f.status === 'Pending' ? 'bg-amber-500 text-white' :
-                      'bg-gray-200 text-[#9AAEAE]'
+                      f.status === 'Active' ? 'bg-[#2DD4BF] text-[#06201D]' :
+                      f.status === 'Pending' ? 'bg-amber-500 text-[#06201D]' :
+                      'bg-[#1B2728] text-[#9AAEAE]'
                     }`}>
                       {index + 1}
                     </div>
@@ -195,7 +195,7 @@ const TrainerMyAssignedFee = () => {
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-semibold text-[#2DD4BF]">{f.trainingType}</p>
                         {f.status === 'Active' && (
-                          <span className="text-[10px] font-bold text-green-700 bg-green-100 px-1.5 py-0.5 rounded uppercase tracking-wide">Current</span>
+                          <span className="text-[10px] font-bold text-[#2DD4BF] bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 px-2 py-0.5 rounded-full uppercase tracking-wide">Current</span>
                         )}
                       </div>
                       <p className="text-xs text-[#9AAEAE] mt-0.5">
@@ -222,7 +222,7 @@ const TrainerMyAssignedFee = () => {
                     </span>
                     <button
                       onClick={() => setSelectedFee(f)}
-                      className="px-3 py-1.5 text-xs font-semibold bg-[#141D1E] border border-[#2A3A3A] text-[#2DD4BF] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold rounded-lg transition-colors whitespace-nowrap shadow-sm"
+                      className="px-3.5 py-1.5 text-xs font-semibold bg-[#0E1415] border border-[#2A3A3A] text-[#2DD4BF] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold rounded-xl transition-all whitespace-nowrap shadow-xs cursor-pointer"
                     >
                       View Details
                     </button>
@@ -320,7 +320,7 @@ const TrainerMyAssignedFee = () => {
               </div>
 
               {selectedFee.notes && (
-                <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl">
+                <div className="p-3.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl">
                   <p className="text-[#9AAEAE] text-xs font-semibold mb-1">Notes from Gym Owner</p>
                   <p className="text-xs text-[#C1D0D0] italic">{selectedFee.notes}</p>
                 </div>

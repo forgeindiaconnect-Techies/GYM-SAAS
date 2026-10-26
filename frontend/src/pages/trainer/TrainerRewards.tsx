@@ -183,7 +183,7 @@ export default function TrainerRewards() {
             <Award className="w-8 h-8" style={{ color: '#2DD4BF' }} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#141D1E' }}>
+            <h1 className="text-2xl font-bold" style={{ color: '#F5FAFA' }}>
               Trainer Performance & Rewards
             </h1>
             <p className="text-sm" style={{ color: '#9AAEAE' }}>
@@ -193,11 +193,11 @@ export default function TrainerRewards() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[#1B2728] border text-xs font-semibold" style={{ borderColor: '#2A3A3A' }}>
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[#0E1415] border text-xs font-semibold" style={{ borderColor: '#2A3A3A' }}>
           <button
             onClick={() => setActiveTab('performance')}
-            className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'performance' ? 'bg-[#2DD4BF] text-white shadow-sm' : 'text-[#C1D0D0] hover:text-black'
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'performance' ? 'bg-[#2DD4BF] text-[#06201D] font-bold shadow-sm' : 'text-[#F5FAFA] hover:text-[#2DD4BF] hover:bg-[#141D1E]'
             }`}
           >
             <Activity className="w-3.5 h-3.5" />
@@ -205,8 +205,8 @@ export default function TrainerRewards() {
           </button>
           <button
             onClick={() => setActiveTab('clients')}
-            className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'clients' ? 'bg-[#2DD4BF] text-white shadow-sm' : 'text-[#C1D0D0] hover:text-black'
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'clients' ? 'bg-[#2DD4BF] text-[#06201D] font-bold shadow-sm' : 'text-[#F5FAFA] hover:text-[#2DD4BF] hover:bg-[#141D1E]'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
@@ -214,8 +214,8 @@ export default function TrainerRewards() {
           </button>
           <button
             onClick={() => setActiveTab('rewards')}
-            className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'rewards' ? 'bg-[#2DD4BF] text-white shadow-sm' : 'text-[#C1D0D0] hover:text-black'
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'rewards' ? 'bg-[#2DD4BF] text-[#06201D] font-bold shadow-sm' : 'text-[#F5FAFA] hover:text-[#2DD4BF] hover:bg-[#141D1E]'
             }`}
           >
             <Gift className="w-3.5 h-3.5" />
@@ -223,8 +223,8 @@ export default function TrainerRewards() {
           </button>
           <button
             onClick={() => setActiveTab('claims')}
-            className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'claims' ? 'bg-[#2DD4BF] text-white shadow-sm' : 'text-[#C1D0D0] hover:text-black'
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'claims' ? 'bg-[#2DD4BF] text-[#06201D] font-bold shadow-sm' : 'text-[#F5FAFA] hover:text-[#2DD4BF] hover:bg-[#141D1E]'
             }`}
           >
             <History className="w-3.5 h-3.5" />
@@ -232,8 +232,8 @@ export default function TrainerRewards() {
           </button>
           <button
             onClick={() => setActiveTab('awards')}
-            className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'awards' ? 'bg-[#2DD4BF] text-white shadow-sm' : 'text-[#C1D0D0] hover:text-black'
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'awards' ? 'bg-[#2DD4BF] text-[#06201D] font-bold shadow-sm' : 'text-[#F5FAFA] hover:text-[#2DD4BF] hover:bg-[#141D1E]'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -270,7 +270,7 @@ export default function TrainerRewards() {
               <CheckCircle2 className="w-4 h-4" />
             </span>
           </div>
-          <div className="mt-3 text-3xl font-bold" style={{ color: '#141D1E' }}>
+          <div className="mt-3 text-3xl font-bold" style={{ color: '#F5FAFA' }}>
             {perfData?.completedSessionsCount ?? stats.completedSessionsCount}
           </div>
           <p className="text-xs mt-1" style={{ color: '#9AAEAE' }}>
@@ -328,7 +328,7 @@ export default function TrainerRewards() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Operational Quality */}
             <div className="bg-[#141D1E] p-6 rounded-2xl border shadow-sm space-y-4" style={{ borderColor: '#2A3A3A' }}>
-              <h2 className="text-lg font-bold" style={{ color: '#141D1E' }}>
+              <h2 className="text-lg font-bold" style={{ color: '#F5FAFA' }}>
                 Operational Performance & Records
               </h2>
               <div className="space-y-3">
@@ -376,7 +376,7 @@ export default function TrainerRewards() {
             {/* Client Reviews */}
             <div className="bg-[#141D1E] p-6 rounded-2xl border shadow-sm space-y-4" style={{ borderColor: '#2A3A3A' }}>
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold" style={{ color: '#141D1E' }}>
+                <h2 className="text-lg font-bold" style={{ color: '#F5FAFA' }}>
                   Customer Reviews & Feedback
                 </h2>
                 <span className="text-xs text-[#9AAEAE]">Verified client ratings</span>
@@ -414,7 +414,7 @@ export default function TrainerRewards() {
         <div className="space-y-4">
           <div className="bg-[#141D1E] p-6 rounded-2xl border shadow-sm space-y-4" style={{ borderColor: '#2A3A3A' }}>
             <div>
-              <h2 className="text-lg font-bold" style={{ color: '#141D1E' }}>
+              <h2 className="text-lg font-bold" style={{ color: '#F5FAFA' }}>
                 Assigned Clients & Verified Progress
               </h2>
               <p className="text-xs text-[#9AAEAE]">
@@ -504,7 +504,7 @@ export default function TrainerRewards() {
       {activeTab === 'rewards' && (
         <div className="space-y-4">
           <div>
-            <h2 className="text-lg font-bold" style={{ color: '#141D1E' }}>
+            <h2 className="text-lg font-bold" style={{ color: '#F5FAFA' }}>
               Available Performance Rewards & Bonuses
             </h2>
             <p className="text-xs text-[#9AAEAE]">
@@ -520,7 +520,7 @@ export default function TrainerRewards() {
           ) : rewards.length === 0 ? (
             <div className="text-center py-16 bg-[#141D1E] rounded-2xl border" style={{ borderColor: '#2A3A3A' }}>
               <Gift className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-bold" style={{ color: '#141D1E' }}>No Trainer Rewards Configured</h3>
+              <h3 className="text-base font-bold" style={{ color: '#F5FAFA' }}>No Trainer Rewards Configured</h3>
               <p className="text-sm max-w-sm mx-auto mt-1" style={{ color: '#9AAEAE' }}>
                 Your gym owner has not published any trainer performance rewards yet.
               </p>
@@ -550,7 +550,7 @@ export default function TrainerRewards() {
                       </div>
 
                       <div>
-                        <h3 className="font-bold text-base leading-tight" style={{ color: '#141D1E' }}>
+                        <h3 className="font-bold text-base leading-tight" style={{ color: '#F5FAFA' }}>
                           {reward.title}
                         </h3>
                         <p className="text-xs text-[#9AAEAE] mt-1 line-clamp-2">
@@ -626,7 +626,7 @@ export default function TrainerRewards() {
       {activeTab === 'claims' && (
         <div className="space-y-4">
           <div>
-            <h2 className="text-lg font-bold" style={{ color: '#141D1E' }}>
+            <h2 className="text-lg font-bold" style={{ color: '#F5FAFA' }}>
               My Claims & Bonus Payout History
             </h2>
             <p className="text-xs text-[#9AAEAE]">
@@ -656,7 +656,7 @@ export default function TrainerRewards() {
                     {claims.map(claim => (
                       <tr key={claim._id} className="hover:bg-[#0E1415]/50">
                         <td className="py-3.5 px-4">
-                          <div className="font-semibold text-xs" style={{ color: '#141D1E' }}>
+                          <div className="font-semibold text-xs" style={{ color: '#F5FAFA' }}>
                             {claim.rewardId?.title || 'Reward'}
                           </div>
                           <span className="text-[11px] text-[#9AAEAE]">{claim.rewardId?.category}</span>
@@ -768,7 +768,7 @@ export default function TrainerRewards() {
 
           {/* Section: My Won Awards */}
           <div>
-            <h3 className="text-base font-bold mb-4 flex items-center gap-2" style={{ color: '#141D1E' }}>
+            <h3 className="text-base font-bold mb-4 flex items-center gap-2" style={{ color: '#F5FAFA' }}>
               <Trophy className="w-4 h-4 text-amber-500" />
               My Conferred Honors ({myAwards.length})
             </h3>

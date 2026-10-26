@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search, MessageSquare, RefreshCw, Brain, CheckCircle2, Clock,
   ChevronDown, ChevronUp, Dumbbell, Salad, User, X, Filter, Send,
@@ -384,12 +384,6 @@ const TrainerAIFeedback = () => {
             <p className="text-[#9AAEAE] text-sm">AI-generated plans & feedback for your clients.</p>
           </div>
         </div>
-        <button
-          onClick={fetchFeedbacks}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] font-semibold rounded-xl hover:bg-[#0E1415] transition-colors text-sm"
-        >
-          <RefreshCw size={16} className={loading ? 'animate-spin text-[#2DD4BF]' : ''} /> Refresh
-        </button>
       </div>
 
       {/* Summary Cards */}

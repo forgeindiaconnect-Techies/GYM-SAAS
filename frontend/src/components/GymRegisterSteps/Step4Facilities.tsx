@@ -28,9 +28,9 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#E2E8F0] pb-2">
-        <h2 className="text-lg font-bold text-[#0F172A]">Gym Facilities</h2>
-        <p className="text-sm text-[#64748B]">Select all the amenities available at your gym.</p>
+      <div className="border-b border-[#2A3A3A] pb-2">
+        <h2 className="text-lg font-bold text-[#F5FAFA]">Gym Facilities</h2>
+        <p className="text-sm text-[#9AAEAE]">Select all the amenities available at your gym.</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -43,11 +43,11 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
               onClick={() => toggleFacility(facility)}
               className={`flex items-center space-x-2.5 p-3 rounded-xl border text-left transition-all cursor-pointer ${
                 isSelected 
-                  ? 'bg-[#F0FDFA] border-[#2DD4BF] text-[#0F172A] shadow-xs' 
-                  : 'bg-[#FFFFFF] border-[#CBD5E1] text-[#334155] hover:border-[#2DD4BF] hover:bg-[#F8FAFC]'
+                  ? 'bg-[#2DD4BF]/15 border-[#2DD4BF] text-[#F5FAFA] shadow-xs' 
+                  : 'bg-[#101819] border-[#2A3A3A] text-[#C1D0D0] hover:border-[#2DD4BF]/60 hover:text-[#F5FAFA]'
               }`}
             >
-              <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border ${isSelected ? 'bg-[#2DD4BF] border-[#2DD4BF]' : 'border-[#CBD5E1]'}`}>
+              <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border ${isSelected ? 'bg-[#2DD4BF] border-[#2DD4BF]' : 'border-[#2A3A3A] bg-[#141D1E]'}`}>
                 {isSelected && <Check size={14} className="text-[#06201D]" />}
               </div>
               <span className="text-xs font-semibold leading-tight">{facility}</span>
@@ -55,7 +55,7 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
           );
         })}
       </div>
-      {errors.facilities && <p className="text-red-500 text-xs mt-2">{errors.facilities}</p>}
+      {errors.facilities && <p className="text-red-400 text-xs mt-2">{errors.facilities}</p>}
     </div>
   );
 };

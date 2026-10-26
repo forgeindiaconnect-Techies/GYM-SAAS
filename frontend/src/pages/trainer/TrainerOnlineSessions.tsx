@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Video, Play, Clock, Calendar, CheckCircle2, Loader2,
   FileText, RefreshCw, Wifi, Timer, Users, Eye, X, Star
@@ -188,11 +188,6 @@ const TrainerOnlineSessions = () => {
             Conduct your approved online training sessions via Jitsi Meet.
           </p>
         </div>
-        <button onClick={() => fetchSessions(true)} disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#2DD4BF] border border-[#2A3A3A] rounded-xl hover:bg-[#0E1415] transition-colors disabled:opacity-50 self-start sm:self-auto">
-          <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
-          Refresh
-        </button>
       </div>
 
       {/* Workflow Banner */}

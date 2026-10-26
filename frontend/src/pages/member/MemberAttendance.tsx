@@ -1,6 +1,7 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
-  CalendarCheck, Dumbbell, Video, Loader2, LogIn, LogOut, Activity, CheckCircle2
+  CalendarCheck, Dumbbell, Video, Loader2, LogIn, LogOut, Activity, CheckCircle2,
+  Calendar, CalendarX
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
@@ -29,6 +30,22 @@ const MemberAttendance = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  // Calendar Date Filter State
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
+  const formatDateDisplay = (dateStr: string) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('T')[0].split('-');
+    if (parts.length === 3) {
+      const [y, m, d] = parts;
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthName = months[parseInt(m, 10) - 1] || m;
+      return `${monthName} ${d}, ${y}`;
+    }
+    return dateStr;
+  };
 
   const fetchAttendance = async () => {
     try {
@@ -80,18 +97,37 @@ const MemberAttendance = () => {
     }
   };
 
-  const totalSessions = sessions.length;
-  const attendedCount = sessions.filter(
-    (s) => s.attendanceStatus === 'Present' || s.status === 'Completed'
-  ).length;
-  const selfLearningCount = sessions.filter((s) => s.attendanceStatus === 'Self-Learning').length;
-  const lateCount = sessions.filter((s) => s.attendanceStatus === 'Late').length;
-  const missedCount = sessions.filter((s) => s.attendanceStatus === 'Absent').length;
+  // Filter sessions according to selectedDate:
+  // User Requirement: "when i clicking anydate it will be showing to the attendance. for example today i am present means it will be showing to the attendance, incase i am absent means dont show anything"
+  const displayedSessions = useMemo(() => {
+    if (!selectedDate) return sessions;
+
+    return sessions.filter((s) => {
+      const isSameDate = s.date === selectedDate || s.date?.startsWith(selectedDate);
+      const isPresent = s.attendanceStatus === 'Present' || s.status === 'Completed' || Boolean(s.checkInTime);
+      return isSameDate && isPresent;
+    });
+  }, [sessions, selectedDate]);
+
+  // Overall or filtered stats
+  const totalSessions = selectedDate ? displayedSessions.length : sessions.length;
+  const attendedCount = selectedDate
+    ? displayedSessions.filter((s) => s.attendanceStatus === 'Present' || s.status === 'Completed' || Boolean(s.checkInTime)).length
+    : sessions.filter((s) => s.attendanceStatus === 'Present' || s.status === 'Completed').length;
+  const selfLearningCount = selectedDate
+    ? displayedSessions.filter((s) => s.attendanceStatus === 'Self-Learning').length
+    : sessions.filter((s) => s.attendanceStatus === 'Self-Learning').length;
+  const lateCount = selectedDate
+    ? displayedSessions.filter((s) => s.attendanceStatus === 'Late').length
+    : sessions.filter((s) => s.attendanceStatus === 'Late').length;
+  const missedCount = selectedDate
+    ? (displayedSessions.length === 0 ? 1 : 0)
+    : sessions.filter((s) => s.attendanceStatus === 'Absent').length;
 
   const attendanceScore =
     totalSessions > 0
       ? Math.round(((attendedCount + selfLearningCount + lateCount) / totalSessions) * 100)
-      : 100;
+      : selectedDate ? 0 : 100;
 
   const ongoingSession = sessions.find((s) => s.checkInTime && !s.checkOutTime);
   const nextEligibleSession = sessions.find(
@@ -104,20 +140,20 @@ const MemberAttendance = () => {
       <div className="bg-gradient-to-r from-[#2DD4BF] via-[#2DD4BF] to-[#2DD4BF] rounded-3xl p-6 md:p-8 text-[#06201D] font-bold shadow-xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#141D1E]/15 backdrop-blur-md rounded-full text-xs font-semibold text-[#2DD4BF]">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#141D1E]/15 backdrop-blur-md rounded-full text-xs font-semibold text-[#06201D]">
               <CalendarCheck size={13} />
               Session Attendance & Consistency
             </span>
-            <h1 className="text-2xl md:text-3xl font-bold">Attendance Record</h1>
-            <p className="text-white/80 text-sm max-w-lg">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#06201D]">Attendance Record</h1>
+            <p className="text-[#06201D]/80 text-sm max-w-lg">
               Track your live online session check-ins, punctuality, and self-learning workout completions over time.
             </p>
           </div>
 
-          <div className="bg-[#141D1E]/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 text-center shrink-0 min-w-[200px]">
-            <p className="text-xs font-bold uppercase tracking-wider text-[#2DD4BF]">Overall Attendance</p>
-            <p className="text-3xl font-black mt-1">{attendanceScore}%</p>
-            <p className="text-xs text-white/70 mt-1">
+          <div className="bg-[#141D1E]/10 backdrop-blur-md border border-black/10 rounded-2xl p-5 text-center shrink-0 min-w-[200px]">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#06201D]">Overall Attendance</p>
+            <p className="text-3xl font-black mt-1 text-[#06201D]">{attendanceScore}%</p>
+            <p className="text-xs text-[#06201D]/70 mt-1">
               {attendedCount + selfLearningCount} of {totalSessions} completed
             </p>
           </div>
@@ -150,26 +186,28 @@ const MemberAttendance = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm text-center">
-          <p className="text-xs text-[#9AAEAE] font-medium uppercase tracking-wider">Total Booked</p>
+          <p className="text-xs text-[#9AAEAE] font-medium uppercase tracking-wider">
+            {selectedDate ? 'Booked on Date' : 'Total Booked'}
+          </p>
           <p className="text-2xl font-bold text-[#F5FAFA] mt-1">{totalSessions}</p>
         </div>
         <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm text-center">
-          <p className="text-xs text-green-700 font-medium uppercase tracking-wider">Attended Live</p>
-          <p className="text-2xl font-bold text-green-700 mt-1">{attendedCount}</p>
+          <p className="text-xs text-emerald-400 font-medium uppercase tracking-wider">Attended Live</p>
+          <p className="text-2xl font-bold text-emerald-400 mt-1">{attendedCount}</p>
         </div>
         <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-[#2DD4BF] font-medium uppercase tracking-wider">Self-Learning</p>
           <p className="text-2xl font-bold text-[#2DD4BF] mt-1">{selfLearningCount}</p>
         </div>
         <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm text-center">
-          <p className="text-xs text-rose-700 font-medium uppercase tracking-wider">Missed / Absent</p>
-          <p className="text-2xl font-bold text-rose-700 mt-1">{missedCount}</p>
+          <p className="text-xs text-rose-400 font-medium uppercase tracking-wider">Missed / Absent</p>
+          <p className="text-2xl font-bold text-rose-400 mt-1">{missedCount}</p>
         </div>
       </div>
 
       {/* Quick Active Check-In & Check-Out Action Bar */}
       {ongoingSession && (
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-[#2A3A3A] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center font-bold shadow-md shadow-emerald-900/10 shrink-0">
               <Activity size={24} className="animate-pulse" />
@@ -211,7 +249,7 @@ const MemberAttendance = () => {
       )}
 
       {!ongoingSession && nextEligibleSession && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-[#1B2728] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold flex items-center justify-center font-bold shadow-md shadow-teal-900/10 shrink-0">
               <LogIn size={22} />
@@ -247,29 +285,109 @@ const MemberAttendance = () => {
 
       {/* Attendance Log Table */}
       <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415]">
-          <h2 className="text-sm font-bold text-[#F5FAFA]">Session Attendance History</h2>
+        {/* Table Header & Calendar Date Picker */}
+        <div className="p-4 border-b border-[#2A3A3A] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0E1415]">
+          <div>
+            <h2 className="text-sm font-bold text-[#F5FAFA] flex items-center gap-2">
+              <CalendarCheck size={16} className="text-[#2DD4BF]" />
+              <span>Session Attendance History</span>
+            </h2>
+            {selectedDate ? (
+              <p className="text-[11px] text-[#2DD4BF] mt-0.5 font-medium">
+                Viewing date: {formatDateDisplay(selectedDate)}
+              </p>
+            ) : (
+              <p className="text-[11px] text-[#9AAEAE] mt-0.5">
+                Showing all session check-ins
+              </p>
+            )}
+          </div>
+
+          {/* Calendar Picker Controls */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Quick Today Button */}
+            <button
+              type="button"
+              onClick={() => {
+                const today = new Date().toISOString().split('T')[0];
+                setSelectedDate(today);
+              }}
+              className={`px-3 py-1.5 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                selectedDate === new Date().toISOString().split('T')[0]
+                  ? 'bg-[#2DD4BF] text-[#06201D] border-[#2DD4BF] shadow-xs'
+                  : 'bg-[#141D1E] text-[#9AAEAE] border-[#2A3A3A] hover:text-[#FFFFFF] hover:border-[#2DD4BF]'
+              }`}
+            >
+              Today
+            </button>
+
+            {/* Calendar Date Input */}
+            <div className="relative inline-flex items-center">
+              <Calendar size={14} className="absolute left-3 text-[#2DD4BF] pointer-events-none" />
+              <input
+                ref={dateInputRef}
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] focus:border-[#2DD4BF] text-[#F5FAFA] font-bold text-xs rounded-xl pl-9 pr-3 py-1.5 outline-none cursor-pointer shadow-xs transition-colors [color-scheme:dark]"
+                title="Select any date to check attendance"
+              />
+            </div>
+
+            {/* Clear / Show All Button */}
+            {selectedDate && (
+              <button
+                type="button"
+                onClick={() => setSelectedDate('')}
+                className="px-3 py-1.5 text-xs font-semibold text-[#9AAEAE] hover:text-[#2DD4BF] bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl transition cursor-pointer"
+                title="Show all attendance history"
+              >
+                Show All
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="animate-spin text-[#2DD4BF]" size={32} />
           </div>
-        ) : sessions.length === 0 ? (
+        ) : displayedSessions.length === 0 ? (
           <div className="p-12 text-center text-[#9AAEAE] space-y-3">
-            <CalendarCheck size={36} className="mx-auto text-[#9AAEAE]" />
-            <p className="font-semibold text-sm">No session attendance records found yet.</p>
-            <p className="text-xs text-[#9AAEAE]">Book and attend your first online trainer session to view check-in history.</p>
-            <Link
-              to="/member/find-trainers"
-              className="inline-block mt-2 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl text-xs font-bold hover:bg-[#5EEAD4] transition"
-            >
-              Book Trainer Session
-            </Link>
+            {selectedDate ? (
+              <>
+                <CalendarX size={38} className="mx-auto text-[#9AAEAE]/50" />
+                <p className="font-semibold text-sm text-[#F5FAFA]">
+                  No attendance record found for {formatDateDisplay(selectedDate)}
+                </p>
+                <p className="text-xs text-[#9AAEAE]">
+                  Status: Absent (no attendance or check-in recorded on this date).
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSelectedDate('')}
+                  className="inline-block mt-2 px-4 py-2 bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] text-[#2DD4BF] font-bold rounded-xl text-xs transition cursor-pointer"
+                >
+                  Show All Attendance History
+                </button>
+              </>
+            ) : (
+              <>
+                <CalendarCheck size={36} className="mx-auto text-[#9AAEAE]" />
+                <p className="font-semibold text-sm">No session attendance records found yet.</p>
+                <p className="text-xs text-[#9AAEAE]">Book and attend your first online trainer session to view check-in history.</p>
+                <Link
+                  to="/member/find-trainers"
+                  className="inline-block mt-2 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl text-xs font-bold hover:bg-[#5EEAD4] transition"
+                >
+                  Book Trainer Session
+                </Link>
+              </>
+            )}
           </div>
         ) : (
           <div className="divide-y divide-[#2A3A3A]">
-            {sessions.map((session) => {
+            {displayedSessions.map((session) => {
               const status = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : session.status);
               const checkedIn = Boolean(session.checkInTime);
               const checkedOut = Boolean(session.checkOutTime);
@@ -297,14 +415,14 @@ const MemberAttendance = () => {
 
                   <div className="flex items-center gap-2.5 flex-wrap">
                     {session.checkInTime && (
-                      <span className="text-xs font-bold text-[#2DD4BF] bg-[#1B2728]/70 border border-[#2A3A3A] px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-[#2DD4BF] bg-[#1B2728] border border-[#2A3A3A] px-2.5 py-1 rounded-lg flex items-center gap-1.5">
                         <LogIn size={12} className="text-[#2DD4BF]" />
                         <span>In: {new Date(session.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </span>
                     )}
 
                     {session.checkOutTime && (
-                      <span className="text-xs font-bold text-[#2DD4BF] bg-[#1B2728]/70 border border-[#2A3A3A] px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-[#2DD4BF] bg-[#1B2728] border border-[#2A3A3A] px-2.5 py-1 rounded-lg flex items-center gap-1.5">
                         <LogOut size={12} className="text-[#2DD4BF]" />
                         <span>Out: {new Date(session.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </span>
@@ -339,13 +457,13 @@ const MemberAttendance = () => {
                     <span
                       className={`text-xs font-extrabold px-3 py-1 rounded-full border ${
                         status === 'Present' || status === 'Completed'
-                          ? 'bg-green-100 text-green-800 border-green-300'
+                          ? 'bg-[#1B2728] text-[#2DD4BF] border-[#2A3A3A]'
                           : status === 'Self-Learning'
                           ? 'bg-[#1B2728] text-[#2DD4BF] border-[#2A3A3A]'
                           : status === 'Late'
-                          ? 'bg-amber-100 text-amber-800 border-amber-300'
+                          ? 'bg-amber-950/40 text-amber-400 border-amber-800/40'
                           : status === 'Absent'
-                          ? 'bg-rose-100 text-rose-800 border-rose-300'
+                          ? 'bg-rose-950/40 text-rose-400 border-rose-800/40'
                           : 'bg-[#1B2728] text-[#C1D0D0] border-[#2A3A3A]'
                       }`}
                     >

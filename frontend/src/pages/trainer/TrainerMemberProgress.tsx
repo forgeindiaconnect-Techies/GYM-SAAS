@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TrendingUp, Search, CheckCircle2, Clock,
   ChevronRight, X, Activity, RefreshCw
@@ -100,13 +100,6 @@ const TrainerMemberProgress: React.FC = () => {
             Monitor client adherence to assigned workout routines, completed sets, workout streak, and exercise completion rate.
           </p>
         </div>
-
-        <button
-          onClick={fetchClientsOverview}
-          className="px-4 py-2 bg-[#0E1415] hover:bg-[#1B2728] text-[#F5FAFA] rounded-xl text-xs font-bold transition-colors flex items-center gap-2"
-        >
-          <RefreshCw size={14} /> Refresh Progress
-        </button>
       </div>
 
       {/* Search & Filter */}

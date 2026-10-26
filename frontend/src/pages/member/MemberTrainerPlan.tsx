@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dumbbell, Utensils, Video, BookOpen, Plus, Send,
   CheckCircle2, Clock, AlertCircle, Play, Eye, Sparkles,
@@ -319,7 +319,7 @@ const MemberTrainerPlan: React.FC = () => {
   return (
     <div className="space-y-6 pb-16 max-w-7xl mx-auto">
       {/* Top Header Card */}
-      <div className="bg-gradient-to-r from-white via-orange-50/30 to-white border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <div className="flex items-center space-x-3 mb-2">
             <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF] flex items-center justify-center text-[#F5FAFA] shadow-md shadow-teal-900/10/50">
@@ -670,7 +670,7 @@ const MemberTrainerPlan: React.FC = () => {
           {activeTab === 'videos' && (
             <div className="space-y-6">
               {/* Header */}
-              <div className="bg-gradient-to-r from-red-50 via-orange-50 to-white border border-red-200/70 rounded-3xl p-6 md:p-7 shadow-xs">
+              <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-7 shadow-xs">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
@@ -678,7 +678,7 @@ const MemberTrainerPlan: React.FC = () => {
                         <Video size={18} />
                       </span>
                       <h3 className="text-xl md:text-2xl font-black text-[#F5FAFA]">Gym Exercise Videos (YouTube)</h3>
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30">
                         YouTube Tutorials
                       </span>
                     </div>
@@ -935,7 +935,7 @@ const MemberTrainerPlan: React.FC = () => {
           {activeTab === 'library' && (
             <div className="space-y-6">
               {/* Header */}
-              <div className="bg-gradient-to-r from-orange-50 via-amber-50 to-white border border-[#2A3A3A]/80 rounded-3xl p-6 md:p-7 shadow-xs">
+              <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-7 shadow-xs">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
@@ -943,7 +943,7 @@ const MemberTrainerPlan: React.FC = () => {
                         <BookOpen size={18} />
                       </span>
                       <h3 className="text-xl md:text-2xl font-black text-[#F5FAFA]">Animated Exercise Library</h3>
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#1B2728] text-[#5EEAD4]">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#1B2728] text-[#5EEAD4] border border-[#2A3A3A]">
                         Biomechanical 3D/2D Animations
                       </span>
                     </div>
@@ -1174,7 +1174,7 @@ const MemberTrainerPlan: React.FC = () => {
           {activeTab === 'equipments' && (
             <div className="space-y-6">
               {/* Header Banner */}
-              <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 border-2 border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center font-extrabold text-xl shadow-md">
                     <ShieldCheck size={26} />

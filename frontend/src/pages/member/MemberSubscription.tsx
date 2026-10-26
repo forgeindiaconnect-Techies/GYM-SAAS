@@ -655,7 +655,7 @@ const MemberSubscription = () => {
                   ) : (
                     <button
                       onClick={() => handleSelectPlan(p)}
-                      className="w-full py-3 rounded-xl font-bold text-xs bg-[#141D1E] border border-[#2A3A3A] text-[#F5FAFA] hover:border-[#2DD4BF] hover:text-[#2DD4BF] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                      className="w-full py-3 rounded-xl font-bold text-xs bg-[#2DD4BF] text-white hover:bg-[#5EEAD4] shadow-md shadow-[#2DD4BF]/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <Zap size={16} />
                       <span>Start Free Trial</span>
@@ -664,11 +664,7 @@ const MemberSubscription = () => {
                 ) : (
                   <button
                     onClick={() => handleSelectPlan(p)}
-                    className={`w-full py-3 rounded-xl font-bold text-xs transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer ${
-                      isPopular
-                        ? 'bg-[#2DD4BF] text-white hover:bg-[#5EEAD4] shadow-md shadow-[#2DD4BF]/25'
-                        : 'bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] hover:border-[#2DD4BF] hover:text-[#2DD4BF]'
-                    }`}
+                    className="w-full py-3 rounded-xl font-bold text-xs bg-[#2DD4BF] text-white hover:bg-[#5EEAD4] shadow-md shadow-[#2DD4BF]/25 transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <Sparkles size={16} />
                     <span>Select &amp; Subscribe</span>

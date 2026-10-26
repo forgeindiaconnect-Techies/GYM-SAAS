@@ -24,10 +24,8 @@ const MemberTrainerReview = () => {
       const res = await api.get(`/ai/member/latest`);
       setRecommendation(res.data.recommendation);
       setHistory(res.data.history || []);
-      // Pre-fill reply if already sent
-      if (res.data.recommendation?.memberReply?.message) {
-        setReplyText(res.data.recommendation.memberReply.message);
-      }
+      // Keep input box empty for new messages
+      setReplyText('');
     } catch (err) {
       console.error(err);
     } finally {

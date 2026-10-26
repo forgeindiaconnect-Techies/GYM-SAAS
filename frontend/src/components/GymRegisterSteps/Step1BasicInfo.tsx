@@ -92,21 +92,21 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
     <div className="space-y-8">
       {/* Owner Details */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-[#0F172A] border-b border-[#E2E8F0] pb-2">Owner Details</h2>
+        <h2 className="text-lg font-bold text-[#F5FAFA] border-b border-[#2A3A3A] pb-2">Owner Details</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
-            <label className="block text-sm font-semibold text-[#334155] mb-2">First Name *</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">First Name *</label>
             <input value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="John" className={inputCls('firstName')} />
-            {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
+            {errors.firstName && <p className="text-red-400 text-xs mt-1">{errors.firstName}</p>}
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#334155] mb-2">Last Name *</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Last Name *</label>
             <input value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="Doe" className={inputCls('lastName')} />
-            {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
+            {errors.lastName && <p className="text-red-400 text-xs mt-1">{errors.lastName}</p>}
           </div>
         </div>
         <div>
-          <label className="block text-sm font-semibold text-[#334155] mb-2">Email Address *</label>
+          <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Email Address *</label>
           <div className="flex gap-2">
             <input type="email" value={form.email} onChange={e => {
               set('email', e.target.value);
@@ -118,20 +118,20 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                 type="button" 
                 onClick={handleSendOtp} 
                 disabled={sendingOtp} 
-                className="px-5 py-2.5 bg-[#2DD4BF] text-[#06201D] text-sm font-bold rounded-xl border border-[#2DD4BF] hover:bg-[#5EEAD4] transition-all whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50 cursor-pointer shadow-xs"
+                className="px-5 py-2.5 bg-[#2DD4BF] text-[#06201D] text-sm font-bold rounded-xl hover:bg-[#5EEAD4] transition-all whitespace-nowrap flex items-center gap-1.5 disabled:opacity-50 cursor-pointer shadow-xs"
               >
                 {sendingOtp && <Loader2 size={14} className="animate-spin" />}
                 {sendingOtp ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
               </button>
             )}
             {form.emailOtpVerified && (
-              <span className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-xl border border-emerald-300 flex items-center gap-1 whitespace-nowrap shadow-xs">
+              <span className="px-4 py-2 bg-emerald-500/15 text-emerald-400 text-sm font-bold rounded-xl border border-emerald-500/30 flex items-center gap-1 whitespace-nowrap shadow-xs">
                 <Check size={16} /> Verified
               </span>
             )}
           </div>
-          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-          {errors.emailOtp && <p className="text-red-500 text-xs mt-1">{errors.emailOtp}</p>}
+          {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+          {errors.emailOtp && <p className="text-red-400 text-xs mt-1">{errors.emailOtp}</p>}
           
           {otpSent && !form.emailOtpVerified && (
             <div className="mt-3 flex gap-2">
@@ -141,7 +141,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                 value={enteredOtp} 
                 onChange={e => setEnteredOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="Enter 6-digit OTP" 
-                className="w-full px-4 py-2.5 light-input bg-[#FFFFFF] border border-[#CBD5E1] rounded-xl text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] flex-1 shadow-xs"
+                className="w-full px-4 py-2.5 bg-[#101819] border border-[#2A3A3A] rounded-xl text-sm text-[#F5FAFA] placeholder-[#6A7F7F] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] flex-1 shadow-xs"
               />
               <button 
                 type="button" 
@@ -154,17 +154,17 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
               </button>
             </div>
           )}
-          {otpError && <p className="text-red-500 text-xs mt-1 font-medium">{otpError}</p>}
+          {otpError && <p className="text-red-400 text-xs mt-1 font-medium">{otpError}</p>}
         </div>
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-semibold text-[#334155]">Mobile Number *</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0]">Mobile Number *</label>
             {!form.emailOtpVerified ? (
-              <span className="text-xs text-amber-600 font-semibold flex items-center gap-1">
+              <span className="text-xs text-amber-400 font-semibold flex items-center gap-1">
                 <Lock size={12} /> Verify email first to enter mobile
               </span>
             ) : (
-              <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+              <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
                 <Check size={12} /> Email verified
               </span>
             )}
@@ -201,43 +201,43 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
               }}
               readOnly={!form.emailOtpVerified}
               placeholder={form.emailOtpVerified ? "10-digit number" : "Please verify email first to enter mobile"} 
-              className={inputCls('mobile') + (!form.emailOtpVerified ? ' !bg-[#F8FAFC] !text-[#64748B] border-[#CBD5E1] cursor-not-allowed select-none' : '')} 
+              className={inputCls('mobile') + (!form.emailOtpVerified ? ' !bg-[#0E1415] !text-[#6A7F7F] !border-[#2A3A3A] cursor-not-allowed select-none' : '')} 
             />
           </div>
           {mobileBlockedNotice && !form.emailOtpVerified && (
-            <p className="text-amber-600 text-xs mt-1.5 flex items-center gap-1 font-semibold">
+            <p className="text-amber-400 text-xs mt-1.5 flex items-center gap-1 font-semibold">
               <AlertCircle size={13} /> Please enter and verify your email ID first before entering mobile number.
             </p>
           )}
-          {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
+          {errors.mobile && <p className="text-red-400 text-xs mt-1">{errors.mobile}</p>}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
-            <label className="block text-sm font-semibold text-[#334155] mb-2">Password *</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Password *</label>
             <div className="relative">
               <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => set('password', e.target.value)} placeholder="Min 8 chars" className={inputCls('password') + ' pr-10'} />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A] transition-colors">
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors">
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+            {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#334155] mb-2">Confirm Password *</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Confirm Password *</label>
             <div className="relative">
               <input type={showConfirm ? 'text' : 'password'} value={form.confirmPassword} onChange={e => set('confirmPassword', e.target.value)} placeholder="Repeat password" className={inputCls('confirmPassword') + ' pr-10'} />
-              <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A] transition-colors">
+              <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors">
                 {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
-            {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
+            {errors.confirmPassword && <p className="text-red-400 text-xs mt-1">{errors.confirmPassword}</p>}
           </div>
         </div>
       </div>
 
       {/* Gym Information */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-[#0F172A] border-b border-[#E2E8F0] pb-2">Gym Information</h2>
+        <h2 className="text-lg font-bold text-[#F5FAFA] border-b border-[#2A3A3A] pb-2">Gym Information</h2>
         <div>
           <label className="block text-sm font-semibold text-[#334155] mb-2">Gym Name *</label>
           <input value={form.gymName} onChange={e => set('gymName', e.target.value)} placeholder="AI Fitness Center" className={inputCls('gymName')} />
@@ -279,42 +279,42 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
 
       {/* Operational Details */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-[#0F172A] border-b border-[#E2E8F0] pb-2">Operational Details</h2>
+        <h2 className="text-lg font-bold text-[#F5FAFA] border-b border-[#2A3A3A] pb-2">Operational Details</h2>
         <div>
-          <label className="block text-sm font-semibold text-[#334155] mb-2">Gym Type *</label>
+          <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Gym Type *</label>
           <div className="flex flex-wrap gap-2">
             {GYM_TYPES.map(t => (
               <button key={t} type="button" onClick={() => set('gymType', t)} className={selBtnCls(form.gymType === t)}>{t}</button>
             ))}
           </div>
-          {errors.gymType && <p className="text-red-500 text-xs mt-1">{errors.gymType}</p>}
+          {errors.gymType && <p className="text-red-400 text-xs mt-1">{errors.gymType}</p>}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
-            <label className="block text-sm font-semibold text-[#334155] mb-2">Approx. Members *</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Approx. Members *</label>
             <input type="number" value={form.approxMembers} onChange={e => set('approxMembers', e.target.value)} placeholder="e.g. 100" className={inputCls('approxMembers')} />
-            {errors.approxMembers && <p className="text-red-500 text-xs mt-1">{errors.approxMembers}</p>}
+            {errors.approxMembers && <p className="text-red-400 text-xs mt-1">{errors.approxMembers}</p>}
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#334155] mb-2">Number of Trainers *</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Number of Trainers *</label>
             <input type="number" value={form.numTrainers} onChange={e => set('numTrainers', e.target.value)} placeholder="e.g. 5" className={inputCls('numTrainers')} />
-            {errors.numTrainers && <p className="text-red-500 text-xs mt-1">{errors.numTrainers}</p>}
+            {errors.numTrainers && <p className="text-red-400 text-xs mt-1">{errors.numTrainers}</p>}
           </div>
         </div>
         <div>
-          <label className="block text-sm font-semibold text-[#334155] mb-2">Operating Hours *</label>
+          <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Operating Hours *</label>
           <div className="flex flex-wrap gap-2">
             {OPERATING_HOURS.map(h => (
               <button key={h} type="button" onClick={() => set('operatingHours', h)} className={selBtnCls(form.operatingHours === h)}>{h}</button>
             ))}
           </div>
-          {errors.operatingHours && <p className="text-red-500 text-xs mt-1">{errors.operatingHours}</p>}
+          {errors.operatingHours && <p className="text-red-400 text-xs mt-1">{errors.operatingHours}</p>}
         </div>
 
         {/* Training Mode */}
         <div>
-          <label className="block text-sm font-semibold text-[#334155] mb-1">Training Mode *</label>
-          <p className="text-xs text-[#64748B] mb-2">Select how your gym provides trainer-led fitness services.</p>
+          <label className="block text-sm font-semibold text-[#C1D0D0] mb-1">Training Mode *</label>
+          <p className="text-xs text-[#9AAEAE] mb-2">Select how your gym provides trainer-led fitness services.</p>
           <div className="flex flex-wrap gap-2">
             {[
               { value: 'offline', label: '🏋️ Offline Training' },
@@ -331,13 +331,13 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
               </button>
             ))}
           </div>
-          {errors.trainingMode && <p className="text-red-500 text-xs mt-1">{errors.trainingMode}</p>}
+          {errors.trainingMode && <p className="text-red-400 text-xs mt-1">{errors.trainingMode}</p>}
         </div>
 
         {/* Services Offered */}
         <div>
-          <label className="block text-sm font-semibold text-[#334155] mb-2">Services Offered *</label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 p-3 sm:p-4 border border-[#E2E8F0] rounded-xl bg-[#F8FAFC]">
+          <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Services Offered *</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 p-3 sm:p-4 border border-[#2A3A3A] rounded-xl bg-[#0E1415]">
             {(form.trainingMode === 'online' 
               ? [
                   'AI Fitness Coaching', '1-on-1 Virtual Training', 'Live Online Classes', 
@@ -366,16 +366,16 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                     if (e.target.checked) set('services', [...current, service]);
                     else set('services', current.filter((s: string) => s !== service));
                   }}
-                  className="rounded text-[#2DD4BF] focus:ring-[#2DD4BF] border-[#CBD5E1]"
+                  className="rounded text-[#2DD4BF] focus:ring-[#2DD4BF] border-[#2A3A3A] bg-[#101819]"
                 />
-                <span className="text-sm font-medium text-[#334155]">{service}</span>
+                <span className="text-sm font-medium text-[#C1D0D0]">{service}</span>
               </label>
             ))}
           </div>
-          {errors.services && <p className="text-red-500 text-xs mt-1">{errors.services}</p>}
+          {errors.services && <p className="text-red-400 text-xs mt-1">{errors.services}</p>}
         </div>
         <div>
-          <label className="block text-sm font-semibold text-[#334155] mb-2">Rating *</label>
+          <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Rating *</label>
           <input type="text" inputMode="decimal" value={form.rating || ''} onChange={e => {
             const v = e.target.value.replace(/[^0-9.]/g, '');
             const parts = v.split('.');
@@ -383,13 +383,13 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
             if (parseFloat(cleaned) > 5) cleaned = '5';
             set('rating', cleaned);
           }} placeholder="e.g. 4.8 (Max 5.0)" className={inputCls('rating')} maxLength={4} />
-          {errors.rating && <p className="text-red-500 text-xs mt-1">{errors.rating}</p>}
+          {errors.rating && <p className="text-red-400 text-xs mt-1">{errors.rating}</p>}
         </div>
 
         {/* Gym Description Form */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-sm font-semibold text-[#334155]">Gym Description (Optional)</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0]">Gym Description (Optional)</label>
             {form.description && (
               <button
                 type="button"
@@ -400,7 +400,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
               </button>
             )}
           </div>
-          <p className="text-xs text-[#64748B] mb-2">
+          <p className="text-xs text-[#9AAEAE] mb-2">
             Click quick template buttons or enter your custom gym description:
           </p>
           <div className="flex flex-wrap gap-2 mb-3">
@@ -429,7 +429,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                   form.description === tpl.text
                     ? 'bg-[#2DD4BF] text-[#06201D] border-[#2DD4BF] shadow-xs'
-                    : 'bg-[#FFFFFF] border-[#CBD5E1] text-[#334155] hover:border-[#2DD4BF] hover:bg-[#F0FDFA]'
+                    : 'bg-[#101819] border-[#2A3A3A] text-[#C1D0D0] hover:border-[#2DD4BF] hover:text-[#F5FAFA]'
                 }`}
               >
                 {tpl.label}
@@ -441,15 +441,15 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
             value={form.description || ''}
             onChange={e => set('description', e.target.value)}
             placeholder="Tell prospective members about your gym atmosphere, specialty equipment, trainer expertise, and facilities..."
-            className="w-full px-4 py-2.5 light-input bg-[#FFFFFF] border border-[#CBD5E1] rounded-xl text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] focus:border-transparent transition-all shadow-xs"
+            className="w-full px-4 py-2.5 bg-[#101819] border border-[#2A3A3A] rounded-xl text-sm text-[#F5FAFA] placeholder-[#6A7F7F] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] focus:border-transparent transition-all shadow-xs"
           />
-          {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+          {errors.description && <p className="text-red-400 text-xs mt-1">{errors.description}</p>}
         </div>
         <div>
-          <label className="block text-sm font-semibold text-[#334155] mb-2">Gym Photo/Logo (Optional)</label>
+          <label className="block text-sm font-semibold text-[#C1D0D0] mb-2">Gym Photo/Logo (Optional)</label>
           <div className="flex items-center gap-4">
             {form.logo && (
-              <img src={form.logo} alt="Gym Logo" className="w-16 h-16 rounded-xl object-cover border border-[#E2E8F0] shadow-xs" />
+              <img src={form.logo} alt="Gym Logo" className="w-16 h-16 rounded-xl object-cover border border-[#2A3A3A] shadow-xs" />
             )}
             <input 
               type="file" 
@@ -462,7 +462,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                   reader.readAsDataURL(file);
                 }
               }}
-              className="text-sm text-[#475569] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[#2DD4BF] file:text-[#06201D] hover:file:bg-[#5EEAD4] transition-colors cursor-pointer"
+              className="text-sm text-[#9AAEAE] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[#2DD4BF] file:text-[#06201D] hover:file:bg-[#5EEAD4] transition-colors cursor-pointer"
             />
           </div>
         </div>

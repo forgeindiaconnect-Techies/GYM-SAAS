@@ -31,13 +31,13 @@ const Step3ACDetails: React.FC<StepProps> = ({ form, set, errors, selBtnCls }) =
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-[#0F172A] border-b border-[#E2E8F0] pb-2 flex items-center gap-2">
+        <h2 className="text-lg font-bold text-[#F5FAFA] border-b border-[#2A3A3A] pb-2 flex items-center gap-2">
           <Wind className="text-[#2DD4BF]" size={20} />
           <span>Air Conditioning Details</span>
         </h2>
         
         <div>
-          <label className="block text-sm font-semibold text-[#334155] mb-3">Gym AC Type *</label>
+          <label className="block text-sm font-semibold text-[#C1D0D0] mb-3">Gym AC Type *</label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {AC_TYPES.map(t => (
               <button 
@@ -47,21 +47,21 @@ const Step3ACDetails: React.FC<StepProps> = ({ form, set, errors, selBtnCls }) =
                 className={`py-3 px-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                   currentType === t 
                     ? 'bg-[#2DD4BF] text-[#06201D] border-[#2DD4BF] shadow-xs' 
-                    : 'bg-[#FFFFFF] border-[#CBD5E1] text-[#334155] hover:border-[#2DD4BF] hover:bg-[#F8FAFC]'
+                    : 'bg-[#101819] border-[#2A3A3A] text-[#C1D0D0] hover:border-[#2DD4BF] hover:text-[#F5FAFA]'
                 }`}
               >
                 {t}
               </button>
             ))}
           </div>
-          {errors['acDetails.type'] && <p className="text-red-500 text-xs mt-2">{errors['acDetails.type']}</p>}
+          {errors['acDetails.type'] && <p className="text-red-400 text-xs mt-2">{errors['acDetails.type']}</p>}
         </div>
       </div>
 
       {currentType && currentType !== 'Non-AC' && currentType !== 'Fully AC' && (
-        <div className="space-y-4 bg-[#F8FAFC] p-6 rounded-xl border border-[#E2E8F0]">
+        <div className="space-y-4 bg-[#0E1415] p-6 rounded-xl border border-[#2A3A3A]">
           <div>
-            <label className="block text-sm font-semibold text-[#334155] mb-3">Specify Areas with AC *</label>
+            <label className="block text-sm font-semibold text-[#C1D0D0] mb-3">Specify Areas with AC *</label>
             <div className="flex flex-wrap gap-2">
               {AC_AREAS.map(area => (
                 <button 
@@ -74,7 +74,7 @@ const Step3ACDetails: React.FC<StepProps> = ({ form, set, errors, selBtnCls }) =
                 </button>
               ))}
             </div>
-            {errors['acDetails.areas'] && <p className="text-red-500 text-xs mt-2">{errors['acDetails.areas']}</p>}
+            {errors['acDetails.areas'] && <p className="text-red-400 text-xs mt-2">{errors['acDetails.areas']}</p>}
           </div>
         </div>
       )}
