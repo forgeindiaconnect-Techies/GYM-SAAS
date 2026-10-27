@@ -1,11 +1,11 @@
-﻿import { Bot, User, MapPin, Activity, ArrowRight, CheckCircle, XCircle, TrendingUp, Dumbbell, ShieldCheck, Calendar, FileText, Settings, HeartPulse, CreditCard, Monitor } from 'lucide-react';
+import { Bot, User, MapPin, Activity, ArrowRight, CheckCircle, XCircle, TrendingUp, Dumbbell, ShieldCheck, Calendar, FileText, Settings, HeartPulse, CreditCard, Monitor } from 'lucide-react';
 
-export const TourSlide = ({ journey, step, setJourney }: { journey: 'select' | 'customer' | 'owner', step: number, setJourney: (j: 'select' | 'customer' | 'owner') => void }) => {
+export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 'select' | 'customer' | 'owner', step: number, setJourney: (j: 'select' | 'customer' | 'owner') => void, onNavigate?: (path: string) => void }) => {
   
   if (journey === 'select') {
     return (
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 w-full max-w-4xl mx-auto h-full animate-in fade-in zoom-in duration-500">
-        <div onClick={() => setJourney('customer')} className="flex-1 w-full bg-[#141D1E] border-2 border-[#141D1E] rounded-3xl p-8 hover:border-[#2DD4BF] hover:bg-[#141D1E]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
+        <div onClick={() => onNavigate ? onNavigate('/portal/customer') : setJourney('customer')} className="flex-1 w-full bg-[#141D1E] border-2 border-[#141D1E] rounded-3xl p-8 hover:border-[#2DD4BF] hover:bg-[#141D1E]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
           <div className="w-16 h-16 bg-[#2DD4BF]/20 rounded-2xl flex items-center justify-center text-[#2DD4BF] mb-6 group-hover:scale-110 transition-transform">
             <User size={32} />
           </div>
@@ -19,18 +19,18 @@ export const TourSlide = ({ journey, step, setJourney }: { journey: 'select' | '
           <div className="inline-flex items-center gap-2 text-[#2DD4BF] font-bold">Start Journey <ArrowRight size={16} /></div>
         </div>
 
-        <div onClick={() => setJourney('owner')} className="flex-1 w-full bg-[#141D1E] border-2 border-[#141D1E] rounded-3xl p-8 hover:border-[#1B2728] hover:bg-[#141D1E]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
-          <div className="w-16 h-16 bg-[#1B2728]/20 rounded-2xl flex items-center justify-center text-[#1B2728] mb-6 group-hover:scale-110 transition-transform">
+        <div onClick={() => onNavigate ? onNavigate('/portal/gym-owner') : setJourney('owner')} className="flex-1 w-full bg-[#141D1E] border-2 border-[#141D1E] rounded-3xl p-8 hover:border-[#2DD4BF] hover:bg-[#141D1E]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
+          <div className="w-16 h-16 bg-[#2DD4BF]/20 rounded-2xl flex items-center justify-center text-[#2DD4BF] mb-6 group-hover:scale-110 transition-transform">
             <Activity size={32} />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-[#1B2728] transition-colors">Gym Owner Journey</h3>
+          <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-[#2DD4BF] transition-colors">Gym Owner Journey</h3>
           <p className="text-[#9AAEAE] mb-6">See how a gym owner registers, gets approved, and manages their facility.</p>
           <ul className="space-y-3 mb-8 flex-1">
             {['Register gym', 'Get Superadmin approval', 'Choose SaaS subscription', 'Complete payment', 'Access Dashboard'].map((item, idx) => (
-              <li key={idx} className="flex items-center text-sm text-[#C1D0D0]"><CheckCircle size={16} className="text-[#1B2728] mr-2" /> {item}</li>
+              <li key={idx} className="flex items-center text-sm text-[#C1D0D0]"><CheckCircle size={16} className="text-[#2DD4BF] mr-2" /> {item}</li>
             ))}
           </ul>
-          <div className="inline-flex items-center gap-2 text-[#1B2728] font-bold">Start Journey <ArrowRight size={16} /></div>
+          <div className="inline-flex items-center gap-2 text-[#2DD4BF] font-bold">Start Journey <ArrowRight size={16} /></div>
         </div>
       </div>
     );

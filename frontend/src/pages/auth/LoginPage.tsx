@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft, ShieldCheck, Building2, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../../utils/routeHelpers';
@@ -8,8 +8,23 @@ import api from '../../utils/api';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
-  const portal = searchParams.get('portal');
+  const portalParam = searchParams.get('portal');
+  const storedPortal = typeof window !== 'undefined' ? sessionStorage.getItem('last_portal') : null;
+  const portal = portalParam || (
+    (location.state as any)?.from?.includes('customer') ||
+    (location.state as any)?.from?.includes('member') ||
+    (location.state as any)?.fromLabel?.toLowerCase().includes('customer') ||
+    (typeof document !== 'undefined' && document.referrer.includes('/portal/customer')) ||
+    storedPortal === 'customer'
+      ? 'customer'
+      : (location.state as any)?.from?.includes('gym-owner') || (typeof document !== 'undefined' && document.referrer.includes('/portal/gym-owner')) || storedPortal === 'gym-owner'
+      ? 'gym-owner'
+      : (location.state as any)?.from?.includes('super-admin') || (typeof document !== 'undefined' && document.referrer.includes('/portal/super-admin')) || storedPortal === 'super-admin'
+      ? 'super-admin'
+      : null
+  );
   const { login } = useAuth();
 
   const [form, setForm] = useState({ email: '', password: '' });

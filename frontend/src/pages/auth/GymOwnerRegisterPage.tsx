@@ -388,9 +388,9 @@ const GymOwnerRegisterPage = () => {
     <div className="min-h-screen bg-[#080B0C] flex flex-col items-center justify-center px-3 sm:px-4 py-10 sm:py-16 relative">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(45,212,191,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
-      <Link to="/" className="static sm:absolute sm:top-8 sm:left-8 mb-4 sm:mb-0 self-start sm:self-auto text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors z-10 cursor-pointer">
+      <Link to="/portal/gym-owner" className="static sm:absolute sm:top-8 sm:left-8 mb-4 sm:mb-0 self-start sm:self-auto text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors z-10 cursor-pointer">
         <ArrowLeft size={20} />
-        <span className="font-medium text-sm">Back to Home</span>
+        <span className="font-medium text-sm">Back to Gym Owner Portal</span>
       </Link>
 
       <Link to="/" className="flex items-center space-x-2.5 mt-4 sm:mt-2 mb-4 sm:mb-8 group z-10">

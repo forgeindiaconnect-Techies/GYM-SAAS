@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -19,12 +20,267 @@ import {
   Sparkles,
   BarChart3,
   ShieldAlert,
-  TerminalSquare
+  TerminalSquare,
+  X,
+  GitBranch,
+  ArrowRight,
+  ArrowDown
 } from 'lucide-react';
 
 const SuperAdminPortalLanding = () => {
+  const [showWorkflow, setShowWorkflow] = useState(false);
+
+  /* ── Workflow Modal ── */
+  const WorkflowModal = () => (
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/75 backdrop-blur-sm px-2 py-6" onClick={() => setShowWorkflow(false)}>
+      <div
+        className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#0E1415] border border-[#2A3A3A] rounded-2xl shadow-2xl shadow-black/60"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 bg-[#0E1415] border-b border-[#2A3A3A]">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 rounded-lg flex items-center justify-center">
+              <GitBranch size={16} className="text-[#2DD4BF]" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-[#F5FAFA]">Super Admin Platform Workflow</h2>
+              <p className="text-xs text-[#6A7F7F]">End-to-end administrative governance flowchart</p>
+            </div>
+          </div>
+          <button onClick={() => setShowWorkflow(false)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1B2728] hover:bg-[#2A3A3A] text-[#9AAEAE] hover:text-[#F5FAFA] transition-all">
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* SVG Flowchart */}
+        <div className="p-4 overflow-x-auto flex justify-center">
+          <svg viewBox="0 0 680 830" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', maxWidth: '680px', minWidth: '580px', display: 'block' }}>
+            <defs>
+              <marker id="wf-arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+                <polygon points="0 0, 9 3.5, 0 7" fill="#2DD4BF" />
+              </marker>
+              <marker id="wf-arrG" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+                <polygon points="0 0, 9 3.5, 0 7" fill="#4ade80" />
+              </marker>
+              <marker id="wf-arrR" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+                <polygon points="0 0, 9 3.5, 0 7" fill="#f87171" />
+              </marker>
+            </defs>
+
+            {/* ── START ── */}
+            <ellipse cx="340" cy="30" rx="72" ry="20" fill="#0a2820" stroke="#2DD4BF" strokeWidth="2" />
+            <text x="340" y="35" textAnchor="middle" fill="#2DD4BF" fontSize="13" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">START</text>
+
+            {/* arrow */}
+            <line x1="340" y1="50" x2="340" y2="68" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* ── Box 1: Visit Portal ── */}
+            <rect x="180" y="68" width="320" height="46" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="340" y="87" textAnchor="middle" fill="#F5FAFA" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Visit Super Admin Portal</text>
+            <text x="340" y="103" textAnchor="middle" fill="#9AAEAE" fontSize="10" fontFamily="ui-sans-serif,sans-serif">/portal/super-admin</text>
+
+            {/* arrow */}
+            <line x1="340" y1="114" x2="340" y2="132" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* ── Box 2: Click Login ── */}
+            <rect x="180" y="132" width="320" height="46" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="340" y="151" textAnchor="middle" fill="#F5FAFA" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Click "Super Admin Login"</text>
+            <text x="340" y="167" textAnchor="middle" fill="#9AAEAE" fontSize="10" fontFamily="ui-sans-serif,sans-serif">Redirects to /login?portal=super-admin</text>
+
+            {/* arrow */}
+            <line x1="340" y1="178" x2="340" y2="196" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* ── Box 3: Enter Credentials ── */}
+            <rect x="180" y="196" width="320" height="46" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="340" y="215" textAnchor="middle" fill="#F5FAFA" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Enter Credentials + MFA</text>
+            <text x="340" y="231" textAnchor="middle" fill="#9AAEAE" fontSize="10" fontFamily="ui-sans-serif,sans-serif">JWT token verification &amp; session claim</text>
+
+            {/* arrow */}
+            <line x1="340" y1="242" x2="340" y2="260" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* ── Decision Diamond: SUPER_ADMIN Role? ── */}
+            <polygon points="340,260 460,305 340,350 220,305" fill="#1B2728" stroke="#2DD4BF" strokeWidth="2" />
+            <text x="340" y="300" textAnchor="middle" fill="#2DD4BF" fontSize="11" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">SUPER_ADMIN</text>
+            <text x="340" y="316" textAnchor="middle" fill="#2DD4BF" fontSize="11" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Role Valid?</text>
+
+            {/* YES — down */}
+            <line x1="340" y1="350" x2="340" y2="380" stroke="#4ade80" strokeWidth="1.5" markerEnd="url(#wf-arrG)" />
+            <text x="350" y="368" fill="#4ade80" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">YES</text>
+
+            {/* NO — right to Access Denied */}
+            <line x1="460" y1="305" x2="530" y2="305" stroke="#f87171" strokeWidth="1.5" markerEnd="url(#wf-arrR)" />
+            <text x="480" y="297" fill="#f87171" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">NO</text>
+            <rect x="530" y="284" width="118" height="42" rx="8" fill="#1a0a0a" stroke="#f87171" strokeWidth="1.5" />
+            <text x="589" y="302" textAnchor="middle" fill="#f87171" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Access Denied</text>
+            <text x="589" y="316" textAnchor="middle" fill="#f87171" fontSize="9" fontFamily="ui-sans-serif,sans-serif">403 Forbidden</text>
+
+            {/* ── Dashboard (highlighted) ── */}
+            <rect x="140" y="380" width="400" height="52" rx="10" fill="#0a2820" stroke="#2DD4BF" strokeWidth="2.5" />
+            <text x="340" y="403" textAnchor="middle" fill="#2DD4BF" fontSize="13" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">Super Admin Dashboard</text>
+            <text x="340" y="421" textAnchor="middle" fill="#9AAEAE" fontSize="10" fontFamily="ui-sans-serif,sans-serif">Tenant Cockpit · Global Metrics · System Governance</text>
+
+            {/* ── Branch lines from Dashboard to 4 Modules ── */}
+            <line x1="340" y1="432" x2="340" y2="452" stroke="#2DD4BF" strokeWidth="1.5" />
+            {/* Horizontal bus line across columns */}
+            <line x1="85" y1="452" x2="595" y2="452" stroke="#2DD4BF" strokeWidth="1.5" />
+            {/* 4 verticals to Level 1 module boxes */}
+            <line x1="85"  y1="452" x2="85"  y2="476" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="255" y1="452" x2="255" y2="476" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="425" y1="452" x2="425" y2="476" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="595" y1="452" x2="595" y2="476" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* ════ LEVEL 1: MODULE HEADERS ════ */}
+            {/* Col 1 */}
+            <rect x="17"  y="476" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="85"  y="495" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Gym Tenant</text>
+            <text x="85"  y="509" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Management</text>
+
+            {/* Col 2 */}
+            <rect x="187" y="476" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="255" y="495" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Subscription</text>
+            <text x="255" y="509" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Billing</text>
+
+            {/* Col 3 */}
+            <rect x="357" y="476" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="425" y="495" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">User &amp; Trainer</text>
+            <text x="425" y="509" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Oversight</text>
+
+            {/* Col 4 */}
+            <rect x="527" y="476" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="595" y="495" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Security &amp;</text>
+            <text x="595" y="509" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Governance</text>
+
+            {/* Down arrows from Level 1 to Level 2 */}
+            <line x1="85"  y1="520" x2="85"  y2="542" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="255" y1="520" x2="255" y2="542" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="425" y1="520" x2="425" y2="542" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="595" y1="520" x2="595" y2="542" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* ════ LEVEL 2: OPERATIONS ════ */}
+            {/* Col 1 */}
+            <rect x="17"  y="542" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="85"  y="561" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Review Gym</text>
+            <text x="85"  y="574" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Applications</text>
+
+            {/* Col 2 */}
+            <rect x="187" y="542" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="255" y="561" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Manage Plans</text>
+            <text x="255" y="574" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Pricing Tiers</text>
+
+            {/* Col 3 */}
+            <rect x="357" y="542" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="425" y="561" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Verify Trainers</text>
+            <text x="425" y="574" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Credentials</text>
+
+            {/* Col 4 */}
+            <rect x="527" y="542" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="595" y="561" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Monitor Threats</text>
+            <text x="595" y="574" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Active Sessions</text>
+
+            {/* Down arrows from Level 2 to Level 3 */}
+            <line x1="85"  y1="586" x2="85"  y2="608" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="255" y1="586" x2="255" y2="608" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="425" y1="586" x2="425" y2="608" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="595" y1="586" x2="595" y2="608" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* ════ LEVEL 3: DECISION & INTERMEDIATE ════ */}
+            {/* Col 1: Decision Diamond inside column (x: 17..153) */}
+            <polygon points="85,608 135,631 85,654 35,631" fill="#1B2728" stroke="#2DD4BF" strokeWidth="1.5" />
+            <text x="85" y="628" textAnchor="middle" fill="#2DD4BF" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Approve</text>
+            <text x="85" y="640" textAnchor="middle" fill="#2DD4BF" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Gym?</text>
+
+            {/* Col 2 */}
+            <rect x="187" y="608" width="136" height="46" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="255" y="627" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Invoicing &amp;</text>
+            <text x="255" y="641" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Payment Gateways</text>
+
+            {/* Col 3 */}
+            <rect x="357" y="608" width="136" height="46" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="425" y="627" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Member Quotas</text>
+            <text x="425" y="641" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Permissions</text>
+
+            {/* Col 4 */}
+            <rect x="527" y="608" width="136" height="46" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="595" y="627" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Immutable</text>
+            <text x="595" y="641" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Audit Logs</text>
+
+            {/* Arrows from Level 3 to Level 4 */}
+            {/* Col 1 Branching from Diamond: NO goes left to Rejected, YES goes right to Approved */}
+            <path d="M 35,631 H 49 V 678" stroke="#f87171" strokeWidth="1.5" fill="none" markerEnd="url(#wf-arrR)" />
+            <text x="32" y="624" fill="#f87171" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">NO</text>
+
+            <path d="M 135,631 H 121 V 678" stroke="#4ade80" strokeWidth="1.5" fill="none" markerEnd="url(#wf-arrG)" />
+            <text x="135" y="624" fill="#4ade80" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">YES</text>
+
+            {/* Cols 2, 3, 4 Down Arrows */}
+            <line x1="255" y1="654" x2="255" y2="678" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="425" y1="654" x2="425" y2="678" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="595" y1="654" x2="595" y2="678" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* ════ LEVEL 4: EXECUTION / METRICS ════ */}
+            {/* Col 1: Left = Rejected, Right = Activated (both inside x: 17..153) */}
+            <rect x="17" y="678" width="64" height="44" rx="7" fill="#1a0707" stroke="#f87171" strokeWidth="1.5" />
+            <text x="49" y="697" textAnchor="middle" fill="#f87171" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Rejected</text>
+            <text x="49" y="709" textAnchor="middle" fill="#9AAEAE" fontSize="8" fontFamily="ui-sans-serif,sans-serif">Suspended</text>
+
+            <rect x="89" y="678" width="64" height="44" rx="7" fill="#071a07" stroke="#4ade80" strokeWidth="1.5" />
+            <text x="121" y="697" textAnchor="middle" fill="#4ade80" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Approved</text>
+            <text x="121" y="709" textAnchor="middle" fill="#9AAEAE" fontSize="8" fontFamily="ui-sans-serif,sans-serif">Activated</text>
+
+            {/* Col 2 */}
+            <rect x="187" y="678" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="255" y="697" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Revenue &amp; MRR</text>
+            <text x="255" y="710" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Growth Analytics</text>
+
+            {/* Col 3 */}
+            <rect x="357" y="678" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="425" y="697" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Member Activity</text>
+            <text x="425" y="710" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Retention</text>
+
+            {/* Col 4 */}
+            <rect x="527" y="678" width="136" height="44" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
+            <text x="595" y="697" textAnchor="middle" fill="#F5FAFA" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Platform Uptime</text>
+            <text x="595" y="710" textAnchor="middle" fill="#9AAEAE" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Health Monitor</text>
+
+            {/* ════ BOTTOM MERGE & END ════ */}
+            {/* Verticals dropping from each column outcome */}
+            <line x1="49"  y1="722" x2="49"  y2="750" stroke="#f87171" strokeWidth="1" />
+            <line x1="121" y1="722" x2="121" y2="750" stroke="#4ade80" strokeWidth="1" />
+            <line x1="255" y1="722" x2="255" y2="750" stroke="#2DD4BF" strokeWidth="1" />
+            <line x1="425" y1="722" x2="425" y2="750" stroke="#2DD4BF" strokeWidth="1" />
+            <line x1="595" y1="722" x2="595" y2="750" stroke="#2DD4BF" strokeWidth="1" />
+
+            {/* Horizontal bus line at y=750 */}
+            <line x1="49" y1="750" x2="595" y2="750" stroke="#2DD4BF" strokeWidth="1.5" />
+
+            {/* Central pointer down to END */}
+            <line x1="340" y1="750" x2="340" y2="770" stroke="#2DD4BF" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+
+            {/* END Oval */}
+            <ellipse cx="340" cy="792" rx="96" ry="22" fill="#0a2820" stroke="#2DD4BF" strokeWidth="2" />
+            <text x="340" y="797" textAnchor="middle" fill="#2DD4BF" fontSize="12" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">PLATFORM MANAGED</text>
+          </svg>
+        </div>
+
+        {/* Modal Footer */}
+        <div className="sticky bottom-0 flex items-center justify-between px-5 py-4 bg-[#0E1415] border-t border-[#2A3A3A]">
+          <p className="text-xs text-[#6A7F7F]">Restricted to authorized Gymora Super Administrators only.</p>
+          <Link
+            to="/login?portal=super-admin"
+            className="flex items-center gap-2 px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-sm rounded-xl transition-all"
+            onClick={() => setShowWorkflow(false)}
+          >
+            <Lock size={14} /> Super Admin Login
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-[#06201D] font-sans">
+      {showWorkflow && <WorkflowModal />}
       {/* Top Navigation */}
       <nav className="border-b border-[#2A3A3A] bg-[#0E1415]/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -186,13 +442,14 @@ const SuperAdminPortalLanding = () => {
                 </div>
               </div>
 
-              <Link
-                to="/login?portal=super-admin"
+              <button
+                onClick={() => setShowWorkflow(true)}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#2DD4BF] text-[#06201D] font-bold text-sm hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20"
               >
-                <span>Access Tenant Management</span>
+                <GitBranch size={16} />
+                <span>View Admin Workflow</span>
                 <ChevronRight size={16} />
-              </Link>
+              </button>
             </div>
 
             {/* Visual Card Right */}
@@ -318,14 +575,6 @@ const SuperAdminPortalLanding = () => {
                   </div>
                 </div>
               </div>
-
-              <Link
-                to="/login?portal=super-admin"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#2DD4BF] text-[#06201D] font-bold text-sm hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20"
-              >
-                <span>View Financial Cockpit</span>
-                <ChevronRight size={16} />
-              </Link>
             </div>
           </div>
         </div>
@@ -431,21 +680,18 @@ const SuperAdminPortalLanding = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Card 1 */}
-            <Link 
-              to="/portal/super-admin/approvals" 
-              className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/60 rounded-3xl p-6 transition-all shadow-lg hover:shadow-teal-500/10 flex flex-col justify-between group cursor-pointer"
-            >
+            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
                     <Building2 size={24} />
                   </div>
                   <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                     12 Pending Review
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2 group-hover:text-[#2DD4BF] transition-colors">
-                  Gym Onboarding & Verification
+                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
+                  Gym Onboarding &amp; Verification
                 </h3>
                 <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
                   Review and approve new gym applications, verify facilities, equipment safety declarations, and issue operational franchise licenses.
@@ -456,28 +702,25 @@ const SuperAdminPortalLanding = () => {
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Branch Approvals</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
-                <span>Open Approvals Desk</span>
-                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
+                <span>Gym Onboarding &amp; Verification</span>
+                <CheckCircle2 size={15} className="text-emerald-400" />
               </div>
-            </Link>
+            </div>
 
             {/* Card 2 */}
-            <Link 
-              to="/portal/super-admin/subscriptions" 
-              className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/60 rounded-3xl p-6 transition-all shadow-lg hover:shadow-teal-500/10 flex flex-col justify-between group cursor-pointer"
-            >
+            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
                     <CreditCard size={24} />
                   </div>
                   <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
                     3 SaaS Tiers Active
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2 group-hover:text-[#2DD4BF] transition-colors">
-                  Subscription & Tier Management
+                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
+                  Subscription &amp; Tier Management
                 </h3>
                 <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
                   Oversee platform pricing plans, manage gym owner billing cycles, process automated recurring invoices, and manage tier upgrades.
@@ -488,28 +731,25 @@ const SuperAdminPortalLanding = () => {
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Custom Pricing</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
+              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
                 <span>Manage Subscriptions</span>
-                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                <CheckCircle2 size={15} className="text-emerald-400" />
               </div>
-            </Link>
+            </div>
 
             {/* Card 3 */}
-            <Link 
-              to="/portal/super-admin/analytics" 
-              className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/60 rounded-3xl p-6 transition-all shadow-lg hover:shadow-teal-500/10 flex flex-col justify-between group cursor-pointer"
-            >
+            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
                     <TrendingUp size={24} />
                   </div>
                   <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                     +28.4% MoM
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2 group-hover:text-[#2DD4BF] transition-colors">
-                  Global Analytics & Reporting
+                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
+                  Global Analytics &amp; Reporting
                 </h3>
                 <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
                   Gain macro insights into tenant retention, platform gross merchandise volume (GMV), system health, and cross-gym member engagement.
@@ -520,27 +760,24 @@ const SuperAdminPortalLanding = () => {
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Revenue Splits</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
+              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
                 <span>Open Analytics Cockpit</span>
-                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                <CheckCircle2 size={15} className="text-emerald-400" />
               </div>
-            </Link>
+            </div>
 
             {/* Card 4 */}
-            <Link 
-              to="/portal/super-admin/users" 
-              className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/60 rounded-3xl p-6 transition-all shadow-lg hover:shadow-teal-500/10 flex flex-col justify-between group cursor-pointer"
-            >
+            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
                     <Users size={24} />
                   </div>
                   <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
                     4,850+ Accounts
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2 group-hover:text-[#2DD4BF] transition-colors">
+                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
                   Multi-Role Governance
                 </h3>
                 <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
@@ -552,28 +789,25 @@ const SuperAdminPortalLanding = () => {
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Access Audit</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
+              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
                 <span>Manage User Directory</span>
-                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                <CheckCircle2 size={15} className="text-emerald-400" />
               </div>
-            </Link>
+            </div>
 
             {/* Card 5 */}
-            <Link 
-              to="/portal/super-admin/security" 
-              className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/60 rounded-3xl p-6 transition-all shadow-lg hover:shadow-teal-500/10 flex flex-col justify-between group cursor-pointer"
-            >
+            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
                     <Lock size={24} />
                   </div>
                   <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                     AES-256 Active
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2 group-hover:text-[#2DD4BF] transition-colors">
-                  Security & Isolation
+                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
+                  Security &amp; Isolation
                 </h3>
                 <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
                   Strict multi-tenant database isolation, encrypted credentials, JWT claim verification, and centralized audit trails for enterprise compliance.
@@ -584,28 +818,25 @@ const SuperAdminPortalLanding = () => {
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Zero-Trust JWT</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
+              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
                 <span>Configure Security</span>
-                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                <CheckCircle2 size={15} className="text-emerald-400" />
               </div>
-            </Link>
+            </div>
 
             {/* Card 6 */}
-            <Link 
-              to="/portal/super-admin/payouts" 
-              className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/60 rounded-3xl p-6 transition-all shadow-lg hover:shadow-teal-500/10 flex flex-col justify-between group cursor-pointer"
-            >
+            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
                     <Server size={24} />
                   </div>
                   <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
                     Auto-Settlement Live
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2 group-hover:text-[#2DD4BF] transition-colors">
-                  Platform Infrastructure & Payouts
+                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
+                  Platform Infrastructure &amp; Payouts
                 </h3>
                 <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
                   Monitor API health, system background tasks, marketplace listings, payouts dispatch, and global notifications in real time.
@@ -616,11 +847,11 @@ const SuperAdminPortalLanding = () => {
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Webhook Feeds</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-bold text-[#2DD4BF]">
-                <span>Manage Payouts & System</span>
-                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
+                <span>Manage Payouts &amp; System</span>
+                <CheckCircle2 size={15} className="text-emerald-400" />
               </div>
-            </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -664,13 +895,35 @@ const SuperAdminPortalLanding = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#2A3A3A] bg-[#0E1415] py-8 text-center text-xs text-[#9AAEAE]">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© {new Date().getFullYear()} Gymora Platform Administration. Confidential & Proprietary.</p>
-          <div className="flex items-center gap-4">
-            <Link to="/" className="hover:text-[#2DD4BF] transition-colors">Main Website</Link>
-            <Link to="/portal/gym-owner" className="hover:text-[#2DD4BF] transition-colors">Gym Owner Portal</Link>
-            <Link to="/portal/customer" className="hover:text-[#2DD4BF] transition-colors">Customer Portal</Link>
+      <footer id="footer" className="border-t border-[#2A3A3A] bg-[#0E1415] py-10 text-xs text-[#9AAEAE]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6">
+          {/* Top row: copyright + portal nav */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-center sm:text-left">
+              © {new Date().getFullYear()} Gymora Platform Administration. All rights reserved.
+            </p>
+            {/* Portal Navigation Links */}
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+              <span className="text-[#2DD4BF] font-semibold uppercase tracking-wider hidden sm:block">Portals:</span>
+              <Link to="/" className="hover:text-[#2DD4BF] transition-colors">Main Website</Link>
+              <span className="text-[#2A3A3A]">|</span>
+              <Link to="/portal/gym-owner" className="hover:text-[#2DD4BF] transition-colors">Gym Owner Portal</Link>
+            </div>
+          </div>
+
+          {/* Bottom row: support & legal links */}
+          <div className="border-t border-[#2A3A3A] pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-[#6A7F7F] text-[11px] text-center sm:text-left">
+              This portal is restricted to authorized Gymora Super Administrators only.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+              <span className="text-[#2DD4BF] font-semibold uppercase tracking-wider hidden sm:block">Support & Legal:</span>
+              <Link to="/contact" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin Portal' }} className="hover:text-[#2DD4BF] transition-colors">Help & Support</Link>
+              <span className="text-[#2A3A3A]">|</span>
+              <Link to="/privacy-policy" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin Portal' }} className="hover:text-[#2DD4BF] transition-colors">Privacy Policy</Link>
+              <span className="text-[#2A3A3A]">|</span>
+              <Link to="/terms-of-service" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin Portal' }} className="hover:text-[#2DD4BF] transition-colors">Terms & Conditions</Link>
+            </div>
           </div>
         </div>
       </footer>

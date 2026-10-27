@@ -40,6 +40,7 @@ import Contact from './pages/company/Contact';
 // Legal
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import TermsOfService from './pages/legal/TermsOfService';
+import CancellationRefundPolicy from './pages/legal/CancellationRefundPolicy';
 
 // Gym Admin
 import GymAdminLayout from './layouts/GymAdminLayout';
@@ -249,6 +250,7 @@ function App() {
           {/* Legal Routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
 
           {/* Post-Registration Routes (auth required) */}
           <Route path="/pending" element={<Navigate to="/status?type=pending" replace />} />

@@ -58,7 +58,7 @@ export default function SuperAdminFeatureDetail() {
 
   const allModules = [
     { id: 'subscriptions', label: 'Manage Subscriptions', icon: CreditCard, subtitle: 'SaaS Tiers, Billing Cycles & MRR Engine' },
-    { id: 'approvals', label: 'Approvals Desk', icon: Building2, subtitle: 'Gym Verification, KYC & Licenses' },
+    { id: 'approvals', label: 'Gym Onboarding & Verification', icon: Building2, subtitle: 'Gym Verification, KYC & Licenses' },
     { id: 'analytics', label: 'Analytics Cockpit', icon: TrendingUp, subtitle: 'Macro Platform GMV & Churn Heatmaps' },
     { id: 'users', label: 'User Directory', icon: Users, subtitle: 'Multi-Role Governance & Identity' },
     { id: 'security', label: 'Configure Security', icon: ShieldCheck, subtitle: 'Zero-Trust Isolation & Audit Trails' },
@@ -80,14 +80,17 @@ export default function SuperAdminFeatureDetail() {
     { id: '5', gymName: 'Gold Standard Gym', owner: 'Karan Mehra', plan: 'Starter', cycle: 'Monthly', mrr: 2499, nextBilling: '2026-10-28', status: 'Past Due' }
   ]);
 
-  // Approvals Module State
+  // Gym Onboarding & Verification Module State
   const [approvalTab, setApprovalTab] = useState('Pending');
+  const [approvalSearch, setApprovalSearch] = useState('');
   const [selectedGymApp, setSelectedGymApp] = useState<any | null>(null);
   const [gymApplications, setGymApplications] = useState([
-    { id: 'g1', name: 'Apex Elite Gym & Spa', owner: 'Arjun Verma', city: 'Bangalore, KA', appliedDate: '2026-10-25', docs: ['Trade License', 'Fire Safety NOC', 'GSTIN Reg'], status: 'Pending' },
-    { id: 'g2', name: 'FlexCore Fitness Center', owner: 'Pooja Hegde', city: 'Mumbai, MH', appliedDate: '2026-10-24', docs: ['Trade License', 'GSTIN Reg'], status: 'Pending' },
-    { id: 'g3', name: 'Spartan Strength Lab', owner: 'Devendra Patel', city: 'Ahmedabad, GJ', appliedDate: '2026-10-23', docs: ['Trade License', 'Fire NOC', 'Equipment Safety'], status: 'Approved' },
-    { id: 'g4', name: 'Urban Pulse Studio', owner: 'Rohit Joshi', city: 'Pune, MH', appliedDate: '2026-10-20', docs: ['Trade License'], status: 'Rejected' }
+    { id: 'g1', name: 'Apex Elite Gym & Spa', owner: 'Arjun Verma', email: 'arjun@apexelite.in', phone: '+91 98765 43210', city: 'Bangalore, KA', area: '12,500 sq ft', capacity: 450, appliedDate: '2026-10-25', licenseId: 'GYM-LIC-2026-8812', docs: ['Trade License', 'Fire Safety NOC', 'GSTIN Reg', 'Biometric Turnstiles'], status: 'Pending' },
+    { id: 'g2', name: 'FlexCore Fitness Center', owner: 'Pooja Hegde', email: 'pooja@flexcore.com', phone: '+91 98450 11223', city: 'Mumbai, MH', area: '8,200 sq ft', capacity: 300, appliedDate: '2026-10-24', licenseId: 'GYM-LIC-2026-8813', docs: ['Trade License', 'GSTIN Reg', 'Equipment Safety Audit'], status: 'Pending' },
+    { id: 'g3', name: 'Titan Strength Club', owner: 'Vikram Choudhary', email: 'vikram@titanstrength.in', phone: '+91 99100 88776', city: 'Delhi, NCR', area: '15,000 sq ft', capacity: 600, appliedDate: '2026-10-23', licenseId: 'GYM-LIC-2026-8814', docs: ['Trade License', 'Fire Safety NOC', 'GSTIN Reg'], status: 'Pending' },
+    { id: 'g4', name: 'Spartan Strength Lab', owner: 'Devendra Patel', email: 'dev@spartanlab.com', phone: '+91 97230 44556', city: 'Ahmedabad, GJ', area: '10,000 sq ft', capacity: 350, appliedDate: '2026-10-22', licenseId: 'GYM-LIC-2026-8799', docs: ['Trade License', 'Fire NOC', 'Equipment Safety', 'GSTIN Reg'], status: 'Approved' },
+    { id: 'g5', name: 'Pulse Cardio & CrossFit', owner: 'Sneha Reddy', email: 'sneha@pulsefit.in', phone: '+91 98840 99887', city: 'Hyderabad, TS', area: '9,500 sq ft', capacity: 280, appliedDate: '2026-10-21', licenseId: 'GYM-LIC-2026-8785', docs: ['Trade License', 'Fire NOC', 'Biometric Turnstiles'], status: 'Approved' },
+    { id: 'g6', name: 'Urban Pulse Studio', owner: 'Rohit Joshi', email: 'rohit@urbanpulse.in', phone: '+91 98220 33445', city: 'Pune, MH', area: '6,000 sq ft', capacity: 150, appliedDate: '2026-10-20', licenseId: 'GYM-LIC-2026-8761', docs: ['Trade License (Expired)'], status: 'Rejected' }
   ]);
 
   // User Directory State
@@ -552,9 +555,10 @@ export default function SuperAdminFeatureDetail() {
       {/* Main Workspace Body */}
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
         {/* ========================================================================= */}
-        {/* SECTION 1: TOP FLOW CHART ARCHITECTURE                                    */}
+        {/* SECTION 1: TOP FLOW CHART ARCHITECTURE (Hidden on Gym Onboarding & Verification) */}
         {/* ========================================================================= */}
-        <section className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+        {activeKey !== 'approvals' && (
+          <section className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2A3A3A] pb-5">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-[#2DD4BF] flex items-center gap-1.5 mb-1">
@@ -627,6 +631,7 @@ export default function SuperAdminFeatureDetail() {
             ))}
           </div>
         </section>
+        )}
 
         {/* ========================================================================= */}
         {/* SECTION 2: LIVE OPERATIONAL CONTENT FOR ACTIVE MODULE                      */}
@@ -839,152 +844,346 @@ export default function SuperAdminFeatureDetail() {
           </section>
         )}
 
-        {/* MODULE 2: APPROVALS DESK */}
+        {/* MODULE 2: GYM ONBOARDING & VERIFICATION DESK */}
         {activeKey === 'approvals' && (
-          <section className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
-                  VERIFICATION QUEUE
-                </span>
-                <h3 className="text-2xl font-bold text-white">Gym Verification & Document Audit Desk</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Inspect submitted trade licenses, fire safety certificates, and facility photos before issuing live platform licenses
-                </p>
+          <section className="space-y-8">
+            {/* Header Banner */}
+            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 shadow-xl">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2A3A3A] pb-6 mb-6">
+                <div>
+                  <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
+                    <Building2 size={14} /> PLATFORM ONBOARDING &amp; GOVERNANCE
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                    Gym Onboarding, Document Audit &amp; License Issuance
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl leading-relaxed">
+                    Review and verify incoming gym applications, inspect legal trade licenses, audit equipment safety declarations, and issue live multi-tenant franchise licenses.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+                  <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    Audit Pipeline Active
+                  </span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                {['Pending', 'Approved', 'Rejected'].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setApprovalTab(tab)}
-                    className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                      approvalTab === tab
-                        ? 'bg-[#2DD4BF] text-black font-bold shadow-md shadow-[#2DD4BF]/20'
-                        : 'bg-[#141D1E] text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Applications Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {gymApplications
-                .filter(g => g.status === approvalTab)
-                .map((gym) => (
-                  <div
-                    key={gym.id}
-                    className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 rounded-3xl p-6 transition-all flex flex-col justify-between space-y-4 shadow-xl"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1">
-                          <Building2 size={13} /> {gym.city}
-                        </span>
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            gym.status === 'Approved'
-                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                              : gym.status === 'Pending'
-                              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                              : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
-                          }`}
-                        >
-                          {gym.status}
-                        </span>
-                      </div>
-
-                      <h4 className="text-lg font-bold text-white">{gym.name}</h4>
-                      <p className="text-xs text-slate-400 mt-1">Applicant: <strong className="text-slate-200">{gym.owner}</strong></p>
-
-                      <div className="mt-4 pt-3 border-t border-[#2A3A3A] space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Submitted Credentials:</span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {gym.docs.map((doc, i) => (
-                            <span key={i} className="text-[10px] px-2 py-0.5 bg-[#141D1E] border border-[#2A3A3A] rounded text-slate-300 flex items-center gap-1">
-                              <FileText size={10} className="text-[#2DD4BF]" />
-                              {doc}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-[#2A3A3A] flex items-center justify-between gap-2">
-                      <button
-                        onClick={() => setSelectedGymApp(gym)}
-                        className="px-3 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] text-slate-300 text-xs font-semibold rounded-xl flex items-center gap-1"
-                      >
-                        <Eye size={12} /> Inspect Dossier
-                      </button>
-
-                      {gym.status === 'Pending' && (
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => handleRejectGym(gym.id)}
-                            className="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl"
-                            title="Reject Application"
-                          >
-                            <X size={14} />
-                          </button>
-                          <button
-                            onClick={() => handleApproveGym(gym.id)}
-                            className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-xl flex items-center gap-1"
-                          >
-                            <Check size={12} /> Approve
-                          </button>
-                        </div>
-                      )}
-                    </div>
+              {/* 4 Metric Summary Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+                    <span>Pending Review</span>
+                    <Clock size={14} className="text-amber-400" />
                   </div>
-                ))}
+                  <div className="text-2xl font-black text-amber-400 font-mono">
+                    {gymApplications.filter(g => g.status === 'Pending').length} Gyms
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Awaiting compliance audit</p>
+                </div>
+
+                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+                    <span>Approved &amp; Active</span>
+                    <CheckCircle2 size={14} className="text-emerald-400" />
+                  </div>
+                  <div className="text-2xl font-black text-emerald-400 font-mono">
+                    {gymApplications.filter(g => g.status === 'Approved').length + 46} Gyms
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Live platform franchises</p>
+                </div>
+
+                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+                    <span>Rejected / Incomplete</span>
+                    <AlertTriangle size={14} className="text-rose-400" />
+                  </div>
+                  <div className="text-2xl font-black text-rose-400 font-mono">
+                    {gymApplications.filter(g => g.status === 'Rejected').length + 3} Gyms
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Correction notices dispatched</p>
+                </div>
+
+                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+                    <span>SLA Turnaround</span>
+                    <Zap size={14} className="text-[#2DD4BF]" />
+                  </div>
+                  <div className="text-2xl font-black text-[#2DD4BF] font-mono">&lt; 24 Hours</div>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Average verification time</p>
+                </div>
+              </div>
             </div>
 
-            {/* Inspect Dossier Modal */}
+            {/* Compliance Standards Guidance Box */}
+            <div className="bg-[#141D1E]/80 border border-[#2A3A3A] rounded-2xl p-5">
+              <h4 className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider mb-3 flex items-center gap-2">
+                <ShieldCheck size={15} /> Mandatory Compliance &amp; Verification Standards for Onboarding
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                  <p className="font-bold text-white mb-0.5">1. Municipal Trade License</p>
+                  <p className="text-slate-400 text-[11px]">Valid Shop &amp; Establishment Act registration with local authority stamp.</p>
+                </div>
+                <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                  <p className="font-bold text-white mb-0.5">2. Tax &amp; GSTIN Verification</p>
+                  <p className="text-slate-400 text-[11px]">Active GSTIN number matching registered trade name &amp; banking account.</p>
+                </div>
+                <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                  <p className="font-bold text-white mb-0.5">3. Fire Safety NOC</p>
+                  <p className="text-slate-400 text-[11px]">Clearance for commercial occupancy, unobstructed fire exits &amp; extinguishers.</p>
+                </div>
+                <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                  <p className="font-bold text-white mb-0.5">4. Equipment &amp; Biometrics</p>
+                  <p className="text-slate-400 text-[11px]">Commercial grade machinery certification &amp; turnstile gate IoT compatibility.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Verification Queue Section */}
+            <div className="space-y-4">
+              {/* Filter Tabs & Search Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+                  {['All', 'Pending', 'Approved', 'Rejected'].map((tab) => {
+                    const count = tab === 'All' 
+                      ? gymApplications.length 
+                      : gymApplications.filter(g => g.status === tab).length;
+                    return (
+                      <button
+                        key={tab}
+                        onClick={() => setApprovalTab(tab)}
+                        className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                          approvalTab === tab
+                            ? 'bg-[#2DD4BF] text-black font-bold shadow-md shadow-[#2DD4BF]/20'
+                            : 'bg-[#141D1E] text-slate-400 hover:text-white border border-[#2A3A3A]'
+                        }`}
+                      >
+                        <span>{tab === 'All' ? 'All Applications' : `${tab} Review`}</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          approvalTab === tab ? 'bg-black/20 text-black' : 'bg-[#0E1415] text-[#2DD4BF]'
+                        }`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Search */}
+                <div className="relative w-full sm:w-72">
+                  <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={approvalSearch}
+                    onChange={(e) => setApprovalSearch(e.target.value)}
+                    placeholder="Search by gym, owner, or city..."
+                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#2DD4BF]"
+                  />
+                </div>
+              </div>
+
+              {/* Gym Applications Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {gymApplications
+                  .filter(g => {
+                    const matchesTab = approvalTab === 'All' || g.status === approvalTab;
+                    const matchesSearch = g.name.toLowerCase().includes(approvalSearch.toLowerCase()) ||
+                                          g.owner.toLowerCase().includes(approvalSearch.toLowerCase()) ||
+                                          g.city.toLowerCase().includes(approvalSearch.toLowerCase());
+                    return matchesTab && matchesSearch;
+                  })
+                  .map((gym) => (
+                    <div
+                      key={gym.id}
+                      className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-3xl p-6 transition-all flex flex-col justify-between space-y-4 shadow-xl"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1">
+                            <Building2 size={13} /> {gym.city}
+                          </span>
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                              gym.status === 'Approved'
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                                : gym.status === 'Pending'
+                                ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+                            }`}
+                          >
+                            {gym.status}
+                          </span>
+                        </div>
+
+                        <h4 className="text-lg font-bold text-white mb-1">{gym.name}</h4>
+                        <p className="text-xs text-slate-400">
+                          Applicant: <strong className="text-slate-200">{gym.owner}</strong>
+                        </p>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          {gym.email} &bull; {gym.phone}
+                        </p>
+
+                        {/* Facility Quick Specs */}
+                        <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#2A3A3A] text-[11px] text-slate-400">
+                          <div>
+                            <span className="text-slate-500 block text-[10px] uppercase font-bold">Floor Area</span>
+                            <span className="font-semibold text-slate-200">{gym.area}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block text-[10px] uppercase font-bold">Capacity</span>
+                            <span className="font-semibold text-slate-200">{gym.capacity} Members</span>
+                          </div>
+                        </div>
+
+                        {/* Submitted Credentials */}
+                        <div className="mt-3 pt-3 border-t border-[#2A3A3A] space-y-1.5">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                            Submitted Legal Credentials:
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {gym.docs.map((doc, i) => (
+                              <span key={i} className="text-[10px] px-2 py-0.5 bg-[#141D1E] border border-[#2A3A3A] rounded text-slate-300 flex items-center gap-1">
+                                <FileText size={10} className="text-[#2DD4BF]" />
+                                {doc}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Footer Actions */}
+                      <div className="pt-4 border-t border-[#2A3A3A] flex items-center justify-between gap-2">
+                        <button
+                          onClick={() => setSelectedGymApp(gym)}
+                          className="px-3.5 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 text-slate-300 hover:text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-colors"
+                        >
+                          <Eye size={13} /> Inspect Dossier
+                        </button>
+
+                        {gym.status === 'Pending' && (
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => handleRejectGym(gym.id)}
+                              className="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-semibold transition-colors"
+                              title="Reject Application"
+                            >
+                              Reject
+                            </button>
+                            <button
+                              onClick={() => handleApproveGym(gym.id)}
+                              className="px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-xl flex items-center gap-1 shadow-md shadow-[#2DD4BF]/20 transition-all"
+                            >
+                              <Check size={13} /> Approve &amp; License
+                            </button>
+                          </div>
+                        )}
+
+                        {gym.status === 'Approved' && (
+                          <span className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
+                            <CheckCircle2 size={13} /> License Issued
+                          </span>
+                        )}
+
+                        {gym.status === 'Rejected' && (
+                          <span className="text-[11px] font-semibold text-rose-400 flex items-center gap-1">
+                            <X size={13} /> Notice Sent
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            {/* Detailed Inspect Dossier Modal */}
             {selectedGymApp && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl max-w-lg w-full p-6 text-white space-y-4 shadow-2xl">
+                <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl max-w-xl w-full p-6 text-white space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
                   <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
-                    <h4 className="font-bold text-base flex items-center gap-2">
-                      <Building2 size={16} className="text-[#2DD4BF]" />
-                      Audit Dossier: {selectedGymApp.name}
-                    </h4>
-                    <button onClick={() => setSelectedGymApp(null)} className="text-slate-400 hover:text-white">
+                    <div>
+                      <h4 className="font-bold text-lg flex items-center gap-2">
+                        <Building2 size={18} className="text-[#2DD4BF]" />
+                        {selectedGymApp.name}
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-0.5">License ID: {selectedGymApp.licenseId || 'GYM-LIC-PENDING'}</p>
+                    </div>
+                    <button onClick={() => setSelectedGymApp(null)} className="p-1.5 rounded-lg bg-[#141D1E] text-slate-400 hover:text-white">
                       <X size={16} />
                     </button>
                   </div>
 
-                  <div className="space-y-3 text-xs text-slate-300">
-                    <p><strong>Applicant Legal Name:</strong> {selectedGymApp.owner}</p>
-                    <p><strong>Location:</strong> {selectedGymApp.city}</p>
-                    <p><strong>Application Date:</strong> {selectedGymApp.appliedDate}</p>
+                  <div className="space-y-4 text-xs text-slate-300">
+                    <div className="grid grid-cols-2 gap-3 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
+                      <div>
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Applicant / Owner</span>
+                        <span className="font-bold text-white text-sm">{selectedGymApp.owner}</span>
+                        <span className="block text-slate-400 text-[11px]">{selectedGymApp.email}</span>
+                        <span className="block text-slate-400 text-[11px]">{selectedGymApp.phone}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Facility Location</span>
+                        <span className="font-bold text-white text-sm">{selectedGymApp.city}</span>
+                        <span className="block text-slate-400 text-[11px]">Floor Area: {selectedGymApp.area}</span>
+                        <span className="block text-slate-400 text-[11px]">Capacity: {selectedGymApp.capacity} Members</span>
+                      </div>
+                    </div>
 
-                    <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] space-y-2">
-                      <span className="font-bold text-slate-400 block uppercase text-[10px]">Verified Regulatory Documents:</span>
+                    {/* Verified Documents Checklist */}
+                    <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] space-y-2.5">
+                      <span className="font-bold text-[#2DD4BF] block uppercase tracking-wider text-[10px]">
+                        Verification Documents Audit:
+                      </span>
                       {selectedGymApp.docs.map((doc: string, idx: number) => (
-                        <div key={idx} className="flex items-center justify-between text-xs py-1 border-b border-[#2A3A3A] last:border-none">
-                          <span className="flex items-center gap-1.5"><FileText size={12} className="text-[#2DD4BF]" /> {doc}</span>
-                          <span className="text-emerald-400 font-semibold flex items-center gap-1"><Check size={10} /> Validated</span>
+                        <div key={idx} className="flex items-center justify-between text-xs py-1.5 border-b border-[#2A3A3A] last:border-none">
+                          <span className="flex items-center gap-2">
+                            <FileText size={13} className="text-[#2DD4BF]" /> {doc}
+                          </span>
+                          <span className="text-emerald-400 font-semibold text-[11px] flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                            <Check size={11} /> Digitally Audited
+                          </span>
                         </div>
                       ))}
                     </div>
+
+                    {/* Safety Inspection Checklist */}
+                    <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] space-y-2">
+                      <span className="font-bold text-[#2DD4BF] block uppercase tracking-wider text-[10px]">
+                        Facility Safety &amp; IoT Audit:
+                      </span>
+                      <div className="space-y-1.5 text-[11px]">
+                        <div className="flex items-center justify-between text-slate-300">
+                          <span>Unobstructed Fire Exit &amp; Evacuation Map</span>
+                          <span className="text-emerald-400 font-bold">&#10003; Pass</span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-300">
+                          <span>First-Aid &amp; AED Emergency Station</span>
+                          <span className="text-emerald-400 font-bold">&#10003; Pass</span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-300">
+                          <span>Biometric Turnstile &amp; QR Attendance Sync</span>
+                          <span className="text-emerald-400 font-bold">&#10003; Ready</span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-300">
+                          <span>Commercial Equipment Load Calibration</span>
+                          <span className="text-emerald-400 font-bold">&#10003; Certified</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="pt-3 border-t border-[#2A3A3A] flex justify-end gap-2 text-xs">
+                  <div className="pt-4 border-t border-[#2A3A3A] flex justify-end gap-2 text-xs">
                     <button
                       onClick={() => handleRejectGym(selectedGymApp.id)}
-                      className="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/30 rounded-xl"
+                      className="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl font-semibold transition-colors"
                     >
                       Reject Application
                     </button>
                     <button
                       onClick={() => handleApproveGym(selectedGymApp.id)}
-                      className="px-4 py-1.5 bg-[#2DD4BF] text-black font-bold rounded-xl"
+                      className="px-5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl shadow-lg shadow-[#2DD4BF]/20 transition-all"
                     >
-                      Approve & License
+                      Approve &amp; Issue Franchise License
                     </button>
                   </div>
                 </div>

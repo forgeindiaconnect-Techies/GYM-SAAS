@@ -215,8 +215,8 @@ const GymDetails = () => {
         <div className="absolute bottom-0 left-0 w-full px-4 sm:px-6 lg:px-8 pb-8">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <button onClick={() => navigate('/')} className="text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center text-sm font-medium mb-4 transition-colors">
-                <ArrowLeft size={16} className="mr-2" /> Back to Search
+              <button onClick={() => navigate('/portal/customer')} className="text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center text-sm font-medium mb-4 transition-colors">
+                <ArrowLeft size={16} className="mr-2" /> Back to Customer Portal
               </button>
               <div className="flex flex-wrap items-center gap-3 mb-3">
                 {branches.length > 0 && (

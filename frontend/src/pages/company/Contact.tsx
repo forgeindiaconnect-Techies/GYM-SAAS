@@ -1,9 +1,31 @@
-﻿import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Activity, ArrowLeft, Mail, Phone, MapPin, CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
 import api from '../../utils/api';
 
 const Contact = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  // If navigated from a portal footer, location.state.from holds the return path
+  const returnPath: string = (location.state as any)?.from ?? '/';
+  const returnLabel: string = (location.state as any)?.fromLabel ?? 'Back to Home';
+
+  const handleBack = () => {
+    if ((location.state as any)?.from) {
+      // Navigate to the portal page and scroll to the footer
+      const [path, hash] = returnPath.split('#');
+      navigate(path, { replace: false });
+      if (hash) {
+        // Small delay to allow page to render before scrolling
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    } else {
+      navigate(-1 as any);
+    }
+  };
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -71,9 +93,12 @@ const Contact = () => {
             </div>
             <span className="text-xl font-bold tracking-tight text-[#2DD4BF]">Gymora</span>
           </Link>
-          <Link to="/" className="text-sm font-medium text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center space-x-2 transition-colors">
-            <ArrowLeft size={16} /> <span>Back to Home</span>
-          </Link>
+          <button
+            onClick={handleBack}
+            className="text-sm font-medium text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center space-x-2 transition-colors cursor-pointer"
+          >
+            <ArrowLeft size={16} /> <span>{returnLabel}</span>
+          </button>
         </div>
       </nav>
 

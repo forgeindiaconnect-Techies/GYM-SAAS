@@ -57,7 +57,7 @@ const GymOwnerIntroduction = () => {
       <nav className="bg-[#141D1E] border-b border-[#2A3A3A] sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2.5 group">
+            <Link to="/portal/gym-owner" className="flex items-center space-x-2.5 group">
               <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
                 <Activity className="text-[#06201D]" size={20} strokeWidth={2.5} />
               </div>
@@ -66,11 +66,11 @@ const GymOwnerIntroduction = () => {
 
             <div className="flex items-center gap-3">
               <Link 
-                to="/"
+                to="/portal/gym-owner"
                 className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-teal-500/20"
               >
                 <ArrowLeft size={16} />
-                <span>Back to Home</span>
+                <span>Back to Gym Owner Portal</span>
               </Link>
 
               <Link 

@@ -161,19 +161,13 @@ const LandingPage = () => {
           <div className="flex items-center gap-6 xl:gap-10 shrink-0">
             {/* Logo — scrolls to top */}
             <button onClick={scrollToTop} className="flex items-center space-x-2.5 group cursor-pointer shrink-0 select-none">
-              <div className="w-9 h-9 bg-[#2DD4BF] rounded-xl flex items-center justify-center shadow-md shadow-[#2DD4BF]/25">
-                <Activity className="text-white" size={20} />
+              <div className="w-10 h-10 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+                <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
               </div>
-              <span className="text-2xl font-black tracking-tight text-[#FFFFFF]">Gymora</span>
+              <span className="text-2xl font-black tracking-tight text-[#FFFFFF] group-hover:text-[#2DD4BF] transition-colors">
+                Gymora
+              </span>
             </button>
-
-            {/* Main Links */}
-            <div className="hidden md:flex items-center space-x-5 xl:space-x-7 text-xs xl:text-sm font-semibold text-[#9AAEAE] shrink-0">
-              <button onClick={() => setIsFeaturesOpen(true)} className="hover:text-[#FFFFFF] transition-colors cursor-pointer whitespace-nowrap">Features</button>
-              <button onClick={() => { setTourJourney('select'); setTourStep(1); setIsTourOpen(true); }} className="hover:text-[#FFFFFF] transition-colors cursor-pointer whitespace-nowrap">Video Tour</button>
-              <a href="#gyms" className="hover:text-[#FFFFFF] transition-colors whitespace-nowrap">Gyms</a>
-              <a href="#pricing" className="hover:text-[#FFFFFF] transition-colors whitespace-nowrap">Pricing</a>
-            </div>
           </div>
 
           {/* Right Action Controls */}
@@ -183,12 +177,12 @@ const LandingPage = () => {
               <button 
                 type="button"
                 onClick={() => setIsPortalMenuOpen(prev => !prev)}
-                className="px-3 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#F5FAFA] bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] transition-all flex items-center gap-1.5 cursor-pointer shadow-sm select-none whitespace-nowrap"
+                className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 cursor-pointer select-none whitespace-nowrap"
                 aria-expanded={isPortalMenuOpen}
               >
-                <ShieldCheck size={14} className="text-[#2DD4BF]" />
+                <ShieldCheck size={14} className="text-[#06201D]" />
                 <span>Portals</span>
-                <ChevronDown size={13} className={`text-[#9AAEAE] transition-transform duration-200 ${isPortalMenuOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={13} className={`text-[#06201D] transition-transform duration-200 ${isPortalMenuOpen ? 'rotate-180' : ''}`} />
               </button>
               
               {/* Dropdown Menu Container */}
@@ -242,31 +236,31 @@ const LandingPage = () => {
               )}
             </div>
 
-            <Link to="/trainers" className="px-3 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white border border-[#2A3A3A] hover:border-[#2DD4BF]/40 font-semibold text-xs xl:text-sm rounded-xl transition-all flex items-center space-x-1.5 shrink-0 whitespace-nowrap">
-              <UserCheck size={14} className="text-[#2DD4BF]" />
+            <Link to="/trainers" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+              <UserCheck size={14} className="text-[#06201D]" />
               <span>Trainers</span>
             </Link>
 
-            <Link to="/careers" className="px-3 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white border border-[#2A3A3A] hover:border-[#2DD4BF]/40 font-semibold text-xs xl:text-sm rounded-xl transition-all flex items-center space-x-1.5 shrink-0 whitespace-nowrap">
-              <Briefcase size={14} className="text-[#2DD4BF]" />
+            <Link to="/careers" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+              <Briefcase size={14} className="text-[#06201D]" />
               <span>Gym Jobs</span>
             </Link>
 
-            <Link to="/login" id="nav-login" className="px-3.5 py-2 bg-[#2DD4BF] text-[#06201D] font-bold text-xs xl:text-sm rounded-xl hover:bg-[#5EEAD4] transition-all shadow-md shadow-[#2DD4BF]/25 flex items-center justify-center shrink-0 whitespace-nowrap">
+            <Link to="/login" id="nav-login" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center justify-center shrink-0 whitespace-nowrap">
               Log In
             </Link>
 
-            <Link to="/gyms" className="px-3.5 py-2 bg-[#2DD4BF] text-[#06201D] font-bold text-xs xl:text-sm rounded-xl hover:bg-[#5EEAD4] transition-all flex items-center space-x-1.5 shadow-md shadow-[#2DD4BF]/25 shrink-0 whitespace-nowrap">
-              <User size={14} />
+            <Link to="/gyms" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+              <User size={14} className="text-[#06201D]" />
               <span>Find a Gym</span>
             </Link>
 
-            <Link to="/gym-owner-introduction" className="px-3.5 py-2 bg-[#2DD4BF] text-[#06201D] font-bold text-xs xl:text-sm rounded-xl hover:bg-[#5EEAD4] transition-all flex items-center space-x-1.5 shadow-md shadow-[#2DD4BF]/25 shrink-0 whitespace-nowrap">
+            <Link to="/gym-owner-introduction" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
               <Activity size={14} className="text-[#06201D]" />
               <span>Manage Your Gym</span>
             </Link>
 
-            <Link to="/gyms" state={{ openEnquiry: true }} className="px-3.5 py-2 bg-[#2DD4BF] text-[#06201D] font-bold text-xs xl:text-sm rounded-xl hover:bg-[#5EEAD4] transition-all shadow-md shadow-[#2DD4BF]/25 flex items-center space-x-1.5 shrink-0 whitespace-nowrap">
+            <Link to="/gyms" state={{ openEnquiry: true }} className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
               <span>Enquire Now</span>
             </Link>
           </div>
@@ -1303,6 +1297,10 @@ const LandingPage = () => {
                 journey={tourJourney}
                 step={tourStep}
                 setJourney={(j) => { setTourJourney(j); setTourStep(1); }}
+                onNavigate={(path) => {
+                  setIsTourOpen(false);
+                  navigate(path, { state: { openTour: true } });
+                }}
               />
             </div>
           </div>

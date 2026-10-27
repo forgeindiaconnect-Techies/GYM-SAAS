@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Activity, CheckCircle, XCircle, Loader2, LogOut, Zap, Crown, Star, Sparkles,
@@ -299,27 +299,21 @@ const SubscriptionPlansPage = () => {
             </div>
           )}
 
-          <div className="inline-flex items-center space-x-2 bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 rounded-full px-4 py-1.5 text-[#2DD4BF] text-xs font-bold uppercase tracking-widest mb-6">
-            <Sparkles size={12} />
-            <span>SaaS Platform Subscriptions</span>
+          <div className="inline-flex items-center space-x-2 bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 rounded-full px-4 py-1.5 text-[#2DD4BF] text-xs font-bold uppercase tracking-widest mb-5">
+            <span>SaaS Platform Pricing for Gyms</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-[#F5FAFA]">
-            Power Your Gym with <span className="text-[#2DD4BF]">Gymora</span>
-          </h1>
-          <p className="text-[#9AAEAE] text-lg mb-3 max-w-2xl mx-auto">
-            Choose a plan that fits your gym's size and ambitions. All plans include our core AI management platform.
-          </p>
-          <p className="text-xs text-[#9AAEAE] mb-10">These are SaaS subscriptions for gym owners, not individual member plans.</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Power Your Gym. Choose Your Plan.</h1>
+          <p className="text-[#9AAEAE] mb-8 max-w-xl mx-auto">All plans give your gym access to the Gymora platform. Scale as your gym grows.</p>
 
           {error && (
-            <div className="inline-flex items-center space-x-2 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-2 text-sm mb-6">
+            <div className="inline-flex items-center space-x-2 bg-red-950/40 border border-red-800 text-red-300 rounded-xl px-4 py-2 text-sm mb-6">
               <span>{error}</span>
             </div>
           )}
 
           {/* ─── Billing Toggle ─── */}
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#F5FAFA]' : 'text-[#9AAEAE]'}`}>
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#FFFFFF]' : 'text-[#9AAEAE]'}`}>
               Monthly
             </span>
 
@@ -333,28 +327,20 @@ const SubscriptionPlansPage = () => {
             </button>
 
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#F5FAFA]' : 'text-[#9AAEAE]'}`}>
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#FFFFFF]' : 'text-[#9AAEAE]'}`}>
                 Annual
               </span>
               {isAnnual ? (
-                <span className="inline-flex items-center gap-1 bg-[#1B2728]/10 text-[#2DD4BF] border border-green-200 text-xs px-3 py-1 rounded-full font-bold">
-                  <Gift size={11} /> Save up to 25% — 2 months FREE!
+                <span className="inline-flex items-center gap-1 bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 text-xs px-3 py-1 rounded-full font-bold">
+                  🎁 2 months FREE — Save up to 25%
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 bg-[#0E1415] text-[#1B2728] border border-[#2A3A3A] text-xs px-3 py-1 rounded-full font-medium">
+                <span className="text-xs bg-[#141D1E] text-[#2DD4BF] border border-[#2A3A3A] px-3 py-1 rounded-full">
                   Switch to annual & save up to 25%
                 </span>
               )}
             </div>
           </div>
-
-          {/* Annual savings reminder bar */}
-          {isAnnual && (
-            <div className="mt-4 inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-2xl px-6 py-3 text-sm text-green-700 font-medium">
-              <CheckCircle size={16} className="text-[#2DD4BF] shrink-0" />
-              Annual billing: pay once, save big. Prices shown are per month, billed yearly.
-            </div>
-          )}
         </div>
 
         {/* ─── Payment Modal ─── */}
@@ -802,128 +788,97 @@ const SubscriptionPlansPage = () => {
         })()}
 
         {/* ─── Pricing Cards ─── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {SAAS_PLANS.map((plan) => {
-            const Icon = plan.icon;
             const priceDisplay = getDisplayPrice(plan);
             const isPopular = plan.popular;
 
             return (
               <div
                 key={plan.key}
-                className={`relative flex flex-col rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl overflow-hidden
-                  ${isPopular ? `bg-[#141D1E] ${plan.borderColor} shadow-xl shadow-teal-900/10` : `bg-[#141D1E] ${plan.borderColor}`}
-                  ${plan.trial ? 'opacity-90' : ''}
-                `}
+                className={`relative flex flex-col bg-[#141D1E] rounded-2xl transition-all duration-300 overflow-hidden border-2 text-[#FFFFFF] ${
+                  isPopular
+                    ? 'border-[#2DD4BF]/50 hover:border-[#2DD4BF] hover:shadow-xl'
+                    : 'border-[#2A3A3A] hover:border-[#2DD4BF]/50 hover:shadow-xl'
+                }`}
               >
                 {/* Popular ribbon */}
                 {isPopular && (
-                  <div className="bg-[#141D1E] text-white text-[10px] font-extrabold text-center py-2 uppercase tracking-widest">
+                  <div className="bg-[#2DD4BF] text-[#0E1415] text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                     ⭐ Most Popular
-                  </div>
-                )}
-
-                {/* Annual badge on card */}
-                {isAnnual && !plan.trial && (
-                  <div className="bg-green-50 border-b border-green-100 text-green-700 text-[10px] font-bold text-center py-1.5 uppercase tracking-widest">
-                    🎁 Annual Plan — 2 Months FREE
                   </div>
                 )}
 
                 <div className="p-6 flex flex-col flex-1">
                   {/* Header */}
-                  <div className="mb-5">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${plan.iconBg}`}>
-                          <Icon size={20} className={plan.iconColor} />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-[#F5FAFA] text-base">{plan.name}</h3>
-                          <p className="text-[#9AAEAE] text-xs">{plan.tagline}</p>
-                        </div>
-                      </div>
-                      {plan.badge && (
-                        <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-md border uppercase tracking-wider ${isPopular ? 'bg-[#141D1E] text-white border-transparent shadow-xs' : 'bg-[#1B2728] text-[#F5FAFA] border-[#2A3A3A]'}`}>
-                          {plan.badge}
-                        </span>
-                      )}
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-base font-bold text-[#FFFFFF]">{plan.name}</h3>
+                    {plan.badge && (
+                      <span className={`text-[10px] px-2.5 py-1 rounded-md font-extrabold uppercase tracking-wider ${
+                        isPopular
+                          ? 'bg-[#2DD4BF]/20 text-[#2DD4BF] border border-[#2DD4BF]/30 shadow-xs'
+                          : 'bg-[#1B2728] text-[#9AAEAE] border border-[#2A3A3A]'
+                      }`}>
+                        {plan.badge}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Price block */}
+                  <div className="mb-3">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-black text-[#FFFFFF]">
+                        {priceDisplay.main}
+                      </span>
+                      <span className="text-[#9AAEAE] text-sm">
+                        {plan.trial ? '/ 1 day' : (isAnnual ? '/year' : '/mo')}
+                      </span>
                     </div>
 
-                    {/* Price block */}
-                    <div className="mt-4">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-black tracking-tight text-[#F5FAFA]">
-                          {priceDisplay.main}
-                        </span>
-                        <span className="text-[#9AAEAE] text-sm font-medium">
-                          {plan.trial ? '/ 1 day' : (isAnnual ? '/year' : '/mo')}
-                        </span>
-                      </div>
-
-                      {/* Annual total / monthly original */}
-                      {!plan.trial && (
-                        <div className="mt-1 min-h-[1.5rem]">
-                          {isAnnual ? (
-                            <div className="space-y-0.5">
-                              <p className="text-[#9AAEAE] text-xs">{priceDisplay.sub}</p>
-                              <p className="text-[#2DD4BF] text-xs font-bold">
-                                💰 Save ₹{plan.savingsAnnual?.toLocaleString('en-IN')} vs monthly
-                              </p>
-                            </div>
-                          ) : (
-                            <p className="text-[#9AAEAE] text-xs">
-                              or save 25% with annual
+                    {!plan.trial && (
+                      <div className="mt-0.5">
+                        {isAnnual ? (
+                          <div className="space-y-0.5">
+                            <p className="text-[#9AAEAE] text-xs">{priceDisplay.sub}</p>
+                            <p className="text-[#2DD4BF] text-xs font-semibold">
+                              💰 Save ₹{plan.savingsAnnual?.toLocaleString('en-IN')} vs monthly billing
                             </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                          </div>
+                        ) : (
+                          <p className="text-[#9AAEAE] text-xs mt-0.5">
+                            or save 25% with annual
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Limits */}
-                  <div className="bg-[#0E1415] rounded-xl p-3 mb-5 border border-[#2A3A3A]">
-                    <p className="text-[10px] uppercase tracking-widest text-[#9AAEAE] font-bold mb-1">PLATFORM LIMITS</p>
-                    <p className="text-xs font-semibold text-[#F5FAFA]">{plan.platformLimits}</p>
+                  <div className="bg-[#0E1415] rounded-xl px-3 py-2 mb-4 border border-[#2A3A3A]">
+                    <p className="text-[10px] uppercase tracking-wider font-bold mb-0.5 text-[#9AAEAE]">PLATFORM LIMITS</p>
+                    <p className="text-xs text-[#FFFFFF] font-medium">{plan.platformLimits}</p>
                   </div>
 
                   {/* Features */}
-                  <ul className="space-y-2 mb-4 flex-1">
+                  <ul className="space-y-1.5 mb-5 flex-1">
                     {plan.features.map((f, i) => (
-                      <li key={i} className={`flex items-start space-x-2 text-xs ${f.included ? 'text-[#F5FAFA]' : 'text-[#9AAEAE]'}`}>
+                      <li key={i} className={`flex items-start gap-2 text-xs ${f.included ? 'text-[#FFFFFF]' : 'text-[#9AAEAE]/60'}`}>
                         {f.included ? (
-                          <CheckCircle size={14} className={`shrink-0 mt-0.5 ${plan.key === 'PREMIUM' ? 'text-[#2DD4BF]' : 'text-[#2DD4BF]'}`} />
+                          <CheckCircle size={13} className="shrink-0 mt-0.5 text-[#2DD4BF]" />
                         ) : (
-                          <XCircle size={14} className="shrink-0 mt-0.5 text-[#D6D3D1]" />
+                          <XCircle size={13} className="shrink-0 mt-0.5 text-[#9AAEAE]/40" />
                         )}
-                        <span className={!f.included ? 'line-through text-[#9AAEAE]' : ''}>{f.text}</span>
+                        <span className={!f.included ? 'line-through text-[#9AAEAE]/60' : ''}>{f.text}</span>
                       </li>
                     ))}
                   </ul>
 
-                  {/* Annual Bonuses */}
-                  {isAnnual && !plan.trial && plan.annualBonuses && (
-                    <div className="mb-4 bg-green-50 border border-green-200 rounded-xl p-3">
-                      <p className="text-[10px] uppercase tracking-widest text-green-700 font-bold mb-2 flex items-center gap-1">
-                        <Gift size={10} /> Annual Bonuses
-                      </p>
-                      <ul className="space-y-1">
-                        {plan.annualBonuses.map((bonus, i) => (
-                          <li key={i} className="flex items-center gap-1.5 text-xs text-green-700">
-                            <CheckCircle size={11} className="text-green-500 shrink-0" />
-                            {bonus}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* CTA */}
+                  {/* CTA Button */}
                   <button
                     id={`plan-${plan.key}`}
                     onClick={() => handleSelect(plan.key)}
                     disabled={loading !== null}
-                    className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center space-x-2 disabled:opacity-60 ${plan.ctaStyle}`}
+                    className="w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center space-x-2 bg-[#2DD4BF] text-white hover:bg-[#5EEAD4] shadow-md shadow-[#2DD4BF]/20 cursor-pointer disabled:opacity-60"
                   >
                     {loading === plan.key ? (
                       <><Loader2 size={16} className="animate-spin" /><span>Activating...</span></>

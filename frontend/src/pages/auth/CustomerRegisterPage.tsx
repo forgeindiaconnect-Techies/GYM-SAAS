@@ -398,14 +398,14 @@ const CustomerRegisterPage = () => {
     <div className="min-h-screen bg-[#0E1415] flex flex-col items-center justify-center px-4 py-12">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
-      {/* Back to Home Arrow */}
-      <Link to="/" className="absolute top-8 left-8 text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors z-10">
+      {/* Back to Customer Portal Arrow */}
+      <Link to="/portal/customer" className="absolute top-8 left-8 text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors z-10">
         <ArrowLeft size={20} />
-        <span className="font-medium text-sm">Back to Home</span>
+        <span className="font-medium text-sm">Back to Customer Portal</span>
       </Link>
 
       {/* Logo */}
-      <Link to="/" className="flex items-center space-x-2 mb-8 group z-10">
+      <Link to="/portal/customer" className="flex items-center space-x-2 mb-8 group z-10">
         <div className="w-9 h-9 bg-[#2DD4BF] rounded-md flex items-center justify-center">
           <Activity className="text-black" size={22} />
         </div>

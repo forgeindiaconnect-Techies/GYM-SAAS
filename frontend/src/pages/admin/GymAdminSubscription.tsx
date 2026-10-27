@@ -211,6 +211,39 @@ const GymAdminSubscription = () => {
     setPaymentError(null);
   };
 
+  // Activate Free Trial (1-day)
+  const handleTrialActivation = async () => {
+    if (currentPlanKey === 'FREE_TRIAL') {
+      setPaymentSuccess('Your 1-day Free Trial is already active.');
+      return;
+    }
+    setLoading('FREE_TRIAL');
+    setPaymentError(null);
+    try {
+      const res = await api.post('/subscriptions/select', {
+        plan: 'FREE_TRIAL',
+        billingCycle: 'trial',
+      });
+      if (res.data?.success) {
+        if (updateUser) {
+          updateUser({
+            subscriptionPlan: 'FREE_TRIAL',
+            subscriptionStatus: 'TRIAL',
+            subscriptionExpiryDate: res.data.subscription?.endDate
+          });
+        }
+        setPaymentSuccess('Free Trial (1 Day) activated successfully! Welcome to Gymora.');
+        await loadSubscriptionInfo();
+      } else {
+        setPaymentError(res.data?.message || 'Could not activate trial.');
+      }
+    } catch (err: any) {
+      setPaymentError(err.response?.data?.message || 'Failed to activate trial.');
+    } finally {
+      setLoading(null);
+    }
+  };
+
   // Process Renewal or Upgrade Payment
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -566,166 +599,156 @@ const GymAdminSubscription = () => {
         </div>
       </div>
 
-      {/* SECTION 3: All Available Plans Grid (Requirement 1 & 6: Never Hide Any Plan!) */}
-      <div id="available-plans-section" className="space-y-6 pt-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#2A3A3A] pb-4">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-black text-[#FFFFFF]">Available Subscription Plans</h2>
-            <p className="text-xs text-[#9AAEAE] mt-0.5">
-              Compare all subscription tiers. You can renew your current plan or upgrade at any time.
-            </p>
+      {/* SECTION 3: SaaS Platform Pricing For Gyms (Matching Monthly & Annual Platform Plans) */}
+      <div id="available-plans-section" className="pt-6 pb-2">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center space-x-2 bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 rounded-full px-4 py-1.5 text-[#2DD4BF] text-xs font-bold uppercase tracking-widest mb-5">
+            <span>SaaS Platform Pricing for Gyms</span>
           </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Power Your Gym. Choose Your Plan.</h2>
+          <p className="text-[#9AAEAE] mb-8 max-w-xl mx-auto">All plans give your gym access to the Gymora platform. Scale as your gym grows.</p>
 
-          {/* Monthly / Annual Billing Toggle */}
-          <div className="flex items-center gap-3 bg-[#0E1415] p-1.5 rounded-2xl border border-[#2A3A3A] self-start sm:self-auto">
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#FFFFFF]' : 'text-[#9AAEAE]'}`}>Monthly</span>
             <button
-              onClick={() => setIsAnnual(false)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                !isAnnual ? 'bg-[#2DD4BF] text-white shadow-sm' : 'text-[#9AAEAE] hover:text-[#FFFFFF]'
-              }`}
+              type="button"
+              onClick={() => setIsAnnual(!isAnnual)}
+              aria-pressed={isAnnual}
+              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] focus:ring-offset-2 ${isAnnual ? 'bg-[#2DD4BF]' : 'bg-[#2A3A3A]'}`}
             >
-              Monthly
+              <span className={`inline-block h-6 w-6 transform rounded-full bg-[#141D1E] shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-9' : 'translate-x-1'}`} />
             </button>
-            <button
-              onClick={() => setIsAnnual(true)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                isAnnual ? 'bg-[#2DD4BF] text-white shadow-sm' : 'text-[#9AAEAE] hover:text-[#FFFFFF]'
-              }`}
-            >
-              <span>Annual</span>
-              <span className="text-[10px] bg-[#2DD4BF]/20 text-[#2DD4BF] border border-[#2DD4BF]/30 px-1.5 py-0.2 rounded-md font-extrabold">
-                Save 20%
-              </span>
-            </button>
+            <div className="flex items-center gap-2">
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#FFFFFF]' : 'text-[#9AAEAE]'}`}>Annual</span>
+              {isAnnual ? (
+                <span className="inline-flex items-center gap-1 bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 text-xs px-3 py-1 rounded-full font-bold">🎁 2 months FREE — Save up to 25%</span>
+              ) : (
+                <span className="text-xs bg-[#141D1E] text-[#2DD4BF] border border-[#2A3A3A] px-3 py-1 rounded-full">Switch to annual & save up to 25%</span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Pricing Cards Grid - Displays ALL Plans Without Hiding */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.filter(p => p.key !== 'FREE_TRIAL').map((plan) => {
+        {/* Pricing Cards Grid - 4 Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {plans.map((plan) => {
             const isCurrent = plan.key === currentPlanKey;
-            const planPricing = PLAN_DETAILS[plan.key] || PLAN_DETAILS.SILVER;
             const currentRank = PLAN_TIER_RANK[currentPlanKey] ?? 1;
             const targetRank = PLAN_TIER_RANK[plan.key] ?? 1;
             const isHigherTier = targetRank > currentRank;
-            const isLowerTier = targetRank < currentRank;
-            const Icon = plan.icon;
 
-            const displayPrice = isAnnual ? planPricing.priceAnnual : planPricing.priceMonthly;
+            const displayPrice = plan.trial ? '₹0' : (isAnnual ? `₹${(plan.priceAnnual || 0).toLocaleString('en-IN')}` : `₹${(plan.priceMonthly || 0).toLocaleString('en-IN')}`);
+            const displayPeriod = plan.trial ? '/ 1 day' : (isAnnual ? '/year' : '/mo');
+            const annualTotal = isAnnual && !plan.trial && plan.priceAnnualPerMonth ? `Equivalent to ₹${plan.priceAnnualPerMonth.toLocaleString('en-IN')}/mo` : null;
+            const savingsText = isAnnual && !plan.trial && plan.savingsAnnual ? `💰 Save ₹${plan.savingsAnnual.toLocaleString('en-IN')} vs monthly billing` : null;
 
             return (
               <div
                 key={plan.key}
-                className={`relative flex flex-col bg-[#141D1E] rounded-3xl border transition-all duration-300 overflow-hidden ${
+                className={`relative flex flex-col bg-[#141D1E] rounded-2xl transition-all duration-300 overflow-hidden border-2 text-[#FFFFFF] ${
                   isCurrent
                     ? 'border-[#2DD4BF] shadow-2xl ring-2 ring-[#2DD4BF]/40'
-                    : 'border-[#2A3A3A] hover:border-[#2DD4BF]/60 hover:shadow-xl'
+                    : plan.popular
+                    ? 'border-[#2DD4BF]/50 hover:border-[#2DD4BF] hover:shadow-xl'
+                    : 'border-[#2A3A3A] hover:border-[#2DD4BF]/50 hover:shadow-xl'
                 }`}
               >
-                {/* Current Plan Badge or Popular Badge */}
-                {isCurrent ? (
-                  <div className="bg-[#2DD4BF] text-[#06201D] font-bold text-[11px] font-black text-center py-1.5 uppercase tracking-widest flex items-center justify-center gap-1">
-                    <CheckCircle2 size={13} /> Your Current Active Plan
+                {/* Most Popular Banner */}
+                {plan.popular && (
+                  <div className="bg-[#2DD4BF] text-[#0E1415] text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
+                    ⭐ Most Popular
                   </div>
-                ) : plan.popular ? (
-                  <div className="bg-gradient-to-r from-[#2DD4BF]/20 to-[#2DD4BF]/30 text-[#2DD4BF] border-b border-[#2DD4BF]/30 text-[11px] font-black text-center py-1.5 uppercase tracking-widest">
-                    ⭐ Recommended Tier
-                  </div>
-                ) : null}
+                )}
 
-                <div className="p-6 flex flex-col flex-1 space-y-4">
+                {/* Current Active Plan Banner */}
+                {isCurrent && !plan.popular && (
+                  <div className="bg-[#2DD4BF]/20 border-b border-[#2DD4BF]/30 text-[#2DD4BF] text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest flex items-center justify-center gap-1">
+                    <CheckCircle2 size={12} /> Current Active Plan
+                  </div>
+                )}
+
+                <div className="p-6 flex flex-col flex-1">
                   {/* Header */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/25 text-[#2DD4BF] flex items-center justify-center">
-                        <Icon size={20} />
-                      </div>
-                      <div>
-                        <h3 className="font-extrabold text-[#FFFFFF] text-base">{plan.name}</h3>
-                        <span className="text-[11px] text-[#9AAEAE]">{plan.badge}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Price */}
-                  <div className="space-y-1">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-black text-[#FFFFFF]">
-                        ₹{displayPrice.toLocaleString('en-IN')}
-                      </span>
-                      <span className="text-[#9AAEAE] text-xs font-semibold">
-                        {isAnnual ? '/year' : '/month'}
-                      </span>
-                    </div>
-                    {isAnnual && (
-                      <p className="text-[11px] text-emerald-400 font-semibold">
-                        Includes 2 months free equivalent
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Limits summary */}
-                  <div className="p-3 bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
-                    <span className="text-[10px] text-[#9AAEAE] uppercase tracking-wider font-extrabold block mb-0.5">
-                      Included Platform Limits
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-base font-bold text-[#FFFFFF]">{plan.name}</h3>
+                    <span className={`text-[10px] px-2.5 py-1 rounded-md font-extrabold uppercase tracking-wider ${
+                      plan.popular
+                        ? 'bg-[#2DD4BF]/20 text-[#2DD4BF] border border-[#2DD4BF]/30 shadow-xs'
+                        : 'bg-[#1B2728] text-[#9AAEAE] border border-[#2A3A3A]'
+                    }`}>
+                      {plan.badge}
                     </span>
-                    <p className="text-xs text-[#FFFFFF] font-semibold">{plan.limits}</p>
                   </div>
 
-                  {/* Features list toggle */}
-                  <div className="flex-1 space-y-2 pt-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#9AAEAE]">Included Features:</span>
-                      <button
-                        onClick={(e) => toggleFeatures(e, plan.key)}
-                        className="text-xs font-bold text-[#2DD4BF] hover:underline cursor-pointer"
-                      >
-                        {expandedPlans[plan.key] ? 'Collapse' : 'Show All'}
-                      </button>
+                  {/* Pricing */}
+                  <div className="mb-3">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-black text-[#FFFFFF]">{displayPrice}</span>
+                      <span className="text-[#9AAEAE] text-sm">{displayPeriod}</span>
                     </div>
-
-                    <ul className="space-y-2 text-xs">
-                      {plan.features.slice(0, expandedPlans[plan.key] ? undefined : 4).map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 text-[#FFFFFF]">
-                          <Check size={14} className="text-[#34D399] shrink-0 mt-0.5" />
-                          <span>{f}</span>
-                        </li>
-                      ))}
-                      {!expandedPlans[plan.key] && plan.features.length > 4 && (
-                        <li className="text-[11px] text-[#9AAEAE] pl-5 italic">
-                          + {plan.features.length - 4} more premium features
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-
-                  {/* Action Button: Renew, Upgrade, or Switch */}
-                  <div className="pt-4">
-                    {isCurrent ? (
-                      <button
-                        onClick={() => handlePlanAction(plan.key, 'RENEWAL')}
-                        className="w-full py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-md shadow-[#2DD4BF]/25 cursor-pointer"
-                      >
-                        <RefreshCw size={14} />
-                        Renew Current Plan
-                      </button>
-                    ) : isHigherTier ? (
-                      <button
-                        onClick={() => handlePlanAction(plan.key, 'UPGRADE')}
-                        className="w-full py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-md shadow-[#2DD4BF]/25 cursor-pointer"
-                      >
-                        <ArrowUpCircle size={14} />
-                        Upgrade to {plan.name}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handlePlanAction(plan.key, 'SWITCH')}
-                        className="w-full py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-md shadow-[#2DD4BF]/25 cursor-pointer"
-                      >
-                        Switch to {plan.name}
-                      </button>
+                    {annualTotal && <p className="text-[#9AAEAE] text-xs mt-0.5">{annualTotal}</p>}
+                    {savingsText && <p className="text-[#2DD4BF] text-xs mt-1 font-semibold">{savingsText}</p>}
+                    {!isAnnual && !plan.trial && (
+                      <p className="text-[#9AAEAE] text-xs mt-0.5">or save 25% with annual</p>
                     )}
                   </div>
+
+                  {/* Platform Limits Box */}
+                  <div className="bg-[#0E1415] rounded-xl px-3 py-2 mb-4 border border-[#2A3A3A]">
+                    <p className="text-[10px] uppercase tracking-wider font-bold mb-0.5 text-[#9AAEAE]">Platform Limits</p>
+                    <p className="text-xs text-[#FFFFFF] font-medium">{plan.limits}</p>
+                  </div>
+
+                  {/* Features list */}
+                  <ul className="space-y-1.5 mb-5 flex-1">
+                    {plan.features.map((feature: string, fIdx: number) => (
+                      <li key={fIdx} className="flex items-start gap-2 text-xs text-[#FFFFFF]">
+                        <CheckCircle size={13} className="shrink-0 mt-0.5 text-[#2DD4BF]" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                    {plan.locked?.map((feature: string, fIdx: number) => (
+                      <li key={`locked-${fIdx}`} className="flex items-start gap-2 text-xs text-[#9AAEAE]/60">
+                        <XCircle size={13} className="shrink-0 mt-0.5 text-[#9AAEAE]/40" />
+                        <span className="line-through">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Action Button */}
+                  {plan.trial ? (
+                    <button
+                      type="button"
+                      onClick={() => handleTrialActivation()}
+                      disabled={isCurrent || loading !== null}
+                      className={`w-full py-3 rounded-xl text-center font-bold transition-all text-sm block cursor-pointer ${
+                        isCurrent
+                          ? 'bg-[#1B2728] text-[#9AAEAE] cursor-default'
+                          : 'bg-[#2DD4BF] text-white hover:bg-[#5EEAD4] shadow-md shadow-[#2DD4BF]/20'
+                      }`}
+                    >
+                      {isCurrent ? 'Current Free Trial' : 'Start Free Trial'}
+                    </button>
+                  ) : isCurrent ? (
+                    <button
+                      type="button"
+                      onClick={() => handlePlanAction(plan.key, 'RENEWAL')}
+                      disabled={loading !== null}
+                      className="w-full py-3 rounded-xl text-center font-bold transition-all text-sm block cursor-pointer bg-[#2DD4BF] text-white hover:bg-[#5EEAD4] shadow-md shadow-[#2DD4BF]/20 flex items-center justify-center gap-1.5"
+                    >
+                      <RefreshCw size={14} />
+                      <span>Renew {plan.name}</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handlePlanAction(plan.key, isHigherTier ? 'UPGRADE' : 'SWITCH')}
+                      disabled={loading !== null}
+                      className="w-full py-3 rounded-xl text-center font-bold transition-all text-sm block cursor-pointer bg-[#2DD4BF] text-white hover:bg-[#5EEAD4] shadow-md shadow-[#2DD4BF]/20"
+                    >
+                      Choose {plan.name}
+                    </button>
+                  )}
                 </div>
               </div>
             );
