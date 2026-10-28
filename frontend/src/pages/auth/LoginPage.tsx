@@ -126,10 +126,10 @@ const LoginPage = () => {
         <ArrowLeft size={16} />
         <span>
           {
-            portal === 'super-admin' ? 'Back to Super Admin Portal' : 
-            portal === 'gym-owner' ? 'Back to Gym Owner Portal' : 
-            portal === 'customer' ? 'Back to Customer Portal' : 
-            portal === 'trainer' ? 'Back to Trainer Portal' : 'Back to Home'
+            portal === 'super-admin' ? 'Back to Super Admin' : 
+            portal === 'gym-owner' ? 'Back to Gym Owner' : 
+            portal === 'customer' ? 'Back to Customer' : 
+            portal === 'trainer' ? 'Back to Trainer' : 'Back to Home'
           }
         </span>
       </Link>
@@ -143,29 +143,29 @@ const LoginPage = () => {
       </Link>
 
       <div className="w-full max-w-md bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-8 sm:p-9 shadow-2xl relative z-10 backdrop-blur-sm">
-        {/* Portal Context Badge */}
+        {/* Context Badge */}
         {portal === 'super-admin' && (
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
             <ShieldCheck size={13} />
-            <span>Super Admin Portal Login</span>
+            <span>Super Admin Login</span>
           </div>
         )}
         {portal === 'gym-owner' && (
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
             <Building2 size={13} />
-            <span>Gym Owner Portal Login</span>
+            <span>Gym Owner Login</span>
           </div>
         )}
         {portal === 'customer' && (
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
             <User size={13} />
-            <span>Customer Fitness Portal Login</span>
+            <span>Customer Login</span>
           </div>
         )}
         {portal === 'trainer' && (
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
             <UserCheck size={13} />
-            <span>Trainer Portal Login</span>
+            <span>Trainer Login</span>
           </div>
         )}
 

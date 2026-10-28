@@ -390,7 +390,7 @@ const GymOwnerRegisterPage = () => {
 
       <Link to="/portal/gym-owner" className="static sm:absolute sm:top-8 sm:left-8 mb-4 sm:mb-0 self-start sm:self-auto px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-2 z-10 cursor-pointer">
         <ArrowLeft size={16} />
-        <span>Back to Gym Owner Portal</span>
+        <span>Back to Gym Owner</span>
       </Link>
 
       <Link to="/" className="flex items-center space-x-2.5 mt-4 sm:mt-2 mb-4 sm:mb-8 group z-10">

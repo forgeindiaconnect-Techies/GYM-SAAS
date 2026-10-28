@@ -151,7 +151,7 @@ const CustomerPortalLanding = () => {
               </span>
             </Link>
             <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-              Customer Fitness Portal
+              Customer Fitness
             </span>
           </div>
 
@@ -182,7 +182,7 @@ const CustomerPortalLanding = () => {
             </button>
             <Link
               to="/gyms"
-              state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+              state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
               className="hidden md:inline-flex px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5"
             >
               <Compass size={14} className="text-[#06201D]" />
@@ -291,12 +291,6 @@ const CustomerPortalLanding = () => {
                 controls
                 className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
               />
-              <div className="absolute top-4 right-4 bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md rounded-xl px-3 py-1.5 shadow-xl pointer-events-none">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#2DD4BF]">
-                  <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse"></span>
-                  <span>Customer Fitness AI</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -741,7 +735,7 @@ const CustomerPortalLanding = () => {
             </div>
             <Link
               to="/gyms"
-              state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+              state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
               className="hidden md:flex items-center space-x-2 text-[#2DD4BF] hover:text-[#5EEAD4] transition-colors font-semibold mt-4 md:mt-0"
             >
               <span>View All Gyms</span>
@@ -847,7 +841,7 @@ const CustomerPortalLanding = () => {
           <div className="mt-8 text-center md:hidden">
             <Link
               to="/gyms"
-              state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+              state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
               className="inline-flex items-center gap-2 text-[#2DD4BF] hover:text-[#5EEAD4] font-semibold"
             >
               View All Gyms <ArrowRight size={18} />
@@ -887,7 +881,7 @@ const CustomerPortalLanding = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/gyms"
-              state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+              state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
               className="w-full sm:w-auto px-8 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all shadow-lg shadow-teal-500/20"
             >
               <span>Explore All Gyms</span>
@@ -1481,10 +1475,10 @@ const CustomerPortalLanding = () => {
                 <button
                   onClick={() => setIsFeaturesOpen(false)}
                   className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
-                  title="Back to Customer Portal"
+                  title="Back to Customer"
                 >
                   <ArrowLeft size={16} />
-                  <span>Back to Customer Portal</span>
+                  <span>Back to Customer</span>
                 </button>
                 <button
                   onClick={() => setIsFeaturesOpen(false)}
@@ -1632,10 +1626,10 @@ const CustomerPortalLanding = () => {
                 <button
                   onClick={() => setIsTourOpen(false)}
                   className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
-                  title="Back to Customer Portal"
+                  title="Back to Customer"
                 >
                   <ArrowLeft size={16} />
-                  <span>Back to Customer Portal</span>
+                  <span>Back to Customer</span>
                 </button>
                 <button
                   onClick={() => setIsTourOpen(false)}

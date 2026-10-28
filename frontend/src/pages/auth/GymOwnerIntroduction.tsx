@@ -70,7 +70,7 @@ const GymOwnerIntroduction = () => {
                 className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-teal-500/20"
               >
                 <ArrowLeft size={16} />
-                <span>Back to Gym Owner Portal</span>
+                <span>Back to Gym Owner</span>
               </Link>
 
               <Link 

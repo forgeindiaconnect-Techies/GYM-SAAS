@@ -239,12 +239,6 @@ const LandingPage = () => {
                   controls
                   className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
                 />
-                <div className="absolute top-4 right-4 bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md rounded-xl px-3 py-1.5 shadow-xl pointer-events-none">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#2DD4BF]">
-                    <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse"></span>
-                    <span>Super Admin Platform</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -273,7 +267,7 @@ const LandingPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
                     <User size={24} />
                   </div>
-                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Customer Portal</h3>
+                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Customer</h3>
                   <p className="text-sm text-[#9AAEAE] leading-relaxed mb-6 font-normal">
                     Your personalized digital fitness companion. Enjoy AI workout and diet generation, book 1-on-1 certified trainers, track progress milestones, and discover top gyms.
                   </p>
@@ -295,7 +289,7 @@ const LandingPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
                     <UserCheck size={24} />
                   </div>
-                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Trainer Portal</h3>
+                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Trainer</h3>
                   <p className="text-sm text-[#9AAEAE] leading-relaxed mb-6 font-normal">
                     The dedicated career and coaching hub for fitness professionals. Showcase your certified expertise, explore gym opportunities, and guide clients towards their goals.
                   </p>
@@ -317,7 +311,7 @@ const LandingPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
                     <Building2 size={24} />
                   </div>
-                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Gym Owner Portal</h3>
+                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Gym Owner</h3>
                   <p className="text-sm text-[#9AAEAE] leading-relaxed mb-6 font-normal">
                     The complete operational engine for fitness clubs. Manage members, trainer rosters, biometric/QR check-ins, offline POS sales, and automated financial reports.
                   </p>

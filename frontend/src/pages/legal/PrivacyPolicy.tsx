@@ -15,7 +15,7 @@ const PrivacyPolicy = () => {
       : '/');
   const returnLabel: string =
     (location.state as any)?.fromLabel ??
-    (returnPath.includes('/portal/customer') ? 'Back to Customer Portal' : 'Back to Home');
+    (returnPath.includes('/portal/customer') ? 'Back to Customer' : 'Back to Home');
 
   const isSuperAdmin = roleParam === 'super-admin' || (location.state as any)?.from?.includes('/portal/super-admin');
 

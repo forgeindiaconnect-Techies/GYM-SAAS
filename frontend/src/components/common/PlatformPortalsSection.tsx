@@ -14,7 +14,7 @@ export const PlatformPortalsSection: React.FC<PlatformPortalsSectionProps> = ({ 
   const portals = [
     {
       id: 'SUPER_ADMIN',
-      title: 'Super Admin Portal',
+      title: 'Super Admin',
       subtitle: 'Platform governance & management',
       description: 'Enterprise governance suite for platform administration, multi-tenant gym approvals, subscription plans, and platform health.',
       icon: ShieldCheck,
@@ -24,7 +24,7 @@ export const PlatformPortalsSection: React.FC<PlatformPortalsSectionProps> = ({ 
     },
     {
       id: 'GYM_OWNER',
-      title: 'Gym Owner Portal',
+      title: 'Gym Owner',
       subtitle: 'Club ops, trainers & billing',
       description: 'Complete operating system for fitness clubs. Manage members, trainer rosters, biometric/QR check-ins, and POS store sales.',
       icon: Building2,
@@ -34,7 +34,7 @@ export const PlatformPortalsSection: React.FC<PlatformPortalsSectionProps> = ({ 
     },
     {
       id: 'MEMBER',
-      title: 'Customer Portal',
+      title: 'Customer',
       subtitle: 'AI workouts, coaching & progress',
       description: 'Personalized digital fitness companion with AI workout and diet generation, certified trainer bookings, and progress tracking.',
       icon: User,
@@ -110,7 +110,7 @@ export const PlatformPortalsSection: React.FC<PlatformPortalsSectionProps> = ({ 
                   to={portal.portalUrl}
                   className="flex-1 py-2 px-3 bg-[#1B2728] hover:bg-[#2DD4BF] text-[#F5FAFA] hover:text-[#06201D] font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 border border-[#2A3A3A] hover:border-[#2DD4BF]"
                 >
-                  <span>Public Portal</span>
+                  <span>Public View</span>
                   <ExternalLink size={13} />
                 </Link>
                 {isCurrent ? (

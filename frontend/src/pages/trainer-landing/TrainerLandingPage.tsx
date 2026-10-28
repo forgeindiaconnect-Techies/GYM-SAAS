@@ -28,10 +28,18 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { TrainerPageLayout } from './TrainerPageLayout';
+import trainerImg1 from '../../assets/Trainer landing image 1.jpg';
+import trainerImg2 from '../../assets/Trainer landing image 2.jpg';
+import trainerImg3 from '../../assets/Trainer landing image 3.jpg';
+import trainerImg4 from '../../assets/Trainer landing image 4.jpg';
+import trainerImg5 from '../../assets/Trainer landing image 5.jpg';
+import trainerBenefitVideo from '../../assets/Trainer benefit video .mp4';
+import trainerResponsibilitiesVideo from '../../assets/Trainer responsbilities.mp4';
 
 export const TrainerLandingPage: React.FC = () => {
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [activeTrainerTab, setActiveTrainerTab] = useState<'benefits' | 'responsibilities'>('benefits');
 
   const toggleFaq = (index: number) => {
     setOpenFaq(prev => (prev === index ? null : index));
@@ -40,31 +48,43 @@ export const TrainerLandingPage: React.FC = () => {
   const steps = [
     {
       step: '01',
+      stage: 'Step 01',
       title: 'Create Your Profile',
+      tag: 'Profile Setup',
       desc: 'Showcase your experience, certifications, skills, and fitness specializations.',
       details: 'Highlight verified credentials (ACE, ISSA, NASM), training methodologies, available hours, and client transformations.',
-      icon: UserCheck
+      icon: UserCheck,
+      image: trainerImg1
     },
     {
       step: '02',
+      stage: 'Step 02',
       title: 'Explore Opportunities',
+      tag: 'Gym Vacancies',
       desc: 'Discover gym opportunities that match your expertise and preferred location.',
       details: 'Browse gym partners seeking full-time staff, part-time personal trainers, strength coaches, and group class instructors.',
-      icon: Compass
+      icon: Compass,
+      image: trainerImg2
     },
     {
       step: '03',
+      stage: 'Step 03',
       title: 'Connect with Gyms',
+      tag: 'Interview & Approval',
       desc: 'Learn about the recruitment and approval process.',
       details: 'Submit inquiries directly to verified gym managers, arrange facility interviews, and receive formal placement approvals.',
-      icon: Building2
+      icon: Building2,
+      image: trainerImg3
     },
     {
       step: '04',
+      stage: 'Step 04',
       title: 'Grow Your Career',
+      tag: 'Active Coaching',
       desc: 'Develop your professional experience and help customers achieve their fitness goals.',
       details: 'Build your client roster, log training milestones, expand your reputation, and maximize your personal coaching revenue.',
-      icon: TrendingUp
+      icon: TrendingUp,
+      image: trainerImg4
     }
   ];
 
@@ -174,7 +194,7 @@ export const TrainerLandingPage: React.FC = () => {
             <div className="lg:col-span-7 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 text-[#2DD4BF] text-xs font-semibold mb-6 shadow-sm">
                 <Sparkles size={14} />
-                <span>Dedicated Fitness Trainer Portal</span>
+                <span>Dedicated Fitness Trainer</span>
               </div>
 
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#F5FAFA] leading-[1.15] mb-6">
@@ -186,7 +206,7 @@ export const TrainerLandingPage: React.FC = () => {
                 Showcase your fitness expertise, connect with gym opportunities, guide customers towards their fitness goals, and grow your career as a professional fitness trainer.
               </p>
 
-              {/* 3 Call-To-Action Buttons */}
+              {/* 2 Call-To-Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-10">
                 <Link
                   to="/careers"
@@ -195,14 +215,6 @@ export const TrainerLandingPage: React.FC = () => {
                   <Briefcase size={16} />
                   <span>Explore Opportunities</span>
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-
-                <Link
-                  to="/invite/trainer/onboarding"
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-lg shadow-teal-500/20 flex items-center justify-center gap-2"
-                >
-                  <UserCheck size={16} className="text-[#06201D]" />
-                  <span>Join as a Trainer</span>
                 </Link>
 
                 <Link
@@ -243,231 +255,447 @@ export const TrainerLandingPage: React.FC = () => {
                   controls
                   className="w-full h-[380px] sm:h-[480px] object-cover object-center block"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                {/* Floating badge top */}
-                <div className="absolute top-4 right-4 bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md rounded-xl px-3 py-1.5 shadow-xl pointer-events-none">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#2DD4BF]">
-                    <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse"></span>
-                    <span>Certified Trainer Hub</span>
+      {/* 2. About Us Section - Split Layout with Left Content & Right Image */}
+      <section className="py-20 sm:py-24 bg-[#0E1415] border-y border-[#2A3A3A]" id="about">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* Left Side: Short, Clear Content */}
+            <div className="lg:col-span-7 text-left">
+              <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 inline-block mb-4">
+                About Our Ecosystem
+              </span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#F5FAFA] tracking-tight mb-4 leading-tight">
+                Empowering Fitness Trainers
+              </h2>
+              <p className="text-base sm:text-lg text-[#9AAEAE] leading-relaxed mb-8 max-w-2xl">
+                We help fitness professionals showcase their expertise, connect with top gyms, and build successful coaching careers.
+              </p>
+
+              {/* 3 Short Value Points */}
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors group">
+                  <div className="w-11 h-11 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] shrink-0 group-hover:scale-105 transition-transform">
+                    <Sparkles size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#F5FAFA] text-base mb-1">Showcase Your Skills</h3>
+                    <p className="text-xs sm:text-sm text-[#9AAEAE] leading-relaxed">
+                      Build a verified coach profile featuring your certifications, specialties, and client transformations.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors group">
+                  <div className="w-11 h-11 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] shrink-0 group-hover:scale-105 transition-transform">
+                    <Building2 size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#F5FAFA] text-base mb-1">Discover Gym Opportunities</h3>
+                    <p className="text-xs sm:text-sm text-[#9AAEAE] leading-relaxed">
+                      Connect directly with top gyms actively hiring certified personal trainers and class instructors.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors group">
+                  <div className="w-11 h-11 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] shrink-0 group-hover:scale-105 transition-transform">
+                    <HeartHandshake size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#F5FAFA] text-base mb-1">Support Customer Goals</h3>
+                    <p className="text-xs sm:text-sm text-[#9AAEAE] leading-relaxed">
+                      Deliver personalized workout routines and help members reach their fitness goals with confidence.
+                    </p>
                   </div>
                 </div>
               </div>
+
+
+            </div>
+
+            {/* Right Side: Showcase Image */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-2xl shadow-black bg-[#141D1E] group">
+                <img
+                  src={trainerImg5}
+                  alt="Empowering Fitness Trainers"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-[400px] sm:h-[500px] object-cover object-center block group-hover:scale-105 transition-transform duration-700 select-none pointer-events-none"
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. About Us Section */}
-      <section className="py-20 bg-[#0E1415] border-y border-[#2A3A3A]" id="about">
+      {/* 3. How It Works - Process Flowchart Section */}
+      <section className="py-20 sm:py-24 bg-[#080B0C] border-t border-[#2A3A3A]" id="how-it-works">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider px-3 py-1 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 inline-block mb-3">
-              About Our Ecosystem
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+            <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 inline-flex items-center gap-2 mb-4">
+              <Sparkles size={13} />
+              <span>Trainer Onboarding Flowchart</span>
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#F5FAFA] tracking-tight mb-4">
-              Empowering Fitness Trainers
-            </h2>
-            <p className="text-base text-[#9AAEAE] leading-relaxed">
-              We empower fitness professionals to showcase their skills, discover rewarding gym opportunities, develop their careers, and support customers in achieving their lifelong fitness goals.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-7 hover:border-[#2DD4BF]/40 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] mb-5">
-                <Sparkles size={22} />
-              </div>
-              <h3 className="text-lg font-bold text-[#F5FAFA] mb-2.5">Showcase Your Skills</h3>
-              <p className="text-xs sm:text-sm text-[#9AAEAE] leading-relaxed">
-                Build a certified digital trainer identity highlighting your verified accreditations, client transformations, exercise philosophies, and specific specializations.
-              </p>
-            </div>
-
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-7 hover:border-[#2DD4BF]/40 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] mb-5">
-                <Building2 size={22} />
-              </div>
-              <h3 className="text-lg font-bold text-[#F5FAFA] mb-2.5">Discover Gym Opportunities</h3>
-              <p className="text-xs sm:text-sm text-[#9AAEAE] leading-relaxed">
-                Connect with verified local and regional fitness centers seeking dedicated professionals for personalized training, group classes, and strength coaching.
-              </p>
-            </div>
-
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-7 hover:border-[#2DD4BF]/40 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] mb-5">
-                <HeartHandshake size={22} />
-              </div>
-              <h3 className="text-lg font-bold text-[#F5FAFA] mb-2.5">Support Customer Goals</h3>
-              <p className="text-xs sm:text-sm text-[#9AAEAE] leading-relaxed">
-                Empower athletes and gym members through customized workout plans, posture audits, nutritional coaching, and motivational guidance that drives real results.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-10 text-center">
-            <Link
-              to="/trainers/about"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#2DD4BF] hover:text-[#5EEAD4] transition-colors"
-            >
-              <span>Learn more about our mission & values</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. How It Works Section */}
-      <section className="py-20 bg-[#080B0C]" id="how-it-works">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider px-3 py-1 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 inline-block mb-3">
-              Simple 4-Step Pathway
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#F5FAFA] tracking-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#F5FAFA] tracking-tight mb-4">
               How It Works
             </h2>
-            <p className="text-base text-[#9AAEAE] leading-relaxed">
-              A transparent, informational walkthrough designed to help fitness professionals establish credentials and navigate gym partnerships.
+            <p className="text-base sm:text-lg text-[#9AAEAE] leading-relaxed">
+              A transparent, step-by-step career flowchart guiding fitness professionals from profile verification to active gym placement and client growth.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((item) => {
+          {/* Flowchart Progress Track (Desktop) */}
+          <div className="hidden lg:block mb-12 max-w-5xl mx-auto">
+            <div className="relative flex items-center justify-between">
+              {/* Connecting line behind steps */}
+              <div className="absolute top-1/2 left-8 right-8 -translate-y-1/2 h-0.5 bg-gradient-to-r from-[#2DD4BF]/30 via-[#2DD4BF] to-[#2DD4BF]/30 -z-0" />
+
+              {steps.map((item) => (
+                <div key={item.step} className="relative z-10 flex flex-col items-center bg-[#080B0C] px-3">
+                  <div className="w-10 h-10 rounded-full bg-[#141D1E] border-2 border-[#2DD4BF] text-[#2DD4BF] font-black text-sm flex items-center justify-center shadow-lg shadow-[#2DD4BF]/20 mb-2">
+                    {item.step}
+                  </div>
+                  <span className="text-xs font-bold text-[#F5FAFA] tracking-wide">
+                    {item.title}
+                  </span>
+                  <span className="text-[10px] text-[#2DD4BF] font-medium mt-0.5">
+                    {item.tag}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Flowchart Cards Grid with Attached Images */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+            {steps.map((item, idx) => {
               const Icon = item.icon;
+              const isLast = idx === steps.length - 1;
+
               return (
-                <div
-                  key={item.step}
-                  className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 relative hover:border-[#2DD4BF]/40 transition-all flex flex-col justify-between group"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] group-hover:scale-110 transition-transform">
-                        <Icon size={22} />
+                <div key={item.step} className="relative flex flex-col">
+                  {/* Flowchart Card */}
+                  <div className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between group shadow-xl hover:shadow-[#2DD4BF]/10 h-full">
+                    {/* Top Image Container */}
+                    <div className="relative aspect-[16/10] overflow-hidden bg-[#141D1E] border-b border-[#2A3A3A]">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0E1415] via-[#0E1415]/20 to-transparent" />
+
+                      {/* Step Number Badge Overlay */}
+                      <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#080B0C]/90 backdrop-blur-md border border-[#2DD4BF]/30 text-xs font-mono font-bold text-[#2DD4BF] shadow-md">
+                        <span>STAGE {item.step}</span>
                       </div>
-                      <span className="text-2xl font-black text-[#2A3A3A] group-hover:text-[#2DD4BF]/40 transition-colors">
-                        {item.step}
-                      </span>
+
+                      {/* Icon Badge Overlay */}
+                      <div className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-[#080B0C]/90 backdrop-blur-md border border-[#2A3A3A] text-[#2DD4BF] flex items-center justify-center shadow-md group-hover:border-[#2DD4BF] transition-colors">
+                        <Icon size={16} />
+                      </div>
+
+                      {/* Tag pill at bottom of image */}
+                      <div className="absolute bottom-2.5 left-3">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-white bg-[#2DD4BF]/20 border border-[#2DD4BF]/30 px-2 py-0.5 rounded-md backdrop-blur-sm">
+                          {item.tag}
+                        </span>
+                      </div>
                     </div>
 
-                    <h3 className="text-lg font-bold text-[#F5FAFA] mb-2">{item.title}</h3>
-                    <p className="text-xs sm:text-sm text-[#C1D0D0] mb-3 leading-relaxed">{item.desc}</p>
-                    <p className="text-xs text-[#9AAEAE] leading-relaxed border-t border-[#2A3A3A]/60 pt-3">{item.details}</p>
+                    {/* Card Body */}
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <h3 className="text-lg font-bold text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors mb-2">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-[#C1D0D0] mb-3 leading-relaxed">
+                          {item.desc}
+                        </p>
+                        <p className="text-xs text-[#9AAEAE] leading-relaxed border-t border-[#2A3A3A]/60 pt-3">
+                          {item.details}
+                        </p>
+                      </div>
+
+                      <div className="mt-5 pt-3 border-t border-[#2A3A3A]/60 flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
+                        <span className="flex items-center gap-1.5">
+                          <CheckCircle2 size={14} className="text-[#2DD4BF]" />
+                          <span>Verified Milestone</span>
+                        </span>
+                        <ChevronRight size={14} className="text-[#9AAEAE] group-hover:text-[#2DD4BF] group-hover:translate-x-1 transition-all" />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="mt-5 pt-3 flex items-center gap-1.5 text-xs font-semibold text-[#2DD4BF]">
-                    <CheckCircle2 size={13} />
-                    <span>Verified Milestone</span>
-                  </div>
+                  {/* Flowchart Connector Arrow Between Cards (Desktop) */}
+                  {!isLast && (
+                    <div className="hidden lg:flex absolute -right-3.5 top-[28%] z-20 w-7 h-7 rounded-full bg-[#141D1E] border border-[#2DD4BF]/50 text-[#2DD4BF] items-center justify-center shadow-md pointer-events-none group-hover:scale-110 transition-transform">
+                      <ChevronRight size={14} strokeWidth={2.5} />
+                    </div>
+                  )}
+
+                  {/* Flowchart Connector Arrow for Mobile (Between stacked cards) */}
+                  {!isLast && (
+                    <div className="flex lg:hidden justify-center my-2 text-[#2DD4BF]">
+                      <div className="w-6 h-6 rounded-full bg-[#141D1E] border border-[#2DD4BF]/40 flex items-center justify-center">
+                        <ChevronRight size={12} className="rotate-90" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-10 text-center">
-            <Link
-              to="/trainers/how-it-works"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#2DD4BF] hover:text-[#5EEAD4] transition-colors"
-            >
-              <span>Explore full step-by-step onboarding details</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+
         </div>
       </section>
 
-      {/* 4. Trainer Benefits Section */}
-      <section className="py-20 bg-[#0E1415] border-t border-[#2A3A3A]" id="benefits">
+      {/* 4. Interactive Showcase: Trainer Benefits & Responsibilities */}
+      <section className="py-20 sm:py-24 bg-[#0E1415] border-t border-[#2A3A3A]" id="benefits">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider px-3 py-1 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 inline-block mb-3">
-              Professional Value
+          {/* Header & Two Buttons */}
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 inline-block mb-3">
+              Professional Value &amp; Standards
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#F5FAFA] tracking-tight mb-4">
-              Trainer Benefits
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#F5FAFA] tracking-tight mb-4">
+              Trainer Benefits &amp; Responsibilities
             </h2>
-            <p className="text-base text-[#9AAEAE] leading-relaxed">
-              Designed to support your personal brand, foster direct relationships with gym operators, and elevate client satisfaction.
+            <p className="text-base sm:text-lg text-[#9AAEAE] leading-relaxed mb-8">
+              Explore the career-accelerating advantages of coaching on Gymora and the core standards expected of certified fitness mentors.
             </p>
+
+            {/* The Two Switch Buttons */}
+            <div className="inline-flex p-1.5 rounded-2xl bg-[#080B0C] border border-[#2A3A3A] gap-2 shadow-xl">
+              <button
+                type="button"
+                onClick={() => setActiveTrainerTab('benefits')}
+                className={`px-6 sm:px-8 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer ${
+                  activeTrainerTab === 'benefits'
+                    ? 'bg-[#2DD4BF] text-[#06201D] shadow-lg shadow-[#2DD4BF]/25'
+                    : 'text-[#9AAEAE] hover:text-white hover:bg-[#141D1E]'
+                }`}
+              >
+                <Award size={18} />
+                <span>Trainer Benefits</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTrainerTab('responsibilities')}
+                className={`px-6 sm:px-8 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer ${
+                  activeTrainerTab === 'responsibilities'
+                    ? 'bg-[#2DD4BF] text-[#06201D] shadow-lg shadow-[#2DD4BF]/25'
+                    : 'text-[#9AAEAE] hover:text-white hover:bg-[#141D1E]'
+                }`}
+              >
+                <ShieldCheck size={18} />
+                <span>Trainer Responsibilities</span>
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {benefits.map((b, index) => {
-              const Icon = b.icon;
-              return (
-                <div
-                  key={index}
-                  className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-7 hover:border-[#2DD4BF]/40 transition-all hover:translate-y-[-2px]"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] mb-5">
-                    <Icon size={22} />
-                  </div>
-                  <h3 className="text-lg font-bold text-[#F5FAFA] mb-2">{b.title}</h3>
-                  <p className="text-xs sm:text-sm text-[#9AAEAE] leading-relaxed">{b.desc}</p>
+          {/* TAB 1: TRAINER BENEFITS (Video on Right, Content on Left) */}
+          {activeTrainerTab === 'benefits' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center animate-fadeIn">
+              {/* Left Side: Benefits Content */}
+              <div className="lg:col-span-7 space-y-6">
+                <div>
+                  <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                    Smart Coaching Tools
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA] tracking-tight">
+                    Client Profiles, Meal Plans &amp; Daily Coaching
+                  </h3>
+                  <p className="text-sm text-[#9AAEAE] mt-2 leading-relaxed">
+                    Directly manage individual member profiles, configure custom nutrition and breakfast meal plans, and deliver real-time coaching from your trainer app.
+                  </p>
                 </div>
-              );
-            })}
-          </div>
 
-          <div className="mt-10 text-center">
-            <Link
-              to="/trainers/benefits"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#2DD4BF] hover:text-[#5EEAD4] transition-colors"
-            >
-              <span>View in-depth breakdown of trainer perks</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Trainer Responsibilities Section */}
-      <section className="py-20 bg-[#080B0C] border-t border-[#2A3A3A]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider px-3 py-1 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 inline-block mb-3">
-              Core Code of Practice
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#F5FAFA] tracking-tight mb-4">
-              Trainer Responsibilities
-            </h2>
-            <p className="text-base text-[#9AAEAE] leading-relaxed">
-              Professional standards expected of fitness mentors to ensure member safety, optimal progress, and exemplary gym culture.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {responsibilities.map((r, i) => {
-              const Icon = r.icon;
-              return (
-                <div
-                  key={i}
-                  className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 hover:border-[#2DD4BF]/40 transition-colors flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="w-10 h-10 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] mb-4">
-                      <Icon size={18} />
+                {/* 4 Crisp Benefit Points Matching Video */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-2.5">
+                      <Users size={18} />
                     </div>
-                    <h3 className="text-base font-bold text-[#F5FAFA] mb-2">{r.title}</h3>
-                    <p className="text-xs text-[#9AAEAE] leading-relaxed">{r.desc}</p>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm mb-1">Client Profile Management</h4>
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Review client fitness levels, baseline biometric records, and specific health targets on one unified digital screen.
+                    </p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-[#2A3A3A]/60 flex items-center gap-1.5 text-[11px] text-[#2DD4BF] font-semibold">
-                    <CheckCircle2 size={13} />
-                    <span>Professional Standard</span>
+
+                  <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-2.5">
+                      <Activity size={18} />
+                    </div>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm mb-1">Custom Nutrition &amp; Meal Plans</h4>
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Build personalized breakfast, lunch, and daily macronutrient targets tailored to support each member's goals.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-2.5">
+                      <Dumbbell size={18} />
+                    </div>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm mb-1">Workout &amp; Routine Prescriptions</h4>
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Prescribe structured exercise splits, rep targets, and rest intervals directly to member smartphones in real time.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-2.5">
+                      <TrendingUp size={18} />
+                    </div>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm mb-1">Real-Time Progress &amp; Check-Ins</h4>
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Monitor client meal logging and habit adherence, enter coaching notes, and celebrate weekly transformation gains.
+                    </p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
 
-          <div className="mt-10 text-center">
-            <Link
-              to="/trainers/guidelines"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#2DD4BF] hover:text-[#5EEAD4] transition-colors"
-            >
-              <span>Read the comprehensive Trainer Guidelines</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+
+              </div>
+
+              {/* Right Side: Benefits Video */}
+              <div className="lg:col-span-5 relative">
+                <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-2xl shadow-black bg-[#141D1E] group">
+                  <video
+                    key="video-benefits"
+                    src={trainerBenefitVideo}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    controls
+                    ref={(el) => {
+                      if (el) {
+                        el.muted = true;
+                        el.defaultMuted = true;
+                        el.play().catch(() => {});
+                      }
+                    }}
+                    onLoadedMetadata={(e) => {
+                      e.currentTarget.muted = true;
+                      if (e.currentTarget.currentTime === 0) {
+                        e.currentTarget.currentTime = 0.05;
+                      }
+                      e.currentTarget.play().catch(() => {});
+                    }}
+                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: TRAINER RESPONSIBILITIES (Video on Right, Content on Left) */}
+          {activeTrainerTab === 'responsibilities' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center animate-fadeIn">
+              {/* Left Side: Responsibilities Content */}
+              <div className="lg:col-span-7 space-y-6">
+                <div>
+                  <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                    Code of Practice
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA] tracking-tight">
+                    Professional Standards &amp; Member Care
+                  </h3>
+                  <p className="text-sm text-[#9AAEAE] mt-2 leading-relaxed">
+                    Core duties expected of certified fitness mentors to ensure member safety, optimal progress, and exemplary gym culture.
+                  </p>
+                </div>
+
+                {/* 4 Crisp Responsibility Points */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-2.5">
+                      <Target size={18} />
+                    </div>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm mb-1">Goal Setting &amp; Milestones</h4>
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Conduct initial physical evaluations and establish realistic, measurable short and long-term milestones.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-2.5">
+                      <Dumbbell size={18} />
+                    </div>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm mb-1">Appropriate Workout Guidance</h4>
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Design progressive resistance routines, functional circuits, and safe exercise adaptations.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-2.5">
+                      <BookOpen size={18} />
+                    </div>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm mb-1">Technique &amp; Injury Prevention</h4>
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Teach biomechanically correct form, pacing, breathing, and proper equipment setup at all times.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-2.5">
+                      <ShieldCheck size={18} />
+                    </div>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm mb-1">Professional Conduct</h4>
+                    <p className="text-xs text-[#9AAEAE] leading-relaxed">
+                      Maintain strict punctuality, respectful member communication, and full compliance with gym codes.
+                    </p>
+                  </div>
+                </div>
+
+
+              </div>
+
+              {/* Right Side: Responsibilities Video */}
+              <div className="lg:col-span-5 relative">
+                <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-2xl shadow-black bg-[#141D1E] group">
+                  <video
+                    key="video-responsibilities"
+                    src={trainerResponsibilitiesVideo}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    controls
+                    ref={(el) => {
+                      if (el) {
+                        el.muted = true;
+                        el.defaultMuted = true;
+                        el.play().catch(() => {});
+                      }
+                    }}
+                    onLoadedMetadata={(e) => {
+                      e.currentTarget.muted = true;
+                      if (e.currentTarget.currentTime === 0) {
+                        e.currentTarget.currentTime = 0.05;
+                      }
+                      e.currentTarget.play().catch(() => {});
+                    }}
+                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -524,15 +752,7 @@ export const TrainerLandingPage: React.FC = () => {
             })}
           </div>
 
-          <div className="mt-10 text-center">
-            <Link
-              to="/trainers/faqs"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#2DD4BF] hover:text-[#5EEAD4] transition-colors"
-            >
-              <span>View full searchable FAQ library</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+
         </div>
       </section>
 
@@ -556,11 +776,11 @@ export const TrainerLandingPage: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              to="/invite/trainer/onboarding"
+              to="/careers"
               className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-xl shadow-teal-500/25 flex items-center justify-center gap-2 group"
             >
-              <UserCheck size={18} />
-              <span>Join as a Trainer</span>
+              <Briefcase size={18} />
+              <span>Explore Opportunities</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>

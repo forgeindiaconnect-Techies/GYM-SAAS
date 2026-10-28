@@ -216,7 +216,7 @@ const GymDetails = () => {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <button onClick={() => navigate('/portal/customer')} className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 inline-flex items-center gap-2 mb-4 cursor-pointer">
-                <ArrowLeft size={16} /> <span>Back to Customer Portal</span>
+                <ArrowLeft size={16} /> <span>Back to Customer</span>
               </button>
               <div className="flex flex-wrap items-center gap-3 mb-3">
                 {branches.length > 0 && (

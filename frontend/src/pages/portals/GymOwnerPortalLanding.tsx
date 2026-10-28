@@ -3,9 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import gymLandingImg1 from '../../assets/GYM landing page image 1.jpg';
 import gymLandingImg2 from '../../assets/GYM landing page image 2.jpg';
 import { TourSlide } from '../../components/Landing/TourSlide';
+import { FaInstagram, FaTwitter, FaYoutube, FaFacebook } from 'react-icons/fa';
 import { 
   Building2, 
   ArrowLeft, 
+  ArrowRight,
   Users, 
   Dumbbell, 
   CalendarCheck, 
@@ -45,6 +47,39 @@ import {
   PlayCircle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+
+const GYM_OWNER_FEATURES = [
+  {
+    title: 'Member & Membership Management',
+    description: 'Effortlessly register new members, track active subscriptions, and automate timely renewal alerts via WhatsApp and SMS. Gain complete visibility over member attendance history, payment statuses, and expiry schedules to keep your member retention consistently high.',
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    title: 'Trainer & Staff Management',
+    description: 'Easily organize your coaching team, assign trainers to members, and oversee customized workout and nutrition plans. Monitor coach performance, review member satisfaction ratings, and automate monthly split commissions without the headache of manual calculations.',
+    image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    title: 'Smart Attendance & Bookings',
+    description: 'Enable lightning-fast check-ins using QR codes, RFID cards, or biometric turnstiles that automatically prevent unpaid access. Members and trainers can easily book personal coaching sessions and group fitness classes with live gym floor occupancy tracking.',
+    image: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    title: 'POS Store & Inventory',
+    description: 'Sell health supplements, beverages, workout apparel, and gym gear right from your front desk with a barcode-ready POS register. Track inventory levels automatically with low-stock warnings and generate daily sales summaries to maximize your retail profit.',
+    image: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    title: 'Sales & Financial Analytics',
+    description: 'Gain total clarity on your gym’s financial health with real-time dashboards showing recurring revenues, active cash flow, and daily expenses. Produce professional GST-compliant invoices and download audited profit-and-loss reports at the click of a button.',
+    image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    title: 'Rewards & Referral Programs',
+    description: 'Boost member loyalty and drive organic word-of-mouth signups by rewarding workout consistency and milestones with redeemable reward points. Host engaging fitness challenges, broadcast live leaderboards, and offer automated referral discounts to expand your gym community.',
+    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop',
+  },
+];
 
 const GymOwnerPortalLanding = () => {
   const { user } = useAuth();
@@ -362,7 +397,7 @@ const GymOwnerPortalLanding = () => {
               onClick={() => setShowTrainerHiringWorkflow(false)}
               className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#1B2728] hover:bg-[#2A3A3A] text-[#2DD4BF] border border-[#2A3A3A] font-semibold text-xs text-center transition-all flex items-center justify-center gap-1.5"
             >
-              <span>Explore Trainer Portal</span>
+              <span>Explore Trainer</span>
               <ExternalLink size={14} />
             </Link>
             <button
@@ -393,7 +428,7 @@ const GymOwnerPortalLanding = () => {
               </span>
             </Link>
             <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-              Gym Owner Portal
+              Gym Owner
             </span>
           </div>
 
@@ -443,11 +478,6 @@ const GymOwnerPortalLanding = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left Content */}
           <div className="lg:col-span-7 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-medium text-[#2DD4BF] mb-6">
-              <Building2 size={14} />
-              <span>Complete Operating System for Modern Gyms, Fitness Clubs &amp; Studios</span>
-            </div>
-
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#F5FAFA]">
               Scale Your Gym Operations &amp; <br className="hidden sm:block" />
               <span className="text-[#2DD4BF]">Maximize Member Retention</span>
@@ -457,7 +487,7 @@ const GymOwnerPortalLanding = () => {
               From multi-branch member tracking and trainer payroll to automated biometric attendance, inventory POS, and revenue analytics—manage everything seamlessly from one central hub.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <Link
                 to="/login?portal=gym-owner"
                 className="w-full sm:w-auto px-7 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30"
@@ -473,46 +503,6 @@ const GymOwnerPortalLanding = () => {
                 <span>Get Started &amp; Register Gym</span>
               </Link>
             </div>
-
-            {/* Club Performance Pulse Bar */}
-            <div className="w-full bg-[#141D1E]/90 border border-[#2A3A3A] rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-xl">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
-                  <ScanLine size={18} />
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Check-in Speed</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">&lt; 0.8s Scan-to-Door</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <TrendingUp size={18} />
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Member Retention</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">89.4% (+32% Avg)</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
-                  <UserCheck size={18} />
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Trainer Roster</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">Automated Payroll</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
-                  <Building2 size={18} />
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Multi-Branch</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">Single Pane Sync</div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right Video Container: Gym Owner Experience Video */}
@@ -527,32 +517,22 @@ const GymOwnerPortalLanding = () => {
                 controls
                 className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
               />
-              <div className="absolute top-4 right-4 bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md rounded-xl px-3 py-1.5 shadow-xl pointer-events-none">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#2DD4BF]">
-                  <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse"></span>
-                  <span>Gym Owner Hub</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Visual Showcase Section 1: Front-Desk Operations & Turnstile Check-ins */}
+      {/* Visual Showcase Section 1: Functional Bodyweight & Calisthenics Training */}
       <section className="py-20 border-t border-[#2A3A3A] bg-[#0E1415]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Copy Left */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-semibold text-[#2DD4BF] mb-4">
-                <ScanLine size={14} />
-                <span>Smart Access & Front-Desk Automation</span>
-              </div>
               <h2 className="text-3xl sm:text-4xl font-black text-[#F5FAFA] tracking-tight mb-4 leading-snug">
-                Frictionless Biometric & QR Attendance That Stops Lost Revenue
+                Functional Bodyweight &amp; Calisthenics Training
               </h2>
               <p className="text-[#9AAEAE] text-base leading-relaxed mb-6">
-                Prevent unauthorized walk-ins and expired memberships automatically. Our hardware-agnostic check-in engine integrates directly with RFID turnstiles, biometric scanners, and tablet QR codes.
+                Help members master bodyweight strength, core control, and pull-up progressions with clear, step-by-step coaching routines.
               </p>
 
               <div className="space-y-4 mb-8">
@@ -561,8 +541,8 @@ const GymOwnerPortalLanding = () => {
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#F5FAFA] text-sm">Automated Gate Lockout for Expired Plans</h4>
-                    <p className="text-xs text-[#9AAEAE] mt-0.5">The turnstile immediately flashes red and alerts the front desk if an unpaid member attempts entry, prompting instant on-spot renewal.</p>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm">Step-by-Step Progressions</h4>
+                    <p className="text-xs text-[#9AAEAE] mt-0.5">Clear coaching paths from beginner bar hangs to strict pull-ups.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3.5">
@@ -570,8 +550,8 @@ const GymOwnerPortalLanding = () => {
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#F5FAFA] text-sm">Real-Time Floor Capacity & Peak Hour Heatmaps</h4>
-                    <p className="text-xs text-[#9AAEAE] mt-0.5">Track live headcount inside your weights room, cardio area, and locker facilities to optimize staffing and HVAC energy usage.</p>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm">Shoulder &amp; Joint Health</h4>
+                    <p className="text-xs text-[#9AAEAE] mt-0.5">Simple warm-ups and mobility drills that protect joints and build lasting endurance.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3.5">
@@ -579,8 +559,8 @@ const GymOwnerPortalLanding = () => {
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#F5FAFA] text-sm">WhatsApp & SMS Check-in Confirmations</h4>
-                    <p className="text-xs text-[#9AAEAE] mt-0.5">Trigger welcome pings, daily motivational quotes, and locker assignments straight to your member's phone upon arrival.</p>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm">Video Form Guidance</h4>
+                    <p className="text-xs text-[#9AAEAE] mt-0.5">Quick technique guides and trainer tips so members train safely with confidence.</p>
                   </div>
                 </div>
               </div>
@@ -591,7 +571,7 @@ const GymOwnerPortalLanding = () => {
               <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] bg-[#141D1E] shadow-2xl shadow-black">
                 <img 
                   src={gymLandingImg1} 
-                  alt="Modern Gym Floor and Performance" 
+                  alt="Functional Calisthenics and Pull-Up Training" 
                   loading="eager"
                   decoding="sync"
                   className="w-full h-[400px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
@@ -602,21 +582,17 @@ const GymOwnerPortalLanding = () => {
         </div>
       </section>
 
-      {/* Visual Showcase Section 2: Trainer Scheduling, Commission & Performance */}
+      {/* Visual Showcase Section 2: Personalized Strength & Muscle Building Workouts */}
       <section className="py-20 border-t border-[#2A3A3A] bg-[#080B0C]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Copy Left */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-semibold text-[#2DD4BF] mb-4">
-                <Dumbbell size={14} />
-                <span>Trainer Roster &amp; Commission Engine</span>
-              </div>
               <h2 className="text-3xl sm:text-4xl font-black text-[#F5FAFA] tracking-tight mb-4 leading-snug">
-                Empower Your Coaches &amp; Automate Split Commission Payroll
+                Personalized Strength &amp; Muscle Building Workouts
               </h2>
               <p className="text-[#9AAEAE] text-base leading-relaxed mb-6">
-                Eliminate manual spreadsheet headaches. Set up customizable commission tiers for personal training sessions, track group class attendance, and disburse payouts with complete financial accuracy.
+                Give your members structured workout routines and expert guidance to build muscle, gain strength, and stay consistent.
               </p>
 
               <div className="space-y-4 mb-8">
@@ -625,8 +601,8 @@ const GymOwnerPortalLanding = () => {
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#F5FAFA] text-sm">Automated 1-on-1 PT Session Check-ins</h4>
-                    <p className="text-xs text-[#9AAEAE] mt-0.5">Sessions are only marked as completed when both the trainer and the member confirm attendance, preventing false claims.</p>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm">Custom Workout Plans</h4>
+                    <p className="text-xs text-[#9AAEAE] mt-0.5">Tailored exercise routines designed for every fitness level and goal.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3.5">
@@ -634,8 +610,8 @@ const GymOwnerPortalLanding = () => {
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#F5FAFA] text-sm">Trainer Workout &amp; Diet Template Library</h4>
-                    <p className="text-xs text-[#9AAEAE] mt-0.5">Give your trainers access to certified exercise video databases and diet macros to build personalized routines in minutes.</p>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm">1-on-1 Coach Guidance</h4>
+                    <p className="text-xs text-[#9AAEAE] mt-0.5">Trainers help members with proper lifting form, heavier weights, and daily motivation.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3.5">
@@ -643,8 +619,8 @@ const GymOwnerPortalLanding = () => {
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#F5FAFA] text-sm">Member Satisfaction &amp; Star Ratings</h4>
-                    <p className="text-xs text-[#9AAEAE] mt-0.5">Collect anonymous post-workout member feedback to identify top-performing trainers and reward excellence.</p>
+                    <h4 className="font-bold text-[#F5FAFA] text-sm">Track Visible Progress</h4>
+                    <p className="text-xs text-[#9AAEAE] mt-0.5">Log daily workouts and personal records to see real transformation week after week.</p>
                   </div>
                 </div>
               </div>
@@ -664,7 +640,7 @@ const GymOwnerPortalLanding = () => {
               <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] bg-[#141D1E] shadow-2xl shadow-black">
                 <img 
                   src={gymLandingImg2} 
-                  alt="Trainer Coaching and Performance" 
+                  alt="Dumbbell Hypertrophy and Strength Coaching" 
                   loading="eager"
                   decoding="sync"
                   className="w-full h-[400px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
@@ -677,192 +653,66 @@ const GymOwnerPortalLanding = () => {
 
 
 
-      {/* Feature Sections Grid */}
-      <section className="py-16 border-t border-[#2A3A3A] bg-[#080B0C]">
+      {/* Everything You Need to Run a Smarter Gym - Alternating Features Section */}
+      <section className="py-24 sm:py-32 border-t border-[#2A3A3A] bg-[#080B0C]" id="features">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA] tracking-tight">
-              All-In-One Gym Management Platform
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-24">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#F5FAFA] tracking-tight mb-4">
+              Everything You Need to Run a Smarter Gym
             </h2>
-            <p className="text-sm text-[#9AAEAE] mt-2">
-              Engineered specifically to automate daily club tasks, eliminate lost revenues, and deliver a premium experience to your members.
+            <p className="text-base sm:text-lg text-[#9AAEAE] leading-relaxed">
+              Manage members, empower trainers, and grow your fitness business from one platform.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <Users size={24} />
+          {/* Alternating Feature Rows */}
+          <div className="space-y-16 sm:space-y-24">
+            {GYM_OWNER_FEATURES.map((feature, idx) => {
+              const isEven = idx % 2 === 1; // Row 2, 4, 6 (1-based): image right, content left on desktop
+              return (
+                <div
+                  key={feature.title}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center"
+                >
+                  {/* Image Column: Stacked first on mobile, alternates on desktop */}
+                  <div
+                    className={`lg:col-span-6 w-full ${
+                      isEven ? 'lg:order-2' : 'lg:order-1'
+                    }`}
+                  >
+                    <div className="relative rounded-2xl overflow-hidden border border-[#2A3A3A] bg-[#141D1E] shadow-2xl aspect-[16/10] group">
+                      <img
+                        src={feature.image}
+                        alt={feature.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => {
+                          e.currentTarget.src = gymLandingImg1;
+                        }}
+                      />
+                    </div>
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-                    Active Directory
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Member & Membership Management
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Manage memberships, renewals, active subscriptions, and customer lifecycle statuses with automated WhatsApp/SMS expiry reminders.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Plan Renewals</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Expiry Alerts</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Import CSV</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Manage Members</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
 
-            {/* Card 2 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <Dumbbell size={24} />
+                  {/* Content Column: Below image on mobile, alternates on desktop */}
+                  <div
+                    className={`lg:col-span-6 w-full ${
+                      isEven ? 'lg:order-1' : 'lg:order-2'
+                    }`}
+                  >
+                    <div className="max-w-xl mx-auto lg:mx-0 text-left">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA] tracking-tight mb-3">
+                        {feature.title}
+                      </h3>
+                      <p className="text-[#9AAEAE] text-base sm:text-lg leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-                    Staff & PT
-                  </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Trainer & Staff Management
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Assign client rosters, track trainer performance ratings, approve exercise & diet programs, and calculate split commissions automatically.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Client Rosters</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Commission Split</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Ratings</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>View Trainer Rosters</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <CalendarCheck size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Live Check-in
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Smart Attendance & Bookings
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Real-time check-in logs, biometric & QR tracking, online/offline session booking calendars, and capacity utilization analytics.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">QR Scanning</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Turnstile Access</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Live Occupancy</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Open Attendance Logs</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
-
-            {/* Card 4 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <ShoppingBag size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-                    POS & Stock
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  POS Store & Inventory
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Sell supplements, merchandise, and gym gear. Manage stock replenishment alerts and handle offline and online point-of-sale transactions.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Barcode POS</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Low Stock Alerts</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Daily Sales</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Open Store Dashboard</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
-
-            {/* Card 5 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <TrendingUp size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Live Cashflow
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Sales & Financial Analytics
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Interactive revenue dashboards, profit-loss insights, cashflow tracking, invoice generation, and downloadable audited financial reports.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Profit & Loss</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Invoices</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Tax Breakdown</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>View Revenue Analytics</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
-
-            {/* Card 6 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <Gift size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-                    Gamification
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Rewards & Referral Engine
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Gamify your gym with fitness challenges, loyalty point redemption, and automated referral programs that bring in organic new memberships.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Referral Codes</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Leaderboards</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Voucher Store</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Manage Rewards Engine</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1148,161 +998,109 @@ const GymOwnerPortalLanding = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#080B0C] py-12 px-4 sm:px-6 lg:px-8 border-t border-[#1F2B2B]">
-        <div className="max-w-7xl mx-auto">
-          {/* Card Container matching Image 2 */}
-          <div className="bg-[#0E1415] border border-[#223333] rounded-2xl md:rounded-3xl p-6 sm:p-10 shadow-2xl relative">
-            
-            {/* Top Brand Header */}
-            <Link
-              to="/"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="inline-flex items-center space-x-3 mb-3 group cursor-pointer"
-            >
-              <div className="w-10 h-10 bg-[#2DD4BF] rounded-xl flex items-center justify-center text-[#06201D] shadow-md shadow-teal-500/20 group-hover:scale-105 transition-transform">
-                <Activity size={22} strokeWidth={2.5} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-[#2DD4BF] transition-colors">Gymora</h3>
-                <p className="text-xs text-[#9AAEAE] font-medium">Gym Owner Portal</p>
-              </div>
-            </Link>
-
-            <p className="text-sm text-[#9AAEAE] mb-6 max-w-2xl">
-              Manage your gym, trainers, memberships, and fitness business from one platform.
-            </p>
-
-            <div className="border-t border-[#1F2B2B] mb-8" />
-
-            {/* 4-Column Navigation Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-              
-              {/* Column 1: Gym Management */}
-              <div>
-                <h4 className="text-white font-bold text-sm tracking-wide mb-4">Gym Management</h4>
-                <ul className="space-y-3 text-sm">
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('gym-profile')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Gym Profile
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('trainer-hiring')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Trainer Hiring
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('subscription-plans')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block font-medium"
-                    >
-                      Subscription Plans
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Column 2: Support & Resources */}
-              <div>
-                <h4 className="text-white font-bold text-sm tracking-wide mb-4">Support & Resources</h4>
-                <ul className="space-y-3 text-sm">
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('help-support')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Help & Support
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('faqs')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      FAQs
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Column 3: Legal */}
-              <div>
-                <h4 className="text-white font-bold text-sm tracking-wide mb-4">Legal</h4>
-                <ul className="space-y-3 text-sm">
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('privacy-policy')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Privacy Policy
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('terms-conditions')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Terms & Conditions
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('cancellation-refund')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Cancellation & Refund Policy
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Column 4: Other Portals */}
-              <div>
-                <h4 className="text-white font-bold text-sm tracking-wide mb-4">Other Portals</h4>
-                <ul className="space-y-3 text-sm">
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('main-website')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Main Website
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('trainer-portal')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Trainer Portal
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveFooterModal('customer-portal')}
-                      className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer text-left block"
-                    >
-                      Customer Portal
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
-            </div>
-
-            {/* Bottom Row */}
-            <div className="pt-6 border-t border-[#1F2B2B] flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-xs text-[#9AAEAE]">
-                © {new Date().getFullYear()} Gymora. All rights reserved.
+      {/* Footer matching reference design */}
+      <footer className="border-t border-[#2A3A3A] bg-[#0E1415] pt-16 pb-8 text-[#9AAEAE]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div className="col-span-1 md:col-span-1">
+              {/* Footer logo — scrolls to top */}
+              <button 
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+                className="flex items-center space-x-2 mb-4 group cursor-pointer text-left"
+              >
+                <div className="w-8 h-8 bg-[#2DD4BF] rounded-lg flex items-center justify-center shadow-md shadow-[#2DD4BF]/25">
+                  <Activity className="text-[#06201D]" size={18} />
+                </div>
+                <span className="text-xl font-bold tracking-tight text-[#FFFFFF]">Gymora</span>
+              </button>
+              <p className="text-[#9AAEAE] text-sm leading-relaxed mb-6">
+                The ultimate fitness ecosystem combining AI intelligence with human expertise for unmatched results.
               </p>
+              <div className="flex space-x-4">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors"><FaInstagram size={20} /></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors"><FaTwitter size={20} /></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors"><FaFacebook size={20} /></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors"><FaYoutube size={20} /></a>
+              </div>
             </div>
 
+            <div>
+              <h4 className="text-[#FFFFFF] font-semibold mb-4">Gym Management</h4>
+              <ul className="space-y-2 text-sm text-[#9AAEAE]">
+                <li>
+                  <button
+                    onClick={() => setActiveFooterModal('gym-profile')}
+                    className="hover:text-[#2DD4BF] transition-colors cursor-pointer text-left"
+                  >
+                    Gym Profile
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveFooterModal('trainer-hiring')}
+                    className="hover:text-[#2DD4BF] transition-colors cursor-pointer text-left"
+                  >
+                    Trainer Hiring
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveFooterModal('subscription-plans')}
+                    className="hover:text-[#2DD4BF] transition-colors cursor-pointer text-left"
+                  >
+                    Subscription Plans
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-[#FFFFFF] font-semibold mb-4">Support &amp; Resources</h4>
+              <ul className="space-y-2 text-sm text-[#9AAEAE]">
+                <li>
+                  <button
+                    onClick={() => setActiveFooterModal('help-support')}
+                    className="hover:text-[#2DD4BF] transition-colors cursor-pointer text-left"
+                  >
+                    Help &amp; Support
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveFooterModal('faqs')}
+                    className="hover:text-[#2DD4BF] transition-colors cursor-pointer text-left"
+                  >
+                    FAQs
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-[#FFFFFF] font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-[#9AAEAE]">
+                <li>
+                  <button
+                    onClick={() => setActiveFooterModal('privacy-policy')}
+                    className="hover:text-[#2DD4BF] transition-colors cursor-pointer text-left"
+                  >
+                    Privacy Policy
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveFooterModal('terms-conditions')}
+                    className="hover:text-[#2DD4BF] transition-colors cursor-pointer text-left"
+                  >
+                    Terms &amp; Conditions
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-[#2A3A3A] pt-8 text-center text-sm text-[#9AAEAE]">
+            <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -1953,7 +1751,7 @@ const GymOwnerPortalLanding = () => {
                     onClick={() => setActiveFooterModal(null)}
                     className="px-4 py-2 rounded-xl bg-[#141D1E] text-[#9AAEAE] hover:text-white text-xs"
                   >
-                    Stay on Gym Owner Portal
+                    Stay on Gym Owner
                   </button>
                   <Link
                     to="/"
@@ -1976,11 +1774,11 @@ const GymOwnerPortalLanding = () => {
                   </div>
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-[#2DD4BF]">Staff Workspace</span>
-                    <h3 className="text-xl font-bold text-white">Gymora Trainer Portal</h3>
+                    <h3 className="text-xl font-bold text-white">Gymora Trainer</h3>
                   </div>
                 </div>
                 <p className="text-sm text-[#9AAEAE] mb-6">
-                  The dedicated portal for fitness instructors and personal trainers working at your gym.
+                  The dedicated interface for fitness instructors and personal trainers working at your gym.
                 </p>
 
                 <div className="p-4 rounded-xl bg-[#141D1E] border border-[#2A3A3A] mb-6 space-y-2">
@@ -2007,7 +1805,7 @@ const GymOwnerPortalLanding = () => {
                     onClick={() => setActiveFooterModal(null)}
                     className="px-6 py-2.5 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-sm transition-all flex items-center gap-2"
                   >
-                    <span>Go to Trainer Portal</span>
+                    <span>Go to Trainer</span>
                     <ExternalLink size={16} />
                   </Link>
                 </div>
@@ -2023,7 +1821,7 @@ const GymOwnerPortalLanding = () => {
                   </div>
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-[#2DD4BF]">Member App</span>
-                    <h3 className="text-xl font-bold text-white">Gymora Customer Portal</h3>
+                    <h3 className="text-xl font-bold text-white">Gymora Customer</h3>
                   </div>
                 </div>
                 <p className="text-sm text-[#9AAEAE] mb-6">
@@ -2054,7 +1852,7 @@ const GymOwnerPortalLanding = () => {
                     onClick={() => setActiveFooterModal(null)}
                     className="px-6 py-2.5 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-sm transition-all flex items-center gap-2"
                   >
-                    <span>Go to Customer Portal</span>
+                    <span>Go to Customer</span>
                     <ExternalLink size={16} />
                   </Link>
                 </div>
@@ -2102,10 +1900,10 @@ const GymOwnerPortalLanding = () => {
                 <button
                   onClick={() => setIsTourOpen(false)}
                   className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
-                  title="Back to Gym Owner Portal"
+                  title="Back to Gym Owner"
                 >
                   <ArrowLeft size={16} />
-                  <span>Back to Portal</span>
+                  <span>Back to Gym Owner</span>
                 </button>
                 <button
                   onClick={() => setIsTourOpen(false)}

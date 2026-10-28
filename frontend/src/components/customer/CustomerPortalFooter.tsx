@@ -599,7 +599,7 @@ const CustomerPortalFooter = () => {
                 <li>
                   <Link
                     to="/privacy-policy"
-                    state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+                    state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                     className={FOOTER_LINK_CLASS}
                   >
                     Privacy Policy
@@ -608,7 +608,7 @@ const CustomerPortalFooter = () => {
                 <li>
                   <Link
                     to="/terms-of-service"
-                    state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+                    state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                     className={FOOTER_LINK_CLASS}
                   >
                     Terms &amp; Conditions
@@ -617,7 +617,7 @@ const CustomerPortalFooter = () => {
                 <li>
                   <Link
                     to="/cancellation-refund-policy"
-                    state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+                    state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                     className={FOOTER_LINK_CLASS}
                   >
                     Cancellation &amp; Refund Policy
@@ -1283,7 +1283,7 @@ const CustomerPortalFooter = () => {
               </button>
               <Link
                 to="/privacy-policy"
-                state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+                state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                 onClick={closeModal}
                 className="px-5 py-2 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
               >
@@ -1328,7 +1328,7 @@ const CustomerPortalFooter = () => {
               </button>
               <Link
                 to="/terms-of-service"
-                state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+                state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                 onClick={closeModal}
                 className="px-5 py-2 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
               >
@@ -1373,7 +1373,7 @@ const CustomerPortalFooter = () => {
               </button>
               <Link
                 to="/cancellation-refund-policy"
-                state={{ from: '/portal/customer', fromLabel: 'Back to Customer Portal' }}
+                state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                 onClick={closeModal}
                 className="px-5 py-2 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
               >

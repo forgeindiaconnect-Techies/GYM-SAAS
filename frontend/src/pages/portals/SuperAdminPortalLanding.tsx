@@ -77,7 +77,7 @@ const SuperAdminPortalLanding = () => {
 
             {/* ── Box 1: Visit Portal ── */}
             <rect x="180" y="68" width="320" height="46" rx="8" fill="#141D1E" stroke="#3A5050" strokeWidth="1.5" />
-            <text x="340" y="87" textAnchor="middle" fill="#F5FAFA" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Visit Super Admin Portal</text>
+            <text x="340" y="87" textAnchor="middle" fill="#F5FAFA" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Visit Super Admin</text>
             <text x="340" y="103" textAnchor="middle" fill="#9AAEAE" fontSize="10" fontFamily="ui-sans-serif,sans-serif">/portal/super-admin</text>
 
             {/* arrow */}
@@ -295,7 +295,7 @@ const SuperAdminPortalLanding = () => {
               </span>
             </Link>
             <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-              Super Admin Portal
+              Super Admin
             </span>
           </div>
 
@@ -410,12 +410,6 @@ const SuperAdminPortalLanding = () => {
                 controls
                 className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
               />
-              <div className="absolute top-4 right-4 bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md rounded-xl px-3 py-1.5 shadow-xl pointer-events-none">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#2DD4BF]">
-                  <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse"></span>
-                  <span>Super Admin Platform</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -915,7 +909,7 @@ const SuperAdminPortalLanding = () => {
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all shadow-lg shadow-teal-500/20"
           >
             <Lock size={16} />
-            <span>Enter Super Admin Portal</span>
+            <span>Enter Super Admin</span>
           </Link>
         </div>
       </section>
@@ -933,7 +927,7 @@ const SuperAdminPortalLanding = () => {
               <span className="text-[#2DD4BF] font-semibold uppercase tracking-wider hidden sm:block">Portals:</span>
               <Link to="/" className="hover:text-[#2DD4BF] transition-colors">Main Website</Link>
               <span className="text-[#2A3A3A]">|</span>
-              <Link to="/portal/gym-owner" className="hover:text-[#2DD4BF] transition-colors">Gym Owner Portal</Link>
+              <Link to="/portal/gym-owner" className="hover:text-[#2DD4BF] transition-colors">Gym Owner</Link>
             </div>
           </div>
 
@@ -944,11 +938,11 @@ const SuperAdminPortalLanding = () => {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
               <span className="text-[#2DD4BF] font-semibold uppercase tracking-wider hidden sm:block">Support & Legal:</span>
-              <Link to="/contact" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin Portal' }} className="hover:text-[#2DD4BF] transition-colors">Help & Support</Link>
+              <Link to="/contact" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#2DD4BF] transition-colors">Help & Support</Link>
               <span className="text-[#2A3A3A]">|</span>
-              <Link to="/privacy-policy" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin Portal' }} className="hover:text-[#2DD4BF] transition-colors">Privacy Policy</Link>
+              <Link to="/privacy-policy" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#2DD4BF] transition-colors">Privacy Policy</Link>
               <span className="text-[#2A3A3A]">|</span>
-              <Link to="/terms-of-service" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin Portal' }} className="hover:text-[#2DD4BF] transition-colors">Terms & Conditions</Link>
+              <Link to="/terms-of-service" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#2DD4BF] transition-colors">Terms & Conditions</Link>
             </div>
           </div>
         </div>

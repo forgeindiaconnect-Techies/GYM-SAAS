@@ -29,7 +29,7 @@ const GymMarketplace = () => {
   const location = useLocation();
 
   const returnPath: string = (location.state as any)?.from || '/portal/customer';
-  const returnLabel: string = (location.state as any)?.fromLabel || (returnPath === '/' ? 'Back to Home' : 'Back to Customer Portal');
+  const returnLabel: string = (location.state as any)?.fromLabel || (returnPath === '/' ? 'Back to Home' : 'Back to Customer');
 
   // If navigated here with openEnquiry state (from landing page "Enquire Now"), scroll to gyms
   useEffect(() => {

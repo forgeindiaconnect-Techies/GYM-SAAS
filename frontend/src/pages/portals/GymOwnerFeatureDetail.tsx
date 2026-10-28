@@ -790,7 +790,7 @@ export default function GymOwnerFeatureDetail() {
               <div className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-center group-hover:border-[#2DD4BF]/50">
                 <ArrowLeft size={16} className="text-[#2DD4BF]" />
               </div>
-              <span className="text-xs font-semibold hidden sm:inline">Gym Owner Portal</span>
+              <span className="text-xs font-semibold hidden sm:inline">Back to Gym Owner</span>
             </Link>
 
             <div className="h-5 w-px bg-[#2A3A3A] hidden sm:block" />
@@ -1570,7 +1570,7 @@ export default function GymOwnerFeatureDetail() {
                 className="px-6 py-2.5 bg-[#141D1E] hover:bg-[#1B2728] text-[#2DD4BF] font-semibold rounded-xl text-xs border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-all flex items-center gap-2"
               >
                 <ArrowLeft size={14} />
-                <span>Return to Gym Owner Portal Overview</span>
+                <span>Return to Gym Owner Overview</span>
               </Link>
             </div>
           </div>

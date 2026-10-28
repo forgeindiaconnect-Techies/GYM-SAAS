@@ -72,7 +72,7 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
             </Link>
           </div>
 
-          {/* Action Buttons: Back, Login, Join as a Trainer */}
+          {/* Action Buttons: Back, Login */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link
               to="/"
@@ -86,14 +86,6 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
               className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
             >
               <span>Login</span>
-            </Link>
-            <Link
-              to="/invite/trainer/onboarding"
-              className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
-            >
-              <UserCheck size={16} />
-              <span className="hidden sm:inline">Join as a Trainer</span>
-              <span className="sm:hidden">Join</span>
             </Link>
           </div>
         </div>

@@ -501,7 +501,7 @@ export default function SuperAdminFeatureDetail() {
               <div className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-center group-hover:border-[#2DD4BF]/50">
                 <ArrowLeft size={16} className="text-[#2DD4BF]" />
               </div>
-              <span className="text-xs font-semibold hidden sm:inline">Super Admin Portal</span>
+              <span className="text-xs font-semibold hidden sm:inline">Back to Super Admin</span>
             </Link>
 
             <div className="h-5 w-px bg-[#2A3A3A] hidden sm:block" />
