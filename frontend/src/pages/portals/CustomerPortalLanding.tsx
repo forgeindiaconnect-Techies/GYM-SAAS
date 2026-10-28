@@ -162,7 +162,7 @@ const CustomerPortalLanding = () => {
               className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5"
             >
               <ArrowLeft size={16} />
-              <span>Back to Main Website</span>
+              <span>Back</span>
             </Link>
             <button
               type="button"
@@ -200,77 +200,103 @@ const CustomerPortalLanding = () => {
       </nav>
 
       {/* Hero Section */}
-      <header className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 text-center flex flex-col items-center">
+      <header className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-16">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#2DD4BF]/12 via-[#080B0C]/0 to-[#080B0C]/0 pointer-events-none" />
 
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-medium text-[#2DD4BF] mb-6">
-          <Sparkles size={14} />
-          <span>Your Personalized Digital Fitness & Transformation Hub</span>
-        </div>
-
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight max-w-4xl text-[#F5FAFA]">
-          Elevate Your Body & Mind With <br className="hidden sm:block" />
-          <span className="text-[#2DD4BF]">AI Workouts & Elite Trainers</span>
-        </h1>
-
-        <p className="text-base sm:text-lg md:text-xl text-[#9AAEAE] max-w-2xl mx-auto mb-10 leading-relaxed">
-          Access customized AI training and nutrition plans, book 1-on-1 certified coaches, track daily weight and calorie goals, and participate in challenges that reward your dedication.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-          <Link
-            to="/register/customer"
-            className="w-full sm:w-auto px-8 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30"
-          >
-            <Flame size={18} className="text-[#06201D]" />
-            <span>Join Now / Create Account</span>
-          </Link>
-          <button
-            type="button"
-            onClick={() => { setTourStep(1); setIsTourOpen(true); }}
-            className="w-full sm:w-auto px-8 py-3.5 bg-[#141D1E] hover:bg-[#1B2728] text-white border border-[#2A3A3A] hover:border-[#2DD4BF] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg cursor-pointer"
-          >
-            <PlayCircle size={18} className="text-[#2DD4BF]" />
-            <span>Watch Customer Journey</span>
-          </button>
-        </div>
-
-        {/* Member Success Pulse Bar */}
-        <div className="mt-14 w-full max-w-4xl bg-[#141D1E]/90 border border-[#2A3A3A] rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-xl">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
-              <Zap size={18} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Left Content */}
+          <div className="lg:col-span-7 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-medium text-[#2DD4BF] mb-6">
+              <Sparkles size={14} />
+              <span>Your Personalized Digital Fitness & Transformation Hub</span>
             </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">AI Routines</div>
-              <div className="text-sm font-bold text-[#F5FAFA]">250,000+ Generated</div>
+
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#F5FAFA]">
+              Elevate Your Body &amp; Mind With <br className="hidden sm:block" />
+              <span className="text-[#2DD4BF]">AI Workouts &amp; Elite Trainers</span>
+            </h1>
+
+            <p className="text-base sm:text-lg text-[#9AAEAE] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+              Access customized AI training and nutrition plans, book 1-on-1 certified coaches, track daily weight and calorie goals, and participate in challenges that reward your dedication.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
+              <Link
+                to="/register/customer"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30"
+              >
+                <Flame size={18} className="text-[#06201D]" />
+                <span>Join Now / Create Account</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => { setTourStep(1); setIsTourOpen(true); }}
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#141D1E] hover:bg-[#1B2728] text-white border border-[#2A3A3A] hover:border-[#2DD4BF] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg cursor-pointer"
+              >
+                <PlayCircle size={18} className="text-[#2DD4BF]" />
+                <span>Watch Customer Journey</span>
+              </button>
+            </div>
+
+            {/* Member Success Pulse Bar */}
+            <div className="w-full bg-[#141D1E]/90 border border-[#2A3A3A] rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
+                  <Zap size={18} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">AI Routines</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">250,000+</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                  <Flame size={18} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Daily Burn</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">540 kcal / Day</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
+                  <Dumbbell size={18} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Elite Coaches</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">1,200+ Active</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <Trophy size={18} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Streak Rate</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">84% Weekly</div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
-              <Flame size={18} />
-            </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Daily Burn</div>
-              <div className="text-sm font-bold text-[#F5FAFA]">540 kcal / Session</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
-              <Dumbbell size={18} />
-            </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Elite Coaches</div>
-              <div className="text-sm font-bold text-[#F5FAFA]">1,200+ Certified</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-              <Trophy size={18} />
-            </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Streak Rate</div>
-              <div className="text-sm font-bold text-[#F5FAFA]">84% Weekly Active</div>
+
+          {/* Right Video Container: Customer Fitness AI Video */}
+          <div className="lg:col-span-5 relative">
+            <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-2xl shadow-black bg-[#141D1E] group">
+              <video
+                src="/videos/customer-ai-gym.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls
+                className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+              />
+              <div className="absolute top-4 right-4 bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md rounded-xl px-3 py-1.5 shadow-xl pointer-events-none">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#2DD4BF]">
+                  <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse"></span>
+                  <span>Customer Fitness AI</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -338,44 +364,14 @@ const CustomerPortalLanding = () => {
 
             {/* Visual Card Right */}
             <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] bg-[#141D1E] shadow-2xl group">
+              <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] bg-[#141D1E] shadow-2xl shadow-black">
                 <img 
-                  src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=900&q=80" 
-                  alt="High Intensity Athlete Workout" 
-                  className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700 opacity-80"
+                  src="/customer-landing-image-1.jpg" 
+                  alt="Intelligent Workout Training" 
+                  loading="eager"
+                  decoding="sync"
+                  className="w-full h-[400px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#080B0C] via-[#080B0C]/40 to-transparent" />
-                
-                {/* Floating Badges */}
-                <div className="absolute top-4 left-4 bg-[#141D1E]/95 backdrop-blur-md border border-[#2A3A3A] rounded-xl px-3.5 py-2 flex items-center gap-2.5 shadow-lg">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs font-bold text-[#F5FAFA]">Today: Hypertrophy Chest & Triceps</span>
-                </div>
-
-                <div className="absolute bottom-4 left-4 right-4 bg-[#141D1E]/95 backdrop-blur-md border border-[#2A3A3A] rounded-2xl p-4 shadow-xl">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-[#2DD4BF] flex items-center gap-1.5">
-                      <Timer size={14} /> Set 3 of 4 • Incline Dumbbell Press
-                    </span>
-                    <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold">
-                      Rest: 45s Remaining
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 text-center pt-2 border-t border-[#2A3A3A]">
-                    <div>
-                      <div className="text-xs font-black text-[#F5FAFA]">32 kg</div>
-                      <div className="text-[10px] text-[#9AAEAE]">Target Load</div>
-                    </div>
-                    <div>
-                      <div className="text-xs font-black text-[#2DD4BF]">10-12</div>
-                      <div className="text-[10px] text-[#9AAEAE]">Target Reps</div>
-                    </div>
-                    <div>
-                      <div className="text-xs font-black text-[#F5FAFA]">380 kcal</div>
-                      <div className="text-[10px] text-[#9AAEAE]">Energy Burned</div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -388,33 +384,14 @@ const CustomerPortalLanding = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Visual Card Left */}
             <div className="relative order-2 lg:order-1">
-              <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] bg-[#141D1E] shadow-2xl group">
+              <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] bg-[#141D1E] shadow-2xl shadow-black">
                 <img 
-                  src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=900&q=80" 
-                  alt="Macro Nutrition & Meal Prep" 
-                  className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700 opacity-80"
+                  src="/customer-landing-image-3.jpg" 
+                  alt="Nutrition & Diet Meal Plan" 
+                  loading="eager"
+                  decoding="sync"
+                  className="w-full h-[400px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#080B0C] via-[#080B0C]/40 to-transparent" />
-
-                <div className="absolute top-4 left-4 bg-[#141D1E]/95 backdrop-blur-md border border-[#2A3A3A] rounded-xl px-3.5 py-2 flex items-center gap-2 shadow-lg">
-                  <Apple size={15} className="text-[#2DD4BF]" />
-                  <span className="text-xs font-bold text-[#F5FAFA]">Daily Calories: 2,350 / 2,400 kcal</span>
-                </div>
-
-                <div className="absolute bottom-4 left-4 right-4 bg-[#141D1E]/95 backdrop-blur-md border border-[#2A3A3A] rounded-2xl p-4 shadow-xl">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold text-[#F5FAFA]">Protein Intake Goal (165g)</span>
-                    <span className="text-xs font-bold text-[#2DD4BF]">100% Met Today</span>
-                  </div>
-                  <div className="w-full bg-[#080B0C] h-2 rounded-full overflow-hidden border border-[#2A3A3A] mb-2">
-                    <div className="bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] h-full w-[96%]" />
-                  </div>
-                  <div className="flex justify-between text-[11px] text-[#9AAEAE]">
-                    <span>Carbs: 210g</span>
-                    <span>Fats: 62g</span>
-                    <span>Hydration: 3.4L</span>
-                  </div>
-                </div>
               </div>
             </div>
 

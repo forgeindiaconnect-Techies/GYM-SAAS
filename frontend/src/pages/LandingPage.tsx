@@ -29,31 +29,14 @@ const LandingPage = () => {
   const [tourJourney, setTourJourney] = useState<'select' | 'customer' | 'owner'>('select');
   const [tourStep, setTourStep] = useState(1);
 
-  // Portal Dropdown State
-  const [isPortalMenuOpen, setIsPortalMenuOpen] = useState(false);
-  const portalMenuRef = useRef<HTMLDivElement>(null);
-
   const navigate = useNavigate();
 
   const handleBackToHome = () => {
     setActiveVideo(null);
     setIsTourOpen(false);
     setIsFeaturesOpen(false);
-    setIsPortalMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (portalMenuRef.current && !portalMenuRef.current.contains(event.target as Node)) {
-        setIsPortalMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -61,7 +44,6 @@ const LandingPage = () => {
         setIsFeaturesOpen(false);
         setIsTourOpen(false);
         setActiveVideo(null);
-        setIsPortalMenuOpen(false);
       }
     };
 
@@ -172,75 +154,6 @@ const LandingPage = () => {
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 xl:gap-2.5 shrink-0 flex-nowrap">
-            {/* Choose Your Portal Dropdown */}
-            <div className="relative shrink-0" ref={portalMenuRef}>
-              <button 
-                type="button"
-                onClick={() => setIsPortalMenuOpen(prev => !prev)}
-                className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 cursor-pointer select-none whitespace-nowrap"
-                aria-expanded={isPortalMenuOpen}
-              >
-                <ShieldCheck size={14} className="text-[#06201D]" />
-                <span>Portals</span>
-                <ChevronDown size={13} className={`text-[#06201D] transition-transform duration-200 ${isPortalMenuOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
-              {/* Dropdown Menu Container */}
-              {isPortalMenuOpen && (
-                <div className="absolute right-0 top-full pt-1.5 w-72 z-50">
-                  <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl shadow-2xl p-2 animate-fadeIn">
-                    <div className="px-3 py-2 text-[10px] font-bold text-[#9AAEAE] uppercase tracking-wider border-b border-[#2A3A3A]/60">
-                      Select Role Portal
-                    </div>
-                    <Link
-                      to="/portal/super-admin"
-                      onClick={() => setIsPortalMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#1B2728] text-xs font-semibold text-[#F5FAFA] transition-colors mt-1"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center shrink-0">
-                        <ShieldCheck size={16} />
-                      </div>
-                      <div>
-                        <div className="font-bold text-[#F5FAFA]">Super Admin Portal</div>
-                        <div className="text-[10px] text-[#9AAEAE] font-normal">Platform governance & management</div>
-                      </div>
-                    </Link>
-                    <Link
-                      to="/portal/gym-owner"
-                      onClick={() => setIsPortalMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#1B2728] text-xs font-semibold text-[#F5FAFA] transition-colors"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center shrink-0">
-                        <Building2 size={16} />
-                      </div>
-                      <div>
-                        <div className="font-bold text-[#F5FAFA]">Gym Owner Portal</div>
-                        <div className="text-[10px] text-[#9AAEAE] font-normal">Club ops, trainers & billing</div>
-                      </div>
-                    </Link>
-                    <Link
-                      to="/portal/customer"
-                      onClick={() => setIsPortalMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#1B2728] text-xs font-semibold text-[#F5FAFA] transition-colors"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center shrink-0">
-                        <User size={16} />
-                      </div>
-                      <div>
-                        <div className="font-bold text-[#F5FAFA]">Customer Portal</div>
-                        <div className="text-[10px] text-[#9AAEAE] font-normal">AI workouts, coaching & progress</div>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Link to="/trainers" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-              <UserCheck size={14} className="text-[#06201D]" />
-              <span>Trainers</span>
-            </Link>
-
             <Link to="/careers" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
               <Briefcase size={14} className="text-[#06201D]" />
               <span>Gym Jobs</span>
@@ -248,16 +161,6 @@ const LandingPage = () => {
 
             <Link to="/login" id="nav-login" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center justify-center shrink-0 whitespace-nowrap">
               Log In
-            </Link>
-
-            <Link to="/gyms" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-              <User size={14} className="text-[#06201D]" />
-              <span>Find a Gym</span>
-            </Link>
-
-            <Link to="/gym-owner-introduction" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-              <Activity size={14} className="text-[#06201D]" />
-              <span>Manage Your Gym</span>
             </Link>
 
             <Link to="/gyms" state={{ openEnquiry: true }} className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
@@ -269,80 +172,81 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <main>
-        <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center flex flex-col items-center">
+        <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#2DD4BF]/15 via-[#080B0C]/0 to-[#080B0C]/0 pointer-events-none"></div>
 
-          <span className="px-4 py-1.5 rounded-full bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 text-[#2DD4BF] text-sm font-semibold inline-flex items-center gap-2 mb-6 shadow-sm">
-            <span>✨</span> The Future of Fitness is Here
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-8 leading-tight text-[#F5FAFA]">
-            Your Personal <span className="text-[#2DD4BF]">AI Fitness Coach</span> <br className="hidden md:block" /> + Human Trainer
-          </h1>
-          <p className="text-lg md:text-xl text-[#C1D0D0] max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
-            Get personalized AI-generated workout and diet plans. Connect with professional trainers and discover the best gyms near you.
-          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            {/* Left Content */}
+            <div className="lg:col-span-7 text-center lg:text-left">
+              <span className="px-4 py-1.5 rounded-full bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 text-[#2DD4BF] text-xs sm:text-sm font-semibold inline-flex items-center gap-2 mb-6 shadow-sm">
+                <span>✨</span> The Future of Fitness is Here
+              </span>
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#F5FAFA]">
+                Your Personal <span className="text-[#2DD4BF]">AI Fitness Coach</span> <br className="hidden sm:block" /> + Human Trainer
+              </h1>
+              <p className="text-base sm:text-lg text-[#C1D0D0] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed font-normal">
+                Get personalized AI-generated workout and diet plans. Connect with professional trainers and discover the best gyms near you.
+              </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
-            <Link to="/gyms" className="w-full sm:w-auto px-8 py-4 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#2DD4BF]/25 hover:shadow-[#2DD4BF]/40">
-              <span>Find a Gym</span>
-              <ArrowRight size={20} />
-            </Link>
-            <Link to="/gym-owner-introduction" className="w-full sm:w-auto px-8 py-4 bg-[#141D1E] hover:bg-[#1B2728] text-white font-bold rounded-xl border border-[#2A3A3A] transition-all flex items-center justify-center space-x-2">
-              <span>Manage Your Gym</span>
-              <ArrowRight size={20} />
-            </Link>
-          </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-6">
+                <Link to="/gyms" className="w-full sm:w-auto px-7 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#2DD4BF]/25 hover:shadow-[#2DD4BF]/40">
+                  <span>Find a Gym</span>
+                  <ArrowRight size={18} />
+                </Link>
+                <Link to="/gym-owner-introduction" className="w-full sm:w-auto px-7 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#2DD4BF]/25 hover:shadow-[#2DD4BF]/40">
+                  <span>Manage Your Gym</span>
+                  <ArrowRight size={18} />
+                </Link>
+              </div>
 
-          {/* Trainer Recruitment & Hiring Action Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-16 p-2.5 rounded-2xl bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md shadow-2xl">
-            <Link
-              to="/trainers"
-              className="w-full sm:w-auto px-5 py-3 bg-[#141D1E] hover:bg-[#1B2728] text-white font-semibold rounded-xl text-xs sm:text-sm border border-[#2DD4BF]/40 transition-all flex items-center justify-center gap-2 group"
-            >
-              <UserCheck size={16} className="text-[#2DD4BF] group-hover:scale-110 transition-transform" />
-              <span>Explore Trainers</span>
-              <span className="text-[10px] bg-[#2DD4BF]/15 text-[#2DD4BF] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Directory</span>
-            </Link>
-            <Link
-              to="/careers"
-              className="w-full sm:w-auto px-5 py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#2DD4BF]/25 group"
-            >
-              <Briefcase size={16} className="group-hover:scale-110 transition-transform" />
-              <span>Find Gym Jobs</span>
-              <span className="text-[10px] bg-black/20 text-black px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Careers</span>
-            </Link>
-            <button
-              onClick={() => {
-                if (!user) {
-                  navigate('/login?portal=gym-owner');
-                } else if (user.role?.toUpperCase() === 'GYM_OWNER' || user.role?.toUpperCase() === 'ADMIN') {
-                  navigate('/admin/hiring/jobs/new');
-                } else {
-                  alert('Please sign in as a Gym Owner to publish trainer job vacancies.');
-                }
-              }}
-              className="w-full sm:w-auto px-5 py-3 bg-[#141D1E] hover:bg-[#1B2728] text-slate-200 hover:text-white font-semibold rounded-xl text-xs sm:text-sm border border-[#2A3A3A] transition-all flex items-center justify-center gap-2"
-            >
-              <Building2 size={16} className="text-[#2DD4BF]" />
-              <span>Post a Trainer Job</span>
-              <span className="text-[10px] bg-teal-500/10 text-teal-300 px-1.5 py-0.5 rounded font-bold uppercase">Owner</span>
-            </button>
-            <Link
-              to="/trainers"
-              className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-teal-500/20 to-teal-400/10 hover:from-teal-500/30 text-teal-200 font-semibold rounded-xl text-xs sm:text-sm border border-teal-500/40 transition-all flex items-center justify-center gap-2"
-            >
-              <UserCheck size={16} className="text-[#2DD4BF]" />
-              <span>Hire a Trainer</span>
-              <ArrowRight size={14} />
-            </Link>
-          </div>
+              {/* Role Portals Quick Access */}
+              <div className="inline-flex flex-wrap sm:flex-nowrap items-center gap-2 p-1.5 rounded-2xl bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md shadow-xl">
+                <Link
+                  to="/portal/gym-owner"
+                  className="px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-500/20 group hover:scale-[1.02] whitespace-nowrap"
+                >
+                  <Building2 size={16} className="text-[#06201D]" />
+                  <span>Gym Owner</span>
+                </Link>
 
-          <div className="w-full max-w-5xl rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-2xl shadow-black relative bg-[#141D1E]">
-            <img
-              src="/images/hero.png"
-              alt="Athlete working out"
-              className="w-full h-auto max-h-[580px] object-cover object-center aspect-[16/10] sm:aspect-[16/9] block"
-            />
+                <Link
+                  to="/trainers"
+                  className="px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-500/20 group hover:scale-[1.02] whitespace-nowrap"
+                >
+                  <UserCheck size={16} className="text-[#06201D]" />
+                  <span>Trainers</span>
+                </Link>
+
+                <Link
+                  to="/portal/customer"
+                  className="px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-500/20 group hover:scale-[1.02] whitespace-nowrap"
+                >
+                  <User size={16} className="text-[#06201D]" />
+                  <span>Customer</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Video Container: Super Admin Platform Video */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-2xl shadow-black bg-[#141D1E] group">
+                <video
+                  src="/videos/superadmin.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  controls
+                  className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+                />
+                <div className="absolute top-4 right-4 bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md rounded-xl px-3 py-1.5 shadow-xl pointer-events-none">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#2DD4BF]">
+                    <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse"></span>
+                    <span>Super Admin Platform</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -363,23 +267,45 @@ const LandingPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Super Admin Portal Card */}
+              {/* Customer Portal Card */}
               <div className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-2xl p-7 flex flex-col justify-between transition-all group shadow-sm hover:shadow-teal-500/5">
                 <div>
                   <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
-                    <ShieldCheck size={24} />
+                    <User size={24} />
                   </div>
-                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Super Admin Portal</h3>
+                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Customer Portal</h3>
                   <p className="text-sm text-[#9AAEAE] leading-relaxed mb-6 font-normal">
-                    Enterprise governance suite for platform administrators. Oversee multi-tenant gym approvals, subscription tiers, global payouts, and infrastructure health.
+                    Your personalized digital fitness companion. Enjoy AI workout and diet generation, book 1-on-1 certified trainers, track progress milestones, and discover top gyms.
                   </p>
                 </div>
                 <div>
                   <Link
-                    to="/portal/super-admin"
+                    to="/portal/customer"
                     className="w-full py-3 px-4 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-500/20"
                   >
-                    <span>Open Super Admin Portal</span>
+                    <span>Customer</span>
+                    <ArrowRight size={15} />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Trainer Portal Card */}
+              <div className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-2xl p-7 flex flex-col justify-between transition-all group shadow-sm hover:shadow-teal-500/5">
+                <div>
+                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
+                    <UserCheck size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Trainer Portal</h3>
+                  <p className="text-sm text-[#9AAEAE] leading-relaxed mb-6 font-normal">
+                    The dedicated career and coaching hub for fitness professionals. Showcase your certified expertise, explore gym opportunities, and guide clients towards their goals.
+                  </p>
+                </div>
+                <div>
+                  <Link
+                    to="/trainers"
+                    className="w-full py-3 px-4 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-500/20"
+                  >
+                    <span>Trainer</span>
                     <ArrowRight size={15} />
                   </Link>
                 </div>
@@ -401,29 +327,7 @@ const LandingPage = () => {
                     to="/portal/gym-owner"
                     className="w-full py-3 px-4 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-500/20"
                   >
-                    <span>Open Gym Owner Portal</span>
-                    <ArrowRight size={15} />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Customer Portal Card */}
-              <div className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-2xl p-7 flex flex-col justify-between transition-all group shadow-sm hover:shadow-teal-500/5">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
-                    <User size={24} />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Customer Fitness Portal</h3>
-                  <p className="text-sm text-[#9AAEAE] leading-relaxed mb-6 font-normal">
-                    Your personalized digital fitness companion. Enjoy AI workout and diet generation, book 1-on-1 certified trainers, track progress milestones, and discover top gyms.
-                  </p>
-                </div>
-                <div>
-                  <Link
-                    to="/portal/customer"
-                    className="w-full py-3 px-4 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-500/20"
-                  >
-                    <span>Open Customer Portal</span>
+                    <span>Gym Owner</span>
                     <ArrowRight size={15} />
                   </Link>
                 </div>

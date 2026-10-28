@@ -155,7 +155,7 @@ const GymMarketplace = () => {
           <div className="flex items-center gap-3">
             <Link 
               to={returnPath} 
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-[#C1D0D0] hover:text-[#F5FAFA] bg-[#141D1E]/70 backdrop-blur-md border border-[#2A3A3A] hover:border-[#2DD4BF]/50 transition-all flex items-center gap-1.5 shadow-sm"
+              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5"
             >
               <ArrowLeft size={16} />
               <span>{returnLabel}</span>

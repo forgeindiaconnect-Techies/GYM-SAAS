@@ -21,6 +21,20 @@ import GymOwnerFeatureDetail from './pages/portals/GymOwnerFeatureDetail';
 import CustomerPortalLanding from './pages/portals/CustomerPortalLanding';
 import CustomerFeatureDetail from './pages/portals/CustomerFeatureDetail';
 
+// Trainer Landing & Informational Pages
+import { TrainerLandingPage } from './pages/trainer-landing/TrainerLandingPage';
+import { TrainerAboutPage } from './pages/trainer-landing/TrainerAboutPage';
+import { TrainerHowItWorksPage } from './pages/trainer-landing/TrainerHowItWorksPage';
+import { TrainerBenefitsPage } from './pages/trainer-landing/TrainerBenefitsPage';
+import { TrainerFaqsPage } from './pages/trainer-landing/TrainerFaqsPage';
+import { TrainerContactPage } from './pages/trainer-landing/TrainerContactPage';
+import { TrainerGuidelinesPage } from './pages/trainer-landing/TrainerGuidelinesPage';
+import { TrainerSupportPage } from './pages/trainer-landing/TrainerSupportPage';
+import { TrainerTermsPage } from './pages/trainer-landing/TrainerTermsPage';
+import { TrainerPrivacyPage } from './pages/trainer-landing/TrainerPrivacyPage';
+import { TrainerCookiePolicyPage } from './pages/trainer-landing/TrainerCookiePolicyPage';
+import { TrainerRefundPolicyPage } from './pages/trainer-landing/TrainerRefundPolicyPage';
+
 // Public Marketplace
 import GymMarketplace from './pages/marketplace/GymMarketplace';
 import GymDetails from './pages/marketplace/GymDetails';
@@ -229,6 +243,8 @@ function App() {
           <Route path="/portal/gym-owner/:featureId" element={<GymOwnerFeatureDetail />} />
           <Route path="/portal/customer" element={<CustomerPortalLanding />} />
           <Route path="/portal/customer/:featureId" element={<CustomerFeatureDetail />} />
+          <Route path="/portal/trainer" element={<Navigate to="/trainers" replace />} />
+          <Route path="/portal/trainers" element={<Navigate to="/trainers" replace />} />
           
           {/* Gym Marketplace */}
           <Route path="/gyms" element={<GymMarketplace />} />
@@ -241,7 +257,20 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/jobs" element={<Careers />} />
-          <Route path="/trainers" element={<TrainersDirectory />} />
+          {/* Dedicated Trainer Landing & Subpages */}
+          <Route path="/trainers" element={<TrainerLandingPage />} />
+          <Route path="/trainers/directory" element={<TrainersDirectory />} />
+          <Route path="/trainers/about" element={<TrainerAboutPage />} />
+          <Route path="/trainers/how-it-works" element={<TrainerHowItWorksPage />} />
+          <Route path="/trainers/benefits" element={<TrainerBenefitsPage />} />
+          <Route path="/trainers/faqs" element={<TrainerFaqsPage />} />
+          <Route path="/trainers/contact" element={<TrainerContactPage />} />
+          <Route path="/trainers/guidelines" element={<TrainerGuidelinesPage />} />
+          <Route path="/trainers/support" element={<TrainerSupportPage />} />
+          <Route path="/trainers/terms" element={<TrainerTermsPage />} />
+          <Route path="/trainers/privacy" element={<TrainerPrivacyPage />} />
+          <Route path="/trainers/cookies" element={<TrainerCookiePolicyPage />} />
+          <Route path="/trainers/refund-policy" element={<TrainerRefundPolicyPage />} />
           <Route path="/explore-trainers" element={<TrainersDirectory />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogPost />} />

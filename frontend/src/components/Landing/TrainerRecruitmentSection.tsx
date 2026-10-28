@@ -385,30 +385,14 @@ export function TrainerRecruitmentSection() {
             Discover verified personal trainers, functional coaches, and group instructors—or browse active coaching vacancies published by top fitness centers nationwide.
           </p>
 
-          {/* 4 Main Action CTAs as required by Section 1 */}
+          {/* Action CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
             <button
               onClick={() => setActiveTab('trainers')}
-              className={`px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 ${
-                activeTab === 'trainers'
-                  ? 'bg-[#2DD4BF] text-black shadow-lg shadow-[#2DD4BF]/25'
-                  : 'bg-[#141D1E] text-slate-300 hover:text-white border border-[#2A3A3A]'
-              }`}
+              className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 bg-[#2DD4BF] text-black shadow-lg shadow-[#2DD4BF]/25"
             >
               <UserCheck size={16} />
               <span>Explore Trainers</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('jobs')}
-              className={`px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 ${
-                activeTab === 'jobs'
-                  ? 'bg-[#2DD4BF] text-black shadow-lg shadow-[#2DD4BF]/25'
-                  : 'bg-[#141D1E] text-slate-300 hover:text-white border border-[#2A3A3A]'
-              }`}
-            >
-              <Briefcase size={16} />
-              <span>Find Gym Jobs</span>
             </button>
 
             <button
@@ -421,15 +405,6 @@ export function TrainerRecruitmentSection() {
                 Owner
               </span>
             </button>
-
-            <Link
-              to="/trainers"
-              className="px-5 py-2.5 bg-gradient-to-r from-teal-500/20 to-teal-400/10 hover:from-teal-500/30 text-teal-200 font-semibold rounded-xl text-xs sm:text-sm border border-teal-500/40 transition-all flex items-center gap-2"
-            >
-              <Search size={16} className="text-[#2DD4BF]" />
-              <span>Hire a Trainer</span>
-              <ArrowRight size={14} />
-            </Link>
           </div>
         </div>
 

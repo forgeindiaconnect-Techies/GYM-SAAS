@@ -306,7 +306,7 @@ const SuperAdminPortalLanding = () => {
               className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5"
             >
               <ArrowLeft size={16} />
-              <span>Back to Main Website</span>
+              <span>Back</span>
             </Link>
             <Link
               to="/login?portal=super-admin"
@@ -320,76 +320,102 @@ const SuperAdminPortalLanding = () => {
       </nav>
 
       {/* Hero Section */}
-      <header className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 text-center flex flex-col items-center">
+      <header className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#2DD4BF]/12 via-[#080B0C]/0 to-[#080B0C]/0 pointer-events-none" />
 
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-medium text-[#2DD4BF] mb-6">
-          <ShieldCheck size={14} />
-          <span>Platform Infrastructure & Global Governance Cockpit</span>
-        </div>
-
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight max-w-4xl text-[#F5FAFA]">
-          Centralized Platform Control & <br className="hidden sm:block" />
-          <span className="text-[#2DD4BF]">Multi-Tenant SaaS Administration</span>
-        </h1>
-
-        <p className="text-base sm:text-lg md:text-xl text-[#9AAEAE] max-w-2xl mx-auto mb-10 leading-relaxed">
-          The authorized administrative cockpit for managing gym ecosystems, global subscriptions, tenant security, facility verification, and platform financials across all regions.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-          <Link
-            to="/login?portal=super-admin"
-            className="w-full sm:w-auto px-8 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30"
-          >
-            <span>Super Admin Secure Login</span>
-            <ChevronRight size={18} />
-          </Link>
-          <Link
-            to="/"
-            className="w-full sm:w-auto px-8 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30"
-          >
-            <ArrowLeft size={16} />
-            <span>Return to Public Home</span>
-          </Link>
-        </div>
-
-        {/* Live Platform Health Bar */}
-        <div className="mt-14 w-full max-w-4xl bg-[#141D1E]/90 border border-[#2A3A3A] rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-xl">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-              <Activity size={18} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Left Content */}
+          <div className="lg:col-span-7 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-medium text-[#2DD4BF] mb-6">
+              <ShieldCheck size={14} />
+              <span>Platform Infrastructure & Global Governance Cockpit</span>
             </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Platform Uptime</div>
-              <div className="text-sm font-bold text-[#F5FAFA]">99.98% Healthy</div>
+
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#F5FAFA]">
+              Centralized Platform Control & <br className="hidden sm:block" />
+              <span className="text-[#2DD4BF]">Multi-Tenant SaaS Administration</span>
+            </h1>
+
+            <p className="text-base sm:text-lg text-[#9AAEAE] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+              The authorized administrative cockpit for managing gym ecosystems, global subscriptions, tenant security, facility verification, and platform financials across all regions.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
+              <Link
+                to="/login?portal=super-admin"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30"
+              >
+                <span>Super Admin Secure Login</span>
+                <ChevronRight size={18} />
+              </Link>
+              <Link
+                to="/"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30"
+              >
+                <ArrowLeft size={16} />
+                <span>Return to Public Home</span>
+              </Link>
+            </div>
+
+            {/* Live Platform Health Bar */}
+            <div className="w-full bg-[#141D1E]/90 border border-[#2A3A3A] rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <Activity size={18} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Platform Uptime</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">99.98% Healthy</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
+                  <Database size={18} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Data Isolation</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">100% Multi-Tenant</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
+                  <Globe2 size={18} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Gateway Latency</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">14ms Global Edge</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
+                  <ShieldCheck size={18} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Security Posture</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">SOC2 &amp; ISO Ready</div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
-              <Database size={18} />
-            </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Data Isolation</div>
-              <div className="text-sm font-bold text-[#F5FAFA]">100% Multi-Tenant</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
-              <Globe2 size={18} />
-            </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Gateway Latency</div>
-              <div className="text-sm font-bold text-[#F5FAFA]">14ms Global Edge</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
-              <ShieldCheck size={18} />
-            </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Security Posture</div>
-              <div className="text-sm font-bold text-[#F5FAFA]">SOC2 & ISO Ready</div>
+
+          {/* Right Video Container: Super Admin Video */}
+          <div className="lg:col-span-5 relative">
+            <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-2xl shadow-black bg-[#141D1E] group">
+              <video
+                src="/videos/superadmin.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls
+                className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+              />
+              <div className="absolute top-4 right-4 bg-[#0E1415]/90 border border-[#2A3A3A] backdrop-blur-md rounded-xl px-3 py-1.5 shadow-xl pointer-events-none">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#2DD4BF]">
+                  <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse"></span>
+                  <span>Super Admin Platform</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

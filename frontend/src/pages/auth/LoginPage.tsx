@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft, ShieldCheck, Building2, User } from 'lucide-react';
+import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft, ShieldCheck, Building2, User, UserCheck } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../../utils/routeHelpers';
 import api from '../../utils/api';
@@ -113,21 +113,23 @@ const LoginPage = () => {
       {/* Background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(45,212,191,0.07)_0%,_transparent_65%)] pointer-events-none" />
 
-      {/* Dynamic Back Arrow */}
+      {/* Dynamic Back Button */}
       <Link 
         to={
           portal === 'super-admin' ? '/portal/super-admin' : 
           portal === 'gym-owner' ? '/portal/gym-owner' : 
-          portal === 'customer' ? '/portal/customer' : '/'
+          portal === 'customer' ? '/portal/customer' : 
+          portal === 'trainer' ? '/trainers' : '/'
         } 
-        className="absolute top-6 left-6 sm:top-8 sm:left-8 text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center gap-2 transition-colors z-20"
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-2 z-20"
       >
-        <ArrowLeft size={20} />
-        <span className="font-medium text-sm">
+        <ArrowLeft size={16} />
+        <span>
           {
             portal === 'super-admin' ? 'Back to Super Admin Portal' : 
             portal === 'gym-owner' ? 'Back to Gym Owner Portal' : 
-            portal === 'customer' ? 'Back to Customer Portal' : 'Back to Home'
+            portal === 'customer' ? 'Back to Customer Portal' : 
+            portal === 'trainer' ? 'Back to Trainer Portal' : 'Back to Home'
           }
         </span>
       </Link>
@@ -158,6 +160,12 @@ const LoginPage = () => {
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
             <User size={13} />
             <span>Customer Fitness Portal Login</span>
+          </div>
+        )}
+        {portal === 'trainer' && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
+            <UserCheck size={13} />
+            <span>Trainer Portal Login</span>
           </div>
         )}
 
