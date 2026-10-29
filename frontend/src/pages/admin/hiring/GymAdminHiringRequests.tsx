@@ -230,14 +230,6 @@ export default function GymAdminHiringRequests() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={fetchRequests}
-            disabled={loading}
-            className="px-3.5 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 border border-[#2A3A3A] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
-          </button>
           <Link
             to="/admin/hiring/trainers"
             className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-sm transition-all flex items-center gap-2"

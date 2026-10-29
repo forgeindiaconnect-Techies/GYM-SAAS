@@ -196,14 +196,6 @@ export default function TrainerHiringRequests() {
             Review direct employment offers sent to you by verified gym owners, negotiate compensation terms, and accept placements.
           </p>
         </div>
-        <button
-          onClick={fetchRequests}
-          disabled={loading}
-          className="px-3.5 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 border border-[#2A3A3A] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all self-start md:self-auto"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
       </div>
 
       {/* Filter Tabs */}

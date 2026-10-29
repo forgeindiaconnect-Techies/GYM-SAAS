@@ -338,20 +338,6 @@ export default function GymAdminApplications() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          {/* Job Filter */}
-          <select
-            value={jobFilter}
-            onChange={(e) => setJobFilter(e.target.value)}
-            className="px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-[#2DD4BF]"
-          >
-            <option value="">All Vacancies</option>
-            {jobsList.map((j) => (
-              <option key={j._id} value={j._id}>
-                {j.title}
-              </option>
-            ))}
-          </select>
-
           {/* Status Filter */}
           <select
             value={statusFilter}
