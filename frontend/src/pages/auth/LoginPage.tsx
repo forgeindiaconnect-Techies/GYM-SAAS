@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft, ShieldCheck, Building2, User, UserCheck } from 'lucide-react';
+import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft, ShieldCheck, Building2, UserCheck } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../../utils/routeHelpers';
 import api from '../../utils/api';
@@ -11,17 +11,15 @@ const LoginPage = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const portalParam = searchParams.get('portal');
-  const storedPortal = typeof window !== 'undefined' ? sessionStorage.getItem('last_portal') : null;
   const portal = portalParam || (
     (location.state as any)?.from?.includes('customer') ||
     (location.state as any)?.from?.includes('member') ||
     (location.state as any)?.fromLabel?.toLowerCase().includes('customer') ||
-    (typeof document !== 'undefined' && document.referrer.includes('/portal/customer')) ||
-    storedPortal === 'customer'
+    (typeof document !== 'undefined' && document.referrer.includes('/portal/customer'))
       ? 'customer'
-      : (location.state as any)?.from?.includes('gym-owner') || (typeof document !== 'undefined' && document.referrer.includes('/portal/gym-owner')) || storedPortal === 'gym-owner'
+      : (location.state as any)?.from?.includes('gym-owner') || (typeof document !== 'undefined' && document.referrer.includes('/portal/gym-owner'))
       ? 'gym-owner'
-      : (location.state as any)?.from?.includes('super-admin') || (typeof document !== 'undefined' && document.referrer.includes('/portal/super-admin')) || storedPortal === 'super-admin'
+      : (location.state as any)?.from?.includes('super-admin') || (typeof document !== 'undefined' && document.referrer.includes('/portal/super-admin'))
       ? 'super-admin'
       : null
   );
@@ -116,20 +114,26 @@ const LoginPage = () => {
       {/* Dynamic Back Button */}
       <Link 
         to={
-          portal === 'super-admin' ? '/portal/super-admin' : 
-          portal === 'gym-owner' ? '/portal/gym-owner' : 
-          portal === 'customer' ? '/portal/customer' : 
-          portal === 'trainer' ? '/trainers' : '/'
-        } 
-        className="absolute top-6 left-6 sm:top-8 sm:left-8 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-2 z-20"
+          portal === 'customer' ? '/portal/customer' :
+          portal === 'gym-owner' ? '/portal/gym-owner' :
+          portal === 'trainer' ? '/trainers' :
+          portal === 'super-admin' ? '/portal/super-admin' : '/'
+        }
+        onClick={() => {
+          if (!portal) {
+            sessionStorage.removeItem('last_portal');
+          }
+          window.scrollTo(0, 0);
+        }}
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-2 z-20 cursor-pointer"
       >
         <ArrowLeft size={16} />
         <span>
           {
-            portal === 'super-admin' ? 'Back to Super Admin' : 
-            portal === 'gym-owner' ? 'Back to Gym Owner' : 
-            portal === 'customer' ? 'Back to Customer' : 
-            portal === 'trainer' ? 'Back to Trainer' : 'Back to Home'
+            portal === 'customer' ? 'Back to Customer' :
+            portal === 'gym-owner' ? 'Back to Gym Owner' :
+            portal === 'trainer' ? 'Back to Trainer' :
+            portal === 'super-admin' ? 'Back to Super Admin' : 'Back'
           }
         </span>
       </Link>
@@ -154,12 +158,6 @@ const LoginPage = () => {
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
             <Building2 size={13} />
             <span>Gym Owner Login</span>
-          </div>
-        )}
-        {portal === 'customer' && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
-            <User size={13} />
-            <span>Customer Login</span>
           </div>
         )}
         {portal === 'trainer' && (

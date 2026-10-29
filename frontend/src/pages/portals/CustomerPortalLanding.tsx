@@ -55,6 +55,9 @@ const CustomerPortalLanding = () => {
   const [tourStep, setTourStep] = useState(1);
   const [activeFeatureTab, setActiveFeatureTab] = useState<'ai' | 'gym' | 'trainer'>('ai');
   const [featureSlideIndex, setFeatureSlideIndex] = useState(0);
+  const [activeCoachingCard, setActiveCoachingCard] = useState(0);
+  const [activeTransformationIndex, setActiveTransformationIndex] = useState(0);
+  const [isTransformationPaused, setIsTransformationPaused] = useState(false);
 
   useEffect(() => {
     if (location.state && (location.state as any).openTour) {
@@ -135,6 +138,98 @@ const CustomerPortalLanding = () => {
       .finally(() => setGymsLoading(false));
   }, []);
 
+  const transformationFeatures = [
+    {
+      badge: 'AI Generator',
+      icon: Bot,
+      title: 'Smart AI Workout Engine',
+      desc: 'Generate tailored weekly exercise programs based on your body type, fitness level, goals, available gym equipment, and past injuries.',
+      tags: ['Custom Splits', 'Video Demos', 'Rest Timers'],
+      img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+      alt: 'Smart AI Workout Engine',
+    },
+    {
+      badge: 'Macro Balanced',
+      icon: Apple,
+      title: 'Customized Diet & Nutrition',
+      desc: 'Macro-balanced daily meal plans with vegetarian, vegan, and protein-rich preferences crafted to fuel your workouts and fat loss.',
+      tags: ['Calorie Budgets', 'Veg / Non-Veg', 'Hydration Log'],
+      img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80',
+      alt: 'Customized Diet & Nutrition',
+    },
+    {
+      badge: 'Certified Mentors',
+      icon: Dumbbell,
+      title: 'Certified Personal Coaches',
+      desc: 'Discover elite trainers at your gym, book online or in-person 1-on-1 training slots, and receive professional form corrections.',
+      tags: ['1-on-1 Slots', 'Form Reviews', 'Direct Chat'],
+      img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80',
+      alt: 'Certified Personal Coaches',
+    },
+    {
+      badge: 'Live Analytics',
+      icon: LineChart,
+      title: 'Progress & Milestone Tracking',
+      desc: 'Log body weight, BMI changes, workout completion streaks, and attendance records with interactive visual progression graphs.',
+      tags: ['Weight Charts', 'BMI Tracker', 'Session History'],
+      img: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&q=80',
+      alt: 'Progress & Milestone Tracking',
+    },
+    {
+      badge: 'Badges & Rewards',
+      icon: Award,
+      title: 'Fitness Challenges & Rewards',
+      desc: 'Join gym-wide endurance challenges, earn badges, unlock membership fee discounts, and redeem store vouchers for protein and merchandise.',
+      tags: ['Weekly Quests', 'Store Discounts', 'Leaderboards'],
+      img: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&q=80',
+      alt: 'Fitness Challenges & Rewards',
+    },
+    {
+      badge: 'Nearby Gyms',
+      icon: MapPin,
+      title: 'Gym Marketplace & Memberships',
+      desc: 'Explore nearby verified fitness clubs, compare day-passes and annual plans, and pay securely via integrated digital payment gateways.',
+      tags: ['Verified Clubs', 'Day Passes', 'Instant QR Entry'],
+      img: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=800&q=80',
+      alt: 'Gym Marketplace & Memberships',
+    },
+  ];
+
+  useEffect(() => {
+    if (isTransformationPaused) return;
+    const interval = setInterval(() => {
+      setActiveTransformationIndex((prev) => (prev + 1) % transformationFeatures.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isTransformationPaused, transformationFeatures.length]);
+
+  const coachingCards = [
+    {
+      badge: '1-on-1 Mentorship',
+      icon: Dumbbell,
+      title: 'Book Certified Trainers',
+      desc: 'Browse trainer specializations, read real reviews, and schedule in-gym personal training or online form correction sessions.',
+      img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=700&q=80',
+      alt: '1-on-1 Personal Trainer Coaching',
+    },
+    {
+      badge: 'Gym Finder',
+      icon: MapPin,
+      title: 'Verified Gym Marketplace',
+      desc: 'Discover partner gyms, compare amenities (steam bath, Olympic barbells, pools), and purchase flexible passes with instant QR check-in.',
+      img: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=700&q=80',
+      alt: 'Multi-Gym Verified Network',
+    },
+    {
+      badge: 'Streaks & Badges',
+      icon: Trophy,
+      title: 'Streaks & Reward Badges',
+      desc: 'Earn points for consecutive workout days, unlock discount coupons on gym store supplements, and claim your place on the leaderboard.',
+      img: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=700&q=80',
+      alt: 'Fitness Streaks & Achievements',
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-[#06201D] font-sans">
       {/* Top Navigation */}
@@ -206,10 +301,7 @@ const CustomerPortalLanding = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left Content */}
           <div className="lg:col-span-7 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-medium text-[#2DD4BF] mb-6">
-              <Sparkles size={14} />
-              <span>Your Personalized Digital Fitness & Transformation Hub</span>
-            </div>
+
 
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#F5FAFA]">
               Elevate Your Body &amp; Mind With <br className="hidden sm:block" />
@@ -231,51 +323,11 @@ const CustomerPortalLanding = () => {
               <button
                 type="button"
                 onClick={() => { setTourStep(1); setIsTourOpen(true); }}
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#141D1E] hover:bg-[#1B2728] text-white border border-[#2A3A3A] hover:border-[#2DD4BF] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg cursor-pointer"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 cursor-pointer"
               >
-                <PlayCircle size={18} className="text-[#2DD4BF]" />
+                <PlayCircle size={18} className="text-[#06201D]" />
                 <span>Watch Customer Journey</span>
               </button>
-            </div>
-
-            {/* Member Success Pulse Bar */}
-            <div className="w-full bg-[#141D1E]/90 border border-[#2A3A3A] rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-xl">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
-                  <Zap size={18} />
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">AI Routines</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">250,000+</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
-                  <Flame size={18} />
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Daily Burn</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">540 kcal / Day</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 text-[#2DD4BF] flex items-center justify-center shrink-0">
-                  <Dumbbell size={18} />
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Elite Coaches</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">1,200+ Active</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <Trophy size={18} />
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-[#9AAEAE]">Streak Rate</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#F5FAFA]">84% Weekly</div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -302,10 +354,7 @@ const CustomerPortalLanding = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Copy Left */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-semibold text-[#2DD4BF] mb-4">
-                <Bot size={14} />
-                <span>Next-Gen Generative Training</span>
-              </div>
+
               <h2 className="text-3xl sm:text-4xl font-black text-[#F5FAFA] tracking-tight mb-4 leading-snug">
                 Intelligent Workouts Adapted to Your Exact Goals & Equipment
               </h2>
@@ -342,18 +391,6 @@ const CustomerPortalLanding = () => {
                   </div>
                 </div>
               </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveWorkoutStep(1);
-                  setShowAiWorkoutModal(true);
-                }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#2DD4BF] text-[#06201D] font-bold text-sm hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 cursor-pointer"
-              >
-                <span>Launch AI Workout Assistant</span>
-                <ChevronRight size={16} />
-              </button>
             </div>
 
             {/* Visual Card Right */}
@@ -391,10 +428,7 @@ const CustomerPortalLanding = () => {
 
             {/* Copy Right */}
             <div className="order-1 lg:order-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-semibold text-[#2DD4BF] mb-4">
-                <Salad size={14} />
-                <span>Precision Fuel & Meal Planning</span>
-              </div>
+
               <h2 className="text-3xl sm:text-4xl font-black text-[#F5FAFA] tracking-tight mb-4 leading-snug">
                 Nutrition Engineered Around Your Metabolism
               </h2>
@@ -431,111 +465,93 @@ const CustomerPortalLanding = () => {
                   </div>
                 </div>
               </div>
-
-              <button
-                type="button"
-                onClick={() => setShowDietFlowchartModal(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#2DD4BF] text-[#06201D] font-bold text-sm hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 cursor-pointer"
-              >
-                <span>View Diet & Meal Plans</span>
-                <ChevronRight size={16} />
-              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Visual Showcase Section 3: Trainer Coaching, Gym Marketplace & Streaks */}
+      {/* Visual Showcase Section 3: Trainer Coaching, Gym Marketplace & Streaks — Interactive Tab Switcher */}
       <section className="py-20 border-t border-[#2A3A3A] bg-[#0E1415]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141D1E] border border-[#2A3A3A] text-xs font-semibold text-[#2DD4BF] mb-3">
-              <Trophy size={14} />
-              <span>Coaching, Community & Milestones</span>
-            </div>
+          {/* Section Header */}
+          <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-3xl sm:text-4xl font-black text-[#F5FAFA] tracking-tight">
-              Work With Elite Coaches & Stay Accountable
+              Work With Elite Coaches &amp; Stay Accountable
             </h2>
             <p className="text-sm text-[#9AAEAE] mt-2">
               Transform alone or connect with certified mentors who push your boundaries and celebrate your wins.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Gallery Card 1 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 rounded-3xl overflow-hidden transition-all shadow-lg group">
-              <div className="h-48 overflow-hidden relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=700&q=80" 
-                  alt="1-on-1 Personal Trainer Coaching" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141D1E] via-transparent to-transparent" />
-                <div className="absolute top-3 left-3 bg-[#080B0C]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#2A3A3A] text-[11px] font-bold text-[#2DD4BF] flex items-center gap-1.5">
-                  <Dumbbell size={13} />
-                  <span>1-on-1 Mentorship</span>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-[#F5FAFA] mb-2">Book Certified Trainers</h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed">
-                  Browse trainer specializations, read real reviews, and schedule in-gym personal training or online form correction sessions.
-                </p>
-              </div>
-            </div>
-
-            {/* Gallery Card 2 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 rounded-3xl overflow-hidden transition-all shadow-lg group">
-              <div className="h-48 overflow-hidden relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=700&q=80" 
-                  alt="Multi-Gym Verified Network" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141D1E] via-transparent to-transparent" />
-                <div className="absolute top-3 left-3 bg-[#080B0C]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#2A3A3A] text-[11px] font-bold text-[#2DD4BF] flex items-center gap-1.5">
-                  <MapPin size={13} />
-                  <span>Gym Finder</span>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-[#F5FAFA] mb-2">Verified Gym Marketplace</h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed">
-                  Discover partner gyms, compare amenities (steam bath, Olympic barbells, pools), and purchase flexible passes with instant QR check-in.
-                </p>
-              </div>
-            </div>
-
-            {/* Gallery Card 3 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 rounded-3xl overflow-hidden transition-all shadow-lg group">
-              <div className="h-48 overflow-hidden relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=700&q=80" 
-                  alt="Fitness Streaks & Achievements" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141D1E] via-transparent to-transparent" />
-                <div className="absolute top-3 left-3 bg-[#080B0C]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#2A3A3A] text-[11px] font-bold text-[#2DD4BF] flex items-center gap-1.5">
-                  <Trophy size={13} />
-                  <span>Streaks & Badges</span>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-[#F5FAFA] mb-2">Streaks & Reward Badges</h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed">
-                  Earn points for consecutive workout days, unlock discount coupons on gym store supplements, and claim your place on the leaderboard.
-                </p>
-              </div>
-            </div>
+          {/* Tab Selectors */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
+            {coachingCards.map((card, idx) => {
+              const Icon = card.icon;
+              const isActive = activeCoachingCard === idx;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveCoachingCard(idx)}
+                  className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl border text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                    isActive
+                      ? 'bg-[#2DD4BF] text-[#06201D] border-[#2DD4BF] shadow-lg shadow-teal-500/20'
+                      : 'bg-[#141D1E] text-[#9AAEAE] border-[#2A3A3A] hover:border-[#2DD4BF]/50 hover:text-[#F5FAFA]'
+                  }`}
+                >
+                  <Icon size={16} />
+                  <span>{card.title}</span>
+                </button>
+              );
+            })}
           </div>
+
+          {/* Content Panel — alternating image/text layout */}
+          {coachingCards.map((card, idx) => {
+            const Icon = card.icon;
+            const isActive = activeCoachingCard === idx;
+            const imageLeft = idx % 2 === 0; // 0 → image left, 1 → image right, 2 → image left
+
+            return (
+              <div
+                key={idx}
+                className={`transition-all duration-300 ${isActive ? 'block' : 'hidden'}`}
+              >
+                <div className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center`}>
+                  {/* Image */}
+                  <div className={`relative ${imageLeft ? 'lg:order-1' : 'lg:order-2'}`}>
+                    <div className="relative rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-2xl shadow-black bg-[#141D1E]">
+                      <img
+                        src={card.img}
+                        alt={card.alt}
+                        loading="eager"
+                        className="w-full h-[320px] sm:h-[400px] object-cover block select-none pointer-events-none"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#141D1E]/60 via-transparent to-transparent pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className={`${imageLeft ? 'lg:order-2' : 'lg:order-1'}`}>
+                    <h3 className="text-2xl sm:text-3xl font-black text-[#F5FAFA] tracking-tight mb-4 leading-snug">
+                      {card.title}
+                    </h3>
+                    <p className="text-[#9AAEAE] text-base leading-relaxed">
+                      {card.desc}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* Feature Sections Grid */}
-      <section className="py-16 border-t border-[#2A3A3A] bg-[#080B0C]">
+      {/* Everything Designed for Your Transformation — Interactive Auto-Scrolling Showcase */}
+      <section className="py-20 border-t border-[#2A3A3A] bg-[#080B0C]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA] tracking-tight">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black text-[#F5FAFA] tracking-tight">
               Everything Designed for Your Transformation
             </h2>
             <p className="text-sm text-[#9AAEAE] mt-2">
@@ -543,180 +559,129 @@ const CustomerPortalLanding = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <Bot size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-                    AI Generator
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Smart AI Workout Engine
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Generate tailored weekly exercise programs based on your body type, fitness level, goals, available gym equipment, and past injuries.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Custom Splits</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Video Demos</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Rest Timers</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Launch AI Workout</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
+          {/* Navigation Tabs Header */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+            <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-2 sm:pb-0 scrollbar-none w-full sm:w-auto">
+              {transformationFeatures.map((feat, idx) => {
+                const Icon = feat.icon;
+                const isActive = activeTransformationIndex === idx;
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveTransformationIndex(idx)}
+                    className={`flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 shrink-0 cursor-pointer ${
+                      isActive
+                        ? 'bg-[#2DD4BF] text-[#06201D] border-[#2DD4BF] shadow-lg shadow-teal-500/20 font-bold'
+                        : 'bg-[#141D1E] text-[#9AAEAE] border-[#2A3A3A] hover:border-[#2DD4BF]/50 hover:text-[#F5FAFA]'
+                    }`}
+                  >
+                    <Icon size={14} />
+                    <span>{feat.title}</span>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Card 2 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <Apple size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Macro Balanced
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Customized Diet &amp; Nutrition
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Macro-balanced daily meal plans with vegetarian, vegan, and protein-rich preferences crafted to fuel your workouts and fat loss.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Calorie Budgets</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Veg / Non-Veg</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Hydration Log</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>View Diet Plans</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
+            {/* Prev / Next controls */}
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveTransformationIndex((prev) =>
+                    prev === 0 ? transformationFeatures.length - 1 : prev - 1
+                  )
+                }
+                aria-label="Previous feature"
+                className="w-10 h-10 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] text-[#F5FAFA] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <ArrowLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveTransformationIndex((prev) => (prev + 1) % transformationFeatures.length)
+                }
+                aria-label="Next feature"
+                className="w-10 h-10 rounded-xl bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] text-[#F5FAFA] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <ArrowRight size={16} />
+              </button>
             </div>
+          </div>
 
-            {/* Card 3 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <Dumbbell size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-                    Certified Mentors
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Certified Personal Coaches
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Discover elite trainers at your gym, book online or in-person 1-on-1 training slots, and receive professional form corrections.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">1-on-1 Slots</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Form Reviews</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Direct Chat</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Find a Coach</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
+          {/* Active Item Showcase with alternating left/right layout */}
+          <div
+            onMouseEnter={() => setIsTransformationPaused(true)}
+            onMouseLeave={() => setIsTransformationPaused(false)}
+            className="relative"
+          >
+            {transformationFeatures.map((feat, idx) => {
+              const Icon = feat.icon;
+              const isActive = activeTransformationIndex === idx;
+              const isImageLeft = idx % 2 === 0;
 
-            {/* Card 4 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <LineChart size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Live Analytics
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Progress &amp; Milestone Tracking
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Log body weight, BMI changes, workout completion streaks, and attendance records with interactive visual progression graphs.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Weight Charts</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">BMI Tracker</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Session History</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Track My Progress</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
+              return (
+                <div
+                  key={idx}
+                  className={`transition-all duration-500 ${
+                    isActive ? 'block opacity-100' : 'hidden opacity-0'
+                  }`}
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 sm:p-10 shadow-2xl">
+                    {/* Image Block */}
+                    <div className={`relative ${isImageLeft ? 'lg:order-1' : 'lg:order-2'}`}>
+                      <div className="relative rounded-2xl overflow-hidden border border-[#2A3A3A] shadow-xl bg-[#0E1415] group">
+                        <img
+                          src={feat.img}
+                          alt={feat.alt}
+                          loading="eager"
+                          className="w-full h-[280px] sm:h-[380px] object-cover block select-none pointer-events-none group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0E1415]/70 via-transparent to-transparent pointer-events-none" />
+                      </div>
+                    </div>
 
-            {/* Card 5 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <Award size={24} />
-                  </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
-                    Badges &amp; Rewards
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Fitness Challenges &amp; Rewards
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Join gym-wide endurance challenges, earn badges, unlock membership fee discounts, and redeem store vouchers for protein and merchandise.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Weekly Quests</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Store Discounts</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Leaderboards</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Join Challenges</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
+                    {/* Content Block */}
+                    <div className={`${isImageLeft ? 'lg:order-2' : 'lg:order-1'}`}>
+                      <h3 className="text-2xl sm:text-3xl font-black text-[#F5FAFA] tracking-tight mb-4 leading-snug">
+                        {feat.title}
+                      </h3>
+                      <p className="text-[#9AAEAE] text-base leading-relaxed mb-6">
+                        {feat.desc}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {feat.tags.map((tag, tIdx) => (
+                          <span
+                            key={tIdx}
+                            className="text-xs font-semibold px-3 py-1 rounded-lg bg-[#080B0C] text-[#C1D0D0] border border-[#2A3A3A]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
 
-            {/* Card 6 */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
-                    <MapPin size={24} />
+                      {/* Indicator Dots */}
+                      <div className="flex items-center gap-2 mt-8 pt-6 border-t border-[#2A3A3A]/60">
+                        {transformationFeatures.map((_, dotIdx) => (
+                          <button
+                            key={dotIdx}
+                            type="button"
+                            onClick={() => setActiveTransformationIndex(dotIdx)}
+                            aria-label={`Go to slide ${dotIdx + 1}`}
+                            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                              activeTransformationIndex === dotIdx
+                                ? 'w-8 bg-[#2DD4BF]'
+                                : 'w-2 bg-[#2A3A3A] hover:bg-[#9AAEAE]'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Nearby Gyms
-                  </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">
-                  Gym Marketplace &amp; Memberships
-                </h3>
-                <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
-                  Explore nearby verified fitness clubs, compare day-passes and annual plans, and pay securely via integrated digital payment gateways.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Verified Clubs</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Day Passes</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#080B0C] text-[#9AAEAE] border border-[#2A3A3A]">Instant QR Entry</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-xs font-semibold text-[#2DD4BF]">
-                <span>Find Nearby Gyms</span>
-                <CheckCircle2 size={16} className="text-emerald-400" />
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -52,6 +52,13 @@ const GymAdminManageJobs: React.FC = () => {
     fetchJobs();
   }, [statusFilter]);
 
+  const isDeadlineCompleted = (deadline?: string) => {
+    if (!deadline) return false;
+    const d = new Date(deadline);
+    d.setHours(23, 59, 59, 999);
+    return d.getTime() < Date.now();
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchJobs();
@@ -240,15 +247,21 @@ const GymAdminManageJobs: React.FC = () => {
                 {/* Left Info */}
                 <div className="space-y-2 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
-                      job.status === 'Published' 
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                        : job.status === 'Draft' 
-                        ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
-                        : 'bg-red-500/10 text-red-400 border-red-500/20'
-                    }`}>
-                      {job.status}
-                    </span>
+                    {isDeadlineCompleted(job.deadline) ? (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border bg-red-500/15 text-red-400 border-red-500/30 flex items-center gap-1">
+                        <AlertCircle size={11} /> Job Vacancy Over
+                      </span>
+                    ) : (
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                        job.status === 'Published' 
+                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                          : job.status === 'Draft' 
+                          ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
+                          : 'bg-red-500/10 text-red-400 border-red-500/20'
+                      }`}>
+                        {job.status}
+                      </span>
+                    )}
                     <span className="text-[11px] text-[#9AAEAE] flex items-center gap-1 font-semibold">
                       <Clock size={12} /> {job.employmentType}
                     </span>
@@ -275,8 +288,9 @@ const GymAdminManageJobs: React.FC = () => {
                     </span>
                     <span>• Experience: {job.experience}</span>
                     {job.deadline && (
-                      <span className="flex items-center gap-1">
+                      <span className={`flex items-center gap-1 font-semibold ${isDeadlineCompleted(job.deadline) ? 'text-red-400' : ''}`}>
                         • Deadline: {new Date(job.deadline).toLocaleDateString()}
+                        {isDeadlineCompleted(job.deadline) && ' (Job Vacancy Over)'}
                       </span>
                     )}
                   </div>

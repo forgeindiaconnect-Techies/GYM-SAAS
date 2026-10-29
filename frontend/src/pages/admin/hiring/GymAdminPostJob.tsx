@@ -296,7 +296,6 @@ const GymAdminPostJob: React.FC = () => {
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
                 <option value="Contract">Contract</option>
-                <option value="Freelance">Freelance</option>
               </select>
             </div>
 
@@ -467,6 +466,15 @@ const GymAdminPostJob: React.FC = () => {
                 onChange={e => setFormData({ ...formData, deadline: e.target.value })}
                 className="w-full px-4 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-xs text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
               />
+              {formData.deadline && new Date(formData.deadline).setHours(23, 59, 59, 999) < Date.now() ? (
+                <p className="text-[11px] text-red-400 mt-1 flex items-center gap-1 font-semibold">
+                  <AlertCircle size={12} /> Deadline expired: This job vacancy will be shown as over.
+                </p>
+              ) : (
+                <p className="text-[10px] text-[#9AAEAE] mt-1">
+                  Once this deadline is completed, the job vacancy will automatically be shown as over.
+                </p>
+              )}
             </div>
           </div>
 

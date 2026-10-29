@@ -20,7 +20,9 @@ import {
   UserCheck,
   ChevronRight,
   ExternalLink,
-  Award
+  Award,
+  AlertCircle,
+  Calendar
 } from 'lucide-react';
 
 interface Vacancy {
@@ -29,17 +31,21 @@ interface Vacancy {
   title: string;
   expertise: string[];
   description: string;
-  responsibilities: string[];
-  qualifications: string[];
-  certifications: string[];
-  experienceRequired: number;
+  responsibilities?: any;
+  qualifications?: any;
+  certifications?: any;
+  experience?: string;
+  experienceRequired?: number;
   salaryMin?: number;
   salaryMax?: number;
   salaryType: string;
+  isSalaryNegotiable?: boolean;
   employmentType: string;
   location: string;
+  workingHours?: string;
   vacanciesCount: number;
   applicationDeadline?: string;
+  deadline?: string;
   status: string;
 }
 
@@ -131,7 +137,51 @@ export default function Careers() {
     }
   };
 
+  const isDeadlineCompleted = (deadline?: string) => {
+    if (!deadline) return false;
+    const d = new Date(deadline);
+    d.setHours(23, 59, 59, 999);
+    return d.getTime() < Date.now();
+  };
+
+  const renderListOrText = (val: any) => {
+    if (!val) return null;
+    if (Array.isArray(val)) {
+      const items = val.map(s => String(s).trim()).filter(Boolean);
+      if (items.length === 0) return null;
+      return (
+        <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+          {items.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ul>
+      );
+    }
+    if (typeof val === 'string') {
+      const trimmed = val.trim();
+      if (!trimmed) return null;
+      const lines = trimmed.split(/\r?\n|•/).map(s => s.trim()).filter(Boolean);
+      if (lines.length > 1) {
+        return (
+          <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+            {lines.map((item, idx) => (
+              <li key={idx}>{item}</li>
+            ))}
+          </ul>
+        );
+      }
+      return <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">{trimmed}</p>;
+    }
+    return null;
+  };
+
   const handleApplyClick = (job: Vacancy) => {
+    const deadline = job.applicationDeadline || (job as any).deadline;
+    if (isDeadlineCompleted(deadline)) {
+      alert('This job vacancy is over because the application deadline has completed.');
+      return;
+    }
+
     // 1. Check if user is authenticated and is a TRAINER
     if (!isAuthenticated) {
       // Redirect to trainer login and return back
@@ -344,7 +394,6 @@ export default function Careers() {
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
                 <option value="Contract">Contract</option>
-                <option value="Freelance">Freelance</option>
               </select>
             </div>
 
@@ -394,6 +443,8 @@ export default function Careers() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredJobs.map((job) => {
               const isApplied = appliedJobs.includes(job._id);
+              const deadline = job.applicationDeadline || (job as any).deadline;
+              const isOver = isDeadlineCompleted(deadline);
 
               return (
                 <div
@@ -411,9 +462,16 @@ export default function Careers() {
                           {job.title}
                         </h3>
                       </div>
-                      <span className="text-[11px] bg-[#141D1E] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#2A3A3A] font-medium whitespace-nowrap">
-                        {job.employmentType}
-                      </span>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="text-[11px] bg-[#141D1E] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#2A3A3A] font-medium whitespace-nowrap">
+                          {job.employmentType}
+                        </span>
+                        {isOver && (
+                          <span className="text-[10px] bg-red-500/15 text-red-400 px-2.5 py-0.5 rounded-full border border-red-500/30 whitespace-nowrap font-bold flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3" /> Job Vacancy Over
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <div className="space-y-2 text-xs text-slate-400 my-4 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
@@ -431,8 +489,16 @@ export default function Careers() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span>{job.experienceRequired}+ years required experience</span>
+                        <span>
+                          {job.experience || (job.experienceRequired ? `${job.experienceRequired}+ years required experience` : 'Any experience welcome')}
+                        </span>
                       </div>
+                      {deadline && (
+                        <div className={`flex items-center gap-2 ${isOver ? 'text-red-400 font-semibold' : ''}`}>
+                          <Calendar className="w-3.5 h-3.5 shrink-0" />
+                          <span>Deadline: {new Date(deadline).toLocaleDateString()} {isOver ? '(Job Vacancy Over)' : ''}</span>
+                        </div>
+                      )}
                     </div>
 
                     <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
@@ -469,6 +535,11 @@ export default function Careers() {
                         <CheckCircle className="w-3.5 h-3.5" />
                         Applied
                       </span>
+                    ) : isOver ? (
+                      <span className="px-4 py-2 bg-red-500/15 text-red-400 border border-red-500/30 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-not-allowed">
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        Job Vacancy Over
+                      </span>
                     ) : (
                       <button
                         onClick={() => handleApplyClick(job)}
@@ -490,92 +561,180 @@ export default function Careers() {
       {selectedJob && !showApplyModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm overflow-y-auto">
           <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[90vh] overflow-y-auto shadow-2xl">
+            {/* Modal Header */}
             <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-4">
               <div>
-                <span className="text-xs text-[#2DD4BF] font-semibold block">
+                <span className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5" />
                   {selectedJob.gymName}
                 </span>
                 <h2 className="text-2xl font-bold text-white mt-1">{selectedJob.title}</h2>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-2">
-                  <span className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5" /> {selectedJob.location}
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <span className="text-[11px] bg-[#141D1E] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#2A3A3A] font-medium">
+                    {selectedJob.employmentType}
                   </span>
-                  <span>•</span>
-                  <span>{selectedJob.employmentType}</span>
-                  <span>•</span>
-                  <span className="text-[#2DD4BF] font-mono font-bold">
-                    {selectedJob.salaryMin
-                      ? `₹${selectedJob.salaryMin.toLocaleString()} - ₹${selectedJob.salaryMax?.toLocaleString()} / ${selectedJob.salaryType}`
-                      : 'Negotiable'}
+                  <span className="text-[11px] bg-[#141D1E] text-[#2DD4BF] px-2.5 py-0.5 rounded-full border border-[#2A3A3A] font-medium">
+                    {selectedJob.vacanciesCount || 1} {Number(selectedJob.vacanciesCount) > 1 ? 'Openings' : 'Opening'}
                   </span>
+                  {selectedJob.isSalaryNegotiable && (
+                    <span className="text-[11px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-medium">
+                      Salary Negotiable
+                    </span>
+                  )}
+                  {isDeadlineCompleted(selectedJob.applicationDeadline || (selectedJob as any).deadline) && (
+                    <span className="text-[11px] bg-red-500/15 text-red-400 px-2.5 py-0.5 rounded-full border border-red-500/30 font-bold flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> Job Vacancy Over
+                    </span>
+                  )}
                 </div>
               </div>
               <button
                 onClick={() => setSelectedJob(null)}
-                className="text-slate-400 hover:text-white p-1"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-[#141D1E]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Comprehensive Job Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5">
+                <MapPin className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold">Location</span>
+                  <span className="text-slate-200 font-medium">{selectedJob.location || 'On-site'}</span>
+                </div>
+              </div>
+
+              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5">
+                <DollarSign className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold">Salary / Compensation</span>
+                  <span className="text-white font-mono font-bold">
+                    {selectedJob.salaryMin && selectedJob.salaryMax
+                      ? `₹${selectedJob.salaryMin.toLocaleString()} - ₹${selectedJob.salaryMax.toLocaleString()} / ${selectedJob.salaryType || 'Monthly'}`
+                      : (selectedJob.salaryMin ? `From ₹${selectedJob.salaryMin.toLocaleString()}` : 'Competitive / Negotiable')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5">
+                <Clock className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold">Required Experience</span>
+                  <span className="text-slate-200 font-medium">
+                    {selectedJob.experience || (selectedJob.experienceRequired ? `${selectedJob.experienceRequired}+ years` : 'Flexible / Any')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5">
+                <Calendar className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold">Application Deadline</span>
+                  {selectedJob.applicationDeadline || (selectedJob as any).deadline ? (
+                    <span className={`font-medium ${isDeadlineCompleted(selectedJob.applicationDeadline || (selectedJob as any).deadline) ? 'text-red-400 font-bold' : 'text-slate-200'}`}>
+                      {new Date(selectedJob.applicationDeadline || (selectedJob as any).deadline).toLocaleDateString()}
+                      {isDeadlineCompleted(selectedJob.applicationDeadline || (selectedJob as any).deadline) ? ' (Job Vacancy Over)' : ''}
+                    </span>
+                  ) : (
+                    <span className="text-slate-400">Open until filled</span>
+                  )}
+                </div>
+              </div>
+
+              {selectedJob.workingHours && (
+                <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5 sm:col-span-2">
+                  <Clock className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+                  <div>
+                    <span className="text-[10px] text-slate-500 block uppercase font-bold">Shift & Working Hours</span>
+                    <span className="text-slate-200 font-medium">{selectedJob.workingHours}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Job Description */}
             <div>
               <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2">
-                Job Overview
+                Job Overview & Description
               </h4>
-              <p className="text-sm text-slate-300 leading-relaxed bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
-                {selectedJob.description}
+              <p className="text-sm text-slate-300 leading-relaxed bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] whitespace-pre-line">
+                {selectedJob.description || 'No detailed description provided.'}
               </p>
             </div>
 
-            {selectedJob.responsibilities?.length > 0 && (
+            {/* Specializations / Expertise */}
+            {selectedJob.expertise && selectedJob.expertise.length > 0 && (
+              <div>
+                <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2">
+                  Required Specializations & Skills
+                </h4>
+                <div className="flex flex-wrap gap-1.5 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
+                  {selectedJob.expertise.map((exp: string, idx: number) => (
+                    <span
+                      key={idx}
+                      className="text-xs bg-[#1B2728] text-slate-200 px-3 py-1 rounded-lg border border-[#2A3A3A]"
+                    >
+                      {exp}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Key Responsibilities */}
+            {Boolean(selectedJob.responsibilities) && (
               <div>
                 <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2">
                   Key Responsibilities
                 </h4>
-                <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
-                  {selectedJob.responsibilities.map((r, i) => (
-                    <li key={i}>{r}</li>
-                  ))}
-                </ul>
+                <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                  {renderListOrText(selectedJob.responsibilities)}
+                </div>
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {selectedJob.qualifications?.length > 0 && (
-                <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
-                  <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
-                    Qualifications
-                  </h4>
-                  <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
-                    {selectedJob.qualifications.map((q, i) => (
-                      <li key={i}>{q}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+            {/* Qualifications & Certifications */}
+            {(Boolean(selectedJob.qualifications) || Boolean(selectedJob.certifications)) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Boolean(selectedJob.qualifications) && (
+                  <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                    <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
+                      Qualifications
+                    </h4>
+                    {renderListOrText(selectedJob.qualifications)}
+                  </div>
+                )}
 
-              {selectedJob.certifications?.length > 0 && (
-                <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
-                  <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
-                    Certifications
-                  </h4>
-                  <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
-                    {selectedJob.certifications.map((c, i) => (
-                      <li key={i}>{c}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+                {Boolean(selectedJob.certifications) && (
+                  <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                    <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
+                      Certifications
+                    </h4>
+                    {renderListOrText(selectedJob.certifications)}
+                  </div>
+                )}
+              </div>
+            )}
 
+            {/* Deadline Over Alert */}
+            {isDeadlineCompleted(selectedJob.applicationDeadline || (selectedJob as any).deadline) && (
+              <div className="p-3.5 bg-red-500/15 border border-red-500/30 rounded-xl text-red-400 text-xs flex items-center gap-2.5 font-semibold">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>Job Vacancy Over: The application deadline for this position has completed.</span>
+              </div>
+            )}
+
+            {/* Footer Buttons */}
             <div className="pt-4 border-t border-[#2A3A3A] flex items-center justify-between">
               <span className="text-xs text-slate-400">
-                {selectedJob.vacanciesCount} openings available
+                {selectedJob.vacanciesCount || 1} {Number(selectedJob.vacanciesCount) > 1 ? 'openings available' : 'opening available'}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setSelectedJob(null)}
-                  className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl text-xs"
+                  className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl text-xs font-medium border border-[#2A3A3A]"
                 >
                   Close
                 </button>
@@ -583,6 +742,11 @@ export default function Careers() {
                   <span className="px-4 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-semibold flex items-center gap-1.5">
                     <CheckCircle className="w-3.5 h-3.5" />
                     Already Applied
+                  </span>
+                ) : isDeadlineCompleted(selectedJob.applicationDeadline || (selectedJob as any).deadline) ? (
+                  <span className="px-4 py-2 bg-red-500/15 text-red-400 border border-red-500/30 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-not-allowed">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    Job Vacancy Over
                   </span>
                 ) : (
                   <button
