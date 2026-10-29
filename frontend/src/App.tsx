@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -12,6 +13,7 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import StatusPage from './pages/auth/StatusPage';
 import TrainerInvitationPage from './pages/auth/TrainerInvitationPage';
 import TrainerOnboarding from './pages/auth/TrainerOnboarding';
+import TrainerRegisterPage from './pages/auth/TrainerRegisterPage';
 
 // Role-Based Public Portals
 import SuperAdminPortalLanding from './pages/portals/SuperAdminPortalLanding';
@@ -220,16 +222,29 @@ import stubDashboard from './pages/StubDashboard';
 const ManagerDashboard = stubDashboard('Manager');
 const ReceptionistDashboard = stubDashboard('Receptionist');
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<Navigate to="/register/customer" replace />} />
           <Route path="/register/customer" element={<CustomerRegisterPage />} />
+          <Route path="/register/trainer" element={<TrainerRegisterPage />} />
+          <Route path="/register/trainers" element={<Navigate to="/register/trainer" replace />} />
           <Route path="/gym-owner-introduction" element={<GymOwnerIntroduction />} />
           <Route path="/register/gym-owner" element={<GymOwnerRegisterPage />} />
           <Route path="/invite/trainer/:token" element={<TrainerInvitationPage />} />
@@ -278,7 +293,9 @@ function App() {
           
           {/* Legal Routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/terms" element={<TermsOfService />} />
           <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
 
           {/* Post-Registration Routes (auth required) */}

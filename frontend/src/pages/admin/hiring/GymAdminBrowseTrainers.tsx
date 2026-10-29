@@ -15,7 +15,12 @@ import {
   ExternalLink,
   ChevronRight,
   UserCheck,
-  DollarSign
+  DollarSign,
+  FileText,
+  Phone,
+  Mail,
+  Building2,
+  Clock
 } from 'lucide-react';
 import api from '../../../utils/api';
 
@@ -24,19 +29,25 @@ interface CandidateTrainer {
   name: string;
   email: string;
   phone?: string;
+  city?: string;
   profilePhoto?: string;
   specialization?: string;
   professionalHeadline?: string;
-  experience?: number;
+  experience?: number | string;
+  trainingMode?: string;
   qualifications?: string;
   certifications?: string;
   expertise?: string;
   bio?: string;
+  previousGym?: string;
   preferredLocation?: string;
   employmentPreference?: string;
   expectedSalary?: number;
   personalTrainingFee?: number;
+  resumeUrl?: string;
+  certificationUrl?: string;
   portfolioUrl?: string;
+  availability?: string;
   earliestJoiningDate?: string;
   availabilityStatus?: string;
   isShortlisted?: boolean;
@@ -385,61 +396,236 @@ export default function GymAdminBrowseTrainers() {
         </div>
       )}
 
-      {/* MODAL 1: VIEW TRAINER PROFILE */}
+      {/* MODAL 1: VIEW TRAINER PROFILE (FULL DETAILS) */}
       {selectedTrainer && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0E1415] border border-[#2DD4BF]/40 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#141D1E] border border-[#2A3A3A]">
+          <div className="bg-[#0E1415] border border-[#2DD4BF]/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#141D1E] border-2 border-[#2DD4BF]/40 shrink-0">
                   {selectedTrainer.profilePhoto ? (
-                    <img src={selectedTrainer.profilePhoto} alt={selectedTrainer.name} className="w-full h-full object-cover" />
+                    <img
+                      src={
+                        selectedTrainer.profilePhoto.startsWith('http')
+                          ? selectedTrainer.profilePhoto
+                          : `http://localhost:5600${selectedTrainer.profilePhoto}`
+                      }
+                      alt={selectedTrainer.name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-lg font-bold text-[#2DD4BF]">
-                      {selectedTrainer.name.charAt(0)}
+                    <div className="w-full h-full flex items-center justify-center text-xl font-black text-[#2DD4BF] bg-[#2DD4BF]/10">
+                      {selectedTrainer.name.charAt(0).toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">{selectedTrainer.name}</h3>
-                  <p className="text-xs text-[#2DD4BF] font-semibold">{selectedTrainer.professionalHeadline || selectedTrainer.specialization}</p>
-                  <p className="text-[11px] text-slate-400">{selectedTrainer.email} • {selectedTrainer.phone || 'Phone verified'}</p>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-extrabold text-white">{selectedTrainer.name}</h3>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30">
+                      Verified Coach
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#2DD4BF] font-semibold mt-0.5">
+                    {selectedTrainer.specialization || selectedTrainer.professionalHeadline || 'Fitness Trainer'}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 mt-1">
+                    <span className="flex items-center gap-1">
+                      <Mail size={12} className="text-slate-500" />
+                      {selectedTrainer.email}
+                    </span>
+                    {selectedTrainer.phone && (
+                      <span className="flex items-center gap-1">
+                        <Phone size={12} className="text-[#2DD4BF]" />
+                        +91 {selectedTrainer.phone.replace(/^\+?91/, '').trim()}
+                      </span>
+                    )}
+                    {(selectedTrainer.city || selectedTrainer.preferredLocation) && (
+                      <span className="flex items-center gap-1">
+                        <MapPin size={12} className="text-slate-500" />
+                        {selectedTrainer.city || selectedTrainer.preferredLocation}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
-              <button onClick={() => setSelectedTrainer(null)} className="text-slate-400 hover:text-white">✕</button>
+              <button
+                onClick={() => setSelectedTrainer(null)}
+                className="p-1.5 rounded-xl bg-[#141D1E] text-slate-400 hover:text-white border border-[#2A3A3A] transition-colors"
+              >
+                ✕
+              </button>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2 bg-[#141D1E] p-3 rounded-2xl border border-[#2A3A3A]">
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Expected Monthly Salary</span>
-                  <span className="font-mono font-bold text-sm text-[#2DD4BF]">
-                    {selectedTrainer.expectedSalary ? `₹${selectedTrainer.expectedSalary.toLocaleString()}` : 'Negotiable'}
+            {/* Quick Stats Grid (4 Cards) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="p-3 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-left">
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">Experience</span>
+                <span className="font-bold text-xs text-white mt-0.5 block">
+                  {selectedTrainer.experience
+                    ? typeof selectedTrainer.experience === 'number'
+                      ? `${selectedTrainer.experience} Years`
+                      : selectedTrainer.experience
+                    : '1–2 Years'}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-left">
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">Training Mode</span>
+                <span className="font-bold text-xs text-[#2DD4BF] mt-0.5 block">
+                  {selectedTrainer.trainingMode === 'online'
+                    ? 'Online / Remote'
+                    : selectedTrainer.trainingMode === 'offline'
+                    ? 'On-Site / Gym'
+                    : selectedTrainer.trainingMode || 'Both (Hybrid)'}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-left">
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">Availability</span>
+                <span className="font-bold text-xs text-white mt-0.5 block truncate">
+                  {selectedTrainer.availability || selectedTrainer.earliestJoiningDate || 'Immediately'}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-left">
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">Expected Salary</span>
+                <span className="font-bold font-mono text-xs text-[#2DD4BF] mt-0.5 block">
+                  {selectedTrainer.expectedSalary ? `₹${selectedTrainer.expectedSalary.toLocaleString()}` : 'Negotiable'}
+                </span>
+              </div>
+            </div>
+
+            {/* Full Details Sections */}
+            <div className="space-y-3.5 text-xs">
+              {/* Previous Gym & Preferred Location Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                    <Building2 size={12} className="text-[#2DD4BF]" /> Previous Gym / Employer
                   </span>
+                  <p className="text-white font-medium">
+                    {selectedTrainer.previousGym || 'Fresher / Independent Coach'}
+                  </p>
                 </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Personal Training Session Fee</span>
-                  <span className="font-mono font-bold text-sm text-white">
-                    {selectedTrainer.personalTrainingFee ? `₹${selectedTrainer.personalTrainingFee.toLocaleString()}` : 'Custom'}
+
+                <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                    <MapPin size={12} className="text-[#2DD4BF]" /> Preferred Work Location
                   </span>
+                  <p className="text-white font-medium">
+                    {selectedTrainer.preferredLocation || selectedTrainer.city || 'Flexible / Bangalore'}
+                  </p>
                 </div>
               </div>
 
-              <div>
-                <strong className="text-white block mb-1">Professional Introduction:</strong>
-                <p className="text-slate-300 leading-relaxed bg-[#141D1E]/40 p-3 rounded-xl border border-[#2A3A3A]">
-                  {selectedTrainer.bio || 'Seasoned fitness instructor with extensive expertise in strength training, client motivation, and nutrition.'}
+              {/* Education & Qualifications */}
+              <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                  <Award size={12} className="text-[#2DD4BF]" /> Education &amp; Qualifications
+                </span>
+                <p className="text-slate-200 font-medium">
+                  {selectedTrainer.qualifications || 'Certified Personal Coach / Exercise Specialist'}
                 </p>
               </div>
 
-              <div>
-                <strong className="text-white block mb-1">Certifications & Qualifications:</strong>
-                <p className="text-slate-300 bg-[#141D1E]/40 p-3 rounded-xl border border-[#2A3A3A]">
-                  {selectedTrainer.certifications || selectedTrainer.qualifications || 'ACE, CSCS, CPR/AED Certified'}
+              {/* Certifications */}
+              <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                  <Sparkles size={12} className="text-[#2DD4BF]" /> Fitness Certifications
+                </span>
+                <p className="text-slate-200 font-medium">
+                  {selectedTrainer.certifications || 'ACE, CSCS, CPR/AED Certified'}
                 </p>
+              </div>
+
+              {/* Professional Introduction / Bio */}
+              <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                  <UserCheck size={12} className="text-[#2DD4BF]" /> Professional Introduction
+                </span>
+                <p className="text-slate-300 leading-relaxed italic">
+                  {selectedTrainer.bio ||
+                    'Seasoned fitness instructor with extensive expertise in strength training, client motivation, and nutrition.'}
+                </p>
+              </div>
+
+              {/* Uploaded Documents (Resume & Certifications) */}
+              <div className="space-y-2 pt-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Uploaded Candidate Documents
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {/* Resume Document Link */}
+                  {selectedTrainer.resumeUrl ? (
+                    <a
+                      href={
+                        selectedTrainer.resumeUrl.startsWith('http')
+                          ? selectedTrainer.resumeUrl
+                          : `http://localhost:5600${selectedTrainer.resumeUrl}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3 rounded-2xl bg-[#141D1E] hover:bg-[#1B2728] border border-[#2DD4BF]/40 hover:border-[#2DD4BF] flex items-center justify-between transition-all group shadow-sm"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                          <FileText size={16} />
+                        </div>
+                        <div>
+                          <span className="font-bold text-white text-xs block group-hover:text-[#2DD4BF] transition-colors">
+                            Resume / CV
+                          </span>
+                          <span className="text-[10px] text-slate-400">PDF / Word Document</span>
+                        </div>
+                      </div>
+                      <ExternalLink size={14} className="text-[#2DD4BF]" />
+                    </a>
+                  ) : (
+                    <div className="p-3 rounded-2xl bg-[#141D1E]/40 border border-[#2A3A3A] flex items-center gap-2.5 text-slate-500">
+                      <FileText size={16} />
+                      <span className="text-xs">No resume uploaded</span>
+                    </div>
+                  )}
+
+                  {/* Certification Document Link */}
+                  {selectedTrainer.certificationUrl ? (
+                    <a
+                      href={
+                        selectedTrainer.certificationUrl.startsWith('http')
+                          ? selectedTrainer.certificationUrl
+                          : `http://localhost:5600${selectedTrainer.certificationUrl}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3 rounded-2xl bg-[#141D1E] hover:bg-[#1B2728] border border-[#2DD4BF]/40 hover:border-[#2DD4BF] flex items-center justify-between transition-all group shadow-sm"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                          <Award size={16} />
+                        </div>
+                        <div>
+                          <span className="font-bold text-white text-xs block group-hover:text-[#2DD4BF] transition-colors">
+                            Certification File
+                          </span>
+                          <span className="text-[10px] text-slate-400">PDF / Image Document</span>
+                        </div>
+                      </div>
+                      <ExternalLink size={14} className="text-[#2DD4BF]" />
+                    </a>
+                  ) : (
+                    <div className="p-3 rounded-2xl bg-[#141D1E]/40 border border-[#2A3A3A] flex items-center gap-2.5 text-slate-500">
+                      <Award size={16} />
+                      <span className="text-xs">No certificate file</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
+            {/* Bottom Actions */}
             <div className="pt-3 border-t border-[#2A3A3A] flex gap-3">
               <button
                 onClick={() => {
@@ -447,14 +633,14 @@ export default function GymAdminBrowseTrainers() {
                   setSelectedTrainer(null);
                   openHiringModal(t);
                 }}
-                className="flex-1 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-xl shadow-md shadow-[#2DD4BF]/20 flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-extrabold text-xs rounded-xl shadow-lg shadow-[#2DD4BF]/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
-                <Send size={13} />
+                <Send size={14} />
                 <span>Send Hiring Proposal</span>
               </button>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="px-5 py-2.5 bg-[#141D1E] text-slate-400 hover:text-white text-xs font-semibold rounded-xl"
+                className="px-6 py-3 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] text-slate-300 hover:text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
               >
                 Close
               </button>

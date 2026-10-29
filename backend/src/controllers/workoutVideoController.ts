@@ -53,7 +53,7 @@ export const createWorkoutVideo = async (req: AuthRequest, res: Response): Promi
     await notify({
       recipientId: customerId.toString(),
       recipientRole: 'MEMBER',
-      gymId: trainer.gymId.toString(),
+      gymId: trainer.gymId ? trainer.gymId.toString() : '',
       title: 'New Workout Video Assigned',
       message: `Your trainer ${trainer.name} assigned a workout video: "${title}".`,
       type: 'info',

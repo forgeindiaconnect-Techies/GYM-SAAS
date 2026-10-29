@@ -107,10 +107,25 @@ export default function Careers() {
       if (res.data.success) {
         const list = res.data.data || res.data.jobs || [];
         setJobs(list);
+        const autoApply = searchParams.get('autoApply') === 'true';
         if (targetJobId) {
           const match = list.find((j: Vacancy) => j._id === targetJobId);
           if (match) {
             setSelectedJob(match);
+            if (autoApply && isAuthenticated && user?.role === 'TRAINER') {
+              setForm(prev => ({
+                ...prev,
+                fullName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || prev.fullName,
+                email: user.email || prev.email,
+                phone: (user as any)?.mobile || prev.phone,
+                expertise: match.expertise?.join(', ') || prev.expertise,
+                expectedSalary: match.salaryMin ? `₹${match.salaryMin.toLocaleString()}` : prev.expectedSalary,
+                preferredLocation: match.location || prev.preferredLocation,
+                employmentPreference: match.employmentType || prev.employmentPreference,
+                coverLetter: `I am passionate about personal training and excited to apply for the ${match.title} role at ${match.gymName}.`
+              }));
+              setShowApplyModal(true);
+            }
           }
         }
       }
@@ -183,18 +198,9 @@ export default function Careers() {
     }
 
     // 1. Check if user is authenticated and is a TRAINER
-    if (!isAuthenticated) {
-      // Redirect to trainer login and return back
-      const returnUrl = encodeURIComponent(`/careers?jobId=${job._id}`);
-      navigate(`/login?portal=trainer&redirect=${returnUrl}`);
-      return;
-    }
-
-    if (user?.role !== 'TRAINER') {
-      alert(
-        'Trainer authentication required. Please log in with a Trainer account to apply for gym positions.'
-      );
-      navigate('/login?portal=trainer');
+    if (!isAuthenticated || user?.role !== 'TRAINER') {
+      const returnUrl = encodeURIComponent(`/careers?jobId=${job._id}&autoApply=true`);
+      navigate(`/register/trainer?jobId=${job._id}&returnUrl=${returnUrl}`);
       return;
     }
 
@@ -308,12 +314,20 @@ export default function Careers() {
                 My Dashboard
               </Link>
             ) : (
-              <Link
-                to="/login?portal=trainer"
-                className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-sm transition-all shadow-md shadow-[#2DD4BF]/25"
-              >
-                Trainer Login
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/register/trainer"
+                  className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-sm transition-all shadow-md shadow-[#2DD4BF]/25"
+                >
+                  Trainer Register
+                </Link>
+                <Link
+                  to="/login?portal=trainer"
+                  className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white rounded-xl text-sm border border-[#2A3A3A] transition-all"
+                >
+                  Trainer Login
+                </Link>
+              </div>
             )}
           </div>
         </div>

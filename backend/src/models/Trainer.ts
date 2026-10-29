@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ITrainer extends Document {
-  gymId: mongoose.Types.ObjectId;
+  gymId?: mongoose.Types.ObjectId;
   branchId?: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   name: string;
@@ -41,6 +41,8 @@ export interface ITrainer extends Document {
   expectedSalary?: number;
   personalTrainingFee?: number;
   resumeUrl?: string;
+  certificationUrl?: string;
+  previousGym?: string;
   portfolioUrl?: string;
   earliestJoiningDate?: string;
   workHistory?: Array<{ company: string; role: string; duration: string; description?: string }>;
@@ -50,7 +52,7 @@ export interface ITrainer extends Document {
 }
 
 const trainerSchema = new Schema<ITrainer>({
-  gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: true },
+  gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: false },
   branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   name: { type: String, required: true },
@@ -90,6 +92,8 @@ const trainerSchema = new Schema<ITrainer>({
   expectedSalary: { type: Number, default: 0 },
   personalTrainingFee: { type: Number, default: 0 },
   resumeUrl: { type: String },
+  certificationUrl: { type: String },
+  previousGym: { type: String },
   portfolioUrl: { type: String },
   earliestJoiningDate: { type: String },
   workHistory: [{

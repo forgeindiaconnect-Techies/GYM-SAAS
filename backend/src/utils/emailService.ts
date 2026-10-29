@@ -1221,4 +1221,270 @@ export const sendGymOwnerSubscriptionConfirmationEmail = async (
   });
 };
 
+export interface JobApplicationEmailParams {
+  toEmail: string;
+  candidateName: string;
+  jobTitle: string;
+  gymName: string;
+  status: 'Shortlisted' | 'Under Review' | 'Rejected' | string;
+  reviewNotes?: string;
+}
+
+export const sendJobApplicationStatusEmail = async (
+  params: JobApplicationEmailParams
+): Promise<{ success: boolean; message?: string; error?: string }> => {
+  const rawKey = process.env.BREVO_API_KEY || '';
+  const apiKey = rawKey.trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderEmail = (process.env.BREVO_SENDER_EMAIL || 'renugopal603@gmail.com').trim().replace(/[\r\n\t\f\v"']/g, '');
+  const senderName = (process.env.BREVO_SENDER_NAME || params.gymName || 'Gymora').trim().replace(/[\r\n\t\f\v"']/g, '');
+
+  const { toEmail, candidateName, jobTitle, gymName, status, reviewNotes } = params;
+
+  let badgeText = '';
+  let badgeBg = '';
+  let badgeColor = '';
+  let subject = '';
+  let headline = '';
+  let mainBody = '';
+  let callToActionText = 'View My Application';
+  let callToActionUrl = 'http://localhost:5173/trainer/applications';
+
+  if (status === 'Shortlisted') {
+    badgeText = '🎉 SHORTLISTED FOR INTERVIEW';
+    badgeBg = '#7C3AED';
+    badgeColor = '#FFFFFF';
+    subject = `🎉 Shortlisted: Your application for ${jobTitle} at ${gymName}`;
+    headline = `Congratulations, ${candidateName}!`;
+    mainBody = `
+      <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
+        Great news! After carefully reviewing your profile, coaching credentials, and experience, the hiring team at <strong>${gymName}</strong> has <strong>shortlisted</strong> you for the position of <strong>${jobTitle}</strong>.
+      </p>
+      <div style="background-color: #F5F3FF; border-left: 4px solid #7C3AED; padding: 16px; border-radius: 8px; margin: 20px 0;">
+        <h4 style="margin: 0 0 8px 0; color: #5B21B6; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Next Steps:</h4>
+        <p style="margin: 0; font-size: 14px; color: #4C1D95; line-height: 1.5;">
+          Our recruitment team will contact you shortly via phone or email to schedule your interview session. Please keep your contact details handy and check your portal for schedule updates.
+        </p>
+      </div>
+    `;
+    callToActionText = 'View Application Details';
+  } else if (status === 'Under Review') {
+    badgeText = '📋 APPLICATION UNDER REVIEW';
+    badgeBg = '#D97706';
+    badgeColor = '#FFFFFF';
+    subject = `📋 Application Update: Your application for ${jobTitle} is Under Review`;
+    headline = `Your Application is Under Review`;
+    mainBody = `
+      <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
+        Hello ${candidateName}, thank you for your interest in joining the fitness coaching team at <strong>${gymName}</strong>.
+      </p>
+      <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
+        We would like to let you know that your application for <strong>${jobTitle}</strong> has been received and is currently being <strong>actively reviewed</strong> by our gym management and hiring committee.
+      </p>
+      <div style="background-color: #FFFBEB; border-left: 4px solid #D97706; padding: 16px; border-radius: 8px; margin: 20px 0;">
+        <h4 style="margin: 0 0 8px 0; color: #92400E; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">What Happens Next:</h4>
+        <p style="margin: 0; font-size: 14px; color: #78350F; line-height: 1.5;">
+          We evaluate all candidates against our current training programs, member schedule requirements, and coaching specializations. You will receive an immediate update as soon as this review phase concludes.
+        </p>
+      </div>
+    `;
+    callToActionText = 'Track Application Status';
+  } else if (status === 'Rejected') {
+    badgeText = 'APPLICATION STATUS UPDATE';
+    badgeBg = '#475569';
+    badgeColor = '#FFFFFF';
+    subject = `Update regarding your application for ${jobTitle} at ${gymName}`;
+    headline = `Thank you for applying, ${candidateName}`;
+    mainBody = `
+      <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
+        Thank you for taking the time to apply for the <strong>${jobTitle}</strong> position at <strong>${gymName}</strong> and for sharing your coaching background with our team.
+      </p>
+      <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
+        We received a substantial number of applications from talented fitness professionals. After careful consideration, we regret to inform you that we will not be moving forward with your application for this specific vacancy.
+      </p>
+      <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 16px; border-radius: 8px; margin: 20px 0;">
+        <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.5;">
+          This decision was based on our immediate specialization and schedule match. We were impressed with your qualifications and will retain your profile in our talent network should suitable opportunities open in the future.
+        </p>
+      </div>
+      <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
+        We sincerely wish you the best in your professional fitness career and coaching endeavors.
+      </p>
+    `;
+    callToActionText = 'Browse Other Opportunities';
+    callToActionUrl = 'http://localhost:5173/careers';
+  } else {
+    badgeText = `STATUS: ${status.toUpperCase()}`;
+    badgeBg = '#0284C7';
+    badgeColor = '#FFFFFF';
+    subject = `Application Update: ${status} for ${jobTitle} at ${gymName}`;
+    headline = `Application Status Update`;
+    mainBody = `
+      <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
+        Hello ${candidateName}, your application for <strong>${jobTitle}</strong> at <strong>${gymName}</strong> has been updated to <strong>${status}</strong>.
+      </p>
+    `;
+  }
+
+  const notesBlock = reviewNotes ? `
+    <div style="background-color: #F1F5F9; border-left: 3px solid #94A3B8; border-radius: 6px; padding: 12px 16px; margin: 16px 0; font-size: 13px; color: #334155;">
+      <strong style="color: #1E293B;">Notes from Hiring Team:</strong><br/>
+      <span style="font-style: italic; color: #475569; display: inline-block; margin-top: 4px;">"${reviewNotes}"</span>
+    </div>
+  ` : '';
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #F1F5F9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F1F5F9; padding: 30px 15px;">
+        <tr>
+          <td align="center">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #E2E8F0;">
+              <!-- Top Brand Banner -->
+              <tr>
+                <td style="background-color: #0E1415; padding: 24px 32px; border-bottom: 2px solid #2DD4BF;">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                      <td>
+                        <span style="font-size: 22px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.5px;">Gymora <span style="color: #2DD4BF; font-weight: 400; font-size: 15px;">| Hiring Portal</span></span>
+                      </td>
+                      <td align="right">
+                        <span style="font-size: 13px; font-weight: 600; color: #2DD4BF; background-color: rgba(45, 212, 191, 0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(45, 212, 191, 0.25);">
+                          ${gymName}
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Main Content Body -->
+              <tr>
+                <td style="padding: 32px 32px 24px 32px;">
+                  <!-- Status Badge -->
+                  <div style="display: inline-block; background-color: ${badgeBg}; color: ${badgeColor}; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 18px;">
+                    ${badgeText}
+                  </div>
+
+                  <!-- Headline -->
+                  <h1 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0F172A; line-height: 1.3;">
+                    ${headline}
+                  </h1>
+
+                  <!-- Role & Gym Summary Card -->
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px 18px; margin-bottom: 20px;">
+                    <tr>
+                      <td>
+                        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748B; letter-spacing: 0.5px;">Position Applied</div>
+                        <div style="font-size: 16px; font-weight: 700; color: #0F172A; margin-top: 2px;">${jobTitle}</div>
+                      </td>
+                      <td align="right">
+                        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748B; letter-spacing: 0.5px;">Gym / Club</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #0F172A; margin-top: 2px;">${gymName}</div>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Main Body Text -->
+                  ${mainBody}
+
+                  <!-- Review Notes (if any) -->
+                  ${notesBlock}
+
+                  <!-- Call to Action Button -->
+                  <div style="text-align: center; margin: 30px 0 10px 0;">
+                    <a href="${callToActionUrl}" style="display: inline-block; background-color: #2DD4BF; color: #06201D; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 32px; border-radius: 10px; box-shadow: 0 4px 10px rgba(45, 212, 191, 0.3);">
+                      ${callToActionText} &rarr;
+                    </a>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="background-color: #F8FAFC; padding: 20px 32px; border-top: 1px solid #E2E8F0; text-align: center;">
+                  <p style="margin: 0 0 6px 0; font-size: 12px; color: #64748B;">
+                    This notification was sent to <strong>${toEmail}</strong> regarding your application on Gymora.
+                  </p>
+                  <p style="margin: 0; font-size: 11px; color: #94A3B8;">
+                    &copy; ${new Date().getFullYear()} ${gymName} &bull; Powered by Gymora Fitness Platform
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+
+  if (!apiKey) {
+    console.warn(`[EmailService] BREVO_API_KEY is not set. Simulating candidate status email (${status}) to: ${toEmail}`);
+    return {
+      success: true,
+      message: `Simulated application email (${status}) to ${toEmail}`
+    };
+  }
+
+  const payload = JSON.stringify({
+    sender: { name: senderName, email: senderEmail },
+    to: [{ email: toEmail, name: candidateName }],
+    subject: subject,
+    htmlContent: htmlContent
+  });
+
+  return new Promise((resolve) => {
+    try {
+      const options = {
+        hostname: 'api.brevo.com',
+        path: '/v3/smtp/email',
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': apiKey,
+          'content-type': 'application/json',
+          'content-length': Buffer.byteLength(payload)
+        }
+      };
+
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => {
+          if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+            console.log(`[EmailService] Application status email (${status}) sent successfully to ${toEmail}`);
+            resolve({ success: true, message: `Status email sent successfully to ${toEmail}` });
+          } else {
+            let errorMsg = `HTTP ${res.statusCode}: ${data}`;
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.message) errorMsg = parsed.message;
+            } catch (_) {}
+            console.error(`[EmailService] Failed to send status email to ${toEmail}: ${errorMsg}`);
+            resolve({ success: false, error: errorMsg });
+          }
+        });
+      });
+
+      req.on('error', (err) => {
+        console.error(`[EmailService] Status email request error: ${err.message}`);
+        resolve({ success: false, error: err.message });
+      });
+
+      req.write(payload);
+      req.end();
+    } catch (err: any) {
+      console.error(`[EmailService] Header error: ${err.message}`);
+      resolve({ success: false, error: err.message });
+    }
+  });
+};
+
+
 

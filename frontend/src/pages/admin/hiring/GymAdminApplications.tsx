@@ -19,6 +19,7 @@ import {
   Mail,
   Award,
   ChevronRight,
+  ChevronDown,
   ExternalLink,
   X
 } from 'lucide-react';
@@ -31,22 +32,56 @@ interface Application {
     employmentType: string;
     location: string;
   };
-  fullName: string;
+  fullName?: string;
+  name?: string;
   email: string;
   phone: string;
-  yearsOfExperience: number;
-  qualifications: string[];
-  certifications: string[];
-  expertise: string[];
-  expectedSalary: string;
-  preferredLocation: string;
-  employmentPreference: string;
-  availability: string;
+  yearsOfExperience?: number | string;
+  workExperience?: string;
+  qualifications?: string[] | string;
+  certifications?: string[] | string;
+  expertise?: string[] | string;
+  expectedSalary?: string;
+  preferredLocation?: string;
+  city?: string;
+  employmentPreference?: string;
+  trainingMode?: string;
+  availability?: string;
+  previousGym?: string;
   coverLetter?: string;
-  resumeUrl: string;
+  resumeUrl?: string;
+  certificationUrl?: string;
+  profilePhoto?: string;
   status: string;
   createdAt: string;
 }
+
+const parseList = (val: any): string[] => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.filter(Boolean);
+  if (typeof val === 'string') {
+    return val.split(',').map((s) => s.trim()).filter(Boolean);
+  }
+  return [];
+};
+
+const formatExp = (workExp?: string, yearsExp?: number | string): string => {
+  if (workExp && String(workExp).trim()) {
+    const trimmed = String(workExp).trim();
+    if (trimmed.toLowerCase().includes('year') || trimmed.toLowerCase().includes('fresher')) {
+      return trimmed;
+    }
+    return `${trimmed} Years`;
+  }
+  if (yearsExp !== undefined && yearsExp !== null && String(yearsExp).trim() !== '') {
+    const s = String(yearsExp).trim();
+    if (s.toLowerCase().includes('year') || s.toLowerCase().includes('fresher')) {
+      return s;
+    }
+    return `${s} Years`;
+  }
+  return '1–2 Years';
+};
 
 export default function GymAdminApplications() {
   const [searchParams] = useSearchParams();
@@ -64,6 +99,7 @@ export default function GymAdminApplications() {
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [statusFeedback, setStatusFeedback] = useState<string | null>(null);
 
   // Interview form state
   const [interviewForm, setInterviewForm] = useState({
@@ -91,12 +127,13 @@ export default function GymAdminApplications() {
 
   const fetchJobsList = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
       const res = await axios.get('http://localhost:5600/api/hiring/admin/jobs', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
-        setJobsList(res.data.data.map((j: any) => ({ _id: j._id, title: j.title })));
+        const jobs = res.data.jobs || res.data.data || [];
+        setJobsList(jobs.map((j: any) => ({ _id: j._id, title: j.title })));
       }
     } catch (err) {
       console.error('Failed to load jobs list:', err);
@@ -106,7 +143,7 @@ export default function GymAdminApplications() {
   const fetchApplications = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
       const params: any = {};
       if (statusFilter) params.status = statusFilter;
       if (jobFilter) params.jobId = jobFilter;
@@ -116,7 +153,7 @@ export default function GymAdminApplications() {
         params
       });
       if (res.data.success) {
-        setApplications(res.data.data);
+        setApplications(res.data.applications || res.data.data || []);
       }
     } catch (err) {
       console.error('Failed to fetch applications:', err);
@@ -128,7 +165,7 @@ export default function GymAdminApplications() {
   const handleStatusChange = async (appId: string, newStatus: string, notes?: string) => {
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
       const res = await axios.patch(
         `http://localhost:5600/api/hiring/admin/applications/${appId}/status`,
         { status: newStatus, notes },
@@ -141,6 +178,12 @@ export default function GymAdminApplications() {
         if (selectedApp && selectedApp._id === appId) {
           setSelectedApp({ ...selectedApp, status: newStatus });
         }
+        const appObj = applications.find((a) => a._id === appId);
+        const emailMsg = appObj?.email ? ` & email sent directly to ${appObj.email}` : '';
+        setStatusFeedback(
+          res.data.message || `Candidate status updated to "${newStatus}"${emailMsg}`
+        );
+        setTimeout(() => setStatusFeedback(null), 6000);
       }
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to update status');
@@ -154,7 +197,7 @@ export default function GymAdminApplications() {
     if (!selectedApp) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
       const res = await axios.post(
         'http://localhost:5600/api/hiring/admin/interviews',
         {
@@ -180,7 +223,7 @@ export default function GymAdminApplications() {
     if (!selectedApp) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
       const res = await axios.post(
         'http://localhost:5600/api/hiring/admin/offers',
         {
@@ -203,11 +246,12 @@ export default function GymAdminApplications() {
 
   const filteredApps = applications.filter((app) => {
     const term = search.toLowerCase();
+    const candidateName = app.fullName || (app as any).name || '';
     return (
-      app.fullName?.toLowerCase().includes(term) ||
+      candidateName.toLowerCase().includes(term) ||
       app.email?.toLowerCase().includes(term) ||
       app.jobId?.title?.toLowerCase().includes(term) ||
-      app.expertise?.some((e) => e.toLowerCase().includes(term))
+      parseList(app.expertise).some((e: string) => e.toLowerCase().includes(term))
     );
   });
 
@@ -263,6 +307,22 @@ export default function GymAdminApplications() {
           </Link>
         </div>
       </div>
+
+      {/* Status Feedback Banner */}
+      {statusFeedback && (
+        <div className="bg-[#2DD4BF]/10 border border-[#2DD4BF]/40 text-[#2DD4BF] px-4 py-3 rounded-xl flex items-center justify-between text-sm shadow-lg shadow-[#2DD4BF]/5">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 shrink-0 text-[#2DD4BF]" />
+            <span className="font-medium">{statusFeedback}</span>
+          </div>
+          <button
+            onClick={() => setStatusFeedback(null)}
+            className="text-[#2DD4BF]/70 hover:text-[#2DD4BF] p-1 transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Filter / Search Bar */}
       <div className="bg-[#0E1415] p-4 rounded-2xl border border-[#2A3A3A] flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -347,7 +407,7 @@ export default function GymAdminApplications() {
                     <td className="px-6 py-4">
                       <div>
                         <div className="font-semibold text-white flex items-center gap-2">
-                          {app.fullName}
+                          {app.fullName || (app as any).name}
                           {app.resumeUrl && (
                             <a
                               href={`http://localhost:5600${app.resumeUrl}`}
@@ -384,10 +444,10 @@ export default function GymAdminApplications() {
 
                     <td className="px-6 py-4">
                       <div className="text-xs text-slate-300 font-medium">
-                        {app.yearsOfExperience} yrs experience
+                        {formatExp(app.workExperience, app.yearsOfExperience)}
                       </div>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {app.expertise?.slice(0, 2).map((exp, i) => (
+                        {parseList(app.expertise).slice(0, 2).map((exp, i) => (
                           <span
                             key={i}
                             className="text-[10px] bg-[#1B2728] text-slate-300 px-1.5 py-0.5 rounded border border-[#2A3A3A]"
@@ -395,9 +455,9 @@ export default function GymAdminApplications() {
                             {exp}
                           </span>
                         ))}
-                        {app.expertise?.length > 2 && (
+                        {parseList(app.expertise).length > 2 && (
                           <span className="text-[10px] text-slate-500">
-                            +{app.expertise.length - 2}
+                            +{parseList(app.expertise).length - 2}
                           </span>
                         )}
                       </div>
@@ -428,16 +488,46 @@ export default function GymAdminApplications() {
                           Review
                         </button>
 
-                        {/* Quick Shortlist Button if not yet shortlisted */}
-                        {app.status === 'Applied' && (
-                          <button
+                        {/* Status Action Dropdown */}
+                        <div className="relative inline-block">
+                          <select
                             disabled={actionLoading}
-                            onClick={() => handleStatusChange(app._id, 'Shortlisted')}
-                            className="px-2.5 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-lg text-xs font-medium transition-all"
+                            value=""
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                handleStatusChange(app._id, e.target.value);
+                              }
+                            }}
+                            className="appearance-none pl-2.5 pr-7 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-lg text-slate-200 hover:text-white text-xs font-medium cursor-pointer transition-all focus:outline-none focus:border-[#2DD4BF]"
+                            title="Update candidate status"
                           >
-                            Shortlist
-                          </button>
-                        )}
+                            <option value="" disabled className="bg-[#0E1415] text-slate-400">
+                              Action ▾
+                            </option>
+                            <option
+                              value="Shortlisted"
+                              disabled={app.status === 'Shortlisted'}
+                              className="bg-[#0E1415] text-purple-400 py-1"
+                            >
+                              Shortlist {app.status === 'Shortlisted' ? '(Current)' : ''}
+                            </option>
+                            <option
+                              value="Under Review"
+                              disabled={app.status === 'Under Review'}
+                              className="bg-[#0E1415] text-amber-400 py-1"
+                            >
+                              Mark Under Review {app.status === 'Under Review' ? '(Current)' : ''}
+                            </option>
+                            <option
+                              value="Rejected"
+                              disabled={app.status === 'Rejected'}
+                              className="bg-[#0E1415] text-rose-400 py-1"
+                            >
+                              Reject {app.status === 'Rejected' ? '(Current)' : ''}
+                            </option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -451,27 +541,52 @@ export default function GymAdminApplications() {
       {/* Candidate Profile / Detailed Review Modal */}
       {selectedApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-2xl w-full p-6 text-white space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-4">
-              <div>
-                <h3 className="text-xl font-bold flex items-center gap-2">
-                  {selectedApp.fullName}
-                  <span
-                    className={`text-xs px-2.5 py-0.5 rounded-full border ${getStatusBadge(
-                      selectedApp.status
-                    )}`}
-                  >
-                    {selectedApp.status}
-                  </span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-1">
-                  Applied for: <span className="text-[#2DD4BF]">{selectedApp.jobId?.title}</span> •{' '}
-                  {new Date(selectedApp.createdAt).toLocaleDateString()}
-                </p>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/30 flex items-center justify-center font-bold text-lg overflow-hidden shrink-0">
+                  {selectedApp.profilePhoto ? (
+                    <img
+                      src={
+                        selectedApp.profilePhoto.startsWith('http')
+                          ? selectedApp.profilePhoto
+                          : `http://localhost:5600${selectedApp.profilePhoto}`
+                      }
+                      alt={selectedApp.fullName || (selectedApp as any).name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    (selectedApp.fullName || (selectedApp as any).name || 'T')
+                      .charAt(0)
+                      .toUpperCase()
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    {selectedApp.fullName || (selectedApp as any).name || 'Trainer Candidate'}
+                    <span
+                      className={`text-xs px-2.5 py-0.5 rounded-full border ${getStatusBadge(
+                        selectedApp.status
+                      )}`}
+                    >
+                      {selectedApp.status}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Applied for:{' '}
+                    <span className="text-[#2DD4BF]">
+                      {selectedApp.jobId?.title || 'Gym Trainer Position'}
+                    </span>{' '}
+                    •{' '}
+                    {selectedApp.createdAt
+                      ? new Date(selectedApp.createdAt).toLocaleDateString()
+                      : 'Recent'}
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setSelectedApp(null)}
-                className="text-slate-400 hover:text-white p-1"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-[#141D1E]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -481,18 +596,22 @@ export default function GymAdminApplications() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] text-xs">
               <div>
                 <span className="text-slate-500 block">Phone</span>
-                <span className="font-semibold text-slate-200">{selectedApp.phone}</span>
+                <span className="font-semibold text-slate-200">
+                  {selectedApp.phone
+                    ? `+91 ${selectedApp.phone.replace(/^\+?91/, '').trim()}`
+                    : 'N/A'}
+                </span>
               </div>
               <div>
                 <span className="text-slate-500 block">Email</span>
-                <span className="font-semibold text-slate-200 truncate block">
+                <span className="font-semibold text-slate-200 truncate block" title={selectedApp.email}>
                   {selectedApp.email}
                 </span>
               </div>
               <div>
                 <span className="text-slate-500 block">Experience</span>
                 <span className="font-semibold text-slate-200">
-                  {selectedApp.yearsOfExperience} Years
+                  {formatExp(selectedApp.workExperience, selectedApp.yearsOfExperience)}
                 </span>
               </div>
               <div>
@@ -503,32 +622,64 @@ export default function GymAdminApplications() {
               </div>
             </div>
 
+            {/* Additional Candidate Info Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#141D1E]/70 p-4 rounded-xl border border-[#2A3A3A] text-xs">
+              <div>
+                <span className="text-slate-500 block">Preferred Location</span>
+                <span className="font-semibold text-slate-200">
+                  {selectedApp.preferredLocation || (selectedApp as any).city || 'Bangalore'}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Availability</span>
+                <span className="font-semibold text-slate-200">
+                  {selectedApp.availability || 'Immediately'}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Training Mode</span>
+                <span className="font-semibold text-[#2DD4BF]">
+                  {selectedApp.employmentPreference || (selectedApp as any).trainingMode || 'Both (Hybrid)'}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Previous Gym / Employer</span>
+                <span className="font-semibold text-slate-200 truncate block">
+                  {(selectedApp as any).previousGym || 'Fresher / Independent'}
+                </span>
+              </div>
+            </div>
+
             {/* Expertise & Skills */}
             <div>
               <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
                 Specializations & Expertise
               </h4>
               <div className="flex flex-wrap gap-1.5">
-                {selectedApp.expertise?.map((e, idx) => (
-                  <span
-                    key={idx}
-                    className="text-xs bg-[#1B2728] text-slate-300 px-2.5 py-1 rounded-lg border border-[#2A3A3A]"
-                  >
-                    {e}
-                  </span>
-                ))}
+                {parseList(selectedApp.expertise).length > 0 ? (
+                  parseList(selectedApp.expertise).map((e, idx) => (
+                    <span
+                      key={idx}
+                      className="text-xs bg-[#1B2728] text-slate-300 px-2.5 py-1 rounded-lg border border-[#2A3A3A]"
+                    >
+                      {e}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-xs text-slate-500 italic">General Fitness</span>
+                )}
               </div>
             </div>
 
             {/* Certifications & Qualifications */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A]">
+              <div className="bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
                 <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2 flex items-center gap-1.5">
-                  <Award className="w-3.5 h-3.5" /> Certifications
+                  <Award className="w-3.5 h-3.5" /> Fitness Certifications
                 </h4>
-                {selectedApp.certifications?.length > 0 ? (
+                {parseList(selectedApp.certifications).length > 0 ? (
                   <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
-                    {selectedApp.certifications.map((c, i) => (
+                    {parseList(selectedApp.certifications).map((c, i) => (
                       <li key={i}>{c}</li>
                     ))}
                   </ul>
@@ -537,13 +688,13 @@ export default function GymAdminApplications() {
                 )}
               </div>
 
-              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A]">
+              <div className="bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
                 <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2 flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5" /> Qualifications
+                  <Briefcase className="w-3.5 h-3.5" /> Education & Qualifications
                 </h4>
-                {selectedApp.qualifications?.length > 0 ? (
+                {parseList(selectedApp.qualifications).length > 0 ? (
                   <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
-                    {selectedApp.qualifications.map((q, i) => (
+                    {parseList(selectedApp.qualifications).map((q, i) => (
                       <li key={i}>{q}</li>
                     ))}
                   </ul>
@@ -565,31 +716,76 @@ export default function GymAdminApplications() {
               </div>
             )}
 
-            {/* Resume Link */}
-            {selectedApp.resumeUrl && (
-              <div className="flex items-center justify-between bg-[#1B2728] p-3.5 rounded-xl border border-[#2DD4BF]/30">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-[#2DD4BF]" />
-                  <div>
-                    <span className="text-xs font-semibold text-white block">
-                      Candidate Resume Document
-                    </span>
-                    <span className="text-[11px] text-slate-400">
-                      Verified uploaded credentials
-                    </span>
+            {/* Uploaded Documents */}
+            <div className="space-y-2">
+              <h4 className="text-xs uppercase font-semibold text-slate-400">
+                Uploaded Candidate Documents
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {selectedApp.resumeUrl ? (
+                  <div className="flex items-center justify-between bg-[#1B2728] p-3.5 rounded-xl border border-[#2DD4BF]/30">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-[#2DD4BF]" />
+                      <div>
+                        <span className="text-xs font-semibold text-white block">
+                          Resume / CV
+                        </span>
+                        <span className="text-[11px] text-slate-400">
+                          Verified candidate document
+                        </span>
+                      </div>
+                    </div>
+                    <a
+                      href={
+                        selectedApp.resumeUrl.startsWith('http')
+                          ? selectedApp.resumeUrl
+                          : `http://localhost:5600${selectedApp.resumeUrl}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Open Resume
+                    </a>
                   </div>
-                </div>
-                <a
-                  href={`http://localhost:5600${selectedApp.resumeUrl}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  Open Resume
-                </a>
+                ) : (
+                  <div className="flex items-center gap-2 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A] text-slate-500 text-xs">
+                    <FileText className="w-5 h-5" />
+                    <span>No resume attached</span>
+                  </div>
+                )}
+
+                {(selectedApp as any).certificationUrl ? (
+                  <div className="flex items-center justify-between bg-[#1B2728] p-3.5 rounded-xl border border-[#2DD4BF]/30">
+                    <div className="flex items-center gap-2">
+                      <Award className="w-5 h-5 text-[#2DD4BF]" />
+                      <div>
+                        <span className="text-xs font-semibold text-white block">
+                          Certification File
+                        </span>
+                        <span className="text-[11px] text-slate-400">
+                          Verified credentials
+                        </span>
+                      </div>
+                    </div>
+                    <a
+                      href={
+                        (selectedApp as any).certificationUrl.startsWith('http')
+                          ? (selectedApp as any).certificationUrl
+                          : `http://localhost:5600${(selectedApp as any).certificationUrl}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Open Certificate
+                    </a>
+                  </div>
+                ) : null}
               </div>
-            )}
+            </div>
 
             {/* Action Bar */}
             <div className="pt-4 border-t border-[#2A3A3A] flex flex-wrap items-center justify-between gap-3">

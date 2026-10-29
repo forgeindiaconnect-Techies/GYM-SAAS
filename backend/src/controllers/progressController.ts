@@ -161,7 +161,7 @@ export const triggerAIReanalysis = async (req: AuthRequest, res: Response): Prom
         await notify({
           recipientId: trainer.userId.toString(),
           recipientRole: 'TRAINER',
-          gymId: trainer.gymId.toString(),
+          gymId: trainer.gymId ? trainer.gymId.toString() : '',
           title: 'AI Re-Analysis Available',
           message: `AI progress re-analysis is ready for your review (Version ${newVersion}).`,
           type: 'info',

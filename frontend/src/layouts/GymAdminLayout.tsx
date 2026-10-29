@@ -147,7 +147,6 @@ const GymAdminLayout = () => {
           { label: 'Post a Job', path: '/admin/hiring/jobs/new', icon: UserPlus },
           { label: 'Manage Jobs', path: '/admin/hiring/jobs', icon: Briefcase },
           { label: 'Job Applications', path: '/admin/hiring/applications', icon: Users },
-          { label: 'Hiring Requests', path: '/admin/hiring/requests', icon: MessageSquare },
           { label: 'Interview Schedule', path: '/admin/hiring/interviews', icon: Calendar },
           { label: 'Hired Trainers', path: '/admin/hiring/hired', icon: UserCheck }
         ]

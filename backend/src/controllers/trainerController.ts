@@ -7,6 +7,7 @@ import Trainer from '../models/Trainer';
 import TrainerFee from '../models/TrainerFee';
 import TrainerInvitation from '../models/TrainerInvitation';
 import Gym from '../models/Gym';
+import JobApplication from '../models/JobApplication';
 import mongoose from 'mongoose';
 
 const isAuthorizedStaff = (role?: string) => {
@@ -357,6 +358,95 @@ export const getTrainers = async (req: AuthRequest, res: Response): Promise<void
     const resolvedGymId = (await resolveGymId(req)) || gymOwner.gymId;
     const branchIdQuery = req.query.branchId as string;
     const effectiveBranchId = gymOwner.branchId || branchIdQuery;
+
+    // Sync any registered trainer applicants for this gym so they appear in Gym Owner's trainers directory
+    if (resolvedGymId) {
+      try {
+        const gymApps = await JobApplication.find({ gymId: resolvedGymId });
+        for (const app of gymApps) {
+          const filter: any = {};
+          if (app.trainerId) {
+            filter.$or = [{ userId: app.trainerId }, { email: app.email.toLowerCase() }];
+          } else {
+            filter.email = app.email.toLowerCase();
+          }
+
+          let trainer = await Trainer.findOne(filter);
+          if (trainer) {
+            let needsSave = false;
+            if (!trainer.gymId) {
+              trainer.gymId = new mongoose.Types.ObjectId(resolvedGymId);
+              needsSave = true;
+            }
+            if (!trainer.phone && app.phone) {
+              trainer.phone = app.phone;
+              needsSave = true;
+            }
+            if (!trainer.specialization && app.expertise?.length) {
+              trainer.specialization = app.expertise[0];
+              needsSave = true;
+            }
+            if (!trainer.experience && app.workExperience) {
+              trainer.experience = parseInt(app.workExperience, 10) || 1;
+              needsSave = true;
+            }
+            if (!trainer.expectedSalary && app.expectedSalary) {
+              const num = Number(String(app.expectedSalary).replace(/[^0-9]/g, ''));
+              if (num) {
+                trainer.expectedSalary = num;
+                needsSave = true;
+              }
+            }
+            if (!trainer.resumeUrl && app.resumeUrl) {
+              trainer.resumeUrl = app.resumeUrl;
+              needsSave = true;
+            }
+            if (!trainer.qualifications && app.qualifications) {
+              trainer.qualifications = app.qualifications;
+              needsSave = true;
+            }
+            if (!trainer.certifications && app.certifications) {
+              trainer.certifications = app.certifications;
+              needsSave = true;
+            }
+            if (!trainer.status || trainer.status === 'Pending') {
+              trainer.status = 'Active';
+              needsSave = true;
+            }
+            if (needsSave) {
+              await trainer.save();
+            }
+          } else {
+            const numericExp = parseInt(app.workExperience, 10) || 1;
+            const expectedNum = app.expectedSalary ? Number(String(app.expectedSalary).replace(/[^0-9]/g, '')) || undefined : undefined;
+            trainer = new Trainer({
+              userId: app.trainerId || new mongoose.Types.ObjectId(),
+              gymId: new mongoose.Types.ObjectId(resolvedGymId),
+              name: app.name,
+              email: app.email.toLowerCase(),
+              phone: app.phone || '',
+              profilePhoto: app.profilePhoto || '',
+              specialization: app.expertise?.[0] || 'Nutrition Coaching',
+              experience: numericExp,
+              trainingMode: 'both',
+              qualifications: app.qualifications || '',
+              certifications: app.certifications || '',
+              expertise: app.expertise?.join(', ') || 'Nutrition Coaching',
+              expectedSalary: expectedNum,
+              preferredLocation: app.preferredLocation || '',
+              availability: app.availability || 'Immediately',
+              resumeUrl: app.resumeUrl || '',
+              status: 'Active',
+              isPublicRecruitment: true
+            });
+            await trainer.save();
+          }
+        }
+      } catch (syncErr) {
+        console.warn('Error syncing applicant trainers to gym:', syncErr);
+      }
+    }
+
     let query: any = resolvedGymId ? { gymId: resolvedGymId } : {};
     if (effectiveBranchId && effectiveBranchId !== 'undefined' && effectiveBranchId !== 'null' && effectiveBranchId !== 'all') {
       if (effectiveBranchId === 'main') {

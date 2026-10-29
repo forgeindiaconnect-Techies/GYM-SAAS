@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import {
@@ -311,6 +311,11 @@ const GymAdminTrainers = () => {
                         <div>
                           <span>₹{Number(trainer.fee).toLocaleString('en-IN')}</span>
                           <span className="text-xs text-[#9AAEAE] font-normal"> / {trainer.paymentType === 'Per Week' ? 'wk' : trainer.paymentType === 'Per Session' ? 'ses' : 'mo'}</span>
+                        </div>
+                      ) : trainer.expectedSalary ? (
+                        <div>
+                          <span>₹{Number(trainer.expectedSalary).toLocaleString('en-IN')}</span>
+                          <span className="text-xs text-[#2DD4BF] font-normal block text-[10px]">Expected</span>
                         </div>
                       ) : (
                         <span className="text-[#9AAEAE] italic text-xs">Not configured</span>
@@ -937,9 +942,11 @@ const GymAdminTrainers = () => {
                     <div className="p-3.5 bg-[#141D1E]">
                       <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
                         <IndianRupee size={12} className="text-[#2DD4BF]" />
-                        <span>Fee</span>
+                        <span>Fee / Compensation</span>
                       </p>
-                      <p className="font-bold text-[#2DD4BF] text-sm">{selectedTrainer.fee ? `₹${selectedTrainer.fee}` : 'N/A'}</p>
+                      <p className="font-bold text-[#2DD4BF] text-sm">
+                        {selectedTrainer.fee ? `₹${selectedTrainer.fee}` : selectedTrainer.expectedSalary ? `₹${Number(selectedTrainer.expectedSalary).toLocaleString('en-IN')} (Expected)` : 'N/A'}
+                      </p>
                     </div>
                     <div className="p-3.5 bg-[#141D1E]">
                       <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
@@ -991,6 +998,37 @@ const GymAdminTrainers = () => {
                   <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">About</h4>
                   <div className="border border-[#2A3A3A] rounded-xl p-4 bg-[#141D1E] shadow-sm">
                     <p className="text-[#F5FAFA] text-sm leading-relaxed">{selectedTrainer.bio}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Section: Uploaded Documents */}
+              {(selectedTrainer.resumeUrl || selectedTrainer.certificationUrl) && (
+                <div>
+                  <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">Candidate Documents</h4>
+                  <div className="flex flex-wrap gap-2.5">
+                    {selectedTrainer.resumeUrl && (
+                      <a
+                        href={selectedTrainer.resumeUrl.startsWith('http') ? selectedTrainer.resumeUrl : `http://localhost:5600${selectedTrainer.resumeUrl}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl text-xs font-semibold text-[#2DD4BF] transition-all"
+                      >
+                        <Briefcase size={14} />
+                        <span>View Resume / CV</span>
+                      </a>
+                    )}
+                    {selectedTrainer.certificationUrl && (
+                      <a
+                        href={selectedTrainer.certificationUrl.startsWith('http') ? selectedTrainer.certificationUrl : `http://localhost:5600${selectedTrainer.certificationUrl}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl text-xs font-semibold text-[#2DD4BF] transition-all"
+                      >
+                        <Award size={14} />
+                        <span>View Certification Document</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               )}

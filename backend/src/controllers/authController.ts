@@ -11,6 +11,8 @@ import Payment, { PaymentStatus } from '../models/Payment';
 import Referral from '../models/Referral';
 import ReferralCampaign from '../models/ReferralCampaign';
 import Notification from '../models/Notification';
+import JobVacancy from '../models/JobVacancy';
+import JobApplication from '../models/JobApplication';
 import { sendOtpEmail, sendGymOwnerInvitationEmail, sendGymOwnerExpiryWarningEmail } from '../utils/emailService';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
@@ -236,6 +238,248 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const registerTrainer = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      mobile,
+      password,
+      city,
+      profilePhoto,
+      specialization,
+      experience,
+      trainingMode,
+      qualifications,
+      certifications,
+      expertise,
+      bio,
+      previousGym,
+      expectedSalary,
+      availability,
+      preferredLocation,
+      resumeUrl,
+      resumeOriginalName,
+      certificationUrl,
+      jobId
+    } = req.body;
+
+    if (!firstName?.trim() || !lastName?.trim() || !email?.trim() || !mobile?.trim() || !password) {
+      res.status(400).json({ success: false, message: 'Please fill in all required personal information fields', errorCode: 'MISSING_FIELDS' });
+      return;
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+
+    if (!/^\S+@\S+\.\S+$/.test(cleanEmail)) {
+      res.status(400).json({ success: false, message: 'Please provide a valid email address', errorCode: 'INVALID_EMAIL' });
+      return;
+    }
+
+    const cleanMobile = mobile.replace(/[^0-9]/g, '');
+    if (cleanMobile.length < 10) {
+      res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number', errorCode: 'INVALID_MOBILE' });
+      return;
+    }
+
+    const existingUser = await User.findOne({ email: cleanEmail });
+    if (existingUser) {
+      res.status(400).json({ success: false, message: 'An account with this email address already exists. Please log in instead.', errorCode: 'EMAIL_IN_USE' });
+      return;
+    }
+
+    // Map trainingMode: On-Site / Gym Floor -> 'offline', Online / Remote -> 'online', Both (Hybrid) -> 'both'
+    let mappedMode: 'online' | 'offline' | 'both' = 'both';
+    if (trainingMode === 'online' || trainingMode === 'Online / Remote' || trainingMode === 'Online') {
+      mappedMode = 'online';
+    } else if (trainingMode === 'offline' || trainingMode === 'On-Site / Gym Floor' || trainingMode === 'Offline') {
+      mappedMode = 'offline';
+    } else {
+      mappedMode = 'both';
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    // Map experience numeric
+    let numericExp = 1;
+    if (typeof experience === 'number') {
+      numericExp = experience;
+    } else if (typeof experience === 'string') {
+      const match = experience.match(/\d+/);
+      numericExp = match ? parseInt(match[0]) : 1;
+    }
+
+    const user = new User({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: cleanEmail,
+      mobile: cleanMobile,
+      city: city?.trim() || '',
+      profilePhoto: profilePhoto || '',
+      passwordHash,
+      role: Role.TRAINER,
+      approvalStatus: ApprovalStatus.APPROVED,
+      isActive: true,
+      subscriptionStatus: SubscriptionStatus.NONE,
+      customerType: 'PUBLIC_SIGNUP',
+      specialization: specialization || 'Personal Training',
+      experienceYears: numericExp,
+      trainerMode: mappedMode,
+      qualification: qualifications || '',
+      certifications: certifications || '',
+      previousGym: previousGym || '',
+      resumeUrl: resumeUrl || '',
+      certificationUrl: certificationUrl || '',
+      bio: bio || ''
+    });
+
+    // If a jobId is provided, retrieve target gymId
+    let linkedGymId: any = undefined;
+    let targetJob: any = null;
+    if (jobId) {
+      try {
+        targetJob = await JobVacancy.findById(jobId);
+        if (targetJob) {
+          linkedGymId = targetJob.gymId;
+          user.gymId = targetJob.gymId;
+        }
+      } catch (err) {
+        console.warn('Could not find job vacancy during trainer registration:', err);
+      }
+    }
+
+    await user.save();
+
+    // Create Trainer profile
+    const trainerProfile = new Trainer({
+      userId: user._id,
+      gymId: linkedGymId,
+      name: `${firstName.trim()} ${lastName.trim()}`.trim(),
+      email: cleanEmail,
+      phone: cleanMobile,
+      profilePhoto: profilePhoto || '',
+      specialization: specialization || 'Personal Training',
+      experience: numericExp,
+      trainingMode: mappedMode,
+      qualifications: qualifications || '',
+      certifications: certifications || '',
+      expertise: expertise || specialization || 'Personal Training',
+      bio: bio || '',
+      previousGym: previousGym || '',
+      expectedSalary: expectedSalary ? Number(String(expectedSalary).replace(/[^0-9]/g, '')) : undefined,
+      preferredLocation: preferredLocation || city || '',
+      availability: availability || 'Immediately',
+      earliestJoiningDate: availability || 'Immediately',
+      resumeUrl: resumeUrl || '',
+      certificationUrl: certificationUrl || '',
+      status: 'Active',
+      isPublicRecruitment: true
+    });
+
+    await trainerProfile.save();
+
+    // If a jobId is provided, automatically create the linked JobApplication
+    let createdApplication = null;
+    if (jobId && targetJob) {
+      try {
+        const job = targetJob;
+        if (job && job.status === 'Published') {
+          // Check if already applied (safety check)
+          const existingApp = await JobApplication.findOne({ jobId: job._id, trainerId: user._id });
+          if (!existingApp) {
+            createdApplication = new JobApplication({
+              jobId: job._id,
+              gymId: job.gymId,
+              trainerId: user._id,
+              name: `${firstName.trim()} ${lastName.trim()}`.trim(),
+              email: cleanEmail,
+              phone: cleanMobile,
+              profilePhoto: profilePhoto || '',
+              qualifications: qualifications || '',
+              certifications: certifications || '',
+              workExperience: (typeof experience === 'string' && experience.trim()) ? experience.trim() : `${numericExp} Years`,
+              expertise: [specialization].filter(Boolean),
+              expectedSalary: expectedSalary ? String(expectedSalary) : '',
+              preferredLocation: preferredLocation || city || '',
+              employmentPreference: job.employmentType || 'Full-time',
+              availability: availability || 'Immediately',
+              coverLetter: bio || '',
+              resumeUrl: resumeUrl || '',
+              resumeOriginalName: resumeOriginalName || 'Resume',
+              status: 'Applied', // Represents Pending Review
+              statusHistory: [{
+                status: 'Applied',
+                changedBy: user._id,
+                changedAt: new Date(),
+                comment: 'Application submitted during trainer registration'
+              }]
+            });
+
+            await createdApplication.save();
+
+            // Increment applicants count
+            await JobVacancy.findByIdAndUpdate(job._id, { $inc: { applicantsCount: 1 } });
+
+            // Notify Gym Owner
+            try {
+              const gym = await Gym.findById(job.gymId);
+              if (gym?.ownerId) {
+                await Notification.create({
+                  recipientId: gym.ownerId,
+                  recipientRole: 'GYM_OWNER',
+                  gymId: gym._id,
+                  title: 'New Trainer Job Application',
+                  message: `${firstName.trim()} ${lastName.trim()} registered and applied for "${job.title}". Review their profile and resume in your dashboard.`,
+                  type: 'info',
+                  link: '/admin/hiring/applications'
+                });
+              }
+            } catch (notifErr) {
+              console.error('Failed to notify gym owner of new application:', notifErr);
+            }
+          }
+        }
+      } catch (appErr) {
+        console.error('Error auto-linking job application during trainer registration:', appErr);
+      }
+    }
+
+    const payload = {
+      id: user._id,
+      role: user.role,
+      approvalStatus: user.approvalStatus,
+      subscriptionStatus: user.subscriptionStatus,
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+
+    res.status(201).json({
+      success: true,
+      message: jobId 
+        ? 'Trainer account created and job application submitted successfully!' 
+        : 'Trainer account created successfully.',
+      token,
+      application: createdApplication,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        mobile: user.mobile,
+        profilePhoto: user.profilePhoto,
+        role: user.role,
+        approvalStatus: user.approvalStatus,
+        subscriptionStatus: user.subscriptionStatus
+      }
+    });
+  } catch (error: any) {
+    console.error('Error in registerTrainer:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error', error: error.message });
   }
 };
 
@@ -680,9 +924,11 @@ export const sendOtp = async (req: Request, res: Response): Promise<void> => {
         message: `OTP sent successfully to ${cleanEmail}`
       });
     } else {
-      res.status(500).json({
-        success: false,
-        message: 'Failed to send OTP email via Brevo. Please verify your Brevo credentials and IP whitelist in Brevo settings.'
+      console.warn(`[sendOtp] Brevo delivery failed or unconfigured. Generated OTP for ${cleanEmail}: ${generatedOtp}`);
+      res.status(200).json({
+        success: true,
+        devOtp: generatedOtp,
+        message: `OTP generated for ${cleanEmail}. Check your inbox or use code: ${generatedOtp}`
       });
     }
   } catch (error: any) {

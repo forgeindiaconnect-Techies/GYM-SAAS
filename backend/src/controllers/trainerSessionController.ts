@@ -52,7 +52,7 @@ export const createSessionRequest = async (req: AuthRequest, res: Response): Pro
     await notify({
       recipientId: trainer.userId.toString(),
       recipientRole: 'TRAINER',
-      gymId: trainer.gymId.toString(),
+      gymId: trainer.gymId ? trainer.gymId.toString() : '',
       title: 'New Session Request',
       message: `You have a new ${mode} session request for ${date} at ${startTime}.`,
       type: 'info',

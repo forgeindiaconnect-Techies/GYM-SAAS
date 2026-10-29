@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import {
   Briefcase,
   Building2,
@@ -14,14 +13,21 @@ import {
   Search,
   ExternalLink,
   ChevronRight,
-  RotateCcw
+  RotateCcw,
+  Eye,
+  X,
+  Award,
+  DollarSign,
+  UserCheck
 } from 'lucide-react';
+import api from '../../../utils/api';
 
 export default function TrainerMyApplications() {
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  const [selectedApp, setSelectedApp] = useState<any | null>(null);
 
   useEffect(() => {
     fetchApplications();
@@ -30,12 +36,9 @@ export default function TrainerMyApplications() {
   const fetchApplications = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5600/api/hiring/trainer/applications', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/hiring/trainer/applications');
       if (res.data.success) {
-        setApplications(res.data.data);
+        setApplications(res.data.applications || res.data.data || []);
       }
     } catch (err) {
       console.error('Failed to load applications:', err);
@@ -45,20 +48,18 @@ export default function TrainerMyApplications() {
   };
 
   const handleWithdraw = async (appId: string) => {
-    if (!window.confirm('Are you sure you want to withdraw this application?')) return;
+    if (!window.confirm('Are you sure you want to withdraw this job application?')) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.patch(
-        `http://localhost:5600/api/hiring/trainer/applications/${appId}/withdraw`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.patch(`/hiring/trainer/applications/${appId}/withdraw`);
       if (res.data.success) {
-        alert('Application withdrawn.');
+        alert('Application withdrawn successfully.');
         setApplications((prev) =>
           prev.map((a) => (a._id === appId ? { ...a, status: 'Withdrawn' } : a))
         );
+        if (selectedApp?._id === appId) {
+          setSelectedApp((prev: any) => ({ ...prev, status: 'Withdrawn' }));
+        }
       }
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to withdraw application');
@@ -67,20 +68,41 @@ export default function TrainerMyApplications() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  // Status mapping as requested in prompt:
+  // - Pending Review
+  // - Under Review
+  // - Shortlisted
+  // - Interview Scheduled
+  // - Approved
+  // - Rejected
+  // - Withdrawn
+  const formatStatusDisplay = (status: string) => {
     switch (status) {
       case 'Applied':
-        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
-      case 'Under Review':
+        return 'Pending Review';
+      case 'Selected':
+      case 'Offer Accepted':
+        return 'Approved';
+      case 'Offer Rejected':
+        return 'Offer Declined';
+      default:
+        return status;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const formatted = formatStatusDisplay(status);
+    switch (formatted) {
+      case 'Pending Review':
         return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
+      case 'Under Review':
+        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
       case 'Shortlisted':
         return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
       case 'Interview Scheduled':
         return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
-      case 'Selected':
+      case 'Approved':
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-      case 'Offer Accepted':
-        return 'bg-teal-500/10 text-teal-300 border-teal-500/30';
       case 'Rejected':
         return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
       case 'Withdrawn':
@@ -92,10 +114,13 @@ export default function TrainerMyApplications() {
 
   const filtered = applications.filter((app) => {
     const term = search.toLowerCase();
+    const title = app.jobId?.title || '';
+    const gym = app.jobId?.gymName || app.gymId?.name || '';
+    const status = formatStatusDisplay(app.status || '');
     return (
-      app.jobId?.title?.toLowerCase().includes(term) ||
-      app.jobId?.gymName?.toLowerCase().includes(term) ||
-      app.status?.toLowerCase().includes(term)
+      title.toLowerCase().includes(term) ||
+      gym.toLowerCase().includes(term) ||
+      status.toLowerCase().includes(term)
     );
   });
 
@@ -109,13 +134,13 @@ export default function TrainerMyApplications() {
             My Job Applications
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Track your application status, interview schedules, and gym job decisions in real-time
+            Track your application status, interview schedules, and gym hiring decisions in real-time
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             to="/trainer/jobs"
-            className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-sm transition-all"
+            className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-sm transition-all shadow-md shadow-teal-500/20"
           >
             Explore Open Vacancies
           </Link>
@@ -128,13 +153,13 @@ export default function TrainerMyApplications() {
         </div>
       </div>
 
-      {/* Search */}
+      {/* Search Bar */}
       <div className="bg-[#0E1415] p-4 rounded-2xl border border-[#2A3A3A]">
         <div className="relative">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search applications by gym or position..."
+            placeholder="Search applications by position, gym name, or status..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#2DD4BF]"
@@ -142,6 +167,7 @@ export default function TrainerMyApplications() {
         </div>
       </div>
 
+      {/* Applications List */}
       {loading ? (
         <div className="p-12 text-center text-slate-400 bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
           <div className="inline-block animate-spin w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full mb-3" />
@@ -152,46 +178,47 @@ export default function TrainerMyApplications() {
           <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-3" />
           <h3 className="text-lg font-semibold text-white mb-1">No applications submitted yet</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto mb-4">
-            Discover active trainer openings matching your fitness credentials and kickstart your coaching career.
+            Discover verified gym coach openings matching your fitness credentials and apply now.
           </p>
           <Link
             to="/trainer/jobs"
-            className="px-4 py-2 bg-[#2DD4BF] text-black font-semibold rounded-xl text-xs inline-block"
+            className="px-4 py-2 bg-[#2DD4BF] text-black font-semibold rounded-xl text-xs inline-block shadow-md shadow-teal-500/20"
           >
-            Browse Jobs Now
+            Browse Vacancies
           </Link>
         </div>
       ) : (
         <div className="space-y-4">
           {filtered.map((app) => {
             const job = app.jobId;
-            const canWithdraw = ['Applied', 'Under Review', 'Shortlisted'].includes(app.status);
+            const canWithdraw = ['Applied', 'Pending Review', 'Under Review', 'Shortlisted'].includes(app.status);
+            const statusLabel = formatStatusDisplay(app.status);
 
             return (
               <div
                 key={app._id}
-                className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-5 hover:border-[#2DD4BF]/40 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-5 hover:border-[#2DD4BF]/40 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg"
               >
                 <div className="space-y-2 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base font-bold text-white">{job?.title || 'Gym Trainer'}</h3>
+                    <h3 className="text-base font-bold text-white">{job?.title || 'Fitness Coach'}</h3>
                     <span
-                      className={`text-xs px-2.5 py-0.5 rounded-full border font-medium ${getStatusBadge(
+                      className={`text-xs px-2.5 py-0.5 rounded-full border font-bold ${getStatusBadge(
                         app.status
                       )}`}
                     >
-                      {app.status}
+                      {statusLabel}
                     </span>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
                     <span className="flex items-center gap-1.5 text-white font-medium">
                       <Building2 className="w-3.5 h-3.5 text-[#2DD4BF]" />
-                      {job?.gymName || 'Fitness Club'}
+                      {job?.gymName || app.gymId?.name || 'Verified Gym'}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                      {job?.location}
+                      {job?.location || app.gymId?.address || 'On-site'}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-slate-500" />
@@ -199,7 +226,7 @@ export default function TrainerMyApplications() {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-1">
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
                     {app.resumeUrl && (
                       <a
                         href={`http://localhost:5600${app.resumeUrl}`}
@@ -211,10 +238,18 @@ export default function TrainerMyApplications() {
                         Submitted Resume <ExternalLink className="w-3 h-3" />
                       </a>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedApp(app)}
+                      className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-[#2DD4BF]" />
+                      View Application Details
+                    </button>
                   </div>
                 </div>
 
-                {/* Status Timeline / Actions */}
+                {/* Actions */}
                 <div className="flex items-center gap-3 self-end md:self-center">
                   {app.status === 'Interview Scheduled' && (
                     <Link
@@ -226,14 +261,23 @@ export default function TrainerMyApplications() {
                     </Link>
                   )}
 
-                  {app.status === 'Selected' && (
+                  {(app.status === 'Selected' || app.status === 'Offer Accepted') && (
                     <Link
                       to="/trainer/job-offers"
-                      className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-xs"
+                      className="px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-xs"
                     >
                       Review Offer
                     </Link>
                   )}
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedApp(app)}
+                    className="px-3 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white border border-[#2A3A3A] rounded-xl text-xs flex items-center gap-1"
+                  >
+                    <Eye size={13} />
+                    Details
+                  </button>
 
                   {canWithdraw && (
                     <button
@@ -249,6 +293,139 @@ export default function TrainerMyApplications() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* VIEW APPLICATION DETAILS MODAL */}
+      {selectedApp && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl">
+            <div className="flex items-start justify-between pb-4 border-b border-[#2A3A3A]">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-[#2DD4BF] tracking-wider block">
+                  Application Details
+                </span>
+                <h2 className="text-xl font-bold text-white mt-0.5">
+                  {selectedApp.jobId?.title || 'Fitness Coach'}
+                </h2>
+                <p className="text-xs text-slate-400">
+                  at {selectedApp.jobId?.gymName || selectedApp.gymId?.name || 'Verified Gym'} · Applied {new Date(selectedApp.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedApp(null)}
+                className="p-2 rounded-xl bg-[#141D1E] text-slate-400 hover:text-white border border-[#2A3A3A]"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Current Status Banner */}
+            <div className="p-4 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-between">
+              <div>
+                <span className="text-xs text-slate-400 block">Application Status</span>
+                <span className={`inline-block mt-1 text-xs px-3 py-1 rounded-full border font-bold ${getStatusBadge(selectedApp.status)}`}>
+                  {formatStatusDisplay(selectedApp.status)}
+                </span>
+              </div>
+              {selectedApp.reviewNotes && (
+                <div className="text-right text-xs max-w-xs">
+                  <span className="text-slate-400 block">Notes from Gym</span>
+                  <span className="text-white italic">{selectedApp.reviewNotes}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Candidate & Application Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+                <span className="text-slate-500 font-semibold uppercase text-[10px]">Candidate Name</span>
+                <p className="font-bold text-white">{selectedApp.name}</p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+                <span className="text-slate-500 font-semibold uppercase text-[10px]">Contact Info</span>
+                <p className="text-slate-300">{selectedApp.email} · {selectedApp.phone}</p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+                <span className="text-slate-500 font-semibold uppercase text-[10px]">Work Experience</span>
+                <p className="font-bold text-white">{selectedApp.workExperience || '1-2 Years'}</p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+                <span className="text-slate-500 font-semibold uppercase text-[10px]">Availability</span>
+                <p className="font-bold text-white">{selectedApp.availability || 'Immediately'}</p>
+              </div>
+
+              {selectedApp.expectedSalary && (
+                <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+                  <span className="text-slate-500 font-semibold uppercase text-[10px]">Expected Salary</span>
+                  <p className="font-bold text-[#2DD4BF]">₹{selectedApp.expectedSalary}</p>
+                </div>
+              )}
+
+              {selectedApp.preferredLocation && (
+                <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+                  <span className="text-slate-500 font-semibold uppercase text-[10px]">Preferred Location</span>
+                  <p className="font-bold text-white">{selectedApp.preferredLocation}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Qualifications & Certifications */}
+            {(selectedApp.qualifications || selectedApp.certifications) && (
+              <div className="space-y-3 p-4 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-xs">
+                {selectedApp.qualifications && (
+                  <div>
+                    <span className="text-slate-500 font-semibold uppercase text-[10px] block">Qualifications</span>
+                    <p className="text-slate-300 mt-0.5">{selectedApp.qualifications}</p>
+                  </div>
+                )}
+                {selectedApp.certifications && (
+                  <div>
+                    <span className="text-slate-500 font-semibold uppercase text-[10px] block">Certifications</span>
+                    <p className="text-slate-300 mt-0.5">{selectedApp.certifications}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Resume Document Link */}
+            {selectedApp.resumeUrl && (
+              <div className="p-4 rounded-2xl bg-[#141D1E] border border-[#2DD4BF]/30 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                    <FileText size={18} />
+                  </div>
+                  <div>
+                    <span className="font-bold text-white block">Submitted Resume Document</span>
+                    <span className="text-[11px] text-slate-400">PDF / Word Document</span>
+                  </div>
+                </div>
+
+                <a
+                  href={`http://localhost:5600${selectedApp.resumeUrl}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-md shadow-teal-500/10"
+                >
+                  <span>Open Resume</span>
+                  <ExternalLink size={13} />
+                </a>
+              </div>
+            )}
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedApp(null)}
+                className="px-5 py-2.5 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] text-white rounded-xl text-xs font-semibold cursor-pointer"
+              >
+                Close Details
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

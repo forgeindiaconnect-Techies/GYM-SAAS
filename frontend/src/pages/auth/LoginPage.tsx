@@ -262,7 +262,10 @@ const LoginPage = () => {
 
         <div className="mt-6 text-center text-sm text-[#9AAEAE]">
           Don't have an account?{' '}
-          <Link to="/register" className="text-[#2DD4BF] font-semibold hover:text-[#5EEAD4] hover:underline transition-colors">
+          <Link
+            to={portal === 'trainer' ? '/register/trainer' : (portal === 'gym-owner' ? '/register/gym-owner' : '/register/customer')}
+            className="text-[#2DD4BF] font-semibold hover:text-[#5EEAD4] hover:underline transition-colors"
+          >
             Sign Up
           </Link>
         </div>

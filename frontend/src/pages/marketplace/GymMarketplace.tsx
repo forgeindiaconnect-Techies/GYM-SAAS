@@ -44,6 +44,8 @@ const GymMarketplace = () => {
         }
       };
       setTimeout(() => tryScroll(), 1200);
+    } else {
+      window.scrollTo(0, 0);
     }
   }, [location.state]);
 

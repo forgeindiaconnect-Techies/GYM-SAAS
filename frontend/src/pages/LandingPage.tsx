@@ -157,11 +157,6 @@ const LandingPage = () => {
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 xl:gap-2.5 shrink-0 flex-nowrap">
-            <Link to="/careers" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-              <Briefcase size={14} className="text-[#06201D]" />
-              <span>Trainers Careers</span>
-            </Link>
-
             <Link to="/login" id="nav-login" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center justify-center shrink-0 whitespace-nowrap">
               Log In
             </Link>

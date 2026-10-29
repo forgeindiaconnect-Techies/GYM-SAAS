@@ -60,6 +60,7 @@ const GymAdminPostJob: React.FC = () => {
     salaryType: 'Monthly',
     isSalaryNegotiable: false,
     employmentType: 'Full-time',
+    trainingMode: 'Offline' as 'Online' | 'Offline' | 'Hybrid',
     location: '',
     workingHours: '',
     vacanciesCount: 1,
@@ -106,6 +107,7 @@ const GymAdminPostJob: React.FC = () => {
               salaryType: j.salaryType || 'Monthly',
               isSalaryNegotiable: Boolean(j.isSalaryNegotiable),
               employmentType: j.employmentType || 'Full-time',
+              trainingMode: j.trainingMode || 'Offline',
               location: j.location || '',
               workingHours: j.workingHours || '',
               vacanciesCount: j.vacanciesCount || 1,
@@ -370,7 +372,55 @@ const GymAdminPostJob: React.FC = () => {
             </div>
           </div>
 
-          {/* 4. Compensation / Salary Range */}
+          {/* 4. Training Mode */}
+          <div>
+            <label className="block text-xs font-bold text-[#F5FAFA] mb-1.5">
+              Training Mode <span className="text-red-400">*</span>
+            </label>
+            <p className="text-[11px] text-[#9AAEAE] mb-3">
+              Select how the trainer will conduct sessions.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {(['Online', 'Offline', 'Hybrid'] as const).map((mode) => {
+                const icons: Record<string, string> = {
+                  Online: '💻',
+                  Offline: '🏋️',
+                  Hybrid: '🔄',
+                };
+                const descriptions: Record<string, string> = {
+                  Online: 'Remote / virtual sessions only',
+                  Offline: 'In-person at gym facility',
+                  Hybrid: 'Mix of online & in-person',
+                };
+                const selected = formData.trainingMode === mode;
+                return (
+                  <button
+                    type="button"
+                    key={mode}
+                    onClick={() => setFormData({ ...formData, trainingMode: mode })}
+                    className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl border text-left transition-all ${
+                      selected
+                        ? 'bg-[#2DD4BF]/10 border-[#2DD4BF] text-[#2DD4BF] shadow-sm shadow-teal-500/20'
+                        : 'bg-[#0E1415] border-[#2A3A3A] text-[#9AAEAE] hover:border-[#2DD4BF]/40 hover:text-[#F5FAFA]'
+                    }`}
+                  >
+                    <span className="text-lg">{icons[mode]}</span>
+                    <div>
+                      <div className={`text-xs font-bold ${selected ? 'text-[#2DD4BF]' : 'text-[#F5FAFA]'}`}>
+                        {mode}
+                      </div>
+                      <div className="text-[10px] text-[#9AAEAE]">{descriptions[mode]}</div>
+                    </div>
+                    {selected && (
+                      <CheckCircle2 size={15} className="ml-auto text-[#2DD4BF] shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 5. Compensation / Salary Range */}
           <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-[#F5FAFA] flex items-center gap-1.5">

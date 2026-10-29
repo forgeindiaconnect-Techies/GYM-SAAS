@@ -8,14 +8,29 @@ const PrivacyPolicy = () => {
   const roleParam = searchParams.get('role');
   const storedPortal = typeof window !== 'undefined' ? sessionStorage.getItem('last_portal') : null;
 
+  const referrer = typeof document !== 'undefined' ? document.referrer : '';
+  const fromTrainerRegister = referrer.includes('/register/trainer') || referrer.includes('/register/trainers');
+  const fromTrainerCareers = referrer.includes('/careers') || referrer.includes('/trainers/careers');
+
   const returnPath: string =
     (location.state as any)?.from ??
-    (storedPortal === 'customer' || (typeof document !== 'undefined' && document.referrer.includes('/portal/customer'))
+    (fromTrainerRegister
+      ? '/register/trainer'
+      : fromTrainerCareers
+      ? '/careers'
+      : storedPortal === 'customer' || (typeof document !== 'undefined' && document.referrer.includes('/portal/customer'))
       ? '/portal/customer'
       : '/');
+
   const returnLabel: string =
     (location.state as any)?.fromLabel ??
-    (returnPath.includes('/portal/customer') ? 'Back to Customer' : 'Back to Home');
+    (fromTrainerRegister
+      ? 'Back to Registration'
+      : fromTrainerCareers
+      ? 'Back to Careers'
+      : returnPath.includes('/portal/customer')
+      ? 'Back to Customer'
+      : 'Back to Home');
 
   const isSuperAdmin = roleParam === 'super-admin' || (location.state as any)?.from?.includes('/portal/super-admin');
 
@@ -31,6 +46,8 @@ const PrivacyPolicy = () => {
       }
     } else if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
+    } else if (fromTrainerRegister) {
+      navigate('/register/trainer');
     } else {
       navigate(returnPath);
     }

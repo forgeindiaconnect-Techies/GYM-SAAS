@@ -10,6 +10,7 @@ import User from '../models/User';
 import Trainer from '../models/Trainer';
 import Notification from '../models/Notification';
 import mongoose from 'mongoose';
+import { sendJobApplicationStatusEmail } from '../utils/emailService';
 
 // Helper to resolve gym for gym owner
 const resolveGymForOwner = async (req: AuthRequest) => {
@@ -22,6 +23,28 @@ const resolveGymForOwner = async (req: AuthRequest) => {
     if (gym) return gym;
   }
   return null;
+};
+
+// Generic file upload endpoint for Resumes, Certifications & Photos
+export const uploadDocument = async (req: any, res: Response): Promise<void> => {
+  try {
+    if (!req.file) {
+      res.status(400).json({ success: false, message: 'No file was uploaded' });
+      return;
+    }
+    const fileUrl = `/uploads/resumes/${req.file.filename}`;
+    res.status(200).json({
+      success: true,
+      fileUrl,
+      originalName: req.file.originalname,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+      message: 'Document uploaded successfully'
+    });
+  } catch (error: any) {
+    console.error('Error in uploadDocument:', error);
+    res.status(500).json({ success: false, message: error.message || 'File upload failed' });
+  }
 };
 
 // ==========================================
@@ -406,10 +429,30 @@ export const getOwnerApplications = async (req: AuthRequest, res: Response): Pro
 
     const applications = await JobApplication.find(query)
       .populate('jobId', 'title location employmentType salaryMin salaryMax salaryType')
-      .populate('trainerId', 'firstName lastName email mobile profilePhoto')
+      .populate('trainerId', 'firstName lastName email mobile profilePhoto city specialization experienceYears qualification certifications previousGym resumeUrl certificationUrl trainerMode bio')
       .sort({ createdAt: -1 });
 
-    res.status(200).json({ success: true, applications });
+    const formattedApplications = applications.map((app: any) => {
+      const doc = app.toObject ? app.toObject() : app;
+      const trainer: any = doc.trainerId || {};
+      const exp = doc.workExperience || (trainer.experienceYears ? `${trainer.experienceYears} Years` : '1-2 Years');
+      return {
+        ...doc,
+        fullName: doc.name || `${trainer.firstName || ''} ${trainer.lastName || ''}`.trim() || 'Trainer Candidate',
+        yearsOfExperience: exp,
+        workExperience: exp,
+        preferredLocation: doc.preferredLocation || trainer.city || '',
+        city: doc.preferredLocation || trainer.city || '',
+        previousGym: (doc as any).previousGym || trainer.previousGym || '',
+        certificationUrl: (doc as any).certificationUrl || trainer.certificationUrl || '',
+        profilePhoto: doc.profilePhoto || trainer.profilePhoto || '',
+        qualifications: doc.qualifications || trainer.qualification || '',
+        certifications: doc.certifications || trainer.certifications || '',
+        trainingMode: doc.employmentPreference || trainer.trainerMode || '',
+      };
+    });
+
+    res.status(200).json({ success: true, applications: formattedApplications, data: formattedApplications });
   } catch (error: any) {
     console.error('Error fetching owner applications:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch applications', error: error.message });
@@ -427,12 +470,30 @@ export const getOwnerApplicationById = async (req: AuthRequest, res: Response): 
 
     const application = await JobApplication.findOne({ _id: id, gymId: gym._id })
       .populate('jobId')
-      .populate('trainerId', 'firstName lastName email mobile profilePhoto');
+      .populate('trainerId', 'firstName lastName email mobile profilePhoto city specialization experienceYears qualification certifications previousGym resumeUrl certificationUrl trainerMode bio');
 
     if (!application) {
       res.status(404).json({ success: false, message: 'Application not found' });
       return;
     }
+
+    const doc: any = application.toObject ? application.toObject() : application;
+    const trainer: any = doc.trainerId || {};
+    const exp = doc.workExperience || (trainer.experienceYears ? `${trainer.experienceYears} Years` : '1-2 Years');
+    const formattedApplication = {
+      ...doc,
+      fullName: doc.name || `${trainer.firstName || ''} ${trainer.lastName || ''}`.trim() || 'Trainer Candidate',
+      yearsOfExperience: exp,
+      workExperience: exp,
+      preferredLocation: doc.preferredLocation || trainer.city || '',
+      city: doc.preferredLocation || trainer.city || '',
+      previousGym: (doc as any).previousGym || trainer.previousGym || '',
+      certificationUrl: (doc as any).certificationUrl || trainer.certificationUrl || '',
+      profilePhoto: doc.profilePhoto || trainer.profilePhoto || '',
+      qualifications: doc.qualifications || trainer.qualification || '',
+      certifications: doc.certifications || trainer.certifications || '',
+      trainingMode: doc.employmentPreference || trainer.trainerMode || '',
+    };
 
     // Also fetch any scheduled interviews and job offers for this application
     const [interviews, offers] = await Promise.all([
@@ -440,7 +501,7 @@ export const getOwnerApplicationById = async (req: AuthRequest, res: Response): 
       JobOffer.find({ applicationId: id }).sort({ createdAt: -1 })
     ]);
 
-    res.status(200).json({ success: true, application, interviews, offers });
+    res.status(200).json({ success: true, application: formattedApplication, interviews, offers });
   } catch (error: any) {
     console.error('Error fetching application details:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch application details', error: error.message });
@@ -509,7 +570,35 @@ export const updateApplicationStatus = async (req: AuthRequest, res: Response): 
       console.error('Failed to dispatch notification:', notifErr);
     }
 
-    res.status(200).json({ success: true, message: `Application status updated to ${status}`, application });
+    // Dispatch direct status email to Candidate's respective mail ID
+    try {
+      const candidateEmail = application.email;
+      const candidateName = application.name || 'Candidate';
+      const jobTitle = (application.jobId as any)?.title || 'Fitness Trainer';
+      const gymName = gym.name || 'Fitness Club';
+
+      if (candidateEmail) {
+        console.log(`[HiringController] Dispatching direct status email (${status}) to candidate email: ${candidateEmail}`);
+        sendJobApplicationStatusEmail({
+          toEmail: candidateEmail,
+          candidateName,
+          jobTitle,
+          gymName,
+          status,
+          reviewNotes: reviewNotes || comment
+        }).catch((emailErr) => {
+          console.error(`[HiringController] Error sending candidate status email to ${candidateEmail}:`, emailErr);
+        });
+      }
+    } catch (emailDispatchErr) {
+      console.error('[HiringController] Failed to dispatch candidate status email:', emailDispatchErr);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Application status updated to ${status}. Notification email sent to ${application.email}`,
+      application
+    });
   } catch (error: any) {
     console.error('Error updating application status:', error);
     res.status(500).json({ success: false, message: 'Failed to update application status', error: error.message });
@@ -518,7 +607,7 @@ export const updateApplicationStatus = async (req: AuthRequest, res: Response): 
 
 export const scheduleInterview = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params; // applicationId
+    const id = req.params.id || req.body.applicationId;
     const gym = await resolveGymForOwner(req);
     if (!gym) {
       res.status(404).json({ success: false, message: 'Gym not found' });
@@ -642,7 +731,7 @@ export const updateInterview = async (req: AuthRequest, res: Response): Promise<
 
 export const issueJobOffer = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params; // applicationId
+    const id = req.params.id || req.body.applicationId;
     const gym = await resolveGymForOwner(req);
     if (!gym) {
       res.status(404).json({ success: false, message: 'Gym not found' });
@@ -910,7 +999,7 @@ export const getTrainerApplications = async (req: AuthRequest, res: Response): P
       .populate('gymId', 'name address city logo')
       .sort({ createdAt: -1 });
 
-    res.status(200).json({ success: true, applications });
+    res.status(200).json({ success: true, applications, data: applications });
   } catch (error: any) {
     console.error('Error fetching trainer applications:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch your applications', error: error.message });
@@ -1359,14 +1448,26 @@ export const getOwnerTrainers = async (req: AuthRequest, res: Response): Promise
     else if (sortBy === 'salaryHigh') sortObj = { expectedSalary: -1 };
     else if (sortBy === 'rating') sortObj = { averageRating: -1 };
 
-    const trainers = await Trainer.find(query).sort(sortObj);
+    const trainers = await Trainer.find(query)
+      .populate('userId', 'city mobile resumeUrl certificationUrl previousGym profilePhoto qualification certifications specialization')
+      .sort(sortObj);
 
     // Map shortlisted flag for this owner's gym
     const mapped = trainers.map(t => {
       const isShortlisted = gymId && t.shortlistedByGyms?.some(id => id.toString() === gymId.toString());
+      const u = (t.userId as any) || {};
       return {
         ...t.toObject(),
-        isShortlisted: !!isShortlisted
+        isShortlisted: !!isShortlisted,
+        city: u.city || t.preferredLocation || '',
+        phone: t.phone || u.mobile || '',
+        resumeUrl: t.resumeUrl || u.resumeUrl || '',
+        certificationUrl: t.certificationUrl || u.certificationUrl || '',
+        previousGym: t.previousGym || u.previousGym || '',
+        qualifications: t.qualifications || u.qualification || '',
+        certifications: t.certifications || u.certifications || '',
+        profilePhoto: t.profilePhoto || u.profilePhoto || '',
+        availability: t.availability || t.earliestJoiningDate || 'Immediately'
       };
     });
 
