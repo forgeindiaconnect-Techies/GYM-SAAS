@@ -459,16 +459,6 @@ const MemberSubscription = () => {
                   <Printer size={14} className="text-[#EA580C]" />
                   <span>Download / Print Receipt</span>
                 </button>
-
-                <button
-                  type="button"
-                  disabled={resendingEmail}
-                  onClick={() => handleResendEmail(currentMembership._id)}
-                  className="px-3.5 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/15 disabled:opacity-50"
-                >
-                  {resendingEmail ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
-                  <span>Resend Email</span>
-                </button>
               </div>
             </div>
           </div>

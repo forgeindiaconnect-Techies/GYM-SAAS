@@ -6,6 +6,29 @@ import api from '../utils/api';
 import { FeaturePreview } from '../components/Landing/FeaturePreview';
 import { TourSlide } from '../components/Landing/TourSlide';
 import { TrainerRecruitmentSection } from '../components/Landing/TrainerRecruitmentSection';
+import builderImg1 from '../assets/builder image 1.jpg';
+import builderImg2 from '../assets/builder image 2.jpg';
+import builderImg3 from '../assets/builder image 3.jpg';
+import builderImg4 from '../assets/builder image 4.jpg';
+import builderImg5 from '../assets/builder image 5.jpg';
+import builderImg6 from '../assets/builder image 6.jpg';
+import builderImg7 from '../assets/builder image 7.jpg';
+import builderImg8 from '../assets/builder image 8.jpg';
+import builderImg9 from '../assets/builder image 9.jpg';
+import builderImg10 from '../assets/builder image 10.jpg';
+
+const BUILDER_IMAGES = [
+  { src: builderImg1, alt: 'Athlete Physique 1' },
+  { src: builderImg2, alt: 'Athlete Physique 2' },
+  { src: builderImg3, alt: 'Athlete Physique 3' },
+  { src: builderImg4, alt: 'Athlete Physique 4' },
+  { src: builderImg5, alt: 'Athlete Physique 5' },
+  { src: builderImg6, alt: 'Athlete Physique 6' },
+  { src: builderImg7, alt: 'Athlete Physique 7' },
+  { src: builderImg8, alt: 'Athlete Physique 8' },
+  { src: builderImg9, alt: 'Athlete Physique 9' },
+  { src: builderImg10, alt: 'Athlete Physique 10' },
+];
 import { useAuth } from '../contexts/AuthContext';
 
 const LandingPage = () => {
@@ -214,17 +237,14 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* Right Video Container: Super Admin Platform Video */}
+            {/* Right Showcase: Clear Gym Related Image */}
             <div className="lg:col-span-5 relative">
-              <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
-                <video
-                  src="/videos/superadmin.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  controls
-                  className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+              <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-orange-500/10 bg-[#FFFFFF] group">
+                <img
+                  src="/hero-gym.jpg"
+                  alt="Professional Gym Workout"
+                  className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                  loading="eager"
                 />
               </div>
             </div>
@@ -250,22 +270,12 @@ const LandingPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
               {/* Left Side: Related Platform Ecosystem Image */}
               <div className="lg:col-span-5 relative">
-                <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-xl bg-[#FFFFFF] group h-full min-h-[340px] sm:min-h-[420px] flex flex-col justify-end">
+                <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-xl bg-[#FFFFFF] group h-full min-h-[340px] sm:min-h-[420px]">
                   <img 
-                    src="/gym-landing-image-1.jpg" 
+                    src="/dedicated-portals.jpg" 
                     alt="Gymora Dedicated Portals Ecosystem" 
-                    className="absolute inset-0 w-full h-full object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover object-center block group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="relative z-10 bg-gradient-to-t from-black/80 via-black/35 to-transparent p-6 sm:p-7 flex flex-col justify-end">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#C2410C] text-white w-fit mb-2 shadow-sm">
-                      <Sparkles size={12} />
-                      <span>Unified Fitness Ecosystem</span>
-                    </span>
-                    <h3 className="text-white text-lg sm:text-xl font-bold">One Platform, Three Tailored Portals</h3>
-                    <p className="text-gray-200 text-xs sm:text-sm mt-1 leading-relaxed">
-                      Connecting gym owners, personal trainers, and customers in a unified fitness experience.
-                    </p>
-                  </div>
                 </div>
               </div>
 
@@ -332,6 +342,52 @@ const LandingPage = () => {
         {/* Trainer Recruitment & Careers Hub Section */}
         <TrainerRecruitmentSection />
 
+        {/* 10 Builder Images Infinite Scrolling Section (Left to Right Automatically) */}
+        <section className="py-20 border-t border-[#E2E8F0] bg-[#FFFFFF] overflow-hidden" id="athletes-showcase">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center">
+            <span className="px-3.5 py-1.5 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs font-semibold inline-flex items-center gap-1.5 mb-3 shadow-xs">
+              <Sparkles size={13} />
+              <span>Real Athletes &amp; Peak Performance</span>
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight mb-3">
+              Built for Every Fitness Ambition
+            </h2>
+            <p className="text-sm sm:text-base text-[#64748B] max-w-2xl mx-auto">
+              From elite physique conditioning to functional strength—join athletes, certified trainers, and premier gyms powered by Gymora.
+            </p>
+          </div>
+
+          {/* Marquee Carousel Container with Gradient Edge Fades */}
+          <div className="relative w-full overflow-hidden py-4">
+            {/* Left Edge Gradient Fade */}
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-[#FFFFFF] to-transparent z-10" />
+            {/* Right Edge Gradient Fade */}
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#FFFFFF] to-transparent z-10" />
+
+            {/* Scrolling Track (duplicated for seamless infinite loop) */}
+            <div className="animate-scroll-ltr flex items-center gap-5 sm:gap-6">
+              {[...BUILDER_IMAGES, ...BUILDER_IMAGES].map((img, idx) => (
+                <div
+                  key={idx}
+                  className="relative shrink-0 w-56 sm:w-64 h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-md hover:shadow-xl transition-all duration-300 group select-none bg-[#F8FAFC]"
+                >
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                    <span className="text-white text-xs font-bold px-2.5 py-1 rounded-md bg-[#C2410C]/90 shadow-sm">
+                      Gymora Athlete
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
 
         {/* Video Tour Section */}
         <section className="py-24 relative overflow-hidden bg-[#FFFFFF]" id="video-tour">
@@ -369,7 +425,7 @@ const LandingPage = () => {
 
                 {/* Related Videos */}
                 <div>
-                  <h3 className="text-[#FFFFFF] font-bold mb-3 flex items-center space-x-2">
+                  <h3 className="text-[#111827] font-bold mb-3 flex items-center space-x-2">
                     <PlayCircle size={16} className="text-[#EA580C]" />
                     <span>Related Videos</span>
                   </h3>
@@ -416,7 +472,7 @@ const LandingPage = () => {
         <section className="border-t border-[#E2E8F0] bg-[#F8FAFC] py-24" id="how-it-works">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">How It Works</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#111827]">How It Works</h2>
               <p className="text-[#64748B]">Your journey to peak fitness in 4 simple steps.</p>
             </div>
             <div className="grid md:grid-cols-4 gap-8 text-center">
@@ -431,7 +487,7 @@ const LandingPage = () => {
                     {item.step}
                   </div>
                   <item.icon size={32} className="text-[#64748B] mb-4" />
-                  <h3 className="text-lg font-semibold mb-2 text-[#FFFFFF]">{item.title}</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-[#111827]">{item.title}</h3>
                   <p className="text-sm text-[#64748B] leading-relaxed">{item.desc}</p>
                 </div>
               ))}
@@ -444,7 +500,7 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Discover Premium <span className="text-[#EA580C]">Gyms</span></h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#111827]">Discover Premium <span className="text-[#EA580C]">Gyms</span></h2>
                 <p className="text-[#64748B] max-w-xl">Find and join the best fitness centers in your area. Use your Gymora membership to access state-of-the-art facilities.</p>
               </div>
               <Link
@@ -476,7 +532,7 @@ const LandingPage = () => {
                       </div>
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-bold mb-1 text-[#FFFFFF]">{gym.name}</h3>
+                      <h3 className="text-xl font-bold mb-1 text-[#111827]">{gym.name}</h3>
                       <div className="flex items-center space-x-1 text-[#64748B] text-sm mb-4">
                         <MapPin size={14} className="text-[#EA580C]" />
                         <span>{gym.location}</span>
@@ -517,7 +573,7 @@ const LandingPage = () => {
                       )}
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-bold mb-1 text-[#FFFFFF] group-hover:text-[#EA580C] transition-colors">{gym.name}</h3>
+                      <h3 className="text-xl font-bold mb-1 text-[#111827] group-hover:text-[#EA580C] transition-colors">{gym.name}</h3>
                       <div className="flex items-start space-x-1.5 text-[#64748B] text-sm mb-4">
                         <MapPin size={15} className="text-[#EA580C] shrink-0 mt-0.5" />
                         <div className="line-clamp-2 text-xs font-medium text-[#64748B]">
@@ -773,7 +829,7 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
               <span className="text-[#EA580C] text-xs font-bold uppercase tracking-widest mb-2 block">Real Community Feedback</span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Don't Just Take Our Word For It</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#111827]">Don't Just Take Our Word For It</h2>
               <p className="text-[#64748B] max-w-2xl mx-auto">See what our real gym owners, certified trainers, and active members are saying about Gymora.</p>
             </div>
 
@@ -880,7 +936,7 @@ const LandingPage = () => {
                       <div className="pt-4 border-t border-[#E2E8F0]">
                         <div className="flex items-center justify-between">
                           <div>
-                            <h4 className="font-bold text-[#FFFFFF] text-base">{review.name}</h4>
+                            <h4 className="font-bold text-[#111827] text-base">{review.name}</h4>
                             <span className="text-xs text-[#EA580C] uppercase tracking-wider font-semibold block mt-0.5">
                               {review.role}
                             </span>
@@ -895,12 +951,12 @@ const LandingPage = () => {
                         {review.reviewedGym ? (
                           <span className="text-xs text-[#64748B] font-medium block mt-2.5 flex items-center gap-1.5 bg-[#F8FAFC] p-2 rounded-lg border border-[#E2E8F0]">
                             <CheckCircle size={14} className="text-[#EA580C] shrink-0" />
-                            <span>Gym Review: <strong className="text-[#FFFFFF]">{review.reviewedGym}</strong>{review.gymLocation ? ` • ${review.gymLocation}` : ''}</span>
+                            <span>Gym Review: <strong className="text-[#111827]">{review.reviewedGym}</strong>{review.gymLocation ? ` • ${review.gymLocation}` : ''}</span>
                           </span>
                         ) : review.reviewedBy ? (
                           <span className="text-xs text-[#64748B] font-medium block mt-2.5 flex items-center gap-1.5 bg-[#F8FAFC] p-2 rounded-lg border border-[#E2E8F0]">
                             <CheckCircle size={14} className="text-[#EA580C] shrink-0" />
-                            <span>Client Review • <strong className="text-[#FFFFFF]">{review.reviewedBy}</strong></span>
+                            <span>Client Review • <strong className="text-[#111827]">{review.reviewedBy}</strong></span>
                           </span>
                         ) : review.subtitle ? (
                           <span className="text-xs text-[#64748B] block mt-2">
@@ -941,7 +997,7 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-[#FFFFFF] font-semibold mb-4">Navigate</h4>
+              <h4 className="text-[#111827] font-semibold mb-4">Navigate</h4>
               <ul className="space-y-2 text-sm text-[#64748B]">
                 <li><button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsFeaturesOpen(true); }} className="hover:text-[#EA580C] transition-colors cursor-pointer">Features</button></li>
                 <li><button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTourJourney('select'); setTourStep(1); setIsTourOpen(true); }} className="hover:text-[#EA580C] transition-colors cursor-pointer">Video Tour</button></li>
@@ -951,7 +1007,7 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-[#FFFFFF] font-semibold mb-4">Company</h4>
+              <h4 className="text-[#111827] font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-[#64748B]">
                 <li><Link to="/about" className="hover:text-[#EA580C] transition-colors">About Us</Link></li>
                 <li><Link to="/blog" className="hover:text-[#EA580C] transition-colors">Blog</Link></li>
@@ -960,7 +1016,7 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-[#FFFFFF] font-semibold mb-4">Account</h4>
+              <h4 className="text-[#111827] font-semibold mb-4">Account</h4>
               <ul className="space-y-2 text-sm text-[#64748B]">
                 <li><Link to="/login" className="hover:text-[#EA580C] transition-colors">Log In</Link></li>
                 <li><Link to="/register/customer" className="hover:text-[#EA580C] transition-colors">Sign In (Register)</Link></li>

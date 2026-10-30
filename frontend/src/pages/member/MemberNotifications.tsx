@@ -81,10 +81,6 @@ const MemberNotifications: React.FC = () => {
     if (!notif.isRead) {
       markAsRead(notif._id);
     }
-    if (notif.link) {
-      navigate(notif.link);
-      return;
-    }
     setSelected(notif);
   };
 
@@ -125,7 +121,7 @@ const MemberNotifications: React.FC = () => {
           <button
             onClick={markAllAsRead}
             disabled={unreadCount === 0}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-white border border-[#E2E8F0] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#111827] border border-[#E2E8F0] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <CheckCheck size={14} className="text-[#EA580C]" />
             Mark all read
@@ -194,7 +190,7 @@ const MemberNotifications: React.FC = () => {
       ) : filteredNotifications.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl py-16 text-center shadow-xl">
           <Bell size={40} className="mx-auto text-zinc-600 mb-3" />
-          <p className="text-white font-bold text-base">No notifications found</p>
+          <p className="text-[#111827] font-bold text-base">No notifications found</p>
           <p className="text-[#64748B] text-xs mt-1">
             {filter === 'unread' ? "You're all caught up! No unread messages." : "Alerts, rewards, and gym messages will appear here."}
           </p>
@@ -223,7 +219,7 @@ const MemberNotifications: React.FC = () => {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start mb-1 gap-3">
-                    <h4 className={clsx("text-sm sm:text-base truncate", isUnread ? 'font-bold text-white' : 'font-semibold text-zinc-300')}>
+                    <h4 className={clsx("text-sm sm:text-base truncate", isUnread ? 'font-bold text-[#111827]' : 'font-semibold text-[#475569]')}>
                       {notif.title}
                     </h4>
                     <span className="text-[11px] text-zinc-500 whitespace-nowrap shrink-0">
@@ -234,13 +230,6 @@ const MemberNotifications: React.FC = () => {
                   <p className="text-xs sm:text-sm text-[#64748B] line-clamp-2 leading-relaxed">
                     {notif.message}
                   </p>
-
-                  {notif.link && (
-                    <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-[#EA580C] hover:underline">
-                      <span>View details</span>
-                      <ExternalLink size={11} />
-                    </div>
-                  )}
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 self-center">
@@ -298,12 +287,12 @@ const MemberNotifications: React.FC = () => {
             <div className="p-6 space-y-4">
               <div>
                 <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold mb-1">Title</p>
-                <p className="font-bold text-white text-base">{selected.title}</p>
+                <p className="font-bold text-[#111827] text-base">{selected.title}</p>
               </div>
 
               <div>
                 <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold mb-1">Message</p>
-                <p className="text-sm text-zinc-300 leading-relaxed bg-[#F8FAFC] p-3.5 rounded-2xl border border-[#E2E8F0]">
+                <p className="text-sm text-[#334155] leading-relaxed bg-[#F8FAFC] p-3.5 rounded-2xl border border-[#E2E8F0]">
                   {selected.message}
                 </p>
               </div>

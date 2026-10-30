@@ -8,7 +8,7 @@ import {
   Briefcase,
   MapPin,
   Clock,
-  DollarSign,
+  IndianRupee,
   Search,
   Filter,
   Building2,
@@ -165,7 +165,7 @@ export default function Careers() {
       const items = val.map(s => String(s).trim()).filter(Boolean);
       if (items.length === 0) return null;
       return (
-        <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+        <ul className="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
           {items.map((item, idx) => (
             <li key={idx}>{item}</li>
           ))}
@@ -178,14 +178,14 @@ export default function Careers() {
       const lines = trimmed.split(/\r?\n|•/).map(s => s.trim()).filter(Boolean);
       if (lines.length > 1) {
         return (
-          <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+          <ul className="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
             {lines.map((item, idx) => (
               <li key={idx}>{item}</li>
             ))}
           </ul>
         );
       }
-      return <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">{trimmed}</p>;
+      return <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">{trimmed}</p>;
     }
     return null;
   };
@@ -290,7 +290,7 @@ export default function Careers() {
           <div className="flex items-center gap-4">
             <Link
               to="/trainers"
-              className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-300 hover:text-[#C2410C] bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all flex items-center gap-2 group"
+              className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 hover:text-[#C2410C] bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all flex items-center gap-2 group"
             >
               <ArrowLeft size={16} className="text-[#EA580C] group-hover:-translate-x-0.5 transition-transform" />
               <span>Back</span>
@@ -300,7 +300,7 @@ export default function Careers() {
               <div className="w-10 h-10 bg-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
                 <Activity className="text-black" size={24} />
               </div>
-              <span className="text-2xl font-bold tracking-tight text-white">Gymora</span>
+              <span className="text-2xl font-bold tracking-tight text-[#111827]">Gymora</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] font-semibold uppercase tracking-wider ml-2">
                 Careers Portal
               </span>
@@ -338,13 +338,13 @@ export default function Careers() {
           <h1 className="text-4xl md:text-5xl font-extrabold text-[#111827] tracking-tight">
             Find High-Paying <span className="text-[#EA580C]">Gym Coaching Jobs</span>
           </h1>
-          <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Apply to top fitness clubs, CrossFit boxes, and wellness centers. Connect directly with
             authorized gym owners and accelerate your coaching career.
           </p>
 
           {/* Quick Stats Banner */}
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-600 font-medium">
             <span className="flex items-center gap-1.5">
               <CheckCircle className="w-4 h-4 text-[#EA580C]" /> Direct Owner Hiring
             </span>
@@ -370,14 +370,14 @@ export default function Careers() {
                 placeholder="Search by job title, gym name, specialization (e.g. Strength, Yoga, Crossfit)..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#FDBA74]"
+                className="w-full pl-12 pr-4 py-3 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] placeholder-slate-500 text-sm focus:outline-none focus:border-[#FDBA74]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-[#E2E8F0]">
             <div>
-              <label className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase text-slate-700 block mb-1">
                 Location
               </label>
               <input
@@ -385,18 +385,18 @@ export default function Careers() {
                 placeholder="City or state..."
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-xs placeholder-slate-500 focus:outline-none focus:border-[#FDBA74]"
+                className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] text-xs placeholder-slate-500 focus:outline-none focus:border-[#FDBA74]"
               />
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase text-slate-700 block mb-1">
                 Employment Type
               </label>
               <select
                 value={employmentFilter}
                 onChange={(e) => setEmploymentFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-xs focus:outline-none focus:border-[#FDBA74]"
+                className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] text-xs focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="">All Employment Types</option>
                 <option value="Full-time">Full-time</option>
@@ -406,13 +406,13 @@ export default function Careers() {
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase text-slate-700 block mb-1">
                 Minimum Experience
               </label>
               <select
                 value={experienceFilter}
                 onChange={(e) => setExperienceFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-xs focus:outline-none focus:border-[#FDBA74]"
+                className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] text-xs focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="">Any Experience</option>
                 <option value="1">1+ Years</option>
@@ -426,7 +426,7 @@ export default function Careers() {
         {/* Results Counter */}
         <div className="flex items-center justify-between text-xs text-slate-400 px-1">
           <span>
-            Showing <strong className="text-white">{filteredJobs.length}</strong> active published
+            Showing <strong className="text-[#111827]">{filteredJobs.length}</strong> active published
             gym opportunities
           </span>
           <span>Only verified, authenticated gym vacancies</span>
@@ -471,7 +471,7 @@ export default function Careers() {
                         </h3>
                       </div>
                       <div className="flex flex-col items-end gap-1">
-                        <span className="text-[11px] bg-[#FFFFFF] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#E2E8F0] font-medium whitespace-nowrap">
+                        <span className="text-[11px] bg-[#FFFFFF] text-slate-700 px-2.5 py-0.5 rounded-full border border-[#E2E8F0] font-semibold whitespace-nowrap">
                           {job.employmentType}
                         </span>
                         {isOver && (
@@ -482,14 +482,14 @@ export default function Careers() {
                       </div>
                     </div>
 
-                    <div className="space-y-2 text-xs text-slate-400 my-4 bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
+                    <div className="space-y-2 text-xs text-slate-600 my-4 bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
                       <div className="flex items-center gap-2">
                         <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span className="text-slate-300 truncate">{job.location}</span>
+                        <span className="text-slate-600 truncate">{job.location}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <DollarSign className="w-3.5 h-3.5 text-[#EA580C] shrink-0" />
-                        <span className="text-white font-bold font-mono">
+                        <IndianRupee className="w-3.5 h-3.5 text-[#EA580C] shrink-0" />
+                        <span className="text-[#111827] font-bold font-mono">
                           {job.salaryMin
                             ? `₹${job.salaryMin.toLocaleString()} - ₹${job.salaryMax?.toLocaleString()} / ${job.salaryType}`
                             : 'Competitive'}
@@ -497,19 +497,19 @@ export default function Careers() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span>
+                        <span className="text-slate-600">
                           {job.experience || (job.experienceRequired ? `${job.experienceRequired}+ years required experience` : 'Any experience welcome')}
                         </span>
                       </div>
                       {deadline && (
-                        <div className={`flex items-center gap-2 ${isOver ? 'text-[#B91C1C] font-semibold' : ''}`}>
+                        <div className={`flex items-center gap-2 ${isOver ? 'text-[#B91C1C] font-semibold' : 'text-slate-600'}`}>
                           <Calendar className="w-3.5 h-3.5 shrink-0" />
                           <span>Deadline: {new Date(deadline).toLocaleDateString()} {isOver ? '(Job Vacancy Over)' : ''}</span>
                         </div>
                       )}
                     </div>
 
-                    <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                       {job.description}
                     </p>
 
@@ -517,7 +517,7 @@ export default function Careers() {
                       {job.expertise?.slice(0, 3).map((exp, i) => (
                         <span
                           key={i}
-                          className="text-[10px] bg-[#F8FAFC] text-slate-300 px-2.5 py-1 rounded-lg border border-[#E2E8F0]"
+                          className="text-[10px] bg-[#F8FAFC] text-slate-600 px-2.5 py-1 rounded-lg border border-[#E2E8F0]"
                         >
                           {exp}
                         </span>
@@ -533,7 +533,7 @@ export default function Careers() {
                   <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
                     <button
                       onClick={() => setSelectedJob(job)}
-                      className="px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 hover:text-[#C2410C] rounded-xl text-xs font-medium border border-[#E2E8F0] transition-all"
+                      className="px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-600 hover:text-[#C2410C] rounded-xl text-xs font-medium border border-[#E2E8F0] transition-all"
                     >
                       View Details
                     </button>
@@ -578,7 +578,7 @@ export default function Careers() {
                 </span>
                 <h2 className="text-2xl font-bold text-[#111827] mt-1">{selectedJob.title}</h2>
                 <div className="flex flex-wrap items-center gap-2 mt-2">
-                  <span className="text-[11px] bg-[#FFFFFF] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#E2E8F0] font-medium">
+                  <span className="text-[11px] bg-[#FFFFFF] text-slate-700 px-2.5 py-0.5 rounded-full border border-[#E2E8F0] font-semibold">
                     {selectedJob.employmentType}
                   </span>
                   <span className="text-[11px] bg-[#FFFFFF] text-[#EA580C] px-2.5 py-0.5 rounded-full border border-[#E2E8F0] font-medium">
@@ -610,15 +610,15 @@ export default function Careers() {
                 <MapPin className="w-4 h-4 text-[#EA580C] shrink-0" />
                 <div>
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Location</span>
-                  <span className="text-slate-200 font-medium">{selectedJob.location || 'On-site'}</span>
+                  <span className="text-slate-700 font-medium">{selectedJob.location || 'On-site'}</span>
                 </div>
               </div>
 
               <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0] flex items-center gap-2.5">
-                <DollarSign className="w-4 h-4 text-[#EA580C] shrink-0" />
+                <IndianRupee className="w-4 h-4 text-[#EA580C] shrink-0" />
                 <div>
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Salary / Compensation</span>
-                  <span className="text-white font-mono font-bold">
+                  <span className="text-[#111827] font-mono font-bold">
                     {selectedJob.salaryMin && selectedJob.salaryMax
                       ? `₹${selectedJob.salaryMin.toLocaleString()} - ₹${selectedJob.salaryMax.toLocaleString()} / ${selectedJob.salaryType || 'Monthly'}`
                       : (selectedJob.salaryMin ? `From ₹${selectedJob.salaryMin.toLocaleString()}` : 'Competitive / Negotiable')}
@@ -630,7 +630,7 @@ export default function Careers() {
                 <Clock className="w-4 h-4 text-[#EA580C] shrink-0" />
                 <div>
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Required Experience</span>
-                  <span className="text-slate-200 font-medium">
+                  <span className="text-slate-700 font-medium">
                     {selectedJob.experience || (selectedJob.experienceRequired ? `${selectedJob.experienceRequired}+ years` : 'Flexible / Any')}
                   </span>
                 </div>
@@ -641,7 +641,7 @@ export default function Careers() {
                 <div>
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Application Deadline</span>
                   {selectedJob.applicationDeadline || (selectedJob as any).deadline ? (
-                    <span className={`font-medium ${isDeadlineCompleted(selectedJob.applicationDeadline || (selectedJob as any).deadline) ? 'text-[#B91C1C] font-bold' : 'text-slate-200'}`}>
+                    <span className={`font-medium ${isDeadlineCompleted(selectedJob.applicationDeadline || (selectedJob as any).deadline) ? 'text-[#B91C1C] font-bold' : 'text-slate-700'}`}>
                       {new Date(selectedJob.applicationDeadline || (selectedJob as any).deadline).toLocaleDateString()}
                       {isDeadlineCompleted(selectedJob.applicationDeadline || (selectedJob as any).deadline) ? ' (Job Vacancy Over)' : ''}
                     </span>
@@ -656,7 +656,7 @@ export default function Careers() {
                   <Clock className="w-4 h-4 text-[#EA580C] shrink-0" />
                   <div>
                     <span className="text-[10px] text-slate-500 block uppercase font-bold">Shift & Working Hours</span>
-                    <span className="text-slate-200 font-medium">{selectedJob.workingHours}</span>
+                    <span className="text-slate-700 font-medium">{selectedJob.workingHours}</span>
                   </div>
                 </div>
               )}
@@ -667,7 +667,7 @@ export default function Careers() {
               <h4 className="text-xs uppercase font-semibold text-[#EA580C] mb-2">
                 Job Overview & Description
               </h4>
-              <p className="text-sm text-slate-300 leading-relaxed bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] whitespace-pre-line">
+              <p className="text-sm text-slate-700 leading-relaxed bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] whitespace-pre-line">
                 {selectedJob.description || 'No detailed description provided.'}
               </p>
             </div>
@@ -682,7 +682,7 @@ export default function Careers() {
                   {selectedJob.expertise.map((exp: string, idx: number) => (
                     <span
                       key={idx}
-                      className="text-xs bg-[#F8FAFC] text-slate-200 px-3 py-1 rounded-lg border border-[#E2E8F0]"
+                      className="text-xs bg-[#F8FAFC] text-slate-700 px-3 py-1 rounded-lg border border-[#E2E8F0]"
                     >
                       {exp}
                     </span>
@@ -736,13 +736,13 @@ export default function Careers() {
 
             {/* Footer Buttons */}
             <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between">
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-600 font-medium">
                 {selectedJob.vacanciesCount || 1} {Number(selectedJob.vacanciesCount) > 1 ? 'openings available' : 'opening available'}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setSelectedJob(null)}
-                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl text-xs font-medium border border-[#E2E8F0]"
+                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-700 hover:text-[#C2410C] rounded-xl text-xs font-semibold border border-[#E2E8F0] transition-colors"
                 >
                   Close
                 </button>
@@ -798,33 +798,33 @@ export default function Careers() {
               {/* Personal Details */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">Full Name *</label>
+                  <label className="text-slate-700 font-medium block mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
                     value={form.fullName}
                     onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">Email *</label>
+                  <label className="text-slate-700 font-medium block mb-1">Email *</label>
                   <input
                     type="email"
                     required
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">Phone Number *</label>
+                  <label className="text-slate-700 font-medium block mb-1">Phone Number *</label>
                   <input
                     type="tel"
                     required
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
               </div>
@@ -832,32 +832,32 @@ export default function Careers() {
               {/* Experience & Salary Expectations */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">Experience (Years) *</label>
+                  <label className="text-slate-700 font-medium block mb-1">Experience (Years) *</label>
                   <input
                     type="number"
                     min="0"
                     required
                     value={form.yearsOfExperience}
                     onChange={(e) => setForm({ ...form, yearsOfExperience: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">Expected Salary (₹)</label>
+                  <label className="text-slate-700 font-medium block mb-1">Expected Salary (₹)</label>
                   <input
                     type="text"
                     placeholder="e.g. ₹40,000 / month"
                     value={form.expectedSalary}
                     onChange={(e) => setForm({ ...form, expectedSalary: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">Notice / Availability</label>
+                  <label className="text-slate-700 font-medium block mb-1">Notice / Availability</label>
                   <select
                     value={form.availability}
                     onChange={(e) => setForm({ ...form, availability: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Immediate">Immediate Joining</option>
                     <option value="15 Days">Within 15 Days</option>
@@ -869,7 +869,7 @@ export default function Careers() {
               {/* Specializations & Certifications */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">
+                  <label className="text-slate-700 font-medium block mb-1">
                     Specializations / Expertise (comma-separated)
                   </label>
                   <input
@@ -877,11 +877,11 @@ export default function Careers() {
                     placeholder="e.g. Strength Training, Crossfit, Functional Fitness"
                     value={form.expertise}
                     onChange={(e) => setForm({ ...form, expertise: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">
+                  <label className="text-slate-700 font-medium block mb-1">
                     Certifications (comma-separated)
                   </label>
                   <input
@@ -889,14 +889,14 @@ export default function Careers() {
                     placeholder="e.g. ACE CPT, CPR/AED, ISSA"
                     value={form.certifications}
                     onChange={(e) => setForm({ ...form, certifications: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
               </div>
 
               {/* Qualifications */}
               <div>
-                <label className="text-slate-400 block mb-1">
+                <label className="text-slate-700 font-medium block mb-1">
                   Academic / Sports Qualifications (comma-separated)
                 </label>
                 <input
@@ -904,13 +904,13 @@ export default function Careers() {
                   placeholder="e.g. B.P.Ed, Sports Nutrition Diploma"
                   value={form.qualifications}
                   onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
               {/* Resume File Upload */}
               <div className="bg-[#FFFFFF] p-4 rounded-xl border border-dashed border-[#FFEDD5]">
-                <label className="text-white font-semibold block mb-1 flex items-center gap-2">
+                <label className="text-[#111827] font-semibold block mb-1 flex items-center gap-2">
                   <Upload className="w-4 h-4 text-[#EA580C]" />
                   Upload Resume / Credentials (PDF, DOC, DOCX up to 10MB) *
                 </label>
@@ -923,7 +923,7 @@ export default function Careers() {
                       setResumeFile(e.target.files[0]);
                     }
                   }}
-                  className="w-full text-slate-400 text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#C2410C] file:text-black hover:file:bg-[#9A3412] cursor-pointer"
+                  className="w-full text-slate-700 text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#C2410C] file:text-white hover:file:bg-[#9A3412] cursor-pointer"
                 />
                 {resumeFile && (
                   <p className="text-[#EA580C] text-[11px] mt-1 font-medium">
@@ -934,14 +934,14 @@ export default function Careers() {
 
               {/* Cover Note */}
               <div>
-                <label className="text-slate-400 block mb-1">
+                <label className="text-slate-700 font-medium block mb-1">
                   Personal Pitch / Cover Note (Optional)
                 </label>
                 <textarea
                   rows={3}
                   value={form.coverLetter}
                   onChange={(e) => setForm({ ...form, coverLetter: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74] resize-none"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] focus:outline-none focus:border-[#FDBA74] resize-none"
                 />
               </div>
 
@@ -949,7 +949,7 @@ export default function Careers() {
                 <button
                   type="button"
                   onClick={() => setShowApplyModal(false)}
-                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl"
+                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-700 hover:text-[#C2410C] rounded-xl border border-[#E2E8F0] transition-colors"
                 >
                   Cancel
                 </button>

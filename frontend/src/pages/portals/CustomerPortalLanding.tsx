@@ -267,14 +267,6 @@ const CustomerPortalLanding = () => {
               <Sparkles size={14} className="text-[#FFFFFF]" />
               <span>Features</span>
             </button>
-            <button
-              type="button"
-              onClick={() => { setTourStep(1); setIsTourOpen(true); }}
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 cursor-pointer"
-            >
-              <PlayCircle size={14} className="text-[#FFFFFF]" />
-              <span>Customer Journey</span>
-            </button>
             <Link
               to="/gyms"
               state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
@@ -320,28 +312,16 @@ const CustomerPortalLanding = () => {
                 <Flame size={18} className="text-[#FFFFFF]" />
                 <span>Join Now / Create Account</span>
               </Link>
-              <button
-                type="button"
-                onClick={() => { setTourStep(1); setIsTourOpen(true); }}
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/15 hover:shadow-teal-500/30 cursor-pointer"
-              >
-                <PlayCircle size={18} className="text-[#FFFFFF]" />
-                <span>Watch Customer Journey</span>
-              </button>
             </div>
           </div>
 
-          {/* Right Video Container: Customer Fitness AI Video */}
+          {/* Right Hero Image Container: Customer Fitness */}
           <div className="lg:col-span-5 relative">
             <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
-              <video
-                src="/videos/customer-ai-gym.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls
-                className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+              <img
+                src="/customer-hero.jpg"
+                alt="AI Workouts & Elite Trainers"
+                className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
               />
             </div>
           </div>

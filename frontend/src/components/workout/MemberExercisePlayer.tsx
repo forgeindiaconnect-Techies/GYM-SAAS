@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X, Play, Pause, RotateCcw, CheckCircle2, ChevronRight, ChevronLeft,
   ShieldAlert, Award, Sparkles, ArrowRight
@@ -242,23 +242,23 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-[#FFFFFF] text-white overflow-hidden animate-in fade-in">
+    <div className="fixed inset-0 z-[100] flex flex-col bg-[#FFFFFF] text-[#111827] overflow-hidden animate-in fade-in">
       {/* Top Navbar */}
-      <div className="px-4 py-3 bg-[#FFFFFF] border-b border-white/10 flex items-center justify-between z-20">
+      <div className="px-4 py-3 bg-[#FFFFFF] border-b border-[#E2E8F0] flex items-center justify-between z-20 shadow-xs">
         <div className="flex items-center gap-3">
           <button
             onClick={onClose}
-            className="p-2 bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 rounded-full transition-colors text-white"
+            className="p-2 bg-[#F1F5F9] hover:bg-[#E2E8F0] rounded-full transition-colors text-[#111827] cursor-pointer"
             title="Exit Workout"
           >
             <X size={20} />
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded bg-[#C2410C] text-[#EA580C]">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                 {dayName}
               </span>
-              <span className="text-xs text-white/60 font-semibold">
+              <span className="text-xs text-[#64748B] font-semibold">
                 Exercise {currentIdx + 1} of {exercises.length}
               </span>
             </div>
@@ -273,17 +273,17 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
           <button
             onClick={handlePrevExercise}
             disabled={currentIdx === 0}
-            className="p-2 bg-[#FFFFFF]/5 hover:bg-[#FFFFFF]/10 rounded-xl text-white/70 hover:text-white disabled:opacity-20 transition-colors"
+            className="p-2 bg-[#F8FAFC] hover:bg-[#F1F5F9] rounded-xl text-[#334155] hover:text-[#111827] border border-[#E2E8F0] disabled:opacity-20 transition-colors cursor-pointer"
           >
             <ChevronLeft size={18} />
           </button>
-          <span className="text-xs font-mono font-bold px-2 py-1 bg-[#FFFFFF]/5 rounded-lg border border-white/10">
+          <span className="text-xs font-mono font-bold px-2.5 py-1 bg-[#F8FAFC] text-[#111827] rounded-lg border border-[#E2E8F0]">
             {currentIdx + 1} / {exercises.length}
           </span>
           <button
             onClick={handleNextExercise}
             disabled={currentIdx === exercises.length - 1}
-            className="p-2 bg-[#FFFFFF]/5 hover:bg-[#FFFFFF]/10 rounded-xl text-white/70 hover:text-white disabled:opacity-20 transition-colors"
+            className="p-2 bg-[#F8FAFC] hover:bg-[#F1F5F9] rounded-xl text-[#334155] hover:text-[#111827] border border-[#E2E8F0] disabled:opacity-20 transition-colors cursor-pointer"
           >
             <ChevronRight size={18} />
           </button>
@@ -295,33 +295,33 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
         {/* Left Column: Animation Video & Playback HUD */}
         <div className="lg:w-3/5 p-4 md:p-6 flex flex-col justify-between space-y-4">
           {/* Top HUD: Set / Reps / Timer Status */}
-          <div className="grid grid-cols-3 gap-2 md:gap-4 bg-[#FFFFFF] p-3 md:p-4 rounded-2xl border border-white/10 text-center">
+          <div className="grid grid-cols-3 gap-2 md:gap-4 bg-[#FFFFFF] p-3 md:p-4 rounded-2xl border border-[#E2E8F0] text-center shadow-sm">
             {/* Set Counter */}
             <div className="flex flex-col items-center justify-center">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-white/50">Current Set</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748B]">Current Set</span>
               <div className="text-xl md:text-2xl font-black font-mono text-[#15803D] mt-0.5">
                 SET {currentSet} / {totalSets}
               </div>
             </div>
 
             {/* Repetition Counter */}
-            <div className="flex flex-col items-center justify-center border-x border-white/10 px-2">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-white/50">Target Reps</span>
+            <div className="flex flex-col items-center justify-center border-x border-[#E2E8F0] px-2">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748B]">Target Reps</span>
               <div className="flex items-center gap-2 mt-0.5">
                 <button
                   type="button"
                   onClick={() => setRepCount(prev => Math.max(1, prev - 1))}
-                  className="w-5 h-5 rounded bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-xs font-bold flex items-center justify-center"
+                  className="w-6 h-6 rounded bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#111827] border border-[#E2E8F0] text-xs font-bold flex items-center justify-center cursor-pointer"
                 >
                   -
                 </button>
-                <span className="text-xl md:text-2xl font-black font-mono text-white">
+                <span className="text-xl md:text-2xl font-black font-mono text-[#111827]">
                   {repCount}
                 </span>
                 <button
                   type="button"
                   onClick={() => setRepCount(prev => prev + 1)}
-                  className="w-5 h-5 rounded bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-xs font-bold flex items-center justify-center"
+                  className="w-6 h-6 rounded bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#111827] border border-[#E2E8F0] text-xs font-bold flex items-center justify-center cursor-pointer"
                 >
                   +
                 </button>
@@ -330,7 +330,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
 
             {/* Countdown / Elapsed Timer */}
             <div className="flex flex-col items-center justify-center">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-white/50">Elapsed Time</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748B]">Elapsed Time</span>
               <div className="text-xl md:text-2xl font-black font-mono text-[#B45309] mt-0.5">
                 {formatTimer(workoutElapsed)}
               </div>
@@ -347,19 +347,19 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                   </div>
                 </div>
                 <h3 className="text-2xl font-extrabold text-[#111827] tracking-wide">REST PERIOD</h3>
-                <p className="text-xs md:text-sm text-white/60 mt-1 max-w-sm">
+                <p className="text-xs md:text-sm text-[#475569] mt-1 max-w-sm">
                   Catch your breath and hydrate. Set {currentSet} of {totalSets} will begin automatically.
                 </p>
                 <div className="flex gap-3 mt-6">
                   <button
                     onClick={handleSkipRest}
-                    className="px-6 py-2.5 bg-[#C2410C] hover:bg-[#C2410C] text-[#111827] rounded-xl text-xs md:text-sm font-black transition-all shadow-lg shadow-emerald-500/20 cursor-pointer"
+                    className="px-6 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-xl text-xs md:text-sm font-black transition-all shadow-md cursor-pointer"
                   >
                     Skip Rest & Begin Set {currentSet}
                   </button>
                   <button
                     onClick={() => setRestTimeRemaining(prev => prev + 15)}
-                    className="px-4 py-2.5 bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-white rounded-xl text-xs md:text-sm font-bold transition-colors cursor-pointer"
+                    className="px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-xl text-xs md:text-sm font-bold transition-colors cursor-pointer"
                   >
                     +15s Rest
                   </button>
@@ -367,36 +367,36 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               </div>
             ) : exerciseCompleted ? (
               <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] to-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center z-30 animate-in zoom-in-95">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-300 text-[#111827] flex items-center justify-center mb-3 shadow-xl shadow-emerald-500/30 animate-bounce">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center mb-3 shadow-xl shadow-emerald-500/30 animate-bounce">
                   <CheckCircle2 size={36} />
                 </div>
                 <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#15803D]">
                   Exercise {currentIdx + 1} of {exercises.length} Complete!
                 </span>
                 <h3 className="text-2xl font-black text-[#111827] mt-1">{ex.name} Finished</h3>
-                <p className="text-xs text-white/70 mt-1 max-w-sm">
+                <p className="text-xs text-[#475569] mt-1 max-w-sm">
                   Logged {totalSets} Sets × {repCount} Reps ({formatTimer(workoutElapsed)}) • Synced with Trainer
                 </p>
 
                 {currentIdx < exercises.length - 1 ? (
-                  <div className="mt-4 p-3 bg-black/40 border border-[#E2E8F0]/30 rounded-2xl max-w-sm w-full text-left">
+                  <div className="mt-4 p-3 bg-[#FFFFFF] border border-[#E2E8F0] shadow-sm rounded-2xl max-w-sm w-full text-left">
                     <div className="flex items-center justify-between text-[11px]">
                       <span className="font-extrabold text-[#EA580C] uppercase tracking-wider">
                         Up Next: Exercise {currentIdx + 2}
                       </span>
-                      <span className="font-mono font-bold text-[#15803D] px-2 py-0.5 bg-[#FFF7ED] rounded-full border border-[#E2E8F0]/30">
+                      <span className="font-mono font-bold text-[#15803D] px-2 py-0.5 bg-[#FFF7ED] rounded-full border border-[#FFEDD5]">
                         Starting in {autoAdvanceCountdown ?? 3}s
                       </span>
                     </div>
-                    <p className="text-sm font-bold text-white mt-1 truncate">
+                    <p className="text-sm font-bold text-[#111827] mt-1 truncate">
                       {exercises[currentIdx + 1]?.exerciseId?.name || 'Next Exercise'}
                     </p>
-                    <p className="text-[11px] text-white/60 mt-0.5">
+                    <p className="text-[11px] text-[#64748B] mt-0.5">
                       {exercises[currentIdx + 1]?.sets || 3} Sets × {exercises[currentIdx + 1]?.repetitions || 12} Reps
                     </p>
                   </div>
                 ) : (
-                  <div className="mt-4 p-3 bg-[#FFF7ED] border border-[#E2E8F0]/30 rounded-2xl max-w-sm w-full text-center">
+                  <div className="mt-4 p-3 bg-[#FFF7ED] border border-[#FFEDD5] rounded-2xl max-w-sm w-full text-center">
                     <span className="text-xs font-bold text-[#EA580C]">
                       You finished all {exercises.length} exercises in today&apos;s routine!
                     </span>
@@ -406,14 +406,14 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                 <div className="flex items-center gap-3 mt-5">
                   <button
                     onClick={handleRestart}
-                    className="px-4 py-2.5 bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    className="px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#111827] hover:text-[#EA580C] border border-[#E2E8F0] rounded-xl text-xs font-bold transition-colors cursor-pointer"
                   >
                     Repeat Exercise
                   </button>
                   {currentIdx < exercises.length - 1 ? (
                     <button
                       onClick={handleProceedToNextExercise}
-                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:opacity-95 text-[#111827] rounded-xl text-xs font-black transition-all shadow-xl shadow-emerald-500/20 flex items-center gap-2 cursor-pointer"
+                      className="px-6 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-xl text-xs font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
                     >
                       <span>Start Exercise {currentIdx + 2} Now</span>
                       <ArrowRight size={16} />
@@ -421,7 +421,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                   ) : (
                     <button
                       onClick={() => setWorkoutFinished(true)}
-                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 text-[#111827] rounded-xl text-xs font-black transition-all shadow-lg flex items-center gap-1.5 cursor-pointer"
+                      className="px-6 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-xl text-xs font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
                     >
                       <Award size={16} /> Complete Workout
                     </button>
@@ -469,7 +469,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               <button
                 type="button"
                 onClick={handleProceedToNextExercise}
-                className="flex-1 py-3 px-6 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-[#111827] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-white rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-orange-500/20 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>
                   Next Exercise: {exercises[currentIdx + 1]?.exerciseId?.name || 'Exercise ' + (currentIdx + 2)} ({autoAdvanceCountdown ?? 3}s)
@@ -480,7 +480,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               <button
                 type="button"
                 onClick={() => setWorkoutFinished(true)}
-                className="flex-1 py-3 px-6 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-[#111827] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/30 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-white rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-orange-500/20 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Award size={20} />
                 <span>Complete Workout</span>
@@ -490,7 +490,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                 type="button"
                 onClick={isResting ? handleSkipRest : handleCompleteSet}
                 disabled={savingProgress}
-                className="flex-1 py-3 px-6 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-[#111827] rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-emerald-500/20 active:scale-95 disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-white rounded-2xl text-sm md:text-base font-black transition-all shadow-xl shadow-orange-500/20 active:scale-95 disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <CheckCircle2 size={20} />
                 <span>
@@ -508,41 +508,41 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
         </div>
 
         {/* Right Column: Step-by-Step Instructions & Trainer Advice */}
-        <div className="lg:w-2/5 p-4 md:p-6 bg-[#F8FAFC] border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col justify-between">
+        <div className="lg:w-2/5 p-4 md:p-6 bg-[#F8FAFC] border-t lg:border-t-0 lg:border-l border-[#E2E8F0] flex flex-col justify-between">
           <div className="space-y-4">
             {/* Meta Tags */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#FFFFFF]/10 text-white/90">
+              <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#FFFFFF] text-[#111827] border border-[#E2E8F0] shadow-sm">
                 {ex.category || 'General'}
               </span>
-              <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#FFFFFF]/10 text-[#EA580C]">
+              <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                 Target: {ex.targetMuscle || 'Muscles'}
               </span>
-              <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#FFFFFF]/10 text-amber-300">
+              <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-[#B45309] border border-amber-200">
                 {ex.difficulty || 'All Levels'}
               </span>
             </div>
 
             {/* Trainer Custom Notes Banner (Crucial requirement) */}
             {currentItem.trainerNotes && (
-              <div className="bg-[#FFFFFF] border border-[#E2E8F0]/40 rounded-2xl p-4 shadow-sm">
+              <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 text-[#15803D] font-bold text-xs uppercase tracking-wider mb-1">
                   <Sparkles size={14} /> Personal Trainer Instruction
                 </div>
-                <p className="text-xs md:text-sm text-[#EA580C] font-medium leading-relaxed">
+                <p className="text-xs md:text-sm text-[#EA580C] font-semibold leading-relaxed">
                   &quot;{currentItem.trainerNotes}&quot;
                 </p>
               </div>
             )}
 
             {/* Tab navigation */}
-            <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+            <div className="flex items-center gap-2 border-b border-[#E2E8F0] pb-2">
               <button
                 onClick={() => setActiveTab('instructions')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                   activeTab === 'instructions'
-                    ? 'bg-[#FFFFFF] text-[#111827]'
-                    : 'text-white/60 hover:text-white'
+                    ? 'bg-[#FFFFFF] text-[#111827] border border-[#E2E8F0] shadow-sm'
+                    : 'text-[#64748B] hover:text-[#111827]'
                 }`}
               >
                 Form Instructions
@@ -550,10 +550,10 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               {ex.safetyInstructions && (
                 <button
                   onClick={() => setActiveTab('safety')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer ${
                     activeTab === 'safety'
                       ? 'bg-rose-500 text-white'
-                      : 'text-[#B91C1C] hover:text-rose-300'
+                      : 'text-[#B91C1C] hover:text-rose-700'
                   }`}
                 >
                   <ShieldAlert size={13} /> Safety Tips
@@ -563,28 +563,28 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
 
             {/* Tab content */}
             {activeTab === 'instructions' && (
-              <div className="space-y-3 text-xs md:text-sm text-white/80 leading-relaxed max-h-72 overflow-y-auto pr-1">
-                <div className="bg-black/20 p-4 rounded-2xl border border-white/10 whitespace-pre-line">
+              <div className="space-y-3 text-xs md:text-sm text-[#334155] leading-relaxed max-h-72 overflow-y-auto pr-1">
+                <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E2E8F0] shadow-sm whitespace-pre-line text-[#334155]">
                   {ex.instructions || 'Perform movement with controlled breathing and proper spine alignment.'}
                 </div>
 
-                <div className="p-3 bg-[#FFFFFF]/5 rounded-xl border border-white/10 text-[11px] text-white/60">
-                  <span className="font-bold text-white block mb-0.5">Recommended Rest:</span>
+                <div className="p-3 bg-[#FFFFFF] rounded-xl border border-[#E2E8F0] shadow-sm text-xs text-[#64748B]">
+                  <span className="font-bold text-[#111827] block mb-0.5">Recommended Rest:</span>
                   {configuredRest} seconds between sets to allow muscle ATP replenishment.
                 </div>
               </div>
             )}
 
             {activeTab === 'safety' && ex.safetyInstructions && (
-              <div className="bg-red-50 border border-rose-500/30 p-4 rounded-2xl text-xs text-rose-200 leading-relaxed whitespace-pre-line">
+              <div className="bg-rose-50 border border-rose-200 p-4 rounded-2xl text-xs text-rose-900 leading-relaxed whitespace-pre-line">
                 {ex.safetyInstructions}
               </div>
             )}
           </div>
 
           {/* Quick Exercise Queue List at bottom */}
-          <div className="pt-4 border-t border-white/10 mt-4">
-            <span className="text-[11px] uppercase font-bold text-white/40 block mb-2">
+          <div className="pt-4 border-t border-[#E2E8F0] mt-4">
+            <span className="text-[11px] uppercase font-bold text-[#64748B] block mb-2">
               Up Next in {dayName}:
             </span>
             <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
@@ -598,21 +598,21 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                       setAutoAdvanceCountdown(null);
                       setCurrentIdx(idx);
                     }}
-                    className={`w-full text-left p-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
+                    className={`w-full text-left p-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer ${
                       isActive
-                        ? 'bg-[#C2410C] text-white border border-[#E2E8F0]/50 shadow-sm'
+                        ? 'bg-[#C2410C] text-white border border-[#C2410C] shadow-sm'
                         : isCompleted
-                        ? 'bg-[#FFF7ED] text-[#EA580C] border border-[#E2E8F0]/30'
-                        : 'text-white/60 hover:bg-[#FFFFFF]/5 hover:text-white'
+                        ? 'bg-emerald-50 text-[#15803D] border border-emerald-200'
+                        : 'bg-[#FFFFFF] text-[#334155] border border-[#E2E8F0] hover:bg-[#FFF7ED] hover:text-[#C2410C]'
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate">
                       <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold ${
                         isCompleted
-                          ? 'bg-[#C2410C] text-[#111827]'
+                          ? 'bg-emerald-600 text-white'
                           : isActive
-                          ? 'bg-[#FFFFFF] text-[#EA580C]'
-                          : 'bg-[#FFFFFF]/10 text-white'
+                          ? 'bg-[#FFFFFF] text-[#C2410C]'
+                          : 'bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]'
                       }`}>
                         {isCompleted ? '✓' : idx + 1}
                       </span>
@@ -620,11 +620,11 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {isCompleted && (
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-[#15803D] px-1.5 py-0.5 rounded bg-[#FFF7ED]">
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-[#15803D] px-1.5 py-0.5 rounded bg-emerald-100">
                           Done
                         </span>
                       )}
-                      <span className="text-[10px] text-white/40 font-mono">
+                      <span className={`text-[10px] font-mono ${isActive ? 'text-white/80' : 'text-[#64748B]'}`}>
                         {item.sets} × {item.repetitions}
                       </span>
                     </div>
@@ -638,34 +638,34 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
 
       {/* WORKOUT FINISHED CELEBRATION MODAL */}
       {workoutFinished && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in zoom-in-95">
-          <div className="bg-[#FFFFFF] border border-white/15 rounded-3xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500 to-emerald-400 text-[#111827] flex items-center justify-center mx-auto shadow-2xl animate-bounce">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in zoom-in-95">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500 to-emerald-400 text-white flex items-center justify-center mx-auto shadow-2xl animate-bounce">
               <Award size={42} />
             </div>
 
             <div>
               <span className="text-xs font-black uppercase tracking-widest text-[#15803D]">Workout Completed</span>
               <h2 className="text-3xl font-black text-[#111827] mt-1">Fantastic Job!</h2>
-              <p className="text-xs text-white/70 mt-2">
+              <p className="text-xs text-[#475569] mt-2">
                 You crushed today&apos;s routine! All completed sets and exercise times have been saved to your progress tracker.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 bg-[#FFFFFF]/5 p-4 rounded-2xl border border-white/10">
+            <div className="grid grid-cols-2 gap-3 bg-[#F8FAFC] p-4 rounded-2xl border border-[#E2E8F0]">
               <div>
-                <span className="text-[10px] uppercase font-bold text-white/50 block">Exercises</span>
-                <span className="text-xl font-black text-white">{exercises.length}</span>
+                <span className="text-[10px] uppercase font-bold text-[#64748B] block">Exercises</span>
+                <span className="text-xl font-black text-[#111827]">{exercises.length}</span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-white/50 block">Total Duration</span>
+                <span className="text-[10px] uppercase font-bold text-[#64748B] block">Total Duration</span>
                 <span className="text-xl font-black text-[#15803D]">{formatTimer(workoutElapsed)}</span>
               </div>
             </div>
 
             <button
               onClick={onClose}
-              className="w-full py-3.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-[#111827] rounded-xl text-sm font-black transition-all shadow-xl shadow-emerald-500/30"
+              className="w-full py-3.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-white rounded-xl text-sm font-black transition-all shadow-xl shadow-orange-500/20 cursor-pointer"
             >
               Return to My Dashboard
             </button>

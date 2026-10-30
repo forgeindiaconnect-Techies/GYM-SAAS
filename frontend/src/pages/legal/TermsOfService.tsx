@@ -119,10 +119,10 @@ const TermsOfService = () => {
           </div>
         ) : (
           /* Customer / Member Terms View */
-          <div className="space-y-12 text-[#64748B] leading-relaxed">
+          <div className="space-y-12 text-[#334155] leading-relaxed">
             {/* Intro Banner */}
             <section className="p-6 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0]">
-              <p className="text-base text-[#CBD5E1] leading-relaxed">
+              <p className="text-base text-[#1E293B] font-medium leading-relaxed">
                 Welcome to <span className="text-[#EA580C] font-bold">Gymora</span>! These Terms &amp; Conditions govern your registration, fitness dashboard access, digital gym check-in privileges, personal training bookings, and store purchases made through our customer portal and partner fitness facilities.
               </p>
             </section>
@@ -136,10 +136,10 @@ const TermsOfService = () => {
                 <h2 className="text-2xl font-bold text-[#111827]">1. Eligibility &amp; Account Responsibilities</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
-                <li><strong className="text-white">Minimum Age:</strong> You must be at least 16 years of age (or have explicit parental/guardian consent) to register for an account and access partner gym facilities.</li>
-                <li><strong className="text-white">Credential Confidentiality:</strong> You are solely responsible for maintaining the confidentiality of your login credentials. Do not share your password with others.</li>
-                <li><strong className="text-white">Non-Transferable Access:</strong> Your membership pass and turnstile QR code are strictly personal to you. You may not loan, screenshot, or transfer your QR code to another individual to gain unauthorized gym entry.</li>
-                <li><strong className="text-white">Accurate Profile Data:</strong> You agree to provide true, accurate, and current contact details to ensure emergency notices and receipts reach you promptly.</li>
+                <li><strong className="text-[#111827]">Minimum Age:</strong> You must be at least 16 years of age (or have explicit parental/guardian consent) to register for an account and access partner gym facilities.</li>
+                <li><strong className="text-[#111827]">Credential Confidentiality:</strong> You are solely responsible for maintaining the confidentiality of your login credentials. Do not share your password with others.</li>
+                <li><strong className="text-[#111827]">Non-Transferable Access:</strong> Your membership pass and turnstile QR code are strictly personal to you. You may not loan, screenshot, or transfer your QR code to another individual to gain unauthorized gym entry.</li>
+                <li><strong className="text-[#111827]">Accurate Profile Data:</strong> You agree to provide true, accurate, and current contact details to ensure emergency notices and receipts reach you promptly.</li>
               </ul>
             </section>
 
@@ -188,11 +188,11 @@ const TermsOfService = () => {
                 <h2 className="text-2xl font-bold text-[#111827]">3. Trainer Bookings &amp; Session Cancellation Policy</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
-                <li><strong className="text-white">Authorized Scheduling:</strong> All 1-on-1 personal coaching sessions must be booked through the Gymora portal to guarantee facility insurance coverage.</li>
-                <li><strong className="text-white">24-Hour Notice for Full Credit:</strong> If you cancel a session more than 24 hours prior to the scheduled time, you receive 100% session fee credit or free rescheduling.</li>
-                <li><strong className="text-white">Late Cancellations (6-24 Hours):</strong> Cancellations made between 6 and 24 hours before the appointment are subject to a 50% cancellation fee to compensate the reserved trainer.</li>
-                <li><strong className="text-white">No-Shows (&lt; 6 Hours):</strong> Failure to attend or cancellations with under 6 hours notice forfeit the session fee entirely.</li>
-                <li><strong className="text-white">Trainer-Initiated Rescheduling:</strong> If your trainer must reschedule due to emergency, you are entitled to full rescheduling or a complete refund without penalty.</li>
+                <li><strong className="text-[#111827]">Authorized Scheduling:</strong> All 1-on-1 personal coaching sessions must be booked through the Gymora portal to guarantee facility insurance coverage.</li>
+                <li><strong className="text-[#111827]">24-Hour Notice for Full Credit:</strong> If you cancel a session more than 24 hours prior to the scheduled time, you receive 100% session fee credit or free rescheduling.</li>
+                <li><strong className="text-[#111827]">Late Cancellations (6-24 Hours):</strong> Cancellations made between 6 and 24 hours before the appointment are subject to a 50% cancellation fee to compensate the reserved trainer.</li>
+                <li><strong className="text-[#111827]">No-Shows (&lt; 6 Hours):</strong> Failure to attend or cancellations with under 6 hours notice forfeit the session fee entirely.</li>
+                <li><strong className="text-[#111827]">Trainer-Initiated Rescheduling:</strong> If your trainer must reschedule due to emergency, you are entitled to full rescheduling or a complete refund without penalty.</li>
               </ul>
             </section>
 
@@ -205,10 +205,10 @@ const TermsOfService = () => {
                 <h2 className="text-2xl font-bold text-[#111827]">4. Membership Subscriptions, Fees &amp; Renewals</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
-                <li><strong className="text-white">Advance Payments:</strong> Membership packages (monthly, quarterly, annual) must be paid in advance via our secure payment gateway (UPI, Credit/Debit cards, Net Banking).</li>
-                <li><strong className="text-white">Validity Duration:</strong> Your active membership status and turnstile access remain active strictly for the paid subscription window.</li>
-                <li><strong className="text-white">Expiration &amp; Grace Period:</strong> Upon reaching plan expiry, turnstile check-in access pauses automatically until a renewal plan is confirmed. Your historical workouts and progress metrics remain permanently accessible.</li>
-                <li><strong className="text-white">Price Adjustments:</strong> Any price updates announced by partner gyms apply solely to future renewal periods, never retroactively to active plans.</li>
+                <li><strong className="text-[#111827]">Advance Payments:</strong> Membership packages (monthly, quarterly, annual) must be paid in advance via our secure payment gateway (UPI, Credit/Debit cards, Net Banking).</li>
+                <li><strong className="text-[#111827]">Validity Duration:</strong> Your active membership status and turnstile access remain active strictly for the paid subscription window.</li>
+                <li><strong className="text-[#111827]">Expiration &amp; Grace Period:</strong> Upon reaching plan expiry, turnstile check-in access pauses automatically until a renewal plan is confirmed. Your historical workouts and progress metrics remain permanently accessible.</li>
+                <li><strong className="text-[#111827]">Price Adjustments:</strong> Any price updates announced by partner gyms apply solely to future renewal periods, never retroactively to active plans.</li>
               </ul>
             </section>
 
@@ -220,7 +220,7 @@ const TermsOfService = () => {
                 </div>
                 <h2 className="text-xl font-bold text-[#111827]">5. Health &amp; Physical Activity Disclaimer</h2>
               </div>
-              <p className="text-sm text-[#CBD5E1] leading-relaxed mb-3">
+              <p className="text-sm text-[#374151] leading-relaxed mb-3">
                 Physical exercise, weight lifting, cardiovascular conditioning, and nutritional modifications involve inherent risks of physical strain or injury.
               </p>
               <ul className="text-xs text-[#64748B] space-y-2 pl-4 list-disc">
@@ -239,9 +239,9 @@ const TermsOfService = () => {
                 <h2 className="text-2xl font-bold text-[#111827]">6. Gym Store Orders &amp; Product Returns</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
-                <li><strong className="text-white">Fulfillment &amp; Counter Pickup:</strong> Supplements and merchandise ordered through the portal are fulfilled on-site at your gym's official inventory desk using your digital pickup PIN.</li>
-                <li><strong className="text-white">Seal Integrity:</strong> Inspect tubs and packaging at pickup. Supplements with broken safety seals or opened containers cannot be returned due to hygiene and food safety regulations.</li>
-                <li><strong className="text-white">Unopened Product Returns:</strong> Defective apparel or factory-sealed supplements can be returned within 48 hours of pickup with the digital invoice.</li>
+                <li><strong className="text-[#111827]">Fulfillment &amp; Counter Pickup:</strong> Supplements and merchandise ordered through the portal are fulfilled on-site at your gym's official inventory desk using your digital pickup PIN.</li>
+                <li><strong className="text-[#111827]">Seal Integrity:</strong> Inspect tubs and packaging at pickup. Supplements with broken safety seals or opened containers cannot be returned due to hygiene and food safety regulations.</li>
+                <li><strong className="text-[#111827]">Unopened Product Returns:</strong> Defective apparel or factory-sealed supplements can be returned within 48 hours of pickup with the digital invoice.</li>
               </ul>
             </section>
 

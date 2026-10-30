@@ -321,7 +321,7 @@ const TrainerExerciseLibrary: React.FC = () => {
               <select
                 value={difficultyFilter}
                 onChange={(e) => setDifficultyFilter(e.target.value)}
-                className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-medium text-[#111827] outline-none"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-bold text-[#111827] outline-none shadow-xs"
               >
                 {DIFFICULTIES.map(d => (
                   <option key={d} value={d}>{d}</option>
@@ -397,7 +397,7 @@ const TrainerExerciseLibrary: React.FC = () => {
                       {ex.category}
                     </span>
                     <span className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-sm border ${
-                      ex.difficulty === 'Beginner' ? 'bg-[#FFF7ED] text-white border-[#E2E8F0]' :
+                      ex.difficulty === 'Beginner' ? 'bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]' :
                       ex.difficulty === 'Intermediate' ? 'bg-amber-600/90 text-white border-amber-500' :
                       'bg-rose-600/90 text-white border-rose-500'
                     }`}>

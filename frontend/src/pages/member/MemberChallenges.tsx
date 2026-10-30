@@ -375,20 +375,20 @@ export default function MemberChallenges() {
 
   return (
     <div className="space-y-8 w-full max-w-7xl mx-auto pb-12">
-      {/* Header Banner - Dark Charcoal & Sand Gold theme */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF] to-[#F8FAFC] border border-[#E2E8F0] p-6 sm:p-8 shadow-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,_rgba(183,110,121,0.12)_0%,_transparent_70%)] pointer-events-none" />
+      {/* Header Banner - Modern Light theme */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF] to-[#F8FAFC] border border-[#E2E8F0] p-6 sm:p-8 shadow-xl flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,_rgba(183,110,121,0.08)_0%,_transparent_70%)] pointer-events-none" />
 
-        <div className="flex items-center gap-4 relative z-10">
+        <div className="flex items-center gap-4 relative z-10 min-w-0">
           <div className="w-14 h-14 rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C] shadow-md shadow-orange-500/15 shrink-0">
             <Trophy className="w-7 h-7" />
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="inline-flex items-center gap-2 px-2.5 py-0.5 mb-1.5 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full text-[10px] font-bold uppercase tracking-wider text-[#EA580C]">
               <Award size={12} className="text-[#EA580C]" />
               Rewards & Performance
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111827]">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111827] truncate">
               Rewards & Performance
             </h1>
             <p className="text-xs sm:text-sm text-[#64748B] mt-0.5 max-w-xl">
@@ -398,25 +398,25 @@ export default function MemberChallenges() {
         </div>
 
         {/* Stat Cards */}
-        <div className="flex items-center gap-3 w-full sm:w-auto relative z-10">
-          <div className="flex-1 sm:flex-none p-3.5 px-5 rounded-2xl border border-[#E2E8F0] bg-[#FFFFFF]/90 backdrop-blur-sm flex items-center gap-3.5 shadow-lg">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full xl:w-auto shrink-0 relative z-10">
+          <div className="flex-1 sm:flex-initial min-w-[170px] p-3.5 px-5 rounded-2xl border border-[#E2E8F0] bg-[#FFFFFF] flex items-center gap-3.5 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center shrink-0">
               <Coins className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-bold tracking-wider uppercase text-[#64748B] block">Points Balance</span>
-              <span className="text-xl font-black text-white">
+              <span className="text-[10px] font-bold tracking-wider uppercase text-[#64748B] block whitespace-nowrap">Points Balance</span>
+              <span className="text-xl font-black text-[#111827]">
                 {wallet.currentBalance} <span className="text-xs font-semibold text-[#EA580C]">pts</span>
               </span>
             </div>
           </div>
 
-          <div className="flex-1 sm:flex-none p-3.5 px-5 rounded-2xl border border-[#E2E8F0] bg-[#FFFFFF]/90 backdrop-blur-sm flex items-center gap-3.5 shadow-lg">
+          <div className="flex-1 sm:flex-initial min-w-[170px] p-3.5 px-5 rounded-2xl border border-[#E2E8F0] bg-[#FFFFFF] flex items-center gap-3.5 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center shrink-0">
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-bold tracking-wider uppercase text-[#64748B] block">Honors & Awards</span>
+              <span className="text-[10px] font-bold tracking-wider uppercase text-[#64748B] block whitespace-nowrap">Honors & Awards</span>
               <span className="text-xl font-black text-[#EA580C]">
                 {myAwards?.length || 0}
               </span>
@@ -498,8 +498,8 @@ export default function MemberChallenges() {
                             className={clsx(
                               "w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all cursor-pointer group",
                               isSubActive
-                                ? "bg-[#FFF7ED] border border-[#FFEDD5] text-white"
-                                : "hover:bg-[#FFF7ED] text-[#64748B] hover:text-[#C2410C]"
+                                ? "bg-[#FFF7ED] border border-[#FFEDD5] text-[#C2410C]"
+                                : "hover:bg-[#FFF7ED] text-[#334155] hover:text-[#C2410C]"
                             )}
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
@@ -510,7 +510,7 @@ export default function MemberChallenges() {
                                 <SubIcon className={clsx("w-4 h-4", item.gold && !isSubActive && "text-[#EA580C]")} />
                               </div>
                               <div className="truncate">
-                                <div className={clsx("text-xs font-bold", isSubActive ? "text-white" : "text-[#E4E4E7]")}>
+                                <div className={clsx("text-xs font-bold", isSubActive ? "text-[#C2410C]" : "text-[#111827]")}>
                                   {item.label}
                                 </div>
                                 <div className="text-[10px] text-[#64748B] truncate">
@@ -533,12 +533,12 @@ export default function MemberChallenges() {
           <div className="relative">
             <button
               onClick={() => setOpenDropdown(openDropdown === 'master' ? null : 'master')}
-              className="w-full md:w-auto flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-white text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-sm"
+              className="w-full md:w-auto flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-[#111827] text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-sm"
             >
               <div className="flex items-center gap-2">
                 <currentTabItem.icon className={clsx("w-4 h-4", currentTabItem.gold ? "text-[#EA580C]" : "text-[#EA580C]")} />
                 <span className="text-[#64748B] font-medium hidden sm:inline">Current View:</span>
-                <span className="font-bold text-white">{currentTabItem.label}</span>
+                <span className="font-bold text-[#111827]">{currentTabItem.label}</span>
               </div>
               <ChevronDown className={clsx("w-3.5 h-3.5 text-[#64748B] transition-transform duration-200", openDropdown === 'master' && "rotate-180")} />
             </button>
@@ -567,7 +567,7 @@ export default function MemberChallenges() {
                             "w-full flex items-center justify-between p-2 rounded-xl text-left transition-all cursor-pointer group",
                             isSubActive
                               ? "bg-[#C2410C] text-white shadow-md shadow-orange-500/15"
-                              : "hover:bg-[#FFF7ED] text-[#64748B] hover:text-[#C2410C]"
+                              : "hover:bg-[#FFF7ED] text-[#334155] hover:text-[#C2410C]"
                           )}
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
@@ -578,7 +578,7 @@ export default function MemberChallenges() {
                               <SubIcon className={clsx("w-3.5 h-3.5", item.gold && !isSubActive && "text-[#EA580C]")} />
                             </div>
                             <div className="truncate">
-                              <div className={clsx("text-xs font-bold", isSubActive ? "text-white" : "text-[#E4E4E7]")}>
+                              <div className={clsx("text-xs font-bold", isSubActive ? "text-white" : "text-[#111827]")}>
                                 {item.label}
                               </div>
                             </div>
@@ -632,7 +632,7 @@ export default function MemberChallenges() {
                 <span>Verified Attendance</span>
                 <span className="p-2 rounded-xl bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]"><Flame className="w-4 h-4" /></span>
               </div>
-              <div className="text-3xl font-black mt-2 text-white">
+              <div className="text-3xl font-black mt-2 text-[#111827]">
                 {myPerformance?.attendance?.totalVerifiedVisits || 0} <span className="text-sm font-normal text-[#64748B]">visits</span>
               </div>
               <p className="text-xs text-[#EA580C] font-semibold mt-1">
@@ -697,7 +697,7 @@ export default function MemberChallenges() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1 text-xs">
                 <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                   <span className="text-[#64748B] block font-medium">CURRENT WEIGHT</span>
-                  <span className="text-xl font-black text-white mt-1 block">
+                  <span className="text-xl font-black text-[#111827] mt-1 block">
                     {myPerformance.measurements.currentWeight} kg
                   </span>
                   {myPerformance.measurements.weightChange !== 0 && (
@@ -709,7 +709,7 @@ export default function MemberChallenges() {
 
                 <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                   <span className="text-[#64748B] block font-medium">BODY FAT %</span>
-                  <span className="text-xl font-black text-white mt-1 block">
+                  <span className="text-xl font-black text-[#111827] mt-1 block">
                     {myPerformance.measurements.bodyFatPercentage ? `${myPerformance.measurements.bodyFatPercentage}%` : 'Not recorded'}
                   </span>
                   <span className="text-[11px] text-[#64748B]">Bio-impedance / caliper</span>
@@ -717,7 +717,7 @@ export default function MemberChallenges() {
 
                 <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                   <span className="text-[#64748B] block font-medium">BENCH PRESS MAX</span>
-                  <span className="text-xl font-black text-white mt-1 block">
+                  <span className="text-xl font-black text-[#111827] mt-1 block">
                     {myPerformance.measurements.benchPressMax ? `${myPerformance.measurements.benchPressMax} kg` : 'Not recorded'}
                   </span>
                   <span className="text-[11px] text-[#64748B]">Personal record</span>
@@ -725,7 +725,7 @@ export default function MemberChallenges() {
 
                 <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                   <span className="text-[#64748B] block font-medium">SQUAT MAX</span>
-                  <span className="text-xl font-black text-white mt-1 block">
+                  <span className="text-xl font-black text-[#111827] mt-1 block">
                     {myPerformance.measurements.squatMax ? `${myPerformance.measurements.squatMax} kg` : 'Not recorded'}
                   </span>
                   <span className="text-[11px] text-[#64748B]">Personal record</span>
@@ -777,17 +777,17 @@ export default function MemberChallenges() {
                       <th className="py-2.5 px-3 text-right">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E2E8F0] text-zinc-300">
+                  <tbody className="divide-y divide-[#E2E8F0] text-[#334155]">
                     {myPerformance.attendance.attendanceLogs.map((log: any, idx: number) => (
                       <tr key={log._id || idx} className="hover:bg-[#FFF7ED]/60 transition">
-                        <td className="py-2.5 px-3 font-semibold text-white">
+                        <td className="py-2.5 px-3 font-semibold text-[#111827]">
                           {log.date ? new Date(log.date).toLocaleDateString() : 'Visit'}
                         </td>
                         <td className="py-2.5 px-3 text-[#64748B]">
                           {log.checkInTime || '--:--'} - {log.checkOutTime || '--:--'}
                         </td>
                         <td className="py-2.5 px-3">
-                          <span className="px-2 py-0.5 rounded-md bg-[#F8FAFC] text-zinc-300 text-[10px] font-medium border border-[#E2E8F0]">
+                          <span className="px-2 py-0.5 rounded-md bg-[#F8FAFC] text-[#475569] text-[10px] font-medium border border-[#E2E8F0]">
                             {log.mode || 'Standard Floor'}
                           </span>
                         </td>
@@ -876,7 +876,7 @@ export default function MemberChallenges() {
                       <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
                         <div className="flex justify-between items-baseline text-xs">
                           <span className="text-[#64748B] font-medium">Completed Progress:</span>
-                          <span className="font-bold text-sm text-white">
+                          <span className="font-bold text-sm text-[#111827]">
                             {p.currentProgress} / {challenge.targetValue} {challenge.targetUnit}
                           </span>
                         </div>
@@ -897,7 +897,7 @@ export default function MemberChallenges() {
                       {/* Trainer Feedback if provided */}
                       {p.trainerFeedback && (
                         <div className="p-2.5 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] text-xs text-[#EA580C]">
-                          <span className="font-bold block text-white">💬 Trainer Feedback:</span>
+                          <span className="font-bold block text-[#C2410C]">💬 Trainer Feedback:</span>
                           <span className="italic">{p.trainerFeedback}</span>
                         </div>
                       )}
@@ -979,7 +979,7 @@ export default function MemberChallenges() {
                       <div className="p-3 rounded-xl bg-[#F8FAFC] text-xs space-y-1.5 border border-[#E2E8F0]">
                         <div className="flex justify-between">
                           <span className="text-[#64748B]">Target Goal:</span>
-                          <span className="font-bold text-white">
+                          <span className="font-bold text-[#111827]">
                             {challenge.targetValue} {challenge.targetUnit}
                           </span>
                         </div>
@@ -1083,7 +1083,7 @@ export default function MemberChallenges() {
                       <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-1">
                         <div className="flex justify-between">
                           <span className="text-[#64748B]">Final Achievement:</span>
-                          <span className="font-bold text-white">
+                          <span className="font-bold text-[#111827]">
                             {p.currentProgress} / {challenge.targetValue} {challenge.targetUnit}
                           </span>
                         </div>
@@ -1105,7 +1105,7 @@ export default function MemberChallenges() {
                         <div className="p-2.5 rounded-xl bg-[#F8FAFC] border border-dashed border-[#FFEDD5] flex items-center justify-between text-xs">
                           <div>
                             <span className="text-[10px] text-[#64748B] block">REWARD CLAIM CODE</span>
-                            <span className="font-mono font-bold text-white">{p.claimCode}</span>
+                            <span className="font-mono font-bold text-[#EA580C]">{p.claimCode}</span>
                           </div>
                           <button
                             onClick={() => copyVoucherCode(p.claimCode!)}
@@ -1168,7 +1168,7 @@ export default function MemberChallenges() {
                       <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2 bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                         <IconComp className="w-7 h-7" />
                       </div>
-                      <div className="font-bold text-xs text-white">
+                      <div className="font-bold text-xs text-[#111827]">
                         {badge.badgeName}
                       </div>
                       <span className="text-[10px] text-[#64748B] mt-1 truncate max-w-full">
@@ -1202,7 +1202,7 @@ export default function MemberChallenges() {
                 {transactions.map((tx: any) => (
                   <div key={tx._id} className="py-3 flex justify-between items-center">
                     <div>
-                      <div className="font-semibold text-xs text-white">
+                      <div className="font-semibold text-xs text-[#111827]">
                         {tx.description}
                       </div>
                       <div className="text-[11px] text-[#64748B]">
@@ -1244,7 +1244,7 @@ export default function MemberChallenges() {
               <select
                 value={leaderboardChallengeId}
                 onChange={e => setLeaderboardChallengeId(e.target.value)}
-                className="px-3.5 py-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-white text-sm font-semibold max-w-xs focus:outline-none focus:border-[#FDBA74]"
+                className="px-3.5 py-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-[#111827] text-sm font-semibold max-w-xs focus:outline-none focus:border-[#FDBA74]"
               >
                 {allChallengesList.map(ch => (
                   <option key={ch._id} value={ch._id}>
@@ -1302,7 +1302,7 @@ export default function MemberChallenges() {
                       </span>
 
                       <div>
-                        <div className={clsx("font-bold text-sm", isMe ? 'text-[#EA580C]' : 'text-white')}>
+                        <div className={clsx("font-bold text-sm", isMe ? 'text-[#EA580C]' : 'text-[#111827]')}>
                           {item.displayName}
                         </div>
                         <div className="text-xs text-[#64748B]">
@@ -1435,38 +1435,38 @@ export default function MemberChallenges() {
                       {/* Category Specific Perks Pill */}
                       <div className="p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-1">
                         {reward.category === 'Personal Training' && (
-                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                          <p className="font-semibold text-[#111827] flex items-center gap-1.5">
                             <Dumbbell className="w-3.5 h-3.5 text-[#EA580C]" />
                             {reward.sessionCount || 1} Free PT Session(s) ({reward.sessionDuration || '45 mins'})
                             {reward.trainerId?.firstName && ` with ${reward.trainerId.firstName}`}
                           </p>
                         )}
                         {reward.category === 'Discount Coupon' && (
-                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                          <p className="font-semibold text-[#111827] flex items-center gap-1.5">
                             <Ticket className="w-3.5 h-3.5 text-[#EA580C]" />
                             {reward.discountValue}{reward.discountType === 'Percentage' ? '%' : '₹'} Off on {reward.applicableService || 'All Services'}
                           </p>
                         )}
                         {reward.category === 'Free Product / Gift' && (
-                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                          <p className="font-semibold text-[#111827] flex items-center gap-1.5">
                             <Gift className="w-3.5 h-3.5 text-[#EA580C]" />
                             Free Gift: {reward.productName || 'Store Product'} (Qty: {reward.productQuantity || 1})
                           </p>
                         )}
                         {reward.category === 'Free Membership / Membership Extension' && (
-                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                          <p className="font-semibold text-[#111827] flex items-center gap-1.5">
                             <Award className="w-3.5 h-3.5 text-[#EA580C]" />
                             {reward.membershipDuration || '1 Month'} Membership Access ({reward.packageName || 'Full Access'})
                           </p>
                         )}
                         {reward.category === 'Performance Award' && (
-                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                          <p className="font-semibold text-[#111827] flex items-center gap-1.5">
                             <Trophy className="w-3.5 h-3.5 text-[#EA580C]" />
                             {reward.bonusAmount ? `₹${reward.bonusAmount} Payout • ` : ''}{reward.awardReason || 'Outstanding Gym Achievement'}
                           </p>
                         )}
                         {reward.category === 'Points-Based Reward' && (
-                          <p className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                          <p className="font-semibold text-[#111827] flex items-center gap-1.5">
                             <Coins className="w-3.5 h-3.5 text-[#EA580C]" />
                             Cost: {reward.requiredPoints} pts
                           </p>
@@ -1499,7 +1499,9 @@ export default function MemberChallenges() {
                           "px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm",
                           isAvailable
                             ? 'bg-[#C2410C] hover:bg-[#9A3412] text-white cursor-pointer'
-                            : 'bg-[#F8FAFC] text-zinc-500 cursor-not-allowed border border-[#E2E8F0]'
+                            : isClaimed
+                            ? 'bg-emerald-50 text-[#15803D] border border-emerald-200 cursor-default'
+                            : 'bg-[#F8FAFC] text-[#64748B] cursor-not-allowed border border-[#E2E8F0]'
                         )}
                       >
                         {isClaimed
@@ -1682,7 +1684,7 @@ export default function MemberChallenges() {
                       </p>
 
                       {award.winnerScore && (
-                        <div className="text-xs p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-zinc-300 mb-3">
+                        <div className="text-xs p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] mb-3">
                           <span className="text-[#64748B] text-[10px] block font-semibold">VERIFIED PERFORMANCE RECORD</span>
                           <span className="font-bold text-[#EA580C]">{award.winnerScore}</span>
                         </div>
@@ -1812,14 +1814,14 @@ export default function MemberChallenges() {
             <div className="p-4 rounded-xl bg-[#F8FAFC] text-xs space-y-2 border border-[#E2E8F0] mb-5">
               <div className="flex justify-between">
                 <span className="text-[#64748B]">Duration:</span>
-                <span className="font-medium text-white">
+                <span className="font-medium text-[#111827]">
                   {new Date(selectedChallenge.startDate).toLocaleDateString()} to {new Date(selectedChallenge.endDate).toLocaleDateString()}
                 </span>
               </div>
 
               <div className="flex justify-between">
                 <span className="text-[#64748B]">Target Goal:</span>
-                <span className="font-bold text-white">
+                <span className="font-bold text-[#111827]">
                   {selectedChallenge.targetValue} {selectedChallenge.targetUnit}
                 </span>
               </div>

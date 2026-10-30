@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../../utils/api';
-import PlatformPortalsSection from '../../components/common/PlatformPortalsSection';
 
 const MemberDashboard = () => {
   const { user, logout } = useAuth();
@@ -296,32 +295,36 @@ const MemberDashboard = () => {
                 </div>
 
                 {/* Card Action Footer */}
-                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 mt-2">
-                  <div className="flex items-center gap-3 text-xs text-[#64748B]">
-                    <span className="flex items-center gap-1 font-semibold text-[#111827]">
-                      <Clock size={14} className="text-[#EA580C]" /> {workoutDuration}
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5 mt-2">
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-[#64748B]">
+                    <span className="inline-flex items-center gap-1.5 font-semibold text-[#111827] whitespace-nowrap">
+                      <Clock size={15} className="text-[#EA580C] shrink-0" />
+                      <span>{workoutDuration}</span>
                     </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1 font-semibold text-[#111827]">
-                      <Flame size={14} className="text-[#EA580C]" /> ~{workoutCalories} kcal
+                    <span className="text-slate-400 select-none">•</span>
+                    <span className="inline-flex items-center gap-1.5 font-semibold text-[#111827] whitespace-nowrap">
+                      <Flame size={15} className="text-[#EA580C] shrink-0" />
+                      <span>~{workoutCalories} kcal</span>
                     </span>
-                    <span>•</span>
-                    <span className="bg-[#FFFFFF] px-2 py-0.5 rounded-md border border-[#E2E8F0] text-[11px] font-medium text-[#111827]">
+                    <span className="text-slate-400 select-none">•</span>
+                    <span className="bg-[#FFFFFF] px-3 py-1 rounded-lg border border-[#E2E8F0] text-xs font-semibold text-[#111827] whitespace-nowrap shadow-sm">
                       {workoutGoal}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
                     <Link
                       to="/member/diet"
-                      className="flex-1 sm:flex-none px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#E2E8F0] border border-[#E2E8F0] text-[#111827] text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      className="flex-1 sm:flex-none px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] text-[#111827] hover:text-[#EA580C] text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-sm whitespace-nowrap"
                     >
-                      <Utensils size={13} className="text-[#EA580C]" /> Diet Plan
+                      <Utensils size={14} className="text-[#EA580C]" />
+                      <span>Diet Plan</span>
                     </Link>
                     <Link
                       to="/member/workout"
-                      className="flex-1 sm:flex-none px-5 py-2.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-[#9A3412] hover:to-[#EA580C] text-[#FFFFFF] font-bold text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md shadow-orange-500/15"
+                      className="flex-1 sm:flex-none px-5 py-2.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-[#9A3412] hover:to-[#EA580C] text-[#FFFFFF] text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md shadow-orange-500/15 whitespace-nowrap"
                     >
-                      <Play size={13} fill="currentColor" /> Start Workout
+                      <Play size={13} fill="currentColor" />
+                      <span>Start Workout</span>
                     </Link>
                   </div>
                 </div>
@@ -468,9 +471,6 @@ const MemberDashboard = () => {
               </table>
             </div>
           </div>
-
-          {/* Role Portals & Ecosystem Section */}
-          <PlatformPortalsSection currentDashboard="MEMBER" />
         </>
       )}
 

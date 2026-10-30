@@ -326,3 +326,27 @@ tr:hover, tbody tr:hover {
 .sidebar-overlay.active {
   display: block;
 }
+
+/* ==============================================================
+   MARQUEE SCROLL: AUTOMATIC LEFT TO RIGHT
+   ============================================================== */
+@keyframes scrollLeftToRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-scroll-ltr {
+  display: flex;
+  width: max-content;
+  animation: scrollLeftToRight 35s linear infinite;
+  will-change: transform;
+}
+
+.animate-scroll-ltr:hover {
+  animation-play-state: paused;
+}
+

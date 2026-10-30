@@ -1065,8 +1065,8 @@ const MemberTrainerPlan: React.FC = () => {
                             <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-black/75 text-white backdrop-blur-xs">
                               {ex.category}
                             </span>
-                            <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md text-white backdrop-blur-xs ${
-                              ex.difficulty === 'Beginner' ? 'bg-[#FFF7ED]' : ex.difficulty === 'Intermediate' ? 'bg-amber-600/90' : 'bg-rose-600/90'
+                            <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md backdrop-blur-xs ${
+                              ex.difficulty === 'Beginner' ? 'bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5]' : ex.difficulty === 'Intermediate' ? 'bg-amber-600/90 text-white' : 'bg-rose-600/90 text-white'
                             }`}>
                               {ex.difficulty || 'All Levels'}
                             </span>

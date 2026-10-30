@@ -100,7 +100,7 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                      <h5 className="font-bold text-sm text-[#111827]">Today's Workout</h5>
                      <p className="text-xs text-[#EA580C] font-semibold">Upper Body Hypertrophy • 45 mins</p>
                    </div>
-                   <button className="bg-[#FFFFFF] text-white px-4 py-2 rounded-lg text-sm font-bold">Start</button>
+                   <button className="bg-[#C2410C] hover:bg-[#9A3412] text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm">Start</button>
                  </div>
                  <div className="grid grid-cols-2 gap-4">
                    <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F8FAFC] shadow-sm">
@@ -250,7 +250,7 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                   <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden"><img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=100&q=80" className="object-cover w-full h-full"/></div>
                   <div><h5 className="font-bold text-sm">Mike Tyson</h5><span className="text-[10px] bg-[#F8FAFC] text-[#EA580C] px-1.5 py-0.5 rounded">Online Expert</span></div>
                 </div>
-                <button className="w-full py-2 bg-[#FFFFFF] text-white text-xs font-bold rounded-lg mt-2">Connect via Chat</button>
+                <button className="w-full py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-lg mt-2 shadow-sm">Connect via Chat</button>
               </div>
             </div>
             <div className="bg-[#FFFFFF] rounded-2xl shadow-xl p-6 flex-1 flex flex-col items-center text-center">
@@ -479,7 +479,7 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
               <input type="email" placeholder="Business Email" className="w-full p-3 border border-[#F8FAFC] rounded-xl bg-[#F8FAFC] text-sm" readOnly value="david@ironforge.com"/>
               <input type="text" placeholder="Phone Number" className="w-full p-3 border border-[#F8FAFC] rounded-xl bg-[#F8FAFC] text-sm" readOnly value="+91 9876543210"/>
             </div>
-            <button className="w-full bg-[#FFFFFF] text-white py-3 rounded-xl font-bold">Continue to Gym Details</button>
+            <button className="w-full bg-[#C2410C] hover:bg-[#9A3412] text-white py-3 rounded-xl font-bold shadow-md shadow-orange-500/15">Continue to Gym Details</button>
           </div>
         )
       },
@@ -553,16 +553,16 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                 <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> Detailed Analytics</li>
                 <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> Trainer Booking System</li>
               </ul>
-              <button className="w-full py-2 bg-[#FFFFFF] text-white rounded-lg text-sm font-bold">Select Gold</button>
+              <button className="w-full py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-lg text-sm font-bold shadow-md shadow-orange-500/15">Select Gold</button>
             </div>
             <div className="bg-gradient-to-b from-[#FFFFFF] to-[#FFFFFF] rounded-2xl p-6 shadow-2xl flex-1 border border-[#FFFFFF] transform md:-translate-y-4 md:scale-105">
-              <div className="inline-block bg-[#FFF7ED] text-white text-[10px] font-bold px-2 py-1 rounded mb-4">PREMIUM PLAN</div>
+              <div className="inline-block bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] text-[10px] font-bold px-2 py-1 rounded mb-4">PREMIUM PLAN</div>
               <div className="text-3xl font-black text-[#111827] mb-1">₹2,499<span className="text-sm text-[#64748B] font-normal">/mo</span></div>
               <p className="text-xs text-[#64748B] mb-4">Enterprise-grade power</p>
               <ul className="space-y-2 text-xs mb-6 text-[#111827]">
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F8FAFC]"/> Unlimited members</li>
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F8FAFC]"/> Unlimited trainers</li>
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F8FAFC]"/> Advanced Revenue Analytics</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> Unlimited members</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> Unlimited trainers</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> Advanced Revenue Analytics</li>
                 <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F8FAFC]"/> Priority Support</li>
               </ul>
               <button className="w-full py-2 bg-[#C2410C] text-white font-bold rounded-lg text-sm font-bold shadow-[0_0_20px_rgba(147,51,234,0.4)]">Select Premium</button>

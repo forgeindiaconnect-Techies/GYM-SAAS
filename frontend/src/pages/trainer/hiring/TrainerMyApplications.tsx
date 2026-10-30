@@ -133,36 +133,22 @@ export default function TrainerMyApplications() {
             <Briefcase className="w-7 h-7 text-[#EA580C]" />
             My Job Applications
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-[#64748B] mt-1">
             Track your application status, interview schedules, and gym hiring decisions in real-time
           </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            to="/trainer/jobs"
-            className="px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-orange-500/15"
-          >
-            Explore Open Vacancies
-          </Link>
-          <Link
-            to="/trainer/job-offers"
-            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl border border-[#E2E8F0] text-sm"
-          >
-            View Job Offers
-          </Link>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className="bg-[#F8FAFC] p-4 rounded-2xl border border-[#E2E8F0]">
+      <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E2E8F0] shadow-sm">
         <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#64748B] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search applications by position, gym name, or status..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#FDBA74]"
+            className="w-full pl-10 pr-4 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#111827] placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#FDBA74]"
           />
         </div>
       </div>
@@ -212,7 +198,7 @@ export default function TrainerMyApplications() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
-                    <span className="flex items-center gap-1.5 text-white font-medium">
+                    <span className="flex items-center gap-1.5 text-[#111827] font-semibold">
                       <Building2 className="w-3.5 h-3.5 text-[#EA580C]" />
                       {job?.gymName || app.gymId?.name || 'Verified Gym'}
                     </span>

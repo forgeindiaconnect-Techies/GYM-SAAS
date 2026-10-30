@@ -151,7 +151,7 @@ const GymMarketplace = () => {
             <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
               <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">Gymora</span>
+            <span className="text-2xl font-bold tracking-tight text-white group-hover:text-[#EA580C] transition-colors">Gymora</span>
           </Link>
 
           <div className="flex items-center gap-3">
@@ -232,7 +232,7 @@ const GymMarketplace = () => {
           {/* Main Headline — changes with slide */}
           <h1
             key={`title-${slideIdx}`}
-            className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-[#111827] leading-[1.15] tracking-tight drop-shadow-2xl mb-4 max-w-4xl"
+            className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white leading-[1.15] tracking-tight drop-shadow-2xl mb-4 max-w-4xl"
             style={{ animation: 'fadeInUp 0.8s ease' }}
           >
             {currentSlide.title}

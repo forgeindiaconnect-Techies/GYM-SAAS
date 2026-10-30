@@ -93,9 +93,6 @@ const TrainerLayout = () => {
       items: [
         { label: 'Find Jobs', path: '/trainer/jobs', icon: Search },
         { label: 'My Applications', path: '/trainer/applications', icon: Briefcase },
-        { label: 'Hiring Requests', path: '/trainer/hiring-requests', icon: Mail },
-        { label: 'Interview Schedule', path: '/trainer/interviews', icon: Calendar },
-        { label: 'Job Offers', path: '/trainer/job-offers', icon: Gift },
       ]
     },
     {

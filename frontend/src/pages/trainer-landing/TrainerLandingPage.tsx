@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   UserCheck,
   Briefcase,
-  LogIn,
   ArrowRight,
   Sparkles,
   Award,
@@ -33,8 +32,6 @@ import trainerImg2 from '../../assets/Trainer landing image 2.jpg';
 import trainerImg3 from '../../assets/Trainer landing image 3.jpg';
 import trainerImg4 from '../../assets/Trainer landing image 4.jpg';
 import trainerImg5 from '../../assets/Trainer landing image 5.jpg';
-import trainerBenefitVideo from '../../assets/Trainer benefit video .mp4';
-import trainerResponsibilitiesVideo from '../../assets/Trainer responsbilities.mp4';
 
 export const TrainerLandingPage: React.FC = () => {
   // FAQ Accordion State
@@ -206,7 +203,7 @@ export const TrainerLandingPage: React.FC = () => {
                 Showcase your fitness expertise, connect with gym opportunities, guide customers towards their fitness goals, and grow your career as a professional fitness trainer.
               </p>
 
-              {/* 2 Call-To-Action Buttons */}
+              {/* Call-To-Action Button */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-10">
                 <Link
                   to="/careers"
@@ -215,14 +212,6 @@ export const TrainerLandingPage: React.FC = () => {
                   <Briefcase size={16} />
                   <span>Explore Opportunities</span>
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-
-                <Link
-                  to="/login?portal=trainer"
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-lg shadow-orange-500/15 flex items-center justify-center gap-2"
-                >
-                  <LogIn size={16} />
-                  <span>Trainer Login</span>
                 </Link>
               </div>
 
@@ -243,17 +232,13 @@ export const TrainerLandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Video Container: Trainer Video */}
+            {/* Right Container: Trainer Hero Image */}
             <div className="lg:col-span-5 relative">
               <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
-                <video
-                  src="/videos/trainer.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  controls
-                  className="w-full h-[380px] sm:h-[480px] object-cover object-center block"
+                <img
+                  src="/trainer-hero.jpg"
+                  alt="Build Your Fitness Career"
+                  className="w-full h-[380px] sm:h-[480px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
             </div>
@@ -406,7 +391,7 @@ export const TrainerLandingPage: React.FC = () => {
 
                       {/* Tag pill at bottom of image */}
                       <div className="absolute bottom-2.5 left-3">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-white bg-[#FFF7ED] border border-[#FFEDD5] px-2 py-0.5 rounded-md backdrop-blur-sm">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#EA580C] bg-[#FFF7ED] border border-[#FFEDD5] px-2 py-0.5 rounded-md backdrop-blur-sm">
                           {item.tag}
                         </span>
                       </div>
@@ -568,33 +553,13 @@ export const TrainerLandingPage: React.FC = () => {
 
               </div>
 
-              {/* Right Side: Benefits Video */}
+              {/* Right Side: Benefits Image */}
               <div className="lg:col-span-5 relative">
                 <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
-                  <video
-                    key="video-benefits"
-                    src={trainerBenefitVideo}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="auto"
-                    controls
-                    ref={(el) => {
-                      if (el) {
-                        el.muted = true;
-                        el.defaultMuted = true;
-                        el.play().catch(() => {});
-                      }
-                    }}
-                    onLoadedMetadata={(e) => {
-                      e.currentTarget.muted = true;
-                      if (e.currentTarget.currentTime === 0) {
-                        e.currentTarget.currentTime = 0.05;
-                      }
-                      e.currentTarget.play().catch(() => {});
-                    }}
-                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+                  <img
+                    src="/trainer-benefit.jpg"
+                    alt="Trainer Benefits & Client Coaching"
+                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
               </div>
@@ -664,33 +629,13 @@ export const TrainerLandingPage: React.FC = () => {
 
               </div>
 
-              {/* Right Side: Responsibilities Video */}
+              {/* Right Side: Responsibilities Image */}
               <div className="lg:col-span-5 relative">
                 <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
-                  <video
-                    key="video-responsibilities"
-                    src={trainerResponsibilitiesVideo}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="auto"
-                    controls
-                    ref={(el) => {
-                      if (el) {
-                        el.muted = true;
-                        el.defaultMuted = true;
-                        el.play().catch(() => {});
-                      }
-                    }}
-                    onLoadedMetadata={(e) => {
-                      e.currentTarget.muted = true;
-                      if (e.currentTarget.currentTime === 0) {
-                        e.currentTarget.currentTime = 0.05;
-                      }
-                      e.currentTarget.play().catch(() => {});
-                    }}
-                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+                  <img
+                    src="/trainer-responsibility.jpg"
+                    alt="Trainer Responsibilities & Proper Exercise Guidance"
+                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
               </div>

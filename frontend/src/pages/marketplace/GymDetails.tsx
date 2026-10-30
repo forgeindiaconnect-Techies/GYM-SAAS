@@ -200,7 +200,7 @@ const GymDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pt-20 pb-24 relative selection:bg-[#C2410C] selection:text-[#111827]">
+    <div className="min-h-screen bg-[#F8FAFC] pt-0 pb-24 relative selection:bg-[#C2410C] selection:text-[#111827]">
       {/* Hero Section */}
       <div className="h-[40vh] md:h-[50vh] relative bg-[#FFFFFF]">
         {gym.logo ? (
@@ -247,11 +247,11 @@ const GymDetails = () => {
                   className="flex items-center text-[#EA580C] bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 cursor-pointer hover:bg-black/80 transition-all shadow-sm"
                   title="View customer reviews and ratings"
                 >
-                  <Star size={14} className="fill-amber-400 text-[#B45309] mr-1.5" />
+                  <Star size={14} className="fill-amber-400 text-amber-400 mr-1.5" />
                   <span className="text-sm font-bold text-white">
                     {ratingStats?.averageRating ? Number(ratingStats.averageRating).toFixed(1) : (gym.rating ? Number(gym.rating).toFixed(1) : '4.5')}
                   </span>
-                  <span className="text-xs text-[#64748B] ml-1.5">
+                  <span className="text-xs text-white/80 font-medium ml-1.5">
                     ({reviews.length || gym.reviewCount || 0} {reviews.length === 1 ? 'review' : 'reviews'})
                   </span>
                 </div>

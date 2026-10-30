@@ -144,26 +144,30 @@ const TrainerDashboard = () => {
       ) : (
         <>
           {/* Key Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3.5 sm:gap-4">
             {[
               { label: 'Active Clients', value: uniqueClients.toString(), icon: Users, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]' },
               { label: 'Completed Exercises', value: totalExercisesDone.toString(), icon: Dumbbell, color: 'text-[#15803D]', bg: 'bg-[#15803D]/10' },
               { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED]' },
-              { label: 'Today\'s Sessions', value: todaySessions.toString(), icon: Calendar, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]' },
+              { label: "Today's Sessions", value: todaySessions.toString(), icon: Calendar, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]' },
               { label: 'Total Earnings', value: `₹${thisMonthEarnings.toLocaleString('en-IN')}`, icon: IndianRupee, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]' },
               { label: 'Rewards & Honors', value: 'Perks', icon: Award, color: 'text-amber-700', bg: 'bg-amber-50', link: '/trainer/rewards' },
             ].map((stat, i) => (
               <Link
                 key={i}
                 to={stat.link || '#'}
-                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 flex items-center space-x-3 shadow-sm hover:shadow-md transition-shadow"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 sm:p-4.5 flex items-center gap-3.5 shadow-sm hover:shadow-md transition-all group min-w-0"
               >
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${stat.bg} ${stat.color}`}>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${stat.bg} ${stat.color} group-hover:scale-105 transition-transform`}>
                   <stat.icon size={22} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[#64748B] text-[11px] font-semibold uppercase tracking-wider truncate">{stat.label}</p>
-                  <h3 className="text-lg font-extrabold text-[#111827] mt-0.5 truncate">{stat.value}</h3>
+                  <p className="text-[#64748B] text-[10px] sm:text-[11px] font-bold uppercase tracking-wide leading-tight line-clamp-2">
+                    {stat.label}
+                  </p>
+                  <h3 className="text-lg sm:text-xl font-black text-[#111827] mt-1 whitespace-nowrap">
+                    {stat.value}
+                  </h3>
                 </div>
               </Link>
             ))}

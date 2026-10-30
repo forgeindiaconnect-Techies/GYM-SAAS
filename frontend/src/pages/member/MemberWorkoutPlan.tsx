@@ -367,30 +367,30 @@ const MemberWorkoutPlan: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Target Focus Card */}
                 <div className="lg:col-span-1 space-y-4">
-                  <div className="bg-gradient-to-br from-[#FFFFFF] to-[#F8FAFC] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFFFFF]/10 rounded-full text-xs font-bold mb-4 text-[#EA580C]">
+                  <div className="bg-gradient-to-br from-[#FFFFFF] to-[#F8FAFC] rounded-3xl p-6 border border-[#E2E8F0] shadow-xl relative overflow-hidden">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full text-xs font-bold mb-4 text-[#EA580C]">
                       <Activity size={14} /> TARGET FOCUS
                     </div>
 
-                    <h3 className="text-2xl font-black mb-1">
+                    <h3 className="text-2xl font-black mb-1 text-[#111827]">
                       {currentDay?.dayName} {currentDay?.focus ? `– ${currentDay.focus}` : ''}
                     </h3>
-                    <p className="text-xs text-white/70 mb-4">
+                    <p className="text-xs text-[#64748B] mb-4">
                       {dayExercises.length} Exercises approved by {trainerName} for target muscular development.
                     </p>
 
                     {currentDay?.targetMuscle && (
-                      <div className="text-xs bg-[#FFFFFF]/10 rounded-xl p-3 mb-4 text-[#EA580C] border border-white/10">
-                        <strong className="text-white">Target Muscle Focus:</strong> {currentDay.targetMuscle}
+                      <div className="text-xs bg-[#FFF7ED] rounded-xl p-3 mb-4 text-[#C2410C] border border-[#FFEDD5]">
+                        <strong className="text-[#111827]">Target Muscle Focus:</strong> {currentDay.targetMuscle}
                       </div>
                     )}
 
                     <div className="space-y-3">
-                      <div className="flex items-center space-x-3 bg-[#FFFFFF]/5 rounded-2xl p-3.5 border border-white/10">
+                      <div className="flex items-center space-x-3 bg-[#FFFFFF] rounded-2xl p-3.5 border border-[#E2E8F0] shadow-sm">
                         <Clock className="text-[#EA580C]" size={20} />
                         <div>
-                          <p className="text-[11px] text-white/50 font-bold uppercase">Estimated Duration</p>
-                          <p className="font-extrabold text-sm text-white">
+                          <p className="text-[11px] text-[#64748B] font-bold uppercase">Estimated Duration</p>
+                          <p className="font-extrabold text-sm text-[#111827]">
                             {dayExercises.reduce((acc, curr) => acc + (curr.duration || 60), 0) / 60 > 1
                               ? `${Math.round(dayExercises.reduce((acc, curr) => acc + (curr.duration || 60), 0) / 60)} Minutes`
                               : (currentDay?.duration || '45 Minutes')}
@@ -398,22 +398,22 @@ const MemberWorkoutPlan: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-3 bg-[#FFFFFF]/5 rounded-2xl p-3.5 border border-white/10">
+                      <div className="flex items-center space-x-3 bg-[#FFFFFF] rounded-2xl p-3.5 border border-[#E2E8F0] shadow-sm">
                         <Flame className="text-[#B45309]" size={20} />
                         <div>
-                          <p className="text-[11px] text-white/50 font-bold uppercase">Estimated Burn</p>
-                          <p className="font-extrabold text-sm text-white">
+                          <p className="text-[11px] text-[#64748B] font-bold uppercase">Estimated Burn</p>
+                          <p className="font-extrabold text-sm text-[#111827]">
                             ~{dayExercises.length * 55} kcal
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-3 bg-[#FFFFFF]/5 rounded-2xl p-3.5 border border-white/10">
-                        <Award className="text-[#F8FAFC]" size={20} />
+                      <div className="flex items-center space-x-3 bg-[#FFFFFF] rounded-2xl p-3.5 border border-[#E2E8F0] shadow-sm">
+                        <Award className="text-[#EA580C]" size={20} />
                         <div>
-                          <p className="text-[11px] text-white/50 font-bold uppercase">Approval Level</p>
-                          <p className="font-extrabold text-sm text-white">
-                            Trainer Verified & Optimized
+                          <p className="text-[11px] text-[#64748B] font-bold uppercase">Approval Level</p>
+                          <p className="font-extrabold text-sm text-[#111827]">
+                            Trainer Verified &amp; Optimized
                           </p>
                         </div>
                       </div>
@@ -422,7 +422,7 @@ const MemberWorkoutPlan: React.FC = () => {
                     {dayExercises.length > 0 && (
                       <button
                         onClick={() => handleLaunchPlayer(0)}
-                        className="w-full mt-6 py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-[#111827] rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                        className="w-full mt-6 py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-white rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
                       >
                         <Play size={15} className="fill-current" />
                         <span>Start Interactive Session</span>

@@ -813,39 +813,51 @@ const MemberRewards: React.FC = () => {
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {customClaims.map((claim) => (
-              <div key={claim._id} className="p-4 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-[#111827]">{claim.rewardTitle}</span>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    claim.status === 'APPROVED' ? 'bg-[#15803D]/10 text-[#15803D]' :
-                    claim.status === 'REDEEMED' ? 'bg-[#FFF7ED] text-[#EA580C]' :
-                    claim.status === 'PENDING' ? 'bg-amber-500/10 text-[#B45309]' : 'bg-red-500/10 text-[#B91C1C]'
-                  }`}>
-                    {claim.status}
-                  </span>
+            {customClaims.map((claim: any) => {
+              const title = claim.rewardId?.title || claim.rewardTitle || 'Reward Voucher';
+              const code = claim.claimCode || claim.voucherCode || '---';
+              const points = claim.pointsDeducted ?? claim.pointsCost ?? 0;
+              const rawStatus = (claim.claimStatus || claim.status || 'Pending').toUpperCase();
+              const dateStr = claim.createdAt || claim.claimedAt;
+              const formattedDate = dateStr && !isNaN(new Date(dateStr).getTime())
+                ? new Date(dateStr).toLocaleDateString()
+                : 'Recently';
+              const note = claim.notes || claim.reviewNotes;
+
+              return (
+                <div key={claim._id} className="p-4 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-sm text-[#111827]">{title}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      rawStatus === 'APPROVED' ? 'bg-[#15803D]/10 text-[#15803D]' :
+                      rawStatus === 'REDEEMED' ? 'bg-[#FFF7ED] text-[#EA580C]' :
+                      rawStatus === 'PENDING' ? 'bg-amber-500/10 text-[#B45309]' : 'bg-red-500/10 text-[#B91C1C]'
+                    }`}>
+                      {claim.claimStatus || claim.status || 'Pending'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs pt-1">
+                    <span className="text-[#64748B]">Voucher Code:</span>
+                    <span className="font-mono font-bold text-[#EA580C] bg-[#FFF7ED] px-2 py-0.5 rounded border border-[#FFEDD5]">
+                      {code}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[#64748B]">Points Cost:</span>
+                    <span className="font-semibold text-[#111827]">{points} points</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[#64748B]">Claim Date:</span>
+                    <span className="text-[#64748B]">{formattedDate}</span>
+                  </div>
+                  {note && (
+                    <p className="text-[11px] text-[#EA580C] bg-[#F8FAFC] p-2 rounded-xl mt-1">
+                      <strong>Gym Note:</strong> {note}
+                    </p>
+                  )}
                 </div>
-                <div className="flex items-center justify-between text-xs pt-1">
-                  <span className="text-[#64748B]">Voucher Code:</span>
-                  <span className="font-mono font-bold text-[#EA580C] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#E2E8F0]">
-                    {claim.voucherCode}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Points Cost:</span>
-                  <span className="font-semibold text-[#111827]">{claim.pointsCost} points</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Claim Date:</span>
-                  <span className="text-[#64748B]">{new Date(claim.claimedAt).toLocaleDateString()}</span>
-                </div>
-                {claim.reviewNotes && (
-                  <p className="text-[11px] text-[#EA580C] bg-[#F8FAFC] p-2 rounded-xl mt-1">
-                    <strong>Gym Note:</strong> {claim.reviewNotes}
-                  </p>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

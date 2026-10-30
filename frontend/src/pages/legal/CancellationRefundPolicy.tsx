@@ -88,7 +88,7 @@ const CancellationRefundPolicy = () => {
           <p className="text-sm text-[#64748B] max-w-xl mx-auto">
             This policy explains your cancellation rights, refund eligibility, and the process for requesting a refund on Gymora.
           </p>
-          <p className="text-xs text-[#E2E8F0] mt-3">
+          <p className="text-xs text-[#64748B] mt-3">
             Last updated: October 2026 &nbsp;·&nbsp; Draft — subject to final review before publication
           </p>
         </div>
@@ -280,7 +280,7 @@ const CancellationRefundPolicy = () => {
             <ArrowLeft size={16} />
             {returnLabel}
           </button>
-          <p className="text-xs text-[#E2E8F0]">© 2026 Gymora. All rights reserved.</p>
+          <p className="text-xs text-[#64748B]">© 2026 Gymora. All rights reserved.</p>
         </div>
       </div>
     </div>

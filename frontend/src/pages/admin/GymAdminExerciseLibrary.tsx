@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search, Plus, Dumbbell, Filter, Video, Edit2, Trash2, CheckCircle2,
   XCircle, Eye, Upload, RefreshCw, Sparkles, X, ShieldAlert
@@ -441,7 +441,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     <span
                       className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border shadow-sm ${
                         ex.difficulty === 'Beginner'
-                          ? 'bg-[#FFF7ED] text-white border-[#FDBA74]'
+                          ? 'bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]'
                           : ex.difficulty === 'Intermediate'
                           ? 'bg-amber-600/90 text-white border-amber-500'
                           : 'bg-rose-600/90 text-white border-rose-500'

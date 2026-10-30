@@ -861,17 +861,17 @@ const MemberDietPlan = () => {
         <div className="flex items-center gap-2 self-start md:self-auto">
           <button
             onClick={markAllCompleted}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0] hover:bg-[#FFF7ED] transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#FFFFFF] text-[#EA580C] border border-[#E2E8F0] hover:bg-[#FFF7ED] hover:border-[#FFEDD5] transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
             title="Mark all meals eaten for this day"
           >
-            <Check size={14} /> Mark All Eaten
+            <Check size={14} className="text-[#EA580C]" /> Mark All Eaten
           </button>
           <button
             onClick={resetDay}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0] hover:text-[#FFFFFF] transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#FFFFFF] text-[#111827] border border-[#E2E8F0] hover:bg-[#FFF7ED] hover:text-[#EA580C] hover:border-[#FFEDD5] transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
             title="Reset meals for this day"
           >
-            <RotateCcw size={14} /> Reset Day
+            <RotateCcw size={14} className="text-[#EA580C]" /> Reset Day
           </button>
         </div>
       </div>

@@ -105,9 +105,9 @@ const PrivacyPolicy = () => {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {isSuperAdmin ? (
           /* Super Admin Policy View */
-          <div className="space-y-12 text-[#64748B] leading-relaxed">
+          <div className="space-y-12 text-[#334155] leading-relaxed">
             <section>
-              <p className="text-base">
+              <p className="text-base text-[#1E293B]">
                 This Privacy Policy governs the collection, use, storage, and protection of data processed through the
                 <span className="text-[#111827] font-semibold"> Gymora Super Admin Portal</span>. This portal is exclusively
                 accessible to authorized Gymora Super Administrators.
@@ -115,7 +115,7 @@ const PrivacyPolicy = () => {
             </section>
             <section>
               <h2 className="text-2xl font-semibold text-[#111827] mb-4">1. Data Accessed by Super Administrators</h2>
-              <ul className="list-disc pl-6 space-y-2">
+              <ul className="list-disc pl-6 space-y-2 text-[#334155]">
                 <li>All registered gym owner accounts, business details, and billing status.</li>
                 <li>System audit logs, login histories, and platform analytics.</li>
               </ul>
@@ -123,10 +123,10 @@ const PrivacyPolicy = () => {
           </div>
         ) : (
           /* Customer / Member Policy View */
-          <div className="space-y-12 text-[#64748B] leading-relaxed">
+          <div className="space-y-12 text-[#334155] leading-relaxed">
             {/* Intro */}
             <section className="p-6 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0]">
-              <p className="text-base text-[#CBD5E1] leading-relaxed">
+              <p className="text-base text-[#1E293B] font-medium leading-relaxed">
                 At <span className="text-[#EA580C] font-bold">Gymora</span>, we believe your personal health and fitness journey belongs to you. This Customer Privacy Policy explains what personal information we collect when you use the Gymora Customer Portal, how we use it to deliver personalized workouts and seamless gym access, and how we safeguard your sensitive health data.
               </p>
             </section>
@@ -139,14 +139,14 @@ const PrivacyPolicy = () => {
                 </div>
                 <h2 className="text-2xl font-bold text-[#111827]">1. Information We Collect from Customers</h2>
               </div>
-              <p className="mb-4">To deliver an intelligent, seamless fitness experience, we collect only necessary data including:</p>
+              <p className="mb-4 text-[#334155] font-medium">To deliver an intelligent, seamless fitness experience, we collect only necessary data including:</p>
               <div className="space-y-3 pl-2">
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                   <h3 className="font-bold text-[#111827] text-sm mb-1 flex items-center gap-2">
                     <CheckCircle2 size={16} className="text-[#EA580C]" />
                     Profile &amp; Account Identity
                   </h3>
-                  <p className="text-xs text-[#64748B]">Your name, contact email, phone number, hashed password, and profile avatar.</p>
+                  <p className="text-xs text-[#475569]">Your name, contact email, phone number, hashed password, and profile avatar.</p>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
@@ -154,7 +154,7 @@ const PrivacyPolicy = () => {
                     <CheckCircle2 size={16} className="text-[#EA580C]" />
                     Biometrics &amp; Health Metrics
                   </h3>
-                  <p className="text-xs text-[#64748B]">Age, height, body weight, BMI estimations, target body fat percentages, and body circumference records (chest, waist, arms).</p>
+                  <p className="text-xs text-[#475569]">Age, height, body weight, BMI estimations, target body fat percentages, and body circumference records (chest, waist, arms).</p>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
@@ -162,7 +162,7 @@ const PrivacyPolicy = () => {
                     <CheckCircle2 size={16} className="text-[#EA580C]" />
                     Workouts, Nutrition &amp; Activity Logs
                   </h3>
-                  <p className="text-xs text-[#64748B]">Assigned workout plans, completed sets, reps and lifted weight volumes, rest timer intervals, and meal breakdown logs.</p>
+                  <p className="text-xs text-[#475569]">Assigned workout plans, completed sets, reps and lifted weight volumes, rest timer intervals, and meal breakdown logs.</p>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
@@ -170,7 +170,7 @@ const PrivacyPolicy = () => {
                     <CheckCircle2 size={16} className="text-[#EA580C]" />
                     Gym Check-ins &amp; Attendance Records
                   </h3>
-                  <p className="text-xs text-[#64748B]">Digital QR code check-in timestamps, attendance streaks, and visited partner gym branches.</p>
+                  <p className="text-xs text-[#475569]">Digital QR code check-in timestamps, attendance streaks, and visited partner gym branches.</p>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
@@ -178,7 +178,7 @@ const PrivacyPolicy = () => {
                     <CheckCircle2 size={16} className="text-[#EA580C]" />
                     Payment &amp; Billing History
                   </h3>
-                  <p className="text-xs text-[#64748B]">Itemized receipts, invoice references, and encrypted transaction IDs. We never store raw debit/credit card numbers or CVVs.</p>
+                  <p className="text-xs text-[#475569]">Itemized receipts, invoice references, and encrypted transaction IDs. We never store raw debit/credit card numbers or CVVs.</p>
                 </div>
               </div>
             </section>
@@ -192,11 +192,11 @@ const PrivacyPolicy = () => {
                 <h2 className="text-2xl font-bold text-[#111827]">2. How We Use Customer Information</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
-                <li><strong className="text-white">Personalized Workouts &amp; Meal Plans:</strong> Calculating maintenance calories, configuring progressive overload sets, and breaking plateaus.</li>
-                <li><strong className="text-white">Seamless Turnstile Access:</strong> Authenticating your digital QR entry pass when arriving at partner gym locations.</li>
-                <li><strong className="text-white">Trainer 1-on-1 Coaching:</strong> Allowing your hired trainer to review workout completions, form feedback, and session reservations.</li>
-                <li><strong className="text-white">Support &amp; Inquiries:</strong> Resolving support tickets, technical reports, and billing clarifications submitted through Help &amp; Support.</li>
-                <li><strong className="text-white">Rewards &amp; Gamification:</strong> Allocating loyalty points for workout milestones and crediting legitimate referral perks.</li>
+                <li><strong className="text-[#111827]">Personalized Workouts &amp; Meal Plans:</strong> Calculating maintenance calories, configuring progressive overload sets, and breaking plateaus.</li>
+                <li><strong className="text-[#111827]">Seamless Turnstile Access:</strong> Authenticating your digital QR entry pass when arriving at partner gym locations.</li>
+                <li><strong className="text-[#111827]">Trainer 1-on-1 Coaching:</strong> Allowing your hired trainer to review workout completions, form feedback, and session reservations.</li>
+                <li><strong className="text-[#111827]">Support &amp; Inquiries:</strong> Resolving support tickets, technical reports, and billing clarifications submitted through Help &amp; Support.</li>
+                <li><strong className="text-[#111827]">Rewards &amp; Gamification:</strong> Allocating loyalty points for workout milestones and crediting legitimate referral perks.</li>
               </ul>
             </section>
 
@@ -208,7 +208,7 @@ const PrivacyPolicy = () => {
                 </div>
                 <h2 className="text-xl font-bold text-[#111827]">3. Strict No-Sale &amp; Health Privacy Pledge</h2>
               </div>
-              <p className="text-sm text-[#CBD5E1] leading-relaxed mb-3">
+              <p className="text-sm text-[#374151] leading-relaxed mb-3">
                 Gymora will <span className="text-[#EA580C] font-bold">never sell, rent, or trade</span> your personal workout records, body measurements, or dietary logs to third-party data brokers, marketing agencies, or health insurance companies.
               </p>
               <p className="text-xs text-[#64748B]">
@@ -226,10 +226,10 @@ const PrivacyPolicy = () => {
               </div>
               <p className="mb-4">We maintain strict technical and operational safeguards:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li><strong className="text-white">TLS 1.3 / SSL Encryption:</strong> All communications between your device and our servers are encrypted in transit.</li>
-                <li><strong className="text-white">Tenant Data Isolation:</strong> Member records are logically separated in the database; gym staff can only view attendees registered with their facility.</li>
-                <li><strong className="text-white">PCI-DSS Payment Processing:</strong> Payments are processed through certified banking gateways with zero local storage of sensitive payment credentials.</li>
-                <li><strong className="text-white">Session Security:</strong> Authenticated sessions use JSON Web Tokens (JWT) with automated expiry to protect against unauthorized account takeover.</li>
+                <li><strong className="text-[#111827]">TLS 1.3 / SSL Encryption:</strong> All communications between your device and our servers are encrypted in transit.</li>
+                <li><strong className="text-[#111827]">Tenant Data Isolation:</strong> Member records are logically separated in the database; gym staff can only view attendees registered with their facility.</li>
+                <li><strong className="text-[#111827]">PCI-DSS Payment Processing:</strong> Payments are processed through certified banking gateways with zero local storage of sensitive payment credentials.</li>
+                <li><strong className="text-[#111827]">Session Security:</strong> Authenticated sessions use JSON Web Tokens (JWT) with automated expiry to protect against unauthorized account takeover.</li>
               </ul>
             </section>
 
@@ -243,10 +243,10 @@ const PrivacyPolicy = () => {
               </div>
               <p className="mb-4">As a Gymora customer, you retain full sovereignty over your personal records:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li><strong className="text-white">Right to Inspect:</strong> View your full historical workouts, weigh-ins, attendance logs, and invoices in your dashboard at any time.</li>
-                <li><strong className="text-white">Right to Correct:</strong> Update contact info, phone numbers, or target fitness preferences directly in Member Settings.</li>
-                <li><strong className="text-white">Right to Data Portability:</strong> Request an export of your fitness progression history by contacting our support team.</li>
-                <li><strong className="text-white">Right to Account Deletion:</strong> Request complete account erasure and biometric purging upon conclusion of your gym membership.</li>
+                <li><strong className="text-[#111827]">Right to Inspect:</strong> View your full historical workouts, weigh-ins, attendance logs, and invoices in your dashboard at any time.</li>
+                <li><strong className="text-[#111827]">Right to Correct:</strong> Update contact info, phone numbers, or target fitness preferences directly in Member Settings.</li>
+                <li><strong className="text-[#111827]">Right to Data Portability:</strong> Request an export of your fitness progression history by contacting our support team.</li>
+                <li><strong className="text-[#111827]">Right to Account Deletion:</strong> Request complete account erasure and biometric purging upon conclusion of your gym membership.</li>
               </ul>
             </section>
 

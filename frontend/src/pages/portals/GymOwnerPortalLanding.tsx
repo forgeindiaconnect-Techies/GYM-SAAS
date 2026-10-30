@@ -505,17 +505,14 @@ const GymOwnerPortalLanding = () => {
             </div>
           </div>
 
-          {/* Right Video Container: Gym Owner Experience Video */}
+          {/* Right Image: Gym Owner Managing Operations */}
           <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
-              <video
-                src="/videos/gym-owners.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls
-                className="w-full h-[360px] sm:h-[460px] object-cover object-center block"
+            <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-orange-500/10 bg-[#FFFFFF] group">
+              <img
+                src="/gym-owner-hero.jpg"
+                alt="Gym Owner Managing Operations"
+                className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                loading="eager"
               />
             </div>
           </div>
@@ -1149,7 +1146,7 @@ const GymOwnerPortalLanding = () => {
                     </div>
                     <p className="text-2xl font-black text-[#EA580C] mb-2">₹0</p>
                     <p className="text-xs text-[#64748B] mb-3">10 members • 1 trainer • 1 branch</p>
-                    <ul className="text-xs text-[#CBD5E1] space-y-1.5">
+                    <ul className="text-xs text-[#374151] space-y-1.5">
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Basic Gym Profile</li>
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Member Management</li>
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> QR Attendance Sync</li>
@@ -1163,7 +1160,7 @@ const GymOwnerPortalLanding = () => {
                     </div>
                     <p className="text-2xl font-black text-[#EA580C] mb-2">₹799<span className="text-xs text-[#64748B] font-normal"> /mo</span></p>
                     <p className="text-xs text-[#64748B] mb-3">100 members • 5 trainers • 1 branch</p>
-                    <ul className="text-xs text-[#CBD5E1] space-y-1.5">
+                    <ul className="text-xs text-[#374151] space-y-1.5">
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Staff Management</li>
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> AI Fitness Assessment</li>
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Automated Reminders</li>
@@ -1180,7 +1177,7 @@ const GymOwnerPortalLanding = () => {
                     </div>
                     <p className="text-2xl font-black text-[#EA580C] mb-2">₹1,499<span className="text-xs text-[#64748B] font-normal"> /mo</span></p>
                     <p className="text-xs text-[#64748B] mb-3">500 members • 15 trainers • Multi-branch</p>
-                    <ul className="text-xs text-[#CBD5E1] space-y-1.5">
+                    <ul className="text-xs text-[#374151] space-y-1.5">
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> AI Workout & Diet Generation</li>
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Biometric Machine Integration</li>
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Revenue Analytics Cockpit</li>
@@ -1194,7 +1191,7 @@ const GymOwnerPortalLanding = () => {
                     </div>
                     <p className="text-2xl font-black text-[#EA580C] mb-2">₹2,999<span className="text-xs text-[#64748B] font-normal"> /mo</span></p>
                     <p className="text-xs text-[#64748B] mb-3">Unlimited members • Unlimited trainers</p>
-                    <ul className="text-xs text-[#CBD5E1] space-y-1.5">
+                    <ul className="text-xs text-[#374151] space-y-1.5">
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Custom Gym Brand & Domain</li>
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Dedicated Account Manager</li>
                       <li className="flex items-center gap-1.5"><Check size={14} className="text-[#EA580C]" /> Turnstile Hardware API</li>
@@ -1229,54 +1226,55 @@ const GymOwnerPortalLanding = () => {
             {activeFooterModal === 'gym-profile' && (
               <div>
                 <div className="flex items-center space-x-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C]">
-                    <Building2 size={20} />
+                  <div className="w-11 h-11 rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C] shrink-0">
+                    <Building2 size={22} />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#EA580C]">Gym Management</span>
-                    <h3 className="text-xl font-bold text-[#111827]">Gym Profile & Multi-Branch Setup</h3>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">Gym Management</span>
+                    <h3 className="text-xl sm:text-2xl font-black text-[#111827]">Gym Profile & Multi-Branch Setup</h3>
                   </div>
                 </div>
-                <p className="text-sm text-[#64748B] mb-6">
+                <p className="text-base text-[#475569] mb-6 leading-relaxed">
                   Set up and manage your fitness facility identity, branches, operating hours, and floor amenities.
                 </p>
 
-                <div className="space-y-3 mb-6">
+                <div className="space-y-4 mb-6">
                   <div className="p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0]">
-                    <h4 className="font-bold text-[#111827] text-sm mb-1 flex items-center gap-2">
-                      <Building2 size={16} className="text-[#EA580C]" /> Multi-Branch Architecture
+                    <h4 className="font-bold text-[#111827] text-base mb-1.5 flex items-center gap-2">
+                      <Building2 size={18} className="text-[#EA580C]" /> Multi-Branch Architecture
                     </h4>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Link and control multiple gym centers from a central administrator panel while maintaining branch-specific member databases, local equipment inventories, and revenue tracking.
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0]">
-                    <h4 className="font-bold text-[#111827] text-sm mb-1 flex items-center gap-2">
-                      <Sparkles size={16} className="text-[#EA580C]" /> Custom Branding & Digital Identity
+                    <h4 className="font-bold text-[#111827] text-base mb-1.5 flex items-center gap-2">
+                      <Sparkles size={18} className="text-[#EA580C]" /> Custom Branding & Digital Identity
                     </h4>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Upload gym logos, custom branch photos, and brand colors. Your branding appears seamlessly on member registration slips, invoice PDFs, and member check-in screens.
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0]">
-                    <h4 className="font-bold text-[#111827] text-sm mb-1 flex items-center gap-2">
-                      <Clock size={16} className="text-[#EA580C]" /> Operating Hours & Amenities
+                    <h4 className="font-bold text-[#111827] text-base mb-1.5 flex items-center gap-2">
+                      <Clock size={18} className="text-[#EA580C]" /> Operating Hours & Amenities
                     </h4>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Configure custom opening and closing schedules, morning/evening batches, women-only hours, and tag amenities like Sauna, Steam Room, Olympic Free Weights, and Crossfit Rigs.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex justify-end pt-4 border-t border-[#E2E8F0]">
+                <div className="flex justify-end pt-4 border-t border-[#E2E8F0] mt-6">
                   <Link
                     to="/gym-owner-introduction"
                     onClick={() => setActiveFooterModal(null)}
-                    className="px-6 py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-sm transition-all"
+                    className="px-6 py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-sm transition-all shadow-md shadow-orange-500/15 whitespace-nowrap text-center inline-flex items-center justify-center gap-2"
                   >
-                    Setup Your Gym Profile
+                    <span>Setup Your Gym Profile</span>
+                    <ArrowRight size={16} />
                   </Link>
                 </div>
               </div>
@@ -1286,53 +1284,43 @@ const GymOwnerPortalLanding = () => {
             {activeFooterModal === 'trainer-hiring' && (
               <div>
                 <div className="flex items-center space-x-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C]">
-                    <Users size={20} />
+                  <div className="w-11 h-11 rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C] shrink-0">
+                    <Users size={22} />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#EA580C]">Recruitment Engine</span>
-                    <h3 className="text-xl font-bold text-[#111827]">Trainer Hiring & Staff Management</h3>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">Recruitment Engine</span>
+                    <h3 className="text-xl sm:text-2xl font-black text-[#111827]">Trainer Hiring & Staff Management</h3>
                   </div>
                 </div>
-                <p className="text-sm text-[#64748B] mb-6">
+                <p className="text-base text-[#475569] mb-6 leading-relaxed">
                   Recruit certified fitness coaches, verify certifications, and automate trainer commission payouts.
                 </p>
 
-                <div className="grid sm:grid-cols-2 gap-3 mb-6">
+                <div className="grid sm:grid-cols-2 gap-4 mb-6">
                   <div className="p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0]">
-                    <h4 className="font-bold text-[#111827] text-sm mb-1">Certified Trainer Pool</h4>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <h4 className="font-bold text-[#111827] text-base mb-1.5">Certified Trainer Pool</h4>
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Browse verified professionals holding ACE, ISSA, K11, ACSM, or CPR certifications ready for full-time or freelance floor roles.
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0]">
-                    <h4 className="font-bold text-[#111827] text-sm mb-1">Post Vacancies</h4>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <h4 className="font-bold text-[#111827] text-base mb-1.5">Post Vacancies</h4>
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Publish open job postings for Strength Coaches, Yoga Instructors, Pilates Trainers, and Nutritionists directly to our trainer community.
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0]">
-                    <h4 className="font-bold text-[#111827] text-sm mb-1">Automated Commissions</h4>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <h4 className="font-bold text-[#111827] text-base mb-1.5">Automated Commissions</h4>
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Set custom split percentages (e.g. 70/30) or per-session fees. Sessions are verified via member check-in before generating settlement ledgers.
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0]">
-                    <h4 className="font-bold text-[#111827] text-sm mb-1">Shift & Booking Calendar</h4>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <h4 className="font-bold text-[#111827] text-base mb-1.5">Shift & Booking Calendar</h4>
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Manage floor shifts, personal training hours, and group class allocations without overlapping bookings.
                     </p>
                   </div>
-                </div>
-
-                <div className="flex justify-end pt-4 border-t border-[#E2E8F0]">
-                  <Link
-                    to="/gym-owner-introduction"
-                    onClick={() => setActiveFooterModal(null)}
-                    className="px-6 py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-sm transition-all"
-                  >
-                    Get Started With Gymora Hiring
-                  </Link>
                 </div>
               </div>
             )}
@@ -1444,7 +1432,7 @@ const GymOwnerPortalLanding = () => {
                     >
                       <button
                         onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
-                        className="w-full p-4 text-left flex items-center justify-between text-white font-semibold text-sm hover:text-[#EA580C] transition-colors"
+                        className="w-full p-4 text-left flex items-center justify-between text-[#111827] font-semibold text-sm hover:text-[#EA580C] transition-colors"
                       >
                         <span>{item.q}</span>
                         <ChevronDown size={16} className={`transition-transform ${expandedFaq === idx ? 'rotate-180 text-[#EA580C]' : 'text-[#64748B]'}`} />
